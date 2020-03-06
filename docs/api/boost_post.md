@@ -1,5 +1,8 @@
 # boost post
 
+1. ถ้าไม่ส่ง post_id มา จะหมายถึงให้ทำการ boost post ทั้งหมด แต่ถ้าส่งมา post_id หมายถึงทำอันเดียว
+2. เว็บไหนที่ไม่มีปุ่ม boost post ให้ใช้วิธี edit description แทน โดยไปใส่ tags พิเศษที่จะเปลี่ยนไปเรื่อยๆ เช่น ##REAS h740hi454###
+
 ## post_data
 ~~~json
 {
@@ -12,8 +15,7 @@
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
         },
-        "ddproperty": {
-            "post_id": "44444",
+        "ddproperty": {            
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
         }
