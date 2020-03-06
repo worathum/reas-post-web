@@ -25,6 +25,13 @@
 ~~~
 
 ## Return response json
+false message
+
+1. System required to manual register and confirm email at https://www.ddproperty.com/agent-register?package=TRIAL
+2. System required to direct contact to create account
+3. System not required to register
+4. System connection timeout in 7 second
+
 ~~~json
 {
     "success": "true",
