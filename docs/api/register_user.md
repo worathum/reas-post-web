@@ -1,5 +1,7 @@
 # register user
 
+name_title = mr mrs miss
+
 ## post_data
 ~~~json
 {
@@ -9,15 +11,21 @@
         "thaihometown": {
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssl_dklsjfkldjs",
-            "name": "Amarin",
-            "surname": "Boonkirt",
+            "name_title": "mr"
+            "name_th": "อัมรินทร์",
+            "surname_th": "บุญเกิด",
+            "name_en": "Amarin",
+            "surname_en": "Boonkirt",
             "tel": "0891999450"
         },
         "otherweb": {
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssl_dklsjfkldjs",
-            "name": "Amarin",
-            "surname": "Boonkirt",
+            "name_title": "mr"
+            "name_th": "อัมรินทร์",
+            "surname_th": "บุญเกิด",
+            "name_en": "Amarin",
+            "surname_en": "Boonkirt",
             "tel": "0891999450"
         }
     }
