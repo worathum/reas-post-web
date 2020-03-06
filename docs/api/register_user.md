@@ -11,22 +11,26 @@ name_title = mr mrs miss
         "thaihometown": {
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssl_dklsjfkldjs",
-            "name_title": "mr"
+            "company_name": "amarin inc",
+            "name_title": "mr",
             "name_th": "อัมรินทร์",
             "surname_th": "บุญเกิด",
             "name_en": "Amarin",
             "surname_en": "Boonkirt",
-            "tel": "0891999450"
+            "tel": "0891999450",
+            "addr_province" : "nonthaburi"
         },
         "otherweb": {
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssl_dklsjfkldjs",
-            "name_title": "mr"
+            "company_name": "amarin inc",
+            "name_title": "mr",
             "name_th": "อัมรินทร์",
             "surname_th": "บุญเกิด",
             "name_en": "Amarin",
             "surname_en": "Boonkirt",
-            "tel": "0891999450"
+            "tel": "0891999450",
+            "addr_province" : "nonthaburi"
         }
     }
 }
