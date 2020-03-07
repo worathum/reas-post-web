@@ -18,15 +18,22 @@
     "timeout": "<timeout_with_second",
     "global_argument1": "xxx",
     "global_argument2": "xxx",    
-    "web": {
-        "thaihometown.com": {
+    "web": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "ds_url": "www.thaihometown.com",
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "5k4kk3253434"
         },
-        "ddproperty.com": {
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "ds_url": "www.ddproperty.com",
+            "account_type" : "corperate",
             "email_user": "amarin.ta@gmail.com",
-            "email_pass": "5k4kk3253434",
+            "email_pass": "5k4kk3253434",            
         }
-    }
+    ]
 }
 ~~~
