@@ -23,16 +23,16 @@
             "ds_name": "thaihometown",
             "ds_id": "4",
             "ds_url": "www.thaihometown.com",
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "5k4kk3253434"
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434"
         },
         {
             "ds_name": "thaihometown",
             "ds_id": "4",
             "ds_url": "www.ddproperty.com",
             "account_type" : "corperate",
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "5k4kk3253434",            
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434",            
         }
     ]
 }
