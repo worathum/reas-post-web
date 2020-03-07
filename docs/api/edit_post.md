@@ -21,21 +21,24 @@
     "post_description_th": "xxx",
     "post_title_en": "",
     "post_description_en": "",
-    "web": {
-        "thaihometown": {
+    "web": [
+        {
+            "ds_name": "thaihometown",
             "post_id": "33333",
             "log_id": "33333",
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
+            "account_type" : "normal",
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434"
         },
-        "ddproperty": {
-            "post_id": "44444",
-            "log_id": "33333",
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "account_type" : "corperate",
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434",
             "project_name": "ลุมพินี"
         }
-    }
+    ]
 }
 ~~~
 
@@ -56,8 +59,7 @@ false message
             "success": "true",            
             "time_usage": "0:00:00.771743",
             "detail": "",
-            "log_id": "33333",
-            
+            "log_id": "33333",            
         },
         "ddproperty": {
             "success": "false",
