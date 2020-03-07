@@ -26,7 +26,6 @@
         "ddproperty": {
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
-            "project_name": "ลุมพินี"
         }
     }
 }
