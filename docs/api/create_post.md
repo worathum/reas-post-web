@@ -55,7 +55,7 @@ email = อีเมล์ตัวแทน
 
 Only ddproperty
 ~~~
-account_type = ex: normal, coperate
+account_type = ex: normal, corperate
 
 SPECIAL PROCESS:
 
@@ -96,7 +96,7 @@ return account_type = normal, coperate
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
         },
         "ddproperty": {
-            "account_type" : "agent",
+            "account_type" : "corperate",
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",            
         }
