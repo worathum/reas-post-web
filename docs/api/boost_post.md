@@ -8,21 +8,22 @@
 {
     "action": "boost_post",
     "timeout": "5",
-    
-    "web": {
-        "thaihometown": {
+    "web": [
+        {
+            "ds_name": "thaihometown",
             "post_id": "33333",
-            "log_id": "33333",
+            "log_id": "33333",       
             "user": "amarin.ta@gmail.com",
-            "pass": "dasdasdsadsads"
+            "pass": "5k4kk3253434"
         },
-        "ddproperty": {       
+        {
+            "ds_name": "ddproperty",
             "post_id": "33333",
             "log_id": "33333",
             "user": "amarin.ta@gmail.com",
-            "pass": "dasdasdsadsads",
+            "pass": "5k4kk3253434",            
         }
-    }
+    ]
 }
 ~~~
 
