@@ -115,28 +115,48 @@ return account_type = normal, coperate
 {
     "action": "create_post",
     "timeout": "5",
-    "listing_type": "ขาย",    
-    "property_type": "คอนโด",
-    "post_img_url_lists": [
+     "post_img_url_lists": [
         "http://imagestore.com/pic1.jpg",
         "http://imagestore.com/pic2.jpg",        
     ],
+    "geo_latitude": "13.786862",
+    "geo_longitude": "100.757815",    
+    "property_id" : "",
+    "post_title_th": "xxx",
+    "short_post_title_th": "xxx",
+    "post_description_th": "xxx",
+    "post_title_en": "",
+    "short_post_title_en": "xxx",
+    "post_description_en": "",
     "price_baht": "3000",
     
+    "listing_type": "ขาย",    
+    "property_type": "คอนโด",    
+    "floor_level  " : "อยู่ชั้นที่",
+    "floor_level  " : "11",
+    "floor_total  " : "11",
+    "floor_area  " : "11",
+    "bath_room  " : "11",
+    "bed_room  " : "11",
+    "prominent_point  " : "จุดเด่น",    
+    "view_type " : "11",
+    "direction_type" : "11",
     "addr_province": "จังหวัด",
     "addr_district": "เขต",
     "addr_sub_district": "ตำบล แขวง",
     "addr_road": "ถนน",
+    "addr_soi": "ซอย",
     "addr_near_by": "สถานที่ใกล้เคียง",
-    "floorarea_sqm"
-    "geo_latitude": "13.786862",
-    "geo_longitude": "100.757815",
+    "floorarea_sqm": "พื้นที่",
     
-    "property_id" : "",
-    "post_title_th": "xxx",
-    "post_description_th": "xxx",
-    "post_title_en": "",
-    "post_description_en": "",
+    "land_size_rai": "ขนาดที่ดินเป็นไร่",
+    "land_size_ngan": "ขนาดที่ดินเป็นงาน",
+    "land_size_wa": "ขนาดที่ดินเป็นวา",
+    
+    "name": "xxx",
+    "mobile": "xxx",
+    "email": "xxx",
+    "line": "xxx",
 
     "web": [
         {
@@ -145,8 +165,7 @@ return account_type = normal, coperate
             "account_type" : null,
             "user": "amarin.ta@gmail.com",
             "pass": "4923892394i0923i",
-            "project_name": "ลุมพินี",
-           
+            "project_name": "ลุมพินี",           
         },
         {
             "ds_name": "thaihometown",
