@@ -102,6 +102,23 @@ return account_type = normal, coperate
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",            
         }
     }
+    "web_example": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "ds_url": "www.thaihometown.com",
+            "email_user": "amarin.ta@gmail.com",
+            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
+        },
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "ds_url": "www.ddproperty.com",
+            "account_type" : "corperate",
+            "email_user": "amarin.ta@gmail.com",
+            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",            
+        }
+    ]
 }
 ~~~
 
