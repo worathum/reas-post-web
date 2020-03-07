@@ -1,27 +1,24 @@
 # delete post
 
-
-
 ## post_data
 ~~~json
 {
     "action": "delete_post",
     "timeout": "5",
-    
-    "web": {
-        "thaihometown": {
-            "post_id": "33333",
+    "web": [
+        {
+            "ds_name": "thaihometown",
             "log_id": "33333",
             "user": "amarin.ta@gmail.com",
-            "pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
+            "pass": "5k4kk3253434"
         },
-        "ddproperty": {  
-            "post_id": "444444",
+        {
+            "ds_name": "ddproperty",
             "log_id": "33333",
             "user": "amarin.ta@gmail.com",
-            "pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
+            "pass": "5k4kk3253434",            
         }
-    }
+    ]
 }
 ~~~
 
@@ -30,7 +27,7 @@ false message
 
 1. Login failed due to incorrect userid/password
 2. System connection timeout in 5 second
-3. System maintenance"
+3. System maintenance
 
 ~~~json
 {
