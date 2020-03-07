@@ -1,25 +1,44 @@
-# create post
+    # create post
+
+arguement?????
+~~~
+listing_type = ประเภทประกาศ / ต้องการ 
+    ex: ขาย ให้เช่า ขายดาว์น
+county = เขต
+district = แขวง
+property_search = รายละเอียดที่ตั้ง / project_name??????
+    ex: ลุมพินี    
+property_type_select = ประเภทของอสังหา
+    ex:
+        คอนโด
+        บ้านเดี่ยว
+        ทาวน์เฮ้าส์
+        ที่ดิน
+        อพาร์ทเมนท์
+        กิจการ
+        สำนักงาน
+        พื้นที่ขายของ
+        ตึกแถว-อาคารพาณิชย์
+        โกดัง-โรงงาน
+~~~
+
+Common arguement
+~~~    
+floorarea_sqm = พื้นที่ (ตารางเมตร) ex: 48
+price_baht = ราคา ex: 300000
+geo_latitude = ค่าละติจูด ex: 29098209328
+geo_longitude = ค่าลองติจูด ex: 29098209328
+
+post_title_th = หัวข้อประกาศ (ไทย)
+post_description_th= รายละเอียดเกี่ยวกับประกาศ (ไทย)
+
+post_title_en = หัวข้อประกาศ (อังกฤษ)
+post_description_en = รายละเอียดเกี่ยวกับประกาศ (อังกฤษ)
 
 ~~~
-ต้องการ ขาย???
-หัวข้อสั้น
-
-จังหวัด
-อำเภอ
-ตำบล
-ถนน
-ซอย
-สถานที่ใกล้เคียง
-ชื่อโครงการคอนโดภาษาไทย
-ชื่อโครงการคอนโดภาษาอังกฤษ
-อาคาร
-พื้นที่ (ตารางเมตร)
-จำนวนห้องนอน
-จำนวนห้องน้ำ
-อยู่ชั้นที่
-จำนวนชั้นทั้งหมด
-จุดเด่นของอสังหา
-วิว
+Only ddproperty
+~~~
+project_name = ลุมพินี
 ~~~
 
 ## post_data
@@ -34,9 +53,7 @@
         "http://imagestore.com/pic4.jpg",
         "http://imagestore.com/pic5.jpg"
     ],
-    "price_baht": "5",
-    "county": "เขต",
-    "district": "แขวง",
+    "price_baht": "3000",
     "geo_latitude": "13.786862",
     "geo_longitude": "100.757815",
     "post_title_th": "xxx",
