@@ -19,13 +19,13 @@
     "global_argument1": "xxx",
     "global_argument2": "xxx",    
     "web": {
-        "thaihometown": {
+        "thaihometown.com": {
             "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
+            "email_pass": "5k4kk3253434"
         },
-        "ddproperty": {
+        "ddproperty.com": {
             "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
+            "email_pass": "5k4kk3253434",
         }
     }
 }
