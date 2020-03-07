@@ -175,7 +175,8 @@ false message
     "web": {
         "thaihometown": {
             "success": "true",            
-            "time_usage": "0:00:00.771743",
+            "start_time": "0:00:00.771743",
+            "end_time": "0:00:00.771743",
             "ds_id": "4",
             "post_url": "http://xxxxx/post/232323",
             "post_id": "33333",
@@ -183,7 +184,8 @@ false message
         },
         "ddproperty": {
             "success": "false",
-            "time_usage": "0:00:00.771743",
+            "start_time": "0:00:00.771743",
+            "end_time": "0:00:00.771743",
             "ds_id": "4",
             "post_url": "",
             "post_id": "",
