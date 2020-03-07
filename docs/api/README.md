@@ -12,7 +12,6 @@ python time arguement UTC+0 -0
 ~~~
 ## post_data
 - post_data จะเป็น json
-- email_pass จะ encrypt มาด้วย openssl ซึ่งทางฝั่ง api จะต้อง decrypt ด้วย key ก่อนนำไปใช้
 ~~~json
 {
     "action": "<action_name>",
@@ -49,13 +48,13 @@ python time arguement UTC+0 -0
         "thaihometown": {
             "success": "true",            
             "start_time": "0:00:00.771743",
-             "end_time": "0:00:00.771743",
+            "end_time": "0:00:00.771743",
             "detail": "",
             "log_id": "33333",
         },
         "ddproperty": {
             "success": "false",
-             "start_time": "0:00:00.771743",
+            "start_time": "0:00:00.771743",
             "end_time": "0:00:00.771743",
             "detail": "",
             "log_id": "33333",
