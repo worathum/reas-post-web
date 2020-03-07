@@ -14,7 +14,11 @@ listing_type = ประเภทประกาศ / ต้องการ
     ex: ขาย ให้เช่า
 project_name = รายละเอียดที่ตั้ง    ex: ลุมพินี   
 district = เขต
-sub_district = ตำบล แขวง
+addr_sub_district = ตำบล แขวง
+addr_road = ถนน
+addr_near_by = สถานที่ใกล้เคียง
+
+
 property_type_select = ประเภทของอสังหา
     ex:
         คอนโด
