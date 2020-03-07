@@ -24,11 +24,13 @@
     "web": {
         "thaihometown": {
             "post_id": "33333",
+            "log_id": "33333",
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
         },
         "ddproperty": {
             "post_id": "44444",
+            "log_id": "33333",
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
             "project_name": "ลุมพินี"
@@ -53,12 +55,15 @@ false message
         "thaihometown": {
             "success": "true",            
             "time_usage": "0:00:00.771743",
-            "detail": ""
+            "detail": "",
+            "log_id": "33333",
+            
         },
         "ddproperty": {
             "success": "false",
             "time_usage": "0:00:00.771743",
-            "detail": ""
+            "detail": "",
+            "log_id": "33333",
         }
     }
 }
