@@ -13,14 +13,14 @@
         "thaihometown": {
             "post_id": "33333",
             "log_id": "33333",
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
+            "user": "amarin.ta@gmail.com",
+            "pass": "dasdasdsadsads"
         },
         "ddproperty": {       
             "post_id": "33333",
             "log_id": "33333",
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
+            "user": "amarin.ta@gmail.com",
+            "pass": "dasdasdsadsads",
         }
     }
 }
