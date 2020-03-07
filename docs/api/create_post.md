@@ -24,6 +24,15 @@ property_type_select = ประเภทของอสังหา
 
 Common arguement
 ~~~    
+action = create_post
+timeout = process ทั้งหมดจะต้องเสร็จภายในวินาที่กำหนด ถ้ามีบางเว็บทำไม่เสร็จจะตัดเป็น false 
+    ทั่วไปเราจะกำหนดไว้ที่ 5 วินาที กรณี retry เราอาจจะปรับเป็น 7 วินาทีก็ได้เลือกเอาตามความเหมาะสม
+post_img_url_lists = ลิสต์ของ image url ที่เราจะอัพโหลดเข้าไปในโพส โครงสร้างเป็น json array
+    ex:
+        [
+            "http://imagestore.com/pic1.jpg",
+            "http://imagestore.com/pic2.jpg"        
+        ]
 floorarea_sqm = พื้นที่ (ตารางเมตร) ex: 48
 price_baht = ราคา ex: 300000
 geo_latitude = ค่าละติจูด ex: 29098209328
