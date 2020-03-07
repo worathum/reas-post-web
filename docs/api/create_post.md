@@ -47,11 +47,14 @@ post_description_en = รายละเอียดเกี่ยวกับ�
 ~~~
 Only ddproperty
 ~~~
-special process ถ้าเป็น coperate account คือมีคำว่า รายละเอียดตัวแทน
+account_type = ex: normal_agent, coperate_agent 
+    ถ้าไม่ส่ง account_type มาเราจะต้องไปตรวจสอบว่าเป็นเป็น coperate account คือมีคำว่า รายละเอียดตัวแทน
+
 if coperate account:
     fill agent name
     fill agent mobile number
     fill agent email
+return account_type = normal_agent
 ~~~
 
 
@@ -80,6 +83,7 @@ if coperate account:
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
         },
         "ddproperty": {
+            "account_type" : "agent",
             "email_user": "amarin.ta@gmail.com",
             "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",            
         }
