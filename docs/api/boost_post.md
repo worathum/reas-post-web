@@ -44,12 +44,14 @@ false message
             "time_usage": "0:00:00.771743",
             "detail": "",
             "log_id": "33333",
+            "post_id": "33333",
         },
         "ddproperty": {
             "success": "false",
             "time_usage": "0:00:00.771743",
             "detail": "",
             "log_id": "33333",
+            "post_id": "33333",
         }
     }
 }
