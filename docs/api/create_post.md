@@ -1,10 +1,5 @@
 # create post
 
-arguement ที่ยังสงสัย
-~~~
-
-~~~
-
 Common arguement
 ~~~    
 action = create_post
