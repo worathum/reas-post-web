@@ -6,8 +6,8 @@ listing_type = ประเภทประกาศ / ต้องการ
     ex: ขาย ให้เช่า ขายดาว์น
 county = เขต
 district = แขวง
-property_search = รายละเอียดที่ตั้ง / project_name??????
-    ex: ลุมพินี    
+
+project_name = รายละเอียดที่ตั้ง    ex: ลุมพินี   
 property_type_select = ประเภทของอสังหา
     ex:
         คอนโด
@@ -43,11 +43,17 @@ post_description_th= รายละเอียดเกี่ยวกับ�
 
 post_title_en = หัวข้อประกาศ (อังกฤษ)
 post_description_en = รายละเอียดเกี่ยวกับประกาศ (อังกฤษ)
+
 ~~~
 Only ddproperty
 ~~~
-project_name = ลุมพินี
+special process ถ้าเป็น coperate account คือมีคำว่า รายละเอียดตัวแทน
+if coperate account:
+    fill agent name
+    fill agent mobile number
+    fill agent email
 ~~~
+
 
 ## post_data
 ~~~json
@@ -75,8 +81,7 @@ project_name = ลุมพินี
         },
         "ddproperty": {
             "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
-            "project_name": "ลุมพินี"
+            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",            
         }
     }
 }
