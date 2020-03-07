@@ -11,13 +11,15 @@
     "web": {
         "thaihometown": {
             "post_id": "33333",
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
+            "log_id": "33333",
+            "user": "amarin.ta@gmail.com",
+            "pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
         },
         "ddproperty": {  
             "post_id": "444444",
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
+            "log_id": "33333",
+            "user": "amarin.ta@gmail.com",
+            "pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",
         }
     }
 }
@@ -34,15 +36,17 @@ false message
 {
     "success": "true",
     "action": "delete_post",
-    "time_usage": "0:00:00.771743",
+    "time_start": "0:00:00.771743",
     "web": {
         "thaihometown": {
-            "success": "true",            
+            "success": "true",      
+            "log_id": "33333",
             "time_usage": "0:00:00.771743",
             "detail": ""
         },
         "ddproperty": {
             "success": "false",
+            "log_id": "33333",
             "time_usage": "0:00:00.771743",
             "detail": ""
         }
