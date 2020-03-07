@@ -92,32 +92,21 @@ return account_type = normal, coperate
     "post_description_th": "xxx",
     "post_title_en": "",
     "post_description_en": "",
-    "web": {
-        "thaihometown": {
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
-        },
-        "ddproperty": {
-            "account_type" : "corperate",
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",            
-        }
-    }
+
     "web_example": [
         {
             "ds_name": "thaihometown",
-            "ds_id": "4",
-            "ds_url": "www.thaihometown.com",
+            "ds_id": "4",            
+            "account_type" : null,
             "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
+            "email_pass": "4923892394i0923i"
         },
         {
             "ds_name": "thaihometown",
             "ds_id": "4",
-            "ds_url": "www.ddproperty.com",
             "account_type" : "corperate",
             "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs",            
+            "email_pass": "34k34k;l3k4l3;",            
         }
     ]
 }
@@ -141,13 +130,14 @@ false message
             "time_usage": "0:00:00.771743",
             "post_url": "http://xxxxx/post/232323",
             "post_id": "33333",
+            "account_type" : null,
         },
         "ddproperty": {
             "success": "false",
             "time_usage": "0:00:00.771743",
             "post_url": "",
             "post_id": "",
-            "account_type" : "normal",
+            "account_type" : "corperate / normal",            
             "detail": ""
         }
     }
