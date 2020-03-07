@@ -3,6 +3,7 @@
 - access_token ใช้เพื่อ secure api
 - post_data จะ encode มาด้วย base64_encode($post_data_json)
 
+python time arguement UTC+0 -0
 ~~~json
 {
     "access_token" : "jeoijroiejroweijrlkasdfjlkjeoijfiojdsj",
