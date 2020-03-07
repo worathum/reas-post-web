@@ -27,10 +27,11 @@ property_type_select = ประเภทของอสังหา
         โกดัง-โรงงาน
 building = ชื่ออาคาร
 floor_level = อยู่ชั้นที่
-floor_area
+floor_total = ชั้นทั้งหมดของทั้งหมดของสิ่งปลูกสร้างที่เราขาย
+floor_area = พื้นที่ใช้สอย
 bath_room = จำนวนห้องนอน
 bed_room = จำนวนห้องนอน
-floor_total = ชั้นทั้งหมด
+
 prominent_point = จุดเด่น
 view_type = วิว
     ex:
@@ -48,7 +49,7 @@ addr_soi = ซอย
 addr_near_by = สถานที่ใกล้เคียง
 
 # บ้าน - ที่ดิน (ที่ไม่ใช่คอนโดจะมีค่านี้)
-floorarea_sqm = พื้นที่ใช้สอย
+floorarea_sqm = พื้นที่
 land_size_rai = ขนาดที่ดินเป็นไร่
 land_size_ngan = ขนาดที่ดินเป็นงาน
 land_size_wa = ขนาดที่ดินเป็นวา
