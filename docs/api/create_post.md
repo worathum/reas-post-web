@@ -47,14 +47,14 @@ post_description_en = รายละเอียดเกี่ยวกับ�
 ~~~
 Only ddproperty
 ~~~
-account_type = ex: normal_agent, coperate_agent 
+account_type = ex: normal, coperate
     ถ้าไม่ส่ง account_type มาเราจะต้องไปตรวจสอบว่าเป็นเป็น coperate account คือมีคำว่า รายละเอียดตัวแทน
 
 if coperate account:
     fill agent name
     fill agent mobile number
     fill agent email
-return account_type = normal_agent
+return account_type = normal
 ~~~
 
 
@@ -115,6 +115,7 @@ false message
             "time_usage": "0:00:00.771743",
             "post_url": "",
             "post_id": "",
+            "account_type" : "normal",
             "detail": ""
         }
     }
