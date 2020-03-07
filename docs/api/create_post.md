@@ -18,7 +18,6 @@ addr_sub_district = ตำบล แขวง
 addr_road = ถนน
 addr_near_by = สถานที่ใกล้เคียง
 
-
 property_type_select = ประเภทของอสังหา
     ex:
         คอนโด
@@ -48,19 +47,27 @@ post_description_th= รายละเอียดเกี่ยวกับ�
 post_title_en = หัวข้อประกาศ (อังกฤษ)
 post_description_en = รายละเอียดเกี่ยวกับประกาศ (อังกฤษ)
 
+name = ชื่อตัวแทน
+mobile = เบอร์มือถือตัวแทน
+email = อีเมล์ตัวแทน
 ~~~
 Only ddproperty
 ~~~
 account_type = ex: normal, coperate
-    ถ้าไม่ส่ง account_type มาเราจะต้องไปตรวจสอบว่าเป็นเป็น coperate account คือมีคำว่า รายละเอียดตัวแทน
 
-if coperate account:
-    fill agent name
-    fill agent mobile number
-    fill agent email
-return account_type = normal
+SPECIAL PROCESS:
+
+if not define account_type: 
+    account_type = normal
+    if content have word "รายละเอียดตัวแทน":
+        account_type = coperate
+if account_type == coperate
+    fill form
+        name = ชื่อตัวแทน
+        mobile = เบอร์มือถือตัวแทน
+        email = อีเมล์ตัวแทน    
+return account_type = normal, coperate
 ~~~
-
 
 ## post_data
 ~~~json
