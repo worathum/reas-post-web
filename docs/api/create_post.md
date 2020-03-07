@@ -132,7 +132,6 @@ return account_type = normal, coperate
     
     "listing_type": "ขาย",    
     "property_type": "คอนโด",    
-    "floor_level  " : "อยู่ชั้นที่",
     "floor_level  " : "11",
     "floor_total  " : "11",
     "floor_area  " : "11",
