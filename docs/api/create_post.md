@@ -26,6 +26,7 @@ property_type_select = ประเภทของอสังหา
         ตึกแถว-อาคารพาณิชย์
         โกดัง-โรงงาน
 
+addr_province = จังหวัด
 addr_district = เขต
 addr_sub_district = ตำบล แขวง
 addr_road = ถนน
