@@ -156,21 +156,20 @@ return account_type = normal, coperate
     "mobile": "xxx",
     "email": "xxx",
     "line": "xxx",
-
-    "web": {
-        "thaihometown": {
-            "post_id": "33333",
-            "log_id": "33333",       
+    "web": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",              
             "user": "amarin.ta@gmail.com",
             "pass": "5k4kk3253434"
         },
-        "ddproperty": {
-            "post_id": "33333",
-            "log_id": "33333",
+        {
+            "ds_name": "ddproperty",
+            "ds_id": "5",     
             "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434"            
+            "pass": "5k4kk3253434"         
         }
-    }
+    ]
 }
 ~~~
 
@@ -201,7 +200,7 @@ false message
             "success": "false",
             "start_time": "0:00:00.771743",
             "end_time": "0:00:00.771743",
-            "ds_id": "4",
+            "ds_id": "5",
             "post_url": "",
             "post_id": "",
             "account_type" : "corperate / normal",            
