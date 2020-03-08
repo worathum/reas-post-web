@@ -5,20 +5,25 @@
 {
     "action": "delete_post",
     "timeout": "5",
-    "web": {
-        "thaihometown": {
+    "web": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
             "post_id": "33333",
-            "log_id": "33333",       
+            "log_id": "33333", 
             "user": "amarin.ta@gmail.com",
             "pass": "5k4kk3253434"
         },
-        "ddproperty": {
+        {
+            "ds_name": "ddproperty",
+            "ds_id": "4",
             "post_id": "33333",
-            "log_id": "33333",
+            "log_id": "33333", 
+            "account_type" : "corperate",
             "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434"            
+            "pass": "5k4kk3253434",            
         }
-    }
+    ]
 }
 ~~~
 
