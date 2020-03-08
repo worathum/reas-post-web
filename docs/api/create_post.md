@@ -157,24 +157,20 @@ return account_type = normal, coperate
     "email": "xxx",
     "line": "xxx",
 
-    "web": [
-        {
-            "ds_name": "thaihometown",
-            "ds_id": "4",            
-            "account_type" : null,
+    "web": {
+        "thaihometown": {
+            "post_id": "33333",
+            "log_id": "33333",       
             "user": "amarin.ta@gmail.com",
-            "pass": "4923892394i0923i",
-            "project_name": "ลุมพินี",           
+            "pass": "5k4kk3253434"
         },
-        {
-            "ds_name": "thaihometown",
-            "ds_id": "4",
-            "account_type" : "corperate",
+        "ddproperty": {
+            "post_id": "33333",
+            "log_id": "33333",
             "user": "amarin.ta@gmail.com",
-            "pass": "34k34k;l3k4l3;",
-            "project_name": "ลุมพินี",
+            "pass": "5k4kk3253434"            
         }
-    ]
+    }
 }
 ~~~
 
