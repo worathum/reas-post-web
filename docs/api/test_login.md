@@ -5,16 +5,21 @@
 {
     "action": "test_login",
     "timeout": "5",
-    "web": {
-        "thaihometown": {
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
+    "web": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434"
         },
-        "otherweb": {
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssljkldsjfldjfklljfdklsjfkldjs"
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "account_type" : "corperate",
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434",            
         }
-    }
+    ]
 }
 ~~~
 
@@ -28,17 +33,20 @@ false message
 {
     "success": "true",
     "action": "test_login",
-    "time_usage":"0:00:00.771743",
+    "start_time": "0:00:00.771743",
+    "end_time": "0:00:00.771743",
     "web": {
         "thaihometown": {
             "success": "true",
             "detail": "",
-            "time_usage":"0:00:00.771743"
+            "start_time": "0:00:00.771743",
+            "end_time": "0:00:00.771743",
         },
         "otherweb": {
             "success": "false",
             "detail": "Login failed due to incorrect userid/password",
-            "time_usage":"0:00:00.771743",
+            "start_time": "0:00:00.771743",
+            "end_time": "0:00:00.771743",
         }
     }
 }
