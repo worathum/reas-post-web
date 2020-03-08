@@ -21,24 +21,20 @@
     "post_description_th": "xxx",
     "post_title_en": "",
     "post_description_en": "",
-    "web": [
-        {
-            "ds_name": "thaihometown",
+    "web": {
+        "thaihometown": {
             "post_id": "33333",
-            "log_id": "33333",
-            "account_type" : "normal",
+            "log_id": "33333",       
             "user": "amarin.ta@gmail.com",
             "pass": "5k4kk3253434"
         },
-        {
-            "ds_name": "thaihometown",
-            "ds_id": "4",
-            "account_type" : "corperate",
+        "ddproperty": {
+            "post_id": "33333",
+            "log_id": "33333",
             "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434",
-            "project_name": "ลุมพินี"
+            "pass": "5k4kk3253434"            
         }
-    ]
+    }
 }
 ~~~
 
