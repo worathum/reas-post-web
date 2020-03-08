@@ -8,20 +8,25 @@
 {
     "action": "boost_post",
     "timeout": "7",
-    "web": {
-        "thaihometown": {
+    "web": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
             "post_id": "33333",
-            "log_id": "33333",       
+            "log_id": "33333",            
             "user": "amarin.ta@gmail.com",
             "pass": "5k4kk3253434"
         },
-        "ddproperty": {
-            "post_id": "33333",
-            "log_id": "33333",
+        {
+            "ds_name": "ddproperty",
+            "ds_id": "5",
+            "post_id": "4444",
+            "log_id": "33333",            
+            "account_type" : "corperate",
             "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434"            
+            "pass": "5k4kk3253434",            
         }
-    }
+    ]
 }
 ~~~
 
@@ -53,7 +58,7 @@ false message
             "end_time": "0:00:00.771743",
             "detail": "",
             "log_id": "33333",
-            "post_id": "33333",
+            "post_id": "4444",
         }
     }
 }
