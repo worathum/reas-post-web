@@ -5,20 +5,20 @@
 {
     "action": "delete_post",
     "timeout": "5",
-    "web": [
-        {
-            "ds_name": "thaihometown",
-            "log_id": "33333",
+    "web": {
+        "thaihometown": {
+            "post_id": "33333",
+            "log_id": "33333",       
             "user": "amarin.ta@gmail.com",
             "pass": "5k4kk3253434"
         },
-        {
-            "ds_name": "ddproperty",
+        "ddproperty": {
+            "post_id": "33333",
             "log_id": "33333",
             "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434",            
+            "pass": "5k4kk3253434"            
         }
-    ]
+    }
 }
 ~~~
 
