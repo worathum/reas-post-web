@@ -7,10 +7,12 @@ name_title = mr mrs miss
 {
     "action": "register_user",
     "timeout": "7",
-    "web": {
-        "thaihometown": {
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssl_dklsjfkldjs",
+    "web": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434",
             "company_name": "amarin inc",
             "name_title": "mr",
             "name_th": "อัมรินทร์",
@@ -18,21 +20,27 @@ name_title = mr mrs miss
             "name_en": "Amarin",
             "surname_en": "Boonkirt",
             "tel": "0891999450",
-            "addr_province" : "nonthaburi"
+            "line": "amarin.ta",
+            "addr_province" : "nonthaburi"            
         },
-        "otherweb": {
-            "email_user": "amarin.ta@gmail.com",
-            "email_pass": "encryped_by_openssl_dklsjfkldjs",
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "5",
+            "account_type" : "corperate",
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434",
             "company_name": "amarin inc",
             "name_title": "mr",
             "name_th": "อัมรินทร์",
             "surname_th": "บุญเกิด",
             "name_en": "Amarin",
             "surname_en": "Boonkirt",
+            "email": "amarin.ta@gmail.com",
             "tel": "0891999450",
+            "line": "amarin.ta",
             "addr_province" : "nonthaburi"
         }
-    }
+    ]
 }
 ~~~
 
@@ -48,17 +56,19 @@ false message
 {
     "success": "true",
     "action": "register_user",
-    "time_usage":"0:00:00.771743",
+    "start_time": "0:00:00.771743",
+    "end_time": "0:00:00.771743",
     "web": {
         "thaihometown": {
             "success": "true",
             "detail": "",
-            "time_usage":"0:00:00.771743"
+            "start_time": "0:00:00.771743",
+            "end_time": "0:00:00.771743",
         },
         "otherweb": {
             "success": "false",
-            "detail": "System not required to register",
-            "time_usage":"0:00:00.771743",
+            "start_time": "0:00:00.771743",
+            "end_time": "0:00:00.771743",
         }
     }
 }
