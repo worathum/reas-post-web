@@ -21,20 +21,25 @@
     "post_description_th": "xxx",
     "post_title_en": "",
     "post_description_en": "",
-    "web": {
-        "thaihometown": {
+    "web": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
             "post_id": "33333",
-            "log_id": "33333",       
+            "log_id": "33333",             
             "user": "amarin.ta@gmail.com",
             "pass": "5k4kk3253434"
         },
-        "ddproperty": {
-            "post_id": "33333",
-            "log_id": "33333",
+        {
+            "ds_name": "ddproperty",
+            "ds_id": "5",
+            "post_id": "4444",
+            "log_id": "44444",             
+            "account_type" : "corperate",
             "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434"            
+            "pass": "5k4kk3253434",            
         }
-    }
+    ]
 }
 ~~~
 
@@ -49,17 +54,20 @@ false message
 {
     "success": "true",
     "action": "edit_post",
-    "time_usage": "0:00:00.771743",
+    "start_time": "0:00:00.771743",
+    "end_time": "0:00:00.771743",
     "web": {
         "thaihometown": {
             "success": "true",            
-            "time_usage": "0:00:00.771743",
+            "start_time": "0:00:00.771743",
+            "end_time": "0:00:00.771743",
             "detail": "",
             "log_id": "33333",            
         },
         "ddproperty": {
             "success": "false",
-            "time_usage": "0:00:00.771743",
+            "start_time": "0:00:00.771743",
+            "end_time": "0:00:00.771743",
             "detail": "",
             "log_id": "33333",
         }
