@@ -1,9 +1,7 @@
 # API docs
 ## main post arguement
 
-http://homepostapi.webup.site:8080/reaspostweb/apirequest
-
-create_post
+POST http://homepostapi.webup.site:8080/reaspostweb/apirequest
 - access_token ใช้เพื่อ secure api
 - post_data จะ encode มาด้วย base64_encode($post_data_json)
 
