@@ -1,12 +1,17 @@
 # API docs
 ## main post arguement
+
+http://homepostapi.webup.site:8080/reaspostweb/apirequest
+
+create_post
 - access_token ใช้เพื่อ secure api
 - post_data จะ encode มาด้วย base64_encode($post_data_json)
 
 python time arguement UTC+0 -0
+
 ~~~json
 {
-    "access_token" : "jeoijroiejroweijrlkasdfjlkjeoijfiojdsj",
+    "access_token" : "YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9",
     "post_data" : "base64data"
 }
 ~~~
