@@ -1,0 +1,4 @@
+beautifulsoup4
+django
+django-ratelimit
+requests_toolbelt

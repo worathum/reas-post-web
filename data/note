@@ -1,0 +1,127 @@
+docker exec -it docker-python3 bash -c "cd /app; python -W "ignore" manage.py runserver 0.0.0.0:8000 --insecure;"
+docker exec -it anticaptchaapi bash -c "cd /app; python -W "ignore" manage.py runserver 0.0.0.0:8000 --insecure;"
+
+
+docker exec -it docker-python3 bash
+root@691c105086e9:/app# python manage.py runserver 0.0.0.0:8000
+
+
+
+
+
+ใน view import นี้  error
+from ratelimit.decorators import ratelimit
+from ratelimit.exceptions import Ratelimited
+ImportError: No module named exceptions
+วิธีแก้
+https://github.com/brad-accuvant/cuckoo-modified/issues/207
+pip uninstall ratelimit
+pip uninstall django-ratelimit
+pip install django-ratelimit
+
+
+docker exec -it docker-python3 bash -c "pip uninstall ratelimit; pip uninstall django-ratelimit; pip install django-ratelimit; pip install requests; pip install bs4; pip install python3-anticaptcha "
+docker exec -it docker-python3 bash -c "cd /app; python -W "ignore" manage.py runserver 0.0.0.0:8000 --insecure;"
+docker exec -it docker-python3 bash -c "pip uninstall ratelimit; pip uninstall django-ratelimit; pip install django-ratelimit; pip install requests; pip install bs4; pip install python3-anticaptcha; pip install requests_toolbelt; cd /app; python -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure; "
+
+
+dd property register
+    Request URL: https://www.ddproperty.com/agent-register
+    Request Method: POST
+    agency_id: OTHER
+    otheragency-th-text: aaaaa
+    otheragency-en-text: aaaaa
+    otheragency: 
+    job_title-th-text: 
+    job_title-en-text: 
+    job_title: 
+    title: Mr.
+    firstname-th-text: bbbbb
+    firstname-en-text: 
+    firstname: 
+    lastname-th-text: ccccc
+    lastname-en-text: 
+    lastname: 
+    birthDay: 1
+    birthMonth: 01
+    birthYear: 1930
+    email: ddddd@email.com
+    mobile: 812525545
+    region: TH37
+    city_area: 
+    password: vkIy9b
+    password_confirm: vkIy9b
+    communication_us: 1
+    submit: Submit
+    https://www.ddproperty.com/agent-register-confirmation?
+
+
+
+dd property post 
+    POST
+    https://agentnet.ddproperty.com/sf2-agent/ajax/listings
+    {"id":null,"title":"","localizedTitle":"à¸«à¸±à¸§à¸à¹à¸­à¸à¸£à¸°à¸à¸²à¸¨","description":null,"localizedDescription":"à¸£à¸²à¸¢à¸¥à¸°à¹à¸­à¸µà¸¢à¸à¸à¸£à¸°à¸à¸²à¸¨","hasStream":false,"statusCode":"DRAFT","sourceCode":null,"typeCode":"SALE","leaseTermCode":null,"featureCode":null,"externalId":null,"event":null,"location":{"id":"626225","block":null,"unit":null,"streetId":null,"longitude":100.49389,"latitude":13.752222,"hdbEstateCode":null,"streetName1":null,"streetName2":null,"streetNumber":null,"postalCode":"11110","regionCode":"TH12","districtCode":"TH1203","areaCode":"11","zoneIds":null},"media":{"cover":{"id":null},"excluded":[],"included":[]},"property":{"id":5987,"name":"Plum condo central station à¹à¸à¸ª 1","temporaryId":null,"typeCode":"CONDO","typeGroup":"N","tenureCode":null,"topYear":null,"totalUnits":1208,"floors":38,"amenities":[]},"propertyUnit":{"tenureCode":null,"furnishingCode":null,"description":null,"hdbTypeCode":null,"floorplanId":-1,"floorLevelCode":null,"floorPosition":null,"telephoneLines":null,"cornerUnit":null,"facingCode":null,"features":[],"occupancyCode":null,"electricitySupply":null,"electricityPhase":null,"ceilingHeight":null,"floorLoading":null,"parkingSpaces":null,"parkingFees":null,"maintenanceFee":null,"liftCargo":null,"liftPassenger":null,"liftCapacity":null,"centralAircon":null,"centralAirconHours":null,"ownerTypeCode":null,"sellerEthnic":null,"sellerResidency":null,"quotaEthnic":false,"quotaSpr":false,"tenancy":{"value":null,"tenantedUntilDate":{}}},"price":{"value":null,"periodCode":null,"valuation":null,"type":{"code":"BAH","text":null}},"sizes":{"bedrooms":{"value":null},"bathrooms":{"value":null},"extrarooms":{"value":null},"floorArea":[{"value":33,"unit":"sqm"}],"landArea":[{"value":null,"unit":"sqm"}],"floorX":[{"unit":"m","value":null}],"floorY":[{"unit":"m","value":null}],"landX":[{"unit":"m","value":null}],"landY":[{"unit":"m","value":null}]},"agent":{"id":10751470,"alternativePhone":"","alternativeAgent":null,"alternativeMobile":"","alternativeEmail":""},"hasFloorplans":false,"boost":{"boostActive":false,"boostDuration":0},"dates":{"timezone":"Asia/Singapore","available":null},"descriptions":{"th":"à¸£à¸²à¸¢à¸¥à¸°à¹à¸­à¸µà¸¢à¸à¸à¸£à¸°à¸à¸²à¸¨"},"qualityScore":0,"localizedHeadline":null,"headlines":{"th":null},"titles":{"th":"à¸«à¸±à¸§à¸à¹à¸­à¸à¸£à¸°à¸à¸²à¸¨"}}
+    GET
+    https://agentnet.ddproperty.com/sf2-agent/ajax/listing/pricing/charges?listingId=7757241
+    GET
+    https://agentnet.ddproperty.com/sf2-agent/ajax/listing/pricing/cues?listingId=7757241
+    POST
+    https://auth.propertyguru.com/session-to-jwt
+    {"country":"th","session":"3B7EC6629ADB7BD3ADEA8CFD4F91E7D3"}
+    GET
+    https://agentnet.ddproperty.com/sf2-agent/ajax/preview-listing/7757241
+    POST
+    https://agentnet.ddproperty.com/sf2-agent/ajax/update/7757241/activate
+    {"id":7757241,"title":"","localizedTitle":"à¸«à¸±à¸§à¸à¹à¸­à¸à¸£à¸°à¸à¸²à¸¨","description":null,"localizedDescription":"à¸£à¸²à¸¢à¸¥à¸°à¹à¸­à¸µà¸¢à¸à¸à¸£à¸°à¸à¸²à¸¨","hasStream":false,"statusCode":"ACT","sourceCode":null,"typeCode":"SALE","leaseTermCode":null,"featureCode":null,"externalId":null,"event":null,"location":{"id":626225,"block":null,"unit":null,"streetId":null,"longitude":100.49389,"latitude":13.752222,"hdbEstateCode":null,"streetName1":null,"streetName2":null,"streetNumber":null,"postalCode":"11110","regionCode":"TH12","districtCode":"TH1203","areaCode":"11","zoneIds":null},"media":{"cover":{"id":null},"excluded":[],"included":[]},"property":{"id":5987,"name":"Plum condo central station à¹à¸à¸ª 1","temporaryId":null,"typeCode":"CONDO","typeGroup":"N","tenureCode":null,"topYear":null,"totalUnits":1208,"floors":38,"amenities":[]},"propertyUnit":{"tenureCode":null,"furnishingCode":null,"description":null,"hdbTypeCode":null,"floorplanId":-1,"floorLevelCode":null,"floorPosition":null,"telephoneLines":null,"cornerUnit":null,"facingCode":null,"features":[],"occupancyCode":null,"electricitySupply":null,"electricityPhase":null,"ceilingHeight":null,"floorLoading":null,"parkingSpaces":null,"parkingFees":null,"maintenanceFee":null,"liftCargo":null,"liftPassenger":null,"liftCapacity":null,"centralAircon":null,"centralAirconHours":null,"ownerTypeCode":null,"sellerEthnic":null,"sellerResidency":null,"quotaEthnic":false,"quotaSpr":false,"tenancy":{"value":null,"tenantedUntilDate":{}},"id":7958786},"price":{"value":null,"periodCode":null,"valuation":null,"type":{"code":"BAH","text":null}},"sizes":{"bedrooms":{"value":null},"bathrooms":{"value":null},"extrarooms":{"value":null},"floorArea":[{"value":33,"unit":"sqm"}],"landArea":[{"value":null,"unit":"sqm"}],"floorX":[{"unit":"m","value":null}],"floorY":[{"unit":"m","value":null}],"landX":[{"unit":"m","value":null}],"landY":[{"unit":"m","value":null}]},"agent":{"id":10751470,"alternativePhone":"","alternativeAgent":null,"alternativeMobile":"","alternativeEmail":""},"hasFloorplans":false,"boost":{"boostActive":false,"boostDuration":0},"dates":{"timezone":"Asia/Singapore","available":null},"descriptions":{"th":"à¸£à¸²à¸¢à¸¥à¸°à¹à¸­à¸µà¸¢à¸à¸à¸£à¸°à¸à¸²à¸¨"},"qualityScore":20,"localizedHeadline":null,"headlines":{"th":null},"titles":{"th":"à¸«à¸±à¸§à¸à¹à¸­à¸à¸£à¸°à¸à¸²à¸¨"},"listingQuality":{"price":0,"location":10,"3_user_photos":0,"1_user_photo":0,"videos_or_virtual_tours":0,"bedrooms":0,"description":0,"bathrooms":0,"floorarea":5,"landarea":3,"property":1,"furnishing":0,"unit_features":0,"property_photo":1,"raw_score":20,"score":20},"charges":{"activate":0,"repost":0,"boost":null,"premuim":24,"spotlight":null,"rankedSpotlight":70}}
+
+thaihometown register
+    GET
+    https://www.thaihometown.com/member/checkuser_onform.php?check=aaaa@aaaa.com
+    POST
+    https://www.thaihometown.com/member/register
+    Form_accept=1&Submit=register&code_edit=vkIy9b&code_edit2=vkIy9b&email=aaaa@aaaa.com&firstname=aaaa&mobile=0855454115&register=active
+thaihometown post
+    POST
+    https://www.thaihometown.com/addcontacts
+    ActionForm2=&
+    ActionForm2=&
+    Submit=Active&
+    ad_title=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&
+    carpark=&
+    code_edit=vkIy9b&
+    conditioning=&
+    contact_code=&
+    dasd=10&
+    date_signup=2020-02-26&
+    email=aaaa@bbbb.com&
+    firstname=test&
+    headtitle=aaaaaa&
+    id=&
+    info%5B%5D=%5Bobject%20Object%5D&
+    info%5B%5D=%5Bobject%20Object%5D&
+    info%5B%5D=%5Bobject%20Object%5D&
+    info%5B%5D=%5Bobject%20Object%5D&
+    info%5B%5D=%5Bobject%20Object%5D&
+    info%5B%5D=%5Bobject%20Object%5D&
+    mobile=0815865411&
+    notprice=1&
+    price_unit=&
+    property_area=33&
+    property_bts=&
+    property_city_2=&
+    property_city_bkk=%5Bobject%20Object%5D
+    &property_country_2=&
+    property_mrt=&
+    property_purple=&
+    property_sqm=1
+    &property_type=%5Bobject%20Object%5D
+    &rent_price=&
+    room1=2
+    &room2=3
+    &sas_name=d41d8cd98f00b204e9800998ecf8427e
+    &selling_price=
+    &string1=DEXY
+    &string2=DEXY
+    &type_forrent=
+    &typepart=%5Bobject%20Object%5D
+    &typeunit=%5Bobject%20Object%5D
