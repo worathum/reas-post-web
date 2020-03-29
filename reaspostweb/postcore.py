@@ -81,13 +81,18 @@ class postcore():
                 response["web"][websitename]["success"] = "false"
                 response["web"][websitename]["detail"] = "not found website class"
                 continue
-
-            module = importlib.import_module('webmodule.'+websitename)
-            classname = getattr(module, websitename)
-            module_instance = classname()
-            webdata = webitem
-            webdata.update(datarequest)
-            response["web"][websitename] = getattr(module_instance, action)(webdata)
+            try:
+                module = importlib.import_module('webmodule.'+websitename)
+                classname = getattr(module, websitename)
+                module_instance = classname()
+                webdata = webitem
+                webdata.update(datarequest)
+                response["web"][websitename] = getattr(module_instance, action)(webdata)            
+            except BaseException:                
+                response["web"][websitename] = {}
+                response["web"][websitename]["success"] = "false"
+                response["web"][websitename]["detail"] = "Import errors: "
+                continue       
 
     #    if action == 'register_user':
     #         response["action"] = action
