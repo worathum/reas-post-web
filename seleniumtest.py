@@ -2,11 +2,13 @@
 
 #INSTALL
 '''
-sudo apt install python3-selenium
+pip install selenium;
 sudo apt-get install chromium-chromedriver
 '''
 #REF
 '''
+install google chrome stable https://askubuntu.com/questions/510056/how-to-install-google-chrome
+install chromedriver https://makandracards.com/makandra/29465-install-chromedriver-on-linux
 https://duo.com/decipher/driving-headless-chrome-with-python
 https://www.guru99.com/selenium-python.html
 https://medium.com/cs-note/web-crawling-by-using-selenium-python-3-4fff0bdb4c65
