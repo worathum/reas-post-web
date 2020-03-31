@@ -32,6 +32,7 @@ class module_websitename():
         self.imgtmp = 'imgtmp'
         self.debug = 0
         self.debugresdata = 0
+        self.handled = False
 
         self.options = Options()
         self.options.add_argument("--headless")  # Runs Chrome in headless mode.
@@ -113,7 +114,10 @@ class module_websitename():
 
         # start process
         #
-        datahandled = self.postdata_handle(postdata)
+        handleddata = self.postdata_handle(postdata)
+        if handleddata == True:
+            handleddata = postdata
+
         success = "true"
         detail = ""
         agent_id = ""
@@ -140,6 +144,10 @@ class module_websitename():
 
     def postdata_handle(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+
+        # if data is handled
+        if self.handled == True:
+            return True
 
         datahandled = {}
 
@@ -311,6 +319,13 @@ class module_websitename():
         except KeyError:
             datahandled['email'] = ''
 
+        try:
+            datahandled['web_project_name'] = postdata["web_project_name"]
+        except KeyError:
+            datahandled['web_project_name'] = ''
+
+        self.handled = True
+
         return datahandled
 
     def create_post(self, postdata):
@@ -323,6 +338,8 @@ class module_websitename():
         success = "true"
         detail = ""
         postid = ""
+
+        # if datahandled['web_project_name'] != '' , MUST use datahandled['web_project_name']
 
         #
         # end process
