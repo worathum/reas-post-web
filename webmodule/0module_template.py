@@ -115,9 +115,7 @@ class module_websitename():
         # start process
         #
         handleddata = self.postdata_handle(postdata)
-        if handleddata == True:
-            handleddata = postdata
-
+      
         success = "true"
         detail = ""
         agent_id = ""
@@ -147,7 +145,7 @@ class module_websitename():
 
         # if data is handled
         if self.handled == True:
-            return True
+            return postdata
 
         datahandled = {}
 
