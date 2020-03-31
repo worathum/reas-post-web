@@ -8,6 +8,11 @@ import re
 import json
 import datetime
 import sys
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+import time
 
 httprequestObj = lib_httprequest()
 
@@ -27,6 +32,15 @@ class ddproperty():
         self.imgtmp = 'imgtmp'
         self.debug = 0
         self.debugresdata = 0
+
+        self.options = Options()
+        self.options.add_argument("--headless")  # Runs Chrome in headless mode.
+        self.options.add_argument('--no-sandbox')  # Bypass OS security model
+        self.options.add_argument('start-maximized')
+        self.options.add_argument('disable-infobars')
+        self.options.add_argument("--disable-extensions")
+        self.options.add_argument("window-size=1024,768")
+        self.chromedriver_binary = "/bin/chromedriver"
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -53,7 +67,7 @@ class ddproperty():
         # จะต้องไปหน้า from login ก่อน เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป register ได้
         r = httprequestObj.http_get('https://www.ddproperty.com/agent-register?package=TRIAL', verify=False)
         data = r.text
-        f = open("ddloginfrom.html", "wb")
+        f = open("debug_response/ddloginfrom.html", "wb")
         f.write(data.encode('utf-8').strip())
 
         datapost = {
@@ -87,7 +101,7 @@ class ddproperty():
 
         r = httprequestObj.http_post('https://www.ddproperty.com/agent-register', data=datapost)
         data = r.text
-        f = open("ddregister.html", "wb")
+        f = open("debug_response/ddregister.html", "wb")
         f.write(data.encode('utf-8').strip())
 
         register_success = "true"
@@ -108,7 +122,7 @@ class ddproperty():
             "detail": detail,
         }
 
-    def test_login(self, postdata):
+    def test_login_httpreq(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -132,7 +146,7 @@ class ddproperty():
         }
         r = httprequestObj.http_post('https://agentnet.ddproperty.com/is_authentic_user', data=datapost)
         data = r.text
-        f = open("ddauthentic.html", "wb")
+        f = open("debug_response/ddauthentic.html", "wb")
         f.write(data.encode('utf-8').strip())
         datajson = r.json()
         # if logged in ,session is 0 cause  {"status":0,"name":"\u0e14\u0e39\u0e14\u0e35 \u0e14\u0e2d\u0e17\u0e04\u0e2d\u0e21","email":"kla.arnut@hotmail.com","profile":"https:\/\/th1-cdn.pgimgs.com\/agent\/10760807\/APHO.74655966.C100X100.jpg"}
@@ -151,7 +165,7 @@ class ddproperty():
             }
             r = httprequestObj.http_post('https://agentnet.ddproperty.com/ex_login_ajax', data=datapost)
             data = r.text
-            f = open("logindd.html", "wb")
+            f = open("debug_response/logindd.html", "wb")
             f.write(data.encode('utf-8').strip())
             matchObj = re.search(r'success', data)
             if matchObj:
@@ -173,181 +187,63 @@ class ddproperty():
             "agent_id": agent_id
         }
 
-    def create_post(self, postdata):
+    def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        post_img_url_lists = postdata['post_img_url_lists']
-        price_baht = postdata['price_baht']
-        addr_province = postdata['addr_province']
-        addr_district = postdata['addr_district']
-        addr_sub_district = postdata['addr_sub_district']
-        addr_road = postdata['addr_road']
-        addr_near_by = postdata['addr_near_by']
-        floorarea_sqm = postdata['floorarea_sqm']
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        post_title_en = postdata['post_title_en']
-        post_description_en = postdata['post_description_en']
-        ds_id = postdata["ds_id"]
-        # account_type = postdata["account_type"]
-        # postdata['user'] = 'kla.arnut@gmail.com'
-        user = postdata['user']
-        # postdata['pass'] = 'vkIy9b'
-        passwd = postdata['pass']
-        # project_name = postdata["project_name"]
+        datahandled = self.postdata_handle(postdata)
 
         # start process
         #
+        success = "true"
+        detail = ""
+        agent_id = ""
 
-        # login
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        detail = test_login["detail"]
-        agent_id = test_login["agent_id"]
-        post_id = ""
+        chrome = webdriver.Chrome(self.chromedriver_binary, options=self.options)
 
-        if success == "true":
-            # post
-            agent_id = agent_id
-            datapost = {
-                "id": "",
-                "title": post_title_en,
-                "localizedTitle": post_title_th,
-                "description": post_description_en,
-                "localizedDescription": post_description_th,
-                "hasStream": "false",
-                "statusCode": "DRAFT",
-                "sourceCode": "",
-                "typeCode": "SALE",
-                "leaseTermCode": "",
-                "featureCode": "",
-                "externalId": 9999,
-                "event": "",
-                "location": {
-                    "id": "626225",
-                    "block": "",
-                    "unit": "",
-                    "streetId": "",
-                    "longitude": geo_longitude,
-                    "latitude": geo_latitude,
-                    "hdbEstateCode": "",
-                    "streetName1": "",
-                    "streetName2": "",
-                    "streetNumber": "",
-                    "postalCode": "11110",
-                    "regionCode": "TH12",
-                    "districtCode": "TH1203",
-                    "areaCode": "11",
-                    "zoneIds": ""
-                },
-                "media": {
-                    "cover": {
-                        "id": ""
-                    },
-                    "excluded": [],
-                    "included": []
-                },
-                "property": {
-                    "id": 5987,
-                    "name": "Plum condo central station เฟส 1",
-                    "temporaryId": "",
-                    "typeCode": "CONDO",
-                    "typeGroup": "N",
-                    "tenureCode": "",
-                    "topYear": "",
-                    "totalUnits": 1208,
-                    "floors": 38,
-                    "amenities": []
-                },
-                "propertyUnit": {
-                    "tenureCode": "",
-                    "furnishingCode": "",
-                    "description": "",
-                    "hdbTypeCode": "",
-                    "floorplanId": -1,
-                    "floorLevelCode": "",
-                    "floorPosition": "",
-                    "telephoneLines": "",
-                    "cornerUnit": "",
-                    "facingCode": "",
-                    "features": [],
-                    "occupancyCode": "",
-                    "electricitySupply": "",
-                    "electricityPhase": "",
-                    "ceilingHeight": "",
-                    "floorLoading": "",
-                    "parkingSpaces": "",
-                    "parkingFees": "",
-                    "maintenanceFee": "",
-                    "liftCargo": "",
-                    "liftPassenger": "",
-                    "liftCapacity": "",
-                    "centralAircon": "",
-                    "centralAirconHours": "",
-                    "ownerTypeCode": "",
-                    "sellerEthnic": "",
-                    "sellerResidency": "",
-                    "quotaEthnic": "false",
-                    "quotaSpr": "false",
-                    "tenancy": {
-                        "value": "",
-                        "tenantedUntilDate": {}
-                    }
-                },
-                "price": {
-                    "value": 9999999,  # price_baht ใช้ price bath 3000 แล้ว error,
-                    "periodCode": "",
-                    "valuation": "",
-                    "type": {
-                        "code": "BAH",
-                        "text": ""}},
-                "sizes": {
-                    "bedrooms": {
-                        "value": ""},
-                    "bathrooms": {
-                        "value": ""},
-                    "extrarooms": {
-                        "value": ""},
-                    "floorArea": [{"value": 44, "unit": "sqm"}],
-                    "landArea": [{"value": "", "unit": "sqm"}],
-                    "floorX": [{"unit": "m", "value": ""}],
-                    "floorY": [{"unit": "m", "value": ""}],
-                    "landX": [{"unit": "m", "value": ""}],
-                    "landY": [{"unit": "m", "value": ""}]},
-                "agent": {"id": agent_id,
-                          "alternativePhone": "",
-                          "alternativeAgent": "",
-                          "alternativeMobile": "",
-                          "alternativeEmail": ""},
-                "hasFloorplans": "false",
-                "boost": {"boostActive": "false", "boostDuration": 0},
-                "dates": {"timezone": "Asia/Singapore", "available": ""},
-                "descriptions": {
-                    "th": post_description_th},
-                "qualityScore": 0,
-                "localizedHeadline": "",
-                "headlines": {"th": ""},
-                "titles": {"th": post_title_th}
-            }
-            datastr = json.dumps(datapost)
-            r = httprequestObj.http_post_json('https://agentnet.ddproperty.com/sf2-agent/ajax/listings', jsoncontent=datastr)
-            data = r.text
-            # f = open("postdd.html", "wb")
-            # f.write(data.encode('utf-8').strip())
-            matchObj = re.search(r'errors', data)
-            if matchObj:
+        # open login page
+        chrome.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
+
+        # input email and enter
+        emailtxt = WebDriverWait(self.driver, 5).until(lambda x: x.find_element_by_id("emailInput"))
+        emailtxt.send_keys(datahandled['user'])
+        nextbttn = WebDriverWait(self.driver, 5).until(lambda x: x.find_element_by_id("next"))
+        nextbttn.click()
+        time.sleep(1)
+
+        # input password
+        passtxt = WebDriverWait(chrome, 5).until(lambda x: x.find_element_by_id("inputPassword"))
+        passtxt.send_keys(datahandled['pass'])
+        passtxt.send_keys(Keys.ENTER)
+        time.sleep(1)
+        f = open("debug_response/loginpassdd2.html", "wb")
+        f.write(chrome.page_source.encode('utf-8').strip())
+
+        if datajson['status'] and datajson['status'] == 0:
+            if datajson['email'] != user:
                 success = "false"
                 detail = data
+        if success == "true":
+            datapost = {
+                'password': passwd,
+                'recapchaResponse': '',
+                'remember_me': 'true',
+                'submit': 'true',
+                '': 'true',
+                'userid': user,
+            }
+            r = httprequestObj.http_post('https://agentnet.ddproperty.com/ex_login_ajax', data=datapost)
+            data = r.text
+            f = open("debug_response/logindd.html", "wb")
+            f.write(data.encode('utf-8').strip())
+            matchObj = re.search(r'success', data)
+            if matchObj:
+                agent_id = re.search(r'jwt_prod_(\d+)', data).group(1)
             else:
-                post_id = re.search(r'{"id":(\d+)', data).group(1)
-            #
-            # end process
+                success = "false"
+                detail = "cannot login"
+        #
+        # end process
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -356,7 +252,405 @@ class ddproperty():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "ds_id": ds_id,
+            "detail": detail,
+            "agent_id": agent_id
+        }
+
+    def postdata_handle(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+
+        datahandled = {}
+
+        # "SALE", "RENT", "OPT" ขาย ให้เช่า ขายดาวน์
+        try:
+            datahandled['listing_type'] = postdata['listing_type']
+        except KeyError:
+            datahandled['listing_type'] = "SALE"
+        if datahandled['listing_type'] == "ให้เช่า":
+            datahandled['listing_type'] = "RENT"
+        elif datahandled['listing_type'] == "ขายดาวน์":
+            datahandled['listing_type'] = "OPT"
+        else:
+            datahandled['listing_type'] = "SALE"
+
+        # "CONDO","BUNG","TOWN","LAND","APT","RET","OFF","WAR","BIZ","SHOP"]
+        try:
+            datahandled['property_type'] = postdata['property_type']
+        except KeyError:
+            datahandled['property_type'] = "CONDO"
+        if datahandled['property_type'] == 2 or datahandled['property_type'] == "บ้านเดี่ยว":
+            datahandled['property_type'] = "BUNG"
+        elif datahandled['property_type'] == 3 or datahandled['property_type'] == "บ้านแฝด":
+            datahandled['property_type'] = "BUNG"
+        elif datahandled['property_type'] == 4 or datahandled['property_type'] == "ทาวน์เฮ้าส์":
+            datahandled['property_type'] = "TOWN"
+        elif datahandled['property_type'] == 5 or datahandled['property_type'] == "ตึกแถว-อาคารพาณิชย์":
+            datahandled['property_type'] = "SHOP"
+        elif datahandled['property_type'] == 6 or datahandled['property_type'] == "ที่ดิน":
+            datahandled['property_type'] = "LAND"
+        elif datahandled['property_type'] == 7 or datahandled['property_type'] == "อพาร์ทเมนท์":
+            datahandled['property_type'] = "APT"
+        elif datahandled['property_type'] == 8 or datahandled['property_type'] == "โรงแรม":
+            datahandled['property_type'] = "BIZ"
+        elif datahandled['property_type'] == 9 or datahandled['property_type'] == "ออฟฟิศสำนักงาน":
+            datahandled['property_type'] = "OFF"
+        elif datahandled['property_type'] == 10 or datahandled['property_type'] == "โกดัง-โรงงาน":
+            datahandled['property_type'] = "WAR"
+        else:
+            datahandled['property_type'] = "CONDO"
+
+        try:
+            datahandled['post_img_url_lists'] = postdata['post_img_url_lists']
+        except KeyError:
+            datahandled['post_img_url_lists'] = {}
+
+        try:
+            datahandled['price_baht'] = postdata['price_baht']
+        except KeyError:
+            datahandled['price_baht'] = 0
+
+        try:
+            datahandled['addr_province'] = postdata['addr_province']
+        except KeyError:
+            datahandled['addr_province'] = ''
+
+        try:
+            datahandled['addr_district'] = postdata['addr_district']
+        except KeyError:
+            datahandled['addr_district'] = ''
+
+        try:
+            datahandled['addr_sub_district'] = postdata['addr_sub_district']
+        except KeyError:
+            datahandled['addr_sub_district'] = ''
+
+        try:
+            datahandled['addr_road'] = postdata['addr_road']
+        except KeyError:
+            datahandled['addr_road'] = ''
+
+        try:
+            datahandled['addr_near_by'] = postdata['addr_near_by']
+        except KeyError:
+            datahandled['addr_near_by'] = ''
+
+        try:
+            datahandled['addr_postcode'] = postdata['addr_postcode']
+        except KeyError:
+            datahandled['addr_postcode'] = ''
+
+        try:
+            datahandled['floorarea_sqm'] = postdata['floorarea_sqm']
+        except KeyError:
+            datahandled['floorarea_sqm'] = ''
+
+        try:
+            datahandled['geo_latitude'] = postdata['geo_latitude']
+        except KeyError:
+            datahandled['geo_latitude'] = ''
+
+        try:
+            datahandled['geo_longitude'] = postdata['geo_longitude']
+        except KeyError:
+            datahandled['geo_longitude'] = ''
+
+        try:
+            datahandled['property_id'] = postdata['property_id']
+        except KeyError:
+            datahandled['property_id'] = ''
+
+        try:
+            datahandled['post_title_th'] = postdata['post_title_th']
+        except KeyError:
+            datahandled['post_title_th'] = ''
+
+        try:
+            datahandled['post_description_th'] = postdata['post_description_th']
+        except KeyError:
+            datahandled['post_description_th'] = ''
+
+        try:
+            datahandled['post_title_en'] = postdata['post_title_en']
+        except KeyError:
+            datahandled['post_title_en'] = ''
+
+        try:
+            datahandled['post_description_en'] = postdata['post_description_en']
+        except KeyError:
+            datahandled['post_description_en'] = ''
+
+        try:
+            datahandled['ds_id'] = postdata["ds_id"]
+        except KeyError:
+            datahandled['ds_id'] = ''
+
+        try:
+            datahandled['ds_name'] = postdata["ds_name"]
+        except KeyError:
+            datahandled['ds_name'] = ''
+
+        try:
+            datahandled['user'] = postdata['user']
+        except KeyError:
+            datahandled['user'] = ''
+
+        try:
+            datahandled['pass'] = postdata['pass']
+        except KeyError:
+            datahandled['pass'] = ''
+
+        try:
+            datahandled['project_name'] = postdata["project_name"]
+        except KeyError:
+            datahandled['project_name'] = ''
+
+        try:
+            datahandled['bed_room'] = postdata["bed_room"]
+        except KeyError:
+            datahandled['bed_room'] = ''
+
+        try:
+            datahandled['bath_room'] = postdata["bath_room"]
+        except KeyError:
+            datahandled['bath_room'] = ''
+
+        try:
+            datahandled['name'] = postdata["name"]
+        except KeyError:
+            datahandled['name'] = ''
+
+        try:
+            datahandled['mobile'] = postdata["mobile"]
+        except KeyError:
+            datahandled['mobile'] = ''
+
+        try:
+            datahandled['email'] = postdata["email"]
+        except KeyError:
+            datahandled['email'] = ''
+
+        return datahandled
+
+    def create_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        # start process
+        #
+
+        # TODO รูปภาพ public upload รูปภาพ
+
+        datahandled = self.postdata_handle(postdata)
+
+        # login
+        test_login = self.test_login(datahandled)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        agent_id = test_login["agent_id"]
+        post_id = ""
+
+        if success == "true":
+            # TODO ใช้การ get create-listing/location ก่อนเพื่อไปหน้า create-listing/detail
+            # เพื่อตรวจสอบ หา account_type normal/corperate ไม่ได้
+            # เพราะ response html เป็น js render ทีหลัง html ทำให้ไม่ได้ content มาเพื่อตรวจสอบ account type
+            # ดังนั้น จะ get account_type ไม่ได้ แต่เวลา post จะใส่ name,mobile,email ให้หมด
+            # get รายละเอียดตัวแทน
+            # r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/location', verify=r=httprequestObj.http_get('https://agentnet.ddproperty.com/sf2-agent/ajax/media/property/7015/photo', verify=False))
+            # r = httprequestObj.http_get('https://agentnet.ddproperty.com/sf2-agent/ajax/project-net/property/7015?language=th', verify=False)
+            # r = httprequestObj.http_get('https://agentnet.ddproperty.com/sf2-agent/ajax/media/property/7015/photo', verify=False)
+            # r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail', verify=False)
+            # data = r.text
+            # f = open("debug_response/ddcreatelist.html", "wb")
+            # f.write(data.encode('utf-8').strip())
+
+            # get property attr
+            r = httprequestObj.http_get('https://services.propertyguru.com/v1/autocomplete?region=th&locale=th&limit=25&object_type=PROPERTY&query='+datahandled['project_name'], verify=False)
+            # data = r.text
+            # f = open("debug_response/ddcreatelist.html", "wb")
+            # f.write(data.encode('utf-8').strip())
+            datajson = r.json()
+            propertyattr = {}
+            # if not found , new project
+            if len(datajson) == 0:
+                # จะต้องมา map หา จังหวัด อำเภอ ตำบล อีก response error ไปเลยดีกว่า
+                # จังหวัด TH01 อำเภอ TH0101 ตำบล TH010101 รหัส ปณ 11110
+                success = 'false'
+                detail = 'ชื่อโครงการไม่มีใน list และไม่มีระบุ จังหวัด  อำเภอ  ตำบล รหัสปณ มา '
+            # if found < 0 , choose array 0
+            else:
+                propertyattr['postalCode'] = re.search(r'.*(\d{5}).*', datajson[0]['displayDescription']).group(1)
+                propertyattr['districtCode'] = datajson[0]['properties']['district']
+                propertyattr['regionCode'] = re.search(r'(TH\d{2})', datajson[0]['properties']['district']).group(1)
+                propertyattr['objectId'] = datajson[0]['objectId']
+
+            if success == 'true':
+                # postdata
+                agent_id = agent_id
+                datapost = {
+                    "id": "",
+                    "title": datahandled['post_title_en'],
+                    "localizedTitle":  datahandled['post_title_th'],
+                    "description":  datahandled['post_description_en'],
+                    "localizedDescription":  datahandled['post_description_th'],
+                    "hasStream": "false",
+                    "statusCode": "DRAFT",
+                    "sourceCode": "",
+                    "typeCode":  datahandled['listing_type'],
+                    "leaseTermCode": "",
+                    "featureCode": "",
+                    "externalId": '9999',
+                    "event": "",
+                    "location": {
+                        "id": "626225",  # TODO ''
+                        "block": "",
+                        "unit": "",
+                        "streetId": "",
+                        "longitude":  datahandled['geo_longitude'],
+                        "latitude":  datahandled['geo_latitude'],
+                        "hdbEstateCode": "",
+                        "streetName1": "",
+                        "streetName2": "",
+                        "streetNumber": "",
+                        "postalCode": propertyattr['postalCode'],
+                        "regionCode": propertyattr['regionCode'],
+                        "districtCode": propertyattr['districtCode'],
+                        "areaCode": "",
+                        "zoneIds": ""
+                    },
+                    "media": {
+                        "cover": {
+                            "id": ""
+                        },
+                        "excluded": [],
+                        "included": []
+                    },
+                    "property": {
+                        "id": propertyattr['objectId'],
+                        "name": datahandled['project_name'],
+                        "temporaryId": "",
+                        "typeCode":  datahandled['property_type'],
+                        "typeGroup": "",
+                        "tenureCode": "",
+                        "topYear": "",
+                        "totalUnits": '',
+                        "floors": "",
+                        "amenities": []
+                    },
+                    "propertyUnit": {
+                        "tenureCode": "",
+                        "furnishingCode": "",
+                        "description": "",
+                        "hdbTypeCode": "",
+                        "floorplanId": -1,
+                        "floorLevelCode": "",
+                        "floorPosition": "",
+                        "telephoneLines": "",
+                        "cornerUnit": "",
+                        "facingCode": "",
+                        "features": [],
+                        "occupancyCode": "",
+                        "electricitySupply": "",
+                        "electricityPhase": "",
+                        "ceilingHeight": "",
+                        "floorLoading": "",
+                        "parkingSpaces": "",
+                        "parkingFees": "",
+                        "maintenanceFee": "",
+                        "liftCargo": "",
+                        "liftPassenger": "",
+                        "liftCapacity": "",
+                        "centralAircon": "",
+                        "centralAirconHours": "",
+                        "ownerTypeCode": "",
+                        "sellerEthnic": "",
+                        "sellerResidency": "",
+                        "quotaEthnic": "false",
+                        "quotaSpr": "false",
+                        "tenancy": {
+                            "value": "",
+                            "tenantedUntilDate": {}
+                        }
+                    },
+                    "price": {
+                        "value": datahandled['price_baht'],  # price_baht ใช้ price bath 3000 แล้ว error,
+                        "periodCode": "",
+                        "valuation": "",
+                        "type": {
+                            "code": "BAH",
+                            "text": ""}},
+                    "sizes": {
+                        "bedrooms": {
+                            "value": datahandled['bed_room']},
+                        "bathrooms": {
+                            "value": datahandled['bath_room']},
+                        "extrarooms": {
+                            "value": ""},
+                        "floorArea": [{"value": datahandled['floorarea_sqm'], "unit": "sqm"}],
+                        "landArea": [{"value": "", "unit": "sqm"}],
+                        "floorX": [{"unit": "m", "value": ""}],
+                        "floorY": [{"unit": "m", "value": ""}],
+                        "landX": [{"unit": "m", "value": ""}],
+                        "landY": [{"unit": "m", "value": ""}]},
+                    "agent": {
+                        "id": agent_id,
+                        "alternativePhone": "",
+                        "alternativeAgent": datahandled['name'],
+                        "alternativeMobile": datahandled['mobile'],
+                        "alternativeEmail": datahandled['email']
+                    },
+                    "hasFloorplans": "false",
+                    "boost": {"boostActive": "false", "boostDuration": 0},
+                    "dates": {"timezone": "Asia/Singapore", "available": ""},
+                    "descriptions": {
+                        "th":  datahandled['post_description_th']},
+                    "qualityScore": 0,
+                    "localizedHeadline": "",
+                    "headlines": {"th": ""},  # TODO short_post_title_th
+                    "titles": {
+                        "th":  datahandled['post_title_th']
+                    }
+                }
+                datastr = json.dumps(datapost)
+                r = httprequestObj.http_post_json('https://agentnet.ddproperty.com/sf2-agent/ajax/listings', jsoncontent=datastr)
+                data = r.text
+                f = open("debug_response/postdd.html", "wb")
+                f.write(data.encode('utf-8').strip())
+                matchObj = re.search(r'errors', data)
+                if matchObj:
+                    success = "false"
+                    detail = data
+                else:
+                    post_id = re.search(r'{"id":(\d+)', data).group(1)
+
+                # # TODO post image
+                # if success == 'true':
+                #     datapost = {
+                #         'ownerId': 7841959,
+                #         'mediaType': 'IMAGE',
+                #         'mediaClass': 'UPHO',
+                #         'source': 'AgentNet',
+                #         'userId': 10760807,
+                #         'caption': '',
+                #         'sortOrder': 1,
+                #         'mediaFile': '''
+
+                #         ''',
+                #     }
+                #     r = httprequestObj.http_post('https://agentnet.ddproperty.com/sf2-agent/ajax/listings/7841959/media', data=data)
+                #     data = r.text
+                #     f = open("debug_response/uploadimg.html", "wb")
+                #     f.write(data.encode('utf-8').strip())
+        #
+        # end process
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "ds_id": datahandled['ds_id'],
             "post_url": "https://www.ddproperty.com/preview-listing/"+post_id if post_id != "" else "",
             "post_id": post_id,
             "account_type": "null",
@@ -389,7 +683,7 @@ class ddproperty():
             headerreg = {"content-type": "application/json"}
             r = httprequestObj.http_post_with_multi_options('https://auth.propertyguru.com/session-to-jwt', headerreg=headerreg, jsoncontent=datajson)
             data = r.text
-            #f = open("ddsessiontojwt.html", "wb")
+            # f = open("debug_response/ddsessiontojwt.html", "wb")
             # f.write(data.encode('utf-8').strip())
             jsonres = r.json()
             if not jsonres["token"]:
@@ -400,10 +694,10 @@ class ddproperty():
                     "content-type": "application/json",
                     "authorization": "Bearer " + jsonres["token"]
                 }
-                #r = httprequestObj.http_post_with_multi_options('https://ads-products.propertyguru.com/api/v1/listing/7797845/product/ranked-spotlight/add?region=th&agentId=10760807', headerreg=headerreg, jsoncontent={})
+                # r = httprequestObj.http_post_with_multi_options('https://ads-products.propertyguru.com/api/v1/listing/7797845/product/ranked-spotlight/add?region=th&agentId=10760807', headerreg=headerreg, jsoncontent={})
                 r = httprequestObj.http_post_with_multi_options('https://ads-products.propertyguru.com/api/v1/listing/'+post_id+'/product/ranked-spotlight/add?region=th&agentId='+agent_id, headerreg=headerreg, jsoncontent={})
                 data = r.text
-                f = open("ddboostpostresponse.html", "wb")
+                f = open("debug_response/ddboostpostresponse.html", "wb")
                 f.write(data.encode('utf-8').strip())
 
                 # TODO ถ้า boost สำเร็จ response จะเป็นยังไง
@@ -430,11 +724,11 @@ class ddproperty():
         time_start = datetime.datetime.utcnow()
 
         log_id = postdata['log_id']
-        #postdata['post_id'] = '7790593'
+        # postdata['post_id'] = '7790593'
         post_id = postdata['post_id']
-        #postdata['user'] = 'kla.arnut@gmail.com'
+        # postdata['user'] = 'kla.arnut@gmail.com'
         user = postdata['user']
-        #postdata['pass'] = 'vkIy9b'
+        # postdata['pass'] = 'vkIy9b'
         passwd = postdata['pass']
 
         # start process
@@ -448,7 +742,7 @@ class ddproperty():
             # จะต้องไปหน้า listing_management เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป delete ได้
             r = httprequestObj.http_get('https://agentnet.ddproperty.com/listing_management#DRAFT', verify=False)
             data = r.text
-            #f = open("ddpostlistdraft.html", "wb")
+            # f = open("debug_response/ddpostlistdraft.html", "wb")
             # f.write(data.encode('utf-8').strip())
 
             # listing_id%5B%5D=7788093&remove=Delete%20selected&selecteds=7788093
@@ -459,14 +753,14 @@ class ddproperty():
             }
             r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing', data=datapost)
             data = r.text
-            f = open("dddelete.html", "wb")
+            f = open("debug_response/dddelete.html", "wb")
             f.write(data.encode('utf-8').strip())
             matchObj = re.search(r'message":"deleted', data)
             if matchObj:
                 # ใกล้ความจริง แต่จะ delete สำเร็จหรือไม่มันก็ return deleted หมด ดังนั้นต้องเช็คจาก post id อีกทีว่า response 404 ป่าว
                 r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail/'+post_id, verify=False)
                 data = r.text
-                f = open("dddelete.html", "wb")
+                f = open("debug_response/dddelete.html", "wb")
                 f.write(data.encode('utf-8').strip())
                 if(r.status_code == 200):
                     success = "false"
@@ -968,7 +1262,7 @@ class ddproperty():
             # print(datastr)
             r = httprequestObj.http_put_json('https://agentnet.ddproperty.com/sf2-agent/ajax/update/'+post_id, jsoncontent=datastr)
             data = r.text
-            f = open("editpostdd.html", "wb")
+            f = open("debug_response/editpostdd.html", "wb")
             f.write(data.encode('utf-8').strip())
 
             matchObj = re.search(r'errors', data)
