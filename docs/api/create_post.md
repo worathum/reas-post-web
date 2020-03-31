@@ -59,6 +59,7 @@ addr_sub_district = ตำบล แขวง
 addr_road = ถนน
 addr_soi = ซอย
 addr_near_by = สถานที่ใกล้เคียง
+addr_postcode = รหัส ปณ จำเป็นมากกับบางเว็บ เช่น ddproperty
 
 # บ้าน - ที่ดิน (ที่ไม่ใช่คอนโดจะมีค่านี้)
 floorarea_sqm = พื้นที่
@@ -156,6 +157,7 @@ return account_type = normal, coperate
     "mobile": "xxx",
     "email": "xxx",
     "line": "xxx",
+    "project_name": "ลุมพีนีวิลล รามอินทราหลักสี่",
     "web": [
         {
             "ds_name": "thaihometown",
@@ -167,7 +169,8 @@ return account_type = normal, coperate
             "ds_name": "ddproperty",
             "ds_id": "5",     
             "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434"         
+            "pass": "5k4kk3253434",
+            "web_project_name": "ลุมพีนี รามอินทราหลักสี่"   
         }
     ]
 }
