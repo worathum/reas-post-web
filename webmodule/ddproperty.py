@@ -3,7 +3,6 @@
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
-# from urlparse import urlparse
 import re
 import json
 import datetime
@@ -13,6 +12,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import time
+from urllib.parse import urlsplit
+import string
+import random
+
 
 httprequestObj = lib_httprequest()
 
@@ -30,17 +33,20 @@ class ddproperty():
 
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
-        self.debug = 0
+        self.debug = 1
         self.debugresdata = 0
+        self.parser = 'html.parser'
+        self.handled = False
 
-        self.options = Options()
-        self.options.add_argument("--headless")  # Runs Chrome in headless mode.
-        self.options.add_argument('--no-sandbox')  # Bypass OS security model
-        self.options.add_argument('start-maximized')
-        self.options.add_argument('disable-infobars')
-        self.options.add_argument("--disable-extensions")
-        self.options.add_argument("window-size=1024,768")
-        self.chromedriver_binary = "/bin/chromedriver"
+        options = Options()
+        options.add_argument("--headless")  # Runs Chrome in headless mode.
+        options.add_argument('--no-sandbox')  # Bypass OS security model
+        options.add_argument('start-maximized')
+        options.add_argument('disable-infobars')
+        options.add_argument("--disable-extensions")
+        options.add_argument("window-size=1024,768")
+        chromedriver_binary = "/bin/chromedriver"
+        self.chrome = webdriver.Chrome(chromedriver_binary, options=options)
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -124,7 +130,6 @@ class ddproperty():
 
     def test_login_httpreq(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
 
         user = postdata['user']
         passwd = postdata['pass']
@@ -176,13 +181,55 @@ class ddproperty():
         #
         # end process
 
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
         return {
             "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
+            "detail": detail,
+            "agent_id": agent_id
+        }
+
+    def test_login_headless(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+
+        # start process
+        #
+        success = "true"
+        detail = ""
+        agent_id = ""
+
+        # open login page
+        self.chrome.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
+
+        # input email and enter
+        emailtxt = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("emailInput"))
+        emailtxt.send_keys(postdata['user'])
+        nextbttn = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("next"))
+        nextbttn.click()
+        time.sleep(1)
+
+        # input password and enter
+        passtxt = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("inputPassword"))
+        passtxt.send_keys(postdata['pass'])
+        passtxt.send_keys(Keys.ENTER)
+        time.sleep(1)
+        # f = open("debug_response/loginpassdd2.html", "wb")
+        # f.write(self.chrome.page_source.encode('utf-8').strip())
+
+        # find text
+        soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
+        titletxt = soup.find('title').text
+        matchObj = re.search(r'Dashboard', titletxt)
+        if not matchObj:
+            success = "false"
+            detail = 'cannot login'
+        if success == "true":
+            # agent_id = re.search(r'optimize_agent_id = (\d+);', self.chrome.page_source).group(1)
+            agent_id = re.search(r'{"user":{"id":(\d+),', self.chrome.page_source).group(1)
+
+        #
+        # end process
+
+        return {
+            "success": success,
             "detail": detail,
             "agent_id": agent_id
         }
@@ -191,73 +238,29 @@ class ddproperty():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        datahandled = self.postdata_handle(postdata)
-
         # start process
         #
-        success = "true"
-        detail = ""
-        agent_id = ""
+        datahandled = self.postdata_handle(postdata)
 
-        chrome = webdriver.Chrome(self.chromedriver_binary, options=self.options)
-
-        # open login page
-        chrome.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
-
-        # input email and enter
-        emailtxt = WebDriverWait(self.driver, 5).until(lambda x: x.find_element_by_id("emailInput"))
-        emailtxt.send_keys(datahandled['user'])
-        nextbttn = WebDriverWait(self.driver, 5).until(lambda x: x.find_element_by_id("next"))
-        nextbttn.click()
-        time.sleep(1)
-
-        # input password
-        passtxt = WebDriverWait(chrome, 5).until(lambda x: x.find_element_by_id("inputPassword"))
-        passtxt.send_keys(datahandled['pass'])
-        passtxt.send_keys(Keys.ENTER)
-        time.sleep(1)
-        f = open("debug_response/loginpassdd2.html", "wb")
-        f.write(chrome.page_source.encode('utf-8').strip())
-
-        if datajson['status'] and datajson['status'] == 0:
-            if datajson['email'] != user:
-                success = "false"
-                detail = data
-        if success == "true":
-            datapost = {
-                'password': passwd,
-                'recapchaResponse': '',
-                'remember_me': 'true',
-                'submit': 'true',
-                '': 'true',
-                'userid': user,
-            }
-            r = httprequestObj.http_post('https://agentnet.ddproperty.com/ex_login_ajax', data=datapost)
-            data = r.text
-            f = open("debug_response/logindd.html", "wb")
-            f.write(data.encode('utf-8').strip())
-            matchObj = re.search(r'success', data)
-            if matchObj:
-                agent_id = re.search(r'jwt_prod_(\d+)', data).group(1)
-            else:
-                success = "false"
-                detail = "cannot login"
-        #
-        # end process
+        response = {}
+        if datahandled['action'] == 'create_post':
+            response = self.test_login_headless(datahandled)
+        else:
+            response = self.test_login_httpreq(datahandled)
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "detail": detail,
-            "agent_id": agent_id
-        }
+        response['usage_time'] = str(time_usage)
+        response['start_time'] = str(time_start)
+        response['end_time'] = str(time_end)
+
+        return response
 
     def postdata_handle(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+
+        if self.handled == True:
+            return postdata
 
         datahandled = {}
 
@@ -294,7 +297,9 @@ class ddproperty():
             datahandled['property_type'] = "BIZ"
         elif datahandled['property_type'] == 9 or datahandled['property_type'] == "ออฟฟิศสำนักงาน":
             datahandled['property_type'] = "OFF"
-        elif datahandled['property_type'] == 10 or datahandled['property_type'] == "โกดัง-โรงงาน":
+        elif datahandled['property_type'] == 10 or datahandled['property_type'] == "โกดัง":
+            datahandled['property_type'] = "WAR"
+        elif datahandled['property_type'] == 25 or datahandled['property_type'] == "โรงงาน":
             datahandled['property_type'] = "WAR"
         else:
             datahandled['property_type'] = "CONDO"
@@ -342,7 +347,7 @@ class ddproperty():
         try:
             datahandled['floorarea_sqm'] = postdata['floorarea_sqm']
         except KeyError:
-            datahandled['floorarea_sqm'] = ''
+            datahandled['floorarea_sqm'] = 99
 
         try:
             datahandled['geo_latitude'] = postdata['geo_latitude']
@@ -405,16 +410,6 @@ class ddproperty():
             datahandled['project_name'] = ''
 
         try:
-            datahandled['bed_room'] = postdata["bed_room"]
-        except KeyError:
-            datahandled['bed_room'] = ''
-
-        try:
-            datahandled['bath_room'] = postdata["bath_room"]
-        except KeyError:
-            datahandled['bath_room'] = ''
-
-        try:
             datahandled['name'] = postdata["name"]
         except KeyError:
             datahandled['name'] = ''
@@ -429,6 +424,62 @@ class ddproperty():
         except KeyError:
             datahandled['email'] = ''
 
+        try:
+            datahandled['web_project_name'] = postdata["web_project_name"]
+        except KeyError:
+            datahandled['web_project_name'] = ''
+
+        try:
+            datahandled['action'] = postdata["action"]
+        except KeyError:
+            datahandled['action'] = ''
+
+        try:
+            datahandled['bath_room'] = postdata["bath_room"]
+        except KeyError:
+            datahandled['bath_room'] = 0
+
+        try:
+            datahandled['bed_room'] = postdata["bed_room"]
+        except KeyError:
+            datahandled['bed_room'] = 0
+
+        try:
+            datahandled['floor_total'] = postdata["floor_total"]
+        except KeyError:
+            datahandled['floor_total'] = 1
+
+        try:
+            datahandled['floor_level'] = postdata["floor_level"]
+        except KeyError:
+            datahandled['floor_level'] = 1
+
+        try:
+            datahandled['direction_type'] = postdata["direction_type"]
+        except KeyError:
+            datahandled['direction_type'] = "ทิศเหนือ"
+        if datahandled['direction_type'] == '11':
+            datahandled['direction_type'] = "ทิศเหนือ"
+        elif datahandled['direction_type'] == '12':
+            datahandled['direction_type'] = "ทิศใต้"
+        elif datahandled['direction_type'] == '13':
+            datahandled['direction_type'] = "ทิศตะวันออก"
+        elif datahandled['direction_type'] == '14':
+            datahandled['direction_type'] = "ทิศตะวันตก"
+        elif datahandled['direction_type'] == '21':
+            datahandled['direction_type'] = "ทิศตะวันออกเฉียงเหนือ"
+        elif datahandled['direction_type'] == '22':
+            datahandled['direction_type'] = "ทิศตะวันออก"
+        elif datahandled['direction_type'] == '23':
+            datahandled['direction_type'] = "ทิศตะวันตกเฉียงเหนือ"
+        elif datahandled['direction_type'] == '24':
+            datahandled['direction_type'] = "ทิศตะวันตกเฉียงใต้"
+
+        # image
+        datahandled['post_images'] = postdata["post_images"]
+
+        self.handled = True
+
         return datahandled
 
     def create_post(self, postdata):
@@ -437,9 +488,174 @@ class ddproperty():
 
         # start process
         #
+        datahandled = self.postdata_handle(postdata)
 
-        # TODO รูปภาพ public upload รูปภาพ
+        # login
+        test_login = self.test_login(datahandled)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        agent_id = test_login["agent_id"]
+        post_id = ""
 
+        if success == "true":
+            projectname = datahandled['project_name']
+            if datahandled['web_project_name'] != '':
+                projectname = datahandled['web_project_name']
+
+            self.chrome.get('https://agentnet.ddproperty.com/create-listing/location')
+            time.sleep(1)
+            # self.chrome.save_screenshot("debug_response/location.png")
+            projectnametxt = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("propertySearch"))
+            projectnametxt.send_keys(projectname)
+            projectnametxt.send_keys(Keys.ENTER)
+            time.sleep(1)
+            # self.chrome.save_screenshot("debug_response/location2.png")
+            # f = open("debug_response/ddpost.html", "wb")
+            # f.write(self.chrome.page_source.encode('utf-8').strip())
+
+            # case no result
+            matchObj = re.search(r'ol class="no-match"', self.chrome.page_source)
+            if matchObj:
+                if(datahandled['addr_province'] == '' or datahandled['addr_district'] == '' or datahandled['addr_sub_district'] == ''):
+                    success = 'false'
+                    detail = 'for a new project name, ddproperty must require province , district and sub_district'
+                if success == 'true':
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("property-new-link")).click()
+                    time.sleep(0.1)
+                    # self.chrome.save_screenshot("debug_response/newp1.png")
+                    linktxt = ''
+                    cssselect = ''
+                    if datahandled['property_type'] == "BUNG":
+                        linktxt = 'บ้านเดี่ยว'
+                        cssselect = 'BUNG'
+                    elif datahandled['property_type'] == "TOWN":
+                        linktxt = 'ทาวน์เฮ้าส์'
+                        cssselect = 'TOWN'
+                    elif datahandled['property_type'] == "SHOP":
+                        linktxt = 'เชิงพาณิชย์'
+                        cssselect = 'RET'
+                    elif datahandled['property_type'] == "LAND":
+                        linktxt = 'ที่ดิน'
+                        cssselect = 'LAND'
+                    elif datahandled['property_type'] == "APT":
+                        linktxt = 'อพาร์ทเมนท์'
+                        cssselect = 'APT'
+                    elif datahandled['property_type'] == "OFF":
+                        linktxt = 'เชิงพาณิชย์'
+                        cssselect = 'OFF'
+                    elif datahandled['property_type'] == "WAR":
+                        linktxt = 'เชิงพาณิชย์'
+                        cssselect = 'WAR'
+                    else:  # CONDO
+                        linktxt = 'คอนโด'
+                        cssselect = 'CONDO'
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
+                    time.sleep(0.1)
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
+                    time.sleep(0.1)
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='"+cssselect+"']")).click()
+                    time.sleep(0.1)
+                    # self.chrome.save_screenshot("debug_response/newp3.png")
+
+                    try:
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-region")).click()
+                        time.sleep(0.1)
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_province'])).click()
+                        time.sleep(0.1)
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-district")).click()
+                        time.sleep(0.1)
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_district'])).click()
+                        time.sleep(0.1)
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-area")).click()
+                        time.sleep(0.1)
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
+                        time.sleep(0.5)
+                        # self.chrome.save_screenshot("debug_response/newp3.png")
+                    except Exception as e:
+                        success = 'false'
+                        detail = 'for a new project name, province , district , subdistrict error'
+
+                    if (success == 'true'):
+                        res = self.inputpostattr(datahandled)
+
+                        # case match choose first argument
+            else:
+                # dddd
+                aaa = 11111
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "ds_id": datahandled['ds_id'],
+            "post_url": "https://www.ddproperty.com/preview-listing/"+post_id if post_id != "" else "",
+            "post_id": post_id,
+            "account_type": "null",
+            "detail": detail,
+        }
+
+    def inputpostattr(self, datahandled):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name('step-next')).click()
+        time.sleep(1)
+        # self.chrome.save_screenshot("debug_response/newp4.png")
+        # WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][id='listing-type-"+datahandled['listing_type']+"']")).find_element_by_tag_name('span').click()
+        if datahandled['listing_type'] == "SALE":
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[1]/label/span')).click()
+        elif datahandled['listing_type'] == "RENT":
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[2]/label/span')).click()
+        else:
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[3]/label/span')).click()
+        # self.chrome.save_screenshot("debug_response/newp5.png")
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
+        if int(datahandled['bed_room']) > 0:
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
+            if int(datahandled['bed_room']) >= 10:
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('10 + ห้องนอน')).click()
+            else:
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room'])+' ห้องนอน')).click()
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
+        if int(datahandled['bath_room']) == 0:
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('ไม่มีห้องน้ำ')).click()
+        elif int(datahandled['bath_room']) >= 1 and int(datahandled['bath_room']) < 9:
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bath_room'])+' ห้องน้ำ')).click()
+        else:
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(datahandled['post_title_th'])
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(datahandled['post_title_en'])
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-facing-type")).click()
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['direction_type'])).click()
+        time.sleep(0.5)
+        self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
+        time.sleep(0.5)
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
+        time.sleep(1)
+
+        for img in datahandled['post_images']:
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath('imgtmp/'+img))
+
+        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
+        time.sleep(1)
+        self.chrome.save_screenshot("debug_response/newp10.png")
+        exit()
+
+    def create_post_bak(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        # start process
+        #
         datahandled = self.postdata_handle(postdata)
 
         # login
@@ -753,15 +969,15 @@ class ddproperty():
             }
             r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing', data=datapost)
             data = r.text
-            f = open("debug_response/dddelete.html", "wb")
-            f.write(data.encode('utf-8').strip())
+            # f = open("debug_response/dddelete.html", "wb")
+            # f.write(data.encode('utf-8').strip())
             matchObj = re.search(r'message":"deleted', data)
             if matchObj:
                 # ใกล้ความจริง แต่จะ delete สำเร็จหรือไม่มันก็ return deleted หมด ดังนั้นต้องเช็คจาก post id อีกทีว่า response 404 ป่าว
                 r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail/'+post_id, verify=False)
                 data = r.text
-                f = open("debug_response/dddelete.html", "wb")
-                f.write(data.encode('utf-8').strip())
+                # f = open("debug_response/dddelete.html", "wb")
+                # f.write(data.encode('utf-8').strip())
                 if(r.status_code == 200):
                     success = "false"
                     detail = r.text

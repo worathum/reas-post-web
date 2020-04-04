@@ -24,7 +24,7 @@ docker exec -it docker-python3 bash -c "pip uninstall ratelimit; pip uninstall d
 docker exec -it docker-python3 bash -c "cd /app; python -W "ignore" manage.py runserver 0.0.0.0:8000 --insecure;"
 
 docker exec -it docker-python3 bash -c "
-yes | pip uninstall ratelimit; 
+pip uninstall ratelimit; 
 pip uninstall django-ratelimit; 
 pip install django-ratelimit; 
 pip install requests; 

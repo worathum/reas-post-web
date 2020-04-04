@@ -5,6 +5,10 @@ import sys
 import json
 import base64
 import os
+import string
+import random
+from webmodule.lib_httprequest import *
+httprequestObj = lib_httprequest()
 
 
 class postcore():
@@ -64,6 +68,24 @@ class postcore():
             "web": {},
         }
 
+        # store image in img tmp
+        try:
+            allimages = datarequest["post_img_url_lists"]
+        except KeyError:
+            allimages = {}
+        datarequest['post_images'] = []
+        imgname = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        imgcount = 1
+        for imgurl in allimages:
+            itype = imgurl.split("/")[-1].split('.')[1]
+            res = httprequestObj.http_get(imgurl, verify=False)
+            if res.status_code == 200:
+                with open("imgtmp/"+imgname+str(imgcount)+"."+itype, 'wb') as f:
+                    f.write(res.content)
+                datarequest['post_images'].append(imgname+str(imgcount)+"."+itype)
+                imgcount = imgcount+1
+
+        # define all website list
         weblists = datarequest['web']
         del(datarequest['web'])
 
@@ -81,117 +103,122 @@ class postcore():
                 response["web"][websitename]["success"] = "false"
                 response["web"][websitename]["detail"] = "not found website class"
                 continue
-            try:
-                module = importlib.import_module('webmodule.'+websitename)
-                classname = getattr(module, websitename)
-                module_instance = classname()
-                webdata = webitem
-                webdata.update(datarequest)
-                response["web"][websitename] = getattr(module_instance, action)(webdata)            
-            except BaseException:                
-                response["web"][websitename] = {}
-                response["web"][websitename]["success"] = "false"
-                response["web"][websitename]["detail"] = "Import errors: "
-                continue       
+            # try: removed for debug
+            module = importlib.import_module('webmodule.'+websitename)
+            classname = getattr(module, websitename)
+            module_instance = classname()
+            webdata = webitem
+            webdata.update(datarequest)
+            response["web"][websitename] = getattr(module_instance, action)(webdata)
+            # except BaseException: removed for debug
+            #     response["web"][websitename] = {}
+            #     response["web"][websitename]["success"] = "false"
+            #     response["web"][websitename]["detail"] = "Import errors: "
+            #     continue
 
-    #    if action == 'register_user':
-    #         response["action"] = action
-    #         allweb = datarequest['web']
-    #         for datareq in allweb:
-    #             websitename = datareq['ds_name']
-    #             # if file not exists websitename.py to next
-    #             if os.path.isfile('webmodule/'+websitename+'.py') == False:
-    #                 response["web"][websitename]["success"] = "false"
-    #                 response["web"][websitename]["detail"] = "not found website class"
-    #                 continue
-    #             module = importlib.import_module('webmodule.'+websitename)
-    #             classname = getattr(module, websitename)
-    #             module_instance = classname()
-    #             response["web"][websitename] = module_instance.register_user(
-    #                 datareq)
+        # remove image tmp
+        for image in datarequest['post_images']:
+            if os.path.isfile('imgtmp/'+image) == True:
+                os.remove(os.path.abspath('imgtmp/'+image))
 
-    #     if action == 'boost_post':
-    #         response["action"] = action
-    #         allweb = datarequest['web']
-    #         for datareq in allweb:
-    #             websitename = datareq['ds_name']
-    #             # if file not exists websitename.py to next
-    #             if os.path.isfile('webmodule/'+websitename+'.py') == False:
-    #                 response["web"][websitename]["success"] = "false"
-    #                 response["web"][websitename]["detail"] = "not found website class"
-    #                 continue
-    #             module = importlib.import_module('webmodule.'+websitename)
-    #             classname = getattr(module, websitename)
-    #             module_instance = classname()
-    #             response["web"][websitename] = module_instance.boost_post(
-    #                 datareq)
+        # if action == 'register_user':
+        #     response["action"]=action
+        #     allweb=datarequest['web']
+        #     for datareq in allweb:
+        #         websitename=datareq['ds_name']
+        #         # if file not exists websitename.py to next
+        #         if os.path.isfile('webmodule/'+websitename+'.py') == False:
+        #             response["web"][websitename]["success"]="false"
+        #             response["web"][websitename]["detail"]="not found website class"
+        #             continue
+        #         module=importlib.import_module('webmodule.'+websitename)
+        #         classname=getattr(module, websitename)
+        #         module_instance=classname()
+        #         response["web"][websitename]=module_instance.register_user(
+        #             datareq)
 
-    #     if action == 'create_post':
-    #         response["action"] = action
-    #         allweb = datarequest['web']
-    #         for datareq in allweb:
-    #             websitename = datareq['ds_name']
-    #             # if file not exists websitename.py to next
-    #             if os.path.isfile('webmodule/'+websitename+'.py') == False:
-    #                 response["web"][websitename]["success"] = "false"
-    #                 response["web"][websitename]["detail"] = "not found website class"
-    #                 continue
-    #             module = importlib.import_module('webmodule.'+websitename)
-    #             classname = getattr(module, websitename)
-    #             module_instance = classname()
-    #             response["web"][websitename] = module_instance.create_post(
-    #                 datareq, {})
+        # if action == 'boost_post':
+        #     response["action"]=action
+        #     allweb=datarequest['web']
+        #     for datareq in allweb:
+        #         websitename=datareq['ds_name']
+        #         # if file not exists websitename.py to next
+        #         if os.path.isfile('webmodule/'+websitename+'.py') == False:
+        #             response["web"][websitename]["success"]="false"
+        #             response["web"][websitename]["detail"]="not found website class"
+        #             continue
+        #         module=importlib.import_module('webmodule.'+websitename)
+        #         classname=getattr(module, websitename)
+        #         module_instance=classname()
+        #         response["web"][websitename]=module_instance.boost_post(
+        #             datareq)
 
-    #     if action == 'delete_post':
-    #         response["action"] = action
-    #         allweb = datarequest['web']
-    #         for datareq in allweb:
-    #             websitename = datareq['ds_name']
-    #             # if file not exists websitename.py to next
-    #             if os.path.isfile('webmodule/'+websitename+'.py') == False:
-    #                 response["web"][websitename]["success"] = "false"
-    #                 response["web"][websitename]["detail"] = "not found website class"
-    #                 continue
-    #             module = importlib.import_module('webmodule.'+websitename)
-    #             classname = getattr(module, websitename)
-    #             module_instance = classname()
-    #             response["web"][websitename] = module_instance.delete_post(
-    #                 datareq)
+        # if action == 'create_post':
+        #     response["action"]=action
+        #     allweb=datarequest['web']
+        #     for datareq in allweb:
+        #         websitename=datareq['ds_name']
+        #         # if file not exists websitename.py to next
+        #         if os.path.isfile('webmodule/'+websitename+'.py') == False:
+        #             response["web"][websitename]["success"]="false"
+        #             response["web"][websitename]["detail"]="not found website class"
+        #             continue
+        #         module=importlib.import_module('webmodule.'+websitename)
+        #         classname=getattr(module, websitename)
+        #         module_instance=classname()
+        #         response["web"][websitename]=module_instance.create_post(
+        #             datareq, {})
 
-    #     if action == 'edit_post':
-    #         response["action"] = action
-    #         allweb = datarequest['web']
-    #         for datareq in allweb:
-    #             websitename = datareq['ds_name']
-    #             # if file not exists websitename.py to next
-    #             if os.path.isfile('webmodule/'+websitename+'.py') == False:
-    #                 response["web"][websitename]["success"] = "false"
-    #                 response["web"][websitename]["detail"] = "not found website class"
-    #                 continue
-    #             module = importlib.import_module('webmodule.'+websitename)
-    #             classname = getattr(module, websitename)
-    #             module_instance = classname()
-    #             response["web"][websitename] = module_instance.edit_post(
-    #                 datareq, {})
+        # if action == 'delete_post':
+        #     response["action"]=action
+        #     allweb=datarequest['web']
+        #     for datareq in allweb:
+        #         websitename=datareq['ds_name']
+        #         # if file not exists websitename.py to next
+        #         if os.path.isfile('webmodule/'+websitename+'.py') == False:
+        #             response["web"][websitename]["success"]="false"
+        #             response["web"][websitename]["detail"]="not found website class"
+        #             continue
+        #         module=importlib.import_module('webmodule.'+websitename)
+        #         classname=getattr(module, websitename)
+        #         module_instance=classname()
+        #         response["web"][websitename]=module_instance.delete_post(
+        #             datareq)
 
-    #     if action == 'test_login':
-    #         response["action"] = action
-    #         allweb = datarequest['web']
-    #         for datareq in allweb:
-    #             websitename = datareq['ds_name']
-    #             # if file not exists websitename.py to next
-    #             if os.path.isfile('webmodule/'+websitename+'.py') == False:
-    #                 response["web"][websitename]["success"] = "false"
-    #                 response["web"][websitename]["detail"] = "not found website class"
-    #                 continue
-    #             module = importlib.import_module('webmodule.'+websitename)
-    #             classname = getattr(module, websitename)
-    #             module_instance = classname()
-    #             response["web"][websitename] = module_instance.test_login(
-    #                 datareq)
+        # if action == 'edit_post':
+        #     response["action"]=action
+        #     allweb=datarequest['web']
+        #     for datareq in allweb:
+        #         websitename=datareq['ds_name']
+        #         # if file not exists websitename.py to next
+        #         if os.path.isfile('webmodule/'+websitename+'.py') == False:
+        #             response["web"][websitename]["success"]="false"
+        #             response["web"][websitename]["detail"]="not found website class"
+        #             continue
+        #         module=importlib.import_module('webmodule.'+websitename)
+        #         classname=getattr(module, websitename)
+        #         module_instance=classname()
+        #         response["web"][websitename]=module_instance.edit_post(
+        #             datareq, {})
+
+        # if action == 'test_login':
+        #     response["action"]=action
+        #     allweb=datarequest['web']
+        #     for datareq in allweb:
+        #         websitename=datareq['ds_name']
+        #         # if file not exists websitename.py to next
+        #         if os.path.isfile('webmodule/'+websitename+'.py') == False:
+        #             response["web"][websitename]["success"]="false"
+        #             response["web"][websitename]["detail"]="not found website class"
+        #             continue
+        #         module=importlib.import_module('webmodule.'+websitename)
+        #         classname=getattr(module, websitename)
+        #         module_instance=classname()
+        #         response["web"][websitename]=module_instance.test_login(
+        #             datareq)
 
         return response
-    
+
     def coreworker_test(self, postdatajson):
         # json decode
         try:
