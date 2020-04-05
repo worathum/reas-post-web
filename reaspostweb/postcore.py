@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import shutil
+import datetime
 import importlib
 import sys
 import json
@@ -74,15 +76,16 @@ class postcore():
         except KeyError:
             allimages = {}
         datarequest['post_images'] = []
-        imgname = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        dirtmp = str(os.getpid())+'_'+str(datetime.datetime.utcnow().strftime("%Y%m%d%H:%M:%S"))
+        os.mkdir("imgtmp/"+dirtmp)
         imgcount = 1
         for imgurl in allimages:
             itype = imgurl.split("/")[-1].split('.')[1]
             res = httprequestObj.http_get(imgurl, verify=False)
             if res.status_code == 200:
-                with open("imgtmp/"+imgname+str(imgcount)+"."+itype, 'wb') as f:
+                with open("imgtmp/"+dirtmp+"/"+str(imgcount)+"."+itype, 'wb') as f:
                     f.write(res.content)
-                datarequest['post_images'].append(imgname+str(imgcount)+"."+itype)
+                datarequest['post_images'].append("imgtmp/"+dirtmp+"/"+str(imgcount)+"."+itype)
                 imgcount = imgcount+1
 
         # define all website list
@@ -103,23 +106,22 @@ class postcore():
                 response["web"][websitename]["success"] = "false"
                 response["web"][websitename]["detail"] = "not found website class"
                 continue
-            # try: removed for debug
-            module = importlib.import_module('webmodule.'+websitename)
-            classname = getattr(module, websitename)
-            module_instance = classname()
-            webdata = webitem
-            webdata.update(datarequest)
-            response["web"][websitename] = getattr(module_instance, action)(webdata)
-            # except BaseException: removed for debug
-            #     response["web"][websitename] = {}
-            #     response["web"][websitename]["success"] = "false"
-            #     response["web"][websitename]["detail"] = "Import errors: "
-            #     continue
+            try:  # removed for debug
+                module = importlib.import_module('webmodule.'+websitename)
+                classname = getattr(module, websitename)
+                module_instance = classname()
+                webdata = webitem
+                webdata.update(datarequest)
+                response["web"][websitename] = getattr(module_instance, action)(webdata)
+            except BaseException:  # removed for debug
+                response["web"][websitename] = {}
+                response["web"][websitename]["success"] = "false"
+                response["web"][websitename]["detail"] = "Import errors: "
+                continue
 
-        # remove image tmp
-        for image in datarequest['post_images']:
-            if os.path.isfile('imgtmp/'+image) == True:
-                os.remove(os.path.abspath('imgtmp/'+image))
+                # remove image tmp
+        if os.path.isdir('imgtmp/'+dirtmp) == True:
+            shutil.rmtree(os.path.abspath('imgtmp/'+dirtmp))
 
         # if action == 'register_user':
         #     response["action"]=action
