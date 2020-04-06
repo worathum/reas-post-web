@@ -688,7 +688,7 @@ class ddproperty():
             if int(datahandled['bed_room']) > 0:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
                 if int(datahandled['bed_room']) >= 10:
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('10 + ห้องนอน')).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
                 else:
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room'])+' ห้องนอน')).click()
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
