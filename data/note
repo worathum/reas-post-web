@@ -1,3 +1,5 @@
+testswitchbranch
+
 docker exec -it docker-python3 bash -c "cd /app; python -W "ignore" manage.py runserver 0.0.0.0:8000 --insecure;"
 docker exec -it anticaptchaapi bash -c "cd /app; python -W "ignore" manage.py runserver 0.0.0.0:8000 --insecure;"
 
