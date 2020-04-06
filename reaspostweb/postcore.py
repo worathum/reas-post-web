@@ -116,7 +116,7 @@ class postcore():
             except BaseException:  # removed for debug
                 response["web"][websitename] = {}
                 response["web"][websitename]["success"] = "false"
-                response["web"][websitename]["detail"] = "Import errors: "
+                response["web"][websitename]["detail"] = "test commit Import errors: "
             continue
 
             # remove image tmp
