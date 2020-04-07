@@ -177,7 +177,7 @@ class ddproperty():
                 agent_id = re.search(r'jwt_prod_(\d+)', data).group(1)
             else:
                 success = "false"
-                detail = "cannot login"
+                detail = "cannot login "+data
         #
         # end process
 
