@@ -33,7 +33,7 @@ class ddproperty():
 
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
-        self.debug = 1
+        self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.handled = False
@@ -281,25 +281,25 @@ class ddproperty():
             datahandled['property_type'] = postdata['property_type']
         except KeyError:
             datahandled['property_type'] = "CONDO"
-        if datahandled['property_type'] == 2 or datahandled['property_type'] == "บ้านเดี่ยว":
+        if datahandled['property_type'] == '2' or datahandled['property_type'] == "บ้านเดี่ยว":
             datahandled['property_type'] = "BUNG"
-        elif datahandled['property_type'] == 3 or datahandled['property_type'] == "บ้านแฝด":
+        elif datahandled['property_type'] == '3' or datahandled['property_type'] == "บ้านแฝด":
             datahandled['property_type'] = "BUNG"
-        elif datahandled['property_type'] == 4 or datahandled['property_type'] == "ทาวน์เฮ้าส์":
+        elif datahandled['property_type'] == '4' or datahandled['property_type'] == "ทาวน์เฮ้าส์":
             datahandled['property_type'] = "TOWN"
-        elif datahandled['property_type'] == 5 or datahandled['property_type'] == "ตึกแถว-อาคารพาณิชย์":
+        elif datahandled['property_type'] == '5' or datahandled['property_type'] == "ตึกแถว-อาคารพาณิชย์":
             datahandled['property_type'] = "SHOP"
-        elif datahandled['property_type'] == 6 or datahandled['property_type'] == "ที่ดิน":
+        elif datahandled['property_type'] == '6' or datahandled['property_type'] == "ที่ดิน":
             datahandled['property_type'] = "LAND"
-        elif datahandled['property_type'] == 7 or datahandled['property_type'] == "อพาร์ทเมนท์":
+        elif datahandled['property_type'] == '7' or datahandled['property_type'] == "อพาร์ทเมนท์":
             datahandled['property_type'] = "APT"
-        elif datahandled['property_type'] == 8 or datahandled['property_type'] == "โรงแรม":
+        elif datahandled['property_type'] == '8' or datahandled['property_type'] == "โรงแรม":
             datahandled['property_type'] = "BIZ"
-        elif datahandled['property_type'] == 9 or datahandled['property_type'] == "ออฟฟิศสำนักงาน":
+        elif datahandled['property_type'] == '9' or datahandled['property_type'] == "ออฟฟิศสำนักงาน":
             datahandled['property_type'] = "OFF"
-        elif datahandled['property_type'] == 10 or datahandled['property_type'] == "โกดัง":
+        elif datahandled['property_type'] == '10' or datahandled['property_type'] == "โกดัง":
             datahandled['property_type'] = "WAR"
-        elif datahandled['property_type'] == 25 or datahandled['property_type'] == "โรงงาน":
+        elif datahandled['property_type'] == '25' or datahandled['property_type'] == "โรงงาน":
             datahandled['property_type'] = "WAR"
         else:
             datahandled['property_type'] = "CONDO"
@@ -347,7 +347,7 @@ class ddproperty():
         try:
             datahandled['floorarea_sqm'] = int(postdata['floorarea_sqm'])
         except KeyError:
-            datahandled['floorarea_sqm'] = 1
+            datahandled['floorarea_sqm'] = 0
 
         try:
             datahandled['geo_latitude'] = postdata['geo_latitude']
@@ -488,6 +488,21 @@ class ddproperty():
         except KeyError:
             datahandled['log_id'] = ''
 
+        try:
+            datahandled['land_size_rai'] = float(postdata["land_size_rai"])
+        except KeyError:
+            datahandled['land_size_rai'] = 0
+
+        try:
+            datahandled['land_size_ngan'] = float(postdata["land_size_ngan"])
+        except KeyError:
+            datahandled['land_size_ngan'] = 0
+
+        try:
+            datahandled['land_size_wa'] = float(postdata["land_size_wa"])
+        except KeyError:
+            datahandled['land_size_wa'] = 0
+
         self.handled = True
 
         return datahandled
@@ -557,6 +572,9 @@ class ddproperty():
                     elif datahandled['property_type'] == "WAR":
                         linktxt = 'เชิงพาณิชย์'
                         cssselect = 'WAR'
+                    elif datahandled['property_type'] == "BIZ":
+                        linktxt = 'เชิงพาณิชย์'
+                        cssselect = 'BIZ'
                     else:  # CONDO
                         linktxt = 'คอนโด'
                         cssselect = 'CONDO'
@@ -621,6 +639,9 @@ class ddproperty():
                 elif datahandled['property_type'] == "WAR":
                     linktxt = 'เชิงพาณิชย์'
                     cssselect = 'WAR'
+                elif datahandled['property_type'] == "BIZ":
+                    linktxt = 'เชิงพาณิชย์'
+                    cssselect = 'BIZ'
                 else:  # CONDO
                     linktxt = 'คอนโด'
                     cssselect = 'CONDO'
@@ -661,19 +682,29 @@ class ddproperty():
         # note ถ้าหากเป็นโครงการที่มีอยู่แล้ว จะมีจำนวนชั้นของตึกตามที่เว็บกำหนดมา ถ้า input floor total มามากกว่าจำนวนที่ web provide ให้ ก็จะใส่ไม่ได้
 
         # validate
-        if isinstance(datahandled['floorarea_sqm'], int) == False or datahandled['floorarea_sqm'] == 1:
+        # CONDO,BUNG,TOWN,APT,BIZ,OFF,SHOP,WAR require พื้นที่ใช้สอย หัวข้อประกาศ (ไทย) รายละเอียดเกี่ยวกับประกาศ (ไทย)
+        # LAND require ขนาดที่ดิน หัวข้อประกาศ (ไทย) รายละเอียดเกี่ยวกับประกาศ (ไทย)
+        if datahandled['post_title_th'] == '' or datahandled['post_description_th'] == '':
             success = 'false'
-            detail = 'floor area sqm allow integer type only'
-        if datahandled['post_title_th'] == '':
-            success = 'false'
-            detail = 'post title th is required'
-        if datahandled['post_description_th'] == '':
-            success = 'false'
-            detail = 'post description th is required'
+            detail = 'post title th is and post description th required'
+        if datahandled['property_type'] == 'CONDO' or datahandled['property_type'] == 'BUNG' or datahandled['property_type'] == 'TOWN' or datahandled['property_type'] == 'APT' or datahandled['property_type'] == 'OFF' or datahandled['property_type'] == 'SHOP' or datahandled['property_type'] == 'BIZ':
+            if isinstance(datahandled['floorarea_sqm'], int) == False or datahandled['floorarea_sqm'] == 0:
+                success = 'false'
+                detail = 'floor area sqm is require and allow integer type only'
+        if datahandled['property_type'] == 'LAND':
+            if datahandled['land_size_rai'] == 0 and datahandled['land_size_ngan'] == 0 and datahandled['land_size_wa'] == 0:
+                success = 'false'
+                detail = 'property type land is require area data'
+            # <=13 ตร.วา จะ error
+            if datahandled['land_size_rai'] == 0 and datahandled['land_size_ngan'] == 0 and datahandled['land_size_wa'] <= 13:
+                success = 'false'
+                detail = 'property type land is require minimum >= 13 sqm'
 
         if success == 'true':
             # self.chrome.save_screenshot("debug_response/newp4.png")
             # WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][id='listing-type-"+datahandled['listing_type']+"']")).find_element_by_tag_name('span').click()
+
+            # type
             if datahandled['listing_type'] == "SALE":
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[1]/label/span')).click()
             elif datahandled['listing_type'] == "RENT":
@@ -681,62 +712,115 @@ class ddproperty():
             else:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[3]/label/span')).click()
             # self.chrome.save_screenshot("debug_response/newp5.png")
+
+            # price
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
             except:
                 pass
-            if int(datahandled['bed_room']) > 0:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
-                if int(datahandled['bed_room']) >= 10:
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
+
+            # bed room
+            try:
+                if int(datahandled['bed_room']) > 0:
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
+                    if int(datahandled['bed_room']) >= 10:
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
+                    else:
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room'])+' ห้องนอน')).click()
+            except:
+                pass
+
+            # bath room
+            try:
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
+                if int(datahandled['bath_room']) == 0:
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('ไม่มีห้องน้ำ')).click()
+                elif int(datahandled['bath_room']) >= 1 and int(datahandled['bath_room']) < 9:
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bath_room'])+' ห้องน้ำ')).click()
                 else:
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room'])+' ห้องนอน')).click()
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
-            if int(datahandled['bath_room']) == 0:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('ไม่มีห้องน้ำ')).click()
-            elif int(datahandled['bath_room']) >= 1 and int(datahandled['bath_room']) < 9:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bath_room'])+' ห้องน้ำ')).click()
-            else:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
-            if datahandled['action'] == 'edit_post':
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
+            except:
+                pass
+
+            # floor area sqm
+            try:
+                if datahandled['action'] == 'edit_post':
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
+            except:
+                pass
+
+            # total floor
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
             except:
                 pass
+
+            # floor position
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
             except:
                 pass
+
+            # title thai
             if datahandled['action'] == 'edit_post':
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.DELETE)
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(datahandled['post_title_th'])
+
+            # title en
             if datahandled['action'] == 'edit_post':
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.CONTROL + "a")   # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.DELETE)   # clear for edit action
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(datahandled['post_title_en'])
+
+            # desc thai
             if datahandled['action'] == 'edit_post':
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL + "a")   # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.DELETE)  # clear for edit action
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
+
+            # desc en
             if datahandled['action'] == 'edit_post':
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.DELETE)  # clear for edit action
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
+
+            # หันหน้าทางทิศ
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-facing-type")).click()
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['direction_type'])).click()
             except:
                 pass
+
+            # area
+            try:
+                if datahandled['action'] == 'edit_post':
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.DELETE)  # clear for edit action
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.DELETE)  # clear for edit action
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.DELETE)  # clear for edit action
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(str(datahandled['land_size_rai']))
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(str(datahandled['land_size_ngan']))
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(str(datahandled['land_size_wa']))
+            except:
+                pass
+
+            # account type
             matchObj = re.search(r'รายละเอียดตัวแทน', self.chrome.page_source)
             if matchObj:
-                account_type = 'coperate'
+                account_type = 'corporate'
                 try:
+                    if datahandled['action'] == 'edit_post':
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
                     # TODO email ตัวแทน ระบุไม่ได้เพราะไม่เห็นของจริง จะต้อง select by xpath เพราะเป็น textarea ไม่มี id
@@ -745,9 +829,11 @@ class ddproperty():
             time.sleep(0.5)
             self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(0.5)
-            # self.chrome.save_screenshot("debug_response/newp9.png")
+            #self.chrome.save_screenshot("debug_response/newp12.png")
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             time.sleep(1)
+
+            # image
             if datahandled['action'] == 'edit_post':
                 # soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
                 # imglis = soup.find('ul', {'class': 'c-upload-file-grid'}).findAll('li')
