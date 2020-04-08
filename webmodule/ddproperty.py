@@ -33,7 +33,7 @@ class ddproperty():
 
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
-        self.debug = 1
+        self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.handled = False
