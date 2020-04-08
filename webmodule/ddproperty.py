@@ -33,7 +33,7 @@ class ddproperty():
 
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
-        self.debug = 0
+        self.debug = 1
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.handled = False
@@ -663,7 +663,7 @@ class ddproperty():
         # validate
         if isinstance(datahandled['floorarea_sqm'], int) == False or datahandled['floorarea_sqm'] == 1:
             success = 'false'
-            detail = 'floor area allow integer type only'
+            detail = 'floor area sqm allow integer type only'
         if datahandled['post_title_th'] == '':
             success = 'false'
             detail = 'post title th is required'
