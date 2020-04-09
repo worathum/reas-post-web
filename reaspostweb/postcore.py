@@ -48,7 +48,7 @@ class postcore():
 
         # json decode
         try:
-            datarequest = json.loads(postdatajson)
+            datarequest = json.loads(postdatajson.decode('utf-8'))
         except ValueError as e:
             return {
                 "success": "false",
@@ -80,13 +80,14 @@ class postcore():
         os.mkdir("imgtmp/"+dirtmp)
         imgcount = 1
         for imgurl in allimages:
-            itype = imgurl.split("/")[-1].split('.')[1]
             res = httprequestObj.http_get(imgurl, verify=False)
             if res.status_code == 200:
-                with open("imgtmp/"+dirtmp+"/"+str(imgcount)+"."+itype, 'wb') as f:
-                    f.write(res.content)
-                datarequest['post_images'].append("imgtmp/"+dirtmp+"/"+str(imgcount)+"."+itype)
-                imgcount = imgcount+1
+                if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png':
+                    extension = res.headers['Content-Type'].split("/")[-1]
+                    with open("imgtmp/"+dirtmp+"/"+str(imgcount)+"."+extension, 'wb') as f:
+                        f.write(res.content)
+                    datarequest['post_images'].append("imgtmp/"+dirtmp+"/"+str(imgcount)+"."+extension)
+                    imgcount = imgcount+1
 
         # define all website list
         weblists = datarequest['web']
@@ -106,14 +107,14 @@ class postcore():
                 response["web"][websitename]["success"] = "false"
                 response["web"][websitename]["detail"] = "not found website class"
                 continue
-            #try:  # removed for debug
+            # try:  # removed for debug
             module = importlib.import_module('webmodule.'+websitename)
             classname = getattr(module, websitename)
             module_instance = classname()
             webdata = webitem
             webdata.update(datarequest)
             response["web"][websitename] = getattr(module_instance, action)(webdata)
-            #except BaseException:  # removed for debug
+            # except BaseException:  # removed for debug
             #    response["web"][websitename] = {}
             #    response["web"][websitename]["success"] = "false"
             #    response["web"][websitename]["detail"] = "test commit Import errors: "
