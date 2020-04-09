@@ -489,19 +489,24 @@ class ddproperty():
             datahandled['log_id'] = ''
 
         try:
-            datahandled['land_size_rai'] = float(postdata["land_size_rai"])
+            datahandled['land_size_rai'] = str(postdata["land_size_rai"])
         except KeyError:
-            datahandled['land_size_rai'] = 0
+            datahandled['land_size_rai'] = '0'
 
         try:
-            datahandled['land_size_ngan'] = float(postdata["land_size_ngan"])
+            datahandled['land_size_ngan'] = str(postdata["land_size_ngan"])
         except KeyError:
-            datahandled['land_size_ngan'] = 0
+            datahandled['land_size_ngan'] = '0'
 
         try:
-            datahandled['land_size_wa'] = float(postdata["land_size_wa"])
+            datahandled['land_size_wa'] = str(postdata["land_size_wa"])
         except KeyError:
-            datahandled['land_size_wa'] = 0
+            datahandled['land_size_wa'] = '0'
+
+        try:
+            datahandled['addr_road'] = postdata["addr_road"]
+        except KeyError:
+            datahandled['addr_road'] = ''
 
         self.handled = True
 
@@ -549,6 +554,8 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("property-new-link")).click()
                     time.sleep(0.1)
                     # self.chrome.save_screenshot("debug_response/newp1.png")
+
+                    # listing type
                     linktxt = ''
                     cssselect = ''
                     if datahandled['property_type'] == "BUNG":
@@ -583,9 +590,10 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
                     time.sleep(0.1)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='"+cssselect+"']")).click()
-                    time.sleep(0.1)
+                    time.sleep(0.5)
                     # self.chrome.save_screenshot("debug_response/newp3.png")
 
+                    # province district subdistrict
                     try:
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-region")).click()
                         time.sleep(0.1)
@@ -598,13 +606,31 @@ class ddproperty():
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-area")).click()
                         time.sleep(0.1)
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
-                        time.sleep(0.5)
-                        # self.chrome.save_screenshot("debug_response/newp3.png")
+                        time.sleep(0.1)
+                        # self.chrome.save_screenshot("debug_response/newp33.png")
                     except Exception as e:
                         success = 'false'
                         detail = 'for a new project name, province , district , subdistrict error'
 
+                    # road
+                    try:
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'])
+                    except:
+                        pass
+                    # self.chrome.save_screenshot("debug_response/newp33.png")
+
+                    # longitude ,latitude
+                    # TODO
+                    # datatest ewoiYWN0aW9uIjogImNyZWF0ZV9wb3N0IiwKInRpbWVvdXQiOiAiNSIsCiJwb3N0X2ltZ191cmxfbGlzdHMiOiBbCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk1MV84MzYzNnBpYzcuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTUyXzgzNjM2cGljOC5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDVfODM2MzZwaWMxLmpwZyIsCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk0Nl84MzYzNnBpYzIuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTQ3XzgzNjM2cGljMy5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDhfODM2MzZwaWM0LmpwZyIsCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk0OV84MzYzNnBpYzUuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTUwXzgzNjM2cGljNi5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY3LzIxOTk5NjlfODM2MzVwaWMxLmpwZyIsCiJodHRwczovL3ppZ25uZXQuc2dwMS5kaWdpdGFsb2NlYW5zcGFjZXMuY29tL2xpdmluZ2pvaW4vY2xhc3NpZmllZC8xODk2ODkvYmlnLzIxMDEyMDIzNTIxNTUwMDk5MS5qcGciLAoiaHR0cHM6Ly96aWdubmV0LnNncDEuZGlnaXRhbG9jZWFuc3BhY2VzLmNvbS9saXZpbmdqb2luL2NsYXNzaWZpZWQvMTg5Njg5L290aGVyL2JpZy8yMTAxMjAyMzUyMjAzMTc5MTguanBnIgpdLAoiZ2VvX2xhdGl0dWRlIjogIjEzLjc4Njg2MiIsCiJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLAoicHJvcGVydHlfaWQiIDogImNodTAwMSIsCiJwb3N0X3RpdGxlX3RoIjogIuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lCIsCiJwb3N0X2Rlc2NyaXB0aW9uX3RoIjogIuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lOC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lFxyXG7guKPguLLguKLguKXguLDguYDguK3guLXguKLguJRcclxu4LiX4Li14LmI4LiU4Li04LiZ4LiC4LiZ4Liy4LiUNuC5hOC4o+C5iFxyXG7guKvguJnguYnguLLguIHguKfguYnguLLguIcgMzAg4LmA4Lih4LiV4LijXHJcbuC4quC4luC4suC4meC4l+C4teC5iOC5g+C4geC4peC5ieC5gOC4hOC4teC4ouC4h1xyXG7guJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYxcclxu4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNVxyXG5cclxu4LmD4Lir4LmJ4LmA4LiK4LmI4LiyIDEwMCwwMDAg4Lia4Liy4LiXXHJcblxyXG7guKrguJnguYPguIjguJXguLTguJTguJXguYjguK0g4LiK4LmI4Lit4LiX4Li04Lie4Lii4LmMIDA5MTgyOTM4NCIsCiJwb3N0X3RpdGxlX2VuIjogIkxhbmQgZm9yIHJlbnQgYmFuZ2tsb3lzYWlub2kgNiByYWkgc3VpdGFibGUgZm9yIGRldmVsb3BpbmciLAoicG9zdF9kZXNjcmlwdGlvbl9lbiI6ICJMYW5kIGZvciByZW50IGJhbmdrbG95c2Fpbm9pIDYgcmFpIHN1aXRhIGJsZSBmb3IgZGV2ZWxvcGluZyIsCiJwcmljZV9iYWh0IjogIjEwMDAwMCIsCiJsaXN0aW5nX3R5cGUiOiAi4LmD4Lir4LmJ4LmA4LiK4LmI4LiyIiwKInByb3BlcnR5X3R5cGUiOiAiNiIsCiJwcm9taW5lbnRfcG9pbnQgIiA6ICLguKvguJnguYnguLLguIHguKfguYnguLLguIfguKHguLLguIEg4LmD4Lir4LmJ4LmA4LiK4LmI4Liy4LiW4Li54LiB4Liq4Li44LiUIiwKImRpcmVjdGlvbl90eXBlIiA6ICIxMSIsCiJhZGRyX3Byb3ZpbmNlIjogIuC4meC4meC4l+C4muC4uOC4o+C4tSIsCiJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4oeC4t+C4reC4h+C4meC4meC4l+C4muC4uOC4o+C4tSIsCiJhZGRyX3N1Yl9kaXN0cmljdCI6ICLguJrguLLguIfguIHguKPguYjguLLguIciLAoiYWRkcl9yb2FkIjogIuC4muC4suC4h+C4geC4o+C4p+C4oi3guYTguJfguKPguJnguYnguK3guKIiLAoiYWRkcl9zb2kiOiAi4LiL4Lit4Lii4Lia4Liy4LiH4LiB4Lij4Lin4LiiLeC5hOC4l+C4o+C4meC5ieC4reC4oiAzNCIsCiJhZGRyX25lYXJfYnkiOiAi4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNVxyXG7guJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYwiLAoibGFuZF9zaXplX3JhaSI6ICI2LjAiLAoibGFuZF9zaXplX25nYW4iOiAiMi4yIiwKImxhbmRfc2l6ZV93YSI6ICIxMC4wIiwKIm5hbWUiOiAi4LiK4Li5IiwKIm1vYmlsZSI6ICIwOTkyODk5OTk5IiwKImVtYWlsIjogImNob3IuY29tQGdtYWlsLmNvbSIsCiJsaW5lIjogIjA5OTI4OTk5OTkiLAoicHJvamVjdF9uYW1lIjogIuC4l+C4teC5iOC4lOC4tOC4mSDguJrguLLguIfguIHguKPguKfguKLguYTguJfguKIt4LiZ4LmJ4Lit4LiiIiwKImZsb29yX2FyZWEiOiAiMSIsCiJ3ZWIiOiBbCnsKImRzX25hbWUiOiAiZGRwcm9wZXJ0eSIsCiJkc19pZCI6ICIyIiwKInVzZXIiOiAia2xhLmFybnV0QGhvdG1haWwuY29tIiwKInBhc3MiOiAidmtJeTliIiwKImFjY291bnRfdHlwZSI6ICJub3JtYWwiCn0KXQp9
+                    try:
+                        js = 'guruApp.createListing.formData.map.lat = '+datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = '+datahandled['geo_longitude']+';'
+                        self.chrome.execute_script(js)
+                    except:
+                        pass
+
                     if (success == 'true'):
+                        self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
+                        time.sleep(0.5)
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name('step-next')).click()
                         time.sleep(1)
                         success, detail, post_id, account_type = self.inputpostattr(datahandled)
@@ -692,11 +718,11 @@ class ddproperty():
                 success = 'false'
                 detail = 'floor area sqm is require and allow integer type only'
         if datahandled['property_type'] == 'LAND':
-            if datahandled['land_size_rai'] == 0 and datahandled['land_size_ngan'] == 0 and datahandled['land_size_wa'] == 0:
+            if datahandled['land_size_rai'] == '0' and datahandled['land_size_ngan'] == '0' and datahandled['land_size_wa'] == '0':
                 success = 'false'
                 detail = 'property type land is require area data'
             # <=13 ตร.วา จะ error
-            if datahandled['land_size_rai'] == 0 and datahandled['land_size_ngan'] == 0 and datahandled['land_size_wa'] <= 13:
+            if datahandled['land_size_rai'] == '0' and datahandled['land_size_ngan'] == '0' and int(datahandled['land_size_wa']) <= 13:
                 success = 'false'
                 detail = 'property type land is require minimum >= 13 sqm'
 
@@ -797,6 +823,7 @@ class ddproperty():
                 pass
 
             # area
+            # จะ auto calculate ให้ เช่น input เป็น rai 6.5 ngaan 5.4 sqw 4.3 จะคำนวณใหม่ให้เป็น 7ไร่ 3งาน 44.3ตรว
             try:
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.CONTROL + "a")  # clear for edit action
@@ -805,9 +832,9 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.DELETE)  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.DELETE)  # clear for edit action
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(str(datahandled['land_size_rai']))
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(str(datahandled['land_size_ngan']))
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(str(datahandled['land_size_wa']))
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(datahandled['land_size_rai'])
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(datahandled['land_size_ngan'])
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(datahandled['land_size_wa'])
             except:
                 pass
 
@@ -821,15 +848,17 @@ class ddproperty():
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.CONTROL + "a")
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
-                    # TODO email ตัวแทน ระบุไม่ได้เพราะไม่เห็นของจริง จะต้อง select by xpath เพราะเป็น textarea ไม่มี id
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
                 except expression as identifier:
                     pass
             time.sleep(0.5)
             self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(0.5)
-            #self.chrome.save_screenshot("debug_response/newp12.png")
+            # self.chrome.save_screenshot("debug_response/newp12.png")
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             time.sleep(1)
 
@@ -855,7 +884,9 @@ class ddproperty():
                         time.sleep(1.5)
 
             for img in datahandled['post_images']:
+                time.sleep(1)
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
+                time.sleep(1)
                 self.chrome.refresh()
 
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
