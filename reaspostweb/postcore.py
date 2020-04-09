@@ -48,7 +48,7 @@ class postcore():
 
         # json decode
         try:
-            datarequest = json.loads(postdatajson)
+            datarequest = json.loads(postdatajson.decode('utf-8'))
         except ValueError as e:
             return {
                 "success": "false",
