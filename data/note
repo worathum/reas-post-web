@@ -20,27 +20,29 @@ pip uninstall ratelimit
 pip uninstall django-ratelimit
 pip install django-ratelimit
 
+Local dev environment
+pip3 install django
+pip3 uninstall ratelimit; 
+pip3 uninstall django-ratelimit; 
+pip3 install django-ratelimit; 
+pip3 install requests; 
+pip3 install bs4; 
+pip3 install python3-anticaptcha; 
+pip3 install requests_toolbelt; 
+pip3 install selenium; 
+cd /bin/
+sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
+sudo tar -xvf geckodriver-v0.26.0-linux64.tar.gz
+sudo rm -f geckodriver-v0.26.0-linux64.tar.gz
+sudo chmod +x geckodriver
+cd /home/arnut/workspace/REASPOSTWEB/
+python3 -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure;
 
-docker exec -it docker-python3 bash -c "pip uninstall ratelimit; pip uninstall django-ratelimit; pip install django-ratelimit; pip install requests; pip install bs4; pip install python3-anticaptcha "
-docker exec -it docker-python3 bash -c "cd /app; python -W "ignore" manage.py runserver 0.0.0.0:8000 --insecure;"
 
-docker exec -it docker-python3 bash -c "
-pip uninstall ratelimit; 
-pip uninstall django-ratelimit; 
-pip install django-ratelimit; 
-pip install requests; 
-pip install bs4; 
-pip install python3-anticaptcha; 
-pip install requests_toolbelt; 
-pip install selenium; 
-apt-get install libnss3 libgconf-2-4; 
-wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -; 
-echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' tee /etc/apt/sources.list.d/google-chrome.list; 
-apt-get update; 
-yes | apt-get install google-chrome-stable; 
-cd /bin; 
-wget https://chromedriver.storage.googleapis.com/80.0.3987.106/chromedriver_linux64.zip; 
-apt-get install unzip; 
+
+
+
+
 unzip chromedriver_linux64.zip; 
 chmod +x chromedriver; 
 cd /app; 

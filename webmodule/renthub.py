@@ -20,6 +20,8 @@ class renthub():
 
     def __init__(self):
 
+        self.websitename = 'renthub'
+
         try:
             import configs
         except ImportError:
@@ -58,6 +60,7 @@ class renthub():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            "websitename": self.websitename,
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
@@ -116,6 +119,7 @@ class renthub():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            "websitename": self.websitename,
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
@@ -590,10 +594,6 @@ class renthub():
         return True
 
     def print_debug_data(self, data):
-        if(self.debugdata == 1):
-            print(data)
-        return True
-
         if(self.debugdata == 1):
             print(data)
         return True
