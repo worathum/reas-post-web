@@ -848,12 +848,12 @@ class ddproperty():
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.CONTROL + "a")
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div[2]/div[5]/div[1]/div/div/div/textarea')).send_keys(Keys.CONTROL + "a")
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div[2]/div[5]/div[1]/div/div/div/textarea')).send_keys(Keys.DELETE)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
-                except expression as identifier:
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div[2]/div[5]/div[1]/div/div/div/textarea')).send_keys(datahandled['email'])
+                except:
                     pass
             time.sleep(0.5)
             self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
