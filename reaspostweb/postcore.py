@@ -107,18 +107,18 @@ class postcore():
                 response["web"][websitename]["success"] = "false"
                 response["web"][websitename]["detail"] = "not found website class"
                 continue
-            # try:  # removed for debug
-            module = importlib.import_module('webmodule.'+websitename)
-            classname = getattr(module, websitename)
-            module_instance = classname()
-            webdata = webitem
-            webdata.update(datarequest)
-            response["web"][websitename] = getattr(module_instance, action)(webdata)
-            # except BaseException:  # removed for debug
-            #    response["web"][websitename] = {}
-            #    response["web"][websitename]["success"] = "false"
-            #    response["web"][websitename]["detail"] = "test commit Import errors: "
-            continue
+            try:  # removed for debug
+                module = importlib.import_module('webmodule.'+websitename)
+                classname = getattr(module, websitename)
+                module_instance = classname()
+                webdata = webitem
+                webdata.update(datarequest)
+                response["web"][websitename] = getattr(module_instance, action)(webdata)
+            except BaseException:  # removed for debug
+                response["web"][websitename] = {}
+                response["web"][websitename]["success"] = "false"
+                response["web"][websitename]["detail"] = "test commit Import errors: "
+                continue
 
             # remove image tmp
         if os.path.isdir('imgtmp/'+dirtmp) == True:
