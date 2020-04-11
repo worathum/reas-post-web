@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
@@ -8,13 +9,16 @@ import json
 import datetime
 import sys
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
 import time
 from urllib.parse import urlsplit
 import string
 import random
+
+#logging.basicConfig(level=logging.DEBUG, filename='log/app.log', filemode='a', format='%(process)d-%(asctime)s-%(levelname)s-%(message)s', datefmt='%d-%b-%y %H:%M:%S')
 
 
 httprequestObj = lib_httprequest()
@@ -25,6 +29,8 @@ class ddproperty():
     name = 'ddproperty'
 
     def __init__(self):
+
+        self.websitename = 'ddproperty'
 
         try:
             import configs
@@ -38,15 +44,21 @@ class ddproperty():
         self.parser = 'html.parser'
         self.handled = False
 
-        options = Options()
-        options.add_argument("--headless")  # Runs Chrome in headless mode.
-        options.add_argument('--no-sandbox')  # Bypass OS security model
-        options.add_argument('start-maximized')
-        options.add_argument('disable-infobars')
-        options.add_argument("--disable-extensions")
-        options.add_argument("window-size=1024,768")
-        chromedriver_binary = "/bin/chromedriver"
-        self.chrome = webdriver.Chrome(chromedriver_binary, options=options)
+        # options = Options()
+        # options.add_argument("--headless")
+        # options.add_argument('--no-sandbox')
+        # options.add_argument('start-maximized')
+        # options.add_argument('disable-infobars')
+        # options.add_argument("--disable-extensions")
+        # options.add_argument("window-size=1024,768")
+        # firefox_driver_binary = "/bin/geckodriver"
+        # self.firefox = webdriver.Firefox(executable_path=firefox_driver_binary, options=options)
+
+        # TODO
+        # ref https://developer.mozilla.org/en-US/docs/Web/WebDriver
+        # รอจนกว่าจะมี element h3>a ขึ้นมา ค่อยทำงานต่อ
+        # WebDriverWait(self.firefox, 5).until(presence_of_element_located((By.CSS_SELECTOR, "h3>a")))
+        # results = driver.find_elements_by_css_selector("h3>a")
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -197,33 +209,33 @@ class ddproperty():
         agent_id = ""
 
         # open login page
-        self.chrome.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
+        self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
 
         # input email and enter
-        emailtxt = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("emailInput"))
+        emailtxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("emailInput"))
         emailtxt.send_keys(postdata['user'])
-        nextbttn = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("next"))
+        nextbttn = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("next"))
         nextbttn.click()
         time.sleep(1)
 
         # input password and enter
-        passtxt = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("inputPassword"))
+        passtxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("inputPassword"))
         passtxt.send_keys(postdata['pass'])
         passtxt.send_keys(Keys.ENTER)
         time.sleep(1)
         # f = open("debug_response/loginpassdd2.html", "wb")
-        # f.write(self.chrome.page_source.encode('utf-8').strip())
+        # f.write(self.firefox.page_source.encode('utf-8').strip())
 
         # find text
-        soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
+        soup = BeautifulSoup(self.firefox.page_source, self.parser, from_encoding='utf-8')
         titletxt = soup.find('title').text
         matchObj = re.search(r'Dashboard', titletxt)
         if not matchObj:
             success = "false"
             detail = 'cannot login'
         if success == "true":
-            # agent_id = re.search(r'optimize_agent_id = (\d+);', self.chrome.page_source).group(1)
-            agent_id = re.search(r'{"user":{"id":(\d+),', self.chrome.page_source).group(1)
+            # agent_id = re.search(r'optimize_agent_id = (\d+);', self.firefox.page_source).group(1)
+            agent_id = re.search(r'{"user":{"id":(\d+),', self.firefox.page_source).group(1)
 
         #
         # end process
@@ -253,6 +265,7 @@ class ddproperty():
         response['usage_time'] = str(time_usage)
         response['start_time'] = str(time_start)
         response['end_time'] = str(time_end)
+        response['websitename'] = self.websitename
 
         return response
 
@@ -533,27 +546,27 @@ class ddproperty():
             if datahandled['web_project_name'] != '':
                 projectname = datahandled['web_project_name']
 
-            self.chrome.get('https://agentnet.ddproperty.com/create-listing/location')
+            self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
             time.sleep(1)
-            # self.chrome.save_screenshot("debug_response/location.png")
-            projectnametxt = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("propertySearch"))
+            # self.firefox.save_screenshot("debug_response/location.png")
+            projectnametxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("propertySearch"))
             projectnametxt.send_keys(projectname)
             projectnametxt.send_keys(Keys.ENTER)
             time.sleep(1)
-            # self.chrome.save_screenshot("debug_response/location2.png")
+            # self.firefox.save_screenshot("debug_response/location2.png")
             # f = open("debug_response/ddpost.html", "wb")
-            # f.write(self.chrome.page_source.encode('utf-8').strip())
+            # f.write(self.firefox.page_source.encode('utf-8').strip())
 
             # case no result
-            matchObj = re.search(r'ol class="no-match"', self.chrome.page_source)
+            matchObj = re.search(r'ol class="no-match"', self.firefox.page_source)
             if matchObj:
                 if(datahandled['addr_province'] == '' or datahandled['addr_district'] == '' or datahandled['addr_sub_district'] == ''):
                     success = 'false'
                     detail = 'for a new project name, ddproperty must require province , district and sub_district'
                 if success == 'true':
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("property-new-link")).click()
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("property-new-link")).click()
                     time.sleep(0.1)
-                    # self.chrome.save_screenshot("debug_response/newp1.png")
+                    # self.firefox.save_screenshot("debug_response/newp1.png")
 
                     # listing type
                     linktxt = ''
@@ -585,63 +598,63 @@ class ddproperty():
                     else:  # CONDO
                         linktxt = 'คอนโด'
                         cssselect = 'CONDO'
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
                     time.sleep(0.1)
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
                     time.sleep(0.1)
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='"+cssselect+"']")).click()
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='"+cssselect+"']")).click()
                     time.sleep(0.5)
-                    # self.chrome.save_screenshot("debug_response/newp3.png")
+                    # self.firefox.save_screenshot("debug_response/newp3.png")
 
                     # province district subdistrict
                     try:
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-region")).click()
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-region")).click()
                         time.sleep(0.1)
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_province'])).click()
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_province'])).click()
                         time.sleep(0.1)
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-district")).click()
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-district")).click()
                         time.sleep(0.1)
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_district'])).click()
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_district'])).click()
                         time.sleep(0.1)
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-area")).click()
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-area")).click()
                         time.sleep(0.1)
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
                         time.sleep(0.1)
-                        # self.chrome.save_screenshot("debug_response/newp33.png")
+                        # self.firefox.save_screenshot("debug_response/newp33.png")
                     except Exception as e:
                         success = 'false'
                         detail = 'for a new project name, province , district , subdistrict error'
 
                     # road
                     try:
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'])
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'])
                     except:
                         pass
-                    # self.chrome.save_screenshot("debug_response/newp33.png")
+                    # self.firefox.save_screenshot("debug_response/newp33.png")
 
                     # longitude ,latitude
                     # TODO
                     # datatest ewoiYWN0aW9uIjogImNyZWF0ZV9wb3N0IiwKInRpbWVvdXQiOiAiNSIsCiJwb3N0X2ltZ191cmxfbGlzdHMiOiBbCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk1MV84MzYzNnBpYzcuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTUyXzgzNjM2cGljOC5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDVfODM2MzZwaWMxLmpwZyIsCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk0Nl84MzYzNnBpYzIuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTQ3XzgzNjM2cGljMy5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDhfODM2MzZwaWM0LmpwZyIsCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk0OV84MzYzNnBpYzUuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTUwXzgzNjM2cGljNi5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY3LzIxOTk5NjlfODM2MzVwaWMxLmpwZyIsCiJodHRwczovL3ppZ25uZXQuc2dwMS5kaWdpdGFsb2NlYW5zcGFjZXMuY29tL2xpdmluZ2pvaW4vY2xhc3NpZmllZC8xODk2ODkvYmlnLzIxMDEyMDIzNTIxNTUwMDk5MS5qcGciLAoiaHR0cHM6Ly96aWdubmV0LnNncDEuZGlnaXRhbG9jZWFuc3BhY2VzLmNvbS9saXZpbmdqb2luL2NsYXNzaWZpZWQvMTg5Njg5L290aGVyL2JpZy8yMTAxMjAyMzUyMjAzMTc5MTguanBnIgpdLAoiZ2VvX2xhdGl0dWRlIjogIjEzLjc4Njg2MiIsCiJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLAoicHJvcGVydHlfaWQiIDogImNodTAwMSIsCiJwb3N0X3RpdGxlX3RoIjogIuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lCIsCiJwb3N0X2Rlc2NyaXB0aW9uX3RoIjogIuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lOC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lFxyXG7guKPguLLguKLguKXguLDguYDguK3guLXguKLguJRcclxu4LiX4Li14LmI4LiU4Li04LiZ4LiC4LiZ4Liy4LiUNuC5hOC4o+C5iFxyXG7guKvguJnguYnguLLguIHguKfguYnguLLguIcgMzAg4LmA4Lih4LiV4LijXHJcbuC4quC4luC4suC4meC4l+C4teC5iOC5g+C4geC4peC5ieC5gOC4hOC4teC4ouC4h1xyXG7guJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYxcclxu4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNVxyXG5cclxu4LmD4Lir4LmJ4LmA4LiK4LmI4LiyIDEwMCwwMDAg4Lia4Liy4LiXXHJcblxyXG7guKrguJnguYPguIjguJXguLTguJTguJXguYjguK0g4LiK4LmI4Lit4LiX4Li04Lie4Lii4LmMIDA5MTgyOTM4NCIsCiJwb3N0X3RpdGxlX2VuIjogIkxhbmQgZm9yIHJlbnQgYmFuZ2tsb3lzYWlub2kgNiByYWkgc3VpdGFibGUgZm9yIGRldmVsb3BpbmciLAoicG9zdF9kZXNjcmlwdGlvbl9lbiI6ICJMYW5kIGZvciByZW50IGJhbmdrbG95c2Fpbm9pIDYgcmFpIHN1aXRhIGJsZSBmb3IgZGV2ZWxvcGluZyIsCiJwcmljZV9iYWh0IjogIjEwMDAwMCIsCiJsaXN0aW5nX3R5cGUiOiAi4LmD4Lir4LmJ4LmA4LiK4LmI4LiyIiwKInByb3BlcnR5X3R5cGUiOiAiNiIsCiJwcm9taW5lbnRfcG9pbnQgIiA6ICLguKvguJnguYnguLLguIHguKfguYnguLLguIfguKHguLLguIEg4LmD4Lir4LmJ4LmA4LiK4LmI4Liy4LiW4Li54LiB4Liq4Li44LiUIiwKImRpcmVjdGlvbl90eXBlIiA6ICIxMSIsCiJhZGRyX3Byb3ZpbmNlIjogIuC4meC4meC4l+C4muC4uOC4o+C4tSIsCiJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4oeC4t+C4reC4h+C4meC4meC4l+C4muC4uOC4o+C4tSIsCiJhZGRyX3N1Yl9kaXN0cmljdCI6ICLguJrguLLguIfguIHguKPguYjguLLguIciLAoiYWRkcl9yb2FkIjogIuC4muC4suC4h+C4geC4o+C4p+C4oi3guYTguJfguKPguJnguYnguK3guKIiLAoiYWRkcl9zb2kiOiAi4LiL4Lit4Lii4Lia4Liy4LiH4LiB4Lij4Lin4LiiLeC5hOC4l+C4o+C4meC5ieC4reC4oiAzNCIsCiJhZGRyX25lYXJfYnkiOiAi4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNVxyXG7guJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYwiLAoibGFuZF9zaXplX3JhaSI6ICI2LjAiLAoibGFuZF9zaXplX25nYW4iOiAiMi4yIiwKImxhbmRfc2l6ZV93YSI6ICIxMC4wIiwKIm5hbWUiOiAi4LiK4Li5IiwKIm1vYmlsZSI6ICIwOTkyODk5OTk5IiwKImVtYWlsIjogImNob3IuY29tQGdtYWlsLmNvbSIsCiJsaW5lIjogIjA5OTI4OTk5OTkiLAoicHJvamVjdF9uYW1lIjogIuC4l+C4teC5iOC4lOC4tOC4mSDguJrguLLguIfguIHguKPguKfguKLguYTguJfguKIt4LiZ4LmJ4Lit4LiiIiwKImZsb29yX2FyZWEiOiAiMSIsCiJ3ZWIiOiBbCnsKImRzX25hbWUiOiAiZGRwcm9wZXJ0eSIsCiJkc19pZCI6ICIyIiwKInVzZXIiOiAia2xhLmFybnV0QGhvdG1haWwuY29tIiwKInBhc3MiOiAidmtJeTliIiwKImFjY291bnRfdHlwZSI6ICJub3JtYWwiCn0KXQp9
                     try:
                         js = 'guruApp.createListing.formData.map.lat = '+datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = '+datahandled['geo_longitude']+';'
-                        self.chrome.execute_script(js)
+                        self.firefox.execute_script(js)
                     except:
                         pass
 
                     if (success == 'true'):
-                        self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
+                        self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
                         time.sleep(0.5)
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name('step-next')).click()
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name('step-next')).click()
                         time.sleep(1)
                         success, detail, post_id, account_type = self.inputpostattr(datahandled)
 
             # case match choose first argument
             else:
-                # self.chrome.save_screenshot("debug_response/newp3.png")
+                # self.firefox.save_screenshot("debug_response/newp3.png")
                 # select li first
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]/a')).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]/a')).click()
                 time.sleep(0.2)
-                # self.chrome.save_screenshot("debug_response/newp4.png")
+                # self.firefox.save_screenshot("debug_response/newp4.png")
                 linktxt = ''
                 cssselect = ''
                 if datahandled['property_type'] == "BUNG":
@@ -671,14 +684,14 @@ class ddproperty():
                 else:  # CONDO
                     linktxt = 'คอนโด'
                     cssselect = 'CONDO'
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
                 time.sleep(0.1)
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
                 time.sleep(0.1)
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='"+cssselect+"']")).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='"+cssselect+"']")).click()
                 time.sleep(0.1)
-                # self.chrome.save_screenshot("debug_response/newp5.png")
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name('step-next')).click()
+                # self.firefox.save_screenshot("debug_response/newp5.png")
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name('step-next')).click()
                 time.sleep(1)
 
                 success, detail, post_id, account_type = self.inputpostattr(datahandled)
@@ -727,98 +740,98 @@ class ddproperty():
                 detail = 'property type land is require minimum >= 13 sqm'
 
         if success == 'true':
-            # self.chrome.save_screenshot("debug_response/newp4.png")
-            # WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][id='listing-type-"+datahandled['listing_type']+"']")).find_element_by_tag_name('span').click()
+            # self.firefox.save_screenshot("debug_response/newp4.png")
+            # WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][id='listing-type-"+datahandled['listing_type']+"']")).find_element_by_tag_name('span').click()
 
             # type
             if datahandled['listing_type'] == "SALE":
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[1]/label/span')).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[1]/label/span')).click()
             elif datahandled['listing_type'] == "RENT":
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[2]/label/span')).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[2]/label/span')).click()
             else:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[3]/label/span')).click()
-            # self.chrome.save_screenshot("debug_response/newp5.png")
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[3]/label/span')).click()
+            # self.firefox.save_screenshot("debug_response/newp5.png")
 
             # price
             try:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
             except:
                 pass
 
             # bed room
             try:
                 if int(datahandled['bed_room']) > 0:
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
                     if int(datahandled['bed_room']) >= 10:
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
                     else:
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room'])+' ห้องนอน')).click()
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room'])+' ห้องนอน')).click()
             except:
                 pass
 
             # bath room
             try:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
                 if int(datahandled['bath_room']) == 0:
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('ไม่มีห้องน้ำ')).click()
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text('ไม่มีห้องน้ำ')).click()
                 elif int(datahandled['bath_room']) >= 1 and int(datahandled['bath_room']) < 9:
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bath_room'])+' ห้องน้ำ')).click()
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bath_room'])+' ห้องน้ำ')).click()
                 else:
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
             except:
                 pass
 
             # floor area sqm
             try:
                 if datahandled['action'] == 'edit_post':
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
             except:
                 pass
 
             # total floor
             try:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
             except:
                 pass
 
             # floor position
             try:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
             except:
                 pass
 
             # title thai
             if datahandled['action'] == 'edit_post':
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.DELETE)
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(datahandled['post_title_th'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.DELETE)
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(datahandled['post_title_th'])
 
             # title en
             if datahandled['action'] == 'edit_post':
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.CONTROL + "a")   # clear for edit action
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.DELETE)   # clear for edit action
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(datahandled['post_title_en'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.CONTROL + "a")   # clear for edit action
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.DELETE)   # clear for edit action
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(datahandled['post_title_en'])
 
             # desc thai
             if datahandled['action'] == 'edit_post':
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL + "a")   # clear for edit action
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.DELETE)  # clear for edit action
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL + "a")   # clear for edit action
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.DELETE)  # clear for edit action
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
 
             # desc en
             if datahandled['action'] == 'edit_post':
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.DELETE)  # clear for edit action
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.DELETE)  # clear for edit action
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
 
             # หันหน้าทางทิศ
             try:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-facing-type")).click()
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['direction_type'])).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-facing-type")).click()
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(datahandled['direction_type'])).click()
             except:
                 pass
 
@@ -826,82 +839,82 @@ class ddproperty():
             # จะ auto calculate ให้ เช่น input เป็น rai 6.5 ngaan 5.4 sqw 4.3 จะคำนวณใหม่ให้เป็น 7ไร่ 3งาน 44.3ตรว
             try:
                 if datahandled['action'] == 'edit_post':
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.DELETE)  # clear for edit action
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.DELETE)  # clear for edit action
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.DELETE)  # clear for edit action
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(datahandled['land_size_rai'])
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(datahandled['land_size_ngan'])
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(datahandled['land_size_wa'])
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.DELETE)  # clear for edit action
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.DELETE)  # clear for edit action
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.DELETE)  # clear for edit action
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(datahandled['land_size_rai'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(datahandled['land_size_ngan'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(datahandled['land_size_wa'])
             except:
                 pass
 
             # account type
-            matchObj = re.search(r'รายละเอียดตัวแทน', self.chrome.page_source)
+            matchObj = re.search(r'รายละเอียดตัวแทน', self.firefox.page_source)
             if matchObj:
                 account_type = 'corporate'
                 try:
                     if datahandled['action'] == 'edit_post':
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div[2]/div[5]/div[1]/div/div/div/textarea')).send_keys(Keys.CONTROL + "a")
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div[2]/div[5]/div[1]/div/div/div/textarea')).send_keys(Keys.DELETE)
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
-                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div[2]/div[5]/div[1]/div/div/div/textarea')).send_keys(datahandled['email'])
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.CONTROL + "a")
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
                 except:
                     pass
             time.sleep(0.5)
-            self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
+            self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(0.5)
-            # self.chrome.save_screenshot("debug_response/newp12.png")
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
+            # self.firefox.save_screenshot("debug_response/newp12.png")
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             time.sleep(1)
 
             # image
             if datahandled['action'] == 'edit_post':
-                # soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
+                # soup = BeautifulSoup(self.firefox.page_source, self.parser, from_encoding='utf-8')
                 # imglis = soup.find('ul', {'class': 'c-upload-file-grid'}).findAll('li')
                 # for imgli in imglis:
                 #     imgid = str(imgli.get("id"))
                 #     if imgid != None:
-                #         imgdiv = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("li[id='"+imgid+"']")).find_elements_by_link_text("...")[0].click()
-                #         self.chrome.save_screenshot("debug_response/newp10.png")
+                #         imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("li[id='"+imgid+"']")).find_elements_by_link_text("...")[0].click()
+                #         self.firefox.save_screenshot("debug_response/newp10.png")
                 #         exit()
-                imgdiv = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
+                imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
                 for imgli in imglis:
                     imgid = imgli.get_attribute("id")
                     if imgid != None:
                         imgli.click()
-                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
-                        alert = self.chrome.switch_to.alert
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
+                        alert = self.firefox.switch_to.alert
                         alert.accept()
                         time.sleep(1.5)
 
             for img in datahandled['post_images']:
                 time.sleep(1)
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
                 time.sleep(1)
-                self.chrome.refresh()
+                self.firefox.refresh()
 
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             time.sleep(1)
-            # self.chrome.save_screenshot("debug_response/newp10.png")
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
+            # self.firefox.save_screenshot("debug_response/newp10.png")
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
             time.sleep(1)
-            # self.chrome.save_screenshot("debug_response/newp11.png")
+            # self.firefox.save_screenshot("debug_response/newp11.png")
             # f = open("debug_response/ddpost.html", "wb")
-            # f.write(self.chrome.page_source.encode('utf-8').strip())
-            post_id = self.chrome.current_url.split("/")[-1]
+            # f.write(self.firefox.page_source.encode('utf-8').strip())
+            post_id = self.firefox.current_url.split("/")[-1]
 
             # create post จะสำเร็จก็ต่อเมื่อ publish ได้ด้วย ถ้า editpost แค่ edit ได้ ก็ถือว่าสำเร็จ
             if datahandled['action'] == 'create_post':
-                matchObj = re.search(r'Active Unit Listing quota exceeded', self.chrome.page_source)
+                matchObj = re.search(r'Active Unit Listing quota exceeded', self.firefox.page_source)
                 if matchObj:
                     success = "false"
                     detail = 'Active Unit Listing quota exceeded'
@@ -1777,9 +1790,9 @@ class ddproperty():
         detail = test_login["detail"]
 
         if (success == "true"):
-            self.chrome.get('https://agentnet.ddproperty.com/create-listing/detail/'+str(datahandled['post_id']))
-            # self.chrome.save_screenshot("debug_response/edit1.png")
-            matchObj = re.search(r'500 Internal Server Error',  self.chrome.page_source)
+            self.firefox.get('https://agentnet.ddproperty.com/create-listing/detail/'+str(datahandled['post_id']))
+            # self.firefox.save_screenshot("debug_response/edit1.png")
+            matchObj = re.search(r'500 Internal Server Error',  self.firefox.page_source)
             if matchObj:
                 success = 'false'
                 detail = 'not found ddproperty post id '+datahandled['post_id']

@@ -20,6 +20,8 @@ class thaihometown():
 
     def __init__(self):
 
+        self.websitename = 'thaihometown'
+
         try:
             import configs
         except ImportError:
@@ -126,6 +128,7 @@ class thaihometown():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            "websitename": self.websitename,
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
@@ -493,7 +496,7 @@ class thaihometown():
                     contact_code=contact_code,
                     date_signup=date_signup,
                     firstname=firstname,
-                    headtitle=post_title_th.encode('cp874','ignore'),
+                    headtitle=post_title_th.encode('cp874', 'ignore'),
 
                     id=post_id,
 
