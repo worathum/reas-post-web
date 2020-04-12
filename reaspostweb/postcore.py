@@ -8,6 +8,8 @@ import sys
 import json
 import base64
 import os
+import string
+import random
 import concurrent.futures
 from webmodule.lib_httprequest import *
 httprequestObj = lib_httprequest()
@@ -84,10 +86,15 @@ class postcore():
             allimages = datarequest["post_img_url_lists"]
         except KeyError:
             allimages = {}
+        #dirtmp = str(os.getpid())+'_'+str(datetime.datetime.utcnow().strftime("%Y%m%d%H:%M:%S"))
+        for i in range(6):
+            dirtmp = 'imgupload_'+''.join(random.SystemRandom().choice(string.ascii_lowercase + string.ascii_uppercase  + string.digits) for _ in range(16))
+            if os.path.isdir('imgtmp/'+dirtmp) == False:
+                os.mkdir("imgtmp/"+dirtmp)
+                log.debug('image directory imgtmp/%s is created',dirtmp)
+                break
+        
         datarequest['post_images'] = []
-        dirtmp = str(os.getpid())+'_'+str(datetime.datetime.utcnow().strftime("%Y%m%d%H:%M:%S"))
-        os.mkdir("imgtmp/"+dirtmp)
-        log.debug('image directory imgtmp/%s is created',dirtmp)
         imgcount = 1
         for imgurl in allimages:
             try:
@@ -106,6 +113,8 @@ class postcore():
                     log.warning('url %s is not image content-type %s',imgurl,res.headers['Content-Type'])
             else:
                 log.warning('image url response error %s',res.status_code)
+        
+        exit()
 
         # define all website list
         weblists = datarequest['web']
