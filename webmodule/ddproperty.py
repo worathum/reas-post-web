@@ -38,14 +38,13 @@ class ddproperty():
         self.websitename = 'ddproperty'
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
-        self.debug = 0
-        self.debugresdata = 0
         self.parser = 'html.parser'
         self.handled = False
 
 
     def register_user(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         user = postdata['user']
@@ -128,7 +127,7 @@ class ddproperty():
         }
 
     def test_login_httpreq(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
 
         user = postdata['user']
         passwd = postdata['pass']
@@ -185,7 +184,7 @@ class ddproperty():
         return {"success": success, "detail": detail, "agent_id": agent_id}
 
     def test_login_headless(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
 
         # ref https://developer.mozilla.org/en-US/docs/Web/WebDriver
         # รอจนกว่าจะมี element h3>a ขึ้นมา ค่อยทำงานต่อ
@@ -209,23 +208,23 @@ class ddproperty():
         self.firefox = webdriver.Firefox(executable_path=firefox_driver_binary,options=options)
 
         # open login page
-        self.firefox.get(
-            'https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
+        self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
 
         # input email and enter
-        emailtxt = WebDriverWait(
-            self.firefox,
-            5).until(lambda x: x.find_element_by_id("emailInput"))
+        emailtxt = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("emailInput"))
         emailtxt.send_keys(postdata['user'])
-        nextbttn = WebDriverWait(
-            self.firefox, 5).until(lambda x: x.find_element_by_id("next"))
+        log.debug('input email')
+        nextbttn = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("next"))
         nextbttn.click()
+        log.debug('click next')
         WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "inputPassword")))
 
         # input password and enter
         passtxt = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("inputPassword"))
         passtxt.send_keys(postdata['pass'])
+        log.debug('input password')
         passtxt.send_keys(Keys.ENTER)
+        log.debug('click enter')
         WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
 
         #self.firefox.save_screenshot("debug_response/login.png")
@@ -233,9 +232,7 @@ class ddproperty():
         # f.write(self.firefox.page_source.encode('utf-8').strip())
 
         # find text
-        soup = BeautifulSoup(self.firefox.page_source,
-                             self.parser,
-                             from_encoding='utf-8')
+        soup = BeautifulSoup(self.firefox.page_source,self.parser,from_encoding='utf-8')
         titletxt = soup.find('title').text
         matchObj = re.search(r'Dashboard', titletxt)
         if not matchObj:
@@ -243,8 +240,7 @@ class ddproperty():
             detail = 'cannot login'
         if success == "true":
             # agent_id = re.search(r'optimize_agent_id = (\d+);', self.firefox.page_source).group(1)
-            agent_id = re.search(r'{"user":{"id":(\d+),',
-                                 self.firefox.page_source).group(1)
+            agent_id = re.search(r'{"user":{"id":(\d+),',self.firefox.page_source).group(1)
 
         #
         # end process
@@ -252,7 +248,8 @@ class ddproperty():
         return {"success": success, "detail": detail, "agent_id": agent_id}
 
     def test_login(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         # start process
@@ -260,8 +257,7 @@ class ddproperty():
         datahandled = self.postdata_handle(postdata)
 
         response = {}
-        if datahandled['action'] == 'create_post' or datahandled[
-                'action'] == 'edit_post':
+        if datahandled['action'] == 'create_post' or datahandled['action'] == 'edit_post':
             response = self.test_login_headless(datahandled)
         else:
             response = self.test_login_httpreq(datahandled)
@@ -278,7 +274,7 @@ class ddproperty():
         return response
 
     def postdata_handle(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
 
         if self.handled == True:
             return postdata
@@ -288,8 +284,9 @@ class ddproperty():
         # "SALE", "RENT", "OPT" ขาย ให้เช่า ขายดาวน์
         try:
             datahandled['listing_type'] = postdata['listing_type']
-        except KeyError:
+        except KeyError as e:
             datahandled['listing_type'] = "SALE"
+            log.warning(e)
         if datahandled['listing_type'] == "ให้เช่า":
             datahandled['listing_type'] = "RENT"
         elif datahandled['listing_type'] == "ขายดาวน์":
@@ -300,8 +297,9 @@ class ddproperty():
         # "CONDO","BUNG","TOWN","LAND","APT","RET","OFF","WAR","BIZ","SHOP"]
         try:
             datahandled['property_type'] = postdata['property_type']
-        except KeyError:
+        except KeyError as e:
             datahandled['property_type'] = "CONDO"
+            log.warning(e)
         if datahandled['property_type'] == '2' or datahandled[
                 'property_type'] == "บ้านเดี่ยว":
             datahandled['property_type'] = "BUNG"
@@ -337,160 +335,191 @@ class ddproperty():
 
         try:
             datahandled['post_img_url_lists'] = postdata['post_img_url_lists']
-        except KeyError:
+        except KeyError as e:
             datahandled['post_img_url_lists'] = {}
+            log.warning(e)
 
         try:
             datahandled['price_baht'] = postdata['price_baht']
-        except KeyError:
+        except KeyError as e:
             datahandled['price_baht'] = 0
+            log.warning(e)
 
         try:
             datahandled['addr_province'] = postdata['addr_province']
-        except KeyError:
+        except KeyError as e:
             datahandled['addr_province'] = ''
+            log.warning(e)
 
         try:
             datahandled['addr_district'] = postdata['addr_district']
-        except KeyError:
+        except KeyError as e:
             datahandled['addr_district'] = ''
+            log.warning(e)
 
         try:
             datahandled['addr_sub_district'] = postdata['addr_sub_district']
-        except KeyError:
+        except KeyError as e:
             datahandled['addr_sub_district'] = ''
+            log.warning(e)
 
         try:
             datahandled['addr_road'] = postdata['addr_road']
-        except KeyError:
+        except KeyError as e:
             datahandled['addr_road'] = ''
+            log.warning(e)
 
         try:
             datahandled['addr_near_by'] = postdata['addr_near_by']
-        except KeyError:
+        except KeyError as e:
             datahandled['addr_near_by'] = ''
+            log.warning(e)
 
         try:
             datahandled['addr_postcode'] = postdata['addr_postcode']
-        except KeyError:
+        except KeyError as e:
             datahandled['addr_postcode'] = ''
+            log.warning(e)
 
         try:
             datahandled['floorarea_sqm'] = int(postdata['floorarea_sqm'])
-        except KeyError:
+        except KeyError as e:
             datahandled['floorarea_sqm'] = 0
+            log.warning(e)
 
         try:
             datahandled['geo_latitude'] = postdata['geo_latitude']
-        except KeyError:
+        except KeyError as e:
             datahandled['geo_latitude'] = ''
+            log.warning(e)
 
         try:
             datahandled['geo_longitude'] = postdata['geo_longitude']
-        except KeyError:
+        except KeyError as e:
             datahandled['geo_longitude'] = ''
+            log.warning(e)
 
         try:
             datahandled['property_id'] = postdata['property_id']
-        except KeyError:
+        except KeyError as e:
             datahandled['property_id'] = ''
+            log.warning(e)
 
         try:
             datahandled['post_title_th'] = postdata['post_title_th']
-        except KeyError:
+        except KeyError as e:
             datahandled['post_title_th'] = ''
+            log.warning(e)
 
         try:
             datahandled['post_description_th'] = postdata[
                 'post_description_th']
-        except KeyError:
+        except KeyError as e:
             datahandled['post_description_th'] = ''
+            log.warning(e)
 
         try:
             datahandled['post_title_en'] = postdata['post_title_en']
-        except KeyError:
+        except KeyError as e:
             datahandled['post_title_en'] = ''
+            log.warning(e)
 
         try:
             datahandled['post_description_en'] = postdata[
                 'post_description_en']
-        except KeyError:
+        except KeyError as e:
             datahandled['post_description_en'] = ''
+            log.warning(e)
 
         try:
             datahandled['ds_id'] = postdata["ds_id"]
-        except KeyError:
+        except KeyError as e:
             datahandled['ds_id'] = ''
+            log.warning(e)
 
         try:
             datahandled['ds_name'] = postdata["ds_name"]
-        except KeyError:
+        except KeyError as e:
             datahandled['ds_name'] = ''
+            log.warning(e)
 
         try:
             datahandled['user'] = postdata['user']
-        except KeyError:
+        except KeyError as e:
             datahandled['user'] = ''
+            log.warning(e)
 
         try:
             datahandled['pass'] = postdata['pass']
-        except KeyError:
+        except KeyError as e:
             datahandled['pass'] = ''
+            log.warning(e)
 
         try:
             datahandled['project_name'] = postdata["project_name"]
-        except KeyError:
+        except KeyError as e:
             datahandled['project_name'] = ''
+            log.warning(e)
 
         try:
             datahandled['name'] = postdata["name"]
-        except KeyError:
+        except KeyError as e:
             datahandled['name'] = ''
+            log.warning(e)
 
         try:
             datahandled['mobile'] = postdata["mobile"]
-        except KeyError:
+        except KeyError as e:
             datahandled['mobile'] = ''
+            log.warning(e)
 
         try:
             datahandled['email'] = postdata["email"]
-        except KeyError:
+        except KeyError as e:
             datahandled['email'] = ''
+            log.warning(e)
 
         try:
             datahandled['web_project_name'] = postdata["web_project_name"]
-        except KeyError:
+        except KeyError as e:
             datahandled['web_project_name'] = ''
+            log.warning(e)
 
         try:
             datahandled['action'] = postdata["action"]
-        except KeyError:
+        except KeyError as e:
             datahandled['action'] = ''
+            log.warning(e)
 
         try:
             datahandled['bath_room'] = postdata["bath_room"]
-        except KeyError:
+        except KeyError as e:
             datahandled['bath_room'] = 0
+            log.warning(e)
 
         try:
             datahandled['bed_room'] = postdata["bed_room"]
-        except KeyError:
+        except KeyError as e:
             datahandled['bed_room'] = 0
+            log.warning(e)
 
         try:
             datahandled['floor_total'] = postdata["floor_total"]
-        except KeyError:
+        except KeyError as e:
             datahandled['floor_total'] = 1
+            log.warning(e)
 
         try:
             datahandled['floor_level'] = postdata["floor_level"]
-        except KeyError:
+        except KeyError as e:
             datahandled['floor_level'] = 1
+            log.warning(e)
 
         try:
             datahandled['direction_type'] = postdata["direction_type"]
-        except KeyError:
+        except KeyError as e:
             datahandled['direction_type'] = "ทิศเหนือ"
+            log.warning(e)
         if datahandled['direction_type'] == '11':
             datahandled['direction_type'] = "ทิศเหนือ"
         elif datahandled['direction_type'] == '12':
@@ -513,40 +542,47 @@ class ddproperty():
 
         try:
             datahandled['post_id'] = postdata["post_id"]
-        except KeyError:
+        except KeyError as e:
             datahandled['post_id'] = ''
+            log.warning(e)
 
         try:
             datahandled['log_id'] = postdata["log_id"]
-        except KeyError:
+        except KeyError as e:
             datahandled['log_id'] = ''
+            log.warning(e)
 
         try:
             datahandled['land_size_rai'] = str(postdata["land_size_rai"])
-        except KeyError:
+        except KeyError as e:
             datahandled['land_size_rai'] = '0'
+            log.warning(e)
 
         try:
             datahandled['land_size_ngan'] = str(postdata["land_size_ngan"])
-        except KeyError:
+        except KeyError as e:
             datahandled['land_size_ngan'] = '0'
+            log.warning(e)
 
         try:
             datahandled['land_size_wa'] = str(postdata["land_size_wa"])
-        except KeyError:
+        except KeyError as e:
             datahandled['land_size_wa'] = '0'
+            log.warning(e)
 
         try:
             datahandled['addr_road'] = postdata["addr_road"]
-        except KeyError:
+        except KeyError as e:
             datahandled['addr_road'] = ''
+            log.warning(e)
 
         self.handled = True
 
         return datahandled
 
     def create_post(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         # start process
@@ -562,126 +598,64 @@ class ddproperty():
         account_type = "normal"
 
         if success == "true":
-            projectname = datahandled['project_name']
-            if datahandled['web_project_name'] != '':
-                projectname = datahandled['web_project_name']
-
+           
             self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
             time.sleep(1)
             WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
-
             # self.firefox.save_screenshot("debug_response/location.png")
-            projectnametxt = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("propertySearch"))
-            projectnametxt.send_keys(projectname)
-            projectnametxt.send_keys(Keys.ENTER)
-            WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.CLASS_NAME, "open")))
-            # self.firefox.save_screenshot("debug_response/location2.png")
-            # f = open("debug_response/ddpost.html", "wb")
-            # f.write(self.firefox.page_source.encode('utf-8').strip())
 
-            # case no result
-            matchObj = re.search(r'ol class="no-match"',self.firefox.page_source)
-            if matchObj:
-                if (datahandled['addr_province'] == ''
-                        or datahandled['addr_district'] == ''
-                        or datahandled['addr_sub_district'] == ''):
-                    success = 'false'
-                    detail = 'for a new project name, ddproperty must require province , district and sub_district'
-                if success == 'true':
-                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_class_name("property-new-link")).click()
-                    time.sleep(0.2)
-                    # self.firefox.save_screenshot("debug_response/newp1.png")
+            success ,detail = self.inputpostgeneral(datahandled)
+            if success == 'true':
+                success, detail, post_id, account_type = self.inputpostdetail(datahandled)    
 
-                    # listing type
-                    linktxt = ''
-                    cssselect = ''
-                    if datahandled['property_type'] == "BUNG":
-                        linktxt = 'บ้านเดี่ยว'
-                        cssselect = 'BUNG'
-                    elif datahandled['property_type'] == "TOWN":
-                        linktxt = 'ทาวน์เฮ้าส์'
-                        cssselect = 'TOWN'
-                    elif datahandled['property_type'] == "SHOP":
-                        linktxt = 'เชิงพาณิชย์'
-                        cssselect = 'RET'
-                    elif datahandled['property_type'] == "LAND":
-                        linktxt = 'ที่ดิน'
-                        cssselect = 'LAND'
-                    elif datahandled['property_type'] == "APT":
-                        linktxt = 'อพาร์ทเมนท์'
-                        cssselect = 'APT'
-                    elif datahandled['property_type'] == "OFF":
-                        linktxt = 'เชิงพาณิชย์'
-                        cssselect = 'OFF'
-                    elif datahandled['property_type'] == "WAR":
-                        linktxt = 'เชิงพาณิชย์'
-                        cssselect = 'WAR'
-                    elif datahandled['property_type'] == "BIZ":
-                        linktxt = 'เชิงพาณิชย์'
-                        cssselect = 'BIZ'
-                    else:  # CONDO
-                        linktxt = 'คอนโด'
-                        cssselect = 'CONDO'
-                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
-                    time.sleep(0.1)
-                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
-                    time.sleep(0.1)
-                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='" + cssselect + "']")).click()
-                    # self.firefox.save_screenshot("debug_response/newp3.png")
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success":success,
+            "usage_time":str(time_usage),
+            "start_time":str(time_start),
+            "end_time":str(time_end),
+            "ds_id":datahandled['ds_id'],
+            "post_url":"https://www.ddproperty.com/preview-listing/" +post_id if post_id != "" else "",
+            "post_id":post_id,
+            "account_type":account_type,
+            "detail":detail,
+            "websitename":self.websitename
+        }
+    
+    def inputpostgeneral(self, datahandled):
+        log.debug('')
 
-                    # province district subdistrict
-                    try:
-                        WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "form-field-region")))
-                        WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("form-field-region")).click()
-                        time.sleep(0.1)
-                        WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_link_text(datahandled['addr_province'])).click()
-                        time.sleep(0.1)
-                        WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("form-field-district")).click()
-                        time.sleep(0.1)
-                        WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_link_text(datahandled['addr_district'])).click()
-                        time.sleep(0.1)
-                        WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("form-field-area")).click()
-                        time.sleep(0.1)
-                        WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
-                        time.sleep(0.1)
-                        # self.firefox.save_screenshot("debug_response/newp33.png")
-                    except Exception as e:
-                        success = 'false'
-                        detail = 'for a new project name, province , district , subdistrict error'
+        success = 'true'
+        detail = ''
 
-                    # road
-                    try:
-                        WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "street-name-field")))
-                        WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'])
-                    except:
-                        pass
-                    # self.firefox.save_screenshot("debug_response/newp33.png")
+        projectname = datahandled['project_name']
+        if datahandled['web_project_name'] != '':
+            projectname = datahandled['web_project_name']
+        projectnametxt = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("propertySearch"))
+        if datahandled['action'] == 'edit_post':
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+            WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.DELETE)  # clear for edit action
+        projectnametxt.send_keys(projectname)
+        projectnametxt.send_keys(Keys.ENTER)
+        WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.CLASS_NAME, "open")))
+        time.sleep(1)
+        #self.firefox.save_screenshot("debug_response/location2.png")
+        # f = open("debug_response/ddpost.html", "wb")
+        # f.write(self.firefox.page_source.encode('utf-8').strip())
 
-                    # longitude ,latitude
-                    # TODO
-                    # datatest ewoiYWN0aW9uIjogImNyZWF0ZV9wb3N0IiwKInRpbWVvdXQiOiAiNSIsCiJwb3N0X2ltZ191cmxfbGlzdHMiOiBbCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk1MV84MzYzNnBpYzcuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTUyXzgzNjM2cGljOC5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDVfODM2MzZwaWMxLmpwZyIsCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk0Nl84MzYzNnBpYzIuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTQ3XzgzNjM2cGljMy5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDhfODM2MzZwaWM0LmpwZyIsCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk0OV84MzYzNnBpYzUuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTUwXzgzNjM2cGljNi5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY3LzIxOTk5NjlfODM2MzVwaWMxLmpwZyIsCiJodHRwczovL3ppZ25uZXQuc2dwMS5kaWdpdGFsb2NlYW5zcGFjZXMuY29tL2xpdmluZ2pvaW4vY2xhc3NpZmllZC8xODk2ODkvYmlnLzIxMDEyMDIzNTIxNTUwMDk5MS5qcGciLAoiaHR0cHM6Ly96aWdubmV0LnNncDEuZGlnaXRhbG9jZWFuc3BhY2VzLmNvbS9saXZpbmdqb2luL2NsYXNzaWZpZWQvMTg5Njg5L290aGVyL2JpZy8yMTAxMjAyMzUyMjAzMTc5MTguanBnIgpdLAoiZ2VvX2xhdGl0dWRlIjogIjEzLjc4Njg2MiIsCiJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLAoicHJvcGVydHlfaWQiIDogImNodTAwMSIsCiJwb3N0X3RpdGxlX3RoIjogIuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lCIsCiJwb3N0X2Rlc2NyaXB0aW9uX3RoIjogIuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lOC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lFxyXG7guKPguLLguKLguKXguLDguYDguK3guLXguKLguJRcclxu4LiX4Li14LmI4LiU4Li04LiZ4LiC4LiZ4Liy4LiUNuC5hOC4o+C5iFxyXG7guKvguJnguYnguLLguIHguKfguYnguLLguIcgMzAg4LmA4Lih4LiV4LijXHJcbuC4quC4luC4suC4meC4l+C4teC5iOC5g+C4geC4peC5ieC5gOC4hOC4teC4ouC4h1xyXG7guJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYxcclxu4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNVxyXG5cclxu4LmD4Lir4LmJ4LmA4LiK4LmI4LiyIDEwMCwwMDAg4Lia4Liy4LiXXHJcblxyXG7guKrguJnguYPguIjguJXguLTguJTguJXguYjguK0g4LiK4LmI4Lit4LiX4Li04Lie4Lii4LmMIDA5MTgyOTM4NCIsCiJwb3N0X3RpdGxlX2VuIjogIkxhbmQgZm9yIHJlbnQgYmFuZ2tsb3lzYWlub2kgNiByYWkgc3VpdGFibGUgZm9yIGRldmVsb3BpbmciLAoicG9zdF9kZXNjcmlwdGlvbl9lbiI6ICJMYW5kIGZvciByZW50IGJhbmdrbG95c2Fpbm9pIDYgcmFpIHN1aXRhIGJsZSBmb3IgZGV2ZWxvcGluZyIsCiJwcmljZV9iYWh0IjogIjEwMDAwMCIsCiJsaXN0aW5nX3R5cGUiOiAi4LmD4Lir4LmJ4LmA4LiK4LmI4LiyIiwKInByb3BlcnR5X3R5cGUiOiAiNiIsCiJwcm9taW5lbnRfcG9pbnQgIiA6ICLguKvguJnguYnguLLguIHguKfguYnguLLguIfguKHguLLguIEg4LmD4Lir4LmJ4LmA4LiK4LmI4Liy4LiW4Li54LiB4Liq4Li44LiUIiwKImRpcmVjdGlvbl90eXBlIiA6ICIxMSIsCiJhZGRyX3Byb3ZpbmNlIjogIuC4meC4meC4l+C4muC4uOC4o+C4tSIsCiJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4oeC4t+C4reC4h+C4meC4meC4l+C4muC4uOC4o+C4tSIsCiJhZGRyX3N1Yl9kaXN0cmljdCI6ICLguJrguLLguIfguIHguKPguYjguLLguIciLAoiYWRkcl9yb2FkIjogIuC4muC4suC4h+C4geC4o+C4p+C4oi3guYTguJfguKPguJnguYnguK3guKIiLAoiYWRkcl9zb2kiOiAi4LiL4Lit4Lii4Lia4Liy4LiH4LiB4Lij4Lin4LiiLeC5hOC4l+C4o+C4meC5ieC4reC4oiAzNCIsCiJhZGRyX25lYXJfYnkiOiAi4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNVxyXG7guJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYwiLAoibGFuZF9zaXplX3JhaSI6ICI2LjAiLAoibGFuZF9zaXplX25nYW4iOiAiMi4yIiwKImxhbmRfc2l6ZV93YSI6ICIxMC4wIiwKIm5hbWUiOiAi4LiK4Li5IiwKIm1vYmlsZSI6ICIwOTkyODk5OTk5IiwKImVtYWlsIjogImNob3IuY29tQGdtYWlsLmNvbSIsCiJsaW5lIjogIjA5OTI4OTk5OTkiLAoicHJvamVjdF9uYW1lIjogIuC4l+C4teC5iOC4lOC4tOC4mSDguJrguLLguIfguIHguKPguKfguKLguYTguJfguKIt4LiZ4LmJ4Lit4LiiIiwKImZsb29yX2FyZWEiOiAiMSIsCiJ3ZWIiOiBbCnsKImRzX25hbWUiOiAiZGRwcm9wZXJ0eSIsCiJkc19pZCI6ICIyIiwKInVzZXIiOiAia2xhLmFybnV0QGhvdG1haWwuY29tIiwKInBhc3MiOiAidmtJeTliIiwKImFjY291bnRfdHlwZSI6ICJub3JtYWwiCn0KXQp9
-                    try:
-                        js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + ';'
-                        self.firefox.execute_script(js)
-                    except:
-                        pass
-
-                    if (success == 'true'):
-                        self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL +Keys.HOME)  # scroll to head page
-                        WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
-                        #self.firefox.save_screenshot("debug_response/newp33.png")
-                        nextbttn = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
-                        self.firefox.execute_script("arguments[0].click();", nextbttn)
-
-                        success, detail, post_id, account_type = self.inputpostattr(datahandled)
-
-            # case match choose first argument
-            else:
-                # self.firefox.save_screenshot("debug_response/newp3.png")
-                # select li first
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]/a')).click()
+        # case no result projectname
+        matchObj = re.search(r'ol class="no-match"',self.firefox.page_source)
+        if matchObj:
+            if (datahandled['addr_province'] == ''or datahandled['addr_district'] == ''or datahandled['addr_sub_district'] == ''):
+                success = 'false'
+                detail = 'for a new project name, ddproperty must require province , district and sub_district'
+            if success == 'true':
+                WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_class_name("property-new-link")).click()
                 time.sleep(0.2)
-                # self.firefox.save_screenshot("debug_response/newp4.png")
+                # self.firefox.save_screenshot("debug_response/newp1.png")
+
+                # listing type
                 linktxt = ''
                 cssselect = ''
                 if datahandled['property_type'] == "BUNG":
@@ -713,36 +687,120 @@ class ddproperty():
                     cssselect = 'CONDO'
                 WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
                 time.sleep(0.1)
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
+                WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
                 time.sleep(0.1)
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='" + cssselect + "']")).click()
-                time.sleep(0.1)
-                # self.firefox.save_screenshot("debug_response/newp5.png")
-                self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL +Keys.HOME)  # scroll to head page
-                WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
-                #self.firefox.save_screenshot("debug_response/newp33.png")
-                nextbttn = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
-                self.firefox.execute_script("arguments[0].click();", nextbttn)
+                WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='" + cssselect + "']")).click()
+                time.sleep(0.2)
+                element = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[4]/div/div[1]/div/div/div/div'))
+                self.firefox.execute_script("arguments[0].style.display = 'none';", element)
+                #self.firefox.save_screenshot("debug_response/newp3.png")
 
-                success, detail, post_id, account_type = self.inputpostattr(datahandled)
+                # province district subdistrict
+                try:
+                    WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "form-field-region")))
+                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("form-field-region")).click()
+                    time.sleep(0.1)
+                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_link_text(datahandled['addr_province'])).click()
+                    time.sleep(0.1)
+                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("form-field-district")).click()
+                    time.sleep(0.1)
+                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_link_text(datahandled['addr_district'])).click()
+                    time.sleep(0.1)
+                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("form-field-area")).click()
+                    time.sleep(0.1)
+                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
+                    time.sleep(0.1)
+                    # self.firefox.save_screenshot("debug_response/newp33.png")
+                except Exception as e:
+                    success = 'false'
+                    detail = 'for a new project name, province , district , subdistrict error'
+                    log.error(e)
 
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
-        return {
-            "success":success,
-            "usage_time":str(time_usage),
-            "start_time":str(time_start),
-            "end_time":str(time_end),
-            "ds_id":datahandled['ds_id'],
-            "post_url":"https://www.ddproperty.com/preview-listing/" +post_id if post_id != "" else "",
-            "post_id":post_id,
-            "account_type":account_type,
-            "detail":detail,
-            "websitename":self.websitename
-        }
+                # road
+                try:  
+                    WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "street-name-field")))
+                    if datahandled['action'] == 'edit_post':
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                        WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(Keys.DELETE)  # clear for edit action
+                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'])
+                except:
+                    pass
+                # self.firefox.save_screenshot("debug_response/newp33.png")
 
-    def inputpostattr(self, datahandled):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+                # longitude ,latitude
+                # TODO
+                # datatest ewoiYWN0aW9uIjogImNyZWF0ZV9wb3N0IiwKInRpbWVvdXQiOiAiNSIsCiJwb3N0X2ltZ191cmxfbGlzdHMiOiBbCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk1MV84MzYzNnBpYzcuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTUyXzgzNjM2cGljOC5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDVfODM2MzZwaWMxLmpwZyIsCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk0Nl84MzYzNnBpYzIuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTQ3XzgzNjM2cGljMy5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDhfODM2MzZwaWM0LmpwZyIsCiJodHRwczovL3d3dy5iYW5na29rYXNzZXRzLmNvbS9wcm9wZXJ0eS8yNTAwNjQvMjE5OTk0OV84MzYzNnBpYzUuanBnIiwKImh0dHBzOi8vd3d3LmJhbmdrb2thc3NldHMuY29tL3Byb3BlcnR5LzI1MDA2NC8yMTk5OTUwXzgzNjM2cGljNi5qcGciLAoiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY3LzIxOTk5NjlfODM2MzVwaWMxLmpwZyIsCiJodHRwczovL3ppZ25uZXQuc2dwMS5kaWdpdGFsb2NlYW5zcGFjZXMuY29tL2xpdmluZ2pvaW4vY2xhc3NpZmllZC8xODk2ODkvYmlnLzIxMDEyMDIzNTIxNTUwMDk5MS5qcGciLAoiaHR0cHM6Ly96aWdubmV0LnNncDEuZGlnaXRhbG9jZWFuc3BhY2VzLmNvbS9saXZpbmdqb2luL2NsYXNzaWZpZWQvMTg5Njg5L290aGVyL2JpZy8yMTAxMjAyMzUyMjAzMTc5MTguanBnIgpdLAoiZ2VvX2xhdGl0dWRlIjogIjEzLjc4Njg2MiIsCiJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLAoicHJvcGVydHlfaWQiIDogImNodTAwMSIsCiJwb3N0X3RpdGxlX3RoIjogIuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lCIsCiJwb3N0X2Rlc2NyaXB0aW9uX3RoIjogIuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lOC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lFxyXG7guKPguLLguKLguKXguLDguYDguK3guLXguKLguJRcclxu4LiX4Li14LmI4LiU4Li04LiZ4LiC4LiZ4Liy4LiUNuC5hOC4o+C5iFxyXG7guKvguJnguYnguLLguIHguKfguYnguLLguIcgMzAg4LmA4Lih4LiV4LijXHJcbuC4quC4luC4suC4meC4l+C4teC5iOC5g+C4geC4peC5ieC5gOC4hOC4teC4ouC4h1xyXG7guJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYxcclxu4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNVxyXG5cclxu4LmD4Lir4LmJ4LmA4LiK4LmI4LiyIDEwMCwwMDAg4Lia4Liy4LiXXHJcblxyXG7guKrguJnguYPguIjguJXguLTguJTguJXguYjguK0g4LiK4LmI4Lit4LiX4Li04Lie4Lii4LmMIDA5MTgyOTM4NCIsCiJwb3N0X3RpdGxlX2VuIjogIkxhbmQgZm9yIHJlbnQgYmFuZ2tsb3lzYWlub2kgNiByYWkgc3VpdGFibGUgZm9yIGRldmVsb3BpbmciLAoicG9zdF9kZXNjcmlwdGlvbl9lbiI6ICJMYW5kIGZvciByZW50IGJhbmdrbG95c2Fpbm9pIDYgcmFpIHN1aXRhIGJsZSBmb3IgZGV2ZWxvcGluZyIsCiJwcmljZV9iYWh0IjogIjEwMDAwMCIsCiJsaXN0aW5nX3R5cGUiOiAi4LmD4Lir4LmJ4LmA4LiK4LmI4LiyIiwKInByb3BlcnR5X3R5cGUiOiAiNiIsCiJwcm9taW5lbnRfcG9pbnQgIiA6ICLguKvguJnguYnguLLguIHguKfguYnguLLguIfguKHguLLguIEg4LmD4Lir4LmJ4LmA4LiK4LmI4Liy4LiW4Li54LiB4Liq4Li44LiUIiwKImRpcmVjdGlvbl90eXBlIiA6ICIxMSIsCiJhZGRyX3Byb3ZpbmNlIjogIuC4meC4meC4l+C4muC4uOC4o+C4tSIsCiJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4oeC4t+C4reC4h+C4meC4meC4l+C4muC4uOC4o+C4tSIsCiJhZGRyX3N1Yl9kaXN0cmljdCI6ICLguJrguLLguIfguIHguKPguYjguLLguIciLAoiYWRkcl9yb2FkIjogIuC4muC4suC4h+C4geC4o+C4p+C4oi3guYTguJfguKPguJnguYnguK3guKIiLAoiYWRkcl9zb2kiOiAi4LiL4Lit4Lii4Lia4Liy4LiH4LiB4Lij4Lin4LiiLeC5hOC4l+C4o+C4meC5ieC4reC4oiAzNCIsCiJhZGRyX25lYXJfYnkiOiAi4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNVxyXG7guJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYwiLAoibGFuZF9zaXplX3JhaSI6ICI2LjAiLAoibGFuZF9zaXplX25nYW4iOiAiMi4yIiwKImxhbmRfc2l6ZV93YSI6ICIxMC4wIiwKIm5hbWUiOiAi4LiK4Li5IiwKIm1vYmlsZSI6ICIwOTkyODk5OTk5IiwKImVtYWlsIjogImNob3IuY29tQGdtYWlsLmNvbSIsCiJsaW5lIjogIjA5OTI4OTk5OTkiLAoicHJvamVjdF9uYW1lIjogIuC4l+C4teC5iOC4lOC4tOC4mSDguJrguLLguIfguIHguKPguKfguKLguYTguJfguKIt4LiZ4LmJ4Lit4LiiIiwKImZsb29yX2FyZWEiOiAiMSIsCiJ3ZWIiOiBbCnsKImRzX25hbWUiOiAiZGRwcm9wZXJ0eSIsCiJkc19pZCI6ICIyIiwKInVzZXIiOiAia2xhLmFybnV0QGhvdG1haWwuY29tIiwKInBhc3MiOiAidmtJeTliIiwKImFjY291bnRfdHlwZSI6ICJub3JtYWwiCn0KXQp9
+                # "geo_latitude": "13.786862","geo_lonude": "100.757815", latitude 13.752222 longitude
+                # 13.8396 100.45645
+                try:
+                    WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
+                    time.sleep(1)
+                    js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
+                    self.firefox.execute_script(js)
+                except Exception as e:
+                    log.warning(e)
+                    pass
+
+                if (success == 'true'):
+                    self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL +Keys.HOME)  # scroll to head page
+                    WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
+                    #self.firefox.save_screenshot("debug_response/newp33.png")
+                    nextbttn = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
+                    self.firefox.execute_script("arguments[0].click();", nextbttn)
+
+        # case match choose first argument
+        else:
+            # self.firefox.save_screenshot("debug_response/newp3.png")
+            # select li first
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]/a')).click()
+            time.sleep(0.2)
+            # self.firefox.save_screenshot("debug_response/newp4.png")
+            linktxt = ''
+            cssselect = ''
+            if datahandled['property_type'] == "BUNG":
+                linktxt = 'บ้านเดี่ยว'
+                cssselect = 'BUNG'
+            elif datahandled['property_type'] == "TOWN":
+                linktxt = 'ทาวน์เฮ้าส์'
+                cssselect = 'TOWN'
+            elif datahandled['property_type'] == "SHOP":
+                linktxt = 'เชิงพาณิชย์'
+                cssselect = 'RET'
+            elif datahandled['property_type'] == "LAND":
+                linktxt = 'ที่ดิน'
+                cssselect = 'LAND'
+            elif datahandled['property_type'] == "APT":
+                linktxt = 'อพาร์ทเมนท์'
+                cssselect = 'APT'
+            elif datahandled['property_type'] == "OFF":
+                linktxt = 'เชิงพาณิชย์'
+                cssselect = 'OFF'
+            elif datahandled['property_type'] == "WAR":
+                linktxt = 'เชิงพาณิชย์'
+                cssselect = 'WAR'
+            elif datahandled['property_type'] == "BIZ":
+                linktxt = 'เชิงพาณิชย์'
+                cssselect = 'BIZ'
+            else:  # CONDO
+                linktxt = 'คอนโด'
+                cssselect = 'CONDO'
+            WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
+            time.sleep(0.1)
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
+            time.sleep(0.1)
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='" + cssselect + "']")).click()
+            time.sleep(0.1)
+            # self.firefox.save_screenshot("debug_response/newp5.png")
+            self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL +Keys.HOME)  # scroll to head page
+            WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
+            #self.firefox.save_screenshot("debug_response/newp33.png")
+            nextbttn = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
+            self.firefox.execute_script("arguments[0].click();", nextbttn)
+        
+        return success, detail
+
+    def inputpostdetail(self, datahandled):
+        log.debug('')
 
         success = "true"
         detail = ''
@@ -784,6 +842,7 @@ class ddproperty():
             else:
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[3]/label/span')).click()
             # self.firefox.save_screenshot("debug_response/newp5.png")
+            log.debug('input property type')
 
             # price
             try:
@@ -847,24 +906,28 @@ class ddproperty():
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.DELETE)
             WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(datahandled['post_title_th'])
+            log.debug('input title thai')
 
             # title en
             if datahandled['action'] == 'edit_post':
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.DELETE)  # clear for edit action
             WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(datahandled['post_title_en'])
+            log.debug('input title en')
 
             # desc thai
             if datahandled['action'] == 'edit_post':
                 WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL +"a")  # clear for edit action
                 WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.DELETE)  # clear for edit action
             WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
+            log.debug('input desc thai')
 
             # desc en
             if datahandled['action'] == 'edit_post':
                 WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.CONTROL +"a")  # clear for edit action
                 WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.DELETE)  # clear for edit action
             WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
+            log.debug('input desc en')
 
             # หันหน้าทางทิศ
             try:
@@ -893,6 +956,7 @@ class ddproperty():
             matchObj = re.search(r'รายละเอียดตัวแทน', self.firefox.page_source)
             if matchObj:
                 account_type = 'corporate'
+                log.debug('account_type corporate')
                 try:
                     if datahandled['action'] == 'edit_post':
                         WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL +"a")  # clear for edit action
@@ -906,6 +970,7 @@ class ddproperty():
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
                 except:
                     pass
+                    log.warning('cannot input corporate data')
             
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(0.5)
@@ -929,8 +994,8 @@ class ddproperty():
                     imgid = imgli.get_attribute("id")
                     if imgid != None:
                         imgli.click()
-                        WebDriverWait(
-                            self.firefox,5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
+                        WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
+                        log.debug('delete image')
                         alert = self.firefox.switch_to.alert
                         alert.accept()
                         time.sleep(1.5)
@@ -938,19 +1003,28 @@ class ddproperty():
             for img in datahandled['post_images']:
                 time.sleep(1)
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
+                log.debug('post image %s',img)
                 time.sleep(1)
                 self.firefox.refresh()
+            log.debug('image success')
+
+            post_id = self.firefox.current_url.split("/")[-1]
+            log.debug('post post id %s',post_id)
 
             WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             # self.firefox.save_screenshot("debug_response/newp10.png")
             time.sleep(1)
+            log.debug('click next')
+            
+            if datahandled['action'] == 'edit_post':
+                return success, detail, post_id, account_type
+                
             WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
             time.sleep(1)
+            log.debug('click publish')
             # self.firefox.save_screenshot("debug_response/newp11.png")
             # f = open("debug_response/ddpost.html", "wb")
             # f.write(self.firefox.page_source.encode('utf-8').strip())
-
-            post_id = self.firefox.current_url.split("/")[-1]
 
             # create post จะสำเร็จก็ต่อเมื่อ publish ได้ด้วย ถ้า editpost แค่ edit ได้ ก็ถือว่าสำเร็จ
             if datahandled['action'] == 'create_post':
@@ -964,7 +1038,8 @@ class ddproperty():
         return success, detail, post_id, account_type
 
     def create_post_bak(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         # start process
@@ -1240,61 +1315,33 @@ class ddproperty():
         }
 
     def boost_post(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
-        time_start = datetime.datetime.utcnow()
+        log.debug('')
 
-        post_id = postdata['post_id']
-        log_id = postdata['log_id']
-        user = postdata['user']
-        passwd = postdata['pass']
+        time_start = datetime.datetime.utcnow()
 
         # start process
         #
+        datahandled = self.postdata_handle(postdata)
 
         # login
-        test_login = self.test_login(postdata)
+        test_login = self.test_login(datahandled)
         success = test_login["success"]
         detail = test_login["detail"]
         agent_id = test_login["agent_id"]
         if success == "true":
             datapost = {
-                "country": "th",
-                "session":
-                "3B7EC6629ADB7BD3ADEA8CFD4F91E7D3"  # TODO จะใช้ได้ตลอดไปมั้ย
+                "listing_id[]": datahandled['post_id'],
+                "statusCode": "ACT",
+                "expectedCredits[]":0,
             }
-            datajson = json.dumps(datapost)
-            headerreg = {"content-type": "application/json"}
-            r = httprequestObj.http_post_with_multi_options(
-                'https://auth.propertyguru.com/session-to-jwt',
-                headerreg=headerreg,
-                jsoncontent=datajson)
+            r = httprequestObj.http_post('https://agentnet.ddproperty.com/repost_listing',datapost)
             data = r.text
-            # f = open("debug_response/ddsessiontojwt.html", "wb")
-            # f.write(data.encode('utf-8').strip())
-            jsonres = r.json()
-            if not jsonres["token"]:
-                success == "false"
-                detail = jsonres
-            if success == "true":
-                headerreg = {
-                    "content-type": "application/json",
-                    "authorization": "Bearer " + jsonres["token"]
-                }
-                # r = httprequestObj.http_post_with_multi_options('https://ads-products.propertyguru.com/api/v1/listing/7797845/product/ranked-spotlight/add?region=th&agentId=10760807', headerreg=headerreg, jsoncontent={})
-                r = httprequestObj.http_post_with_multi_options(
-                    'https://ads-products.propertyguru.com/api/v1/listing/' +
-                    post_id +
-                    '/product/ranked-spotlight/add?region=th&agentId=' +
-                    agent_id,
-                    headerreg=headerreg,
-                    jsoncontent={})
-                data = r.text
-                f = open("debug_response/ddboostpostresponse.html", "wb")
-                f.write(data.encode('utf-8').strip())
-
-                # TODO ถ้า boost สำเร็จ response จะเป็นยังไง
-                success = "false"
-                detail = data + " ต้องมี credit จริง เพื่อเก็บ response เวลา boost post สำเร็จ"
+            datajson = r.json()
+            #f = open("debug_response/ddboostpostresponse.html", "wb")
+            #f.write(data.encode('utf-8').strip())
+            if datajson['status'] != 0:
+                success = 'false'
+                detail = datajson['message']
 
             #
             # end process
@@ -1307,12 +1354,14 @@ class ddproperty():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            "log_id": log_id,
-            "post_id": post_id,
+            "log_id": datahandled['log_id'],
+            "post_id": datahandled['post_id'],
+            "websitename": self.websitename
         }
 
     def delete_post(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         log_id = postdata['log_id']
@@ -1345,9 +1394,7 @@ class ddproperty():
                 "remove": "Delete selected",
                 "selecteds": post_id,
             }
-            r = httprequestObj.http_post(
-                'https://agentnet.ddproperty.com/remove_listing',
-                data=datapost)
+            r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing',data=datapost)
             data = r.text
             # f = open("debug_response/dddelete.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1380,7 +1427,8 @@ class ddproperty():
         }
 
     def edit_post_bak(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         # post_img_url_lists = postdata['post_img_url_lists']
@@ -1898,7 +1946,8 @@ class ddproperty():
         }
 
     def edit_post(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         # start proces
@@ -1912,19 +1961,18 @@ class ddproperty():
         detail = test_login["detail"]
 
         if (success == "true"):
-            self.firefox.get(
-                'https://agentnet.ddproperty.com/create-listing/detail/' +
-                str(datahandled['post_id']))
+            self.firefox.get('https://agentnet.ddproperty.com/create-listing/detail/' +str(datahandled['post_id']))
             # self.firefox.save_screenshot("debug_response/edit1.png")
-            matchObj = re.search(r'500 Internal Server Error',
-                                 self.firefox.page_source)
+            matchObj = re.search(r'500 Internal Server Error',self.firefox.page_source)
             if matchObj:
                 success = 'false'
-                detail = 'not found ddproperty post id ' + datahandled[
-                    'post_id']
+                detail = 'not found ddproperty post id ' + datahandled['post_id']
             if success == 'true':
-                success, detail, post_id, account_type = self.inputpostattr(
-                    datahandled)
+                self.firefox.get('https://agentnet.ddproperty.com/create-listing/location/' +str(datahandled['post_id']))
+                WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
+                success ,detail = self.inputpostgeneral(datahandled)
+                if success == 'true':
+                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)    
         #
         # end process
 
@@ -1940,12 +1988,3 @@ class ddproperty():
             "websitename": self.websitename
         }
 
-    def print_debug(self, msg):
-        if (self.debug == 1):
-            print(msg)
-        return True
-
-    def print_debug_data(self, data):
-        if (self.debugdata == 1):
-            print(data)
-        return True
