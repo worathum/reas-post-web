@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import logging.config
 import shutil
 import datetime
 import importlib
@@ -10,27 +11,32 @@ import os
 import concurrent.futures
 from webmodule.lib_httprequest import *
 httprequestObj = lib_httprequest()
-logging.basicConfig(level=logging.DEBUG, filename='log/app.log', filemode='a', format='%(process)d-%(asctime)s-%(levelname)s-%(message)s', datefmt='%d-%b-%y %H:%M:%S')
 
+try:
+    import configs
+except ImportError:
+    configs = {}
+logging.config.dictConfig(getattr(configs, 'logging_config', {}))
+log = logging.getLogger()
 
 class postcore():
+
 
     name = 'postcore'
 
     def __init__(self):
-        try:
-            import configs
-        except ImportError:
-            configs = {}
         self.secret_key = getattr(configs, 'secret_key', [])
         self.list_module = getattr(configs, 'list_module', [])
         self.list_action = getattr(configs, 'list_action', [])
         self.encoding = 'utf-8'
+        log.debug('load app config success.')
+
 
     def coreworker(self, access_token, postdata):
 
         # check secret key
         if self.secret_key != access_token:
+            log.error('wrong access token.')
             return {
                 "success": "false",
                 "detail": "Wrong access token",
@@ -41,6 +47,7 @@ class postcore():
         try:
             postdatajson = base64.b64decode(postdata)
         except ValueError as e:
+            log.error('base64 decode error.'+str(e))
             return {
                 "success": "false",
                 "detail": "Wrong data request (" + str(e) + ")",
@@ -50,6 +57,7 @@ class postcore():
         try:
             datarequest = json.loads(postdatajson.decode('utf-8'))
         except ValueError as e:
+            log.error('json decode error.'+str(e))
             return {
                 "success": "false",
                 "detail": "Wrong json format (" + str(e) + ")",
@@ -58,6 +66,7 @@ class postcore():
         # check action in list
         action = datarequest['action']
         if(action not in self.list_action):
+            log.error('action %s not allow',datarequest['action'])
             return {
                 "success": "false",
                 "detail": "Action not allow",
@@ -69,6 +78,7 @@ class postcore():
             "action": action,
             "web": {},
         }
+
         # store image in img tmp
         try:
             allimages = datarequest["post_img_url_lists"]
@@ -77,9 +87,14 @@ class postcore():
         datarequest['post_images'] = []
         dirtmp = str(os.getpid())+'_'+str(datetime.datetime.utcnow().strftime("%Y%m%d%H:%M:%S"))
         os.mkdir("imgtmp/"+dirtmp)
+        log.debug('image directory imgtmp/%s is created',dirtmp)
         imgcount = 1
         for imgurl in allimages:
-            res = httprequestObj.http_get(imgurl, verify=False)
+            try:
+                res = httprequestObj.http_get(imgurl, verify=False)
+            except:
+                log.warning('http connection error %s',imgurl)
+                continue
             if res.status_code == 200:
                 if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png':
                     extension = res.headers['Content-Type'].split("/")[-1]
@@ -87,6 +102,10 @@ class postcore():
                         f.write(res.content)
                     datarequest['post_images'].append("imgtmp/"+dirtmp+"/"+str(imgcount)+"."+extension)
                     imgcount = imgcount+1
+                else:
+                    log.warning('url %s is not image content-type %s',imgurl,res.headers['Content-Type'])
+            else:
+                log.warning('image url response error %s',res.status_code)
 
         # define all website list
         weblists = datarequest['web']
@@ -106,6 +125,7 @@ class postcore():
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["post_url"] = ''
                     response["web"][websitename]["post_id"] = ''
+                    log.error('websitename %s is not in allow list module',websitename)
                     continue
                 # if file not exists websitename.py to next
                 if os.path.isfile('webmodule/'+websitename+'.py') == False:
@@ -118,6 +138,7 @@ class postcore():
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["post_url"] = ''
                     response["web"][websitename]["post_id"] = ''
+                    log.error('not found websitename %s module',websitename)
                     continue
                 # try:  # removed for debug
                 module = importlib.import_module('webmodule.'+websitename)
@@ -145,6 +166,7 @@ class postcore():
         # remove image tmp
         if os.path.isdir('imgtmp/'+dirtmp) == True:
             shutil.rmtree(os.path.abspath('imgtmp/'+dirtmp))
+            log.debug('removed image temp imgtmp/%s',dirtmp)
 
     #    if action == 'register_user':
     #         re    sponse["action"] = action
