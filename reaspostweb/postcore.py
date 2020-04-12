@@ -114,8 +114,6 @@ class postcore():
             else:
                 log.warning('image url response error %s',res.status_code)
         
-        exit()
-
         # define all website list
         weblists = datarequest['web']
         del(datarequest['web'])
