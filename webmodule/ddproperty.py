@@ -20,7 +20,7 @@ from urllib.parse import urlsplit
 import string
 import random
 from selenium.webdriver.support import expected_conditions as EC
-form selenium.webdriver.firefox.firefox_byna
+
 try:
     import configs
 except ImportError:
