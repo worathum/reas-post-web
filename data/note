@@ -39,7 +39,8 @@ cd /home/arnut/workspace/REASPOSTWEB/
 python3 -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure;
 
 
-
+install firefox on server debian
+https://unix.stackexchange.com/questions/395316/install-firefox-quantum-in-debian-9-stretch
 
 
 
