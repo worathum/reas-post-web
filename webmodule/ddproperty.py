@@ -242,6 +242,8 @@ class ddproperty():
             # agent_id = re.search(r'optimize_agent_id = (\d+);', self.firefox.page_source).group(1)
             agent_id = re.search(r'{"user":{"id":(\d+),',self.firefox.page_source).group(1)
 
+        log.debug("login status %s agent id %s",success,agent_id)
+
         #
         # end process
 
@@ -1960,6 +1962,7 @@ class ddproperty():
 
         if (success == "true"):
             self.firefox.get('https://agentnet.ddproperty.com/create-listing/detail/' +str(datahandled['post_id']))
+            log.debug('search post id %s',str(datahandled['post_id']))
             # self.firefox.save_screenshot("debug_response/edit1.png")
             matchObj = re.search(r'500 Internal Server Error',self.firefox.page_source)
             if matchObj:
@@ -1967,6 +1970,8 @@ class ddproperty():
                 detail = 'not found ddproperty post id ' + datahandled['post_id']
             if success == 'true':
                 self.firefox.get('https://agentnet.ddproperty.com/create-listing/location/' +str(datahandled['post_id']))
+                log.debug('go to edit post %s',str(datahandled['post_id'])
+                time.sleep(0.5)
                 WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
                 success ,detail = self.inputpostgeneral(datahandled)
                 if success == 'true':
