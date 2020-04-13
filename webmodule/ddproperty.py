@@ -1970,7 +1970,7 @@ class ddproperty():
                 detail = 'not found ddproperty post id ' + datahandled['post_id']
             if success == 'true':
                 self.firefox.get('https://agentnet.ddproperty.com/create-listing/location/' +str(datahandled['post_id']))
-                log.debug('go to edit post %s',str(datahandled['post_id'])
+                log.debug('go to edit post %s',str(datahandled['post_id']))
                 time.sleep(0.5)
                 WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
                 success ,detail = self.inputpostgeneral(datahandled)
