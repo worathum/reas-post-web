@@ -156,7 +156,7 @@ class postcore():
                     webdata.update(datarequest)
                     futures.append(pool.submit(actioncall, webdata))
                     response["web"][websitename] = getattr(module_instance, action)(webdata)
-                except Exception:  # removed for debug
+                except Exception as e:  # removed for debug
                     response["web"][websitename] = {}
                     response["web"][websitename]["success"] = "false"
                     response["web"][websitename]["detail"] = str(e)
@@ -164,6 +164,7 @@ class postcore():
                     response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
+                    log.error('import error %s',e)
                     continue
             for poolresult in concurrent.futures.as_completed(futures):
                 webresult = poolresult.result()
