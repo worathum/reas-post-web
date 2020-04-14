@@ -244,8 +244,8 @@ class ddproperty():
 
         log.debug("login status %s agent id %s",success,agent_id)
 
-        # if(postdata['action'] == 'test_login':
-        #     self.firefox.quit()
+        if(postdata['action'] == 'test_login'):
+            self.firefox.quit()
 
         #
         # end process
