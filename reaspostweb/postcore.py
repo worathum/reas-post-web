@@ -18,6 +18,8 @@ try:
     import configs
 except ImportError:
     configs = {}
+if os.path.isdir('log') == False:
+    os.mkdir('log')
 logging.config.dictConfig(getattr(configs, 'logging_config', {}))
 log = logging.getLogger()
 
