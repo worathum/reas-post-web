@@ -244,6 +244,9 @@ class ddproperty():
 
         log.debug("login status %s agent id %s",success,agent_id)
 
+        if(postdata['action'] == 'test_login':
+            self.firefox.quit()
+
         #
         # end process
 
@@ -1017,6 +1020,7 @@ class ddproperty():
             log.debug('click next')
             
             if datahandled['action'] == 'edit_post':
+                self.firefox.quit()
                 return success, detail, post_id, account_type
                 
             WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
