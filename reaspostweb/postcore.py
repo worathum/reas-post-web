@@ -149,24 +149,24 @@ class postcore():
                     response["web"][websitename]["post_id"] = ''
                     log.error('not found websitename %s module',websitename)
                     continue
-                # try:  # removed for debug
-                module = importlib.import_module('webmodule.'+websitename)
-                classname = getattr(module, websitename)
-                module_instance = classname()
-                actioncall = getattr(module_instance, action)
-                webdata = webitem
-                webdata.update(datarequest)
-                futures.append(pool.submit(actioncall, webdata))
-                #response["web"][websitename] = getattr(module_instance, action)(webdata)
-                # except BaseException:  # removed for debug
-                #     response["web"][websitename] = {}
-                #     response["web"][websitename]["success"] = "false"
-                #     response["web"][websitename]["detail"] = "Import errors: "
-                #     response["web"][websitename]["ds_id"] = webitem['ds_id']
-                #     response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
-                #     response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
-                #     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
-                #     continue
+                try:  # removed for debug
+                    module = importlib.import_module('webmodule.'+websitename)
+                    classname = getattr(module, websitename)
+                    module_instance = classname()
+                    actioncall = getattr(module_instance, action)
+                    webdata = webitem
+                    webdata.update(datarequest)
+                    futures.append(pool.submit(actioncall, webdata))
+                    #response["web"][websitename] = getattr(module_instance, action)(webdata)
+                except BaseException:  # removed for debug
+                    response["web"][websitename] = {}
+                    response["web"][websitename]["success"] = "false"
+                    response["web"][websitename]["detail"] = "Import errors: "
+                    response["web"][websitename]["ds_id"] = webitem['ds_id']
+                    response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
+                    response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
+                    response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
+                    continue
             for poolresult in concurrent.futures.as_completed(futures):
                 webresult = poolresult.result()
                 websitename = webresult["websitename"]
