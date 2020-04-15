@@ -109,6 +109,7 @@ class postcore():
                     extension = res.headers['Content-Type'].split("/")[-1]
                     with open("imgtmp/"+dirtmp+"/"+str(imgcount)+"."+extension, 'wb') as f:
                         f.write(res.content)
+                        f.close()
                     datarequest['post_images'].append("imgtmp/"+dirtmp+"/"+str(imgcount)+"."+extension)
                     imgcount = imgcount+1
                 else:

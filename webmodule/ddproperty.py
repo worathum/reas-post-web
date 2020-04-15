@@ -70,8 +70,8 @@ class ddproperty():
             'https://www.ddproperty.com/agent-register?package=TRIAL',
             verify=False)
         data = r.text
-        f = open("debug_response/ddloginfrom.html", "wb")
-        f.write(data.encode('utf-8').strip())
+        #f = open("debug_response/ddloginfrom.html", "wb")
+        #f.write(data.encode('utf-8').strip())
 
         datapost = {
             'agency_id': 'OTHER',
@@ -105,8 +105,8 @@ class ddproperty():
         r = httprequestObj.http_post(
             'https://www.ddproperty.com/agent-register', data=datapost)
         data = r.text
-        f = open("debug_response/ddregister.html", "wb")
-        f.write(data.encode('utf-8').strip())
+        #f = open("debug_response/ddregister.html", "wb")
+        #f.write(data.encode('utf-8').strip())
 
         register_success = "true"
         detail = ""
@@ -150,9 +150,9 @@ class ddproperty():
         r = httprequestObj.http_post(
             'https://agentnet.ddproperty.com/is_authentic_user', data=datapost)
         data = r.text
-        f = open("debug_response/ddauthentic.html", "wb")
-        f.write(data.encode('utf-8').strip())
-        datajson = r.json()
+        #f = open("debug_response/ddauthentic.html", "wb")
+        #f.write(data.encode('utf-8').strip())
+        #datajson = r.json()
         # if logged in ,session is 0 cause  {"status":0,"name":"\u0e14\u0e39\u0e14\u0e35 \u0e14\u0e2d\u0e17\u0e04\u0e2d\u0e21","email":"kla.arnut@hotmail.com","profile":"https:\/\/th1-cdn.pgimgs.com\/agent\/10760807\/APHO.74655966.C100X100.jpg"}
         if datajson['status'] and datajson['status'] == 0:
             if datajson['email'] != user:
@@ -170,8 +170,8 @@ class ddproperty():
             r = httprequestObj.http_post(
                 'https://agentnet.ddproperty.com/ex_login_ajax', data=datapost)
             data = r.text
-            f = open("debug_response/logindd.html", "wb")
-            f.write(data.encode('utf-8').strip())
+            #f = open("debug_response/logindd.html", "wb")
+            #f.write(data.encode('utf-8').strip())
             matchObj = re.search(r'success', data)
             if matchObj:
                 agent_id = re.search(r'jwt_prod_(\d+)', data).group(1)
@@ -1264,8 +1264,8 @@ class ddproperty():
                     'https://agentnet.ddproperty.com/sf2-agent/ajax/listings',
                     jsoncontent=datastr)
                 data = r.text
-                f = open("debug_response/postdd.html", "wb")
-                f.write(data.encode('utf-8').strip())
+                #f = open("debug_response/postdd.html", "wb")
+                #f.write(data.encode('utf-8').strip())
                 matchObj = re.search(r'errors', data)
                 if matchObj:
                     success = "false"
@@ -1923,8 +1923,8 @@ class ddproperty():
                 post_id,
                 jsoncontent=datastr)
             data = r.text
-            f = open("debug_response/editpostdd.html", "wb")
-            f.write(data.encode('utf-8').strip())
+            #f = open("debug_response/editpostdd.html", "wb")
+            #f.write(data.encode('utf-8').strip())
 
             matchObj = re.search(r'errors', data)
             if matchObj:
