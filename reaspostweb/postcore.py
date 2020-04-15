@@ -166,7 +166,7 @@ class postcore():
                     response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
-                    log.error('import error %s',e)
+                    log.error('import error %s',str(e))
                     continue
 
             for poolresult in concurrent.futures.as_completed(futures):
