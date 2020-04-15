@@ -18,6 +18,8 @@ try:
     import configs
 except ImportError:
     configs = {}
+if os.path.isdir('log') == False:
+    os.mkdir('log')
 logging.config.dictConfig(getattr(configs, 'logging_config', {}))
 log = logging.getLogger()
 
@@ -121,19 +123,19 @@ class postcore():
         with concurrent.futures.ProcessPoolExecutor() as pool:
             for webitem in weblists:
                 websitename = webitem['ds_name']
-                # if not defind in configs['list_module']
-                if websitename not in self.list_module:
-                    response["web"][websitename] = {}
-                    response["web"][websitename]["success"] = "false"
-                    response["web"][websitename]["detail"] = "not found website class"
-                    response["web"][websitename]["ds_id"] = webitem['ds_id']
-                    response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
-                    response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
-                    response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
-                    response["web"][websitename]["post_url"] = ''
-                    response["web"][websitename]["post_id"] = ''
-                    log.error('websitename %s is not in allow list module',websitename)
-                    continue
+                # # if not defind in configs['list_module']
+                # if websitename not in self.list_module:
+                #     response["web"][websitename] = {}
+                #     response["web"][websitename]["success"] = "false"
+                #     response["web"][websitename]["detail"] = "not found website class"
+                #     response["web"][websitename]["ds_id"] = webitem['ds_id']
+                #     response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
+                #     response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
+                #     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
+                #     response["web"][websitename]["post_url"] = ''
+                #     response["web"][websitename]["post_id"] = ''
+                #     log.error('websitename %s is not in allow list module',websitename)
+                #     continue
                 # if file not exists websitename.py to next
                 if os.path.isfile('webmodule/'+websitename+'.py') == False:
                     response["web"][websitename] = {}
@@ -156,15 +158,17 @@ class postcore():
                     webdata.update(datarequest)
                     futures.append(pool.submit(actioncall, webdata))
                     #response["web"][websitename] = getattr(module_instance, action)(webdata)
-                except BaseException:  # removed for debug
+                except Exception as e:  # removed for debug
                     response["web"][websitename] = {}
                     response["web"][websitename]["success"] = "false"
-                    response["web"][websitename]["detail"] = "Import errors: "
+                    response["web"][websitename]["detail"] = str(e)
                     response["web"][websitename]["ds_id"] = webitem['ds_id']
                     response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
+                    log.error('import error %s',e)
                     continue
+
             for poolresult in concurrent.futures.as_completed(futures):
                 webresult = poolresult.result()
                 websitename = webresult["websitename"]
