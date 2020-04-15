@@ -292,7 +292,7 @@ class ddproperty():
         except KeyError as e:
             datahandled['listing_type'] = "SALE"
             log.warning(e)
-        if datahandled['listing_type'] == "ให้เช่า":
+        if datahandled['listing_type'] == "เช่า":
             datahandled['listing_type'] = "RENT"
         elif datahandled['listing_type'] == "ขายดาวน์":
             datahandled['listing_type'] = "OPT"
