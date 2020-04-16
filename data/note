@@ -43,11 +43,16 @@ install firefox on server debian
 https://unix.stackexchange.com/questions/395316/install-firefox-quantum-in-debian-9-stretch
 
 
+install google chrome on ubuntu
+https://www.linuxbabe.com/ubuntu/install-google-chrome-ubuntu-18-04-lts
 
+install chromedriver
+cd /bin
+wget https://chromedriver.storage.googleapis.com/81.0.4044.69/chromedriver_linux64.zip
 unzip chromedriver_linux64.zip; 
 chmod +x chromedriver; 
-cd /app; 
-python -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure; "
+rm -f chromedriver_linux64.zip
+python3 -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure; "
 
 
 dd edit
