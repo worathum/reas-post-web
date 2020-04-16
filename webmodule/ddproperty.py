@@ -13,7 +13,8 @@ import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.options import Options
+#from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 import time
 from urllib.parse import urlsplit
@@ -204,8 +205,10 @@ class ddproperty():
         options.add_argument('disable-infobars')
         options.add_argument("--disable-extensions")
         options.add_argument("window-size=1024,768")
-        firefox_driver_binary = "/bin/geckodriver"
-        self.firefox = webdriver.Firefox(executable_path=firefox_driver_binary,options=options)
+        #firefox_driver_binary = "/bin/geckodriver"
+        #self.firefox = webdriver.Chrome(executable_path=firefox_driver_binary,options=options)
+        chrome_driver_binary ="/bin/chromedriver"
+        self.firefox = webdriver.Chrome(chrome_driver_binary,options=options)
 
         # open login page
         self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
@@ -217,7 +220,8 @@ class ddproperty():
         nextbttn = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("next"))
         nextbttn.click()
         log.debug('click next')
-        WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.ID, "inputPassword")))
+        time.sleep(0.8)
+        WebDriverWait(self.firefox,10).until(EC.presence_of_element_located((By.ID, "inputPassword")))
 
         # input password and enter
         passtxt = WebDriverWait(self.firefox,5).until(lambda x: x.find_element_by_id("inputPassword"))
@@ -835,17 +839,20 @@ class ddproperty():
             # self.firefox.save_screenshot("debug_response/newp4.png")
             # WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][id='listing-type-"+datahandled['listing_type']+"']")).find_element_by_tag_name('span').click()
 
-            WebDriverWait(self.firefox,5).until(EC.presence_of_element_located((By.CLASS_NAME, 'l-listing-create-basic')))
+            WebDriverWait(self.firefox,10).until(EC.presence_of_element_located((By.CLASS_NAME, 'l-listing-create-basic')))
+            time.sleep(1)
 
             # type
             if datahandled['listing_type'] == "SALE":
-                WebDriverWait( self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[1]/label/span')).click()
+                WebDriverWait( self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[1]/label/span')).click()
+                log.debug('input property type SALE')
             elif datahandled['listing_type'] == "RENT":
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[2]/label/span')).click()
+                WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[2]/label/span')).click()
+                log.debug('input property type RENT')
             else:
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[3]/label/span')).click()
+                WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[3]/label/span')).click()
+                log.debug('input property type OPT')
             # self.firefox.save_screenshot("debug_response/newp5.png")
-            log.debug('input property type')
 
             # price
             try:
