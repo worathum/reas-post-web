@@ -215,14 +215,12 @@ class ddproperty():
         emailtxt = WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("emailInput"))
         emailtxt.send_keys(postdata['user'])
         log.debug('input email')
-        nextbttn = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("next"))
-        nextbttn.click()
+        WebDriverWait(self.chrome, 5).until(EC.element_to_be_clickable((By.ID,"next"))).click()
         log.debug('click next')
-        time.sleep(0.8)
-        WebDriverWait(self.chrome,10).until(EC.presence_of_element_located((By.ID, "inputPassword")))
+        time.sleep(1)      
 
         # input password and enter
-        passtxt = WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("inputPassword"))
+        passtxt = WebDriverWait(self.chrome,30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
         passtxt.send_keys(postdata['pass'])
         log.debug('input password')
         passtxt.send_keys(Keys.ENTER)
@@ -721,7 +719,7 @@ class ddproperty():
                 except Exception as e:
                     success = 'false'
                     detail = 'for a new project name, province , district , subdistrict error'
-                    log.error(e)
+                    log.error(str(e))
 
                 # road
                 try:  
@@ -1021,6 +1019,7 @@ class ddproperty():
             post_id = self.chrome.current_url.split("/")[-1]
             log.debug('post post id %s',post_id)
 
+            WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')))
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             # self.chrome.save_screenshot("debug_response/newp10.png")
             time.sleep(0.5)
