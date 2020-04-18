@@ -217,7 +217,7 @@ class ddproperty():
         log.debug('input email')
         WebDriverWait(self.chrome, 5).until(EC.element_to_be_clickable((By.ID,"next"))).click()
         log.debug('click next')
-        time.sleep(1)      
+        time.sleep(1.8)      
 
         # input password and enter
         passtxt = WebDriverWait(self.chrome,30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
@@ -613,7 +613,7 @@ class ddproperty():
             if success == 'true':
                 success, detail, post_id, account_type = self.inputpostdetail(datahandled)    
         
-        log.debug('edit post done')
+        log.debug('create post done')
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -1032,7 +1032,7 @@ class ddproperty():
                 return success, detail, post_id, account_type
                 
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
-            time.sleep(0.5)
+            time.sleep(1.5)
             log.debug('click publish')
             # self.chrome.save_screenshot("debug_response/newp11.png")
             # f = open("debug_response/ddpost.html", "wb")
