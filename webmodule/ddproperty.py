@@ -291,7 +291,7 @@ class ddproperty():
             datahandled['listing_type'] = postdata['listing_type']
         except KeyError as e:
             datahandled['listing_type'] = "SALE"
-            log.warning(e)
+            log.warning(str(e))
         if datahandled['listing_type'] == "เช่า":
             datahandled['listing_type'] = "RENT"
         elif datahandled['listing_type'] == "ขายดาวน์":
@@ -304,7 +304,7 @@ class ddproperty():
             datahandled['property_type'] = postdata['property_type']
         except KeyError as e:
             datahandled['property_type'] = "CONDO"
-            log.warning(e)
+            log.warning(str(e))
         if datahandled['property_type'] == '2' or datahandled[
                 'property_type'] == "บ้านเดี่ยว":
             datahandled['property_type'] = "BUNG"
@@ -342,189 +342,189 @@ class ddproperty():
             datahandled['post_img_url_lists'] = postdata['post_img_url_lists']
         except KeyError as e:
             datahandled['post_img_url_lists'] = {}
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['price_baht'] = postdata['price_baht']
         except KeyError as e:
             datahandled['price_baht'] = 0
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['addr_province'] = postdata['addr_province']
         except KeyError as e:
             datahandled['addr_province'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['addr_district'] = postdata['addr_district']
         except KeyError as e:
             datahandled['addr_district'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['addr_sub_district'] = postdata['addr_sub_district']
         except KeyError as e:
             datahandled['addr_sub_district'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['addr_road'] = postdata['addr_road']
         except KeyError as e:
             datahandled['addr_road'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['addr_near_by'] = postdata['addr_near_by']
         except KeyError as e:
             datahandled['addr_near_by'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['addr_postcode'] = postdata['addr_postcode']
         except KeyError as e:
             datahandled['addr_postcode'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['floorarea_sqm'] = int(postdata['floorarea_sqm'])
         except KeyError as e:
             datahandled['floorarea_sqm'] = 0
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['geo_latitude'] = postdata['geo_latitude']
         except KeyError as e:
             datahandled['geo_latitude'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['geo_longitude'] = postdata['geo_longitude']
         except KeyError as e:
             datahandled['geo_longitude'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['property_id'] = postdata['property_id']
         except KeyError as e:
             datahandled['property_id'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['post_title_th'] = postdata['post_title_th']
         except KeyError as e:
             datahandled['post_title_th'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['post_description_th'] = postdata[
                 'post_description_th']
         except KeyError as e:
             datahandled['post_description_th'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['post_title_en'] = postdata['post_title_en']
         except KeyError as e:
             datahandled['post_title_en'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['post_description_en'] = postdata[
                 'post_description_en']
         except KeyError as e:
             datahandled['post_description_en'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['ds_id'] = postdata["ds_id"]
         except KeyError as e:
             datahandled['ds_id'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['ds_name'] = postdata["ds_name"]
         except KeyError as e:
             datahandled['ds_name'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['user'] = postdata['user']
         except KeyError as e:
             datahandled['user'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['pass'] = postdata['pass']
         except KeyError as e:
             datahandled['pass'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['project_name'] = postdata["project_name"]
         except KeyError as e:
             datahandled['project_name'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['name'] = postdata["name"]
         except KeyError as e:
             datahandled['name'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['mobile'] = postdata["mobile"]
         except KeyError as e:
             datahandled['mobile'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['email'] = postdata["email"]
         except KeyError as e:
             datahandled['email'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['web_project_name'] = postdata["web_project_name"]
         except KeyError as e:
             datahandled['web_project_name'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['action'] = postdata["action"]
         except KeyError as e:
             datahandled['action'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['bath_room'] = postdata["bath_room"]
         except KeyError as e:
             datahandled['bath_room'] = 0
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['bed_room'] = postdata["bed_room"]
         except KeyError as e:
             datahandled['bed_room'] = 0
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['floor_total'] = postdata["floor_total"]
         except KeyError as e:
             datahandled['floor_total'] = 1
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['floor_level'] = postdata["floor_level"]
         except KeyError as e:
             datahandled['floor_level'] = 1
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['direction_type'] = postdata["direction_type"]
         except KeyError as e:
             datahandled['direction_type'] = "ทิศเหนือ"
-            log.warning(e)
+            log.warning(str(e))
         if datahandled['direction_type'] == '11':
             datahandled['direction_type'] = "ทิศเหนือ"
         elif datahandled['direction_type'] == '12':
@@ -549,37 +549,37 @@ class ddproperty():
             datahandled['post_id'] = postdata["post_id"]
         except KeyError as e:
             datahandled['post_id'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['log_id'] = postdata["log_id"]
         except KeyError as e:
             datahandled['log_id'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['land_size_rai'] = str(postdata["land_size_rai"])
         except KeyError as e:
             datahandled['land_size_rai'] = '0'
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['land_size_ngan'] = str(postdata["land_size_ngan"])
         except KeyError as e:
             datahandled['land_size_ngan'] = '0'
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['land_size_wa'] = str(postdata["land_size_wa"])
         except KeyError as e:
             datahandled['land_size_wa'] = '0'
-            log.warning(e)
+            log.warning(str(e))
 
         try:
             datahandled['addr_road'] = postdata["addr_road"]
         except KeyError as e:
             datahandled['addr_road'] = ''
-            log.warning(e)
+            log.warning(str(e))
 
         self.handled = True
 
@@ -612,6 +612,8 @@ class ddproperty():
             success ,detail = self.inputpostgeneral(datahandled)
             if success == 'true':
                 success, detail, post_id, account_type = self.inputpostdetail(datahandled)    
+        
+        log.debug('edit post done')
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -719,7 +721,7 @@ class ddproperty():
                 except Exception as e:
                     success = 'false'
                     detail = 'for a new project name, province , district , subdistrict error'
-                    log.error(str(e))
+                    log.error(str(str(e)))
 
                 # road
                 try:  
@@ -741,7 +743,7 @@ class ddproperty():
                     self.chrome.execute_script(js)
                     time.sleep(0.2)
                 except Exception as e:
-                    log.warning(e)
+                    log.warning(str(e))
                     pass
 
                 if (success == 'true'):
@@ -1042,7 +1044,7 @@ class ddproperty():
                 if matchObj:
                     success = "false"
                     detail = 'Active Unit Listing quota exceeded'
-        
+                    
         self.chrome.quit()
 
         return success, detail, post_id, account_type
@@ -1985,7 +1987,9 @@ class ddproperty():
                 WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
                 success ,detail = self.inputpostgeneral(datahandled)
                 if success == 'true':
-                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)    
+                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+
+        log.debug('edit post done')    
         #
         # end process
 
