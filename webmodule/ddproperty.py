@@ -613,7 +613,7 @@ class ddproperty():
             if success == 'true':
                 success, detail, post_id, account_type = self.inputpostdetail(datahandled)    
         
-        log.debug('edit post done')
+        log.debug('create post done')
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
