@@ -88,6 +88,7 @@ class postcore():
             allimages = datarequest["post_img_url_lists"]
         except KeyError:
             allimages = {}
+            log.warning(str(e))
         #dirtmp = str(os.getpid())+'_'+str(datetime.datetime.utcnow().strftime("%Y%m%d%H:%M:%S"))
         for i in range(6):
             dirtmp = 'imgupload_'+''.join(random.SystemRandom().choice(string.ascii_lowercase + string.ascii_uppercase  + string.digits) for _ in range(16))
@@ -101,6 +102,7 @@ class postcore():
         for imgurl in allimages:
             try:
                 res = httprequestObj.http_get(imgurl, verify=False)
+                log.debug('get image from url %s',imgurl)
             except:
                 log.warning('http connection error %s',imgurl)
                 continue

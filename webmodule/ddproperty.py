@@ -612,6 +612,8 @@ class ddproperty():
             success ,detail = self.inputpostgeneral(datahandled)
             if success == 'true':
                 success, detail, post_id, account_type = self.inputpostdetail(datahandled)    
+        
+        log.debug('edit post done')
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -1042,7 +1044,7 @@ class ddproperty():
                 if matchObj:
                     success = "false"
                     detail = 'Active Unit Listing quota exceeded'
-        
+                    
         self.chrome.quit()
 
         return success, detail, post_id, account_type
@@ -1985,7 +1987,9 @@ class ddproperty():
                 WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
                 success ,detail = self.inputpostgeneral(datahandled)
                 if success == 'true':
-                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)    
+                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+
+        log.debug('edit post done')    
         #
         # end process
 
