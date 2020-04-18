@@ -9,9 +9,14 @@ import json
 import datetime
 import sys
 from urllib.parse import unquote
-
-
 httprequestObj = lib_httprequest()
+
+try:
+    import configs
+except ImportError:
+    configs = {}
+logging.config.dictConfig(getattr(configs, 'logging_config', {}))
+log = logging.getLogger()
 
 
 class thaihometown():
@@ -65,7 +70,8 @@ class thaihometown():
             firstname=name_th,
             mobile=tel,
         )
-        r = httprequestObj.http_post('https://www.thaihometown.com/member/register', data=datapost)
+        r = httprequestObj.http_post(
+            'https://www.thaihometown.com/member/register', data=datapost)
         data = r.text
         # print (data)
 
@@ -114,9 +120,9 @@ class thaihometown():
             'part': '/addnew',
             'pwd_login': passwd,
             'user_login': user,
-
         }
-        r = httprequestObj.http_post('https://www.thaihometown.com/member/check', data=datapost)
+        r = httprequestObj.http_post(
+            'https://www.thaihometown.com/member/check', data=datapost)
         data = r.text
         # print(data)
         matchObj = re.search(r'member\/[0-9]+', data)
@@ -139,7 +145,7 @@ class thaihometown():
         }
 
     def create_post(self, postdata):
-        log.debug('') 
+        log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
@@ -158,7 +164,7 @@ class thaihometown():
         property_id = postdata['property_id']
         post_title_th = postdata['post_title_th']
         post_description_th = postdata['post_description_th']
-        post_description_th = post_description_th+"addddddddddddddddddddddddddddddddddddddddddddddddddadddddddddddddddddddddddddddddddddddddddddddddddddaddddddddddddddddddddddddddddddddddddddddddddddddddadddddddddddddddddddddddddddddddddddddddddddddddddd"
+        post_description_th = post_description_th + "addddddddddddddddddddddddddddddddddddddddddddddddddadddddddddddddddddddddddddddddddddddddddddddddddddaddddddddddddddddddddddddddddddddddddddddddddddddddadddddddddddddddddddddddddddddddddddddddddddddddddd"
         post_title_en = postdata['post_title_en']
         post_description_en = postdata['post_description_en']
         ds_id = postdata["ds_id"]
@@ -179,7 +185,8 @@ class thaihometown():
         post_id = ""
 
         if success == "true":
-            r = httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/addnew',
+                                        verify=False)
             data = r.text
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             string2 = soup.find("input", {"name": "string2"})['value']
@@ -193,72 +200,89 @@ class thaihometown():
             date_signup = soup.find("input", {"name": "date_signup"})['value']
 
             # https://www.thaihometown.com/addcontacts
-            datapost = dict(
-                ActionForm2='',
-                Submit='Active',
-                ad_title=post_description_th.encode('cp874', 'ignore'),
-                carpark='',
-                code_edit=code_edit,
-                conditioning='',
-                contact_code='',
-                dasd=dasd,
-                date_signup=date_signup,
-                email=email,
-                firstname=firstname,
-                headtitle=post_title_th.encode('cp874', 'ignore'),
-                id='',
-                info=[' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ', ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ', ' ไมโครเวฟ ', ' ชุดรับแขก '],
-                mobile=mobile,
-                notprice=1,
-                price_unit='',
-                property_area=floorarea_sqm,
-                property_bts='',
-                property_city_2='',
-                property_city_bkk='ยานนาวา+Yannawa',
-                property_country_2='',
-                property_mrt='',
-                property_purple='',
-                property_sqm=1,
-                property_type='บ้าน+Home',
-                rent_price='',
-                room1=2,
-                room2=3,
-                sas_name=sas_name,
-                selling_price='',
-                string1=string1,
-                string2=string2,
-                type_forrent='',
-                typepart='ประกาศขาย',
-                typeunit='ต่อตร.ม'
-            )
+            datapost = dict(ActionForm2='',
+                            Submit='Active',
+                            ad_title=post_description_th.encode(
+                                'cp874', 'ignore'),
+                            carpark='',
+                            code_edit=code_edit,
+                            conditioning='',
+                            contact_code='',
+                            dasd=dasd,
+                            date_signup=date_signup,
+                            email=email,
+                            firstname=firstname,
+                            headtitle=post_title_th.encode('cp874', 'ignore'),
+                            id='',
+                            info=[
+                                ' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ',
+                                ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ',
+                                ' ไมโครเวฟ ', ' ชุดรับแขก '
+                            ],
+                            mobile=mobile,
+                            notprice=1,
+                            price_unit='',
+                            property_area=floorarea_sqm,
+                            property_bts='',
+                            property_city_2='',
+                            property_city_bkk='ยานนาวา+Yannawa',
+                            property_country_2='',
+                            property_mrt='',
+                            property_purple='',
+                            property_sqm=1,
+                            property_type='บ้าน+Home',
+                            rent_price='',
+                            room1=2,
+                            room2=3,
+                            sas_name=sas_name,
+                            selling_price='',
+                            string1=string1,
+                            string2=string2,
+                            type_forrent='',
+                            typepart='ประกาศขาย',
+                            typeunit='ต่อตร.ม')
             # print(datapost)
-            r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
+            r = httprequestObj.http_post(
+                'https://www.thaihometown.com/addcontacts', data=datapost)
             data = r.text
             # print(data)
             f = open("thihomepost.html", "wb")
             f.write(data.encode('utf-8').strip())
 
-            matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
+            matchObj = re.search(
+                r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
             if not matchObj:
                 success = "false"
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 txtresponse = soup.find("font").text
                 detail = unquote(txtresponse)
             else:
-                post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
+                post_id = re.search(
+                    r'https:\/\/www.thaihometown.com\/edit\/(\d+)',
+                    data).group(1)
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "ds_id": ds_id,
-            "post_url": "https://www.thaihometown.com/home/"+post_id if post_id != "" else "",
-            "post_id": post_id,
-            "account_type": "null",
-            "detail": detail,
+            "success":
+            success,
+            "usage_time":
+            str(time_usage),
+            "start_time":
+            str(time_start),
+            "end_time":
+            str(time_end),
+            "ds_id":
+            ds_id,
+            "post_url":
+            "https://www.thaihometown.com/home/" +
+            post_id if post_id != "" else "",
+            "post_id":
+            post_id,
+            "account_type":
+            "null",
+            "detail":
+            detail,
         }
 
     def boost_post(self, postdata):
@@ -282,32 +306,37 @@ class thaihometown():
 
         if (success == "true"):
 
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+post_id, verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' +
+                                        post_id,
+                                        verify=False)
             data = r.text
             f = open("editpostthaihometown.html", "wb")
             f.write(data.encode('utf-8').strip())
 
             # check respone py post id
-            matchObj = re.search(r''+post_id+'', data)
+            matchObj = re.search(r'' + post_id + '', data)
             if not matchObj:
                 success = "false"
-                detail = "not found this post_id "+post_id
+                detail = "not found this post_id " + post_id
 
             # check edit 10 times
-            matchObj = re.search(r'�ѹ���! �س��䢢����Ż�С�ȷ����ҹ���� �ú��˹� 10', data)
+            matchObj = re.search(r'�ѹ���! �س��䢢����Ż�С�ȷ����ҹ���� �ú��˹� 10',
+                                 data)
             if matchObj:
                 success = "false"
                 detail = "today you is edited post 10 times วันนี้! คุณแก้ไขข้อมูลประกาศที่ใช้งานแล้ว ครบกำหนด 10 ครั้ง/วัน กรุณาใช้งานอีกครั้งในวันถัดไป"
 
             if success == "true":
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                contact_code = soup.find("input", {"name": "contact_code"})['value']
+                contact_code = soup.find("input",
+                                         {"name": "contact_code"})['value']
 
                 sas_name = soup.find("input", {"name": "sas_name"})['value']
                 code_edit = soup.find("input", {"name": "code_edit"})['value']
                 firstname = soup.find("input", {"name": "firstname"})['value']
                 mobile = soup.find("input", {"name": "mobile"})['value']
-                date_signup = soup.find("input", {"name": "date_signup"})['value']
+                date_signup = soup.find("input",
+                                        {"name": "date_signup"})['value']
                 email = soup.find("input", {"name": "email"})['value']
                 ad_title = soup.find("textarea", {"name": "ad_title"}).contents
                 ad_title = ad_title[0]
@@ -327,7 +356,6 @@ class thaihometown():
                     Action_ad_title=1,
                     Action_headtitle=1,
                     Submit='Active',
-
 
                     # Name_Project2='',
                     # Owner_Project2='',
@@ -369,12 +397,14 @@ class thaihometown():
                     # typeunit5=''
                 )
 
-                r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
+                r = httprequestObj.http_post(
+                    'https://www.thaihometown.com/editcontacts', data=datapost)
                 data = r.text
                 f = open("boostthaihometown.html", "wb")
                 f.write(data.encode('utf-8').strip())
 
-                matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/'+post_id, data)
+                matchObj = re.search(
+                    r'https:\/\/www.thaihometown.com\/edit\/' + post_id, data)
                 if matchObj:
                     success = "true"
                 else:
@@ -467,16 +497,18 @@ class thaihometown():
 
         if (success == "true"):
 
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+post_id, verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' +
+                                        post_id,
+                                        verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
 
             # check respone py post id
-            matchObj = re.search(r''+post_id+'', data)
+            matchObj = re.search(r'' + post_id + '', data)
             if not matchObj:
                 success = "false"
-                detail = "not found this post_id "+post_id
+                detail = "not found this post_id " + post_id
 
             if success == "true":
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -488,9 +520,11 @@ class thaihometown():
                 code_edit = soup.find("input", {"name": "code_edit"})['value']
                 firstname = soup.find("input", {"name": "firstname"})['value']
                 mobile = soup.find("input", {"name": "mobile"})['value']
-                date_signup = soup.find("input", {"name": "date_signup"})['value']
+                date_signup = soup.find("input",
+                                        {"name": "date_signup"})['value']
                 email = soup.find("input", {"name": "email"})['value']
-                contact_code = soup.find("input", {"name": "contact_code"})['value']
+                contact_code = soup.find("input",
+                                         {"name": "contact_code"})['value']
 
                 datapost = dict(
                     code_edit=code_edit,
@@ -501,11 +535,8 @@ class thaihometown():
                     date_signup=date_signup,
                     firstname=firstname,
                     headtitle=post_title_th.encode('cp874', 'ignore'),
-
                     id=post_id,
-
                     ActionForm2='',
-
                     Action_ad_title=1,
                     Action_headtitle=1,
                     Name_Project2='',
@@ -520,7 +551,11 @@ class thaihometown():
 
                     # headtitle2='888888',  # post_title_th.encode('cp874', 'ignore')
                     info=[],
-                    infomation2=[' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ', ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ', ' ไมโครเวฟ ', ' ชุดรับแขก '],
+                    infomation2=[
+                        ' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ',
+                        ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ', ' ไมโครเวฟ ',
+                        ' ชุดรับแขก '
+                    ],
                     notprice=1,
                     price_number_unit2=0,
                     price_unit='',
@@ -554,15 +589,16 @@ class thaihometown():
                     type_forrent='',
                     type_forrent2=0,
                     typepart='ประกาศขาย',
-                    typeunit5=''
-                )
+                    typeunit5='')
 
-                r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
+                r = httprequestObj.http_post(
+                    'https://www.thaihometown.com/editcontacts', data=datapost)
                 data = r.text
                 f = open("editpostthaihometown.html", "wb")
                 f.write(data.encode('utf-8').strip())
 
-                matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/'+post_id, data)
+                matchObj = re.search(
+                    r'https:\/\/www.thaihometown.com\/edit\/' + post_id, data)
                 if matchObj:
                     success = "true"
                 else:
@@ -583,5 +619,3 @@ class thaihometown():
             "log_id": log_id,
             "post_id": post_id
         }
-
-   
