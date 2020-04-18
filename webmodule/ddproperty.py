@@ -42,7 +42,6 @@ class ddproperty():
         self.parser = 'html.parser'
         self.handled = False
 
-
     def register_user(self, postdata):
         log.debug('')
 
@@ -67,9 +66,7 @@ class ddproperty():
         newtel = ''.join(tel)
 
         # จะต้องไปหน้า from login ก่อน เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป register ได้
-        r = httprequestObj.http_get(
-            'https://www.ddproperty.com/agent-register?package=TRIAL',
-            verify=False)
+        r = httprequestObj.http_get('https://www.ddproperty.com/agent-register?package=TRIAL', verify=False)
         data = r.text
         #f = open("debug_response/ddloginfrom.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -103,8 +100,7 @@ class ddproperty():
             'months': ''
         }
 
-        r = httprequestObj.http_post(
-            'https://www.ddproperty.com/agent-register', data=datapost)
+        r = httprequestObj.http_post('https://www.ddproperty.com/agent-register', data=datapost)
         data = r.text
         #f = open("debug_response/ddregister.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -148,8 +144,8 @@ class ddproperty():
         datapost = {
             'email': user,
         }
-        r = httprequestObj.http_post(
-            'https://agentnet.ddproperty.com/is_authentic_user', data=datapost)
+        r = httprequestObj.http_post('https://agentnet.ddproperty.com/is_authentic_user', data=datapost)
+        log.debug('email post')
         data = r.text
         #f = open("debug_response/ddauthentic.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -168,8 +164,8 @@ class ddproperty():
                 '': 'true',
                 'userid': user,
             }
-            r = httprequestObj.http_post(
-                'https://agentnet.ddproperty.com/ex_login_ajax', data=datapost)
+            r = httprequestObj.http_post('https://agentnet.ddproperty.com/ex_login_ajax', data=datapost)
+            log.debug('post login')
             data = r.text
             #f = open("debug_response/logindd.html", "wb")
             #f.write(data.encode('utf-8').strip())
@@ -179,6 +175,8 @@ class ddproperty():
             else:
                 success = "false"
                 detail = "cannot login " + data
+
+        log.debug('login status %s', success)
         #
         # end process
 
@@ -205,34 +203,34 @@ class ddproperty():
         options.add_argument('disable-infobars')
         options.add_argument("--disable-extensions")
         options.add_argument("window-size=1024,768")
-        chrome_driver_binary ="/bin/chromedriver"
-        self.chrome = webdriver.Chrome(chrome_driver_binary,options=options)
+        chrome_driver_binary = "/bin/chromedriver"
+        self.chrome = webdriver.Chrome(chrome_driver_binary, options=options)
 
         # open login page
         self.chrome.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
 
         # input email and enter
-        emailtxt = WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("emailInput"))
+        emailtxt = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("emailInput"))
         emailtxt.send_keys(postdata['user'])
         log.debug('input email')
-        WebDriverWait(self.chrome, 5).until(EC.element_to_be_clickable((By.ID,"next"))).click()
+        WebDriverWait(self.chrome, 5).until(EC.element_to_be_clickable((By.ID, "next"))).click()
         log.debug('click next')
-        time.sleep(1.8)      
+        time.sleep(1.8)
 
         # input password and enter
-        passtxt = WebDriverWait(self.chrome,30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
+        passtxt = WebDriverWait(self.chrome, 30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
         passtxt.send_keys(postdata['pass'])
         log.debug('input password')
         passtxt.send_keys(Keys.ENTER)
         log.debug('click enter')
-        WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
+        WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
 
         #self.chrome.save_screenshot("debug_response/login.png")
         # f = open("debug_response/loginpassdd2.html", "wb")
         # f.write(self.chrome.page_source.encode('utf-8').strip())
 
         # find text
-        soup = BeautifulSoup(self.chrome.page_source,self.parser,from_encoding='utf-8')
+        soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
         titletxt = soup.find('title').text
         matchObj = re.search(r'Dashboard', titletxt)
         if not matchObj:
@@ -240,11 +238,11 @@ class ddproperty():
             detail = 'cannot login'
         if success == "true":
             # agent_id = re.search(r'optimize_agent_id = (\d+);', self.chrome.page_source).group(1)
-            agent_id = re.search(r'{"user":{"id":(\d+),',self.chrome.page_source).group(1)
+            agent_id = re.search(r'{"user":{"id":(\d+),', self.chrome.page_source).group(1)
 
-        log.debug("login status %s agent id %s",success,agent_id)
+        log.debug("login status %s agent id %s", success, agent_id)
 
-        if(postdata['action'] == 'test_login'):
+        if (postdata['action'] == 'test_login'):
             self.chrome.quit()
 
         #
@@ -305,35 +303,25 @@ class ddproperty():
         except KeyError as e:
             datahandled['property_type'] = "CONDO"
             log.warning(str(e))
-        if datahandled['property_type'] == '2' or datahandled[
-                'property_type'] == "บ้านเดี่ยว":
+        if datahandled['property_type'] == '2' or datahandled['property_type'] == "บ้านเดี่ยว":
             datahandled['property_type'] = "BUNG"
-        elif datahandled['property_type'] == '3' or datahandled[
-                'property_type'] == "บ้านแฝด":
+        elif datahandled['property_type'] == '3' or datahandled['property_type'] == "บ้านแฝด":
             datahandled['property_type'] = "BUNG"
-        elif datahandled['property_type'] == '4' or datahandled[
-                'property_type'] == "ทาวน์เฮ้าส์":
+        elif datahandled['property_type'] == '4' or datahandled['property_type'] == "ทาวน์เฮ้าส์":
             datahandled['property_type'] = "TOWN"
-        elif datahandled['property_type'] == '5' or datahandled[
-                'property_type'] == "ตึกแถว-อาคารพาณิชย์":
+        elif datahandled['property_type'] == '5' or datahandled['property_type'] == "ตึกแถว-อาคารพาณิชย์":
             datahandled['property_type'] = "SHOP"
-        elif datahandled['property_type'] == '6' or datahandled[
-                'property_type'] == "ที่ดิน":
+        elif datahandled['property_type'] == '6' or datahandled['property_type'] == "ที่ดิน":
             datahandled['property_type'] = "LAND"
-        elif datahandled['property_type'] == '7' or datahandled[
-                'property_type'] == "อพาร์ทเมนท์":
+        elif datahandled['property_type'] == '7' or datahandled['property_type'] == "อพาร์ทเมนท์":
             datahandled['property_type'] = "APT"
-        elif datahandled['property_type'] == '8' or datahandled[
-                'property_type'] == "โรงแรม":
+        elif datahandled['property_type'] == '8' or datahandled['property_type'] == "โรงแรม":
             datahandled['property_type'] = "BIZ"
-        elif datahandled['property_type'] == '9' or datahandled[
-                'property_type'] == "ออฟฟิศสำนักงาน":
+        elif datahandled['property_type'] == '9' or datahandled['property_type'] == "ออฟฟิศสำนักงาน":
             datahandled['property_type'] = "OFF"
-        elif datahandled['property_type'] == '10' or datahandled[
-                'property_type'] == "โกดัง":
+        elif datahandled['property_type'] == '10' or datahandled['property_type'] == "โกดัง":
             datahandled['property_type'] = "WAR"
-        elif datahandled['property_type'] == '25' or datahandled[
-                'property_type'] == "โรงงาน":
+        elif datahandled['property_type'] == '25' or datahandled['property_type'] == "โรงงาน":
             datahandled['property_type'] = "WAR"
         else:
             datahandled['property_type'] = "CONDO"
@@ -417,8 +405,7 @@ class ddproperty():
             log.warning(str(e))
 
         try:
-            datahandled['post_description_th'] = postdata[
-                'post_description_th']
+            datahandled['post_description_th'] = postdata['post_description_th']
         except KeyError as e:
             datahandled['post_description_th'] = ''
             log.warning(str(e))
@@ -430,8 +417,7 @@ class ddproperty():
             log.warning(str(e))
 
         try:
-            datahandled['post_description_en'] = postdata[
-                'post_description_en']
+            datahandled['post_description_en'] = postdata['post_description_en']
         except KeyError as e:
             datahandled['post_description_en'] = ''
             log.warning(str(e))
@@ -603,33 +589,33 @@ class ddproperty():
         account_type = "normal"
 
         if success == "true":
-           
+
             self.chrome.get('https://agentnet.ddproperty.com/create-listing/location')
             time.sleep(1)
-            WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
+            WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
             # self.chrome.save_screenshot("debug_response/location.png")
 
-            success ,detail = self.inputpostgeneral(datahandled)
+            success, detail = self.inputpostgeneral(datahandled)
             if success == 'true':
-                success, detail, post_id, account_type = self.inputpostdetail(datahandled)    
-        
+                success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+
         log.debug('create post done')
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "success":success,
-            "usage_time":str(time_usage),
-            "start_time":str(time_start),
-            "end_time":str(time_end),
-            "ds_id":datahandled['ds_id'],
-            "post_url":"https://www.ddproperty.com/preview-listing/" +post_id if post_id != "" else "",
-            "post_id":post_id,
-            "account_type":account_type,
-            "detail":detail,
-            "websitename":self.websitename
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "ds_id": datahandled['ds_id'],
+            "post_url": "https://www.ddproperty.com/preview-listing/" + post_id if post_id != "" else "",
+            "post_id": post_id,
+            "account_type": account_type,
+            "detail": detail,
+            "websitename": self.websitename
         }
-    
+
     def inputpostgeneral(self, datahandled):
         log.debug('')
 
@@ -639,27 +625,27 @@ class ddproperty():
         projectname = datahandled['project_name']
         if datahandled['web_project_name'] != '':
             projectname = datahandled['web_project_name']
-        projectnametxt = WebDriverWait(self.chrome,10).until(EC.presence_of_element_located((By.ID, "propertySearch")))
+        projectnametxt = WebDriverWait(self.chrome, 10).until(EC.presence_of_element_located((By.ID, "propertySearch")))
         if datahandled['action'] == 'edit_post':
             WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-            WebDriverWait(self.chrome,10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.DELETE)  # clear for edit action
+            WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.DELETE)  # clear for edit action
         projectnametxt.send_keys(projectname)
         projectnametxt.send_keys(Keys.ENTER)
-        WebDriverWait(self.chrome,10).until(EC.presence_of_element_located((By.CLASS_NAME, "open")))
+        WebDriverWait(self.chrome, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "open")))
         time.sleep(1)
         #self.chrome.save_screenshot("debug_response/location2.png")
         # f = open("debug_response/ddpost.html", "wb")
         # f.write(self.chrome.page_source.encode('utf-8').strip())
 
         # case no result projectname
-        matchObj = re.search(r'ol class="no-match"',self.chrome.page_source)
+        matchObj = re.search(r'ol class="no-match"', self.chrome.page_source)
         if matchObj:
-            log.debug('not found property name %s',projectname)
-            if (datahandled['addr_province'] == ''or datahandled['addr_district'] == ''or datahandled['addr_sub_district'] == ''):
+            log.debug('not found property name %s', projectname)
+            if (datahandled['addr_province'] == '' or datahandled['addr_district'] == '' or datahandled['addr_sub_district'] == ''):
                 success = 'false'
                 detail = 'for a new project name, ddproperty must require province , district and sub_district'
             if success == 'true':
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_class_name("property-new-link")).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("property-new-link")).click()
                 time.sleep(0.2)
                 # self.chrome.save_screenshot("debug_response/newp1.png")
 
@@ -693,30 +679,30 @@ class ddproperty():
                 else:  # CONDO
                     linktxt = 'คอนโด'
                     cssselect = 'CONDO'
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
                 time.sleep(0.1)
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
                 time.sleep(0.1)
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='" + cssselect + "']")).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='" + cssselect + "']")).click()
                 time.sleep(0.2)
-                element = WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[4]/div/div[1]/div/div/div/div'))
+                element = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[4]/div/div[1]/div/div/div/div'))
                 self.chrome.execute_script("arguments[0].style.display = 'none';", element)
                 #self.chrome.save_screenshot("debug_response/newp3.png")
 
                 # province district subdistrict
                 try:
-                    WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.ID, "form-field-region")))
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("form-field-region")).click()
+                    WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, "form-field-region")))
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-region")).click()
                     time.sleep(0.1)
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_link_text(datahandled['addr_province'])).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_province'])).click()
                     time.sleep(0.1)
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("form-field-district")).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-district")).click()
                     time.sleep(0.1)
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_link_text(datahandled['addr_district'])).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_district'])).click()
                     time.sleep(0.1)
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("form-field-area")).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-area")).click()
                     time.sleep(0.1)
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
                     time.sleep(0.1)
                     # self.chrome.save_screenshot("debug_response/newp33.png")
                 except Exception as e:
@@ -725,12 +711,12 @@ class ddproperty():
                     log.error(str(str(e)))
 
                 # road
-                try:  
-                    WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.ID, "street-name-field")))
+                try:
+                    WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, "street-name-field")))
                     if datahandled['action'] == 'edit_post':
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                        WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(Keys.DELETE)  # clear for edit action
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'])
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(Keys.DELETE)  # clear for edit action
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'])
                 except:
                     pass
                 # self.chrome.save_screenshot("debug_response/newp33.png")
@@ -738,7 +724,7 @@ class ddproperty():
                 # longitude ,latitude
                 try:
                     time.sleep(0.2)
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
                     time.sleep(1)
                     js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
                     self.chrome.execute_script(js)
@@ -748,15 +734,15 @@ class ddproperty():
                     pass
 
                 if (success == 'true'):
-                    self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL +Keys.HOME)  # scroll to head page
-                    WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
+                    self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
+                    WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
                     #self.chrome.save_screenshot("debug_response/newp33.png")
-                    nextbttn = WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
+                    nextbttn = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
                     self.chrome.execute_script("arguments[0].click();", nextbttn)
 
         # case match choose first argument
         else:
-            log.debug('found property name %s',projectname)
+            log.debug('found property name %s', projectname)
             # self.chrome.save_screenshot("debug_response/newp3.png")
             # select li first
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]/a')).click()
@@ -791,19 +777,19 @@ class ddproperty():
             else:  # CONDO
                 linktxt = 'คอนโด'
                 cssselect = 'CONDO'
-            WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
             time.sleep(0.1)
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
             time.sleep(0.1)
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='" + cssselect + "']")).click()
             time.sleep(0.1)
             # self.chrome.save_screenshot("debug_response/newp5.png")
-            self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL +Keys.HOME)  # scroll to head page
-            WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
+            self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
+            WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
             #self.chrome.save_screenshot("debug_response/newp33.png")
-            nextbttn = WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
+            nextbttn = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
             self.chrome.execute_script("arguments[0].click();", nextbttn)
-        
+
         return success, detail
 
     def inputpostdetail(self, datahandled):
@@ -822,8 +808,9 @@ class ddproperty():
         if datahandled['post_title_th'] == '' or datahandled['post_description_th'] == '':
             success = 'false'
             detail = 'post title th is and post description th required'
-        if datahandled['property_type'] == 'CONDO' or datahandled['property_type'] == 'BUNG' or datahandled['property_type'] == 'TOWN' or datahandled['property_type'] == 'APT' or datahandled['property_type'] == 'OFF' or datahandled['property_type'] == 'SHOP' or datahandled['property_type'] == 'BIZ':
-            if isinstance(datahandled['floorarea_sqm'],int) == False or datahandled['floorarea_sqm'] == 0:
+        if datahandled['property_type'] == 'CONDO' or datahandled['property_type'] == 'BUNG' or datahandled['property_type'] == 'TOWN' or datahandled['property_type'] == 'APT' or datahandled['property_type'] == 'OFF' or datahandled[
+                'property_type'] == 'SHOP' or datahandled['property_type'] == 'BIZ':
+            if isinstance(datahandled['floorarea_sqm'], int) == False or datahandled['floorarea_sqm'] == 0:
                 success = 'false'
                 detail = 'floor area sqm is require and allow integer type only'
         if datahandled['property_type'] == 'LAND':
@@ -839,13 +826,13 @@ class ddproperty():
             # self.chrome.save_screenshot("debug_response/newp4.png")
             # WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][id='listing-type-"+datahandled['listing_type']+"']")).find_element_by_tag_name('span').click()
 
-            WebDriverWait(self.chrome,10).until(EC.presence_of_element_located((By.CLASS_NAME, 'l-listing-create-basic')))
+            WebDriverWait(self.chrome, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'l-listing-create-basic')))
             self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)
             #self.chrome.save_screenshot("debug_response/newp44.png")
 
             # type
             if datahandled['listing_type'] == "SALE":
-                WebDriverWait( self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[1]/label/span')).click()
+                WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[1]/label/span')).click()
                 log.debug('input property type SALE')
             elif datahandled['listing_type'] == "RENT":
                 WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[2]/label/span')).click()
@@ -857,7 +844,7 @@ class ddproperty():
 
             # price
             try:
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
             except:
                 log.warning('cannot input price')
                 pass
@@ -865,28 +852,23 @@ class ddproperty():
             # bed room
             try:
                 if int(datahandled['bed_room']) > 0:
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
                     if int(datahandled['bed_room']) >= 10:
-                        WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
                     else:
-                        WebDriverWait(
-                            self.chrome,5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room']) + ' ห้องนอน')).click()
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room']) + ' ห้องนอน')).click()
             except:
                 pass
 
             # bath room
             try:
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
                 if int(datahandled['bath_room']) == 0:
-                    WebDriverWait(
-                        self.chrome,5).until(lambda x: x.find_element_by_link_text('ไม่มีห้องน้ำ')).click()
-                elif int(datahandled['bath_room']) >= 1 and int(
-                        datahandled['bath_room']) < 9:
-                    WebDriverWait(
-                        self.chrome,5).until(lambda x: x.find_element_by_link_text(str(datahandled['bath_room']) + ' ห้องน้ำ')).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('ไม่มีห้องน้ำ')).click()
+                elif int(datahandled['bath_room']) >= 1 and int(datahandled['bath_room']) < 9:
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bath_room']) + ' ห้องน้ำ')).click()
                 else:
-                    WebDriverWait(
-                        self.chrome,5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
             except:
                 pass
 
@@ -894,22 +876,22 @@ class ddproperty():
             try:
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
             except:
                 pass
 
             # total floor
             try:
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
             except:
                 pass
 
             # floor position
             try:
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
             except:
                 pass
 
@@ -929,22 +911,22 @@ class ddproperty():
 
             # desc thai
             if datahandled['action'] == 'edit_post':
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL +"a")  # clear for edit action
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.DELETE)  # clear for edit action
-            WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.DELETE)  # clear for edit action
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
             log.debug('input desc thai')
 
             # desc en
             if datahandled['action'] == 'edit_post':
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.CONTROL +"a")  # clear for edit action
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.DELETE)  # clear for edit action
-            WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.DELETE)  # clear for edit action
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
             log.debug('input desc en')
 
             # หันหน้าทางทิศ
             try:
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("form-field-facing-type")).click()
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_link_text(datahandled['direction_type'])).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-facing-type")).click()
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['direction_type'])).click()
             except:
                 pass
 
@@ -953,14 +935,14 @@ class ddproperty():
             try:
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.DELETE)  # clear for edit action
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(Keys.DELETE)  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.DELETE)  # clear for edit action
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(Keys.DELETE)  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.DELETE)  # clear for edit action
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(datahandled['land_size_rai'])
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(datahandled['land_size_ngan'])
-                WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(datahandled['land_size_wa'])
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(Keys.DELETE)  # clear for edit action
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(datahandled['land_size_rai'])
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(datahandled['land_size_ngan'])
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(datahandled['land_size_wa'])
             except:
                 pass
 
@@ -971,25 +953,25 @@ class ddproperty():
                 log.debug('account_type corporate')
                 try:
                     if datahandled['action'] == 'edit_post':
-                        WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL +"a")  # clear for edit action
-                        WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
-                        WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL +"a")  # clear for edit action
-                        WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.CONTROL + "a")
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
-                    WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
                 except:
                     pass
                     log.warning('cannot input corporate data')
-            
+
             self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(0.5)
             # self.chrome.save_screenshot("debug_response/newp12.png")
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
 
-            WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
+            WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
             # image
             if datahandled['action'] == 'edit_post':
                 # soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
@@ -1000,13 +982,13 @@ class ddproperty():
                 #         imgdiv = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("li[id='"+imgid+"']")).find_elements_by_link_text("...")[0].click()
                 #         self.chrome.save_screenshot("debug_response/newp10.png")
                 #         exit()
-                imgdiv = WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
+                imgdiv = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
                 for imgli in imglis:
                     imgid = imgli.get_attribute("id")
                     if imgid != None:
                         imgli.click()
-                        WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
+                        WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
                         log.debug('delete image')
                         alert = self.chrome.switch_to.alert
                         alert.accept()
@@ -1015,24 +997,24 @@ class ddproperty():
             for img in datahandled['post_images']:
                 time.sleep(1)
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
-                log.debug('post image %s',img)
+                log.debug('post image %s', img)
                 time.sleep(1)
                 self.chrome.refresh()
             log.debug('image success')
 
             post_id = self.chrome.current_url.split("/")[-1]
-            log.debug('post post id %s',post_id)
+            log.debug('post post id %s', post_id)
 
-            WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')))
+            WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')))
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             # self.chrome.save_screenshot("debug_response/newp10.png")
             time.sleep(0.5)
             log.debug('click next')
-            
+
             if datahandled['action'] == 'edit_post':
                 self.chrome.quit()
                 return success, detail, post_id, account_type
-                
+
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
             time.sleep(1.5)
             log.debug('click publish')
@@ -1042,11 +1024,11 @@ class ddproperty():
 
             # create post จะสำเร็จก็ต่อเมื่อ publish ได้ด้วย ถ้า editpost แค่ edit ได้ ก็ถือว่าสำเร็จ
             if datahandled['action'] == 'create_post':
-                matchObj = re.search(r'Active Unit Listing quota exceeded',self.chrome.page_source)
+                matchObj = re.search(r'Active Unit Listing quota exceeded', self.chrome.page_source)
                 if matchObj:
                     success = "false"
                     detail = 'Active Unit Listing quota exceeded'
-                    
+
         self.chrome.quit()
 
         return success, detail, post_id, account_type
@@ -1082,10 +1064,7 @@ class ddproperty():
             # f.write(data.encode('utf-8').strip())
 
             # get property attr
-            r = httprequestObj.http_get(
-                'https://services.propertyguru.com/v1/autocomplete?region=th&locale=th&limit=25&object_type=PROPERTY&query='
-                + datahandled['project_name'],
-                verify=False)
+            r = httprequestObj.http_get('https://services.propertyguru.com/v1/autocomplete?region=th&locale=th&limit=25&object_type=PROPERTY&query=' + datahandled['project_name'], verify=False)
             # data = r.text
             # f = open("debug_response/ddcreatelist.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1099,13 +1078,9 @@ class ddproperty():
                 detail = 'ชื่อโครงการไม่มีใน list และไม่มีระบุ จังหวัด  อำเภอ  ตำบล รหัสปณ มา '
             # if found < 0 , choose array 0
             else:
-                propertyattr['postalCode'] = re.search(
-                    r'.*(\d{5}).*', datajson[0]['displayDescription']).group(1)
-                propertyattr['districtCode'] = datajson[0]['properties'][
-                    'district']
-                propertyattr['regionCode'] = re.search(
-                    r'(TH\d{2})',
-                    datajson[0]['properties']['district']).group(1)
+                propertyattr['postalCode'] = re.search(r'.*(\d{5}).*', datajson[0]['displayDescription']).group(1)
+                propertyattr['districtCode'] = datajson[0]['properties']['district']
+                propertyattr['regionCode'] = re.search(r'(TH\d{2})', datajson[0]['properties']['district']).group(1)
                 propertyattr['objectId'] = datajson[0]['objectId']
 
             if success == 'true':
@@ -1197,8 +1172,7 @@ class ddproperty():
                         }
                     },
                     "price": {
-                        "value": datahandled[
-                            'price_baht'],  # price_baht ใช้ price bath 3000 แล้ว error,
+                        "value": datahandled['price_baht'],  # price_baht ใช้ price bath 3000 แล้ว error,
                         "periodCode": "",
                         "valuation": "",
                         "type": {
@@ -1270,9 +1244,7 @@ class ddproperty():
                     }
                 }
                 datastr = json.dumps(datapost)
-                r = httprequestObj.http_post_json(
-                    'https://agentnet.ddproperty.com/sf2-agent/ajax/listings',
-                    jsoncontent=datastr)
+                r = httprequestObj.http_post_json('https://agentnet.ddproperty.com/sf2-agent/ajax/listings', jsoncontent=datastr)
                 data = r.text
                 #f = open("debug_response/postdd.html", "wb")
                 #f.write(data.encode('utf-8').strip())
@@ -1307,25 +1279,15 @@ class ddproperty():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "success":
-            success,
-            "usage_time":
-            str(time_usage),
-            "start_time":
-            str(time_start),
-            "end_time":
-            str(time_end),
-            "ds_id":
-            datahandled['ds_id'],
-            "post_url":
-            "https://www.ddproperty.com/preview-listing/" +
-            post_id if post_id != "" else "",
-            "post_id":
-            post_id,
-            "account_type":
-            "null",
-            "detail":
-            detail,
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "ds_id": datahandled['ds_id'],
+            "post_url": "https://www.ddproperty.com/preview-listing/" + post_id if post_id != "" else "",
+            "post_id": post_id,
+            "account_type": "null",
+            "detail": detail,
         }
 
     def boost_post(self, postdata):
@@ -1346,9 +1308,9 @@ class ddproperty():
             datapost = {
                 "listing_id[]": datahandled['post_id'],
                 "statusCode": "ACT",
-                "expectedCredits[]":0,
+                "expectedCredits[]": 0,
             }
-            r = httprequestObj.http_post('https://agentnet.ddproperty.com/repost_listing',datapost)
+            r = httprequestObj.http_post('https://agentnet.ddproperty.com/repost_listing', datapost)
             data = r.text
             datajson = r.json()
             #f = open("debug_response/ddboostpostresponse.html", "wb")
@@ -1362,16 +1324,7 @@ class ddproperty():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "detail": detail,
-            "log_id": datahandled['log_id'],
-            "post_id": datahandled['post_id'],
-            "websitename": self.websitename
-        }
+        return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "post_id": datahandled['post_id'], "websitename": self.websitename}
 
     def delete_post(self, postdata):
         log.debug('')
@@ -1395,9 +1348,7 @@ class ddproperty():
 
         if success == "true":
             # จะต้องไปหน้า listing_management เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป delete ได้
-            r = httprequestObj.http_get(
-                'https://agentnet.ddproperty.com/listing_management#DRAFT',
-                verify=False)
+            r = httprequestObj.http_get('https://agentnet.ddproperty.com/listing_management#DRAFT', verify=False)
             data = r.text
             # f = open("debug_response/ddpostlistdraft.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1408,17 +1359,14 @@ class ddproperty():
                 "remove": "Delete selected",
                 "selecteds": post_id,
             }
-            r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing',data=datapost)
+            r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing', data=datapost)
             data = r.text
             # f = open("debug_response/dddelete.html", "wb")
             # f.write(data.encode('utf-8').strip())
             matchObj = re.search(r'message":"deleted', data)
             if matchObj:
                 # ใกล้ความจริง แต่จะ delete สำเร็จหรือไม่มันก็ return deleted หมด ดังนั้นต้องเช็คจาก post id อีกทีว่า response 404 ป่าว
-                r = httprequestObj.http_get(
-                    'https://agentnet.ddproperty.com/create-listing/detail/' +
-                    post_id,
-                    verify=False)
+                r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail/' + post_id, verify=False)
                 data = r.text
                 # f = open("debug_response/dddelete.html", "wb")
                 # f.write(data.encode('utf-8').strip())
@@ -1607,23 +1555,16 @@ class ddproperty():
                 },
                 "urls": {
                     "listing": {
-                        "api":
-                        "https://api.propertyguru.com/v1/listings/7788091?region=th",
-                        "internal":
-                        "http://listing.guruestate.com/v1/listings/7788091?region=th",
-                        "mobile":
-                        "https://www.ddproperty.com/property/xxx-ขาย-7788091",
-                        "desktop":
-                        "https://www.ddproperty.com/property/xxx-ขาย-7788091",
+                        "api": "https://api.propertyguru.com/v1/listings/7788091?region=th",
+                        "internal": "http://listing.guruestate.com/v1/listings/7788091?region=th",
+                        "mobile": "https://www.ddproperty.com/property/xxx-ขาย-7788091",
+                        "desktop": "https://www.ddproperty.com/property/xxx-ขาย-7788091",
                         "desktopByLocales": {
-                            "th":
-                            "https://www.ddproperty.com/property/xxx-ขาย-7788091",
-                            "en":
-                            "https://www.ddproperty.com/en/property/xxx-for-sale-7788091"
+                            "th": "https://www.ddproperty.com/property/xxx-ขาย-7788091",
+                            "en": "https://www.ddproperty.com/en/property/xxx-for-sale-7788091"
                         },
                         "preview": {
-                            "desktop":
-                            "https://www.ddproperty.com/preview-listing/7788091"
+                            "desktop": "https://www.ddproperty.com/preview-listing/7788091"
                         }
                     }
                 },
@@ -1671,50 +1612,34 @@ class ddproperty():
                     "areaCode": "11",
                     "areaText": "",
                     "areaSlug": "",
-                    "fullAddress":
-                    ". ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี",
+                    "fullAddress": ". ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี",
                     "hdbEstateCode": "",
                     "hdbEstateText": "",
                     "postalCode": "11110",
                     "block": "",
                     "unit": "",
                     "streetId": "",
-                    "streetName1":
-                    "ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี",
+                    "streetName1": "ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี",
                     "streetName2": "",
                     "streetNumber": ".",
                     "zoneIds": "",
                     "subZoneIds": ""
                 },
                 "property": {
-                    "id":
-                    5987,
-                    "temporaryId":
-                    "",
-                    "statusCode":
-                    "6DML",
-                    "name":
-                    "Plum condo central station เฟส 1",
-                    "typeCode":
-                    "CONDO",
-                    "typeText":
-                    "คอนโด",
-                    "typeGroup":
-                    "N",
-                    "tenureCode":
-                    "F",
-                    "tenureText":
-                    "ขายขาด",
-                    "topMonth":
-                    10,
-                    "topYear":
-                    2018,
-                    "developer":
-                    "Pruksa Real Estate - พฤกษา เรียลเอสเตท จำกัด (มหาชน)",
-                    "totalUnits":
-                    1208,
-                    "floors":
-                    38,
+                    "id": 5987,
+                    "temporaryId": "",
+                    "statusCode": "6DML",
+                    "name": "Plum condo central station เฟส 1",
+                    "typeCode": "CONDO",
+                    "typeText": "คอนโด",
+                    "typeGroup": "N",
+                    "tenureCode": "F",
+                    "tenureText": "ขายขาด",
+                    "topMonth": 10,
+                    "topYear": 2018,
+                    "developer": "Pruksa Real Estate - พฤกษา เรียลเอสเตท จำกัด (มหาชน)",
+                    "totalUnits": 1208,
+                    "floors": 38,
                     "amenities": [{
                         "code": "CCAR"
                     }, {
@@ -1784,102 +1709,57 @@ class ddproperty():
                 },
                 "media": {
                     "cover": {
-                        "id":
-                        61330097,
-                        "caption":
-                        "",
-                        "statusCode":
-                        "CONF",
-                        "suspReason":
-                        "",
-                        "appealComment":
-                        "",
-                        "appealSent":
-                        "false",
-                        "sortOrder":
-                        61330097,
-                        "V150":
-                        "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550":
-                        "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                        "id": 61330097,
+                        "caption": "",
+                        "statusCode": "CONF",
+                        "suspReason": "",
+                        "appealComment": "",
+                        "appealSent": "false",
+                        "sortOrder": 61330097,
+                        "V150": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                        "V550": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
                     },
                     "listing": [],
                     "property": [{
-                        "id":
-                        61330097,
-                        "caption":
-                        "",
-                        "statusCode":
-                        "CONF",
-                        "suspReason":
-                        "",
-                        "appealComment":
-                        "",
-                        "appealSent":
-                        "false",
-                        "sortOrder":
-                        61330097,
-                        "V150":
-                        "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550":
-                        "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                        "id": 61330097,
+                        "caption": "",
+                        "statusCode": "CONF",
+                        "suspReason": "",
+                        "appealComment": "",
+                        "appealSent": "false",
+                        "sortOrder": 61330097,
+                        "V150": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                        "V550": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
                     }, {
-                        "id":
-                        61330098,
-                        "caption":
-                        "",
-                        "statusCode":
-                        "CONF",
-                        "suspReason":
-                        "",
-                        "appealComment":
-                        "",
-                        "appealSent":
-                        "false",
-                        "sortOrder":
-                        61330098,
-                        "V150":
-                        "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330098.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550":
-                        "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330098.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                        "id": 61330098,
+                        "caption": "",
+                        "statusCode": "CONF",
+                        "suspReason": "",
+                        "appealComment": "",
+                        "appealSent": "false",
+                        "sortOrder": 61330098,
+                        "V150": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330098.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                        "V550": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330098.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
                     }, {
-                        "id":
-                        61330099,
-                        "caption":
-                        "",
-                        "statusCode":
-                        "CONF",
-                        "suspReason":
-                        "",
-                        "appealComment":
-                        "",
-                        "appealSent":
-                        "false",
-                        "sortOrder":
-                        61330099,
-                        "V150":
-                        "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330099.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550":
-                        "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330099.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                        "id": 61330099,
+                        "caption": "",
+                        "statusCode": "CONF",
+                        "suspReason": "",
+                        "appealComment": "",
+                        "appealSent": "false",
+                        "sortOrder": 61330099,
+                        "V150": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330099.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                        "V550": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330099.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
                     }, {
-                        "id":
-                        61330104,
-                        "caption":
-                        "",
-                        "statusCode":
-                        "CONF",
-                        "suspReason":
-                        "",
-                        "appealComment":
-                        "",
-                        "appealSent":
-                        "false",
-                        "sortOrder":
-                        61330104,
-                        "V150":
-                        "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330104.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550":
-                        "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330104.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                        "id": 61330104,
+                        "caption": "",
+                        "statusCode": "CONF",
+                        "suspReason": "",
+                        "appealComment": "",
+                        "appealSent": "false",
+                        "sortOrder": 61330104,
+                        "V150": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330104.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                        "V550": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330104.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
                     }],
                     "agent":
                     "",
@@ -1895,12 +1775,9 @@ class ddproperty():
                     "listingVirtualTours": []
                 },
                 "metas": {
-                    "title":
-                    "Xxx, . ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี, 44 ตร.ม., คอนโด ขาย, โดย Cccc Cccc, ฿9,999,999, 7788091",
-                    "description":
-                    "ดูรายละเอียด, รูปภาพ และแผนที่ของประกาศอสังหาริมทรัพย์ 7788091 - ขาย - xxx - . ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี, 44 ตร.ม., ฿9,999,999",
-                    "keywords":
-                    "ตัวแทน, ประกาศ, อสังหาริมทรัพย์, ทรัพย์สิน, ขาย, เช่า, อพาร์ทเม้นท์, บ้าน, ชาวต่างชาติ, ที่อยู่อาศัย, hdb, สถานที่ตั้ง, คอนโด, แผนที่"
+                    "title": "Xxx, . ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี, 44 ตร.ม., คอนโด ขาย, โดย Cccc Cccc, ฿9,999,999, 7788091",
+                    "description": "ดูรายละเอียด, รูปภาพ และแผนที่ของประกาศอสังหาริมทรัพย์ 7788091 - ขาย - xxx - . ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี, 44 ตร.ม., ฿9,999,999",
+                    "keywords": "ตัวแทน, ประกาศ, อสังหาริมทรัพย์, ทรัพย์สิน, ขาย, เช่า, อพาร์ทเม้นท์, บ้าน, ชาวต่างชาติ, ที่อยู่อาศัย, hdb, สถานที่ตั้ง, คอนโด, แผนที่"
                 },
                 "alertBatchId": "",
                 "unitTypes": [],
@@ -1928,10 +1805,7 @@ class ddproperty():
             }
             datastr = json.dumps(datapost)
             # print(datastr)
-            r = httprequestObj.http_put_json(
-                'https://agentnet.ddproperty.com/sf2-agent/ajax/update/' +
-                post_id,
-                jsoncontent=datastr)
+            r = httprequestObj.http_put_json('https://agentnet.ddproperty.com/sf2-agent/ajax/update/' + post_id, jsoncontent=datastr)
             data = r.text
             #f = open("debug_response/editpostdd.html", "wb")
             #f.write(data.encode('utf-8').strip())
@@ -1950,14 +1824,7 @@ class ddproperty():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "detail": detail,
-            "log_id": log_id
-        }
+        return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": log_id}
 
     def edit_post(self, postdata):
         log.debug('')
@@ -1975,35 +1842,26 @@ class ddproperty():
         detail = test_login["detail"]
 
         if (success == "true"):
-            self.chrome.get('https://agentnet.ddproperty.com/create-listing/detail/' +str(datahandled['post_id']))
-            log.debug('search post id %s',str(datahandled['post_id']))
+            self.chrome.get('https://agentnet.ddproperty.com/create-listing/detail/' + str(datahandled['post_id']))
+            log.debug('search post id %s', str(datahandled['post_id']))
             # self.chrome.save_screenshot("debug_response/edit1.png")
-            matchObj = re.search(r'500 Internal Server Error',self.chrome.page_source)
+            matchObj = re.search(r'500 Internal Server Error', self.chrome.page_source)
             if matchObj:
                 success = 'false'
                 detail = 'not found ddproperty post id ' + datahandled['post_id']
             if success == 'true':
-                self.chrome.get('https://agentnet.ddproperty.com/create-listing/location/' +str(datahandled['post_id']))
-                log.debug('go to edit post %s',str(datahandled['post_id']))
+                self.chrome.get('https://agentnet.ddproperty.com/create-listing/location/' + str(datahandled['post_id']))
+                log.debug('go to edit post %s', str(datahandled['post_id']))
                 time.sleep(0.5)
-                WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
-                success ,detail = self.inputpostgeneral(datahandled)
+                WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
+                success, detail = self.inputpostgeneral(datahandled)
                 if success == 'true':
                     success, detail, post_id, account_type = self.inputpostdetail(datahandled)
 
-        log.debug('edit post done')    
+        log.debug('edit post done')
         #
         # end process
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "detail": detail,
-            "log_id": datahandled['log_id'],
-            "websitename": self.websitename
-        }
-
+        return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "websitename": self.websitename}
