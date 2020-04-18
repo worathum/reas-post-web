@@ -34,7 +34,8 @@ class thaihometown():
         self.parser = 'html.parser'
 
     def register_user(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         user = postdata['user']
@@ -88,7 +89,8 @@ class thaihometown():
         }
 
     def test_login(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         user = postdata['user']
@@ -137,7 +139,8 @@ class thaihometown():
         }
 
     def create_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('') 
+
         time_start = datetime.datetime.utcnow()
 
         listing_type = postdata['listing_type']
@@ -259,7 +262,8 @@ class thaihometown():
         }
 
     def boost_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
+
         time_start = datetime.datetime.utcnow()
 
         post_id = postdata["post_id"]
@@ -393,7 +397,7 @@ class thaihometown():
         }
 
     def delete_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
@@ -427,7 +431,7 @@ class thaihometown():
         }
 
     def edit_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
         time_start = datetime.datetime.utcnow()
 
         post_img_url_lists = postdata['post_img_url_lists']
@@ -580,16 +584,4 @@ class thaihometown():
             "post_id": post_id
         }
 
-    def print_debug(self, msg):
-        if(self.debug == 1):
-            print(msg)
-        return True
-
-    def print_debug_data(self, data):
-        if(self.debugdata == 1):
-            print(data)
-        return True
-
-        if(self.debugdata == 1):
-            print(data)
-        return True
+   
