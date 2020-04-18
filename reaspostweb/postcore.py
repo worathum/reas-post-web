@@ -86,7 +86,7 @@ class postcore():
         # store image in img tmp
         try:
             allimages = datarequest["post_img_url_lists"]
-        except KeyError:
+        except KeyError as e:
             allimages = {}
             log.warning(str(e))
         #dirtmp = str(os.getpid())+'_'+str(datetime.datetime.utcnow().strftime("%Y%m%d%H:%M:%S"))
