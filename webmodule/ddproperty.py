@@ -639,13 +639,13 @@ class ddproperty():
         projectname = datahandled['project_name']
         if datahandled['web_project_name'] != '':
             projectname = datahandled['web_project_name']
-        projectnametxt = WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("propertySearch"))
+        projectnametxt = WebDriverWait(self.chrome,10).until(EC.presence_of_element_located((By.ID, "propertySearch")))
         if datahandled['action'] == 'edit_post':
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-            WebDriverWait(self.chrome,5).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.DELETE)  # clear for edit action
+            WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.CONTROL + "a")  # clear for edit action
+            WebDriverWait(self.chrome,10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.DELETE)  # clear for edit action
         projectnametxt.send_keys(projectname)
         projectnametxt.send_keys(Keys.ENTER)
-        WebDriverWait(self.chrome,5).until(EC.presence_of_element_located((By.CLASS_NAME, "open")))
+        WebDriverWait(self.chrome,10).until(EC.presence_of_element_located((By.CLASS_NAME, "open")))
         time.sleep(1)
         #self.chrome.save_screenshot("debug_response/location2.png")
         # f = open("debug_response/ddpost.html", "wb")
@@ -654,6 +654,7 @@ class ddproperty():
         # case no result projectname
         matchObj = re.search(r'ol class="no-match"',self.chrome.page_source)
         if matchObj:
+            log.debug('not found property name %s',projectname)
             if (datahandled['addr_province'] == ''or datahandled['addr_district'] == ''or datahandled['addr_sub_district'] == ''):
                 success = 'false'
                 detail = 'for a new project name, ddproperty must require province , district and sub_district'
@@ -755,6 +756,7 @@ class ddproperty():
 
         # case match choose first argument
         else:
+            log.debug('found property name %s',projectname)
             # self.chrome.save_screenshot("debug_response/newp3.png")
             # select li first
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]/a')).click()
