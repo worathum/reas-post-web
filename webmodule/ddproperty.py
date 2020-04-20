@@ -58,7 +58,6 @@ class ddproperty():
         tel = postdata["tel"]
         line: postdata["line"]
         addr_province = postdata["addr_province"]
-        
 
         # start process
         #
@@ -512,21 +511,21 @@ class ddproperty():
         except KeyError as e:
             datahandled['direction_type'] = "ทิศเหนือ"
             log.warning(str(e))
-        if datahandled['direction_type'] == '11':
+        if datahandled['direction_type'] == '11' or datahandled['direction_type'] == 11:
             datahandled['direction_type'] = "ทิศเหนือ"
-        elif datahandled['direction_type'] == '12':
+        elif datahandled['direction_type'] == '12' or datahandled['direction_type'] == 12:
             datahandled['direction_type'] = "ทิศใต้"
-        elif datahandled['direction_type'] == '13':
+        elif datahandled['direction_type'] == '13' or datahandled['direction_type'] == 13:
             datahandled['direction_type'] = "ทิศตะวันออก"
-        elif datahandled['direction_type'] == '14':
+        elif datahandled['direction_type'] == '14' or datahandled['direction_type'] == 14:
             datahandled['direction_type'] = "ทิศตะวันตก"
-        elif datahandled['direction_type'] == '21':
+        elif datahandled['direction_type'] == '21' or datahandled['direction_type'] == 21:
             datahandled['direction_type'] = "ทิศตะวันออกเฉียงเหนือ"
-        elif datahandled['direction_type'] == '22':
+        elif datahandled['direction_type'] == '22' or datahandled['direction_type'] == 22:
             datahandled['direction_type'] = "ทิศตะวันออก"
-        elif datahandled['direction_type'] == '23':
+        elif datahandled['direction_type'] == '23' or datahandled['direction_type'] == 23:
             datahandled['direction_type'] = "ทิศตะวันตกเฉียงเหนือ"
-        elif datahandled['direction_type'] == '24':
+        elif datahandled['direction_type'] == '24' or datahandled['direction_type'] == 24:
             datahandled['direction_type'] = "ทิศตะวันตกเฉียงใต้"
 
         # image
@@ -574,12 +573,6 @@ class ddproperty():
 
     def create_post(self, postdata):
         log.debug('')
-
-        #TODO
-        # เรื่องรูปถ้าไม่มีรูปส่งมาเลยไม่ต้องทำไร
-        #ถ้า projectname webprojectname ไม่มี ใช้ title แทน
-        #ดูทิศด้วยว่าลงถูกต้องป่าว
-
 
         time_start = datetime.datetime.utcnow()
 
@@ -629,9 +622,16 @@ class ddproperty():
         success = 'true'
         detail = ''
 
+        # 1 use project_name
+        # 2 if web_project_name, use web_project_name
+        # 3 if web_project_name = '' or null , use post_title_th
+
         projectname = datahandled['project_name']
-        if datahandled['web_project_name'] != '':
+        if datahandled['web_project_name'] != '' and datahandled['web_project_name'] != 'null':
             projectname = datahandled['web_project_name']
+        if projectname == '':
+            projectname = datahandled['post_title_th']
+
         projectnametxt = WebDriverWait(self.chrome, 10).until(EC.presence_of_element_located((By.ID, "propertySearch")))
         if datahandled['action'] == 'edit_post':
             WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.CONTROL + "a")  # clear for edit action
@@ -730,12 +730,12 @@ class ddproperty():
 
                 # longitude ,latitude
                 try:
-                    time.sleep(0.2)
+                    time.sleep(0.5)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
                     time.sleep(1)
                     js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
                     self.chrome.execute_script(js)
-                    time.sleep(0.2)
+                    time.sleep(0.5)
                 except Exception as e:
                     log.warning(str(e))
                     pass
@@ -865,6 +865,7 @@ class ddproperty():
                     else:
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room']) + ' ห้องนอน')).click()
             except:
+                log.warning('cannot input bed room')
                 pass
 
             # bath room
@@ -877,6 +878,7 @@ class ddproperty():
                 else:
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
             except:
+                log.warning('cannot input bath room')
                 pass
 
             # floor area sqm
@@ -886,6 +888,7 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
             except:
+                log.warning('cannot input floor area sqm')
                 pass
 
             # total floor
@@ -893,6 +896,7 @@ class ddproperty():
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
             except:
+                log.warning('cannot input total floor')
                 pass
 
             # floor position
@@ -900,6 +904,7 @@ class ddproperty():
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
             except:
+                log.warning('cannot input floor position')
                 pass
 
             # title thai
@@ -932,9 +937,13 @@ class ddproperty():
 
             # หันหน้าทางทิศ
             try:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-facing-type")).click()
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['direction_type'])).click()
+                element = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="form-field-facing-type"]'))
+                self.chrome.execute_script("arguments[0].click();", element)
+                element = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['direction_type'])))
+                self.chrome.execute_script("arguments[0].click();", element)
+                log.debug('input direction type')
             except:
+                log.warning('cannot input direction type')
                 pass
 
             # area
@@ -951,6 +960,7 @@ class ddproperty():
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(datahandled['land_size_ngan'])
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(datahandled['land_size_wa'])
             except:
+                log.warning('cannot input area')
                 pass
 
             # account type
@@ -970,8 +980,8 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
                 except:
-                    pass
                     log.warning('cannot input corporate data')
+                    pass
 
             self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(0.5)
@@ -979,16 +989,11 @@ class ddproperty():
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
 
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
+
             # image
-            if datahandled['action'] == 'edit_post':
-                # soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
-                # imglis = soup.find('ul', {'class': 'c-upload-file-grid'}).findAll('li')
-                # for imgli in imglis:
-                #     imgid = str(imgli.get("id"))
-                #     if imgid != None:
-                #         imgdiv = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("li[id='"+imgid+"']")).find_elements_by_link_text("...")[0].click()
-                #         self.chrome.save_screenshot("debug_response/newp10.png")
-                #         exit()
+            # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
+            if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) < 0):
+                log.debug('edit image')
                 imgdiv = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
                 for imgli in imglis:
