@@ -56,8 +56,9 @@ class ddproperty():
         name_en = postdata["name_en"]
         surname_en = postdata["surname_en"]
         tel = postdata["tel"]
-        line: postdata["amarin.ta"]
+        line: postdata["line"]
         addr_province = postdata["addr_province"]
+        
 
         # start process
         #
@@ -573,6 +574,12 @@ class ddproperty():
 
     def create_post(self, postdata):
         log.debug('')
+
+        #TODO
+        # เรื่องรูปถ้าไม่มีรูปส่งมาเลยไม่ต้องทำไร
+        #ถ้า projectname webprojectname ไม่มี ใช้ title แทน
+        #ดูทิศด้วยว่าลงถูกต้องป่าว
+
 
         time_start = datetime.datetime.utcnow()
 
