@@ -124,7 +124,8 @@ class postcore():
         futures = []
 
         #with concurrent.futures.ProcessPoolExecutor() as pool:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+        #with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+        with concurrent.futures.ThreadPoolExecutor() as pool:
             for webitem in weblists:
                 websitename = webitem['ds_name']
                 # # if not defind in configs['list_module']
