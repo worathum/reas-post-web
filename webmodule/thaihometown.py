@@ -389,22 +389,21 @@ class thaihometown():
         log.debug('')
 
         time_start = datetime.datetime.utcnow()
-        #TODO
-        user = postdata['user']
-        passwd = postdata['pass']
-        company_name = postdata['company_name']
-        name_title = postdata["name_title"]
-        name_th = postdata["name_th"]
-        surname_th = postdata["surname_th"]
-        name_en = postdata["name_en"]
-        surname_en = postdata["surname_en"]
-        tel = postdata["tel"]
-        line: postdata["amarin.ta"]
-        addr_province = postdata["addr_province"]
 
         # start process
         #
         datahandled = self.postdata_handle(postdata)
+        user = datahandled['user']
+        passwd = datahandled['pass']
+        company_name = datahandled['company_name']
+        name_title = datahandled["name_title"]
+        name_th = datahandled["name_th"]
+        surname_th = datahandled["surname_th"]
+        name_en = datahandled["name_en"]
+        surname_en = datahandled["surname_en"]
+        tel = datahandled["tel"]
+        line = datahandled["line"]
+        addr_province = datahandled["addr_province"]
 
         success = "true"
         detail = ""
