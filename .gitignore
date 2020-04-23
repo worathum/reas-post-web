@@ -130,5 +130,5 @@ dmypy.json
 /debug_response
 /imgtmp
 /log
-/newenv
+/py37-venv
 .vscode/settings.json
