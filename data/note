@@ -1,15 +1,3 @@
-
-docker exec -it docker-python3 bash -c "cd /app; python -W "ignore" manage.py runserver 0.0.0.0:8000 --insecure;"
-docker exec -it anticaptchaapi bash -c "cd /app; python -W "ignore" manage.py runserver 0.0.0.0:8000 --insecure;"
-
-
-docker exec -it docker-python3 bash
-root@691c105086e9:/app# python manage.py runserver 0.0.0.0:8000
-
-
-
-
-
 ใน view import นี้  error
 from ratelimit.decorators import ratelimit
 from ratelimit.exceptions import Ratelimited
@@ -19,6 +7,7 @@ https://github.com/brad-accuvant/cuckoo-modified/issues/207
 pip uninstall ratelimit
 pip uninstall django-ratelimit
 pip install django-ratelimit
+
 
 Local dev environment
 pip3 install django
@@ -30,13 +19,12 @@ pip3 install bs4;
 pip3 install python3-anticaptcha; 
 pip3 install requests_toolbelt; 
 pip3 install selenium; 
-cd /bin/;
-sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz;
-sudo tar -xvf geckodriver-v0.26.0-linux64.tar.gz;
-sudo rm -f geckodriver-v0.26.0-linux64.tar.gz;
-sudo chmod +x geckodriver;
-cd /home/arnut/workspace/REASPOSTWEB/
-python3 -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure;
+
+start service
+python3.7 -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure
+python3.7 -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure &
+python3.7 -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure >> /dev/null 2>&1 &
+
 
 
 install firefox on server debian
@@ -46,11 +34,32 @@ https://unix.stackexchange.com/questions/395316/install-firefox-quantum-in-debia
 install google chrome on ubuntu
 https://www.linuxbabe.com/ubuntu/install-google-chrome-ubuntu-18-04-lts
 
+install firefox driver
+cd /bin/;
+sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz;
+sudo tar -xvf geckodriver-v0.26.0-linux64.tar.gz;
+sudo rm -f geckodriver-v0.26.0-linux64.tar.gz;
+sudo chmod +x geckodriver;
+cd /home/arnut/workspace/REASPOSTWEB/
+
 install chromedriver
 cd /bin;
 wget https://chromedriver.storage.googleapis.com/81.0.4044.69/chromedriver_linux64.zip;
 unzip chromedriver_linux64.zip; 
 chmod +x chromedriver; 
 rm -f chromedriver_linux64.zip;
-python3 -W "ignore" manage.py runserver 0.0.0.0:8080 --insecure >> /dev/null 2>&1 &
+
+
+python visualenv with window
+https://medium.com/@nonthakon/virtualenv-%E0%B9%83%E0%B8%99-python-3-windows-10d3dd89a0a7
+
+python3 visualenv with linux
+https://help.dreamhost.com/hc/en-us/articles/115000695551-Installing-and-using-virtualenv-with-Python-3
+
+active visual env
+#cd /home/arnut/workspace/REASPOSTWEB
+#source py37-venv/bin/activate
+
+deactivate visual env
+#deactivate
 

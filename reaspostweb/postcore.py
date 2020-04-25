@@ -13,6 +13,8 @@ import random
 import concurrent.futures
 from webmodule.lib_httprequest import *
 httprequestObj = lib_httprequest()
+import re
+
 
 try:
     import configs
@@ -56,7 +58,7 @@ class postcore():
                 "detail": "Wrong data request (" + str(e) + ")",
             }
 
-        # json decode
+        # json decode to array
         try:
             datarequest = json.loads(postdatajson.decode('utf-8'))
         except ValueError as e:
@@ -65,7 +67,24 @@ class postcore():
                 "success": "false",
                 "detail": "Wrong json format (" + str(e) + ")",
             }
+        
 
+        # replace string \n to \r\n , \t to ''
+        # TODO how to replace all dict by foreach or array walk?
+        datarequest['post_title_th'] = re.sub(r'\n','\r\n',datarequest['post_title_th'])
+        datarequest['post_title_en'] = re.sub(r'\n','\r\n',datarequest['post_title_en'])
+        datarequest['short_post_title_th'] = re.sub(r'\n','\r\n',datarequest['short_post_title_th'])
+        datarequest['short_post_title_en'] = re.sub(r'\n','\r\n',datarequest['short_post_title_en'])
+        datarequest['post_description_th'] = re.sub(r'\n','\r\n',datarequest['post_description_th'])
+        datarequest['post_description_en'] = re.sub(r'\n','\r\n',datarequest['post_description_en'])
+        datarequest['post_title_th'] = re.sub(r'\t','',datarequest['post_title_th'])
+        datarequest['post_title_en'] = re.sub(r'\t','',datarequest['post_title_en'])
+        datarequest['short_post_title_th'] = re.sub(r'\t','',datarequest['short_post_title_th'])
+        datarequest['short_post_title_en'] = re.sub(r'\t','',datarequest['short_post_title_en'])
+        datarequest['post_description_th'] = re.sub(r'\t','',datarequest['post_description_th'])
+        datarequest['post_description_en'] = re.sub(r'\t','',datarequest['post_description_en'])
+
+        
         # check action in list
         action = datarequest['action']
         if (action not in self.list_action):

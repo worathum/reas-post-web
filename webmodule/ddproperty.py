@@ -16,6 +16,7 @@ from selenium.webdriver.common.keys import Keys
 #from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import WebDriverException
 import time
 from urllib.parse import urlsplit
 import string
@@ -499,13 +500,13 @@ class ddproperty():
         try:
             datahandled['floor_total'] = postdata["floor_total"]
         except KeyError as e:
-            datahandled['floor_total'] = 1
+            datahandled['floor_total'] = 0
             log.warning(str(e))
 
         try:
             datahandled['floor_level'] = postdata["floor_level"]
         except KeyError as e:
-            datahandled['floor_level'] = 1
+            datahandled['floor_level'] = 0
             log.warning(str(e))
 
         try:
@@ -669,7 +670,7 @@ class ddproperty():
                     cssselect = 'TOWN'
                 elif datahandled['property_type'] == "SHOP":
                     linktxt = 'เชิงพาณิชย์'
-                    cssselect = 'RET'
+                    cssselect = 'SHOP'
                 elif datahandled['property_type'] == "LAND":
                     linktxt = 'ที่ดิน'
                     cssselect = 'LAND'
@@ -770,7 +771,7 @@ class ddproperty():
                 cssselect = 'TOWN'
             elif datahandled['property_type'] == "SHOP":
                 linktxt = 'เชิงพาณิชย์'
-                cssselect = 'RET'
+                cssselect = 'SHOP'
             elif datahandled['property_type'] == "LAND":
                 linktxt = 'ที่ดิน'
                 cssselect = 'LAND'
@@ -857,8 +858,8 @@ class ddproperty():
             # price
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
-            except:
-                log.warning('cannot input price')
+            except WebDriverException as e:
+                log.warning('cannot input price '+str(e))
                 pass
 
             # bed room
@@ -869,8 +870,8 @@ class ddproperty():
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
                     else:
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room']) + ' ห้องนอน')).click()
-            except:
-                log.warning('cannot input bed room')
+            except WebDriverException as e:
+                log.warning('cannot input bed room '+str(e))
                 pass
 
             # bath room
@@ -882,8 +883,8 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bath_room']) + ' ห้องน้ำ')).click()
                 else:
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
-            except:
-                log.warning('cannot input bath room')
+            except WebDriverException as e:
+                log.warning('cannot input bath room '+str(e))
                 pass
 
             # floor area sqm
@@ -892,25 +893,27 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
-            except:
-                log.warning('cannot input floor area sqm')
+            except WebDriverException as e:
+                log.warning('cannot input floor area sqm '+str(e))
                 pass
 
             # total floor
-            try:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
-            except:
-                log.warning('cannot input total floor')
-                pass
+            if datahandled['floor_total'] != None and datahandled['floor_total'] < 0:
+                try:
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
+                except WebDriverException as e:
+                    log.warning('cannot input total floor '+str(e))
+                    pass
 
             # floor position
-            try:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
-            except:
-                log.warning('cannot input floor position')
-                pass
+            if datahandled['floor_level'] != None and datahandled['floor_level'] < 0:
+                try:
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
+                except WebDriverException as e:
+                    log.warning('cannot input floor position '+str(e))
+                    pass
 
             # title thai
             try:
@@ -918,10 +921,10 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.DELETE)
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(datahandled['post_title_th'])
-                log.debug('input title thai')
-            except Exception as e:
+                log.debug('input title thai ')
+            except WebDriverException as e:
                 pass
-                log.warning(str(e))
+                log.warning('cannot input title thai '+str(e))
 
             # title en
             try:
@@ -930,9 +933,9 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.DELETE)  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(datahandled['post_title_en'])
                 log.debug('input title en')
-            except Exception as e:
+            except WebDriverException as e:
                 pass
-                log.warning(str(e))
+                log.warning('cannot input title en '+str(e))
             #self.chrome.save_screenshot("debug_response/newp00.png")
 
             # desc thai
@@ -942,9 +945,9 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.DELETE)  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
                 log.debug('input desc thai')
-            except Exception as e:
+            except WebDriverException as e:
                 pass
-                log.warning(str(e))
+                log.warning('cannot input desc thai '+str(e))
             #self.chrome.save_screenshot("debug_response/newp11.png")
 
             # desc en
@@ -954,9 +957,9 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.DELETE)  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
                 log.debug('input desc en')
-            except Exception as e:
+            except WebDriverException as e:
                 pass
-                log.warning(str(e))
+                log.warning('cannot input post_description_en '+str(e))
             #self.chrome.save_screenshot("debug_response/newp22.png")
 
             # หันหน้าทางทิศ
@@ -966,8 +969,8 @@ class ddproperty():
                 element = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['direction_type'])))
                 self.chrome.execute_script("arguments[0].click();", element)
                 log.debug('input direction type')
-            except:
-                log.warning('cannot input direction type')
+            except WebDriverException as e:
+                log.warning('cannot input direction type '+str(e))
                 pass
             #self.chrome.save_screenshot("debug_response/newp33.png")
 
@@ -984,8 +987,8 @@ class ddproperty():
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_rai")).send_keys(datahandled['land_size_rai'])
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(datahandled['land_size_ngan'])
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(datahandled['land_size_wa'])
-            except:
-                log.warning('cannot input area')
+            except WebDriverException as e:
+                log.warning('cannot input area '+str(e))
                 pass
 
             # account type
@@ -1004,17 +1007,25 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
-                except:
-                    log.warning('cannot input corporate data')
+                except WebDriverException as e:
+                    log.warning('cannot input corporate data '+str(e))
                     pass
 
             self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
-            time.sleep(0.5)
+            time.sleep(1.5)
             #self.chrome.save_screenshot("debug_response/newp12.png")
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
+
+            try:
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
+            except WebDriverException as e:
+                log.debug('cannot click next , cause floor_area_sqm is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
+                success = 'false'
+                detail = 'cannot click next , cause floor_area_sqm is too low OR price_baht is too low OR post_description_th,post_title_th not set'
+                self.chrome.quit()
+                return success, detail, post_id, account_type
+
 
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
-
             # image
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
             if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) < 0):
@@ -1047,13 +1058,13 @@ class ddproperty():
             # self.chrome.save_screenshot("debug_response/newp10.png")
             time.sleep(0.5)
             log.debug('click next')
-
+            
             if datahandled['action'] == 'edit_post':
                 self.chrome.quit()
                 return success, detail, post_id, account_type
 
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
-            time.sleep(1.5)
+            time.sleep(1.8)
             log.debug('click publish')
             # self.chrome.save_screenshot("debug_response/newp11.png")
             # f = open("debug_response/ddpost.html", "wb")
