@@ -44,47 +44,46 @@ class thaihometown():
 
         datahandled = {}
 
-        # "SALE", "RENT", "OPT" ขาย ให้เช่า ขายดาวน์
         try:
             datahandled['listing_type'] = postdata['listing_type']
         except KeyError as e:
-            datahandled['listing_type'] = "SALE"
+            datahandled['listing_type'] = "ประกาศขาย"
             log.warning(str(e))
         if datahandled['listing_type'] == "เช่า":
-            datahandled['listing_type'] = "RENT"
+            datahandled['listing_type'] = "ประกาศให้เช่า"
         elif datahandled['listing_type'] == "ขายดาวน์":
-            datahandled['listing_type'] = "OPT"
+            datahandled['listing_type'] = "ประกาศขายดาวน์"
         else:
-            datahandled['listing_type'] = "SALE"
+            datahandled['listing_type'] = "ประกาศขาย"
 
         # "CONDO","BUNG","TOWN","LAND","APT","RET","OFF","WAR","BIZ","SHOP"]
         try:
             datahandled['property_type'] = postdata['property_type']
         except KeyError as e:
-            datahandled['property_type'] = "CONDO"
+            datahandled['property_type'] = "คอนโดมิเนียม+Condominiem"
             log.warning(str(e))
-        if datahandled['property_type'] == '2' or datahandled['property_type'] == "บ้านเดี่ยว":
-            datahandled['property_type'] = "BUNG"
-        elif datahandled['property_type'] == '3' or datahandled['property_type'] == "บ้านแฝด":
-            datahandled['property_type'] = "BUNG"
-        elif datahandled['property_type'] == '4' or datahandled['property_type'] == "ทาวน์เฮ้าส์":
-            datahandled['property_type'] = "TOWN"
-        elif datahandled['property_type'] == '5' or datahandled['property_type'] == "ตึกแถว-อาคารพาณิชย์":
-            datahandled['property_type'] = "SHOP"
-        elif datahandled['property_type'] == '6' or datahandled['property_type'] == "ที่ดิน":
-            datahandled['property_type'] = "LAND"
-        elif datahandled['property_type'] == '7' or datahandled['property_type'] == "อพาร์ทเมนท์":
-            datahandled['property_type'] = "APT"
-        elif datahandled['property_type'] == '8' or datahandled['property_type'] == "โรงแรม":
-            datahandled['property_type'] = "BIZ"
-        elif datahandled['property_type'] == '9' or datahandled['property_type'] == "ออฟฟิศสำนักงาน":
-            datahandled['property_type'] = "OFF"
-        elif datahandled['property_type'] == '10' or datahandled['property_type'] == "โกดัง":
-            datahandled['property_type'] = "WAR"
-        elif datahandled['property_type'] == '25' or datahandled['property_type'] == "โรงงาน":
-            datahandled['property_type'] = "WAR"
+        if datahandled['property_type'] == '2' or datahandled['property_type'] == 2: #2 บ้านเดี่ยว
+            datahandled['property_type'] = "บ้านเดี่ยว+Singlehouse"
+        elif datahandled['property_type'] == '3' or datahandled['property_type'] == 3: #3 บ้านแฝด
+            datahandled['property_type'] = "บ้าน+Home"
+        elif datahandled['property_type'] == '4' or datahandled['property_type'] == 4: #4 ทาวน์เฮ้าส์
+            datahandled['property_type'] = "ทาวน์เฮ้าส์+Townhouse"
+        elif datahandled['property_type'] == '5' or datahandled['property_type'] == 5: #5 ตึกแถว-อาคารพาณิชย์
+            datahandled['property_type'] = "อาคารพาณิชย์+Buildings"
+        elif datahandled['property_type'] == '6' or datahandled['property_type'] == 6: #6 ที่ดิน
+            datahandled['property_type'] = "ที่ดิน+Land"
+        elif datahandled['property_type'] == '7' or datahandled['property_type'] == 7: #7 อพาร์ทเมนท์
+            datahandled['property_type'] = "อพาร์ทเมนท์+Apartment"
+        elif datahandled['property_type'] == '8' or datahandled['property_type'] == 8: #8 โรงแรม
+            datahandled['property_type'] = "ธุรกิจ+Business"
+        elif datahandled['property_type'] == '9' or datahandled['property_type'] == 9: #9 ออฟฟิศสำนักงาน
+            datahandled['property_type'] = "สำนักงาน+Office"
+        elif datahandled['property_type'] == '10' or datahandled['property_type'] == 10: #10 โกดัง
+            datahandled['property_type'] = "โกดัง+Storehouse"
+        elif datahandled['property_type'] == '25' or datahandled['property_type'] == 25: #25 โรงงาน
+            datahandled['property_type'] = "โรงงาน+Factory"
         else:
-            datahandled['property_type'] = "CONDO"
+            datahandled['property_type'] = "คอนโดมิเนียม+Condominiem" #1 คอนโด
 
         try:
             datahandled['post_img_url_lists'] = postdata['post_img_url_lists']
@@ -266,27 +265,7 @@ class thaihometown():
             datahandled['floor_level'] = 1
             log.warning(str(e))
 
-        try:
-            datahandled['direction_type'] = postdata["direction_type"]
-        except KeyError as e:
-            datahandled['direction_type'] = "ทิศเหนือ"
-            log.warning(str(e))
-        if datahandled['direction_type'] == '11':
-            datahandled['direction_type'] = "ทิศเหนือ"
-        elif datahandled['direction_type'] == '12':
-            datahandled['direction_type'] = "ทิศใต้"
-        elif datahandled['direction_type'] == '13':
-            datahandled['direction_type'] = "ทิศตะวันออก"
-        elif datahandled['direction_type'] == '14':
-            datahandled['direction_type'] = "ทิศตะวันตก"
-        elif datahandled['direction_type'] == '21':
-            datahandled['direction_type'] = "ทิศตะวันออกเฉียงเหนือ"
-        elif datahandled['direction_type'] == '22':
-            datahandled['direction_type'] = "ทิศตะวันออก"
-        elif datahandled['direction_type'] == '23':
-            datahandled['direction_type'] = "ทิศตะวันตกเฉียงเหนือ"
-        elif datahandled['direction_type'] == '24':
-            datahandled['direction_type'] = "ทิศตะวันตกเฉียงใต้"
+        
 
         # image
         datahandled['post_images'] = postdata["post_images"]
@@ -376,11 +355,17 @@ class thaihometown():
             log.warning(str(e))
 
         try:
-            datahandled['addr_province'] = postdata["addr_province"]
+            datahandled['addr_province'] = postdata['addr_province']
         except KeyError as e:
             datahandled['addr_province'] = ''
             log.warning(str(e))
 
+        try:
+            datahandled['addr_district'] = postdata['addr_district']
+        except KeyError as e:
+            datahandled['addr_district'] = ''
+            log.warning(str(e))
+        
         self.handled = True
 
         return datahandled
@@ -395,15 +380,7 @@ class thaihometown():
         datahandled = self.postdata_handle(postdata)
         user = datahandled['user']
         passwd = datahandled['pass']
-        company_name = datahandled['company_name']
-        name_title = datahandled["name_title"]
-        name_th = datahandled["name_th"]
-        surname_th = datahandled["surname_th"]
-        name_en = datahandled["name_en"]
-        surname_en = datahandled["surname_en"]
         tel = datahandled["tel"]
-        line = datahandled["line"]
-        addr_province = datahandled["addr_province"]
 
         success = "true"
         detail = ""
@@ -446,17 +423,18 @@ class thaihometown():
 
         time_start = datetime.datetime.utcnow()
 
-        user = postdata['user']
-        passwd = postdata['pass']
-        ds_name = "thaihometown"
-        if (postdata["ds_name"]):
-            ds_name = postdata["ds_name"]
-        ds_id = ""
-        if (postdata["ds_id"]):
-            ds_id = postdata["ds_id"]
-
         # start process
         #
+        datahandled = self.postdata_handle(postdata)
+        user = datahandled['user']
+        passwd = datahandled['pass']
+        ds_name = "thaihometown"
+        if (postdata["ds_name"]):
+            ds_name = datahandled["ds_name"]
+        ds_id = ""
+        if (postdata["ds_id"]):
+            ds_id = datahandled["ds_id"]
+        
         success = "true"
         detail = ""
 
@@ -493,45 +471,69 @@ class thaihometown():
             "detail": detail,
         }
 
+    def validatedatapost(self,datahandled):
+        log.debug('')
+
+        success = 'true'
+        detail = ''
+
+        #validate
+        if datahandled['addr_province'] == None or  datahandled['addr_province'] == '' or datahandled['addr_district'] == None or datahandled['addr_district'] =='':
+            detail = "addr_province or addr_district not defined"
+        if datahandled['property_type'] == '' or datahandled['property_type'] == None:
+            detail = "property_type not defined"
+        if datahandled['listing_type'] == None or datahandled['listing_type'] == '':
+            detail = "listing_type not defined"
+        if datahandled['property_type'] == 'บ้านเดี่ยว+Singlehouse' or datahandled['property_type'] == 'บ้าน+Home' or ordatahandled['property_type'] == 'ทาวน์เฮ้าส์+Townhouse' or datahandled['property_type'] == 'คอนโดมิเนียม+Condominiem':
+            if  datahandled['bath_room'] == 0 or datahandled['bed_room'] == 0:
+                detail = 'บ้าน คอนโด ทาวน์เฮ้าส์ จำนวนห้องนอน และห้องน้ำต้องใส่ข้อมูล'
+        if len(datahandled['post_description_th']) < 200 or len(datahandled['post_description_th']) > 5000:
+            detail = 'post_description_th between 200 - 5000'
+        if len(datahandled['post_title_th']) > 250:
+            detail = 'post_title_th must < 250'
+        
+
+        if detail != "":
+            success = 'false'
+        
+        return success,detail
+
+
     def create_post(self, postdata):
         log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        post_img_url_lists = postdata['post_img_url_lists']
-        price_baht = postdata['price_baht']
-        addr_province = postdata['addr_province']
-        addr_district = postdata['addr_district']
-        addr_sub_district = postdata['addr_sub_district']
-        addr_road = postdata['addr_road']
-        addr_near_by = postdata['addr_near_by']
-        floorarea_sqm = postdata['floorarea_sqm']
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        post_description_th = post_description_th + "addddddddddddddddddddddddddddddddddddddddddddddddddadddddddddddddddddddddddddddddddddddddddddddddddddaddddddddddddddddddddddddddddddddddddddddddddddddddadddddddddddddddddddddddddddddddddddddddddddddddddd"
-        post_title_en = postdata['post_title_en']
-        post_description_en = postdata['post_description_en']
-        ds_id = postdata["ds_id"]
-        # account_type = postdata["account_type"]
-        # postdata['user'] = 'kla.arnut@gmail.com'
-        user = postdata['user']
-        # postdata['pass'] = 'vkIy9b'
-        passwd = postdata['pass']
-        # project_name = postdata["project_name"]
-
         # start process
         #
+        datahandled = self.postdata_handle(postdata)
+        listing_type = datahandled['listing_type']
+        property_type = datahandled['property_type']
+        post_images = datahandled['post_images']
+        price_baht = datahandled['price_baht']
+        addr_province = datahandled['addr_province']
+        addr_district = datahandled['addr_district']
+        addr_sub_district = datahandled['addr_sub_district']
+        addr_road = datahandled['addr_road']
+        addr_near_by = datahandled['addr_near_by']
+        floorarea_sqm = datahandled['floorarea_sqm']
+        property_id = datahandled['property_id']
+        post_title_th = datahandled['post_title_th']
+        post_description_th = datahandled['post_description_th']
+        post_title_en = datahandled['post_title_en']
+        post_description_en = datahandled['post_description_en']
+        ds_id = postdata["ds_id"]
 
+        success = "true"
+        detail = ""
+        post_id = ""
+
+        success,detail = self.validatedatapost(datahandled)
+            
         # login
-        test_login = self.test_login(postdata)
+        test_login = self.test_login(datahandled)
         success = test_login["success"]
         detail = test_login["detail"]
-        post_id = ""
 
         if success == "true":
             r = httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
@@ -548,42 +550,44 @@ class thaihometown():
             date_signup = soup.find("input", {"name": "date_signup"})['value']
 
             # https://www.thaihometown.com/addcontacts
-            datapost = dict(ActionForm2='',
-                            Submit='Active',
-                            ad_title=post_description_th.encode('cp874', 'ignore'),
-                            carpark='',
-                            code_edit=code_edit,
-                            conditioning='',
-                            contact_code='',
-                            dasd=dasd,
-                            date_signup=date_signup,
-                            email=email,
-                            firstname=firstname,
-                            headtitle=post_title_th.encode('cp874', 'ignore'),
-                            id='',
-                            info=[' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ', ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ', ' ไมโครเวฟ ', ' ชุดรับแขก '],
-                            mobile=mobile,
-                            notprice=1,
-                            price_unit='',
-                            property_area=floorarea_sqm,
-                            property_bts='',
-                            property_city_2='',
-                            property_city_bkk='ยานนาวา+Yannawa',
-                            property_country_2='',
-                            property_mrt='',
-                            property_purple='',
-                            property_sqm=1,
-                            property_type='บ้าน+Home',
-                            rent_price='',
-                            room1=2,
-                            room2=3,
-                            sas_name=sas_name,
-                            selling_price='',
-                            string1=string1,
-                            string2=string2,
-                            type_forrent='',
-                            typepart='ประกาศขาย',
-                            typeunit='ต่อตร.ม')
+            datapost = dict(
+                        ActionForm2='',
+                        Submit='Active',
+                        ad_title=post_description_th.encode('cp874', 'ignore'),
+                        carpark='',
+                        code_edit=code_edit,
+                        conditioning='',
+                        contact_code='',
+                        dasd=dasd,
+                        date_signup=date_signup,
+                        email=email,
+                        firstname=firstname,
+                        headtitle=post_title_th.encode('cp874', 'ignore'),
+                        id='',
+                        info=[' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ', ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ', ' ไมโครเวฟ ', ' ชุดรับแขก '],
+                        mobile=mobile,
+                        notprice=1,
+                        price_unit='',
+                        property_area=floorarea_sqm,
+                        property_bts='',
+                        property_city_2='',
+                        property_city_bkk='ยานนาวา+Yannawa',
+                        property_country_2='',
+                        property_mrt='',
+                        property_purple='',
+                        property_sqm=1,
+                        property_type='บ้าน+Home',
+                        rent_price='',
+                        room1=2,
+                        room2=3,
+                        sas_name=sas_name,
+                        selling_price='',
+                        string1=string1,
+                        string2=string2,
+                        type_forrent='',
+                        typepart='ประกาศขาย',
+                        typeunit='ต่อตร.ม'
+                    )
             # print(datapost)
             r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
             data = r.text
