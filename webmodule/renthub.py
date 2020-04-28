@@ -105,8 +105,8 @@ class renthub():
 
         r = httprequestObj.http_post('https://www.renthub.in.th/login', data=datapost)
         data = r.text
-        f = open("renthub.html", "wb")
-        f.write(data.encode('utf-8').strip())
+        #f = open("renthub.html", "wb")
+        #f.write(data.encode('utf-8').strip())
 
         matchObj = re.search(r'ประกาศของคุณ', data)
         if not matchObj:
