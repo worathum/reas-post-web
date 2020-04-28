@@ -46,6 +46,30 @@ class lib_httprequest():
             return r
         except (ssl.SSLError, socket.error) as e:
             raise requests.exceptions.RequestException(e.message)
+    
+    def http_get_with_encode(self, url, params=None,encoder='utf-8', *args, **kwargs):
+        '''
+        New version of web_get
+        '''
+
+        def get_soup(self):
+            if not hasattr(self, '_soup'):
+                self._soup = BeautifulSoup(
+                    self.text, self.parser, from_encoding=encoder)
+            # time.sleep(.250)
+            return self._soup
+
+        try:
+            proxies = {'http': self.proxies,
+                       'https': self.proxies} if self.proxies else None
+            r = self.session.get(
+                url, params=params, allow_redirects=True, timeout=self.timeout, proxies=proxies)
+            if hasattr(self, 'encoding'):
+                r.encoding = encoder
+            r.__class__.soup = property(get_soup)
+            return r
+        except (ssl.SSLError, socket.error) as e:
+            raise requests.exceptions.RequestException(e.message)
 
     def http_get_with_headers(self, url, params=None, *args, **kwargs):
         '''
@@ -83,7 +107,6 @@ class lib_httprequest():
                     self.text, self.parser, from_encoding=self.encoding)
             # time.sleep(.255)
             return self._soup
-
         try:
             proxies = {'http': self.proxies,
                        'https': self.proxies} if self.proxies else None
@@ -94,9 +117,11 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(e.message)
-
-    def http_post_with_headers(self, url, data, params=None, *args, **kwargs):
+            #raise requests.exceptions.RequestException(e.message)
+            #fix ให้ผ่านไปก่อน
+            pass
+   
+    def http_post_with_headers(self, url,headers, data, params=None, *args, **kwargs):
         '''
         New version of web_post
         '''
@@ -107,7 +132,7 @@ class lib_httprequest():
                     self.text, self.parser, from_encoding=self.encoding)
             # time.sleep(.255)
             return self._soup
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36', }
+        #headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36', }
         try:
             proxies = {'http': self.proxies,
                        'https': self.proxies} if self.proxies else None

@@ -61,9 +61,7 @@ class ploychao():
             self.provincedata = json.load(f)
         # product categ id
         self.getProdId = {'1':24,'2':25,'3':26,'4':27,'5':29,'6':34,'7':28,'8':14,'9':31,'10':33}
-
-    
-
+        self.websitename = 'ploychao'
 
     def upload_file(self,postdata,theid,ashopname):
 

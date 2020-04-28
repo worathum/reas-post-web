@@ -197,6 +197,7 @@ class goodpriceproperty():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "websitename": self.websitename
         }
 
     def create_post(self, postdata):

@@ -104,6 +104,7 @@ class prakardproperty():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "websitename": self.websitename
         }
         #
         #

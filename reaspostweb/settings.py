@@ -26,8 +26,8 @@ SECRET_KEY = '+!(7rgh8by$$r!&o2_$vf^x1k^wcl8)j5s2!6rb=o2@u2#8@y7'
 DEBUG = True
 
 #ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['192.168.2.40', '192.168.1.56', 'localhost', '127.0.0.1',
-                 '192.168.42.62', '178.128.212.153', 'homepostapi.webup.site', 'homepostapi-dev.webup.site', '209.97.168.205']
+ALLOWED_HOSTS = ['192.168.2.40', '192.168.1.56', '192.168.2.22', '127.0.0.1',
+    '192.168.42.62', '178.128.212.153', 'homepostapi.webup.site', 'homepostapi-dev.webup.site','localhost']
 
 
 # Application definition

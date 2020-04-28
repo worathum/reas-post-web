@@ -10,8 +10,9 @@ import re
 import json
 import datetime
 import sys
-from urllib.parse import unquote
+from urllib.parse import unquote,urlparse,parse_qs
 httprequestObj = lib_httprequest()
+from requests_toolbelt import MultipartEncoder
 
 try:
     import configs
@@ -44,47 +45,46 @@ class thaihometown():
 
         datahandled = {}
 
-        # "SALE", "RENT", "OPT" ขาย ให้เช่า ขายดาวน์
         try:
             datahandled['listing_type'] = postdata['listing_type']
         except KeyError as e:
-            datahandled['listing_type'] = "SALE"
+            datahandled['listing_type'] = "ประกาศขาย"
             log.warning(str(e))
         if datahandled['listing_type'] == "เช่า":
-            datahandled['listing_type'] = "RENT"
+            datahandled['listing_type'] = "ประกาศให้เช่า"
         elif datahandled['listing_type'] == "ขายดาวน์":
-            datahandled['listing_type'] = "OPT"
+            datahandled['listing_type'] = "ประกาศขายดาวน์"
         else:
-            datahandled['listing_type'] = "SALE"
+            datahandled['listing_type'] = "ประกาศขาย"
 
         # "CONDO","BUNG","TOWN","LAND","APT","RET","OFF","WAR","BIZ","SHOP"]
         try:
             datahandled['property_type'] = postdata['property_type']
         except KeyError as e:
-            datahandled['property_type'] = "CONDO"
+            datahandled['property_type'] = "คอนโดมิเนียม+Condominiem"
             log.warning(str(e))
-        if datahandled['property_type'] == '2' or datahandled['property_type'] == "บ้านเดี่ยว":
-            datahandled['property_type'] = "BUNG"
-        elif datahandled['property_type'] == '3' or datahandled['property_type'] == "บ้านแฝด":
-            datahandled['property_type'] = "BUNG"
-        elif datahandled['property_type'] == '4' or datahandled['property_type'] == "ทาวน์เฮ้าส์":
-            datahandled['property_type'] = "TOWN"
-        elif datahandled['property_type'] == '5' or datahandled['property_type'] == "ตึกแถว-อาคารพาณิชย์":
-            datahandled['property_type'] = "SHOP"
-        elif datahandled['property_type'] == '6' or datahandled['property_type'] == "ที่ดิน":
-            datahandled['property_type'] = "LAND"
-        elif datahandled['property_type'] == '7' or datahandled['property_type'] == "อพาร์ทเมนท์":
-            datahandled['property_type'] = "APT"
-        elif datahandled['property_type'] == '8' or datahandled['property_type'] == "โรงแรม":
-            datahandled['property_type'] = "BIZ"
-        elif datahandled['property_type'] == '9' or datahandled['property_type'] == "ออฟฟิศสำนักงาน":
-            datahandled['property_type'] = "OFF"
-        elif datahandled['property_type'] == '10' or datahandled['property_type'] == "โกดัง":
-            datahandled['property_type'] = "WAR"
-        elif datahandled['property_type'] == '25' or datahandled['property_type'] == "โรงงาน":
-            datahandled['property_type'] = "WAR"
+        if datahandled['property_type'] == '2' or datahandled['property_type'] == 2: #2 บ้านเดี่ยว
+            datahandled['property_type'] = "บ้านเดี่ยว+Singlehouse"
+        elif datahandled['property_type'] == '3' or datahandled['property_type'] == 3: #3 บ้านแฝด
+            datahandled['property_type'] = "บ้าน+Home"
+        elif datahandled['property_type'] == '4' or datahandled['property_type'] == 4: #4 ทาวน์เฮ้าส์
+            datahandled['property_type'] = "ทาวน์เฮ้าส์+Townhouse"
+        elif datahandled['property_type'] == '5' or datahandled['property_type'] == 5: #5 ตึกแถว-อาคารพาณิชย์
+            datahandled['property_type'] = "อาคารพาณิชย์+Buildings"
+        elif datahandled['property_type'] == '6' or datahandled['property_type'] == 6: #6 ที่ดิน
+            datahandled['property_type'] = "ที่ดิน+Land"
+        elif datahandled['property_type'] == '7' or datahandled['property_type'] == 7: #7 อพาร์ทเมนท์
+            datahandled['property_type'] = "อพาร์ทเมนท์+Apartment"
+        elif datahandled['property_type'] == '8' or datahandled['property_type'] == 8: #8 โรงแรม
+            datahandled['property_type'] = "ธุรกิจ+Business"
+        elif datahandled['property_type'] == '9' or datahandled['property_type'] == 9: #9 ออฟฟิศสำนักงาน
+            datahandled['property_type'] = "สำนักงาน+Office"
+        elif datahandled['property_type'] == '10' or datahandled['property_type'] == 10: #10 โกดัง
+            datahandled['property_type'] = "โกดัง+Storehouse"
+        elif datahandled['property_type'] == '25' or datahandled['property_type'] == 25: #25 โรงงาน
+            datahandled['property_type'] = "โรงงาน+Factory"
         else:
-            datahandled['property_type'] = "CONDO"
+            datahandled['property_type'] = "คอนโดมิเนียม+Condominiem" #1 คอนโด
 
         try:
             datahandled['post_img_url_lists'] = postdata['post_img_url_lists']
@@ -266,27 +266,7 @@ class thaihometown():
             datahandled['floor_level'] = 1
             log.warning(str(e))
 
-        try:
-            datahandled['direction_type'] = postdata["direction_type"]
-        except KeyError as e:
-            datahandled['direction_type'] = "ทิศเหนือ"
-            log.warning(str(e))
-        if datahandled['direction_type'] == '11':
-            datahandled['direction_type'] = "ทิศเหนือ"
-        elif datahandled['direction_type'] == '12':
-            datahandled['direction_type'] = "ทิศใต้"
-        elif datahandled['direction_type'] == '13':
-            datahandled['direction_type'] = "ทิศตะวันออก"
-        elif datahandled['direction_type'] == '14':
-            datahandled['direction_type'] = "ทิศตะวันตก"
-        elif datahandled['direction_type'] == '21':
-            datahandled['direction_type'] = "ทิศตะวันออกเฉียงเหนือ"
-        elif datahandled['direction_type'] == '22':
-            datahandled['direction_type'] = "ทิศตะวันออก"
-        elif datahandled['direction_type'] == '23':
-            datahandled['direction_type'] = "ทิศตะวันตกเฉียงเหนือ"
-        elif datahandled['direction_type'] == '24':
-            datahandled['direction_type'] = "ทิศตะวันตกเฉียงใต้"
+        
 
         # image
         datahandled['post_images'] = postdata["post_images"]
@@ -376,11 +356,17 @@ class thaihometown():
             log.warning(str(e))
 
         try:
-            datahandled['addr_province'] = postdata["addr_province"]
+            datahandled['addr_province'] = postdata['addr_province']
         except KeyError as e:
             datahandled['addr_province'] = ''
             log.warning(str(e))
 
+        try:
+            datahandled['addr_district'] = postdata['addr_district']
+        except KeyError as e:
+            datahandled['addr_district'] = ''
+            log.warning(str(e))
+        
         self.handled = True
 
         return datahandled
@@ -389,22 +375,13 @@ class thaihometown():
         log.debug('')
 
         time_start = datetime.datetime.utcnow()
-        #TODO
-        user = postdata['user']
-        passwd = postdata['pass']
-        company_name = postdata['company_name']
-        name_title = postdata["name_title"]
-        name_th = postdata["name_th"]
-        surname_th = postdata["surname_th"]
-        name_en = postdata["name_en"]
-        surname_en = postdata["surname_en"]
-        tel = postdata["tel"]
-        line: postdata["amarin.ta"]
-        addr_province = postdata["addr_province"]
 
         # start process
         #
         datahandled = self.postdata_handle(postdata)
+        user = datahandled['user']
+        passwd = datahandled['pass']
+        tel = datahandled["tel"]
 
         success = "true"
         detail = ""
@@ -447,17 +424,18 @@ class thaihometown():
 
         time_start = datetime.datetime.utcnow()
 
-        user = postdata['user']
-        passwd = postdata['pass']
-        ds_name = "thaihometown"
-        if (postdata["ds_name"]):
-            ds_name = postdata["ds_name"]
-        ds_id = ""
-        if (postdata["ds_id"]):
-            ds_id = postdata["ds_id"]
-
         # start process
         #
+        datahandled = self.postdata_handle(postdata)
+        user = datahandled['user']
+        passwd = datahandled['pass']
+        ds_name = "thaihometown"
+        if (postdata["ds_name"]):
+            ds_name = datahandled["ds_name"]
+        ds_id = ""
+        if (postdata["ds_id"]):
+            ds_id = datahandled["ds_id"]
+        
         success = "true"
         detail = ""
 
@@ -494,113 +472,187 @@ class thaihometown():
             "detail": detail,
         }
 
+    def validatedatapost(self,datahandled):
+        log.debug('')
+
+        success = 'true'
+        detail = ''
+
+        #validate
+        if datahandled['addr_province'] == None or  datahandled['addr_province'] == '' or datahandled['addr_district'] == None or datahandled['addr_district'] =='':
+            detail = "addr_province or addr_district not defined"
+        if datahandled['property_type'] == '' or datahandled['property_type'] == None:
+            detail = "property_type not defined"
+        if datahandled['listing_type'] == None or datahandled['listing_type'] == '':
+            detail = "listing_type not defined"
+        if datahandled['property_type'] == 'บ้านเดี่ยว+Singlehouse' or datahandled['property_type'] == 'บ้าน+Home' or datahandled['property_type'] == 'ทาวน์เฮ้าส์+Townhouse' or datahandled['property_type'] == 'คอนโดมิเนียม+Condominiem':
+            if  datahandled['bath_room'] == 0 or datahandled['bed_room'] == 0:
+                detail = 'บ้าน คอนโด ทาวน์เฮ้าส์ จำนวนห้องนอน และห้องน้ำต้องใส่ข้อมูล'
+        if len(datahandled['post_description_th']) < 200 or len(datahandled['post_description_th']) > 5000:
+            detail = 'post_description_th between 200 - 5000'
+        if len(datahandled['post_title_th']) > 250:
+            detail = 'post_title_th must < 250'
+        if datahandled['floorarea_sqm'] == 0:
+            detail = 'floorarea_sqm not defined'
+        
+
+        if detail != "":
+            success = 'false'
+        
+        return success,detail
+
+    def getprovincedistrictid(self,datahandled):
+        log.debug('')
+
+        datahandled['property_city_bkk'] = ''
+        datahandled['property_city_2'] = ''
+        datahandled['property_country_2'] = ''
+
+        #กรุงเทพ
+        if datahandled['addr_province'] == 'กรุงเทพมหานคร' or datahandled['addr_province'] == 'กรุงเทพ':
+            r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
+            data = r.text
+            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            try:
+                datahandled['property_city_bkk'] = soup.find('select',{'id':'property_city_bkk'}).find('option',text=re.compile(datahandled['addr_district']))['value']
+                log.debug('bkk district is '+datahandled['property_city_bkk'])
+            except:
+                pass
+                
+        #ต่างจังหวัด
+        else:
+            r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
+            data = r.text
+            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            try:
+                datahandled['property_country_2'] = soup.find('select',{'id':'property_country_2'}).find('option',text=re.compile(datahandled['addr_province']))['value']
+                log.debug('province is '+datahandled['property_country_2'])
+            except:
+                pass
+            if datahandled['property_country_2'] != "":                
+                r = httprequestObj.http_get('https://www.thaihometown.com/search/state2012_addnew.php?PID='+str(datahandled['property_country_2']),verify=False)
+                data = r.text
+                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                try:
+                    datahandled['property_city_2'] = soup.find('option',text=re.compile(datahandled['addr_district']))['value']
+                    log.debug('district is '+datahandled['property_city_2'])
+                except:
+                    pass                    
+
+        if datahandled['property_city_bkk'] == '' and (datahandled['property_city_2'] == '' or datahandled['property_country_2'] == ''):
+            return 'false','wrong province or district '+datahandled['addr_province']+' '+datahandled['addr_district'],datahandled
+
+        return 'true','',datahandled
+
     def create_post(self, postdata):
         log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        post_img_url_lists = postdata['post_img_url_lists']
-        price_baht = postdata['price_baht']
-        addr_province = postdata['addr_province']
-        addr_district = postdata['addr_district']
-        addr_sub_district = postdata['addr_sub_district']
-        addr_road = postdata['addr_road']
-        addr_near_by = postdata['addr_near_by']
-        floorarea_sqm = postdata['floorarea_sqm']
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        post_description_th = post_description_th + "addddddddddddddddddddddddddddddddddddddddddddddddddadddddddddddddddddddddddddddddddddddddddddddddddddaddddddddddddddddddddddddddddddddddddddddddddddddddadddddddddddddddddddddddddddddddddddddddddddddddddd"
-        post_title_en = postdata['post_title_en']
-        post_description_en = postdata['post_description_en']
-        ds_id = postdata["ds_id"]
-        # account_type = postdata["account_type"]
-        # postdata['user'] = 'kla.arnut@gmail.com'
-        user = postdata['user']
-        # postdata['pass'] = 'vkIy9b'
-        passwd = postdata['pass']
-        # project_name = postdata["project_name"]
-
         # start process
         #
+        datahandled = self.postdata_handle(postdata)
+        ds_id = postdata["ds_id"]
 
-        # login
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        detail = test_login["detail"]
+        rent_price=''
+        selling_price=''
+        if datahandled['listing_type'] == 'ประกาศขาย' or datahandled['listing_type'] == 'ประกาศขายดาวน์':
+            selling_price = datahandled['price_baht']
+        elif datahandled['listing_type'] == 'ประกาศให้เช่า':
+            rent_price = datahandled['price_baht']
+
+        success = "true"
+        detail = ""
         post_id = ""
 
+        success,detail = self.validatedatapost(datahandled)
+            
+        # login
         if success == "true":
-            r = httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
-            data = r.text
-            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-            string2 = soup.find("input", {"name": "string2"})['value']
-            string1 = string2
-            dasd = soup.find("input", {"name": "dasd"})['value']
-            sas_name = soup.find("input", {"name": "sas_name"})['value']
-            email = soup.find("input", {"name": "email"})['value']
-            code_edit = soup.find("input", {"name": "code_edit"})['value']
-            firstname = soup.find("input", {"name": "firstname"})['value']
-            mobile = soup.find("input", {"name": "mobile"})['value']
-            date_signup = soup.find("input", {"name": "date_signup"})['value']
+            test_login = self.test_login(datahandled)
+            success = test_login["success"]
+            detail = test_login["detail"]
 
-            # https://www.thaihometown.com/addcontacts
-            datapost = dict(ActionForm2='',
-                            Submit='Active',
-                            ad_title=post_description_th.encode('cp874', 'ignore'),
-                            carpark='',
-                            code_edit=code_edit,
-                            conditioning='',
-                            contact_code='',
-                            dasd=dasd,
-                            date_signup=date_signup,
-                            email=email,
-                            firstname=firstname,
-                            headtitle=post_title_th.encode('cp874', 'ignore'),
-                            id='',
-                            info=[' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ', ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ', ' ไมโครเวฟ ', ' ชุดรับแขก '],
-                            mobile=mobile,
-                            notprice=1,
-                            price_unit='',
-                            property_area=floorarea_sqm,
-                            property_bts='',
-                            property_city_2='',
-                            property_city_bkk='ยานนาวา+Yannawa',
-                            property_country_2='',
-                            property_mrt='',
-                            property_purple='',
-                            property_sqm=1,
-                            property_type='บ้าน+Home',
-                            rent_price='',
-                            room1=2,
-                            room2=3,
-                            sas_name=sas_name,
-                            selling_price='',
-                            string1=string1,
-                            string2=string2,
-                            type_forrent='',
-                            typepart='ประกาศขาย',
-                            typeunit='ต่อตร.ม')
-            # print(datapost)
-            r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
-            data = r.text
-            # print(data)
-            f = open("thihomepost.html", "wb")
-            f.write(data.encode('utf-8').strip())
-
-            matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
-            if not matchObj:
-                success = "false"
+        if success == "true":
+            #get provice district id
+            success,detail,datahandled = self.getprovincedistrictid(datahandled)
+            
+            if success == 'true':
+                #get post authen value
+                r = httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
+                data = r.text
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                txtresponse = soup.find("font").text
-                detail = unquote(txtresponse)
-            else:
-                post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
+                string2 = soup.find("input", {"name": "string2"})['value']
+                string1 = string2
+                dasd = soup.find("input", {"name": "dasd"})['value']
+                sas_name = soup.find("input", {"name": "sas_name"})['value']
+                email = soup.find("input", {"name": "email"})['value']
+                code_edit = soup.find("input", {"name": "code_edit"})['value']
+                firstname = soup.find("input", {"name": "firstname"})['value']
+                mobile = soup.find("input", {"name": "mobile"})['value']
+                date_signup = soup.find("input", {"name": "date_signup"})['value']
 
+                # https://www.thaihometown.com/addcontacts
+                datapost = {
+                            'ActionForm2':'',
+                            'Submit':'Active',
+                            'ad_title':datahandled['post_description_th'].encode('cp874', 'ignore'),
+                            'carpark':'',
+                            'code_edit':code_edit,
+                            'conditioning':'',
+                            'contact_code':'',
+                            'dasd':dasd,
+                            'date_signup':date_signup,
+                            'email':email,
+                            'firstname':firstname,
+                            'headtitle':datahandled['post_title_th'].encode('cp874', 'ignore'),
+                            'id':'',
+                            #TODO info
+                            'info':[' ตกแต่งห้องนอน '.encode('cp874', 'ignore'), ' ตกแต่งห้องนั่งเล่น '.encode('cp874', 'ignore'), ' ปูพื้นเซรามิค '.encode('cp874', 'ignore'), ' เฟอร์นิเจอร์ '.encode('cp874', 'ignore'), ' ไมโครเวฟ '.encode('cp874', 'ignore'), ' ชุดรับแขก '.encode('cp874', 'ignore')],
+                            'mobile':mobile,
+                            'price_unit':'',
+                            'property_area':datahandled['floorarea_sqm'],
+                            'property_bts':'',
+                            'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
+                            'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
+                            'property_country_2':datahandled['property_country_2'].encode('cp874', 'ignore'),
+                            'property_mrt':'',
+                            'property_purple':'',
+                            'property_sqm':1,
+                            'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
+                            'room1':datahandled['bed_room'],
+                            'room2':datahandled['bath_room'],
+                            'sas_name':sas_name,
+                            'rent_price':rent_price,
+                            'selling_price':selling_price,
+                            'type_forrent':'',
+                            'string1':string1,
+                            'string2':string2,
+                            'typepart':datahandled['listing_type'].encode('cp874', 'ignore'),
+                            'typeunit':'ต่อตร.ม'.encode('cp874', 'ignore'),
+                            'notprice': 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
+                }
+
+                #log.debug(datapost)
+                r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
+                data = r.text
+                # print(data)
+                #f = open("thihomepost.html", "wb")
+                #f.write(data.encode('utf-8').strip())
+
+                matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
+                if not matchObj:
+                    success = "false"
+                    soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                    txtresponse = soup.find("font").text
+                    detail = unquote(txtresponse)
+                else:
+                    post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
+
+                    #upload image
+                    self.uploadimage(datahandled,post_id)
+
+        
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -613,9 +665,72 @@ class thaihometown():
             "post_id": post_id,
             "account_type": "null",
             "detail": detail,
+            "websitename": self.websitename
         }
+    
+    def uploadimage(self,datahandled,post_id):
+        log.debug('')
 
-    def boost_post(self, postdata):
+        r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(post_id), verify=False)
+        data = r.text
+        soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+        uploadcode = ''
+        uploadlink = ''
+        try:
+            uploadlink = soup.find('a',href=re.compile('memberupload'))['href']
+            log.debug('upload link ' +uploadlink)
+            uploadcode = parse_qs(urlparse(uploadlink).query)['Mag'][0]
+        except:
+            pass
+            log.warning('cannot get uploadlink and uploadcode')
+        log.debug('uploadcode ' +uploadcode)
+
+        #if find image when editpost , to delete before new upload
+        try:
+            r = httprequestObj.http_get(uploadlink, verify=False)
+            data = r.text
+            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            allimage = soup.find_all('img',src=re.compile('small.jpg'))
+            log.debug('find all old image '+str(len(allimage)))
+            for img in allimage:
+                imgid = re.search(r'-(\d+)_small',str(img)).group(1)
+                datapost = {
+                    'id': str(imgid),
+                    'contact': str(2219182),
+                    'code': str(uploadcode),
+                    'datesing': '',
+                    'maction':'',
+                    }
+                r = httprequestObj.http_post(
+                'https://www.thaihometown.com/form/memberupload/delete.php',
+                data=datapost,
+                )
+                log.debug('remove image id '+str(imgid))
+        except:
+            pass
+
+        #upload image ,MultipartEncoder is very HARD, I use 24hr. for wrestle with it
+        allowupload =len(datahandled['post_images'][:11])
+        for i in range(allowupload):
+            datapost = {
+                        'id':str(i+1),
+                        'contact': str(post_id), #post id
+                        'code': str(uploadcode),
+                        'datesing': str(datetime.datetime.utcnow().strftime('%Y-%m-%d')), #'2020-04-27'
+                        'maction':'2',
+                        'uploadfile':( str(i+1) + '.jpg', open(os.path.abspath(datahandled['post_images'][i]), 'rb'), 'image/jpeg'),
+            }
+            encoder = MultipartEncoder(fields=datapost)
+            r = httprequestObj.http_post(
+            'https://www.thaihometown.com/form/memberupload/upload-file.php?id='+str(i+1)+'&contact='+str(post_id)+'&code='+str(uploadcode)+'&datesing='+str(datetime.datetime.utcnow().strftime('%Y-%m-%d'))+'&maction=2',
+            data=encoder,
+            headers={'Content-Type': encoder.content_type}
+            )
+            log.debug('image upload '+r.text)
+        
+        return True
+
+    def boost_post_bak(self, postdata):
         log.debug('')
 
         time_start = datetime.datetime.utcnow()
@@ -638,8 +753,8 @@ class thaihometown():
 
             r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + post_id, verify=False)
             data = r.text
-            f = open("editpostthaihometown.html", "wb")
-            f.write(data.encode('utf-8').strip())
+            #f = open("editpostthaihometown.html", "wb")
+            #f.write(data.encode('utf-8').strip())
 
             # check respone py post id
             matchObj = re.search(r'' + post_id + '', data)
@@ -724,8 +839,8 @@ class thaihometown():
 
                 r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
                 data = r.text
-                f = open("boostthaihometown.html", "wb")
-                f.write(data.encode('utf-8').strip())
+                #f = open("boostthaihometown.html", "wb")
+                #f.write(data.encode('utf-8').strip())
 
                 matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/' + post_id, data)
                 if matchObj:
@@ -775,67 +890,65 @@ class thaihometown():
             "log_id": log_id,
         }
 
-    def edit_post(self, postdata):
+    def boost_post(self,postdata):
         log.debug('')
         time_start = datetime.datetime.utcnow()
 
-        post_img_url_lists = postdata['post_img_url_lists']
-        price_baht = postdata['price_baht']
-        county = postdata["county"]
-        district = postdata["district"]
-        # addr_province = postdata['addr_province']
-        # addr_district = postdata['addr_district']
-        # addr_sub_district = postdata['addr_sub_district']
-        # addr_road = postdata['addr_road']
-        # addr_near_by = postdata['addr_near_by']
-        # floorarea_sqm = postdata['floorarea_sqm']
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        # property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        post_title_en = postdata['post_title_en']
-        post_description_en = postdata['post_description_en']
-        post_id = postdata["post_id"]
-        user = postdata['user']
-        passwd = postdata['pass']
-        log_id = postdata["log_id"]
-
         # start proces
         #
+        datahandled = self.postdata_handle(postdata)
+
+        success = "true"
+        detail = ""
+
+        if datahandled['post_id'] == '' or datahandled['post_id'] == None:
+            success = 'false'
+            detail = 'post_id not defined'
 
         # login
-        self.test_login(postdata)
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        detail = test_login["detail"]
+        if success == 'true':
+            self.test_login(postdata)
+            test_login = self.test_login(postdata)
+            success = test_login["success"]
+            detail = test_login["detail"]
 
         if (success == "true"):
-
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + post_id, verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
 
             # check respone py post id
-            matchObj = re.search(r'' + post_id + '', data)
+            pid = datahandled['post_id']
+            matchObj = re.search(rf"{pid}", data)
             if not matchObj:
                 success = "false"
-                detail = "not found this post_id " + post_id
+                detail = "not found this post_id " + datahandled['post_id']
+            
+            # check edit 10 times
+            matchObj = re.search(r'�ѹ���! �س��䢢����Ż�С�ȷ����ҹ���� �ú��˹� 10', data)
+            if matchObj:
+                success = "false"
+                detail = "today you is edited post 10 times วันนี้! คุณแก้ไขข้อมูลประกาศที่ใช้งานแล้ว ครบกำหนด 10 ครั้ง/วัน กรุณาใช้งานอีกครั้งในวันถัดไป"
+
 
             if success == "true":
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
 
                 sas_name = soup.find("input", {"name": "sas_name"})['value']
-                #headtitle = soup.find("textarea", {"name": "headtitle"}).contents
-                #headtitle = headtitle[0]
-
                 code_edit = soup.find("input", {"name": "code_edit"})['value']
                 firstname = soup.find("input", {"name": "firstname"})['value']
                 mobile = soup.find("input", {"name": "mobile"})['value']
                 date_signup = soup.find("input", {"name": "date_signup"})['value']
                 email = soup.find("input", {"name": "email"})['value']
                 contact_code = soup.find("input", {"name": "contact_code"})['value']
+                ad_title = soup.find("textarea", {"name": "ad_title"}).contents
+                ad_title = ad_title[0]
+                log.debug(ad_title)
+                exit()
+                ad_title = ad_title + "\n" + str(datetime.datetime.utcnow())
+                #TODO
+                ad_title = ad_title.encode('utf-8', 'ignore')
 
                 datapost = dict(
                     code_edit=code_edit,
@@ -845,65 +958,19 @@ class thaihometown():
                     contact_code=contact_code,
                     date_signup=date_signup,
                     firstname=firstname,
-                    headtitle=post_title_th.encode('cp874', 'ignore'),
-                    id=post_id,
-                    ActionForm2='',
+                    id=datahandled['post_id'],
+                    ad_title=ad_title ,
                     Action_ad_title=1,
                     Action_headtitle=1,
-                    Name_Project2='',
-                    Owner_Project2='',
-                    Status_Project2=0,
                     Submit='Active',
-                    ad_title=post_description_th.encode('cp874', 'ignore'),
-                    carpark='',
-                    carpark2=0,
-                    conditioning='',
-                    conditioning2=0,
-
-                    # headtitle2='888888',  # post_title_th.encode('cp874', 'ignore')
-                    info=[],
-                    infomation2=[' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ', ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ', ' ไมโครเวฟ ', ' ชุดรับแขก '],
-                    notprice=1,
-                    price_number_unit2=0,
-                    price_unit='',
-                    promotion_bonus2=0,
-                    promotion_discount2=0,
-                    property_area=55,
-                    property_area2=0.00,
-                    property_bts='',
-                    property_bts2='',
-                    property_city2='ราษฎร์บูรณะ',
-                    property_city_2='',
-                    property_city_bkk='ยานนาวา+Yannawa',
-                    property_country2='กรุงเทพมหานคร',
-                    property_country_2='',
-                    property_mrt='',
-                    property_mrt2='',
-                    property_purple='',
-                    property_purple2='',
-                    property_sqm=1,
-                    property_sqm4=1,
-                    property_type='บ้าน+Home',
-                    property_type2='บ้าน+Home',
-                    rent_price='',
-                    rent_price_number2=0,
-                    room1=2,
-                    room12=2,
-                    room2=3,
-                    room22=3,
-                    selling_price='',
-                    selling_price_number2=0,
-                    type_forrent='',
-                    type_forrent2=0,
-                    typepart='ประกาศขาย',
-                    typeunit5='')
+                )
 
                 r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
                 data = r.text
-                f = open("editpostthaihometown.html", "wb")
-                f.write(data.encode('utf-8').strip())
+                #f = open("editpostthaihometown.html", "wb")
+                #f.write(data.encode('utf-8').strip())
 
-                matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/' + post_id, data)
+                matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/' + datahandled['post_id'], data)
                 if matchObj:
                     success = "true"
                 else:
@@ -915,4 +982,171 @@ class thaihometown():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": log_id, "post_id": post_id}
+        return {
+            "success": success, 
+            "usage_time": str(time_usage), 
+            "start_time": str(time_start), 
+            "end_time": str(time_end), 
+            "detail": detail, 
+            "log_id": datahandled['log_id'], 
+            "post_id": datahandled['post_id'],
+            "websitename": self.websitename
+        }
+
+
+    def edit_post(self, postdata):
+        log.debug('')
+        time_start = datetime.datetime.utcnow()
+
+        # start proces
+        #
+        datahandled = self.postdata_handle(postdata)
+
+        rent_price=''
+        selling_price=''
+        if datahandled['listing_type'] == 'ประกาศขาย' or datahandled['listing_type'] == 'ประกาศขายดาวน์':
+            selling_price = datahandled['price_baht']
+        elif datahandled['listing_type'] == 'ประกาศให้เช่า':
+            rent_price = datahandled['price_baht']
+
+        success = "true"
+        detail = ""
+
+        success,detail = self.validatedatapost(datahandled)
+
+        if datahandled['post_id'] == '' or datahandled['post_id'] == None:
+            success = 'false'
+            detail = 'post_id not defined'
+
+        # login
+        if success == 'true':
+            self.test_login(postdata)
+            test_login = self.test_login(postdata)
+            success = test_login["success"]
+            detail = test_login["detail"]
+
+        if (success == "true"):
+            #get provice district id
+            success,detail,datahandled = self.getprovincedistrictid(datahandled)
+            
+            if success == 'true':
+                r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
+                data = r.text
+                # f = open("editpostthaihometown.html", "wb")
+                # f.write(data.encode('utf-8').strip())
+
+                # check respone py post id
+                pid = datahandled['post_id']
+                matchObj = re.search(rf"{pid}", data)
+                if not matchObj:
+                    success = "false"
+                    detail = "not found this post_id " + datahandled['post_id']
+                
+                # check edit 10 times
+                matchObj = re.search(r'�ѹ���! �س��䢢����Ż�С�ȷ����ҹ���� �ú��˹� 10', data)
+                if matchObj:
+                    success = "false"
+                    detail = "today you is edited post 10 times วันนี้! คุณแก้ไขข้อมูลประกาศที่ใช้งานแล้ว ครบกำหนด 10 ครั้ง/วัน กรุณาใช้งานอีกครั้งในวันถัดไป"
+
+
+                if success == "true":
+                    soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+
+                    sas_name = soup.find("input", {"name": "sas_name"})['value']
+                    code_edit = soup.find("input", {"name": "code_edit"})['value']
+                    firstname = soup.find("input", {"name": "firstname"})['value']
+                    mobile = soup.find("input", {"name": "mobile"})['value']
+                    date_signup = soup.find("input", {"name": "date_signup"})['value']
+                    email = soup.find("input", {"name": "email"})['value']
+                    contact_code = soup.find("input", {"name": "contact_code"})['value']
+
+                    datapost = dict(
+                        code_edit=code_edit,
+                        email=email,
+                        mobile=mobile,
+                        sas_name=sas_name,
+                        contact_code=contact_code,
+                        date_signup=date_signup,
+                        firstname=firstname,
+                        headtitle=datahandled['post_title_th'].encode('cp874', 'ignore'),
+                        id=datahandled['post_id'],
+                        ActionForm2='',
+                        Action_ad_title=1,
+                        Action_headtitle=1,
+                        Name_Project2='',
+                        Owner_Project2='',
+                        Status_Project2=0,
+                        Submit='Active',
+                        ad_title=datahandled['post_description_th'].encode('cp874', 'ignore'),
+                        carpark='',
+                        carpark2=0,
+                        conditioning='',
+                        conditioning2=0,
+                        # TODO info
+                        info=[],
+                        infomation2=[' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ', ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ', ' ไมโครเวฟ ', ' ชุดรับแขก '],
+                        price_number_unit2=0,
+                        price_unit='',
+                        promotion_bonus2=0,
+                        promotion_discount2=0,
+                        property_area=datahandled['floorarea_sqm'],
+                        property_area2=datahandled['floorarea_sqm'],
+                        property_bts='',
+                        property_bts2='',
+                        property_city2=datahandled['property_city_2'].encode('cp874', 'ignore'),
+                        property_city_2=datahandled['property_city_2'].encode('cp874', 'ignore'),
+                        property_city_bkk=datahandled['property_city_bkk'].encode('cp874', 'ignore'),
+                        property_country2=datahandled['property_country_2'].encode('cp874', 'ignore'),
+                        property_country_2=datahandled['property_country_2'].encode('cp874', 'ignore'),
+                        property_mrt='',
+                        property_mrt2='',
+                        property_purple='',
+                        property_purple2='',
+                        property_sqm=1,
+                        property_sqm4=1,
+                        property_type=datahandled['property_type'].encode('cp874', 'ignore'),
+                        property_type2=datahandled['property_type'].encode('cp874', 'ignore'),
+                        rent_price='',
+                        rent_price_number2=rent_price,
+                        room1=datahandled['bed_room'],
+                        room12=datahandled['bed_room'],
+                        room2=datahandled['bath_room'],
+                        room22=datahandled['bath_room'],
+                        selling_price='',
+                        selling_price_number2=selling_price,
+                        type_forrent='',
+                        type_forrent2=0,
+                        typepart=datahandled['listing_type'].encode('cp874', 'ignore'),
+                        typeunit5='ต่อตร.ม'.encode('cp874', 'ignore'),
+                        notprice = 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
+                    )
+
+                    r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
+                    data = r.text
+                    #f = open("editpostthaihometown.html", "wb")
+                    #f.write(data.encode('utf-8').strip())
+
+                    matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/' + datahandled['post_id'], data)
+                    if matchObj:
+                        success = "true"
+                        #upload image
+                        self.uploadimage(datahandled,datahandled['post_id'])
+                    else:
+                        success = "false"
+                        detail = unquote(data)
+
+        #
+        # end process
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success, 
+            "usage_time": str(time_usage), 
+            "start_time": str(time_start), 
+            "end_time": str(time_end), 
+            "detail": detail, 
+            "log_id": datahandled['log_id'], 
+            "post_id": datahandled['post_id'],
+            "websitename": self.websitename
+        }

@@ -112,7 +112,7 @@ class dotproperty():
             'remember': 'on'            
         }
 
-        r = httprequestObj.http_post_with_headers(self.primary_domain + '/ajaxLogin', data=datapost)
+        r = httprequestObj.http_post(self.primary_domain + '/ajaxLogin', data=datapost)
         data = r.json()
         detail = data['msg']
         

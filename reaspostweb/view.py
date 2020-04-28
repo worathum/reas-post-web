@@ -85,17 +85,17 @@ def home(request):
 @ratelimit(key='ip', rate='10/5m', method=['GET', 'POST'])
 @sensitive_post_parameters('access_token', 'post_data')
 def apirequest(request):
-    # TODO convert to GMT
+
     time_start = datetime.datetime.utcnow()
 
     access_token = ''
     post_data = ''
     # get request
     if request.method == 'POST':
-        if request.POST['access_token']:
-            access_token = request.POST['access_token']
-        if request.POST['post_data']:
-            post_data = request.POST['post_data']
+        if request.POST.get('access_token'):
+            access_token = request.POST.get('access_token')
+        if request.POST.get('post_data'):
+            post_data = request.POST.get('post_data')
     if request.method == 'GET':
         if request.GET.get('access_token'):
             access_token = request.GET.get('access_token')
