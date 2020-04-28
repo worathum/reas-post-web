@@ -132,3 +132,4 @@ dmypy.json
 /log
 /newenv
 .vscode/settings.json
+/py37-venv
