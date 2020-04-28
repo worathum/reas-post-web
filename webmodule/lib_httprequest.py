@@ -117,8 +117,9 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(e.message)
-    
+            #raise requests.exceptions.RequestException(e.message)
+            #fix ให้ผ่านไปก่อน
+            pass
    
     def http_post_with_headers(self, url,headers, data, params=None, *args, **kwargs):
         '''

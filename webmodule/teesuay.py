@@ -39,6 +39,7 @@ class teesuay():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.websitename = 'teesuay'
 
 
 
@@ -134,6 +135,7 @@ class teesuay():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "websitename": self.websitename
         }
 
 

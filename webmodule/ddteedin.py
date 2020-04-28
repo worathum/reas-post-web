@@ -41,6 +41,7 @@ class ddteedin():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.websitename = 'ddteedin'
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -119,6 +120,7 @@ class ddteedin():
             "end_time": str(time_end),
             "website_name": "ddteedin",
             "detail": detail,
+            "websitename": self.websitename
         }
 
     def create_post(self, postdata):

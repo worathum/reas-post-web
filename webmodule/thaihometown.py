@@ -753,8 +753,8 @@ class thaihometown():
 
             r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + post_id, verify=False)
             data = r.text
-            f = open("editpostthaihometown.html", "wb")
-            f.write(data.encode('utf-8').strip())
+            #f = open("editpostthaihometown.html", "wb")
+            #f.write(data.encode('utf-8').strip())
 
             # check respone py post id
             matchObj = re.search(r'' + post_id + '', data)
@@ -839,8 +839,8 @@ class thaihometown():
 
                 r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
                 data = r.text
-                f = open("boostthaihometown.html", "wb")
-                f.write(data.encode('utf-8').strip())
+                #f = open("boostthaihometown.html", "wb")
+                #f.write(data.encode('utf-8').strip())
 
                 matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/' + post_id, data)
                 if matchObj:
@@ -944,9 +944,11 @@ class thaihometown():
                 contact_code = soup.find("input", {"name": "contact_code"})['value']
                 ad_title = soup.find("textarea", {"name": "ad_title"}).contents
                 ad_title = ad_title[0]
+                log.debug(ad_title)
+                exit()
                 ad_title = ad_title + "\n" + str(datetime.datetime.utcnow())
                 #TODO
-                #ad_title = ad_title.encode('cp874', 'ignore')
+                ad_title = ad_title.encode('utf-8', 'ignore')
 
                 datapost = dict(
                     code_edit=code_edit,
