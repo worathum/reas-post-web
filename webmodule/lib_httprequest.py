@@ -45,7 +45,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(e.message)
+            raise requests.exceptions.RequestException(str(e))
     
     def http_get_with_encode(self, url, params=None,encoder='utf-8', *args, **kwargs):
         '''
@@ -69,7 +69,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(e.message)
+            raise requests.exceptions.RequestException(str(e))
 
     def http_get_with_headers(self, url, params=None, *args, **kwargs):
         '''
@@ -94,7 +94,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(e.message)
+            raise requests.exceptions.RequestException(str(e))
 
     def http_post(self, url, data, params=None, *args, **kwargs):
         '''
@@ -117,9 +117,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            #raise requests.exceptions.RequestException(e.message)
-            #fix ให้ผ่านไปก่อน
-            pass
+            raise requests.exceptions.RequestException(str(e))
    
     def http_post_with_headers(self, url,headers, data, params=None, *args, **kwargs):
         '''
@@ -143,7 +141,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(e.message)
+            raise requests.exceptions.RequestException(str(e))
 
     def http_post_json(self, url, jsoncontent, params=None, *args, **kwargs):
         '''
@@ -169,7 +167,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(e.message)
+            raise requests.exceptions.RequestException(str(e))
 
     def http_post_with_multi_options(self, url, headerreg={}, jsoncontent={}, params=None, *args, **kwargs):
         '''
@@ -193,7 +191,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(e.message)
+            raise requests.exceptions.RequestException(str(e))
 
     def http_put_json(self, url, jsoncontent, params=None, *args, **kwargs):
         '''
@@ -219,4 +217,4 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(e.message)
+            raise requests.exceptions.RequestException(str(e))

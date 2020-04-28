@@ -135,7 +135,7 @@ class thaihometown():
             log.warning(str(e))
 
         try:
-            datahandled['floorarea_sqm'] = int(postdata['floorarea_sqm'])
+            datahandled['floorarea_sqm'] = postdata['floorarea_sqm']
         except KeyError as e:
             datahandled['floorarea_sqm'] = 0
             log.warning(str(e))
@@ -913,7 +913,7 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
+            r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -926,7 +926,8 @@ class thaihometown():
                 detail = "not found this post_id " + datahandled['post_id']
             
             # check edit 10 times
-            matchObj = re.search(r'�ѹ���! �س��䢢����Ż�С�ȷ����ҹ���� �ú��˹� 10', data)
+            #matchObj = re.search(r'�ѹ���! �س��䢢����Ż�С�ȷ����ҹ���� �ú��˹� 10', data)
+            matchObj = re.search(r'ครบกำหนด 10 ครั้ง', data)
             if matchObj:
                 success = "false"
                 detail = "today you is edited post 10 times วันนี้! คุณแก้ไขข้อมูลประกาศที่ใช้งานแล้ว ครบกำหนด 10 ครั้ง/วัน กรุณาใช้งานอีกครั้งในวันถัดไป"
@@ -944,11 +945,9 @@ class thaihometown():
                 contact_code = soup.find("input", {"name": "contact_code"})['value']
                 ad_title = soup.find("textarea", {"name": "ad_title"}).contents
                 ad_title = ad_title[0]
-                log.debug(ad_title)
-                exit()
+                #log.debug(ad_title)
                 ad_title = ad_title + "\n" + str(datetime.datetime.utcnow())
-                #TODO
-                ad_title = ad_title.encode('utf-8', 'ignore')
+                ad_title = ad_title.encode('cp874', 'ignore')
 
                 datapost = dict(
                     code_edit=code_edit,
