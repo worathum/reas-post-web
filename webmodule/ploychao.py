@@ -202,7 +202,6 @@ class ploychao():
             "websitename": "ploychao",
             "end_time": str(time_end),
             "detail": detail,
-            "websitename": self.websitename
         }
 
 
