@@ -276,6 +276,7 @@ class ddproperty():
         response['start_time'] = str(time_start)
         response['end_time'] = str(time_end)
         response['websitename'] = self.websitename
+        response['ds_id'] = datahandled['ds_id']
 
         return response
 
@@ -378,9 +379,9 @@ class ddproperty():
             log.warning(str(e))
 
         try:
-            datahandled['floorarea_sqm'] = postdata['floorarea_sqm']
+            datahandled['floor_area'] = postdata['floor_area']
         except KeyError as e:
-            datahandled['floorarea_sqm'] = '0'
+            datahandled['floor_area'] = '0'
             log.warning(str(e))
 
         try:
@@ -636,6 +637,7 @@ class ddproperty():
             projectname = datahandled['post_title_th']
 
         projectnametxt = WebDriverWait(self.chrome, 10).until(EC.presence_of_element_located((By.ID, "propertySearch")))
+        time.sleep(1)
         if datahandled['action'] == 'edit_post':
             WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.CONTROL + "a")  # clear for edit action
             WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.DELETE)  # clear for edit action
@@ -706,6 +708,8 @@ class ddproperty():
                     time.sleep(0.1)
                     if re.search(r'กรุงเทพ', datahandled['addr_province']):
                         datahandled['addr_province'] = 'กรุงเทพ'
+                    if re.search(r'ป้อมปราบ', datahandled['addr_sub_district']):
+                        datahandled['addr_sub_district'] = 'ป้อมปราบศัตรูพ่าย'
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_province'])).click()
                     time.sleep(0.1)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-district")).click()
@@ -823,7 +827,7 @@ class ddproperty():
             detail = 'post title th is and post description th required'
         if datahandled['property_type'] == 'CONDO' or datahandled['property_type'] == 'BUNG' or datahandled['property_type'] == 'TOWN' or datahandled['property_type'] == 'APT' or datahandled['property_type'] == 'OFF' or datahandled[
                 'property_type'] == 'SHOP' or datahandled['property_type'] == 'BIZ':
-            if datahandled['floorarea_sqm'] == None or datahandled['floorarea_sqm'] == '0':
+            if datahandled['floor_area'] == None or datahandled['floor_area'] == '0':
                 success = 'false'
                 detail = 'floor area sqm is require and allow integer type only'
         if datahandled['property_type'] == 'LAND':
@@ -892,7 +896,7 @@ class ddproperty():
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floorarea_sqm']))
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floor_area']))
             except WebDriverException as e:
                 log.warning('cannot input floor area sqm '+str(e))
                 pass
@@ -1018,9 +1022,9 @@ class ddproperty():
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             except WebDriverException as e:
-                log.debug('cannot click next , cause floor_area_sqm is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
+                log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
                 success = 'false'
-                detail = 'cannot click next , cause floor_area_sqm is too low OR price_baht is too low OR post_description_th,post_title_th not set'
+                detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set'
                 self.chrome.quit()
                 return success, detail, post_id, account_type
 
@@ -1239,7 +1243,7 @@ class ddproperty():
                             "value": ""
                         },
                         "floorArea": [{
-                            "value": datahandled['floorarea_sqm'],
+                            "value": datahandled['floor_area'],
                             "unit": "sqm"
                         }],
                         "landArea": [{
@@ -1450,7 +1454,7 @@ class ddproperty():
         # addr_sub_district = postdata['addr_sub_district']
         # addr_road = postdata['addr_road']
         # addr_near_by = postdata['addr_near_by']
-        # floorarea_sqm = postdata['floorarea_sqm']
+        # floor_area = postdata['floor_area']
         # geo_latitude = postdata['geo_latitude']
         # geo_longitude = postdata['geo_longitude']
         # property_id = postdata['property_id']

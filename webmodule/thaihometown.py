@@ -13,6 +13,11 @@ import sys
 from urllib.parse import unquote,urlparse,parse_qs
 httprequestObj = lib_httprequest()
 from requests_toolbelt import MultipartEncoder
+import random
+from python3_anticaptcha import ImageToTextTask
+from python3_anticaptcha import errors
+from python3_anticaptcha import AntiCaptchaControl
+
 
 try:
     import configs
@@ -36,6 +41,7 @@ class thaihometown():
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.handled = False
+        self.captchascret = getattr(configs, 'captcha_secret', '')
 
     def postdata_handle(self, postdata):
         log.debug('')
@@ -135,9 +141,9 @@ class thaihometown():
             log.warning(str(e))
 
         try:
-            datahandled['floorarea_sqm'] = int(postdata['floorarea_sqm'])
+            datahandled['floor_area'] = postdata['floor_area']
         except KeyError as e:
-            datahandled['floorarea_sqm'] = 0
+            datahandled['floor_area'] = 0
             log.warning(str(e))
 
         try:
@@ -470,6 +476,7 @@ class thaihometown():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": datahandled['ds_id']
         }
 
     def validatedatapost(self,datahandled):
@@ -492,8 +499,8 @@ class thaihometown():
             detail = 'post_description_th between 200 - 5000'
         if len(datahandled['post_title_th']) > 250:
             detail = 'post_title_th must < 250'
-        if datahandled['floorarea_sqm'] == 0:
-            detail = 'floorarea_sqm not defined'
+        if datahandled['floor_area'] == 0:
+            detail = 'floor_area not defined'
         
 
         if detail != "":
@@ -611,7 +618,7 @@ class thaihometown():
                             'info':[' ตกแต่งห้องนอน '.encode('cp874', 'ignore'), ' ตกแต่งห้องนั่งเล่น '.encode('cp874', 'ignore'), ' ปูพื้นเซรามิค '.encode('cp874', 'ignore'), ' เฟอร์นิเจอร์ '.encode('cp874', 'ignore'), ' ไมโครเวฟ '.encode('cp874', 'ignore'), ' ชุดรับแขก '.encode('cp874', 'ignore')],
                             'mobile':mobile,
                             'price_unit':'',
-                            'property_area':datahandled['floorarea_sqm'],
+                            'property_area':datahandled['floor_area'],
                             'property_bts':'',
                             'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
                             'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
@@ -861,19 +868,109 @@ class thaihometown():
         time_start = datetime.datetime.utcnow()
 
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
-        log_id = postdata['log_id']
-        post_id = postdata['post_id']
-        user = postdata['user']
-        passwd = postdata['pass']
-
-        # start process
+        # start proces
         #
-        # login
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        detail = test_login["detail"]
+        datahandled = self.postdata_handle(postdata)
 
-        # if success == "true":
+        success = "true"
+        detail = ""
+
+        if datahandled['post_id'] == '' or datahandled['post_id'] == None:
+            success = 'false'
+            detail = 'post_id not defined'
+
+        # login
+        if success == 'true':
+            self.test_login(postdata)
+            test_login = self.test_login(postdata)
+            success = test_login["success"]
+            detail = test_login["detail"]
+
+        if (success == "true"):
+            #get code , it same upload code
+            r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(datahandled['post_id']), verify=False)
+            data = r.text
+            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            uploadcode = ''
+            try:
+                uploadlink = soup.find('a',href=re.compile('memberupload'))['href']
+                log.debug('upload link ' +uploadlink)
+                uploadcode = parse_qs(urlparse(uploadlink).query)['Mag'][0]
+                log.debug('uploadcode ' +uploadcode)
+            except:
+                pass
+                log.error("cannot get post code , not found post id "+datahandled['post_id'])
+                success = "false"
+                detail = "cannot get post code , not found post id "+datahandled['post_id']
+        
+        if success == "true":
+            #try 5 times
+            for i in range(5):
+                success = "true"
+
+                log.debug('try solve captcha image loop '+str(i+1))
+
+                #go to delete page
+                r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode,encoder='cp874',verify=False)
+                data = r.text
+                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                #log.debug(data)
+                #detect if post can delete
+                checkform = soup.find("form", {"name": "checkForm"})
+                if not checkform:
+                    success = "false"
+                    detail = soup.text
+                    log.debug(soup.text)
+                    break
+            
+                if success == "true":
+                    idcode = soup.find("input", {"name": "idcode"})['value']
+                    scode = soup.find("input", {"name": "scode"})['value']
+                    contacts_id = soup.find("input", {"name": "contacts_id"})['value']
+                    imgurl  =  soup.find("img",src=re.compile('securimage_show'))['src']
+                    
+                    res = httprequestObj.http_get(imgurl, verify=False)
+                    imgname = "imgtmp/captchatmp/" + str(random.randint(1, 999999999)) + '.png'
+                    with open(imgname, 'wb') as f:
+                        f.write(res.content)
+                        f.close()
+                    #log.debug('download image '+imgname)
+                    imgnum = self.ImgToTextResolve(imgname)
+                    os.unlink(imgname)
+                    log.debug(imgnum)
+                    #if anti captcha is error
+                    if imgnum['errorId'] < 0:
+                        success = 'false'
+                        detail = imgnum['errorDescription']
+                        log.debug(imgnum['errorDescription'])
+                        if imgnum['errorCode'] == 'ERROR_KEY_DOES_NOT_EXIST' or imgnum['errorCode'] == 'ERROR_ZERO_BALANCE' or imgnum['errorCode'] == 'ERROR_IP_NOT_ALLOWED' or imgnum['errorCode'] == 'ERROR_IP_BLOCKED':
+                            log.debug('break')
+                            break
+                        continue
+
+                    datapost = {
+                        'CKcode' : imgnum['solution']['text'],
+                        'idcode' : idcode,
+                        'scode' : scode,
+                        'contacts_id' : contacts_id
+                    }
+                    r = httprequestObj.http_post_with_encode('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode,encoder='cp874', data=datapost)
+                    data = r.text
+                    # f = open("editpostthaihometown.html", "wb")
+                    # f.write(data.encode('utf-8').strip())
+                    matchObj = re.search(r'ใส่รหัสไม่ถูกต้อง', data)
+                    if matchObj:
+                        success = "false"
+                        detail = "ใส่รหัส captcha image ไม่ถูกต้อง"
+                        log.debug("ใส่รหัส captcha image ไม่ถูกต้อง")
+                        continue
+                    else:
+                        success = "true"
+                        log.debug("post id %s deleted success",datahandled['post_id'])
+                        log.debug('break')
+                        break
+                    
+                    #TODO ไม่อนุญาติให้ลบประกาศเกิน 5 ประกาศต่อวัน แต่ถ้าลบครบ 5 แล้ว จะ response อย่างไร
 
         #
         # end process
@@ -885,10 +982,34 @@ class thaihometown():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            # "detail": detail,
-            "detail": "under construction",
-            "log_id": log_id,
+            "detail": detail,
+            "log_id": datahandled['log_id'],
+            "ds_id": datahandled['ds_id'],
+            "websitename": self.websitename
         }
+    
+    def ImgToTextResolve(self,imgname):
+        log.debug('')
+
+        #{'errorId': 0, 'balance': 1.9321}
+        #{'errorId': 1, 'errorCode': 'ERROR_KEY_DOES_NOT_EXIST', 'errorDescription': 'Account authorization key not found in the system'}
+        
+        #check balance first
+        try:
+            user_ans = AntiCaptchaControl.AntiCaptchaControl(anticaptcha_key = self.captchascret).get_balance()
+        except Exception as err:
+            return {'errorId':9999,'errorDescription' :str(err)}
+        
+        if user_ans['balance'] <= 0.001000:
+            return {'errorId':9999,'errorDescription' :'balance not enough '+user_ans['balance']}
+     
+        #resolve captcha
+        try:
+            user_ans = ImageToTextTask.ImageToTextTask(anticaptcha_key = self.captchascret).captcha_handler(captcha_file=imgname)
+            return user_ans
+        except Exception as err:
+            return {'errorId':9999,'errorDescription' :str(err)}
+        
 
     def boost_post(self,postdata):
         log.debug('')
@@ -913,7 +1034,7 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
+            r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -926,7 +1047,7 @@ class thaihometown():
                 detail = "not found this post_id " + datahandled['post_id']
             
             # check edit 10 times
-            matchObj = re.search(r'�ѹ���! �س��䢢����Ż�С�ȷ����ҹ���� �ú��˹� 10', data)
+            matchObj = re.search(r'ครบกำหนด 10 ครั้ง', data)
             if matchObj:
                 success = "false"
                 detail = "today you is edited post 10 times วันนี้! คุณแก้ไขข้อมูลประกาศที่ใช้งานแล้ว ครบกำหนด 10 ครั้ง/วัน กรุณาใช้งานอีกครั้งในวันถัดไป"
@@ -944,11 +1065,9 @@ class thaihometown():
                 contact_code = soup.find("input", {"name": "contact_code"})['value']
                 ad_title = soup.find("textarea", {"name": "ad_title"}).contents
                 ad_title = ad_title[0]
-                log.debug(ad_title)
-                exit()
+                #log.debug(ad_title)
                 ad_title = ad_title + "\n" + str(datetime.datetime.utcnow())
-                #TODO
-                ad_title = ad_title.encode('utf-8', 'ignore')
+                ad_title = ad_title.encode('cp874', 'ignore')
 
                 datapost = dict(
                     code_edit=code_edit,
@@ -1089,8 +1208,8 @@ class thaihometown():
                         price_unit='',
                         promotion_bonus2=0,
                         promotion_discount2=0,
-                        property_area=datahandled['floorarea_sqm'],
-                        property_area2=datahandled['floorarea_sqm'],
+                        property_area=datahandled['floor_area'],
+                        property_area2=datahandled['floor_area'],
                         property_bts='',
                         property_bts2='',
                         property_city2=datahandled['property_city_2'].encode('cp874', 'ignore'),

@@ -4,6 +4,7 @@ list_module = ['ddproperty', 'thaihometown', 'renthub']
 
 list_action = ['register_user', 'test_login', 'create_post', 'edit_post', 'boost_post', 'delete_post']
 
+captcha_secret = '28b19f8fa1d583a46e2cec418f8b0172'
 
 logging_config = { 
     'version': 1,
