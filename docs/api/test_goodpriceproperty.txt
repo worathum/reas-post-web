@@ -1,0 +1,151 @@
+## register user :
+### input 
+
+anNvbl9yZWdpc3Rlcj17CiAgICAiYWN0aW9uIjogInJlZ2lzdGVyX3VzZXIiLAogICAgInRpbWVv
+dXQiOiAiNyIsCiAgICAid2ViIjogWwogICAgICAgIHsKICAgICAgICAgICAgImRzX25hbWUiOiAi
+Z29vZHByaWNlcHJvcGVydHkiLAogICAgICAgICAgICAiZHNfaWQiOiAiNCIsCiAgICAgICAgICAg
+ICJ1c2VyIjogImFtYXJpbjUudGFAZ21haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiAiNWs0
+a2szMjUzNDM0IiwKICAgICAgICAgICAgImNvbXBhbnlfbmFtZSI6ICJhbWFyaW4gaW5jIiwKICAg
+ICAgICAgICAgIm5hbWVfdGl0bGUiOiAibXIiLAogICAgICAgICAgICAibmFtZV90aCI6ICLguK3g
+uLHguKHguKPguLTguJnguJfguKPguYwiLAogICAgICAgICAgICAic3VybmFtZV90aCI6ICLguJrg
+uLjguI3guYDguIHguLTguJQiLAogICAgICAgICAgICAibmFtZV9lbiI6ICJBbWFyaW4iLAogICAg
+ICAgICAgICAic3VybmFtZV9lbiI6ICJCb29ua2lydCIsCiAgICAgICAgICAgICJ0ZWwiOiAiMDg5
+MTk5OTQ1MCIsCiAgICAgICAgICAgICJsaW5lIjogImFtYXJpbi50YSIsCiAgICAgICAgICAgICJh
+ZGRyX3Byb3ZpbmNlIjogIuC4geC4suC4rOC4quC4tOC4meC4mOC4uOC5jCIsCiAgICAgICAgICAg
+ICJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4oeC4t+C4reC4h+C4geC4suC4rOC4quC4tOC4meC4mOC4
+uOC5jCIsCiAgICAgICAgfQogICAgXQp9
+
+
+
+
+### result
+{ "usage_time": "0:00:02.737376", "end_time": "2020-04-06 08:46:10.018210", "web": { "goodpriceproperty": { "detail": "\n", "end_time": "2020-04-06 08:46:10.018012", "start_time": "2020-04-06 08:46:07.281559", "success": "true" } }, "action": "test_login", "success": "true", "start_time": "2020-04-06 08:46:07.280834" }
+
+
+## login
+### input
+
+ewogICAgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKICAgICJ0aW1lb3V0IjogIjciLAogICAgIndl
+YiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImdvb2RwcmljZXByb3BlcnR5
+IiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAidXNlciI6ICJ2aXZhYmEx
+ODkwQGlzbWFpbGd1bC5uZXQiLAogICAgICAgICAgICAicGFzcyI6ICIxMjM0NTY3OCIsCiAgICAg
+ICAgICAgICJjb21wYW55X25hbWUiOiAiYW1hcmluIGluYyIsCiAgICAgICAgICAgICJuYW1lX3Rp
+dGxlIjogIm1yIiwKICAgICAgICAgICAgIm5hbWVfdGgiOiAi4Lit4Lix4Lih4Lij4Li04LiZ4LiX
+4Lij4LmMIiwKICAgICAgICAgICAgInN1cm5hbWVfdGgiOiAi4Lia4Li44LiN4LmA4LiB4Li04LiU
+IiwKICAgICAgICAgICAgIm5hbWVfZW4iOiAiQW1hcmluIiwKICAgICAgICAgICAgInN1cm5hbWVf
+ZW4iOiAiQm9vbmtpcnQiLAogICAgICAgICAgICAidGVsIjogIjA4OTE5OTk0NTAiLAogICAgICAg
+ICAgICAibGluZSI6ICJhbWFyaW4udGEiLAogICAgICAgICAgICAiYWRkcl9wcm92aW5jZSI6ICLg
+uIHguLLguKzguKrguLTguJnguJjguLjguYwiLAogICAgICAgICAgICAiYWRkcl9kaXN0cmljdCI6
+ICLguYDguKHguLfguK3guIfguIHguLLguKzguKrguLTguJnguJjguLjguYwiCiAgICAgICAgfQog
+ICAgXQp9
+
+### result
+{ "usage_time": "0:00:02.737376", "end_time": "2020-04-06 08:46:10.018210", "web": { "goodpriceproperty": { "detail": "\n", "end_time": "2020-04-06 08:46:10.018012", "start_time": "2020-04-06 08:46:07.281559", "success": "true" } }, "action": "test_login", "success": "true", "start_time": "2020-04-06 08:46:07.280834" }
+
+
+
+
+## create_post
+
+### input
+
+
+
+
+## edit
+### input
+json_edit={
+    "action": "edit_post",
+    "timeout": "5",
+    "post_img_url_lists": [
+        "http://imagestore.com/pic1.jpg",
+        "http://imagestore.com/pic2.jpg",
+        "http://imagestore.com/pic3.jpg",
+        "http://imagestore.com/pic4.jpg",
+        "http://imagestore.com/pic5.jpg"
+    ],
+    "name": "xxx",
+    "mobile": "xxx",
+    "email": "xxx",
+    "line": "xxx",
+    "property_id" : "289338",
+    "floorarea_sqm": "พื้นที่",
+    "direction_type" : "11",
+    "addr_road": "ถนน",
+    "addr_soi": "ซอย",
+    "addr_near_by": "สถานที่ใกล้เคียง",
+    "listing_type": "ขาย",    
+    "property_type": "คอนโด",
+    "addr_province": "กาฬสินธุ์",
+    "addr_district": "เมืองกาฬสินธุ์",
+    "addr_sub_district": "ตำบล แขวง",
+    "price_baht": "5",
+    "county": "เขต",
+    "district": "แขวง",
+    "geo_latitude": "13.786862",
+    "geo_longitude": "100.757815",
+    "post_title_th": "xxx",
+    "post_description_th": "xxx",
+    "post_title_en": "",
+    "post_description_en": "adhgdshgdsfhgjdsfhgfdh",
+    "project_name": "ลุมพีนีวิลล รามอินทราหลักสี่",
+    "web": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "post_id": "33333",
+            "log_id": "33333",             
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434"
+        },
+        {
+            "ds_name": "ddproperty",
+            "ds_id": "5",
+            "post_id": "4444",
+            "log_id": "44444",             
+            "account_type" : "corperate",
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434",     
+            "web_project_name": "ลุมพีนี รามอินทราหลักสี่"
+        }
+    ]
+}
+### result
+{'success': 'true', 'action': 'edit_post', 'start_time': '2020-04-06 07:24:32.219275', 'end_time': '2020-04-06 07:24:41.535319', 'web': {'thaihometown': {'success': 'true', 'start_time': '2020-04-06 07:24:32.219275', 'end_time': '2020-04-06 07:24:41.535319', 'detail': '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n<meta http-equiv=refresh content=0;URL=../property/289338/รหัส-NPT0086-ขาย--คอนโด-The-Key-Prachachuen-1-ห้องนอน.html>', 'log_id': ''}}}
+
+
+
+## Delete post
+### input 
+
+json_delete={
+    "action": "delete_post",
+    "timeout": "5",
+    "web": [
+        {
+            "ds_name": "thaihometown",
+            "ds_id": "4",
+            "post_id": "289338",
+            "log_id": "33333", 
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434"
+        },
+        {
+            "ds_name": "ddproperty",
+            "ds_id": "4",
+            "post_id": "33333",
+            "log_id": "33333", 
+            "account_type" : "corperate",
+            "user": "amarin.ta@gmail.com",
+            "pass": "5k4kk3253434",            
+        }
+    ]
+}
+
+
+
+### result
+{'success': 'true', 'action': 'delete_post', 'start_time': '2020-04-06 07:38:27.522847', 'end_time': '2020-04-06 07:38:28.550379', 'web': {'thaihometown': {'success': 'true', 'start_time': '2020-04-06 07:38:27.522847', 'end_time': '2020-04-06 07:38:28.550379', 'detail': '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n<meta http-equiv=refresh content=0;URL=list-property.php>', 'log_id': ''}}}
+
+
+

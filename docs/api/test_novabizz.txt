@@ -1,0 +1,212 @@
+REGISTRATION => pass
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ0aW1lb3V0IjogIjciLCAid2ViIjogW3siZHNfbmFtZSI6ICJub3ZhYml6eiIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAiYW1hcmluLnRhQGdtYWlsLmNvbSIsICJwYXNzIjogIjVrNGtrMzI1MzQzNCIsICJjb21wYW55X25hbWUiOiAiIiwgIm5hbWVfdGl0bGUiOiAibXIiLCAibmFtZV90aCI6ICJcdTBlMmRcdTBlMzFcdTBlMjFcdTBlMjNcdTBlMzRcdTBlMTlcdTBlMTdcdTBlMjNcdTBlNGMiLCAic3VybmFtZV90aCI6ICJcdTBlMWFcdTBlMzhcdTBlMGRcdTBlNDBcdTBlMDFcdTBlMzRcdTBlMTQiLCAibmFtZV9lbiI6ICJBbWFyaW4iLCAic3VybmFtZV9lbiI6ICJCb29ua2lydCIsICJ0ZWwiOiAiMDg5MTk5OTQ1MCIsICJsaW5lIjogImFtYXJpbi50YSIsICJhZGRyX3Byb3ZpbmNlIjogIiJ9XX0=
+<output>
+{
+ "success": "true",
+ "action": "register_user",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "true",
+   "start_time": "2020-04-18 09:43:57.862978",
+   "end_time": "2020-04-18 09:43:59.520246",
+   "detail": "Registered"
+  }
+ },
+ "usage_time": "0:00:01.805653",
+ "start_time": "2020-04-18 09:43:57.739341",
+ "end_time": "2020-04-18 09:43:59.544994"
+}
+
+LOGIN : Corect Pass => Pass
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJub3ZhYml6eiIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAiMTIzNDU2N0BnbWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
+
+<output>
+
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "true",
+   "start_time": "2020-04-18 09:52:40.181953",
+   "end_time": "2020-04-18 09:52:41.977513",
+   "detail": "logged in"
+  }
+ },
+ "usage_time": "0:00:01.881558",
+ "start_time": "2020-04-18 09:52:40.102020",
+ "end_time": "2020-04-18 09:52:41.983578"
+}
+
+LOGIN : Wrong Pass => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data :
+eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJub3ZhYml6eiIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAicGFyem9kdXBzb0B5ZXZtZS5jb20iLCAicGFzcyI6ICIxMjM0NTZkNzgifV19
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "false",
+   "start_time": "2020-05-03 11:16:02.184507",
+   "end_time": "2020-05-03 11:16:03.388663",
+   "detail": "Failed Login"
+  }
+ },
+ "usage_time": "0:00:01.612909",
+ "start_time": "2020-05-03 11:16:01.782403",
+ "end_time": "2020-05-03 11:16:03.395312"
+}
+
+
+LOGIN : Wrong User => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data :
+eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJub3ZhYml6eiIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAicGFyem9kdXBzb2FzZGFzQHlldm1lLmNvbSIsICJwYXNzIjogIjEyMzQ1NmQ3OCJ9XX0=
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "false",
+   "start_time": "2020-05-03 11:18:23.723245",
+   "end_time": "2020-05-03 11:18:24.627937",
+   "detail": "Failed Login"
+  }
+ },
+ "usage_time": "0:00:00.939680",
+ "start_time": "2020-05-03 11:18:23.696979",
+ "end_time": "2020-05-03 11:18:24.636659"
+}
+
+
+
+CREATE POST : with new line  => Pass
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiY3JlYXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgInBvc3RfaW1nX3VybF9saXN0cyI6IFsiaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS91cmw/c2E9aSZ1cmw9aHR0cHMlM0ElMkYlMkZwaXhhYmF5LmNvbSUyRmltYWdlcyUyRnNlYXJjaCUyRm5hdHVyZSUyRiZwc2lnPUFPdlZhdzNyMnFDLTk2UHNzbVFtZURraUw5M3YmdXN0PTE1ODcyOTA3NDIxNTAwMDAmc291cmNlPWltYWdlcyZjZD12ZmUmdmVkPTBDQUlRalJ4cUZ3b1RDTGo5dFAzYzhlZ0NGUUFBQUFBZEFBQUFBQkFEIl0sICJnZW9fbGF0aXR1ZGUiOiAiMTMuOTk4OTgzMzg2MjEyNDk3IiwgImdlb19sb25naXR1ZGUiOiAiOTkuNzQ0NjQwMjkwNDYxNDIiLCAicHJvcGVydHlfaWQiOiAiIiwgInBvc3RfdGl0bGVfdGgiOiAieHh4IiwgInNob3J0X3Bvc3RfdGl0bGVfdGgiOiAieHh4IiwgInBvc3RfZGVzY3JpcHRpb25fdGgiOiAieFxyXG54eCIsICJwb3N0X3RpdGxlX2VuIjogImFiY2Rhc2tqZGZnIiwgInNob3J0X3Bvc3RfdGl0bGVfZW4iOiAieHh4IiwgInBvc3RfZGVzY3JpcHRpb25fZW4iOiAiTGFuZCBmb3IgcmVudCBiYW5na2xveXNhaW5vaSA2IHJhaSBzdWl0YWJsZSBmb3IgZGV2ZWxvcGluZ1xyXG5MYW5kIFNpemUgNiByYWlcclxuV2lkdGggMzAgbWV0ZXIiLCAicHJpY2VfYmFodCI6IDMwMDAsICJwcm9qZWN0X25hbWUiOiAicHJvamVjdG5hbWVpc2VuZXRlcnRlZGhlcmUiLCAibGlzdGluZ190eXBlIjogIlx1MGUwMlx1MGUzMlx1MGUyMiIsICJwcm9wZXJ0eV90eXBlIjogMiwgImZsb29yX2xldmVsIjogMiwgImZsb29yX3RvdGFsIjogIjExIiwgImZsb29yX2FyZWEiOiAiMTEiLCAiYmF0aF9yb29tIjogMiwgImJlZF9yb29tIjogMywiZHVyYXRpb24iOiIzMCIgLCJwcm9taW5lbnRfcG9pbnQiOiAiXHUwZTA4XHUwZTM4XHUwZTE0XHUwZTQwXHUwZTE0XHUwZTQ4XHUwZTE5IiwgInZpZXdfdHlwZSAiOiAiMTEiLCAiZGlyZWN0aW9uX3R5cGUiOiAiMTEiLCAiYWRkcl9wcm92aW5jZSI6ICJcdTBlMDFcdTBlMzJcdTBlMGRcdTBlMDhcdTBlMTlcdTBlMWFcdTBlMzhcdTBlMjNcdTBlMzUiLCAiYWRkcl9kaXN0cmljdCI6ICJcdTBlMTdcdTBlNDhcdTBlMzJcdTBlMjFcdTBlMzBcdTBlMDFcdTBlMzIiLCAiYWRkcl9zdWJfZGlzdHJpY3QiOiAiXHUwZTE1XHUwZTMwXHUwZTA0XHUwZTIzXHUwZTQ5XHUwZTMzXHUwZTQwXHUwZTJkXHUwZTE5IiwgImFkZHJfcm9hZCI6ICIiLCAiYWRkcl9zb2kiOiAiIiwgImFkZHJfbmVhcl9ieSI6ICIiLCAiZmxvb3JhcmVhX3NxbSI6IDEyMzQsICJsYW5kX3NpemVfcmFpIjogMzIsICJsYW5kX3NpemVfbmdhbiI6IDIxLCAibGFuZF9zaXplX3dhIjogMTIsICJuYW1lIjogInh4eCIsICJtb2JpbGUiOiAieHh4IiwgImVtYWlsIjogInh4eCIsICJsaW5lIjogInh4eCIsICJ3ZWIiOiBbeyJkc19uYW1lIjogIm5vdmFiaXp6IiwgImRzX2lkIjogIjQiLCAidXNlciI6ICJwYXJ6b2R1cHNvQHlldm1lLmNvbSIsICJwYXNzIjogIjEyMzQ1NmFhOSJ9XX0=
+<output>
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "true",
+   "start_time": "2020-05-03 11:42:02.657148",
+   "end_time": "2020-05-03 11:42:07.671399",
+   "post_url": "//www.novabizz.com/p555199/xxx.html",
+   "post_id": "555199"
+  }
+ },
+ "usage_time": "0:00:05.341399",
+ "start_time": "2020-05-03 11:42:02.336324",
+ "end_time": "2020-05-03 11:42:07.677723"
+}
+
+CREATE POST : with no new line  => Pass
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiY3JlYXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgInBvc3RfaW1nX3VybF9saXN0cyI6IFsiaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS91cmw/c2E9aSZ1cmw9aHR0cHMlM0ElMkYlMkZwaXhhYmF5LmNvbSUyRmltYWdlcyUyRnNlYXJjaCUyRm5hdHVyZSUyRiZwc2lnPUFPdlZhdzNyMnFDLTk2UHNzbVFtZURraUw5M3YmdXN0PTE1ODcyOTA3NDIxNTAwMDAmc291cmNlPWltYWdlcyZjZD12ZmUmdmVkPTBDQUlRalJ4cUZ3b1RDTGo5dFAzYzhlZ0NGUUFBQUFBZEFBQUFBQkFEIl0sICJnZW9fbGF0aXR1ZGUiOiAiMTMuOTk4OTgzMzg2MjEyNDk3IiwgImdlb19sb25naXR1ZGUiOiAiOTkuNzQ0NjQwMjkwNDYxNDIiLCAicHJvcGVydHlfaWQiOiAiIiwgInBvc3RfdGl0bGVfdGgiOiAieHh4IiwgInNob3J0X3Bvc3RfdGl0bGVfdGgiOiAieHh4IiwgInBvc3RfZGVzY3JpcHRpb25fdGgiOiAieHh4IiwgInBvc3RfdGl0bGVfZW4iOiAiYWJjZGFza2pkZmciLCAic2hvcnRfcG9zdF90aXRsZV9lbiI6ICJ4eHgiLCAicG9zdF9kZXNjcmlwdGlvbl9lbiI6ICJMYW5kIGZvciByZW50IGJhbmdrbG95c2Fpbm9pIDYgcmFpIHN1aXRhYmxlIGZvciBkZXZlbG9waW5nXHJcbkxhbmQgU2l6ZSA2IHJhaVxyXG5XaWR0aCAzMCBtZXRlciIsICJwcmljZV9iYWh0IjogMzAwMCwgInByb2plY3RfbmFtZSI6ICJwcm9qZWN0bmFtZWlzZW5ldGVydGVkaGVyZSIsICJsaXN0aW5nX3R5cGUiOiAiXHUwZTAyXHUwZTMyXHUwZTIyIiwgInByb3BlcnR5X3R5cGUiOiAyLCAiZmxvb3JfbGV2ZWwiOiAyLCAiZmxvb3JfdG90YWwiOiAiMTEiLCAiZmxvb3JfYXJlYSI6ICIxMSIsICJiYXRoX3Jvb20iOiAyLCAiYmVkX3Jvb20iOiAzLCJkdXJhdGlvbiI6IjMwIiAsInByb21pbmVudF9wb2ludCI6ICJcdTBlMDhcdTBlMzhcdTBlMTRcdTBlNDBcdTBlMTRcdTBlNDhcdTBlMTkiLCAidmlld190eXBlICI6ICIxMSIsICJkaXJlY3Rpb25fdHlwZSI6ICIxMSIsICJhZGRyX3Byb3ZpbmNlIjogIlx1MGUwMVx1MGUzMlx1MGUwZFx1MGUwOFx1MGUxOVx1MGUxYVx1MGUzOFx1MGUyM1x1MGUzNSIsICJhZGRyX2Rpc3RyaWN0IjogIlx1MGUxN1x1MGU0OFx1MGUzMlx1MGUyMVx1MGUzMFx1MGUwMVx1MGUzMiIsICJhZGRyX3N1Yl9kaXN0cmljdCI6ICJcdTBlMTVcdTBlMzBcdTBlMDRcdTBlMjNcdTBlNDlcdTBlMzNcdTBlNDBcdTBlMmRcdTBlMTkiLCAiYWRkcl9yb2FkIjogIiIsICJhZGRyX3NvaSI6ICIiLCAiYWRkcl9uZWFyX2J5IjogIiIsICJmbG9vcmFyZWFfc3FtIjogMTIzNCwgImxhbmRfc2l6ZV9yYWkiOiAzMiwgImxhbmRfc2l6ZV9uZ2FuIjogMjEsICJsYW5kX3NpemVfd2EiOiAxMiwgIm5hbWUiOiAieHh4IiwgIm1vYmlsZSI6ICJ4eHgiLCAiZW1haWwiOiAieHh4IiwgImxpbmUiOiAieHh4IiwgIndlYiI6IFt7ImRzX25hbWUiOiAibm92YWJpenoiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogInBhcnpvZHVwc29AeWV2bWUuY29tIiwgInBhc3MiOiAiMTIzNDU2YWE5In1dfQ==
+<output>
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "true",
+   "start_time": "2020-05-03 11:43:51.644446",
+   "end_time": "2020-05-03 11:43:53.916418",
+   "post_url": "//www.novabizz.com/p555201/xxx.html",
+   "post_id": "555201"
+  }
+ },
+ "usage_time": "0:00:02.433991",
+ "start_time": "2020-05-03 11:43:51.487451",
+ "end_time": "2020-05-03 11:43:53.921442"
+}
+
+Edit Post
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwb3N0X2ltZ191cmxfbGlzdHMiOiBbImh0dHBzOi8vY2RuLnBpeGFiYXkuY29tL3Bob3RvLzIwMTUvMDQvMjMvMjIvMDAvdHJlZS03MzY4ODVfXzM0MC5qcGciXSwgImdlb19sYXRpdHVkZSI6ICIxMy45OTg5ODMzODYyMTI0OTciLCAiZ2VvX2xvbmdpdHVkZSI6ICI5OS43NDQ2NDAyOTA0NjE0MiIsICJwcm9wZXJ0eV9pZCI6ICIiLCAicG9zdF90aXRsZV90aCI6ICJ4WXgiLCAic2hvcnRfcG9zdF90aXRsZV90aCI6ICJ4eHgiLCAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJ4eHgiLCAicG9zdF90aXRsZV9lbiI6ICJhYmNkYXNramRmZyIsICJzaG9ydF9wb3N0X3RpdGxlX2VuIjogInh4eCIsICJwb3N0X2Rlc2NyaXB0aW9uX2VuIjogIkVkaXR0ZWQgd2l0aCBuZXdsaW5lXHJcbm5ld2xpbmVcclxubmV3bGluZSIsICJwcmljZV9iYWh0IjogMzAwMCwgInByb2plY3RfbmFtZSI6ICJwcm9qZWN0bmFtZWlzZW5ldGVydGVkaGVyZSIsICJsaXN0aW5nX3R5cGUiOiAiXHUwZTAyXHUwZTMyXHUwZTIyIiwgInByb3BlcnR5X3R5cGUiOiAyLCAiZmxvb3JfbGV2ZWwiOiAyLCAiZmxvb3JfdG90YWwiOiAiMTEiLCAiZmxvb3JfYXJlYSI6ICIxMSIsICJiYXRoX3Jvb20iOiAyLCAiYmVkX3Jvb20iOiAzLCJkdXJhdGlvbiI6MzAsICJwcm9taW5lbnRfcG9pbnQiOiAiXHUwZTA4XHUwZTM4XHUwZTE0XHUwZTQwXHUwZTE0XHUwZTQ4XHUwZTE5IiwgInZpZXdfdHlwZSAiOiAiMTEiLCAiZGlyZWN0aW9uX3R5cGUiOiAiMTEiLCAiYWRkcl9wcm92aW5jZSI6ICJcdTBlMDFcdTBlMzJcdTBlMGRcdTBlMDhcdTBlMTlcdTBlMWFcdTBlMzhcdTBlMjNcdTBlMzUiLCAiYWRkcl9kaXN0cmljdCI6ICJcdTBlMTdcdTBlNDhcdTBlMzJcdTBlMjFcdTBlMzBcdTBlMDFcdTBlMzIiLCAiYWRkcl9zdWJfZGlzdHJpY3QiOiAiXHUwZTE1XHUwZTMwXHUwZTA0XHUwZTIzXHUwZTQ5XHUwZTMzXHUwZTQwXHUwZTJkXHUwZTE5IiwgImFkZHJfcm9hZCI6ICIiLCAiYWRkcl9zb2kiOiAiIiwgImFkZHJfbmVhcl9ieSI6ICIiLCAiZmxvb3JhcmVhX3NxbSI6IDEyMzQsICJsYW5kX3NpemVfcmFpIjogMzIsICJsYW5kX3NpemVfbmdhbiI6IDIxLCAibGFuZF9zaXplX3dhIjogMTIsICJuYW1lIjogInh4eCIsICJtb2JpbGUiOiAieHh4IiwgImVtYWlsIjogInh4eCIsICJsaW5lIjogInh4eCIsICJ3ZWIiOiBbeyJkc19uYW1lIjogIm5vdmFiaXp6IiwgImRzX2lkIjogIjQiLCAidXNlciI6ICJ0ZW1wQGdtYWlsLmNvbSIsICJwYXNzIjogIjEyMzQ1Njc4IiwgInBvc3RfaWQiOiAiNTQ4MjY0IiwgImxvZ19pZCI6ICI0NDQ0NDQifV19
+
+<output>
+{
+ "success": "true",
+ "action": "edit_post",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "true",
+   "start_time": "2020-04-18 16:51:23.592921",
+   "end_time": "2020-04-18 16:51:25.854671",
+   "detail": "Edited"
+  }
+ },
+ "usage_time": "0:00:02.532179",
+ "start_time": "2020-04-18 16:51:23.328197",
+ "end_time": "2020-04-18 16:51:25.860376"
+}
+
+Delete Post
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7ImRzX25hbWUiOiAibm92YWJpenoiLCAiZHNfaWQiOiAiNCIsICJwb3N0X2lkIjogIjU0ODI2NCIsICJsb2dfaWQiOiAiNzE5NzczIiwgInVzZXIiOiAidGVtcEBnbWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
+<output>
+{
+ "success": "true",
+ "action": "delete_post",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "true",
+   "start_time": "2020-04-18 16:52:23.993404",
+   "end_time": "2020-04-18 16:52:25.812967",
+   "detail": "Deleted Post"
+  }
+ },
+ "usage_time": "0:00:01.862843",
+ "start_time": "2020-04-18 16:52:23.975443",
+ "end_time": "2020-04-18 16:52:25.838286"
+}
+boost post
+<input>
+eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJub3ZhYml6eiIsICJkc19pZCI6ICI0IiwgInBvc3RfaWQiOiAiNTU0Nzk0IiwgImxvZ19pZCI6ICI3MTk3NzMiLCAidXNlciI6ICJwYXJ6b2R1cHNvQHlldm1lLmNvbSIsICJwYXNzIjogIjEyMzQ1NmFhOSJ9XX0=
+<output>
+{
+ "success": "true",
+ "action": "boost_post",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "true",
+   "time_usage": "P0DT00H00M08.336686S",
+   "time_start": "2020-05-04T07:55:04.576",
+   "time_end": "2020-05-04T07:55:12.912",
+   "detail": "",
+   "post_id": "554794"
+  }
+ },
+ "usage_time": "0:00:08.391882",
+ "start_time": "2020-05-04 07:55:04.522593",
+ "end_time": "2020-05-04 07:55:12.914475"
+}

@@ -61,6 +61,7 @@ class quickdealfree():
         data = r.text
         # print(data)
         if data.find("อีเมล์นี้มีอยู่ในระบบแล้ว") != -1:
+            success = "false"
             detail = "Email Already registered"
         else:
             detail = "Registered"
@@ -125,11 +126,19 @@ class quickdealfree():
 
         # login
 
+        # print(postdata)
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
         post_id = ""
         post_url = ""
+
+
+        if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
+            if 'project_name' in postdata and postdata['project_name']!=None:
+                postdata['web_project_name'] = postdata['project_name']
+            else:
+                postdata['web_project_name'] = postdata['post_title_th']
 
         proid = {
             'คอนโด': '1',
@@ -141,18 +150,21 @@ class quickdealfree():
             'อพาร์ทเมนท์': '7',
             'โรงแรม': '8',
             'ออฟฟิศสำนักงาน': '9',
-            'โกดัง-โรงงาน': '10'
+            'โกดัง-โรงงาน': '10',
+            'โรงงาน':'25'
         }
-        getProdId = {'1': 159, '2': 156, '3': 157, '4': 157,
-                     '5': 158, '6': 161, '7': 162, '8': 162, '9': 162, '10': 162}
+        getProdId = {'1': 159, '2': 156, '3': 156, '4': 157,
+                     '5': 158, '6': 161, '7': 162, '8': 162, '9': 162, '10': 162, '25':162}
 
         try:
             theprodid = getProdId[proid[postdata['property_type']]]
         except:
             theprodid = getProdId[postdata['property_type']]
+            for i in proid:
+                if proid[i] == postdata['property_type']:
+                    postdata['property_type'] = i
 
         province_id = ''
-
         for (key, value) in provincedata.items():
             if type(value) is str and postdata['addr_province'].strip() in value.strip():
                 province_id = key
@@ -171,7 +183,7 @@ class quickdealfree():
                 ('cate_id', '23'),
                 ('sub_cate_id', theprodid),
                 ('post_title', postdata['post_title_th']),
-                ('detail', postdata['post_description_th']),
+                ('detail', postdata['post_description_th'].replace('\n','<br>')),
                 ('post_price_type', '2'),
                 ('post_price', postdata['price_baht']),
                 ('add', prod_address),
@@ -182,6 +194,12 @@ class quickdealfree():
                 ('rands', 'ZF71'),
                 ('capcha', 'ZF71'),
                 ('submit', 'Confirm announcement'),
+                ('tag1',postdata['listing_type']),
+                ('tag2',postdata['property_type']),
+                ('tag3',postdata['web_project_name']),
+                ('tag4',postdata['addr_near_by']),
+                ('tag5',postdata['addr_district']),
+                ('tag6',postdata['addr_province'])
             ]
 
             if postdata['listing_type'] != 'ขาย':
@@ -253,19 +271,29 @@ class quickdealfree():
             'อพาร์ทเมนท์': '7',
             'โรงแรม': '8',
             'ออฟฟิศสำนักงาน': '9',
-            'โกดัง-โรงงาน': '10'
+            'โกดัง-โรงงาน': '10',
+            'โรงงาน':'25'
         }
         getProdId = {'1': 159, '2': 156, '3': 157, '4': 157,
-                     '5': 158, '6': 161, '7': 162, '8': 162, '9': 162, '10': 162}
+                     '5': 158, '6': 161, '7': 162, '8': 162, '9': 162, '10': 162, '25':162}
+
 
         try:
             theprodid = getProdId[proid[postdata['property_type']]]
         except:
             theprodid = getProdId[postdata['property_type']]
+            for i in proid:
+                if proid[i] == theprodid:
+                    postdata['property_type'] = i
 
         province_id = ''
 
         # for i in postdata["post_img_url_lists"]:
+        if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
+            if 'project_name' in postdata and postdata['project_name']!=None:
+                postdata['web_project_name'] = postdata['project_name']
+            else:
+                postdata['web_project_name'] = postdata['post_title_th']
 
         for (key, value) in provincedata.items():
             if type(value) is str and postdata['addr_province'].strip() in value.strip():
@@ -296,7 +324,7 @@ class quickdealfree():
                         ('cate_id', '23'),
                         ('sub_cate_id', theprodid),
                         ('post_title', postdata['post_title_th']),
-                        ('detail', postdata['post_description_th']),
+                        ('detail', postdata['post_description_th'].replace('\r\n','<br>')),
                         ('post_price_type', '2'),
                         ('post_price', postdata['price_baht']),
                         ('add', prod_address),
@@ -307,6 +335,12 @@ class quickdealfree():
                         ('rands', 'ZF71'),
                         ('capcha', 'ZF71'),
                         ('submit', 'Confirm announcement'),
+                        ('tag1',postdata['listing_type']),
+                        ('tag2',postdata['property_type']),
+                        ('tag3',postdata['project_name']),
+                        ('tag4',postdata['addr_near_by']),
+                        ('tag5',postdata['addr_district']),
+                        ('tag6',postdata['addr_province'])
                     ]
                     allimages = postdata["post_images"][:5]
                     for i in range(len(allimages)):
@@ -392,21 +426,52 @@ class quickdealfree():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        post_id = postdata['post_id']
-        log_id = postdata['log_id']
+        # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
+        r = httprequestObj.http_get(
+            "http://www.quickdealfree.com/member/list-classifieds.php")
+        soup = BeautifulSoup(r.text, 'lxml')
+        post_url = soup.select(
+            "#frmMain > div > table > tbody > tr > td> a")
+        success = "false"
+        for i in post_url:
+                    if i['href'][8:13] == postdata['post_id']:
+                        success = "true"
+        user = postdata['user']
+        passwd = postdata['pass']
 
+        # start process
         #
-        #
-
+        # login
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        if success == "true":
+            r = httprequestObj.http_get(
+                "http://www.quickdealfree.com/member/list-classifieds.php")
+            soup = BeautifulSoup(r.text, 'lxml')
+            post_url = soup.select(
+                "#frmMain > div > table > tbody > tr > td> a")
+            success = "false"
+            for i in post_url:
+                if i['href'][8:13] == postdata['post_id']:
+                    success = "true"
+            if success == "true":
+                r = httprequestObj.http_get(
+                    'http://www.quickdealfree.com/member/slide-classified-post.php?id='+postdata['post_id'])
+            else:
+                detail = "No post found with given id."
+        else:
+            detail = "cannot login"
         time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
         return {
-            "success": "false",
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
-            "detail": "",
-            "log_id": log_id,
-            "post_id": post_id,
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": "quickdealfree",
+            "log_id": 1,
         }
 
     def print_debug(self, msg):
