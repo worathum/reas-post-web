@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 import os
-from lib_httprequest import *
+from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
 # from urlparse import urlparse
