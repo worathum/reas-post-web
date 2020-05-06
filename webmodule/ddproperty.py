@@ -203,6 +203,7 @@ class ddproperty():
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
         options.add_argument("--disable-extensions")
+        options.add_argument("disable-gpu")
         options.add_argument("window-size=1024,768")
         prefs = {"profile.managed_default_content_settings.images": 2}
         options.add_experimental_option("prefs", prefs)
@@ -226,22 +227,31 @@ class ddproperty():
         log.debug('input password')
         passtxt.send_keys(Keys.ENTER)
         log.debug('click enter')
-        WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
-
-        #self.chrome.save_screenshot("debug_response/login.png")
-        # f = open("debug_response/loginpassdd2.html", "wb")
-        # f.write(self.chrome.page_source.encode('utf-8').strip())
-
-        # find text
-        soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
-        titletxt = soup.find('title').text
-        matchObj = re.search(r'Dashboard', titletxt)
-        if not matchObj:
+        time.sleep(0.5)
+        
+        matchObj = re.search(r'บัญชีผู้ใช้งานของท่านหมดอายุ', self.chrome.page_source)
+        if matchObj:
             success = "false"
-            detail = 'cannot login'
+            detail = 'บัญชีผู้ใช้งานของท่านหมดอายุ'
+            log.warning('บัญชีผู้ใช้งานของท่านหมดอายุ')
+        
         if success == "true":
-            # agent_id = re.search(r'optimize_agent_id = (\d+);', self.chrome.page_source).group(1)
-            agent_id = re.search(r'{"user":{"id":(\d+),', self.chrome.page_source).group(1)
+            WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
+            #self.chrome.save_screenshot("debug_response/login.png")
+            # f = open("debug_response/loginpassdd2.html", "wb")
+            # f.write(self.chrome.page_source.encode('utf-8').strip())
+            # find text
+            soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
+            titletxt = soup.find('title').text
+            log.debug('title %s',titletxt)
+            matchObj = re.search(r'Dashboard', titletxt)
+            if not matchObj:
+                success = "false"
+                detail = 'cannot login'
+                log.warning('cannot login')
+            if success == "true":
+                # agent_id = re.search(r'optimize_agent_id = (\d+);', self.chrome.page_source).group(1)
+                agent_id = re.search(r'{"user":{"id":(\d+),', self.chrome.page_source).group(1)
 
         log.debug("login status %s agent id %s", success, agent_id)
 
@@ -362,6 +372,8 @@ class ddproperty():
 
         try:
             datahandled['addr_road'] = postdata['addr_road']
+            if datahandled['addr_road'] == None:
+                datahandled['addr_road'] = ""
         except KeyError as e:
             datahandled['addr_road'] = ''
             log.warning(str(e))
@@ -549,26 +561,26 @@ class ddproperty():
 
         try:
             datahandled['land_size_rai'] = str(postdata["land_size_rai"])
+            if(postdata["land_size_rai"]) == None:
+                postdata["land_size_rai"] = '0'
         except KeyError as e:
             datahandled['land_size_rai'] = '0'
             log.warning(str(e))
 
         try:
             datahandled['land_size_ngan'] = str(postdata["land_size_ngan"])
+            if(postdata["land_size_ngan"]) == None:
+                postdata["land_size_ngan"] = '0'
         except KeyError as e:
             datahandled['land_size_ngan'] = '0'
             log.warning(str(e))
 
         try:
             datahandled['land_size_wa'] = str(postdata["land_size_wa"])
+            if(postdata["land_size_wa"]) == None:
+                postdata["land_size_wa"] = '0'
         except KeyError as e:
             datahandled['land_size_wa'] = '0'
-            log.warning(str(e))
-
-        try:
-            datahandled['addr_road'] = postdata["addr_road"]
-        except KeyError as e:
-            datahandled['addr_road'] = ''
             log.warning(str(e))
 
         self.handled = True
@@ -742,7 +754,8 @@ class ddproperty():
                 try:
                     time.sleep(0.5)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
-                    time.sleep(1)
+                    time.sleep(0.5)
+                    log.debug('input lat %s lng %s',datahandled['geo_latitude'],datahandled['geo_longitude'])
                     js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
                     self.chrome.execute_script(js)
                     time.sleep(0.5)
@@ -868,7 +881,7 @@ class ddproperty():
 
             # bed room
             try:
-                if int(datahandled['bed_room']) > 0:
+                if datahandled['bed_room'] != None and int(datahandled['bed_room']) > 0:
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
                     if int(datahandled['bed_room']) >= 10:
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
@@ -881,7 +894,7 @@ class ddproperty():
             # bath room
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
-                if int(datahandled['bath_room']) == 0:
+                if datahandled['bed_room'] == None or int(datahandled['bath_room']) == 0:
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('ไม่มีห้องน้ำ')).click()
                 elif int(datahandled['bath_room']) >= 1 and int(datahandled['bath_room']) < 9:
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bath_room']) + ' ห้องน้ำ')).click()
@@ -994,6 +1007,7 @@ class ddproperty():
             except WebDriverException as e:
                 log.warning('cannot input area '+str(e))
                 pass
+            #self.chrome.save_screenshot("debug_response/newp12.png")
 
             # account type
             matchObj = re.search(r'รายละเอียดตัวแทน', self.chrome.page_source)
@@ -1019,6 +1033,7 @@ class ddproperty():
             time.sleep(1.5)
             #self.chrome.save_screenshot("debug_response/newp12.png")
 
+            # next
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             except WebDriverException as e:
@@ -1028,9 +1043,8 @@ class ddproperty():
                 self.chrome.quit()
                 return success, detail, post_id, account_type
 
-
-            WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
             # image
+            WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
             if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) < 0):
                 log.debug('edit image')
@@ -1438,44 +1452,17 @@ class ddproperty():
             "end_time": str(time_end),
             "detail": detail,
             "log_id": log_id,
+            "websitename": self.websitename,
         }
 
-    def edit_post_bak(self, postdata):
+    def edit_post_bak(self, post_id,datahandled):
         log.debug('')
-
-        time_start = datetime.datetime.utcnow()
-
-        # post_img_url_lists = postdata['post_img_url_lists']
-        price_baht = postdata['price_baht']
-        # county = postdata["county"]
-        # district = postdata["district"]
-        # addr_province = postdata['addr_province']
-        # addr_district = postdata['addr_district']
-        # addr_sub_district = postdata['addr_sub_district']
-        # addr_road = postdata['addr_road']
-        # addr_near_by = postdata['addr_near_by']
-        # floor_area = postdata['floor_area']
-        # geo_latitude = postdata['geo_latitude']
-        # geo_longitude = postdata['geo_longitude']
-        # property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        # post_title_en = postdata['post_title_en']
-        # post_description_en = postdata['post_description_en']
-        # postdata["post_id"] = '7788091'
-        post_id = postdata["post_id"]
-        # postdata['user'] = 'kla.arnut@gmail.com'
-        user = postdata['user']
-        # postdata['pass'] = 'vkIy9b'
-        passwd = postdata['pass']
-        log_id = postdata["log_id"]
 
         # start proces
         #
 
         # login
-        self.test_login(postdata)
-        test_login = self.test_login(postdata)
+        test_login = self.test_login_httpreq(datahandled)
         success = test_login["success"]
         detail = test_login["detail"]
         agent_id = test_login["agent_id"]
@@ -1483,384 +1470,383 @@ class ddproperty():
         if (success == "true"):
             datapost = {
                 "id": post_id,
-                "statusCode": "DRAFT",
-                "daysUntilExpire": 0,
-                "isExpiring": "true",
-                "sourceCode": "",
+                # "statusCode": "DRAFT",
+                # "daysUntilExpire": 0,
+                # "isExpiring": "true",
+                # "sourceCode": "",
                 "typeCode": "SALE",
-                "typeText": "ขาย",
-                "subTypeCode": "",
-                "leaseTermCode": "",
-                "leaseTermText": "",
-                "featureCode": "",
-                "accountTypeCode": "NORMAL",
-                "accountSubTypeCode": "",
-                "isPremiumAccount": "false",
-                "isPropertySpecialistListing": "false",
-                "isMobilePropertySpotlightListing": "false",
-                "isTransactorListing": "false",
-                "isCommercial": "false",
-                "hasFloorplans": "false",
-                "hasStream": "true",
-                "featuredBy": [],
-                "localizedHeadline": "",
-                "headlines": {
-                    "th": "",
-                    "en": ""
-                },
-                "localizedTitle": post_title_th,
-                "titles": {
-                    "th": post_title_th
-                },
-                "localizedDescription": post_description_th,
-                "descriptions": {
-                    "th": post_description_th
-                },
-                "notes": "",
-                "externalId": 9999,
-                "cobroke": 0,
-                "price": {
-                    "value": 9999999,
-                    "pretty": "฿9,999,999",
-                    "periodCode": "",
-                    "pricePerArea": {
-                        "value": 227272.7045,
-                        "unit": "sqm",
-                        "reference": "floorArea"
-                    },
-                    "type": {
-                        "code": "BAH",
-                        "text": "",
-                        "pretty": "บาท"
-                    },
-                    "valuation": 0,
-                    "valuationText": "",
-                    "completed": 0,
-                    "currency": "฿"
-                },
-                "sizes": {
-                    "bedrooms": {
-                        "value": "",
-                        "text": ""
-                    },
-                    "bathrooms": {
-                        "value": "",
-                        "text": ""
-                    },
-                    "extrarooms": {
-                        "value": "",
-                        "text": ""
-                    },
-                    "floorArea": [{
-                        "unit": "sqm",
-                        "value": 44,
-                        "text": "44 ตร.ม."
-                    }],
-                    "landArea": [{
-                        "unit": "sqm",
-                        "value": "",
-                        "text": ""
-                    }],
-                    "floorX": [{
-                        "unit": "m",
-                        "value": ""
-                    }],
-                    "floorY": [{
-                        "unit": "m",
-                        "value": ""
-                    }],
-                    "landX": [{
-                        "unit": "m",
-                        "value": ""
-                    }],
-                    "landY": [{
-                        "unit": "m",
-                        "value": ""
-                    }]
-                },
-                "pricePerArea": {
-                    "floorArea": [{
-                        "unit": "sqm",
-                        "value": 227272.70454545,
-                        "text": "฿227,273 / ตารางเมตร"
-                    }],
-                    "landArea": [{
-                        "unit": "",
-                        "value": "",
-                        "text": ""
-                    }]
-                },
-                "dates": {
-                    "timezone": "Asia/Singapore",
-                    "firstPosted": "",
-                    "lastPosted": "",
-                    "expiry": "",
-                    "available": "",
-                    "created": {
-                        "date": "2020-03-11 01:14:38",
-                        "unix": 1583860478
-                    },
-                    "updated": {
-                        "date": "2020-03-11 01:14:38",
-                        "unix": 1583860478
-                    }
-                },
-                "urls": {
-                    "listing": {
-                        "api": "https://api.propertyguru.com/v1/listings/7788091?region=th",
-                        "internal": "http://listing.guruestate.com/v1/listings/7788091?region=th",
-                        "mobile": "https://www.ddproperty.com/property/xxx-ขาย-7788091",
-                        "desktop": "https://www.ddproperty.com/property/xxx-ขาย-7788091",
-                        "desktopByLocales": {
-                            "th": "https://www.ddproperty.com/property/xxx-ขาย-7788091",
-                            "en": "https://www.ddproperty.com/en/property/xxx-for-sale-7788091"
-                        },
-                        "preview": {
-                            "desktop": "https://www.ddproperty.com/preview-listing/7788091"
-                        }
-                    }
-                },
-                "_user": "",
-                "qualityScore": 70,
-                "finalScore": "",
-                "tier": 0,
-                "showAgentProfile": "false",
-                "event": "",
-                "mywebOrder": "",
-                "agent": {
-                    "id": agent_id,
-                    "name": "cccc cccc",
-                    "mobile": "+66839703921",
-                    "mobilePretty": "+66 83 970 3921",
-                    "phone": "",
-                    "phonePretty": "",
-                    "alternativePhone": "",
-                    "alternativeAgent": "",
-                    "alternativeMobile": "",
-                    "alternativeEmail": "",
-                    "jobTitle": "",
-                    "licenseNumber": "",
-                    "showProfile": "false",
-                    "website": "",
-                    "email": "kla.arnut@gmail.com",
-                    "blackberryPin": ""
-                },
-                "agency": {
-                    "id": 42297,
-                    "name": "aaaa",
-                    "ceaLicenseNumber": ""
-                },
+                # "typeText": "ขาย",
+                # "subTypeCode": "",
+                # "leaseTermCode": "",
+                # "leaseTermText": "",
+                # "featureCode": "",
+                # "accountTypeCode": "NORMAL",
+                # "accountSubTypeCode": "",
+                # "isPremiumAccount": "false",
+                # "isPropertySpecialistListing": "false",
+                # "isMobilePropertySpotlightListing": "false",
+                # "isTransactorListing": "false",
+                # "isCommercial": "false",
+                # "hasFloorplans": "false",
+                # "hasStream": "true",
+                # "featuredBy": [],
+                # "localizedHeadline": "",
+                # "headlines": {
+                #     "th": "",
+                #     "en": ""
+                # },
+                # "localizedTitle": post_title_th,
+                # "titles": {
+                #     "th": post_title_th
+                # },
+                # "localizedDescription": post_description_th,
+                # "descriptions": {
+                #     "th": post_description_th
+                # },
+                # "notes": "",
+                # "externalId": 9999,
+                # "cobroke": 0,
+                # "price": {
+                #     "value": 9999999,
+                #     "pretty": "฿9,999,999",
+                #     "periodCode": "",
+                #     "pricePerArea": {
+                #         "value": 227272.7045,
+                #         "unit": "sqm",
+                #         "reference": "floorArea"
+                #     },
+                #     "type": {
+                #         "code": "BAH",
+                #         "text": "",
+                #         "pretty": "บาท"
+                #     },
+                #     "valuation": 0,
+                #     "valuationText": "",
+                #     "completed": 0,
+                #     "currency": "฿"
+                # },
+                # "sizes": {
+                #     "bedrooms": {
+                #         "value": "",
+                #         "text": ""
+                #     },
+                #     "bathrooms": {
+                #         "value": "",
+                #         "text": ""
+                #     },
+                #     "extrarooms": {
+                #         "value": "",
+                #         "text": ""
+                #     },
+                #     "floorArea": [{
+                #         "unit": "sqm",
+                #         "value": 44,
+                #         "text": "44 ตร.ม."
+                #     }],
+                #     "landArea": [{
+                #         "unit": "sqm",
+                #         "value": "",
+                #         "text": ""
+                #     }],
+                #     "floorX": [{
+                #         "unit": "m",
+                #         "value": ""
+                #     }],
+                #     "floorY": [{
+                #         "unit": "m",
+                #         "value": ""
+                #     }],
+                #     "landX": [{
+                #         "unit": "m",
+                #         "value": ""
+                #     }],
+                #     "landY": [{
+                #         "unit": "m",
+                #         "value": ""
+                #     }]
+                # },
+                # "pricePerArea": {
+                #     "floorArea": [{
+                #         "unit": "sqm",
+                #         "value": 227272.70454545,
+                #         "text": "฿227,273 / ตารางเมตร"
+                #     }],
+                #     "landArea": [{
+                #         "unit": "",
+                #         "value": "",
+                #         "text": ""
+                #     }]
+                # },
+                # "dates": {
+                #     "timezone": "Asia/Singapore",
+                #     "firstPosted": "",
+                #     "lastPosted": "",
+                #     "expiry": "",
+                #     "available": "",
+                #     "created": {
+                #         "date": "2020-03-11 01:14:38",
+                #         "unix": 1583860478
+                #     },
+                #     "updated": {
+                #         "date": "2020-03-11 01:14:38",
+                #         "unix": 1583860478
+                #     }
+                # },
+                # "urls": {
+                #     "listing": {
+                #         "api": "https://api.propertyguru.com/v1/listings/7788091?region=th",
+                #         "internal": "http://listing.guruestate.com/v1/listings/7788091?region=th",
+                #         "mobile": "https://www.ddproperty.com/property/xxx-ขาย-7788091",
+                #         "desktop": "https://www.ddproperty.com/property/xxx-ขาย-7788091",
+                #         "desktopByLocales": {
+                #             "th": "https://www.ddproperty.com/property/xxx-ขาย-7788091",
+                #             "en": "https://www.ddproperty.com/en/property/xxx-for-sale-7788091"
+                #         },
+                #         "preview": {
+                #             "desktop": "https://www.ddproperty.com/preview-listing/7788091"
+                #         }
+                #     }
+                # },
+                # "_user": "",
+                # "qualityScore": 70,
+                # "finalScore": "",
+                # "tier": 0,
+                # "showAgentProfile": "false",
+                # "event": "",
+                # "mywebOrder": "",
+                # "agent": {
+                #     "id": agent_id,
+                #     "name": "cccc cccc",
+                #     "mobile": "+66839703921",
+                #     "mobilePretty": "+66 83 970 3921",
+                #     "phone": "",
+                #     "phonePretty": "",
+                #     "alternativePhone": "",
+                #     "alternativeAgent": "",
+                #     "alternativeMobile": "",
+                #     "alternativeEmail": "",
+                #     "jobTitle": "",
+                #     "licenseNumber": "",
+                #     "showProfile": "false",
+                #     "website": "",
+                #     "email": "kla.arnut@gmail.com",
+                #     "blackberryPin": ""
+                # },
+                # "agency": {
+                #     "id": 42297,
+                #     "name": "aaaa",
+                #     "ceaLicenseNumber": ""
+                # },
                 "location": {
-                    "id": 626225,
                     "latitude": 13.8749,
                     "longitude": 100.413606,
-                    "distance": "",
-                    "regionCode": "TH12",
-                    "regionText": "นนทบุรี",
-                    "regionSlug": "นนทบุรี",
-                    "districtCode": "TH1203",
-                    "districtText": "บางใหญ่",
-                    "districtSlug": "บางใหญ่",
-                    "areaCode": "11",
-                    "areaText": "",
-                    "areaSlug": "",
-                    "fullAddress": ". ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี",
-                    "hdbEstateCode": "",
-                    "hdbEstateText": "",
-                    "postalCode": "11110",
-                    "block": "",
-                    "unit": "",
-                    "streetId": "",
-                    "streetName1": "ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี",
-                    "streetName2": "",
-                    "streetNumber": ".",
-                    "zoneIds": "",
-                    "subZoneIds": ""
+                    # "distance": "",
+                    # "regionCode": "TH12",
+                    # "regionText": "นนทบุรี",
+                    # "regionSlug": "นนทบุรี",
+                    # "districtCode": "TH1203",
+                    # "districtText": "บางใหญ่",
+                    # "districtSlug": "บางใหญ่",
+                    # "areaCode": "11",
+                    # "areaText": "",
+                    # "areaSlug": "",
+                    # "fullAddress": ". ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี",
+                    # "hdbEstateCode": "",
+                    # "hdbEstateText": "",
+                    # "postalCode": "11110",
+                    # "block": "",
+                    # "unit": "",
+                    # "streetId": "",
+                    # "streetName1": "ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี",
+                    # "streetName2": "",
+                    # "streetNumber": ".",
+                    # "zoneIds": "",
+                    # "subZoneIds": ""
                 },
-                "property": {
-                    "id": 5987,
-                    "temporaryId": "",
-                    "statusCode": "6DML",
-                    "name": "Plum condo central station เฟส 1",
-                    "typeCode": "CONDO",
-                    "typeText": "คอนโด",
-                    "typeGroup": "N",
-                    "tenureCode": "F",
-                    "tenureText": "ขายขาด",
-                    "topMonth": 10,
-                    "topYear": 2018,
-                    "developer": "Pruksa Real Estate - พฤกษา เรียลเอสเตท จำกัด (มหาชน)",
-                    "totalUnits": 1208,
-                    "floors": 38,
-                    "amenities": [{
-                        "code": "CCAR"
-                    }, {
-                        "code": "CTV"
-                    }, {
-                        "code": "FIT"
-                    }, {
-                        "code": "OCAR"
-                    }, {
-                        "code": "PDEC"
-                    }, {
-                        "code": "SAUNA"
-                    }, {
-                        "code": "SEC"
-                    }, {
-                        "code": "SPA"
-                    }, {
-                        "code": "STE"
-                    }, {
-                        "code": "SWI"
-                    }, {
-                        "code": "WAD"
-                    }]
-                },
-                "propertyUnit": {
-                    "id": 7989636,
-                    "description": "",
-                    "furnishingCode": "",
-                    "furnishingText": "",
-                    "hdbTypeCode": "",
-                    "floorplanId": -1,
-                    "floorLevelCode": "",
-                    "floorLevelText": "",
-                    "floorPosition": "",
-                    "cornerUnit": "",
-                    "facingCode": "",
-                    "occupancyCode": "",
-                    "electricitySupply": "",
-                    "electricityPhase": "",
-                    "ceilingHeight": "",
-                    "floorLoading": "",
-                    "garages": "",
-                    "parkingSpaces": "",
-                    "parkingFees": "",
-                    "maintenanceFee": {
-                        "value": 0,
-                        "pretty": "฿0.00",
-                        "periodeCode": "MONTH"
-                    },
-                    "liftCargo": "",
-                    "liftPassenger": "",
-                    "liftCapacity": "",
-                    "centralAircon": "",
-                    "centralAirconHours": "",
-                    "ownerTypeCode": "",
-                    "sellerEthnic": "",
-                    "sellerResidency": "",
-                    "quotaEthnic": "true",
-                    "quotaSpr": "true",
-                    "telephoneLines": "",
-                    "features": [],
-                    "tenancy": {
-                        "value": "UNTENANTED",
-                        "tenantedUntilDate": {}
-                    },
-                    "tenureCode": "F"
-                },
-                "media": {
-                    "cover": {
-                        "id": 61330097,
-                        "caption": "",
-                        "statusCode": "CONF",
-                        "suspReason": "",
-                        "appealComment": "",
-                        "appealSent": "false",
-                        "sortOrder": 61330097,
-                        "V150": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
-                    },
-                    "listing": [],
-                    "property": [{
-                        "id": 61330097,
-                        "caption": "",
-                        "statusCode": "CONF",
-                        "suspReason": "",
-                        "appealComment": "",
-                        "appealSent": "false",
-                        "sortOrder": 61330097,
-                        "V150": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
-                    }, {
-                        "id": 61330098,
-                        "caption": "",
-                        "statusCode": "CONF",
-                        "suspReason": "",
-                        "appealComment": "",
-                        "appealSent": "false",
-                        "sortOrder": 61330098,
-                        "V150": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330098.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330098.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
-                    }, {
-                        "id": 61330099,
-                        "caption": "",
-                        "statusCode": "CONF",
-                        "suspReason": "",
-                        "appealComment": "",
-                        "appealSent": "false",
-                        "sortOrder": 61330099,
-                        "V150": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330099.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330099.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
-                    }, {
-                        "id": 61330104,
-                        "caption": "",
-                        "statusCode": "CONF",
-                        "suspReason": "",
-                        "appealComment": "",
-                        "appealSent": "false",
-                        "sortOrder": 61330104,
-                        "V150": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330104.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
-                        "V550": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330104.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
-                    }],
-                    "agent":
-                    "",
-                    "agentLogo": [],
-                    "agencyLogo": [],
-                    "excluded": [],
-                    "included": [],
-                    "listingDocuments": [],
-                    "propertyFloorplans": [],
-                    "listingFloorplans": [],
-                    "listingSiteplans": [],
-                    "listingVideos": [],
-                    "listingVirtualTours": []
-                },
-                "metas": {
-                    "title": "Xxx, . ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี, 44 ตร.ม., คอนโด ขาย, โดย Cccc Cccc, ฿9,999,999, 7788091",
-                    "description": "ดูรายละเอียด, รูปภาพ และแผนที่ของประกาศอสังหาริมทรัพย์ 7788091 - ขาย - xxx - . ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี, 44 ตร.ม., ฿9,999,999",
-                    "keywords": "ตัวแทน, ประกาศ, อสังหาริมทรัพย์, ทรัพย์สิน, ขาย, เช่า, อพาร์ทเม้นท์, บ้าน, ชาวต่างชาติ, ที่อยู่อาศัย, hdb, สถานที่ตั้ง, คอนโด, แผนที่"
-                },
-                "alertBatchId": "",
-                "unitTypes": [],
-                "qualityScoreData": {
-                    "price": 50,
-                    "location": 10,
-                    "3_user_photos": 0,
-                    "1_user_photo": 0,
-                    "videos_or_virtual_tours": 0,
-                    "bedrooms": 0,
-                    "description": 0,
-                    "bathrooms": 0,
-                    "floorarea": 5,
-                    "landarea": 3,
-                    "property": 1,
-                    "furnishing": 0,
-                    "unit_features": 0,
-                    "property_photo": 1,
-                    "raw_score": 70,
-                    "score": 70
-                },
-                "dependencyErrors": [],
-                "isRankedSpotlight": "false",
-                "isFeaturedListing": "false"
+                # "property": {
+                #     "id": 5987,
+                #     "temporaryId": "",
+                #     "statusCode": "6DML",
+                #     "name": "Plum condo central station เฟส 1",
+                #     "typeCode": "CONDO",
+                #     "typeText": "คอนโด",
+                #     "typeGroup": "N",
+                #     "tenureCode": "F",
+                #     "tenureText": "ขายขาด",
+                #     "topMonth": 10,
+                #     "topYear": 2018,
+                #     "developer": "Pruksa Real Estate - พฤกษา เรียลเอสเตท จำกัด (มหาชน)",
+                #     "totalUnits": 1208,
+                #     "floors": 38,
+                #     "amenities": [{
+                #         "code": "CCAR"
+                #     }, {
+                #         "code": "CTV"
+                #     }, {
+                #         "code": "FIT"
+                #     }, {
+                #         "code": "OCAR"
+                #     }, {
+                #         "code": "PDEC"
+                #     }, {
+                #         "code": "SAUNA"
+                #     }, {
+                #         "code": "SEC"
+                #     }, {
+                #         "code": "SPA"
+                #     }, {
+                #         "code": "STE"
+                #     }, {
+                #         "code": "SWI"
+                #     }, {
+                #         "code": "WAD"
+                #     }]
+                # },
+                # "propertyUnit": {
+                #     "id": 7989636,
+                #     "description": "",
+                #     "furnishingCode": "",
+                #     "furnishingText": "",
+                #     "hdbTypeCode": "",
+                #     "floorplanId": -1,
+                #     "floorLevelCode": "",
+                #     "floorLevelText": "",
+                #     "floorPosition": "",
+                #     "cornerUnit": "",
+                #     "facingCode": "",
+                #     "occupancyCode": "",
+                #     "electricitySupply": "",
+                #     "electricityPhase": "",
+                #     "ceilingHeight": "",
+                #     "floorLoading": "",
+                #     "garages": "",
+                #     "parkingSpaces": "",
+                #     "parkingFees": "",
+                #     "maintenanceFee": {
+                #         "value": 0,
+                #         "pretty": "฿0.00",
+                #         "periodeCode": "MONTH"
+                #     },
+                #     "liftCargo": "",
+                #     "liftPassenger": "",
+                #     "liftCapacity": "",
+                #     "centralAircon": "",
+                #     "centralAirconHours": "",
+                #     "ownerTypeCode": "",
+                #     "sellerEthnic": "",
+                #     "sellerResidency": "",
+                #     "quotaEthnic": "true",
+                #     "quotaSpr": "true",
+                #     "telephoneLines": "",
+                #     "features": [],
+                #     "tenancy": {
+                #         "value": "UNTENANTED",
+                #         "tenantedUntilDate": {}
+                #     },
+                #     "tenureCode": "F"
+                # },
+                # "media": {
+                #     "cover": {
+                #         "id": 61330097,
+                #         "caption": "",
+                #         "statusCode": "CONF",
+                #         "suspReason": "",
+                #         "appealComment": "",
+                #         "appealSent": "false",
+                #         "sortOrder": 61330097,
+                #         "V150": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                #         "V550": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                #     },
+                #     "listing": [],
+                #     "property": [{
+                #         "id": 61330097,
+                #         "caption": "",
+                #         "statusCode": "CONF",
+                #         "suspReason": "",
+                #         "appealComment": "",
+                #         "appealSent": "false",
+                #         "sortOrder": 61330097,
+                #         "V150": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                #         "V550": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330097.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                #     }, {
+                #         "id": 61330098,
+                #         "caption": "",
+                #         "statusCode": "CONF",
+                #         "suspReason": "",
+                #         "appealComment": "",
+                #         "appealSent": "false",
+                #         "sortOrder": 61330098,
+                #         "V150": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330098.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                #         "V550": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330098.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                #     }, {
+                #         "id": 61330099,
+                #         "caption": "",
+                #         "statusCode": "CONF",
+                #         "suspReason": "",
+                #         "appealComment": "",
+                #         "appealSent": "false",
+                #         "sortOrder": 61330099,
+                #         "V150": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330099.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                #         "V550": "https://th2-cdn.pgimgs.com/property/5987/PPHO.61330099.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                #     }, {
+                #         "id": 61330104,
+                #         "caption": "",
+                #         "statusCode": "CONF",
+                #         "suspReason": "",
+                #         "appealComment": "",
+                #         "appealSent": "false",
+                #         "sortOrder": 61330104,
+                #         "V150": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330104.V150/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg",
+                #         "V550": "https://th1-cdn.pgimgs.com/property/5987/PPHO.61330104.V550/Plum-condo-central-station-%E0%B9%80%E0%B8%9F%E0%B8%AA-1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-Thailand.jpg"
+                #     }],
+                #     "agent":
+                #     "",
+                #     "agentLogo": [],
+                #     "agencyLogo": [],
+                #     "excluded": [],
+                #     "included": [],
+                #     "listingDocuments": [],
+                #     "propertyFloorplans": [],
+                #     "listingFloorplans": [],
+                #     "listingSiteplans": [],
+                #     "listingVideos": [],
+                #     "listingVirtualTours": []
+                # },
+                # "metas": {
+                #     "title": "Xxx, . ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี, 44 ตร.ม., คอนโด ขาย, โดย Cccc Cccc, ฿9,999,999, 7788091",
+                #     "description": "ดูรายละเอียด, รูปภาพ และแผนที่ของประกาศอสังหาริมทรัพย์ 7788091 - ขาย - xxx - . ถนนรัตนาธิเบศร์ ตำบลเสาธงหิน อำเภอบางใหญ่ นนทบุรี, บางใหญ่, นนทบุรี, 44 ตร.ม., ฿9,999,999",
+                #     "keywords": "ตัวแทน, ประกาศ, อสังหาริมทรัพย์, ทรัพย์สิน, ขาย, เช่า, อพาร์ทเม้นท์, บ้าน, ชาวต่างชาติ, ที่อยู่อาศัย, hdb, สถานที่ตั้ง, คอนโด, แผนที่"
+                # },
+                # "alertBatchId": "",
+                # "unitTypes": [],
+                # "qualityScoreData": {
+                #     "price": 50,
+                #     "location": 10,
+                #     "3_user_photos": 0,
+                #     "1_user_photo": 0,
+                #     "videos_or_virtual_tours": 0,
+                #     "bedrooms": 0,
+                #     "description": 0,
+                #     "bathrooms": 0,
+                #     "floorarea": 5,
+                #     "landarea": 3,
+                #     "property": 1,
+                #     "furnishing": 0,
+                #     "unit_features": 0,
+                #     "property_photo": 1,
+                #     "raw_score": 70,
+                #     "score": 70
+                # },
+                # "dependencyErrors": [],
+                # "isRankedSpotlight": "false",
+                # "isFeaturedListing": "false"
             }
             datastr = json.dumps(datapost)
             # print(datastr)
             r = httprequestObj.http_put_json('https://agentnet.ddproperty.com/sf2-agent/ajax/update/' + post_id, jsoncontent=datastr)
             data = r.text
-            #f = open("debug_response/editpostdd.html", "wb")
-            #f.write(data.encode('utf-8').strip())
+            f = open("debug_response/editpostdd.html", "wb")
+            f.write(data.encode('utf-8').strip())
 
             matchObj = re.search(r'errors', data)
             if matchObj:
@@ -1874,9 +1860,7 @@ class ddproperty():
         #
         # end process
 
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
-        return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": log_id}
+        return {"success": success}
 
     def edit_post(self, postdata):
         log.debug('')

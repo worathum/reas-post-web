@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import logging
+import logging.config
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
@@ -9,9 +11,14 @@ import json
 import datetime
 import sys
 from urllib.parse import unquote
-
-
 httprequestObj = lib_httprequest()
+
+try:
+    import configs
+except ImportError:
+    configs = {}
+logging.config.dictConfig(getattr(configs, 'logging_config', {}))
+log = logging.getLogger()
 
 
 class renthub():
@@ -21,37 +28,298 @@ class renthub():
     def __init__(self):
 
         self.websitename = 'renthub'
-
-        try:
-            import configs
-        except ImportError:
-            configs = {}
-
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.handled = False
+    
+    def postdata_handle(self, postdata):
+        log.debug('')
+
+        if self.handled == True:
+            return postdata
+
+        datahandled = {}
+
+        try:
+            datahandled['price_baht'] = postdata['price_baht']
+        except KeyError as e:
+            datahandled['price_baht'] = 0
+            log.warning(str(e))
+
+        try:
+            datahandled['addr_province'] = postdata['addr_province']
+        except KeyError as e:
+            datahandled['addr_province'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['addr_district'] = postdata['addr_district']
+        except KeyError as e:
+            datahandled['addr_district'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['addr_sub_district'] = postdata['addr_sub_district']
+        except KeyError as e:
+            datahandled['addr_sub_district'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['addr_road'] = postdata['addr_road']
+        except KeyError as e:
+            datahandled['addr_road'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['addr_near_by'] = postdata['addr_near_by']
+        except KeyError as e:
+            datahandled['addr_near_by'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['addr_postcode'] = postdata['addr_postcode']
+        except KeyError as e:
+            datahandled['addr_postcode'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['floor_area'] = postdata['floor_area']
+        except KeyError as e:
+            datahandled['floor_area'] = 0
+            log.warning(str(e))
+
+        try:
+            datahandled['geo_latitude'] = postdata['geo_latitude']
+        except KeyError as e:
+            datahandled['geo_latitude'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['geo_longitude'] = postdata['geo_longitude']
+        except KeyError as e:
+            datahandled['geo_longitude'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['property_id'] = postdata['property_id']
+        except KeyError as e:
+            datahandled['property_id'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['post_title_th'] = postdata['post_title_th']
+        except KeyError as e:
+            datahandled['post_title_th'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['post_description_th'] = postdata['post_description_th']
+        except KeyError as e:
+            datahandled['post_description_th'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['post_title_en'] = postdata['post_title_en']
+        except KeyError as e:
+            datahandled['post_title_en'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['post_description_en'] = postdata['post_description_en']
+        except KeyError as e:
+            datahandled['post_description_en'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['ds_id'] = postdata["ds_id"]
+        except KeyError as e:
+            datahandled['ds_id'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['ds_name'] = postdata["ds_name"]
+        except KeyError as e:
+            datahandled['ds_name'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['user'] = postdata['user']
+        except KeyError as e:
+            datahandled['user'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['pass'] = postdata['pass']
+        except KeyError as e:
+            datahandled['pass'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['project_name'] = postdata["project_name"]
+        except KeyError as e:
+            datahandled['project_name'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['name'] = postdata["name"]
+        except KeyError as e:
+            datahandled['name'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['mobile'] = postdata["mobile"]
+        except KeyError as e:
+            datahandled['mobile'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['email'] = postdata["email"]
+        except KeyError as e:
+            datahandled['email'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['web_project_name'] = postdata["web_project_name"]
+        except KeyError as e:
+            datahandled['web_project_name'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['action'] = postdata["action"]
+        except KeyError as e:
+            datahandled['action'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['bath_room'] = postdata["bath_room"]
+        except KeyError as e:
+            datahandled['bath_room'] = 0
+            log.warning(str(e))
+
+        try:
+            datahandled['bed_room'] = postdata["bed_room"]
+        except KeyError as e:
+            datahandled['bed_room'] = 0
+            log.warning(str(e))
+
+        try:
+            datahandled['floor_total'] = postdata["floor_total"]
+        except KeyError as e:
+            datahandled['floor_total'] = 1
+            log.warning(str(e))
+
+        try:
+            datahandled['floor_level'] = postdata["floor_level"]
+        except KeyError as e:
+            datahandled['floor_level'] = 1
+            log.warning(str(e))
+
+        
+
+        # image
+        datahandled['post_images'] = postdata["post_images"]
+
+        try:
+            datahandled['post_id'] = postdata["post_id"]
+        except KeyError as e:
+            datahandled['post_id'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['log_id'] = postdata["log_id"]
+        except KeyError as e:
+            datahandled['log_id'] = ''
+            log.warning(str(e))
+
+       
+
+        try:
+            datahandled['addr_road'] = postdata["addr_road"]
+        except KeyError as e:
+            datahandled['addr_road'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['company_name'] = postdata["company_name"]
+        except KeyError as e:
+            datahandled['company_name'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['name_title'] = postdata["name_title"]
+        except KeyError as e:
+            datahandled['name_title'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['name_th'] = postdata["name_th"]
+        except KeyError as e:
+            datahandled['name_th'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['surname_th'] = postdata["surname_th"]
+        except KeyError as e:
+            datahandled['surname_th'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['name_en'] = postdata["name_en"]
+        except KeyError as e:
+            datahandled['name_en'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['surname_en'] = postdata["surname_en"]
+        except KeyError as e:
+            datahandled['surname_en'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['tel'] = postdata["tel"]
+        except KeyError as e:
+            datahandled['tel'] = ''
+            log.warning(str(e))
+
+        try:
+            datahandled['line'] = postdata["line"]
+        except KeyError as e:
+            datahandled['line'] = ''
+            log.warning(str(e))
+
+
+        
+        self.handled = True
+
+        return datahandled
 
     def register_user(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
         time_start = datetime.datetime.utcnow()
-
-        user = postdata['user']
-        passwd = postdata['pass']
-        company_name = postdata['company_name']
-        name_title = postdata["name_title"]
-        name_th = postdata["name_th"]
-        surname_th = postdata["surname_th"]
-        name_en = postdata["name_en"]
-        surname_en = postdata["surname_en"]
-        tel = postdata["tel"]
-        line: postdata["amarin.ta"]
-        addr_province = postdata["addr_province"]
 
         # start process
         #
-        success = "true"
+        datahandled = self.postdata_handle(postdata)
+        user = datahandled['user']
+        passwd = datahandled['pass']
+        company_name = datahandled['company_name']
+        name_title = datahandled["name_title"]
+        name_th = datahandled["name_th"]
+        surname_th = datahandled["surname_th"]
+        name_en = datahandled["name_en"]
+        surname_en = datahandled["surname_en"]
+        tel = datahandled["tel"]
+        line: datahandled["amarin.ta"]
+        addr_province = datahandled["addr_province"]
+
+        # POST
+        # https://renthub.in.th/signup
+        # authenticity_token=/Ha+oc+M/vFof/rlvlbJdNOtw4/drQPvVs+/VKazQvE=&commit=%E0%B8%AA%E0%B8%A1%E0%B8%B1%E0%B8%84%E0%B8%A3%E0%B8%AA%E0%B8%A1%E0%B8%B2%E0%B8%8A%E0%B8%B4%E0%B8%81&user%5Bemail%5D=kla.arnut@hotmail.com&user%5Bname%5D=arnut&user%5Bpassword%5D=vkIy9b&user%5Bpassword_confirmation%5D=vkIy9b&user%5Bphone%5D=0887779999&user%5Bprovince_code%5D=&user%5Broles%5D=apartment_manager&user%5Bsubscribe_newsletter%5D=0&utf8=%E2%9C%93
+
+        success = "false"
         detail = "Under construction"
 
         #
@@ -69,22 +337,14 @@ class renthub():
         }
 
     def test_login(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
         time_start = datetime.datetime.utcnow()
-
-        user = postdata['user']
-        passwd = postdata['pass']
-        ds_name = "renthub"
-        if (postdata["ds_name"]):
-            ds_name = postdata["ds_name"]
-        ds_id = ""
-        if (postdata["ds_id"]):
-            ds_id = postdata["ds_id"]
 
         # start process
         #
-
-        # clear session
+        datahandled = self.postdata_handle(postdata)
+        user = datahandled['user']
+        passwd = datahandled['pass']
 
         success = "true"
         detail = ""
@@ -112,6 +372,7 @@ class renthub():
         if not matchObj:
             success = "false"
             detail = "cannot login"
+            log.debug('login fail')
 
         #
         # end process
@@ -128,41 +389,23 @@ class renthub():
         }
 
     def create_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
         time_start = datetime.datetime.utcnow()
 
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        post_img_url_lists = postdata['post_img_url_lists']
-        price_baht = postdata['price_baht']
-        addr_province = postdata['addr_province']
-        addr_district = postdata['addr_district']
-        addr_sub_district = postdata['addr_sub_district']
-        addr_road = postdata['addr_road']
-        addr_near_by = postdata['addr_near_by']
-        floorarea_sqm = postdata['floorarea_sqm']
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        post_title_en = postdata['post_title_en']
-        post_description_en = postdata['post_description_en']
-        ds_id = postdata["ds_id"]
-        user = postdata['user']
-        passwd = postdata['pass']
-        name = postdata['name']
-        mobile = postdata['mobile']
-        email = postdata['email']
-        line = postdata['line']
-
+       
         # start process
         #
+
         # login
-        test_login = self.test_login(postdata)
+        datahandled = self.postdata_handle(postdata)
+
+        #validate
+
+        test_login = self.test_login(datahandled)
         success = test_login["success"]
         detail = test_login["detail"]
         post_id = ""
+
 
         if success == "true":
             r = httprequestObj.http_get('https://renthub.in.th/condo_listings/new', verify=False)
@@ -187,14 +430,14 @@ class renthub():
                 'amenities[water_heater]': 0,
                 'commit': 'ยอมรับเงื่อนไข และ ลงประกาศ',
                 'condo_listing[condo_project_id]': 1158,
-                'condo_listing[contact_person]': name,
-                'condo_listing[detail]': '<div>' + post_description_th + '<div>',
-                'condo_listing[email]': user,  # email,
-                'condo_listing[phone[0]]': mobile,
-                'condo_listing[post_type]': 2,
-                'condo_listing[title]': post_title_th,
-                'english[detail]': '<div>' + post_description_en + '<div>',
-                'english[title]': post_title_en,
+                'condo_listing[contact_person]': datahandled['name'],
+                'condo_listing[detail]': '<div>' + datahandled['post_description_th'] + '<div>',
+                'condo_listing[email]': datahandled['email'],  # email,
+                'condo_listing[phone[0]]': datahandled['mobile'],
+                'condo_listing[post_type]': 2, # 2 คือ ให้เช่า
+                'condo_listing[title]': datahandled['post_title_th'],
+                'english[detail]': '<div>' + datahandled['post_description_en'] + '<div>',
+                'english[title]': datahandled['post_title_en'],
                 'rental[advance_fee_bath]': '',
                 'rental[advance_fee_month]': 0,
                 'rental[advance_fee_type]': 1,
@@ -240,8 +483,9 @@ class renthub():
             r = httprequestObj.http_post('https://renthub.in.th/condo_listings', data=datapost)
             data = r.text
             # print(data)
-            f = open("renthubpost.html", "wb")
+            f = open("debug_response/renthubpost.html", "wb")
             f.write(data.encode('utf-8').strip())
+
 
             matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
             if not matchObj:
@@ -259,15 +503,16 @@ class renthub():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "ds_id": ds_id,
+            #"ds_id": ds_id,
             "post_url": "https://www.thaihometown.com/home/"+post_id if post_id != "" else "",
             "post_id": post_id,
             "account_type": "null",
             "detail": detail,
+            
         }
 
     def boost_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
         time_start = datetime.datetime.utcnow()
 
         post_id = postdata["post_id"]
@@ -401,7 +646,7 @@ class renthub():
         }
 
     def delete_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
@@ -435,7 +680,7 @@ class renthub():
         }
 
     def edit_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        log.debug('')
         time_start = datetime.datetime.utcnow()
 
         post_img_url_lists = postdata['post_img_url_lists']
@@ -588,12 +833,3 @@ class renthub():
             "post_id": post_id
         }
 
-    def print_debug(self, msg):
-        if(self.debug == 1):
-            print(msg)
-        return True
-
-    def print_debug_data(self, data):
-        if(self.debugdata == 1):
-            print(data)
-        return True

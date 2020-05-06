@@ -361,17 +361,7 @@ class thaihometown():
             datahandled['line'] = ''
             log.warning(str(e))
 
-        try:
-            datahandled['addr_province'] = postdata['addr_province']
-        except KeyError as e:
-            datahandled['addr_province'] = ''
-            log.warning(str(e))
-
-        try:
-            datahandled['addr_district'] = postdata['addr_district']
-        except KeyError as e:
-            datahandled['addr_district'] = ''
-            log.warning(str(e))
+     
         
         self.handled = True
 
@@ -435,12 +425,6 @@ class thaihometown():
         datahandled = self.postdata_handle(postdata)
         user = datahandled['user']
         passwd = datahandled['pass']
-        ds_name = "thaihometown"
-        if (postdata["ds_name"]):
-            ds_name = datahandled["ds_name"]
-        ds_id = ""
-        if (postdata["ds_id"]):
-            ds_id = datahandled["ds_id"]
         
         success = "true"
         detail = ""
@@ -571,6 +555,7 @@ class thaihometown():
         success = "true"
         detail = ""
         post_id = ""
+        post_url = ""
 
         success,detail = self.validatedatapost(datahandled)
             
@@ -589,75 +574,86 @@ class thaihometown():
                 r = httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
                 data = r.text
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                string2 = soup.find("input", {"name": "string2"})['value']
-                string1 = string2
-                dasd = soup.find("input", {"name": "dasd"})['value']
-                sas_name = soup.find("input", {"name": "sas_name"})['value']
-                email = soup.find("input", {"name": "email"})['value']
-                code_edit = soup.find("input", {"name": "code_edit"})['value']
-                firstname = soup.find("input", {"name": "firstname"})['value']
-                mobile = soup.find("input", {"name": "mobile"})['value']
-                date_signup = soup.find("input", {"name": "date_signup"})['value']
-
-                # https://www.thaihometown.com/addcontacts
-                datapost = {
-                            'ActionForm2':'',
-                            'Submit':'Active',
-                            'ad_title':datahandled['post_description_th'].encode('cp874', 'ignore'),
-                            'carpark':'',
-                            'code_edit':code_edit,
-                            'conditioning':'',
-                            'contact_code':'',
-                            'dasd':dasd,
-                            'date_signup':date_signup,
-                            'email':email,
-                            'firstname':firstname,
-                            'headtitle':datahandled['post_title_th'].encode('cp874', 'ignore'),
-                            'id':'',
-                            #TODO info
-                            'info':[' ตกแต่งห้องนอน '.encode('cp874', 'ignore'), ' ตกแต่งห้องนั่งเล่น '.encode('cp874', 'ignore'), ' ปูพื้นเซรามิค '.encode('cp874', 'ignore'), ' เฟอร์นิเจอร์ '.encode('cp874', 'ignore'), ' ไมโครเวฟ '.encode('cp874', 'ignore'), ' ชุดรับแขก '.encode('cp874', 'ignore')],
-                            'mobile':mobile,
-                            'price_unit':'',
-                            'property_area':datahandled['floor_area'],
-                            'property_bts':'',
-                            'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
-                            'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
-                            'property_country_2':datahandled['property_country_2'].encode('cp874', 'ignore'),
-                            'property_mrt':'',
-                            'property_purple':'',
-                            'property_sqm':1,
-                            'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
-                            'room1':datahandled['bed_room'],
-                            'room2':datahandled['bath_room'],
-                            'sas_name':sas_name,
-                            'rent_price':rent_price,
-                            'selling_price':selling_price,
-                            'type_forrent':'',
-                            'string1':string1,
-                            'string2':string2,
-                            'typepart':datahandled['listing_type'].encode('cp874', 'ignore'),
-                            'typeunit':'ต่อตร.ม'.encode('cp874', 'ignore'),
-                            'notprice': 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
-                }
-
-                #log.debug(datapost)
-                r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
-                data = r.text
-                # print(data)
                 #f = open("thihomepost.html", "wb")
                 #f.write(data.encode('utf-8').strip())
-
-                matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
-                if not matchObj:
+                postlimit = soup.find("div",{"id":"posted_limit2"})
+                if postlimit:
                     success = "false"
-                    soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                    txtresponse = soup.find("font").text
-                    detail = unquote(txtresponse)
-                else:
-                    post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
+                    detail = 'คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป'
+                    log.debug('คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป')
+                if success == 'true':
+                    string2 = soup.find("input", {"name": "string2"})['value']
+                    string1 = string2
+                    dasd = soup.find("input", {"name": "dasd"})['value']
+                    sas_name = soup.find("input", {"name": "sas_name"})['value']
+                    email = soup.find("input", {"name": "email"})['value']
+                    code_edit = soup.find("input", {"name": "code_edit"})['value']
+                    firstname = soup.find("input", {"name": "firstname"})['value']
+                    mobile = soup.find("input", {"name": "mobile"})['value']
+                    date_signup = soup.find("input", {"name": "date_signup"})['value']
 
-                    #upload image
-                    self.uploadimage(datahandled,post_id)
+                    # https://www.thaihometown.com/addcontacts
+                    datapost = {
+                                'ActionForm2':'',
+                                'Submit':'Active',
+                                'ad_title':datahandled['post_description_th'].encode('cp874', 'ignore'),
+                                'carpark':'',
+                                'code_edit':code_edit,
+                                'conditioning':'',
+                                'contact_code':'',
+                                'dasd':dasd,
+                                'date_signup':date_signup,
+                                'email':email,
+                                'firstname':firstname,
+                                'headtitle':datahandled['post_title_th'].encode('cp874', 'ignore'),
+                                'id':'',
+                                #TODO info
+                                'info':[' ตกแต่งห้องนอน '.encode('cp874', 'ignore'), ' ตกแต่งห้องนั่งเล่น '.encode('cp874', 'ignore'), ' ปูพื้นเซรามิค '.encode('cp874', 'ignore'), ' เฟอร์นิเจอร์ '.encode('cp874', 'ignore'), ' ไมโครเวฟ '.encode('cp874', 'ignore'), ' ชุดรับแขก '.encode('cp874', 'ignore')],
+                                'mobile':mobile,
+                                'price_unit':'',
+                                'property_area':datahandled['floor_area'],
+                                'property_bts':'',
+                                'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
+                                'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
+                                'property_country_2':datahandled['property_country_2'].encode('cp874', 'ignore'),
+                                'property_mrt':'',
+                                'property_purple':'',
+                                'property_sqm':1,
+                                'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
+                                'room1':datahandled['bed_room'],
+                                'room2':datahandled['bath_room'],
+                                'sas_name':sas_name,
+                                'rent_price':rent_price,
+                                'selling_price':selling_price,
+                                'type_forrent':'',
+                                'string1':string1,
+                                'string2':string2,
+                                'typepart':datahandled['listing_type'].encode('cp874', 'ignore'),
+                                'typeunit':'ต่อตร.ม'.encode('cp874', 'ignore'),
+                                'notprice': 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
+                    }
+
+                    #log.debug(datapost)
+                    r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
+                    data = r.text
+                    # print(data)
+                    #f = open("thihomepost.html", "wb")
+                    #f.write(data.encode('utf-8').strip())
+
+                    matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
+                    if not matchObj:
+                        success = "false"
+                        soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                        txtresponse = soup.find("font").text
+                        detail = unquote(txtresponse)
+                    else:
+                        post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
+                     
+                        #get post url
+                        post_url = self.getposturl(post_id)
+                        
+                        #upload image
+                        self.uploadimage(datahandled,post_id)
 
         
         time_end = datetime.datetime.utcnow()
@@ -668,12 +664,39 @@ class thaihometown():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "ds_id": ds_id,
-            "post_url": "https://www.thaihometown.com/home/" + post_id if post_id != "" else "",
+            "post_url": post_url,
             "post_id": post_id,
             "account_type": "null",
             "detail": detail,
             "websitename": self.websitename
         }
+    
+    def getposturl(self,post_id):
+        log.debug('')
+
+        post_url = 'https://www.thaihometown.com/home/'+str(post_id)
+        r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/edit/'+str(post_id),encoder='cp874', verify=False)
+        data = r.text
+        soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+        # post is publish
+        try:
+            #https://www.thaihometown.com/storehouse/2225810
+            if soup.find('a',text=re.compile('ดูประกาศที่ใช้งานหน้าเว็บ')):
+                post_url = soup.find('a',text=re.compile('ดูประกาศที่ใช้งานหน้าเว็บ'))['href']
+        except:
+            pass
+        # post is not publish
+        try:
+            #https://www.thaihometown.com/singlehouse/2226300/idcode/e8859755bce1195f9746e244789dd023
+            if soup.find('a',text=re.compile('ดูตัวอย่างประกาศของคุณ')):
+                post_url = soup.find('a',text=re.compile('ดูตัวอย่างประกาศของคุณ'))['href']
+                log.debug(re.search(r'(https:\/\/www.thaihometown.com\/\w+\/\d+)',post_url))
+                post_url = re.search(r'(https:\/\/www.thaihometown.com\/\w+\/\d+)',post_url).group(1)
+        except:
+            pass
+
+        return post_url
+
     
     def uploadimage(self,datahandled,post_id):
         log.debug('')
@@ -970,7 +993,6 @@ class thaihometown():
                         log.debug('break')
                         break
                     
-                    #TODO ไม่อนุญาติให้ลบประกาศเกิน 5 ประกาศต่อวัน แต่ถ้าลบครบ 5 แล้ว จะ response อย่างไร
 
         #
         # end process
@@ -1130,6 +1152,7 @@ class thaihometown():
 
         success = "true"
         detail = ""
+        post_url = ''
 
         success,detail = self.validatedatapost(datahandled)
 
@@ -1248,6 +1271,8 @@ class thaihometown():
                     matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/' + datahandled['post_id'], data)
                     if matchObj:
                         success = "true"
+                        #get post url
+                        post_url = self.getposturl(datahandled['post_id'])
                         #upload image
                         self.uploadimage(datahandled,datahandled['post_id'])
                     else:
@@ -1267,5 +1292,6 @@ class thaihometown():
             "detail": detail, 
             "log_id": datahandled['log_id'], 
             "post_id": datahandled['post_id'],
-            "websitename": self.websitename
+            "websitename": self.websitename,
+            #"post_url": post_url
         }
