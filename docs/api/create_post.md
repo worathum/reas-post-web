@@ -59,7 +59,9 @@ addr_sub_district = ตำบล แขวง
 addr_road = ถนน
 addr_soi = ซอย
 addr_near_by = สถานที่ใกล้เคียง
-addr_postcode = รหัส ปณ จำเป็นมากกับบางเว็บ เช่น ddproperty
+addr_postcode = รหัส ปณ 
+addr_number = บ้านเลขที่
+
 
 # บ้าน - ที่ดิน (ที่ไม่ใช่คอนโดจะมีค่านี้)
 floorarea_sqm = พื้นที่
