@@ -15,6 +15,8 @@ httprequestObj = lib_httprequest()
 from requests_toolbelt import MultipartEncoder
 import string
 import random
+import time
+
 
 try:
     import configs
@@ -489,12 +491,7 @@ class renthub():
             "commit": "Sign in",
             "authenticity_token": authenticity_token
         }
-        # authenticity_token=Gck8I7dhK778QqLcKkEcAAH2J+BAKVgltsLafwoRm20=
-        # &commit=Sign%20in
-        # &user%5Bemail%5D=kla.arnut@hotmail.com
-        # &user%5Bpassword%5D=vkIy9b
-        # &user%5Bremember_me%5D=0
-        # &utf8=%E2%9C%93
+       
 
         r = httprequestObj.http_post('https://renthub.in.th/login', data=datapost)
         data = r.text
@@ -635,116 +632,121 @@ class renthub():
         data = r.text
         #f = open("debug_response/renthublogin.html", "wb")
         #f.write(data.encode('utf-8').strip())
-        #
+        matchObj = re.search(r'ประกาศของคุณ', data)
+        if not matchObj:
+            success = "false"
+            detail = "cannot login"
+            log.debug('login fail')
 
 
-        r = httprequestObj.http_get('https://renthub.in.th/apartments/new', verify=False)
-        data = r.text
-        #f = open("debug_response/renthubcreate.html", "wb")
-        #f.write(data.encode('utf-8').strip())
-        soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-        authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
+        if success == 'true':
+            r = httprequestObj.http_get('https://renthub.in.th/apartments/new', verify=False)
+            data = r.text
+            #f = open("debug_response/renthubcreate.html", "wb")
+            #f.write(data.encode('utf-8').strip())
+            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
 
-        arrimg = self.uploadimage('apartment',authenticity_token,datahandled)
-        
-        datapost = {
-            '_wysihtml5_mode':1,
-            'apartment[address]':datahandled['addr_number'],
-            'apartment[air]':0,
-            'apartment[allow_pet]':0,
-            'apartment[allow_smoking]':0,
-            'apartment[cctv]':0,
-            'apartment[contact_person]':datahandled['name'],
-            'apartment[detail]':'<div>' + datahandled['post_description_th'] + '</div>',
-            'apartment[direct_phone]':0,
-            'apartment[district_code]':datahandled['district_code'],
-            'apartment[email]':datahandled['email'],
-            'apartment[fan]':0,
-            'apartment[fitness]':0,
-            'apartment[furniture]':0,
-            'apartment[has_promotion]':0,
-            'apartment[internet]':0,
-            'apartment[keycard]':0,
-            'apartment[laundry]':0,
-            'apartment[lift]':0,
-            'apartment[line_id]':datahandled['line'],
-            'apartment[name]':datahandled['post_title_th'],
-            'apartment[parking]':0,
-            'apartment[pool]':0,
-            'apartment[postcode]':datahandled['addr_postcode'],
-            'apartment[promotion]':'',
-            'apartment[promotion_end]':'',
-            'apartment[promotion_start]':'',
-            'apartment[province_code]':datahandled['province_code'],
-            'apartment[road]':datahandled['addr_road'],
-            'apartment[salon]':0,
-            'apartment[satellite]':0,
-            'apartment[street]':datahandled['addr_soi'],
-            'apartment[subdistrict_code]':datahandled['subdistrict_code'],
-            'apartment[ubc]':0,
-            'apartment[water_heater]':0,
-            'apartment[wifi]':0,
-            'apartment_phone[0]':datahandled['mobile'],
-            'authenticity_token':authenticity_token,
-            'commit':'ยอมรับเงื่อนไข และ ลงประกาศ',
-            'fee[advance_fee_bath]':'',
-            'fee[advance_fee_month]':'',
-            'fee[advance_fee_type]':0,
-            'fee[deposit_bath]':'',
-            'fee[deposit_month]':'',
-            'fee[deposit_type]':0,
-            'fee[electric_price]':'',
-            'fee[electric_price_minimum]':'',
-            'fee[electric_price_type]':3,
-            'fee[internet_price_bath]':'',
-            'fee[internet_price_type]':0,
-            'fee[phone_price_minute]':'',
-            'fee[phone_price_minute_unit]':'',
-            'fee[phone_price_time]':'',
-            'fee[phone_price_type]':0,
-            'fee[service_fee_price]':'',
-            'fee[service_fee_type]':0,
-            'fee[water_price]':'',
-            'fee[water_price_minimum]':'',
-            'fee[water_price_monthly_per_person]':'',
-            'fee[water_price_monthly_per_person_remark]':'',
-            'fee[water_price_monthly_per_room]':'',
-            'fee[water_price_monthly_per_room_remark]':'',
-            'fee[water_price_per_person_exceed]':'',
-            'fee[water_price_per_room_exceed]':'',
-            'fee[water_price_type]':5,
-            'room_available[0]':1,
-            'room_daily[0]':0,
-            'room_has_rental[0]':1,
-            'room_max_price_perday[0]':'',
-            'room_max_price_permonth[0]':datahandled['price_baht'],
-            'room_min_price_perday[0]':'',
-            'room_min_price_permonth[0]':datahandled['price_baht'],
-            'room_monthly[0]':1,
-            'room_name[0]':'อพาร์ทเม้นท์',
-            'room_size[0]':datahandled['floor_area'],
-            'room_type[0]':0, #studio
-            'temp[eng_detail]': '<div>' + datahandled['post_description_en'] + '</div>',
-            'temp[eng_name]': datahandled['post_title_en'],
-            'temp[is_service_apartment]':'false',
-            'temp[lat]':datahandled['geo_latitude'],#16.3836649195804,
-            'temp[lng]':datahandled['geo_longitude'],#102.8049505179853,
-            'temp[no_eng_name]':'',
-            'temp[nofacility]':1,
-            'temp[nopicture]':'',
-            'temp[picture_order]':','.join(arrimg),
-            'temp[review_eng_detail]':'',
-            'temp[review_thai_detail]':'',
-            'utf8':'✓'
-        }
-        # print(datapost)
-        r = httprequestObj.http_post('https://www.renthub.in.th/apartments', data=datapost)
-        data = r.text
-        # print(data)
-        #f = open("debug_response/renthubpost.html", "wb")
-        #f.write(data.encode('utf-8').strip())
+            arrimg = self.uploadimage('apartment',authenticity_token,datahandled)
+            
+            datapost = {
+                '_wysihtml5_mode':1,
+                'apartment[address]':datahandled['addr_number'],
+                'apartment[air]':0,
+                'apartment[allow_pet]':0,
+                'apartment[allow_smoking]':0,
+                'apartment[cctv]':0,
+                'apartment[contact_person]':datahandled['name'],
+                'apartment[detail]':'<div>' + datahandled['post_description_th'] + '</div>',
+                'apartment[direct_phone]':0,
+                'apartment[district_code]':datahandled['district_code'],
+                'apartment[email]':datahandled['email'],
+                'apartment[fan]':0,
+                'apartment[fitness]':0,
+                'apartment[furniture]':0,
+                'apartment[has_promotion]':0,
+                'apartment[internet]':0,
+                'apartment[keycard]':0,
+                'apartment[laundry]':0,
+                'apartment[lift]':0,
+                'apartment[line_id]':datahandled['line'],
+                'apartment[name]':datahandled['post_title_th'],
+                'apartment[parking]':0,
+                'apartment[pool]':0,
+                'apartment[postcode]':datahandled['addr_postcode'],
+                'apartment[promotion]':'',
+                'apartment[promotion_end]':'',
+                'apartment[promotion_start]':'',
+                'apartment[province_code]':datahandled['province_code'],
+                'apartment[road]':datahandled['addr_road'],
+                'apartment[salon]':0,
+                'apartment[satellite]':0,
+                'apartment[street]':datahandled['addr_soi'],
+                'apartment[subdistrict_code]':datahandled['subdistrict_code'],
+                'apartment[ubc]':0,
+                'apartment[water_heater]':0,
+                'apartment[wifi]':0,
+                'apartment_phone[0]':datahandled['mobile'],
+                'authenticity_token':authenticity_token,
+                'commit':'ยอมรับเงื่อนไข และ ลงประกาศ',
+                'fee[advance_fee_bath]':'',
+                'fee[advance_fee_month]':'',
+                'fee[advance_fee_type]':0,
+                'fee[deposit_bath]':'',
+                'fee[deposit_month]':'',
+                'fee[deposit_type]':0,
+                'fee[electric_price]':'',
+                'fee[electric_price_minimum]':'',
+                'fee[electric_price_type]':3,
+                'fee[internet_price_bath]':'',
+                'fee[internet_price_type]':0,
+                'fee[phone_price_minute]':'',
+                'fee[phone_price_minute_unit]':'',
+                'fee[phone_price_time]':'',
+                'fee[phone_price_type]':0,
+                'fee[service_fee_price]':'',
+                'fee[service_fee_type]':0,
+                'fee[water_price]':'',
+                'fee[water_price_minimum]':'',
+                'fee[water_price_monthly_per_person]':'',
+                'fee[water_price_monthly_per_person_remark]':'',
+                'fee[water_price_monthly_per_room]':'',
+                'fee[water_price_monthly_per_room_remark]':'',
+                'fee[water_price_per_person_exceed]':'',
+                'fee[water_price_per_room_exceed]':'',
+                'fee[water_price_type]':5,
+                'room_available[0]':1,
+                'room_daily[0]':0,
+                'room_has_rental[0]':1,
+                'room_max_price_perday[0]':'',
+                'room_max_price_permonth[0]':datahandled['price_baht'],
+                'room_min_price_perday[0]':'',
+                'room_min_price_permonth[0]':datahandled['price_baht'],
+                'room_monthly[0]':1,
+                'room_name[0]':'อพาร์ทเม้นท์',
+                'room_size[0]':datahandled['floor_area'],
+                'room_type[0]':0, #studio
+                'temp[eng_detail]': '<div>' + datahandled['post_description_en'] + '</div>',
+                'temp[eng_name]': datahandled['post_title_en'],
+                'temp[is_service_apartment]':'false',
+                'temp[lat]':datahandled['geo_latitude'],#16.3836649195804,
+                'temp[lng]':datahandled['geo_longitude'],#102.8049505179853,
+                'temp[no_eng_name]':'',
+                'temp[nofacility]':1,
+                'temp[nopicture]':'',
+                'temp[picture_order]':','.join(arrimg),
+                'temp[review_eng_detail]':'',
+                'temp[review_thai_detail]':'',
+                'utf8':'✓'
+            }
+            # print(datapost)
+            r = httprequestObj.http_post('https://www.renthub.in.th/apartments', data=datapost)
+            data = r.text
+            # print(data)
+            #f = open("debug_response/renthubpost.html", "wb")
+            #f.write(data.encode('utf-8').strip())
 
-        success,post_id,posturl,detail = self.getpostdataapartment(datahandled)
+            success,post_id,posturl,detail = self.getpostdataapartment(datahandled)
 
         
         return success,detail,post_id,posturl
@@ -776,101 +778,105 @@ class renthub():
         data = r.text
         #f = open("debug_response/renthublogin.html", "wb")
         #f.write(data.encode('utf-8').strip())
-        #
+        matchObj = re.search(r'ประกาศของคุณ', data)
+        if not matchObj:
+            success = "false"
+            detail = "cannot login"
+            log.debug('login fail')
 
+        if success == "true":
+            r = httprequestObj.http_get('https://renthub.in.th/condo_listings/new', verify=False)
+            data = r.text
+            #f = open("debug_response/renthubcreate.html", "wb")
+            #f.write(data.encode('utf-8').strip())
+            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
 
-        r = httprequestObj.http_get('https://renthub.in.th/condo_listings/new', verify=False)
-        data = r.text
-        #f = open("debug_response/renthubcreate.html", "wb")
-        #f.write(data.encode('utf-8').strip())
-        soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-        authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
+            arrimg = self.uploadimage('condo',authenticity_token,datahandled)
+            
+            # https://renthub.in.th/condo_listings
+            datapost = {
+                'authenticity_token': authenticity_token,
+                'amenities[air]': 0,
+                'amenities[digital_door_lock]': 0,
+                'amenities[furniture]': 0,
+                'amenities[hot_tub]': 0,
+                'amenities[internet]': 0,
+                'amenities[kitchen_hood]': 0,
+                'amenities[kitchen_stove]': 0,
+                'amenities[phone]': 0,
+                'amenities[refrigerator]': 0,
+                'amenities[tv]': 0,
+                'amenities[washer]': 0,
+                'amenities[water_heater]': 0,
+                'commit': 'ยอมรับเงื่อนไข และ ลงประกาศ',
+                'condo_listing[condo_project_id]': self.getprojectid(datahandled['use_project_name']),
+                'condo_listing[contact_person]': datahandled['name'],
+                'condo_listing[detail]': '<div>' + datahandled['post_description_th'] + '</div>',
+                'condo_listing[email]': datahandled['email'],  # email,
+                'condo_listing[phone[0]]': datahandled['mobile'],
+                'condo_listing[post_type]': 2, # 2 คือ ให้เช่า
+                'condo_listing[title]': datahandled['post_title_th'],
+                'english[detail]': '<div>' + datahandled['post_description_en'] + '</div>',
+                'english[title]': datahandled['post_title_en'],
+                'rental[advance_fee_bath]': '',
+                'rental[advance_fee_month]': 0,
+                'rental[advance_fee_type]': 0,
+                'rental[daily_price_type]': 2,
+                'rental[deposit_bath]': '',
+                'rental[deposit_month]': '',
+                'rental[deposit_type]': 0,
+                'rental[min_daily_rental_price]': '',
+                'rental[min_rental_price]': datahandled['price_baht'],
+                'rental[price_type]': 1,
+                'room_information[building]': '',
+                'room_information[direction]': datahandled['direction_type'],
+                'room_information[no_of_bath]': datahandled['bath_room'],
+                'room_information[no_of_bed]': datahandled['bed_room'],
+                'room_information[on_floor]': datahandled['floor_level'],
+                'room_information[remark]': '',
+                'room_information[room_area]': datahandled['floor_area'],
+                'room_information[room_home_address]': '',
+                'room_information[room_no]': '',
+                'room_information[room_type]': 0,
+                'sale[existing_rental_contract_end]': '',
+                'sale[existing_rental_price]': '',
+                'sale[existing_renter_nationality]': '',
+                'sale[price_type]': 1,
+                'sale[sale_price]': '',
+                'sale[with_rental_contract]': 0,
+                'sale_deposit[price_type]': 1,
+                'sale_deposit[sale_deposit_price]': '',
+                'sale_right[contract_price]': '',
+                'sale_right[price_type]': 1,
+                'sale_right[remaining_downpayment]': '',
+                'sale_right[remaining_downpayment_months]': '',
+                'sale_right[remaining_payment]': '',
+                'sale_right[sale_right_price]': '',
+                'temp[no_eng_title_check]': '',
+                'temp[noamenity]': 1,
+                'temp[nopicture]': '',#1,
+                'temp[picture_order]': ','.join(arrimg),#'',
+                'temp[room_no_picture_id_input]': '',
+                'temp[subscribe_newsletter]':0,
+                'utf8': '✓',
+                'condo_project[lat]': datahandled['geo_latitude'],#16.432115710705236,
+                'condo_project[lng]': datahandled['geo_longitude'],#103.57590562193461,
+                'condo_project[road]':datahandled['addr_road'],
+                'condo_project[street]':datahandled['addr_soi'],
+                'condo_project[province_code]': datahandled['province_code'],
+                'condo_project[district_code]':datahandled['district_code'],
+                'condo_project[subdistrict_code]':datahandled['subdistrict_code'],
+                'condo_project[postcode]':datahandled['addr_postcode'],
+            }
+            # print(datapost)
+            r = httprequestObj.http_post('https://renthub.in.th/condo_listings', data=datapost)
+            data = r.text
+            # print(data)
+            #f = open("debug_response/renthubpost.html", "wb")
+            #f.write(data.encode('utf-8').strip())
 
-        arrimg = self.uploadimage('condo',authenticity_token,datahandled)
-        
-        # https://renthub.in.th/condo_listings
-        datapost = {
-            'authenticity_token': authenticity_token,
-            'amenities[air]': 0,
-            'amenities[digital_door_lock]': 0,
-            'amenities[furniture]': 0,
-            'amenities[hot_tub]': 0,
-            'amenities[internet]': 0,
-            'amenities[kitchen_hood]': 0,
-            'amenities[kitchen_stove]': 0,
-            'amenities[phone]': 0,
-            'amenities[refrigerator]': 0,
-            'amenities[tv]': 0,
-            'amenities[washer]': 0,
-            'amenities[water_heater]': 0,
-            'commit': 'ยอมรับเงื่อนไข และ ลงประกาศ',
-            'condo_listing[condo_project_id]': self.getprojectid(datahandled['use_project_name']),
-            'condo_listing[contact_person]': datahandled['name'],
-            'condo_listing[detail]': '<div>' + datahandled['post_description_th'] + '</div>',
-            'condo_listing[email]': datahandled['email'],  # email,
-            'condo_listing[phone[0]]': datahandled['mobile'],
-            'condo_listing[post_type]': 2, # 2 คือ ให้เช่า
-            'condo_listing[title]': datahandled['post_title_th'],
-            'english[detail]': '<div>' + datahandled['post_description_en'] + '</div>',
-            'english[title]': datahandled['post_title_en'],
-            'rental[advance_fee_bath]': '',
-            'rental[advance_fee_month]': 0,
-            'rental[advance_fee_type]': 0,
-            'rental[daily_price_type]': 2,
-            'rental[deposit_bath]': '',
-            'rental[deposit_month]': '',
-            'rental[deposit_type]': 0,
-            'rental[min_daily_rental_price]': '',
-            'rental[min_rental_price]': datahandled['price_baht'],
-            'rental[price_type]': 1,
-            'room_information[building]': '',
-            'room_information[direction]': datahandled['direction_type'],
-            'room_information[no_of_bath]': datahandled['bath_room'],
-            'room_information[no_of_bed]': datahandled['bed_room'],
-            'room_information[on_floor]': datahandled['floor_level'],
-            'room_information[remark]': '',
-            'room_information[room_area]': datahandled['floor_area'],
-            'room_information[room_home_address]': '',
-            'room_information[room_no]': '',
-            'room_information[room_type]': 0,
-            'sale[existing_rental_contract_end]': '',
-            'sale[existing_rental_price]': '',
-            'sale[existing_renter_nationality]': '',
-            'sale[price_type]': 1,
-            'sale[sale_price]': '',
-            'sale[with_rental_contract]': 0,
-            'sale_deposit[price_type]': 1,
-            'sale_deposit[sale_deposit_price]': '',
-            'sale_right[contract_price]': '',
-            'sale_right[price_type]': 1,
-            'sale_right[remaining_downpayment]': '',
-            'sale_right[remaining_downpayment_months]': '',
-            'sale_right[remaining_payment]': '',
-            'sale_right[sale_right_price]': '',
-            'temp[no_eng_title_check]': '',
-            'temp[noamenity]': 1,
-            'temp[nopicture]': '',#1,
-            'temp[picture_order]': ','.join(arrimg),#'',
-            'temp[room_no_picture_id_input]': '',
-            'temp[subscribe_newsletter]':0,
-            'utf8': '✓',
-            'condo_project[lat]': datahandled['geo_latitude'],#16.432115710705236,
-            'condo_project[lng]': datahandled['geo_longitude'],#103.57590562193461,
-            'condo_project[road]':datahandled['addr_road'],
-            'condo_project[street]':datahandled['addr_soi'],
-            'condo_project[province_code]': datahandled['province_code'],
-            'condo_project[district_code]':datahandled['district_code'],
-            'condo_project[subdistrict_code]':datahandled['subdistrict_code'],
-            'condo_project[postcode]':datahandled['addr_postcode'],
-        }
-        # print(datapost)
-        r = httprequestObj.http_post('https://renthub.in.th/condo_listings', data=datapost)
-        data = r.text
-        # print(data)
-        #f = open("debug_response/renthubpost.html", "wb")
-        #f.write(data.encode('utf-8').strip())
-
-        success,post_id,posturl,detail = self.getpostdatacondo(datahandled)
+            success,post_id,posturl,detail = self.getpostdatacondo(datahandled)
 
         
         return success,detail,post_id,posturl
@@ -1006,120 +1012,76 @@ class renthub():
         log.debug('')
         time_start = datetime.datetime.utcnow()
 
-        post_id = postdata["post_id"]
-        user = postdata['user']
-        passwd = postdata['pass']
-        log_id = postdata["log_id"]
-
         # start proces
         #
 
-        # login
-        self.test_login(postdata)
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        detail = test_login["detail"]
+        datahandled = self.postdata_handle(postdata)
+        success = 'true'
+        detail = ''
 
+        #validate
+        if datahandled['post_id'] == None or datahandled['post_id'] == '':
+            success = 'false'
+            detail = 'post_id not defined'
+
+        if success == 'true':
+            #login
+            test_login = self.test_login(datahandled)
+            success = test_login["success"]
+            detail = test_login["detail"]
+
+        foundpost = False
         if (success == "true"):
 
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+post_id, verify=False)
-            data = r.text
-            #f = open("editpostthaihometown.html", "wb")
-            #f.write(data.encode('utf-8').strip())
-
-            # check respone py post id
-            matchObj = re.search(r''+post_id+'', data)
-            if not matchObj:
-                success = "false"
-                detail = "not found this post_id "+post_id
-
-            # check edit 10 times
-            matchObj = re.search(r'�ѹ���! �س��䢢����Ż�С�ȷ����ҹ���� �ú��˹� 10', data)
-            if matchObj:
-                success = "false"
-                detail = "today you is edited post 10 times วันนี้! คุณแก้ไขข้อมูลประกาศที่ใช้งานแล้ว ครบกำหนด 10 ครั้ง/วัน กรุณาใช้งานอีกครั้งในวันถัดไป"
-
-            if success == "true":
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                contact_code = soup.find("input", {"name": "contact_code"})['value']
-
-                sas_name = soup.find("input", {"name": "sas_name"})['value']
-                code_edit = soup.find("input", {"name": "code_edit"})['value']
-                firstname = soup.find("input", {"name": "firstname"})['value']
-                mobile = soup.find("input", {"name": "mobile"})['value']
-                date_signup = soup.find("input", {"name": "date_signup"})['value']
-                email = soup.find("input", {"name": "email"})['value']
-                ad_title = soup.find("textarea", {"name": "ad_title"}).contents
-                ad_title = ad_title[0]
-                datenow = str(datetime.datetime.utcnow())
-
-                datapost = dict(
-                    code_edit=code_edit,
-                    email=email,
-                    mobile=mobile,
-                    sas_name=sas_name,
-                    contact_code=contact_code,
-                    date_signup=date_signup,
-                    firstname=firstname,
-                    id=post_id,
-                    # ad_title=ad_title.encode('cp874','ignore'),  # + "\n" + datenow,
-                    ad_title=ad_title + "\n" + datenow,
-                    Action_ad_title=1,
-                    Action_headtitle=1,
-                    Submit='Active',
-
-
-                    # Name_Project2='',
-                    # Owner_Project2='',
-                    # Status_Project2=0,
-                    # headtitle=post_title_th.encode('cp874','ignore'),
-                    # ActionForm2='',
-                    # carpark2=0,
-                    # conditioning2=0,
-                    # promotion_bonus2=0,
-                    # promotion_discount2=0,
-                    # property_area=55,
-                    # property_area2=0.00,
-                    # property_bts='',
-                    # property_bts2='',
-                    # property_city2='ราษฎร์บูรณะ',
-                    # property_city_2='',
-                    # property_city_bkk='ยานนาวา+Yannawa',
-                    # property_country2='กรุงเทพมหานคร',
-                    # property_country_2='',
-                    # property_mrt='',
-                    # property_mrt2='',
-                    # property_purple='',
-                    # property_purple2='',
-                    # property_sqm=1,
-                    # property_sqm4=1,
-                    # property_type='บ้าน+Home',
-                    # property_type2='บ้าน+Home',
-                    # rent_price='',
-                    # rent_price_number2=0,
-                    # room1=2,
-                    # room12=2,
-                    # room2=3,
-                    # room22=3,
-                    # selling_price='',
-                    # selling_price_number2=0,
-                    # type_forrent='',
-                    # type_forrent2=0,
-                    # typepart='ประกาศขาย',
-                    # typeunit5=''
+            #boost by url condo
+            r = httprequestObj.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
+            if r.status_code == 200:
+                log.debug('this post id is condo listing')
+                foundpost =  True
+                soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+                token = soup.find("input", {"name": "authenticity_token"})['value']
+                datapost = {
+                    'id' : str(datahandled['post_id'])
+                }
+                r = httprequestObj.http_post('https://renthub.in.th/dashboard/condo_listings/refresh', 
+                data=datapost,
+                headers={'X-CSRF-Token': token,}
                 )
+                log.debug(r.text)
+                if r.text != 'เรียบร้อย':
+                    success = 'false'
+                    detail = 'cannot boost post '+r.text
+                    log.warning('cannot boost post '+r.text)
 
-                r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
-                data = r.text
-                #f = open("boostthaihometown.html", "wb")
-                #f.write(data.encode('utf-8').strip())
+            #boost by url apartment
+            if foundpost == False:
+                r = httprequestObj.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
+                if r.status_code == 200:
+                    log.debug('this post id is apartment listing')
+                    foundpost =  True
+                    soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+                    token = soup.find("input", {"name": "authenticity_token"})['value']
+                    datapost = {
+                        'apartment_id': str(datahandled['post_id']),
+                        'authenticity_token':'' ,
+                        'listing_type': 'apartment',
+                        'condo_project_id':'',
+                    }
+                    r = httprequestObj.http_post('https://renthub.in.th/dashboard/apartments/update_listing_type', 
+                    data=datapost,
+                    headers={'X-CSRF-Token': token,}
+                    )
+                    log.debug(r.text)
+                    datajson = r.json()
+                    if datajson['text'] != 'เรียบร้อย':
+                        success = 'false'
+                        detail = 'cannot boost post '+r.text
+                        log.warning('cannot boost post '+r.text)
 
-                matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/'+post_id, data)
-                if matchObj:
-                    success = "true"
-                else:
-                    success = "false"
-                    detail = unquote(data)
+        if foundpost == False:
+            success = 'false'
+            detail = "post id %s notfound" % (datahandled['post_id'],)
+            log.warning("cannot boost post %s" % (datahandled['post_id'],))
 
         #
         # end process
@@ -1132,15 +1094,15 @@ class renthub():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            "log_id": log_id,
-            "post_id": post_id
+            "log_id": datahandled['log_id'],
+            "post_id": datahandled['post_id'],
+            "websitename": self.websitename,
         }
 
     def delete_post(self, postdata):
         log.debug('')
         time_start = datetime.datetime.utcnow()
 
-        # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
         log_id = postdata['log_id']
         post_id = postdata['post_id']
         user = postdata['user']
