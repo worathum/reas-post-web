@@ -26,7 +26,7 @@ building = ชื่ออาคาร
 floor_level = อยู่ชั้นที่
 floor_total = ชั้นทั้งหมดของทั้งหมดของสิ่งปลูกสร้างที่เราขาย
 floor_area = พื้นที่ใช้สอย
-bath_room = จำนวนห้องนอน
+bath_room = จำนวนห้องน้ำ
 bed_room = จำนวนห้องนอน
 
 prominent_point = จุดเด่น
@@ -65,7 +65,7 @@ addr_number = บ้านเลขที่
 
 
 # บ้าน - ที่ดิน (ที่ไม่ใช่คอนโดจะมีค่านี้)
-floorarea_sqm = พื้นที่
+#floorarea_sqm = พื้นที่
 land_size_rai = ขนาดที่ดินเป็นไร่
 land_size_ngan = ขนาดที่ดินเป็นงาน
 land_size_wa = ขนาดที่ดินเป็นวา
@@ -76,18 +76,18 @@ post_img_url_lists = ลิสต์ของ image url ที่เราจะ
             "http://imagestore.com/pic1.jpg",
             "http://imagestore.com/pic2.jpg"        
         ]
-floorarea_sqm = พื้นที่ (ตารางเมตร) ex: 48
+#floorarea_sqm = พื้นที่ (ตารางเมตร) ex: 48
 price_baht = ราคา ex: 300000
 geo_latitude = ค่าละติจูด ex: 29098209328
 geo_longitude = ค่าลองติจูด ex: 29098209328
 
 property_id = รหัสทรัพย์ alias
 post_title_th = หัวข้อประกาศ (ไทย)
-short_post_title_th = หัวข้อประกาศสั้น (ไทย)
+#short_post_title_th = หัวข้อประกาศสั้น (ไทย)
 post_description_th= รายละเอียดเกี่ยวกับประกาศ (ไทย)
 
 post_title_en = หัวข้อประกาศ (อังกฤษ)
-short_post_title_en = หัวข้อประกาศสั้น (อังกฤษ)
+#short_post_title_en = หัวข้อประกาศสั้น (อังกฤษ)
 post_description_en = รายละเอียดเกี่ยวกับประกาศ (อังกฤษ)
 
 name = ชื่อตัวแทน
