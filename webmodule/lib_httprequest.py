@@ -119,6 +119,29 @@ class lib_httprequest():
         except (ssl.SSLError, socket.error) as e:
             raise requests.exceptions.RequestException(str(e))
     
+    def http_post_get_cookies(self, url, data, params=None, *args, **kwargs):
+        '''
+        New version of web_post
+        '''
+
+        def get_soup(self):
+            if not hasattr(self, '_soup'):
+                self._soup = BeautifulSoup(
+                    self.text, self.parser, from_encoding=self.encoding)
+            # time.sleep(.255)
+            return self._soup
+        try:
+            proxies = {'http': self.proxies,
+                       'https': self.proxies} if self.proxies else None
+            r = self.session.post(url, data=data,  params=params, allow_redirects=True,
+                                  timeout=self.timeout, proxies=proxies, *args, **kwargs)
+            if hasattr(self, 'encoding'):
+                r.encoding = self.encoding
+            r.__class__.soup = property(get_soup)
+            return r , self.session.cookies.get_dict()
+        except (ssl.SSLError, socket.error) as e:
+            raise requests.exceptions.RequestException(str(e))
+    
     def http_post_with_encode(self, url, data, params=None, encoder='utf-8',*args, **kwargs):
         '''
         New version of web_post
