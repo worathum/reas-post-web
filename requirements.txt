@@ -4,3 +4,5 @@ django-ratelimit
 requests_toolbelt
 requests
 selenium
+bs4
+python3-anticaptcha
