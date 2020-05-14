@@ -14,6 +14,8 @@ import concurrent.futures
 from webmodule.lib_httprequest import *
 httprequestObj = lib_httprequest()
 import re
+import time
+
 
 
 try:
@@ -114,8 +116,12 @@ class postcore():
         for i in range(6):
             dirtmp = 'imgupload_' + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
             if os.path.isdir('imgtmp/' + dirtmp) == False:
-                os.mkdir("imgtmp/" + dirtmp)
-                log.debug('image directory imgtmp/%s is created', dirtmp)
+                try:
+                    os.mkdir("imgtmp/" + dirtmp)
+                    log.debug('image directory imgtmp/%s is created', dirtmp)
+                    time.sleep(0.2)
+                except:
+                    pass
                 break
 
         datarequest['post_images'] = []
@@ -129,12 +135,15 @@ class postcore():
                 continue
             if res.status_code == 200:
                 if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png':
-                    extension = res.headers['Content-Type'].split("/")[-1]
-                    with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
-                        f.write(res.content)
-                        f.close()
-                    datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension)
-                    imgcount = imgcount + 1
+                    try:
+                        extension = res.headers['Content-Type'].split("/")[-1]
+                        with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
+                            f.write(res.content)
+                            f.close()
+                        datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension)
+                        imgcount = imgcount + 1
+                    except:
+                        pass
                 else:
                     log.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
             else:
