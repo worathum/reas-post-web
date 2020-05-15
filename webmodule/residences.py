@@ -633,6 +633,114 @@ C คอนโด
             "detail": detail,
         }
 
+    def create_post_condo(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        # start process
+        #
+        datahandled = self.postdata_handle(postdata)
+        success = "true"
+        detail = ""
+        postid = ""
+
+        #TODO 1 first post
+        datapost = {            
+            "utf8": "✓",
+            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q=",
+            "listing": {
+                "title": "title thai",
+                "title_en": "title eng",
+                "listing_project_id": "14",
+                "post_type": "1",
+                "remark": "",
+                "title_deed": "0",
+                "room_type": "3",
+                "no_of_bedroom": "2",
+                "no_of_bathroom": "1",
+                "room_area": "11",
+                "floor": "11",
+                "building": "",
+                "home_address": "111",
+                "room_no": "111",
+                "furnishing": "3",
+                "parking_spaces": "2",
+                "facing_direction": "n",
+                "facility_ids": [
+                "14",
+                "3",
+                "4"
+                ],
+                "rent_availability_status": "1",
+                "rental_price_type": "1",
+                "rent_price": "10000",
+                "daily_rental_price": "",
+                "daily_rental_price_type": "2",
+                "deposit_month": "",
+                "deposit_bath": "",
+                "rental_deposit_type": "4",
+                "advance_fee_month": "",
+                "advance_fee_bath": "",
+                "advance_fee_type": "4",
+                "common_service_fee_bath": "",
+                "common_service_fee_type": "3",
+                "detail": "detail thai",
+                "detail_en": "detail eng",
+                "contact_person": "amarin boonkirt",
+                "line_user_id": "amarin.ta",
+                "phone": "0891999450",
+                "email": "amarin.ta@gmail.com",
+                "create_level": "1"
+            },
+            "_wysihtml5_mode": "1",
+            "ref_action": "new",
+            "commit": "สร้างประกาศและดำเนินการต่อ"
+        }
+
+        
+        r = httprequestObj.http_post(self.primary_domain + '/listings', data=datapost)
+        data = r.text
+
+        #TODO 2 edit https://www.residences.in.th/listings/31157-title-thai/images
+        # รูปภาพที่พัก
+        # ajax post image
+
+        datapost = {
+            "utf8": "✓",
+            "_method": "put",
+            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q=",
+            "do_not_validation_listing_images": "0",
+            "accepted": {
+                "term_and_condition": "1"
+            },
+            "listing": {
+                "create_level": "2"
+            },
+            "ref_action": "images"
+        }
+        
+        r = httprequestObj.http_post(self.primary_domain + '/listings/31157-title-thai', data=datapost)
+        data = r.text
+
+        # if datahandled['web_project_name'] != '' , MUST use datahandled['web_project_name']
+
+        #
+        # end process
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "ds_id": datahandled['ds_id'],
+            "post_url": "https://www.ddproperty.com/preview-listing/"+post_id if post_id != "" else "",
+            "post_id": post_id,
+            "account_type": "null",
+            "detail": detail,
+        }        
+
 # not have boost post , use edit_post
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -660,12 +768,84 @@ C คอนโด
             "log_id": log_id,
             "post_id": post_id,
         }
+        
+    def boost_post_apartment(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
 
-'''
-Method:    POST
-URL:    https://www.teedin108.com/post/trash/
-Request Body:   post_id=2082326
-'''
+        # start process
+        #
+        datahandled = self.postdata_handle(postdata)
+        success = "true"
+        detail = ""
+        post_id = ""
+        log_id = ""
+
+        # action="/apartments/114489/moveon"
+
+        datapost = {
+            "utf8": "✓",
+            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q=",
+            "commit": "เลื่อนตำแหน่ง"
+        }
+
+        r = httprequestObj.http_post(self.primary_domain + '/apartments/' + post_id + '/moveon', data=datapost)
+        data = r.text
+
+        #
+        # end process
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "log_id": log_id,
+            "post_id": post_id,
+        }      
+
+    #TODO ยังไม่ได้ทำ
+    def boost_post_condo(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        # start process
+        #
+        datahandled = self.postdata_handle(postdata)
+        success = "true"
+        detail = ""
+        post_id = ""
+        log_id = ""
+
+        # action="/apartments/114489/moveon"
+
+        datapost = {
+            "utf8": "✓",
+            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q=",
+            "commit": "เลื่อนตำแหน่ง"
+        }
+
+        r = httprequestObj.http_post(self.primary_domain + '/apartments/' + post_id + '/moveon', data=datapost)
+        data = r.text
+
+        #
+        # end process
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "log_id": log_id,
+            "post_id": post_id,
+        }    
+
     def delete_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
@@ -677,6 +857,13 @@ Request Body:   post_id=2082326
         detail = ""
         log_id = ""
 
+        datapost = {
+            "_method": "delete",
+            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q="
+        }
+        
+        r = httprequestObj.http_post(self.primary_domain + '/apartments/114489-%E0%B9%83%E0%B8%AB%E0%B9%89%E0%B9%80%E0%B8%8A%E0%B9%88%E0%B8%B2-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-watermark-%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A2%E0%B8%B2%E0%B8%A3%E0%B8%B4%E0%B9%80%E0%B8%A7%E0%B8%A7%E0%B8%AD%E0%B8%AD%E0%B8%A3%E0%B9%8C-105-%E0%B8%95%E0%B8%A3%E0%B8%A1-2-%E0%B8%99%E0%B8%AD%E0%B8%99-2', data=datapost)
+        data = r.text
         #
         # end process
 
@@ -758,4 +945,3 @@ Request Body:   post_id=2082326
         if(self.debugdata == 1):
             print(data)
         return True
-residences
