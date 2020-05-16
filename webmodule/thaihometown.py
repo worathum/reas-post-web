@@ -360,6 +360,10 @@ class thaihometown():
         except KeyError as e:
             datahandled['line'] = ''
             log.warning(str(e))
+        
+        for key, val in datahandled.items():
+            if val == None:
+                datahandled[key] = ''
 
      
         
@@ -535,6 +539,50 @@ class thaihometown():
 
         return 'true','',datahandled
 
+    def getsizeunit(self,datahandled):
+        log.debug('')
+
+        size = datahandled['floor_area']
+        typeunit = 1
+
+        if datahandled['property_type'] != 'คอนโดมิเนียม+Condominiem' and datahandled['property_type'] != 'สำนักงาน+Office':
+            typeunit = 2
+            try:
+                size = float(datahandled['floor_area']) / 4
+            except:
+                size = datahandled['floor_area']
+                typeunit = 1
+                log.debug('cannot convert area to sqw')
+        if datahandled['property_type'] == 'ที่ดิน+Land':
+            size = 0
+            typeunit = 2
+            try:
+                rai = float(datahandled['land_size_rai'])
+                size = rai*400
+            except ValueError:
+                log.debug('cannot convert area rai')
+                pass
+            try:
+                ngan = float(datahandled['land_size_ngan'])
+                size = size + (ngan*100)
+            except ValueError:
+                log.debug('cannot convert area ngan')
+                pass
+            try:
+                wa = float(datahandled['land_size_wa'])
+                size = size + wa
+            except ValueError:
+                log.debug('cannot convert area wa')
+                pass    
+            if size == 0:
+                size = datahandled['floor_area']
+                typeunit = 1
+
+        log.debug('size %s type %s',size,typeunit)
+
+        return size,typeunit
+
+
     def create_post(self, postdata):
         log.debug('')
 
@@ -551,6 +599,9 @@ class thaihometown():
             selling_price = datahandled['price_baht']
         elif datahandled['listing_type'] == 'ประกาศให้เช่า':
             rent_price = datahandled['price_baht']
+        
+        #area detect
+        size,typeunit = self.getsizeunit(datahandled)
 
         success = "true"
         detail = ""
@@ -607,18 +658,22 @@ class thaihometown():
                                 'firstname':firstname,
                                 'headtitle':datahandled['post_title_th'].encode('cp874', 'ignore'),
                                 'id':'',
-                                #TODO info
-                                'info':[' ตกแต่งห้องนอน '.encode('cp874', 'ignore'), ' ตกแต่งห้องนั่งเล่น '.encode('cp874', 'ignore'), ' ปูพื้นเซรามิค '.encode('cp874', 'ignore'), ' เฟอร์นิเจอร์ '.encode('cp874', 'ignore'), ' ไมโครเวฟ '.encode('cp874', 'ignore'), ' ชุดรับแขก '.encode('cp874', 'ignore')],
+                                'info[0]' :'ตกแต่งห้องนอน'.encode('cp874', 'ignore'),
+                                'info[1]' :'ตกแต่งห้องนั่งเล่น'.encode('cp874', 'ignore'),
+                                'info[2]' :'ปูพื้นเซรามิค'.encode('cp874', 'ignore'),
+                                'info[3]' :'เฟอร์นิเจอร์'.encode('cp874', 'ignore'),
+                                'info[4]' :'ไมโครเวฟ'.encode('cp874', 'ignore'),
+                                'info[5]' :'ชุดรับแขก'.encode('cp874', 'ignore'),
                                 'mobile':mobile,
                                 'price_unit':'',
-                                'property_area':datahandled['floor_area'],
+                                'property_area':size,
                                 'property_bts':'',
                                 'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
                                 'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
                                 'property_country_2':datahandled['property_country_2'].encode('cp874', 'ignore'),
                                 'property_mrt':'',
                                 'property_purple':'',
-                                'property_sqm':1,
+                                'property_sqm':typeunit,
                                 'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
                                 'room1':datahandled['bed_room'],
                                 'room2':datahandled['bath_room'],
@@ -722,20 +777,21 @@ class thaihometown():
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             allimage = soup.find_all('img',src=re.compile('small.jpg'))
             log.debug('find all old image '+str(len(allimage)))
-            for img in allimage:
-                imgid = re.search(r'-(\d+)_small',str(img)).group(1)
-                datapost = {
-                    'id': str(imgid),
-                    'contact': str(2219182),
-                    'code': str(uploadcode),
-                    'datesing': '',
-                    'maction':'',
-                    }
-                r = httprequestObj.http_post(
-                'https://www.thaihometown.com/form/memberupload/delete.php',
-                data=datapost,
-                )
-                log.debug('remove image id '+str(imgid))
+            if len(datahandled['post_images']) > 0:
+                for img in allimage:
+                    imgid = re.search(r'-(\d+)_small',str(img)).group(1)
+                    datapost = {
+                        'id': str(imgid),
+                        'contact': str(post_id),
+                        'code': str(uploadcode),
+                        'datesing': '',
+                        'maction':'',
+                        }
+                    r = httprequestObj.http_post(
+                    'https://www.thaihometown.com/form/memberupload/delete.php',
+                    data=datapost,
+                    )
+                    log.debug('remove image id '+str(imgid))
         except:
             pass
 
@@ -758,6 +814,33 @@ class thaihometown():
             )
             log.debug('image upload '+r.text)
         
+        #fix black image //thaihometown bug
+        try:
+            log.debug('fix black image')
+            r = httprequestObj.http_get('https://www.thaihometown.com/form/memberupload/image_update_copy.php?code='+str(uploadcode)+'&id='+str(post_id), verify=False)
+            #log.debug(r.text)
+            soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+            is_total = soup.find('input',{'name':'is_total'})['value']
+            log.debug('image total '+is_total)
+            allimage = soup.find_all('input',id=re.compile('imag'))
+            #log.debug(allimage)
+            datapost = {
+                'UPDATE':'[object Object]',
+                'status_active':1,
+                'is_total':is_total
+            }
+            for img in allimage:
+                log.debug("image name %s image value %s",img['id'],img['value'])
+                datapost[img['id']] = img['value']
+            #log.debug(datapost)
+            r = httprequestObj.http_post('https://www.thaihometown.com/form/memberupload/image_update_copy.php?code='+str(uploadcode)+'&id='+str(post_id), data=datapost)
+            matchObj = re.search(r'&#3649;&#3585;&#3657;&#3652;&#3586;&#3619;&#3641;&#3611;&#3616;&#3634;&#3614;&#3648;&#3619;&#3637;&#3618;&#3610;&#3619;&#3657;&#3629;&#3618;', r.text) #แก้ไขรูปภาพเรียบร้อย
+            if matchObj:
+                log.debug('fixed black image success')
+        except:
+            log.debug('post edit black image error')
+            pass
+         
         return True
 
     def boost_post_bak(self, postdata):
@@ -1087,9 +1170,24 @@ class thaihometown():
                 contact_code = soup.find("input", {"name": "contact_code"})['value']
                 ad_title = soup.find("textarea", {"name": "ad_title"}).contents
                 ad_title = ad_title[0]
+                #for province in bangkok
+                property_city_bkk = ''
+                try:
+                    property_city_bkk = soup.find("select", {"id": "property_city_bkk"}).find("option",{'selected':True})['value']
+                except:
+                    pass
+                #for province not bangkok
+                property_country_2 = ''
+                property_city_2 = ''
+                try:
+                    property_country_2 = soup.find("select", {"id": "property_country_2"}).find("option",{'selected':True})['value']
+                    property_city_2 = soup.find("select", {"id": "property_city_2"}).find("option",{'selected':True})['value']
+                except:
+                    pass
                 #log.debug(ad_title)
                 ad_title = ad_title + "\n" + str(datetime.datetime.utcnow())
                 ad_title = ad_title.encode('cp874', 'ignore')
+                
 
                 datapost = dict(
                     code_edit=code_edit,
@@ -1104,6 +1202,11 @@ class thaihometown():
                     Action_ad_title=1,
                     Action_headtitle=1,
                     Submit='Active',
+                    property_city2=property_city_2.encode('cp874', 'ignore'),
+                    property_city_2=property_city_2.encode('cp874', 'ignore'),
+                    property_city_bkk=property_city_bkk.encode('cp874', 'ignore'),
+                    property_country2=property_country_2.encode('cp874', 'ignore'),
+                    property_country_2=property_country_2.encode('cp874', 'ignore'),
                 )
 
                 r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
@@ -1143,8 +1246,8 @@ class thaihometown():
         #
         datahandled = self.postdata_handle(postdata)
 
-        rent_price=''
-        selling_price=''
+        rent_price=0
+        selling_price=0
         if datahandled['listing_type'] == 'ประกาศขาย' or datahandled['listing_type'] == 'ประกาศขายดาวน์':
             selling_price = datahandled['price_baht']
         elif datahandled['listing_type'] == 'ประกาศให้เช่า':
@@ -1153,6 +1256,9 @@ class thaihometown():
         success = "true"
         detail = ""
         post_url = ''
+
+        #area detect
+        size,typeunit = self.getsizeunit(datahandled)
 
         success,detail = self.validatedatapost(datahandled)
 
@@ -1202,70 +1308,81 @@ class thaihometown():
                     email = soup.find("input", {"name": "email"})['value']
                     contact_code = soup.find("input", {"name": "contact_code"})['value']
 
-                    datapost = dict(
-                        code_edit=code_edit,
-                        email=email,
-                        mobile=mobile,
-                        sas_name=sas_name,
-                        contact_code=contact_code,
-                        date_signup=date_signup,
-                        firstname=firstname,
-                        headtitle=datahandled['post_title_th'].encode('cp874', 'ignore'),
-                        id=datahandled['post_id'],
-                        ActionForm2='',
-                        Action_ad_title=1,
-                        Action_headtitle=1,
-                        Name_Project2='',
-                        Owner_Project2='',
-                        Status_Project2=0,
-                        Submit='Active',
-                        ad_title=datahandled['post_description_th'].encode('cp874', 'ignore'),
-                        carpark='',
-                        carpark2=0,
-                        conditioning='',
-                        conditioning2=0,
-                        # TODO info
-                        info=[],
-                        infomation2=[' ตกแต่งห้องนอน ', ' ตกแต่งห้องนั่งเล่น ', ' ปูพื้นเซรามิค ', ' เฟอร์นิเจอร์ ', ' ไมโครเวฟ ', ' ชุดรับแขก '],
-                        price_number_unit2=0,
-                        price_unit='',
-                        promotion_bonus2=0,
-                        promotion_discount2=0,
-                        property_area=datahandled['floor_area'],
-                        property_area2=datahandled['floor_area'],
-                        property_bts='',
-                        property_bts2='',
-                        property_city2=datahandled['property_city_2'].encode('cp874', 'ignore'),
-                        property_city_2=datahandled['property_city_2'].encode('cp874', 'ignore'),
-                        property_city_bkk=datahandled['property_city_bkk'].encode('cp874', 'ignore'),
-                        property_country2=datahandled['property_country_2'].encode('cp874', 'ignore'),
-                        property_country_2=datahandled['property_country_2'].encode('cp874', 'ignore'),
-                        property_mrt='',
-                        property_mrt2='',
-                        property_purple='',
-                        property_purple2='',
-                        property_sqm=1,
-                        property_sqm4=1,
-                        property_type=datahandled['property_type'].encode('cp874', 'ignore'),
-                        property_type2=datahandled['property_type'].encode('cp874', 'ignore'),
-                        rent_price='',
-                        rent_price_number2=rent_price,
-                        room1=datahandled['bed_room'],
-                        room12=datahandled['bed_room'],
-                        room2=datahandled['bath_room'],
-                        room22=datahandled['bath_room'],
-                        selling_price='',
-                        selling_price_number2=selling_price,
-                        type_forrent='',
-                        type_forrent2=0,
-                        typepart=datahandled['listing_type'].encode('cp874', 'ignore'),
-                        typeunit5='ต่อตร.ม'.encode('cp874', 'ignore'),
-                        notprice = 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
-                    )
+                    datapost = {
+                        'code_edit':code_edit,
+                        'email':email,
+                        'mobile':mobile,
+                        'sas_name':sas_name,
+                        'contact_code':contact_code,
+                        'date_signup':date_signup,
+                        'firstname':firstname,
+                        'headtitle':datahandled['post_title_th'].encode('cp874', 'ignore'),
+                        'id':datahandled['post_id'],
+                        'ActionForm2':'',
+                        'Action_ad_title':1,
+                        'Action_headtitle':1,
+                        'Name_Project2':'',
+                        'Owner_Project2':'',
+                        'Status_Project2':0,
+                        'Submit':'Active',
+                        'ad_title':datahandled['post_description_th'].encode('cp874', 'ignore'),
+                        'carpark':'',
+                        'carpark2':0,
+                        'conditioning':'',
+                        'conditioning2':0,
+                        'info[0]' :'ตกแต่งห้องนอน'.encode('cp874', 'ignore'),
+                        'info[1]' :'ตกแต่งห้องนั่งเล่น'.encode('cp874', 'ignore'),
+                        'info[2]' :'ปูพื้นเซรามิค'.encode('cp874', 'ignore'),
+                        'info[3]' :'เฟอร์นิเจอร์'.encode('cp874', 'ignore'),
+                        'info[4]' :'ไมโครเวฟ'.encode('cp874', 'ignore'),
+                        'info[5]' :'ชุดรับแขก'.encode('cp874', 'ignore'),
+                        'infomation2[0]' :'ตกแต่งห้องนอน'.encode('cp874', 'ignore'),
+                        'infomation2[1]' :'ตกแต่งห้องนั่งเล่น'.encode('cp874', 'ignore'),
+                        'infomation2[2]' :'ปูพื้นเซรามิค'.encode('cp874', 'ignore'),
+                        'infomation2[3]' :'เฟอร์นิเจอร์'.encode('cp874', 'ignore'),
+                        'infomation2[4]' :'ไมโครเวฟ'.encode('cp874', 'ignore'),
+                        'infomation2[5]' :'ชุดรับแขก'.encode('cp874', 'ignore'),
+                        'price_number_unit2':0,
+                        'price_unit':'',
+                        'promotion_bonus2':0,
+                        'promotion_discount2':0,
+                        'property_area': size, 
+                        'property_area2': size,
+                        'property_sqm': typeunit,
+                        'property_sqm4': typeunit,
+                        'property_bts':'',
+                        'property_bts2':'',
+                        'property_city2':datahandled['property_city_2'].encode('cp874', 'ignore'),
+                        'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
+                        'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
+                        'property_country2':datahandled['property_country_2'].encode('cp874', 'ignore'),
+                        'property_country_2':datahandled['property_country_2'].encode('cp874', 'ignore'),
+                        'property_mrt':'',
+                        'property_mrt2':'',
+                        'property_purple':'',
+                        'property_purple2':'',
+                        'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
+                        'property_type2':datahandled['property_type'].encode('cp874', 'ignore'),
+                        'rent_price':rent_price,
+                        'rent_price_number2':rent_price,
+                        'room1':datahandled['bed_room'],
+                        'room12':datahandled['bed_room'],
+                        'room2':datahandled['bath_room'],
+                        'room22':datahandled['bath_room'],
+                        'selling_price':selling_price,
+                        'selling_price_number2':selling_price,
+                        'type_forrent':'',
+                        'type_forrent2':0,
+                        'typepart':datahandled['listing_type'].encode('cp874', 'ignore'),
+                        'typeunit5':'ต่อตร.ม'.encode('cp874', 'ignore'),
+                        'notprice' : 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
+                    }
+
+                    #log.debug(datapost)
 
                     r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
                     data = r.text
-                    #f = open("editpostthaihometown.html", "wb")
+                    #f = open("debug_response/editpostthaihometown.html", "wb")
                     #f.write(data.encode('utf-8').strip())
 
                     matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/' + datahandled['post_id'], data)

@@ -1030,7 +1030,7 @@ class ddproperty():
                     pass
 
             self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
-            time.sleep(1.5)
+            time.sleep(2)
             #self.chrome.save_screenshot("debug_response/newp12.png")
 
             # next
@@ -1074,7 +1074,7 @@ class ddproperty():
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')))
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
             # self.chrome.save_screenshot("debug_response/newp10.png")
-            time.sleep(0.5)
+            time.sleep(1)
             log.debug('click next')
             
             if datahandled['action'] == 'edit_post':
