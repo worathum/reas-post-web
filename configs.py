@@ -1,6 +1,6 @@
 secret_key = 'baquooSiriewoM8yae6iemiu1urohshohRo1pahyoo5eigoChei4ieph2wieNgujechooxaen8eSh8eiquael0ke6reo4moh9holohfeyooPhi8leifotoohuthequah'
 
-list_module = ['ddproperty', 'thaihometown', 'renthub']
+list_module = ['ddproperty', 'thaihometown', 'renthub', 'bankumka', 'goodpriceproperty', 'home2all', 'kaiteedin', 'novabizz', 'ploychao', 'proptecheasy', 'quickdealfree', 'teedin2', 'teedindd', 'thaisecondhand']
 
 list_action = ['register_user', 'test_login', 'create_post', 'edit_post', 'boost_post', 'delete_post']
 

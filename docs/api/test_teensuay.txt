@@ -1,0 +1,173 @@
+## register user  => Pass
+### input 
+
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ3ZWIiOiBbeyJ0ZWwiOiAiMDg5MTk5OTQ1MCIsICJkc19pZCI6ICI0IiwgImxpbmUiOiAiYW1hcmluLnRhIiwgInVzZXIiOiAicmV0ZWgzNzY4MUBmZnQtbWFpbC5jb20iLCAiZHNfbmFtZSI6ICJ0ZWVuc3VheSIsICJjb21wYW55X25hbWUiOiAiYW1hcmtqamsiLCAibmFtZV9lbiI6ICJBbWFyaW4iLCAibmFtZV90aXRsZSI6ICJtciIsICJwYXNzIjogIjEyMzQ1Njc4IiwgImFkZHJfcHJvdmluY2UiOiAiXHUwZTE5XHUwZTE5XHUwZTE3XHUwZTFhXHUwZTM4XHUwZTIzXHUwZTM1IiwgImFkZHJfZGlzdHJpY3QiOiAiXHUwZTQwXHUwZTIxXHUwZTM3XHUwZTJkXHUwZTA3XHUwZTE5XHUwZTE5XHUwZTE3XHUwZTFhXHUwZTM4XHUwZTIzXHUwZTM1IiwgIm5hbWVfdGgiOiAiXHUwZTJkXHUwZTMxXHUwZTIxXHUwZTIzXHUwZTM0XHUwZTE5XHUwZTE3XHUwZTIzXHUwZTRjIiwgInN1cm5hbWVfdGgiOiAiXHUwZTFhXHUwZTM4XHUwZTBkXHUwZTQwXHUwZTAxXHUwZTM0XHUwZTE0IiwgInN1cm5hbWVfZW4iOiAiQm9vbmtpcnQifV0sICJ0aW1lb3V0IjogIjcifQ==
+
+
+
+
+
+### result
+{
+  "detail": "registered", 
+  "end_time": "2020-04-06 13:47:14.330629", 
+  "start_time": "2020-04-06 13:47:14.093396", 
+  "success": "true"
+}
+
+
+
+## create
+### input
+ json_create = {
+
+        "action": "create_post",
+        "timeout": "5",
+        "post_img_url_lists": [
+            "https://images.freeimages.com/images/small-previews/ffa/water-lilly-1368676.jpg",
+            "https://images.freeimages.com/images/small-previews/ffa/water-lilly-1368676.jpg",
+        ],
+		"class_type_id":"1",
+		"cate_id":"2",
+        "geo_latitude": "13.786862",
+        "geo_longitude": "100.757815",
+        "property_id": "289191",
+        "post_title_th": "xxsx_new",
+        "short_post_title_th": "xxx",
+        "post_description_th": "xxx",
+        "post_title_en": "DFhgh_nre232",
+        "short_post_title_en": "sdgxxx",
+        "post_description_en": "",
+        "price_baht": "3000",
+
+        "listing_type": "ขาย",
+        "property_type": "คอนโด",
+        "floor_level": "11",
+        "floor_total": "11",
+        "floor_area": "11",
+        "bathroom": "11",
+        "bedroom": "11",
+        "prominent_point": "จุดเด่น",
+        "view_type": "11",
+        "direction_type": "11",
+        "addr_province": "กาฬสินธุ์",
+        "addr_district": "กระบ",
+        "addr_sub_district": "ตำบล แขวง",
+        "addr_road": "ถนน",
+        "addr_soi": "ซอย",
+        "addr_near_by": "สถานที่ใกล้เคียง",
+        "floorarea_sqm": "พื้นที่",
+
+        "land_size_rai": "ขนาดที่ดินเป็นไร่",
+        "land_size_ngan": "ขนาดที่ดินเป็นงาน",
+        "land_size_wa": "ขนาดที่ดินเป็นวา",
+
+        "name": "xxx",
+        "mobile": "xxx",
+        'email': "temp@gmail.com",
+		'pass': "temp",
+        "line": "xxx",
+        "project_name": "ลุมพีนีวิลล รามอินทราหลักสี่",
+    }
+### result
+{
+  "post_id": "122615", 
+  "post_url": "http://www.teesuay.com/property/122615/dfhgh_nre232.html", 
+  "ret": "../property-122615/dfhgh_nre232.html", 
+  "success": "true"
+}
+
+
+
+## login
+### input
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: eyJ3ZWIiOiBbeyJkc19uYW1lIjogInRlZW5zdWF5IiwgInVzZXIiOiAicmV0ZWgzNzY4MUBmZnQtbWFpbC5jb20iLCAiZHNfaWQiOiAiNCIsICJwYXNzIjogIjEyMzQ1Njc4In1dLCAidGltZW91dCI6ICI1IiwgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIn0=
+
+
+### result
+{
+  "detail": "logged in", 
+  "end_time": "2020-04-06 13:46:36.805135", 
+  "start_time": "2020-04-06 13:46:36.476261", 
+  "success": "true"
+}
+
+
+## edit
+### input
+ json_create = {
+
+        "action": "create_post",
+        "timeout": "5",
+        "post_img_url_lists": [
+            "https://images.freeimages.com/images/small-previews/ffa/water-lilly-1368676.jpg",
+            "https://images.freeimages.com/images/small-previews/ffa/water-lilly-1368676.jpg",
+        ],
+		"class_type_id":"1",
+		"cate_id":"2",
+        "geo_latitude": "13.786862",
+        "geo_longitude": "100.757815",
+        "property_id": "289191",
+        "post_title_th": "xxsx_new",
+        "short_post_title_th": "xxx",
+        "post_description_th": "xxx",
+        "post_title_en": "DFhgh_nre232",
+        "short_post_title_en": "sdgxxx",
+        "post_description_en": "",
+        "price_baht": "3000",
+
+        "listing_type": "ขาย",
+        "property_type": "คอนโด",
+        "floor_level": "11",
+        "floor_total": "11",
+        "floor_area": "11",
+        "bathroom": "11",
+        "bedroom": "11",
+        "prominent_point": "จุดเด่น",
+        "view_type": "11",
+        "direction_type": "11",
+        "addr_province": "กาฬสินธุ์",
+        "addr_district": "กระบ",
+        "addr_sub_district": "ตำบล แขวง",
+        "addr_road": "ถนน",
+        "addr_soi": "ซอย",
+        "addr_near_by": "สถานที่ใกล้เคียง",
+        "floorarea_sqm": "พื้นที่",
+		"property_id":"122608",
+
+        "land_size_rai": "ขนาดที่ดินเป็นไร่",
+        "land_size_ngan": "ขนาดที่ดินเป็นงาน",
+        "land_size_wa": "ขนาดที่ดินเป็นวา",
+
+        "name": "xxx",
+        "mobile": "xxx",
+        'email': "temp@gmail.com",
+		'pass': "temp",
+        "line": "xxx",
+        "project_name": "ลุมพีนีวิลล รามอินทราหลักสี่",
+    }
+### result
+{'success': 'true'}
+
+
+
+## Delete post
+### input 
+
+  postdata = {'email': "temp@gmail.com", 'pass': "temp", 'btlogin.x': 22, 'btlogin.y': 21, 'name': '1234abcd', 'add': '1234a', 'province': '64', 'amphur': '864',
+                'tel': '1234a', 'website': 'http://1234a.com', 'email': '12345abcd@gmail.com', 'pass': '1234','property_id':'122615'
+                }
+
+
+
+### result
+{
+  "detail": "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<meta http-equiv='refresh' content='0;url=list-property.php'>", 
+  "end_time": "2020-04-06 13:50:15.754901", 
+  "start_time": "2020-04-06 13:50:13.042620", 
+  "success": "true"
+}
+
+

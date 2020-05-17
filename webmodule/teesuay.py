@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from selenium import webdriver
@@ -15,11 +16,10 @@ import time
 import sys
 from urllib.parse import unquote
 
-
 httprequestObj = lib_httprequest()
 
 
-with open("./static/ploychao_province.json") as f:
+with open("./static/teesuay.json") as f:
     provincedata = json.load(f)
 
 
@@ -39,7 +39,6 @@ class teesuay():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
-        self.websitename = 'teesuay'
 
 
 
@@ -135,7 +134,6 @@ class teesuay():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            "websitename": self.websitename
         }
 
 
@@ -151,20 +149,23 @@ class teesuay():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         ashopname = test_login["detail"]
-
+        
 
         # getProdId = {'1':24,'2':25,'3':26,'4':27,'5':29,'6':34,'7':28,'8':14,'9':31,'10':33}
         # theprodid = getProdId[postdata['property_id']]
-        province_id=-1
-        amphur_id=0
+        province_id=""
+        amphur_id=""
+        postdata['addr_province']=postdata['addr_province'].replace(" ","")
+        postdata['addr_district']=postdata['addr_district'].replace(" ","")
         for (key, value) in provincedata.items():
             if type(value) is str and postdata['addr_province'].strip() in value.strip():
                 province_id = key
                 break
-        if province_id==-1:
+        if province_id=="":
             return{
+                'websitename':'teesuay',
                 'success': 'False',
-                'ret': "",
+                'ret': "wrong province id",
                 'post_url': "",
                 'post_id': ""
             }
@@ -175,52 +176,104 @@ class teesuay():
 
         if amphur_id=="":
             return{
+                'websitename':'teesuay',
                 'success': 'false',
-                'ret': "",
+                'ret': "wrong amphur id",
                 'post_url': "",
                 'post_id': ""
             }
+        if 'addr_soi' in postdata and postdata['addr_soi']!=None:
+                pass
+        else:
+            postdata['addr_soi']=''
+        if 'addr_road' in postdata and postdata['addr_soi']!=None:
+                pass
+        else:
+            postdata['addr_road']=''
         prod_address = ""
         for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
-            if add is not None:
+            if add is not None and add!="" and add!=" ":
                 prod_address += add + ","
         prod_address = prod_address[:-1]
 
         propertytype={
             '6':1,
             '2':2,
-            '3':3,
+            '4':3,
             '1':4,
             '7':5,
             '5':6,
             # 'Resort hotel':7,
             '9':8,
             '10':9,
-            '4':10,
-            '8':10
+            '25':9,
+            '8':7,
+            '3':2
             }
         try:
-            postdata['cate_id']=propertytype[postdata['property_type']]
+            postdata['cate_id']=propertytype[str(postdata['property_type'])]
         except:
             return{
+                'websitename':'teesuay',
                 'success': 'false',
-                'ret': "",
+                'ret': "Wrong Property type",
                 'post_url': "",
                 'post_id': ""
             }
+
         if success == "true":
-            floor_total, bedroom, bathroom, floor_area = [''] * 4
-            if 'floor_total' in postdata: floor_total = postdata['floor_total']
-            if 'bedroom' in postdata: bedroom = postdata['bedroom']
-            if 'bathroom' in postdata: bathroom = postdata['bathroom']
-            if 'floor_area' in postdata: floor_area = postdata['floor_area']
+            postdata['post_title_th']=postdata['post_title_th'].replace('%','')
+            floor_total, bedroom, bathroom = [''] * 3
+            if 'floor_total' in postdata and postdata['floor_total']!=None: 
+                floor_total = str(postdata['floor_total'])
+            else:
+                if postdata['property_type']=='6' or postdata['property_type']=='10'or postdata['property_type']=='25':
+                    pass
+                else:
+                    floor_total = '0'
+            if 'bed_room' in postdata and postdata['bed_room']!=None: 
+                bedroom = str(postdata['bed_room'])
+            else:
+                if postdata['property_type']=='6' or postdata['property_type']=='9' or postdata['property_type']=='10'or postdata['property_type']=='25':
+                    pass
+                else:
+                    bedroom='0'
+            if 'bath_room' in postdata and postdata['bath_room']!=None: 
+                bathroom = str(postdata['bath_room'])
+            else:
+                if postdata['property_type']=='6' or postdata['property_type']=='9'or postdata['property_type']=='10'or postdata['property_type']=='25':
+                    pass
+                else:
+                    bathroom='0'
+            if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None:
+                postdata['land_size_ngan']=0
+            if 'land_size_rai' not in postdata or postdata['land_size_rai']==None:
+                postdata['land_size_rai']=0
+            if 'land_size_wa' not in postdata or postdata['land_size_wa']==None:
+                postdata['land_size_wa']=0
+            if 'project_name' not in postdata:
+                postdata['project_name']=postdata['post_title_th']
+            if len(postdata['post_images'])==0:
+                postdata['post_images']=['imgtmp/default/white.jpg']
+            # if 'floor_area' in postdata: floor_area = postdata['floor_area']
+            floorarea='0'
+            print(postdata['property_type'])
+            if postdata['property_type']=='1' or postdata['property_type']=='9' or postdata['property_type']=='10' or postdata['property_type']=='25':
+                if 'floor_area' not in postdata:
+                    postdata['floor_area']=0
+                floorarea=str(postdata['floor_area'])+" ตรม"
+            else:
+                floorarea=str(400*int(postdata['land_size_rai']) + 100 * int(postdata['land_size_ngan']) + int(postdata['land_size_wa'])) +" ตรว"
+            postdata['post_project_name']=postdata['post_description_th']
+            postdata['post_description_th']=postdata['post_description_th'].replace('\r\n','<br>')
+            postdata['post_description_th']=postdata['post_description_th'].replace('\n','<br>')
             datapost = {
                 'class_type_id':'1', # 1 for sell 2 for rent
                 'cate_id':postdata['cate_id'], #the property tye
                 'action': 'p-edit-property.php',
                 'status': '1',
                 'title': postdata['post_title_th'],
-                'project': postdata['project_name'],
+                'project': postdata['post_project_name'],
                 'price':postdata['price_baht'],
                 'add':prod_address,
                 'province':province_id,
@@ -231,7 +284,8 @@ class teesuay():
                 'bedroom':bedroom,
                 'bathroom':bathroom,
                 'floors':floor_total,
-                'area':floor_area,
+                'input':postdata['post_description_th'],
+                'area':floorarea,
                 'capcha':"ABCD",
                 'rands':"ABCD",
                 'fileshow': '(binary)',
@@ -245,14 +299,14 @@ class teesuay():
                 'op3': '',
                 'file4': '(binary)',
                 'op4':'',
-                'name':'Temp',
-                'email':postdata['user'],
-                'website':'http://temp.com',
+                'name':postdata['name'],
+                'email':postdata['email'],
+                'website':'',
+                'tel': postdata['mobile'],
                 'Submit':'Continue >>'
             }
             if postdata['listing_type']!='ขาย':
                 datapost['class_type_id']=2
-            
             arr = ["fileshow", "file1", "file2", "file3", "file4"]
             files={}
             for i in range(len(postdata['post_images'][:5])):
@@ -263,6 +317,8 @@ class teesuay():
                 'http://www.teesuay.com/member/p-post-property.php', data=datapost,files=files)
 
             data = r.text
+            if 'รูปภาพโชว์ เฉพาะไฟล์ภาพ .jpg หรือ .jpeg เท่านั้น' in r.text:
+                success='false'
             if data == '1':
                 success = "false"
             else:
@@ -291,6 +347,7 @@ class teesuay():
         return {
             "websitename": "teesuay",
             "success": success,
+            "ret":success,
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
@@ -311,8 +368,31 @@ class teesuay():
         post_id = ""
         detail = ""
         province_id=-1
-        amphur_id=0
+        amphur_id=-1
 
+        url_list='http://www.teesuay.com/member/list-property.php'
+        # url_list='https://www.novabizz.com/manage-post.php'
+        r=httprequestObj.http_get(url_list)
+        soup = BeautifulSoup(r.content, 'html5lib')
+        ahref=soup.findAll('a')
+        post_id=''
+        storeI=''
+        for i in ahref:
+            var=i['href']
+            j = len('../property/')
+            post_id = ''
+            
+            while j<len(var) and var[j] != '/':
+                post_id += var[j]
+                j += 1
+            if post_id == postdata['post_id']:
+                storeI=i
+                break;
+        if storeI=='':
+            return {
+                'websitename':'teesuay',
+                'success':'false',
+            }
         for (key, value) in provincedata.items():
             if type(value) is str and postdata['addr_province'].strip() in value.strip():
                 province_id = key
@@ -320,6 +400,7 @@ class teesuay():
 
         if province_id=="":
             return{
+                'websitename':'teesuay',
                 'success': 'false',
                 'ret': "",
                 'post_url': "",
@@ -333,6 +414,7 @@ class teesuay():
 
         if amphur_id==-1:
             return{
+                'websitename':'teesuay',
                 'success': 'false',
                 'ret': "",
                 'post_url': "",
@@ -347,30 +429,31 @@ class teesuay():
         #         postdata['post_img_url_lists'][i], str(no)+".jpg")
         #     no += 1
 
-
         prod_address = ""
         for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
-            if add is not None:
+            if add is not None and add=="" and add==" ":
                 prod_address += add + ","
         prod_address = prod_address[:-1]
 
         propertytype={
             '6':1,
             '2':2,
-            '3':3,
+            '4':3,
             '1':4,
             '7':5,
             '5':6,
             # 'Resort hotel':7,
             '9':8,
             '10':9,
-            '4':10,
-            '8':10
-            }
+            '25':9,
+            '8':7,
+            '3':2
+        }
         try:
-            postdata['cate_id']=propertytype[postdata['property_type']]
+            postdata['cate_id']=propertytype[str(postdata['property_type'])]
         except:
             return{
+                'websitename':'teesuay',
                 'success': 'false',
                 'detail':'wrong propertytype',
                 'ret': '',
@@ -378,6 +461,52 @@ class teesuay():
                 'post_id': ''
             }
         if success == "true":
+            postdata['post_title_th']=postdata['post_title_th'].replace('%','')
+            postdata['post_project_name']=postdata['post_description_th']
+            postdata['post_description_th']=postdata['post_description_th'].replace('\r\n','<br>')
+            postdata['post_description_th']=postdata['post_description_th'].replace('\n','<br>')
+            floor_total, bedroom, bathroom = [''] * 3
+            if 'floor_total' in postdata and postdata['floor_total']!=None: 
+                floor_total = str(postdata['floor_total'])
+            else:
+                if postdata['property_type']=='6' or postdata['property_type']=='10'or postdata['property_type']=='25':
+                    pass
+                else:
+                    floor_total = '2'
+            if 'bed_room' in postdata and postdata['bed_room']!=None: 
+                bedroom = str(postdata['bed_room'])
+            else:
+                if postdata['property_type']=='6' or postdata['property_type']=='9' or postdata['property_type']=='10'or postdata['property_type']=='25':
+                    pass
+                else:
+                    bedroom='2'
+            if 'bath_room' in postdata and postdata['bath_room']!=None: 
+                bathroom = str(postdata['bath_room'])
+            else:
+                if postdata['property_type']=='6' or postdata['property_type']=='9' or postdata['property_type']=='10'or postdata['property_type']=='25':
+                    pass
+                else:
+                    bathroom='2'
+            if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None:
+                postdata['land_size_ngan']=0
+            if 'land_size_rai' not in postdata or postdata['land_size_rai']==None:
+                postdata['land_size_rai']=0
+            if 'land_size_wa' not in postdata or postdata['land_size_wa']==None:
+                postdata['land_size_wa']=0
+            if 'project_name' not in postdata:
+                postdata['project_name']=postdata['post_title_th']
+            if len(postdata['post_images'])==0:
+                postdata['post_images']=['imgtmp/default/white.jpg']
+            # if 'floor_area' in postdata: floor_area = postdata['floor_area']
+            floorarea='0'
+            print(postdata['property_type'])
+            if postdata['property_type']=='1' or postdata['property_type']=='9' or postdata['property_type']=='10' or postdata['property_type']=='25':
+                if 'floor_area' not in postdata:
+                    postdata['floor_area']=0
+                floorarea=str(postdata['floor_area'])+ " ตรม"
+            else:
+                floorarea=str(400*int(postdata['land_size_rai']) + 100 * int(postdata['land_size_ngan']) + int(postdata['land_size_wa'])) +" ตรว"
+            
             datapost = {
                 'post_id':postdata['post_id'],
                 # 'class_type_id':postdata['class_type_id'], # 1 for sell 2 for rent
@@ -385,7 +514,7 @@ class teesuay():
                 'action': 'p-edit-property.php',
                 'status': '1',
                 'title': postdata['post_title_th'],
-                'project': postdata['post_title_th'],
+                'project': postdata['post_project_name'],
                 'price':postdata['price_baht'],
                 'add':prod_address,
                 'province':province_id,
@@ -397,7 +526,7 @@ class teesuay():
                 'bedroom':'',
                 'bathroom':'',
                 'floors':'',
-                'area':prod_address,
+                'area':floorarea,
                 'capcha':"ABCD",
                 'rands':"ABCD",
                 'fileshow': '(binary)',
@@ -411,10 +540,11 @@ class teesuay():
                 'op3': '',
                 'file4': '(binary)',
                 'op4':'',
-                'name':'Temp',
-                'email':'temp@gmail.com',
-                'website':'http://temp.com',
-                'Submit':'Continue >>'
+                'name':postdata['name'],
+                'email':postdata['email'],
+                'website':'',
+                'Submit':'Continue >>',
+                'tel': postdata['mobile']
             }
             if postdata['listing_type']!='ขาย':
                 datapost['class_type_id']=2
@@ -426,12 +556,10 @@ class teesuay():
                 datapost[arr[i]] = postdata['post_images'][i]
                 files[arr[i]] = (postdata['post_images'][i], open(postdata['post_images'][i], "rb"), "image/jpg")
 
- 
-
-
             url_n='http://www.teesuay.com/member/p-edit-property.php'
 
             r=httprequestObj.http_post(url_n,datapost)
+
             detail=r.text
             success="true"
         else:
@@ -458,12 +586,35 @@ class teesuay():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
+        url_list='http://www.teesuay.com/member/list-property.php'
+        r=httprequestObj.http_get(url_list)
+        soup = BeautifulSoup(r.content, 'html5lib')
+        ahref=soup.findAll('a')
+        post_id=''
+        storeI=''
+        for i in ahref:
+            var=i['href']
+            j = len('../property/')
+            post_id = ''
+
+            while j<len(var) and var[j] != '/':
+                post_id += var[j]
+                j += 1
+            if post_id == postdata['post_id']:
+                storeI=i
+                break;
+        if storeI=='':
+            return {
+                'websitename':'teesuay',
+                'success':'false'
+            }
         r=httprequestObj.http_get('http://www.teesuay.com/member/list-property.php')
             # r=s.post(edit_url,,headers=register_headers)
         soup = BeautifulSoup(r.content, 'html5lib')
         var = soup.find('input', attrs={'name': 'hdnCount'})['value']
         if len(var) == 0:
             return{
+                'websitename':'teesuay',
                 'success': 'false',
                 'ret': "",
                 'post_url': "",

@@ -1,0 +1,69 @@
+CREATE POST : with new line  => Pass
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiY3JlYXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgInBvc3RfaW1nX3VybF9saXN0cyI6IFsiaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS91cmw/c2E9aSZ1cmw9aHR0cHMlM0ElMkYlMkZwaXhhYmF5LmNvbSUyRmltYWdlcyUyRnNlYXJjaCUyRm5hdHVyZSUyRiZwc2lnPUFPdlZhdzNyMnFDLTk2UHNzbVFtZURraUw5M3YmdXN0PTE1ODcyOTA3NDIxNTAwMDAmc291cmNlPWltYWdlcyZjZD12ZmUmdmVkPTBDQUlRalJ4cUZ3b1RDTGo5dFAzYzhlZ0NGUUFBQUFBZEFBQUFBQkFEIl0sICJnZW9fbGF0aXR1ZGUiOiAiMTMuOTk4OTgzMzg2MjEyNDk3IiwgImdlb19sb25naXR1ZGUiOiAiOTkuNzQ0NjQwMjkwNDYxNDIiLCAicHJvcGVydHlfaWQiOiAiIiwgInBvc3RfdGl0bGVfdGgiOiAieHh4IiwgInNob3J0X3Bvc3RfdGl0bGVfdGgiOiAieHh4IiwgInBvc3RfZGVzY3JpcHRpb25fdGgiOiAieHh4IiwgInBvc3RfdGl0bGVfZW4iOiAiYWJjZGFza2pkZmciLCAic2hvcnRfcG9zdF90aXRsZV9lbiI6ICJ4eHgiLCAicG9zdF9kZXNjcmlwdGlvbl9lbiI6ICJMYW5kIGZvciByZW50IGJhbmdrbG95c2Fpbm9pIDYgcmFpIHN1aXRhYmxlIGZvciBkZXZlbG9waW5nXHJcbkxhbmQgU2l6ZSA2IHJhaVxyXG5XaWR0aCAzMCBtZXRlciIsICJwcmljZV9iYWh0IjogMzAwMCwgInByb2plY3RfbmFtZSI6ICJwcm9qZWN0bmFtZWlzZW5ldGVydGVkaGVyZSIsICJsaXN0aW5nX3R5cGUiOiAiXHUwZTAyXHUwZTMyXHUwZTIyIiwgInByb3BlcnR5X3R5cGUiOiAyLCAiZmxvb3JfbGV2ZWwiOiAyLCAiZmxvb3JfdG90YWwiOiAiMTEiLCAiZmxvb3JfYXJlYSI6ICIxMSIsICJiYXRoX3Jvb20iOiAyLCAiYmVkX3Jvb20iOiAzLCJkdXJhdGlvbiI6IjMwIiAsInByb21pbmVudF9wb2ludCI6ICJcdTBlMDhcdTBlMzhcdTBlMTRcdTBlNDBcdTBlMTRcdTBlNDhcdTBlMTkiLCAidmlld190eXBlICI6ICIxMSIsICJkaXJlY3Rpb25fdHlwZSI6ICIxMSIsICJhZGRyX3Byb3ZpbmNlIjogIlx1MGUwMVx1MGUzMlx1MGUwZFx1MGUwOFx1MGUxOVx1MGUxYVx1MGUzOFx1MGUyM1x1MGUzNSIsICJhZGRyX2Rpc3RyaWN0IjogIlx1MGUxN1x1MGU0OFx1MGUzMlx1MGUyMVx1MGUzMFx1MGUwMVx1MGUzMiIsICJhZGRyX3N1Yl9kaXN0cmljdCI6ICJcdTBlMTVcdTBlMzBcdTBlMDRcdTBlMjNcdTBlNDlcdTBlMzNcdTBlNDBcdTBlMmRcdTBlMTkiLCAiYWRkcl9yb2FkIjogIiIsICJhZGRyX3NvaSI6ICIiLCAiYWRkcl9uZWFyX2J5IjogIiIsICJmbG9vcmFyZWFfc3FtIjogMTIzNCwgImxhbmRfc2l6ZV9yYWkiOiAzMiwgImxhbmRfc2l6ZV9uZ2FuIjogMjEsICJsYW5kX3NpemVfd2EiOiAxMiwgIm5hbWUiOiAieHh4IiwgIm1vYmlsZSI6ICJ4eHgiLCAiZW1haWwiOiAieHh4IiwgImxpbmUiOiAieHh4IiwgIndlYiI6IFt7ImRzX25hbWUiOiAidGVlZGluMiIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAidGVtcEBnbWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
+<output>
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "teedin2": {
+   "websitename": "teedin2",
+   "success": "true",
+   "ret": "window.location = 'https://www.teedin2.com/detail/379909.html';",
+   "post_url": "https://www.teedin2.com/detail/379909.html",
+   "post_id": "379909"
+  }
+ },
+ "usage_time": "0:00:12.961095",
+ "start_time": "2020-04-18 16:53:42.332072",
+ "end_time": "2020-04-18 16:53:55.293167"
+}
+
+
+
+Edit Post
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwb3N0X2ltZ191cmxfbGlzdHMiOiBbImh0dHBzOi8vY2RuLnBpeGFiYXkuY29tL3Bob3RvLzIwMTUvMDQvMjMvMjIvMDAvdHJlZS03MzY4ODVfXzM0MC5qcGciXSwgImdlb19sYXRpdHVkZSI6ICIxMy45OTg5ODMzODYyMTI0OTciLCAiZ2VvX2xvbmdpdHVkZSI6ICI5OS43NDQ2NDAyOTA0NjE0MiIsICJwcm9wZXJ0eV9pZCI6ICIiLCAicG9zdF90aXRsZV90aCI6ICJ4WXgiLCAic2hvcnRfcG9zdF90aXRsZV90aCI6ICJ4eHgiLCAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJ4eHgiLCAicG9zdF90aXRsZV9lbiI6ICJhYmNkYXNramRmZyIsICJzaG9ydF9wb3N0X3RpdGxlX2VuIjogInh4eCIsICJwb3N0X2Rlc2NyaXB0aW9uX2VuIjogIkVkaXR0ZWQgd2l0aCBuZXdsaW5lXHJcbm5ld2xpbmVcclxubmV3bGluZSIsICJwcmljZV9iYWh0IjogMzAwMCwgInByb2plY3RfbmFtZSI6ICJwcm9qZWN0bmFtZWlzZW5ldGVydGVkaGVyZSIsICJsaXN0aW5nX3R5cGUiOiAiXHUwZTAyXHUwZTMyXHUwZTIyIiwgInByb3BlcnR5X3R5cGUiOiAyLCAiZmxvb3JfbGV2ZWwiOiAyLCAiZmxvb3JfdG90YWwiOiAiMTEiLCAiZmxvb3JfYXJlYSI6ICIxMSIsICJiYXRoX3Jvb20iOiAyLCAiYmVkX3Jvb20iOiAzLCJkdXJhdGlvbiI6MzAsICJwcm9taW5lbnRfcG9pbnQiOiAiXHUwZTA4XHUwZTM4XHUwZTE0XHUwZTQwXHUwZTE0XHUwZTQ4XHUwZTE5IiwgInZpZXdfdHlwZSAiOiAiMTEiLCAiZGlyZWN0aW9uX3R5cGUiOiAiMTEiLCAiYWRkcl9wcm92aW5jZSI6ICLguIHguKPguLjguIfguYDguJfguJ7guKHguKvguLLguJnguITguKMiLCAiYWRkcl9kaXN0cmljdCI6ICLguITguKXguK3guIfguYDguJXguKIiLCAiYWRkcl9zdWJfZGlzdHJpY3QiOiAi4LiE4Lil4Lit4LiH4LiV4Lix4LiZIiwgImFkZHJfcm9hZCI6ICIiLCAiYWRkcl9zb2kiOiAiIiwgImFkZHJfbmVhcl9ieSI6ICIiLCAiZmxvb3JhcmVhX3NxbSI6IDEyMzQsICJsYW5kX3NpemVfcmFpIjogMzIsICJsYW5kX3NpemVfbmdhbiI6IDIxLCAibGFuZF9zaXplX3dhIjogMTIsICJuYW1lIjogInh4eCIsICJtb2JpbGUiOiAieHh4IiwgImVtYWlsIjogInh4eCIsICJsaW5lIjogInh4eCIsICJ3ZWIiOiBbeyJkc19uYW1lIjogInRlZWRpbjIiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogInRlbXBAZ21haWwuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgiLCAicG9zdF9pZCI6ICIzNzk5MDkiLCAibG9nX2lkIjogIjQ0NDQ0NCJ9XX0=
+<output>
+{
+ "success": "true",
+ "action": "edit_post",
+ "web": {
+  "teedin2": {
+   "success": "true",
+   "websitename": "teedin2",
+   "start_time": "2020-04-18 17:50:52.402601",
+   "end_time": "2020-04-18 17:51:07.405873",
+   "detail": "Edited "
+  }
+ },
+ "usage_time": "0:00:25.100654",
+ "start_time": "2020-04-18 17:50:42.335125",
+ "end_time": "2020-04-18 17:51:07.435779"
+}
+Delete Post
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7ImRzX25hbWUiOiAidGVlZGluMiIsICJkc19pZCI6ICI0IiwgInBvc3RfaWQiOiAiMzgwMTUwIiwgImxvZ19pZCI6ICI3MTk3NzMiLCAidXNlciI6ICJ0ZW1wQGdtYWlsLmNvbSIsICJwYXNzIjogIjEyMzQ1Njc4In1dfQ==
+<output>
+{
+ "success": "true",
+ "action": "delete_post",
+ "web": {
+  "novabizz": {
+   "websitename": "novabizz",
+   "success": "true",
+   "start_time": "2020-04-18 10:50:20.296147",
+   "end_time": "2020-04-18 10:50:22.197358",
+   "detail": "Deleted Post"
+  }
+ },
+ "usage_time": "0:00:01.975294",
+ "start_time": "2020-04-18 10:50:20.247664",
+ "end_time": "2020-04-18 10:50:22.222958"
+}
