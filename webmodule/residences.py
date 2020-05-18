@@ -190,6 +190,8 @@ class residences():
         if success == 'true':
 
             r = httprequestObj.http_get(self.primary_domain+'/users',verify=False)
+            #f = open("debug_response/loginpage.html", "wb")
+            #f.write(r.text.encode('utf-8').strip())
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
             datapost = {
@@ -354,8 +356,6 @@ class residences():
     def uploadimage(self,postdata,token,newrelic,url,content):
         log.debug('')
 
-        url = url.replace("amenities", "")
-
         #delete if has old image
         if len(postdata['post_images']) > 0:
             soup = BeautifulSoup(content, self.parser, from_encoding='utf-8')
@@ -403,8 +403,9 @@ class residences():
             data=encoder,
             headers=headers
             )
-            if re.search(r'id=\"image_\d+\"',r.text) != None:
-                log.debug('image upload id %s',re.search(r'id=\"image_(\d+)\"',r.text).group(1))
+            #log.debug(r.text)
+            if re.search(r'image_\d+',r.text) != None:
+                log.debug('image upload id %s',re.search(r'(image_\d+)',r.text).group(1))
             else:
                 log.warning('upload image %s fail',str(i+1))
 
@@ -420,34 +421,33 @@ class residences():
             'apartment[central_facility_ids][]': '',
             'do_not_validation_all_facility': 1,
             'do_not_validation_listing_images': 0,
-            'apartment[create_level]': 3,
+            'apartment[create_level]': 4, #3
             'ref_action': 'amenities',
         }
 
         return datapost
     
-    def get_datapost_apartment_roomtype(self,postdata,content):
+    def get_datapost_apartment_roomtype(self,postdata):
         log.debug('')
 
-        soup = BeautifulSoup(content, self.parser, from_encoding='utf-8')
-        roomattr = soup.find_all("input",id=re.compile('apartment_rooms_attributes_'))['id']
-        attrcode = re.search(r'apartment_rooms_attributes_(\d+)_name',roomattr).group(1)
+        # attrcode = int(datetime.datetime.now().timestamp()*1000)
+        # attrcode = str(attrcode)
 
         datapost = {
             'utf8': '✓',
             '_method': 'put',
-            'apartment[rooms_attributes]['+attrcode+'][name]': 'อพาร์ทเม้น',
-            'apartment[rooms_attributes]['+attrcode+'][room_type]': 'R0',
-            'apartment[rooms_attributes]['+attrcode+'][size]': postdata['floor_area'],
-            'apartment[rooms_attributes]['+attrcode+'][monthly]': 0,
-            'apartment[rooms_attributes]['+attrcode+'][monthly]': 1,
-            'apartment[rooms_attributes]['+attrcode+'][min_price_permonth]': postdata['price_baht'],
-            'apartment[rooms_attributes]['+attrcode+'][max_price_permonth]': postdata['price_baht'],
-            'apartment[rooms_attributes]['+attrcode+'][daily]': 0,
-            'apartment[rooms_attributes]['+attrcode+'][min_price_perday]':'',
-            'apartment[rooms_attributes]['+attrcode+'][max_price_perday]': '',
-            'apartment[rooms_attributes]['+attrcode+'][available]': 0,
-            'apartment[rooms_attributes]['+attrcode+'][_destroy]': 'false',
+            'apartment[rooms_attributes][0][name]': 'อพาร์ทเม้น',
+            'apartment[rooms_attributes][0][room_type]': 'R0',
+            'apartment[rooms_attributes][0][size]': postdata['floor_area'],
+            'apartment[rooms_attributes][0][monthly]': 0,
+            'apartment[rooms_attributes][0][monthly]': 1,
+            'apartment[rooms_attributes][0][min_price_permonth]': postdata['price_baht'],
+            'apartment[rooms_attributes][0][max_price_permonth]': postdata['price_baht'],
+            'apartment[rooms_attributes][0][daily]': 0,
+            'apartment[rooms_attributes][0][min_price_perday]':'',
+            'apartment[rooms_attributes][0][max_price_perday]': '',
+            'apartment[rooms_attributes][0][available]': 1,
+            'apartment[rooms_attributes][0][_destroy]': 'false',
             'apartment[water_price]':'' ,
             'apartment[water_price_monthly_per_person]': '',
             'apartment[water_price_monthly_per_room]': '',
@@ -480,7 +480,7 @@ class residences():
             'apartment[promotion_end]': '',
             'apartment[promotion_description]': '',
             '_wysihtml5_mode': 1,
-            'apartment[create_level]': 3,
+            'apartment[create_level]': 4,#3,
             'ref_action': 'roomtypes',
         }
 
@@ -507,34 +507,44 @@ class residences():
             datapost['apartment[create_level]'] = 1
             datapost['ref_action'] = 'new'
             r = httprequestObj.http_post(self.primary_domain + '/apartments', data=datapost)
-
-            #image and amenities
+            # f = open("debug_response/postgeneral.html", "wb")
+            # f.write(r.text.encode('utf-8').strip())
             if re.search(r'amenities', r.url) == None:
                 success = 'false'
                 detail = 'cannot post in general wizard'
 
+            #image and amenities
             if success == 'true':
                 postid = re.search(r'residences\.in\.th\/apartments\/(\d+)-', r.url).group(1)
                 log.debug('postid %s',postid)
                 soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                 authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
                 newrelic = 'UA8CWVBUGwUHUlFVBAM='
-                
-                self.uploadimage(postdata,authenticity_token,newrelic,r.url,r.text)
-
+                posturl = r.url.replace("/amenities", "")
+                self.uploadimage(postdata,authenticity_token,newrelic,posturl,r.text)
                 datapost = self.get_datapost_apartment_amenities()
                 datapost['authenticity_token'] = authenticity_token
-                posturl = r.url.replace("amenities", "")
                 r = httprequestObj.http_post(posturl, data=datapost)
-                #TODO
+                r = httprequestObj.http_get(posturl + '/roomtypes' ,verify=False)
+                #f = open("debug_response/residentroomtype.html", "wb")
+                #f.write(r.text.encode('utf-8').strip())
                 if re.search(r'roomtypes', r.url) == None:
                     success = 'false'
                     detail = 'cannot post in image and amenities'
                 
             if success == 'true':
-                datapost = self.get_datapost_apartment_roomtype(postdata,r.text)
+                #test
+                p = httprequestObj.http_post('https://bam.nr-data.net/events/1/1a40c9db78?a=6760732&v=1167.2a4546b&to=dlldQ0paDlVUFhlZEVRER1pdWxZKHhZZVwxBT0NSSw%3D%3D&rst=41978&ref='+posturl+'/roomtypes', data={})  
+                
+
+
+                soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+                authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
+                #TODO อาจจะต้องใช้ตอน edit apartment[rooms_attributes][0][id]: 17853
+                datapost = self.get_datapost_apartment_roomtype(postdata)
                 datapost['authenticity_token'] = authenticity_token
-                r = httprequestObj.http_post(posturl, data=datapost)
+                r = httprequestObj.http_post(posturl, data=datapost)       
+                r = httprequestObj.http_get(posturl + '/verify' ,verify=False)
                 if re.search(r'verify', r.url) == None:
                     success = 'false'
                     detail = 'cannot post in roomtype'
