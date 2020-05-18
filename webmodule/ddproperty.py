@@ -60,7 +60,7 @@ class ddproperty():
         name_en = datahandled["name_en"]
         surname_en = datahandled["surname_en"]
         tel = datahandled["tel"]
-        line: datahandled["line"]
+        line = datahandled["line"]
         addr_province = datahandled["addr_province"]
         tel = list(tel)
         del tel[0]
@@ -117,6 +117,7 @@ class ddproperty():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            "websitename": self.websitename,
             "success": register_success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),

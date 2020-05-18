@@ -380,7 +380,9 @@ class proptecheasy():
         r = httprequestObj.http_post(
             'https://www.proptecheasy.com/wp-content/plugins/pointfindercoreelements/includes/pfajaxhandler.php', headers=headers, data=datapost)
         get_security(1)
+        print(r.text,"lol1")
         data = json.loads(r.text)
+        print(data,"lol")
         if data['login'] == 'false' or data['login'] == 'False' or data['login'] == False:
             success = "false"
             detail = "cannot login"
