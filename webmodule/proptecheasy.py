@@ -92,8 +92,8 @@ def get_security(flag1, post_id=''):
 
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
-        with open('temp', 'w') as f:
-            f.write(str(soup))
+        # with open('temp', 'w') as f:
+        #     f.write(str(soup))
 
         arr = soup.find_all('script')
         var = ""
@@ -145,8 +145,8 @@ def get_security(flag1, post_id=''):
 
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
-        with open('temp', 'w') as f:
-            f.write(str(soup))
+        # with open('temp', 'w') as f:
+        #     f.write(str(soup))
 
         arr = soup.find_all('script')
         var = ""
@@ -208,8 +208,8 @@ def get_security(flag1, post_id=''):
             'https://www.proptecheasy.com/dashboard/', headers=headers, params=params)
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
-        with open('temp', 'w') as f:
-            f.write(str(soup))
+        # with open('temp', 'w') as f:
+        #     f.write(str(soup))
 
         arr = soup.find_all('script')
         var = ""
