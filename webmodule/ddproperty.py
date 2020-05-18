@@ -60,7 +60,7 @@ class ddproperty():
         name_en = datahandled["name_en"]
         surname_en = datahandled["surname_en"]
         tel = datahandled["tel"]
-        line: datahandled["line"]
+        line = datahandled["line"]
         addr_province = datahandled["addr_province"]
         tel = list(tel)
         del tel[0]
