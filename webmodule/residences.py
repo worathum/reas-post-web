@@ -152,8 +152,8 @@ class residences():
                 detail = detail + ' ' + 'addr_district not defined'
             if postdata['addr_sub_district'] == None:
                 detail = detail + ' ' + 'addr_sub_district not defined'
-            if postdata['property_type'] == 7 and postdata.get('addr_number',None) == None: #apartment required arr_number
-                detail = detail + ' ' + 'apartment required arr_number'
+            if postdata.get('addr_number',None) == None: #apartment/condo required arr_number
+                detail = detail + ' ' + 'apartment/condo required arr_number'
             if postdata['name'] == None:
                 detail = detail + ' ' + 'name not defined'
             if postdata['mobile'] == None:
@@ -162,7 +162,41 @@ class residences():
                 detail = detail + ' ' + 'email not defined'
             if postdata['listing_type'] != 'เช่า':
                 detail = detail + ' ' + 'allow only RENT' 
+            #title is not len > 60
+            if len(postdata['post_title_th']) > 60:
+                postdata['post_title_th'] = postdata['post_title_th'][:60]
+                log.debug('split post_title_th to %s',str(postdata['post_title_th']))
+            if postdata['property_type'] == 1:
+                if postdata.get('floor_level',None) == None or postdata.get('floor_level','') == '':
+                    detail = detail + ' ' + 'allow only condo and apartment' 
+            
+            if postdata.get('name',None) == None or postdata.get('name','') == '':
+                detail = detail + ' ' + 'name not defined'
+            if postdata.get('mobile',None) == None or postdata.get('mobile','') == '':
+                detail = detail + ' ' + 'mobile not defined'
+        
+        if postdata['action'] == 'edit_post':
+            if postdata.get('post_id',None) == None or postdata.get('post_id','') == '':
+                detail = 'post_id is not defined'
 
+        #direction
+        direction = postdata.get('direction_type',None)
+        if direction == int(11):
+            postdata['direction_type'] = 'n'
+        elif direction == int(12):
+            postdata['direction_type'] = 's'
+        elif direction == int(13):
+            postdata['direction_type'] = 'e'
+        elif direction == int(14):
+            postdata['direction_type'] = 'w'
+        elif direction == int(21):
+            postdata['direction_type'] = 'ne'
+        elif direction == int(22):
+            postdata['direction_type'] = 'se'
+        elif direction == int(23):
+            postdata['direction_type'] = 'nw'
+        else: #24 ทิศตะวันตกเฉียงใต้
+            postdata['direction_type'] = 'sw'
 
         if detail != "":
             success = 'false'
@@ -189,31 +223,38 @@ class residences():
 
         if success == 'true':
 
+            #clear session
+            r = httprequestObj.http_get(self.primary_domain+'/users/sign_out',verify=False)
+
             r = httprequestObj.http_get(self.primary_domain+'/users',verify=False)
             #f = open("debug_response/loginpage.html", "wb")
             #f.write(r.text.encode('utf-8').strip())
-            soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
-            authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
-            datapost = {
-                "authenticity_token":authenticity_token,
-                "commit":"เข้าสู่ระบบ",
-                "user[email]":postdata['user'],
-                "user[password]":postdata['pass'],
-                "user[remember_me]":"0",
-                "utf8":"✓"
-            }
-
-            r = httprequestObj.http_post(self.primary_domain + '/users/sign_in', data=datapost)
-            if re.search(r'คุณได้ลงชื่อเข้าใช้สำเร็จแล้ว', r.text) == None:
+            if re.search(r'Not authorized as an administrator', r.text) != None:
                 success = 'false'
-                if re.search(r'อีเมล์หรือรหัสผ่าน', r.text) != None:
-                    detail = 'email or password invalid'
-                elif re.search(r'กรุณายืนยันบัญชีของคุณก่อน',r.text) != None:
-                    detail = 'please confirm email before login'
-                elif re.search(r'บัญชีของคุณถูกระงับการใช้งาน',r.text) != None:
-                    detail = 'บัญชีของคุณถูกระงับการใช้งาน'
-                else:
-                    detail = 'login error'
+                detail = 'web login page error please try again'
+            if success == 'true':
+                soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+                authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
+                datapost = {
+                    "authenticity_token":authenticity_token,
+                    "commit":"เข้าสู่ระบบ",
+                    "user[email]":postdata['user'],
+                    "user[password]":postdata['pass'],
+                    "user[remember_me]":"0",
+                    "utf8":"✓"
+                }
+
+                r = httprequestObj.http_post(self.primary_domain + '/users/sign_in', data=datapost)
+                if re.search(r'คุณได้ลงชื่อเข้าใช้สำเร็จแล้ว', r.text) == None:
+                    success = 'false'
+                    if re.search(r'อีเมล์หรือรหัสผ่าน', r.text) != None:
+                        detail = 'email or password invalid'
+                    elif re.search(r'กรุณายืนยันบัญชีของคุณก่อน',r.text) != None:
+                        detail = 'please confirm email before login'
+                    elif re.search(r'บัญชีของคุณถูกระงับการใช้งาน',r.text) != None:
+                        detail = 'บัญชีของคุณถูกระงับการใช้งาน'
+                    else:
+                        detail = 'login error'
 
         # end process
         #
@@ -229,9 +270,6 @@ class residences():
             "ds_id": postdata['ds_id']
         }
 
-   
-
-   
 
     def create_post(self, postdata):
         log.debug('')
@@ -264,7 +302,7 @@ class residences():
                 success ,detail ,postid ,posturl = self.create_post_apartment(postdata)
             #condo
             else: #1
-                self.create_post_condo(postdata)
+                success ,detail ,postid ,posturl = self.create_post_condo(postdata)
 
 
         #check condo or apartment
@@ -346,14 +384,13 @@ class residences():
                 'apartment[line_user_id]': postdata['line'],
                 'apartment[facebook_url]': '' ,
                 'apartment[description]': postdata['post_description_th'],
-                '_wysihtml5_mode': 1,
                 'apartment[en_description]': postdata['post_description_en'],
                 '_wysihtml5_mode': 1,
         }
 
         return datapost
     
-    def uploadimage(self,postdata,token,newrelic,url,content):
+    def uploadimage_apartment(self,postdata,token,newrelic,url,content):
         log.debug('')
 
         #delete if has old image
@@ -411,6 +448,59 @@ class residences():
 
         return True
     
+    def uploadimage_condo(self,postdata,token,newrelic,url,content):
+        log.debug('')
+
+        #delete if has old image
+        if len(postdata['post_images']) > 0:
+            soup = BeautifulSoup(content, self.parser, from_encoding='utf-8')
+            oldimage = soup.find_all("li",id=re.compile('photo_'))
+            for image in oldimage:
+                imageid = image['id']
+                imageid = imageid.replace("photo_", "")
+                deleteurl = self.primary_domain + '/photos/' + str(imageid)
+                datapost = {
+                    '_method': 'delete',
+                    'authenticity_token': token
+                }
+                r = httprequestObj.http_post(
+                deleteurl,
+                data=datapost,
+                )
+                log.debug('deleted image %s',str(image['id']))
+
+        #add
+        uploadurl = url
+        imgcount = len(postdata['post_images'])
+        for i in range(imgcount):
+            datapost = {
+                'utf8': '✓',
+                '_method': 'put',
+                'authenticity_token': str(token),
+                'do_not_validation_listing_images': '0',
+                'accepted[term_and_condition]': '0', #TODO
+                'listing[create_level]': '2',
+                'ref_action': 'images',
+                'listing[photos_attributes][][attachment]': ( str(i+1) + '.jpg', open(os.path.abspath(postdata['post_images'][i]), 'rb'), 'image/jpeg'),
+            }
+            encoder = MultipartEncoder(fields=datapost)
+            headers = {
+                'x-csrf-token': token,
+                'x-newrelic-id': newrelic,
+                'Content-Type': encoder.content_type
+            }
+            r = httprequestObj.http_post(
+            uploadurl,
+            data=encoder,
+            headers=headers
+            )
+            if r.status_code == 200:
+                log.debug('image uploaded  %s',str(i+1))
+            else:
+                log.warning('upload image %s fail',str(i+1))
+
+        return True
+    
     def get_datapost_apartment_amenities(self):
         log.debug('')
 
@@ -418,7 +508,9 @@ class residences():
             'utf8': '✓',
             '_method': 'put',
             'apartment[facility_ids][]': '',
+            'apartment[facility_ids][]': 2,
             'apartment[central_facility_ids][]': '',
+            'apartment[central_facility_ids][]': 12,
             'do_not_validation_all_facility': 1,
             'do_not_validation_listing_images': 0,
             'apartment[create_level]': 4, #3
@@ -439,7 +531,6 @@ class residences():
             'apartment[rooms_attributes][0][name]': 'อพาร์ทเม้น',
             'apartment[rooms_attributes][0][room_type]': 'R0',
             'apartment[rooms_attributes][0][size]': postdata['floor_area'],
-            'apartment[rooms_attributes][0][monthly]': 0,
             'apartment[rooms_attributes][0][monthly]': 1,
             'apartment[rooms_attributes][0][min_price_permonth]': postdata['price_baht'],
             'apartment[rooms_attributes][0][max_price_permonth]': postdata['price_baht'],
@@ -512,6 +603,8 @@ class residences():
             if re.search(r'amenities', r.url) == None:
                 success = 'false'
                 detail = 'cannot post in general wizard'
+                if re.search(r'กรุณาคลิกเครื่องหมายถูกในช่อง',r.text) != None:
+                    detail = 'cannot post in general wizard '+ '(google anti captcha block)'
 
             #image and amenities
             if success == 'true':
@@ -521,7 +614,7 @@ class residences():
                 authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
                 newrelic = 'UA8CWVBUGwUHUlFVBAM='
                 posturl = r.url.replace("/amenities", "")
-                self.uploadimage(postdata,authenticity_token,newrelic,posturl,r.text)
+                self.uploadimage_apartment(postdata,authenticity_token,newrelic,posturl,r.text)
                 datapost = self.get_datapost_apartment_amenities()
                 datapost['authenticity_token'] = authenticity_token
                 r = httprequestObj.http_post(posturl, data=datapost)
@@ -533,16 +626,12 @@ class residences():
                     detail = 'cannot post in image and amenities'
                 
             if success == 'true':
-                #test
-                p = httprequestObj.http_post('https://bam.nr-data.net/events/1/1a40c9db78?a=6760732&v=1167.2a4546b&to=dlldQ0paDlVUFhlZEVRER1pdWxZKHhZZVwxBT0NSSw%3D%3D&rst=41978&ref='+posturl+'/roomtypes', data={})  
-                
-
-
                 soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                 authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
                 #TODO อาจจะต้องใช้ตอน edit apartment[rooms_attributes][0][id]: 17853
                 datapost = self.get_datapost_apartment_roomtype(postdata)
                 datapost['authenticity_token'] = authenticity_token
+                datapost['accepted[term_and_condition]'] = '1'
                 r = httprequestObj.http_post(posturl, data=datapost)       
                 r = httprequestObj.http_get(posturl + '/verify' ,verify=False)
                 if re.search(r'verify', r.url) == None:
@@ -553,120 +642,152 @@ class residences():
                 soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                 posturl = soup.find('a',{'class':'lightweight-line'})['href']
                 posturl =  self.primary_domain+posturl          
-    
 
+            #TODO ยอมรับเงื่อนไขและลงประกาศ
         #
         # end process
 
         return success ,detail ,postid ,posturl
+    
+    def get_condo_listing_id(self,postdata):
+        log.debug('')
+
+        success = 'true'
+        detail = ''
+
+        listingname = postdata.get('project_name',None)
+        if postdata.get('web_project_name',None) != None and postdata.get('web_project_name',None) != '':
+            listingname = postdata.get('web_project_name',None)
+        
+        if listingname == None:
+            success == "false"
+            detail = 'projectname is not defined'
+        
+        if success == 'true':
+            r = httprequestObj.http_get(self.primary_domain + '/listing_projects/searches.json?q='+str(listingname) ,verify=False)
+            datajson = r.json()
+            data = datajson['items']
+            if len(data) < 1:
+                success = 'false'
+                detail = 'not found project name'
+                log.warning('not found project name')
+            else:
+                postdata['project_id'] = data[0]['id']
+                log.debug('project id %s',postdata['project_id'])
+        
+        return success,detail,postdata
+
+    def get_datapost_condo_general(self,postdata):
+        log.debug('')
+
+        datapost = {
+            'utf8': '✓',
+            'listing[title]': postdata.get('post_title_th'),
+            'listing[title_en]': postdata.get('post_title_en') ,
+            'listing[listing_project_id]':postdata.get('project_id'),
+            'listing[post_type]':1,
+            'listing[remark]':'',
+            'listing[title_deed]':0,
+            'listing[room_type]':1,
+            'listing[no_of_bedroom]':postdata.get('bed_room',1),
+            'listing[no_of_bathroom]':postdata.get('bath_room',1),
+            'listing[room_area]':float(postdata.get('floor_area',1)),
+            'listing[floor]':postdata.get('floor_level'),
+            'listing[building]':'',
+            'listing[home_address]':postdata.get('addr_number'),
+            'listing[room_no]':'',
+            'listing[furnishing]':1,
+            'listing[parking_spaces]':1,
+            'listing[facing_direction]':postdata.get('direction_type'),
+            'listing[facility_ids][]':2,
+            'listing[rent_availability_status]':1,
+            'listing[rental_price_type]':1,
+            'listing[rent_price]':float(postdata.get('price_baht',1)),
+            'listing[daily_rental_price]':'',
+            'listing[daily_rental_price_type]':0,
+            'listing[deposit_month]':'',
+            'listing[deposit_bath]':'',
+            'listing[rental_deposit_type]':4,
+            'listing[advance_fee_month]':'',
+            'listing[advance_fee_bath]':'',
+            'listing[advance_fee_type]':4,
+            'listing[common_service_fee_bath]':'',
+            'listing[common_service_fee_type]':3,
+            'listing[detail]':postdata.get('post_description_th',''),
+            'listing[detail_en]': postdata.get('post_description_en',''),
+            '_wysihtml5_mode': 1,
+            'listing[contact_person]': postdata.get('name',''),
+            'listing[line_user_id]': postdata.get('line',''),
+            'listing[phone]': postdata.get('mobile',''),
+            'listing[email]': postdata.get('email',''),
+            'commit': 'สร้างประกาศและดำเนินการต่อ'
+        }
+
+        return datapost
+
+    def get_datapost_condo_accept_term(self):
+        datapost = {
+            'utf8': '✓',
+            '_method': 'put',
+            'listing[photos_attributes][][attachment]': '(binary)',
+            'do_not_validation_listing_images': '0',
+            'accepted[term_and_condition]': '1',
+            'listing[create_level]': '3',
+            'ref_action': 'images',
+        }
+
+        return datapost
 
     def create_post_condo(self, postdata):
         log.debug('')
-        time_start = datetime.datetime.utcnow()
 
-        # start process
-        #
-        datahandled = self.postdata_handle(postdata)
         success = "true"
         detail = ""
         postid = ""
+        posturl = ""
 
-        #TODO 1 first post
-        datapost = {            
-            "utf8": "✓",
-            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q=",
-            "listing": {
-                "title": "title thai",
-                "title_en": "title eng",
-                "listing_project_id": "14",
-                "post_type": "1",
-                "remark": "",
-                "title_deed": "0",
-                "room_type": "3",
-                "no_of_bedroom": "2",
-                "no_of_bathroom": "1",
-                "room_area": "11",
-                "floor": "11",
-                "building": "",
-                "home_address": "111",
-                "room_no": "111",
-                "furnishing": "3",
-                "parking_spaces": "2",
-                "facing_direction": "n",
-                "facility_ids": [
-                "14",
-                "3",
-                "4"
-                ],
-                "rent_availability_status": "1",
-                "rental_price_type": "1",
-                "rent_price": "10000",
-                "daily_rental_price": "",
-                "daily_rental_price_type": "2",
-                "deposit_month": "",
-                "deposit_bath": "",
-                "rental_deposit_type": "4",
-                "advance_fee_month": "",
-                "advance_fee_bath": "",
-                "advance_fee_type": "4",
-                "common_service_fee_bath": "",
-                "common_service_fee_type": "3",
-                "detail": "detail thai",
-                "detail_en": "detail eng",
-                "contact_person": "amarin boonkirt",
-                "line_user_id": "amarin.ta",
-                "phone": "0891999450",
-                "email": "amarin.ta@gmail.com",
-                "create_level": "1"
-            },
-            "_wysihtml5_mode": "1",
-            "ref_action": "new",
-            "commit": "สร้างประกาศและดำเนินการต่อ"
-        }
-
+        r = httprequestObj.http_get(self.primary_domain + '/listings/new' ,verify=False)
+        soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+        authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
         
-        r = httprequestObj.http_post(self.primary_domain + '/listings', data=datapost)
-        data = r.text
+        success,detail,postdata = self.get_condo_listing_id(postdata)
 
-        #TODO 2 edit https://www.residences.in.th/listings/31157-title-thai/images
-        # รูปภาพที่พัก
-        # ajax post image
+        if success == 'true':
+            datapost = self.get_datapost_condo_general(postdata)
+            datapost['authenticity_token'] = authenticity_token
+            datapost['ref_action'] = 'new'
+            datapost['listing[create_level]'] = 1,
+            r = httprequestObj.http_post(self.primary_domain + '/listings', data=datapost)
+            if re.search(r'images', r.url) == None:
+                success = 'false'
+                detail = 'cannot post in general wizard'
 
-        datapost = {
-            "utf8": "✓",
-            "_method": "put",
-            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q=",
-            "do_not_validation_listing_images": "0",
-            "accepted": {
-                "term_and_condition": "1"
-            },
-            "listing": {
-                "create_level": "2"
-            },
-            "ref_action": "images"
-        }
-        
-        r = httprequestObj.http_post(self.primary_domain + '/listings/31157-title-thai', data=datapost)
-        data = r.text
+            #image
+            if success == 'true':
+                postid = re.search(r'residences\.in\.th\/listings\/(\d+)-', r.url).group(1)
+                log.debug('postid %s',postid)
+                soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+                authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
+                newrelic = 'UA8CWVBUGwUHUlFVBAM='
+                posturl = r.url.replace("/images", "")
+                self.uploadimage_condo(postdata,authenticity_token,newrelic,posturl,r.text)
 
-        # if datahandled['web_project_name'] != '' , MUST use datahandled['web_project_name']
-
-        #
-        # end process
-
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
-        return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "ds_id": datahandled['ds_id'],
-            "post_url": "https://www.ddproperty.com/preview-listing/"+post_id if post_id != "" else "",
-            "post_id": post_id,
-            "account_type": "null",
-            "detail": detail,
-        }        
+            #accetp term and condition
+            datapost = self.get_datapost_condo_accept_term()
+            datapost['authenticity_token'] = authenticity_token
+            r = httprequestObj.http_post(posturl, data=datapost)
+            r = httprequestObj.http_get(posturl + '/verify' ,verify=False)
+            if re.search(r'verify', r.url) == None:
+                    success = 'false'
+                    detail = 'cannot post condo images'
+            
+            #get post link
+            if success == 'true':
+                soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+                posturl = soup.find('a',{'class':'lightweight-line'})['href']
+                posturl =  self.primary_domain+posturl
+       
+        return success ,detail ,postid ,posturl
 
     # not have boost post , use edit_post
     def boost_post(self, postdata):
@@ -805,49 +926,55 @@ class residences():
             "log_id": log_id,
         }
 
+    def get_post_type(self,postdata):
+        log.debug('')
+
+        #test condo
+        r = httprequestObj.http_get(self.primary_domain + '/listings/' + str(postdata['post_id']) + '/information',verify=False)
+        if r.status_code == 200:
+            log.debug('edit post type condo')
+            return 'true','','condo',r.text
+            
+        
+        #test apartment
+        r = httprequestObj.http_get(self.primary_domain + '/apartments/' + str(postdata['post_id']) + '/information',verify=False)
+        if r.status_code == 200:
+            log.debug('edit post type apartment')
+            return 'true','','apartment',r.text
+        
+        log.warning('not found post id %s',str(postdata['post_id']))
+        return 'false','cannot found post by post_id',''
+        
+
+
     def edit_post(self, postdata):
         log.debug('')
         time_start = datetime.datetime.utcnow()
 
-        # start proces
+        # start process
         #
-        datahandled = self.postdata_handle(postdata)
         success = "true"
         detail = ""
-        log_id = ""
-
-        post_id = ""
-        datapost = {
-            "data": {
-                #"lat_lng": datahandled['geo_latitude'], datahandled['geo_longitude'],
-                "post_type_code": datahandled['listing_type'],
-                "property_type_code": datahandled['property_type'],
-                "geo_id": "2",
-                "province_id": "1",
-                "amphur_id": "33",
-                "district_id": "192",
-                "subject": datahandled['post_title_th'],
-                "price": datahandled['price_baht'],
-                "description": datahandled['post_description_th'],
-                "map_use": "1",
-                "poster_name": datahandled['name'],
-                "poster_telephone": datahandled['mobile'],
-                "poster_email": datahandled['email'],
-                "poster_lineid": "amarin.ta",
-                "password": datahandled['pass']
-            },
-            "photos": {
-                "name": [
-                    "20200502124232_6821785ead08482d618.jpg"
-                ],
-                "angle": [
-                    "0"
-                ]
-            }
-        }
+        postid = ""
+        posturl = ""
         
-        r = httprequestObj.http_post(self.primary_domain + '/post/save/' + post_id + '/', data=datapost)
-        data = r.text
+        success,detail = self.validator(postdata)
+
+        #login
+        login = self.test_login(postdata)
+        success = login['success']
+        detail = login['detail']
+
+        if success == 'true':
+            #test post is condo or apartment
+            success,detail,posttype,content = self.get_post_type(postdata)
+        
+        if success == 'true':
+            if posttype == 'condo':
+                success,detail = self.edit_post_condo(postdata,content)
+            else:
+                success,detail = self.edit_post_apartment(postdata,content)
+
 
         #
         # end process
@@ -860,5 +987,40 @@ class residences():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            "log_id": log_id
+            "log_id": postdata['log_id'],
+            "websitename": self.websitename,
         }
+    
+    def edit_post_condo(self,postdata,content):
+        log.debug('')
+
+        
+        soup = BeautifulSoup(content, self.parser, from_encoding='utf-8')
+        posturl = soup.find('li',{'role':'presentation'}).find('a')['href']
+        posturl = self.primary_domain + posturl
+        posturl = posturl.replace("/information", "")
+        authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
+        datapost = self.get_datapost_condo_general(postdata)
+        datapost['authenticity_token'] = authenticity_token
+        datapost['_method']= 'put'
+        datapost['listing[create_level]']= 3
+        datapost['ref_action']= 'information'
+
+        #edit info
+        r = httprequestObj.http_post(posturl, data=datapost)
+
+        #upload image
+        r = httprequestObj.http_get(posturl + '/images' ,verify=False)
+        self.uploadimage_condo(postdata,authenticity_token,'UA8CWVBUGwUHUlFVBAM=',posturl,r.text)
+
+        #confirm term
+        datapost = self.get_datapost_condo_accept_term()
+        r = httprequestObj.http_post(posturl, data=datapost)
+
+        return 'true',''
+    
+    def edit_post_apartment(self,postdata,content):
+        log.debug('')
+
+        #TODO
+        return success,detail
