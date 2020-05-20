@@ -362,31 +362,33 @@ class residences():
     
     def get_datapost_apartment_general(self,postdata):
         datapost = {
-                'utf8': '✓',
-                'apartment[name]': postdata['post_title_th'],
-                'apartment[en_name]': postdata['post_title_en'],
-                'apartment[apartment_type]': 0,
-                'apartment[province_id]': postdata['provinceid'],
-                'apartment[amphur_id]': postdata['districtid'],
-                'apartment[district_id]': postdata['subdistrictid'],
-                'ignore_reverse_district_id': 0,
-                'apartment[postcode]': postdata.get('addr_postcode',''),
-                'apartment[address]': postdata['addr_number'],
-                'apartment[road]': postdata['addr_road'],
-                'apartment[street]': postdata['addr_soi'],
-                'apartment[latitude]': postdata['geo_latitude'],
-                'apartment[longitude]': postdata['geo_longitude'],
-                'apartment[gmaps_zoom]': '',
-                'apartment[staff]': postdata['name'],
-                'apartment[telephone]': postdata['mobile'],
-                'apartment[en_telephone]': '' ,
-                'apartment[email]': postdata['email'],
-                'apartment[line_user_id]': postdata['line'],
-                'apartment[facebook_url]': '' ,
-                'apartment[description]': postdata['post_description_th'],
-                'apartment[en_description]': postdata['post_description_en'],
-                '_wysihtml5_mode': 1,
+            'utf8': '✓',
+            'apartment[name]': postdata['post_title_th'],
+            'apartment[en_name]': postdata['post_title_en'],
+            'apartment[apartment_type]': 0,
+            'apartment[province_id]': postdata['provinceid'],
+            'apartment[amphur_id]': postdata['districtid'],
+            'apartment[district_id]': postdata['subdistrictid'],
+            'ignore_reverse_district_id': 0,
+            'apartment[postcode]': postdata.get('addr_postcode',''),
+            'apartment[address]': postdata['addr_number'],
+            'apartment[road]': postdata['addr_road'],
+            'apartment[street]': postdata['addr_soi'],
+            'apartment[latitude]': postdata['geo_latitude'],
+            'apartment[longitude]': postdata['geo_longitude'],
+            'apartment[gmaps_zoom]': '',
+            'apartment[staff]': postdata['name'],
+            'apartment[telephone]': postdata['mobile'],
+            'apartment[en_telephone]': '' ,
+            'apartment[email]': postdata['email'],
+            'apartment[line_user_id]': postdata['line'],
+            'apartment[facebook_url]': '' ,
+            'apartment[description]': postdata['post_description_th'],
+            'apartment[en_description]': postdata['post_description_en'],
+            '_wysihtml5_mode': 1,
         }
+        
+        #TODO g-recaptcha-response: 03AGdBq25p2fAeF2XUdO3gC7UQpb5aJjsoUthAUy44HihBsx_-FWep77KgCZB057m9bPiumwdEcxihdjdbkUxLr-2EgmPG9aeAlPSMKEx9Kj2vjTWqmaxYmLoIrK2OXHySzLB9DOld5IlaQ4WyRIxdJA1yzKdOWaKn45o5rN4_Yz3a17ribEncyfOtxgJmu86RTn4smHX9Ros7lA5c7or7-YRokROzFYqQSNB8ZWW6yGBBVwoKsuqKGl3vHCM_G5X6YAZrwKQleo4kWYZf6OCHiHxEyYyXwJBr1saZiGD-RPyVArmaxvGCNuT0tx0O6CA8jtoTV0qBcenJ7rqH73UU81Wb-pmnViL4rDhYe8v9L5U4uk_GVnV_Or4enbSeNfctpQqoWmHv5-260FkMhfHViAMLH2GajN5zRA
 
         return datapost
     
@@ -511,34 +513,24 @@ class residences():
             'apartment[facility_ids][]': 2,
             'apartment[central_facility_ids][]': '',
             'apartment[central_facility_ids][]': 12,
-            'do_not_validation_all_facility': 1,
+            'do_not_validation_all_facility': 0,
             'do_not_validation_listing_images': 0,
-            'apartment[create_level]': 3,
+            'apartment[create_level]': 2,
             'ref_action': 'amenities',
+
         }
 
         return datapost
     
-    def get_datapost_apartment_roomtype(self,postdata):
+    def get_datapost_apartment_roomtype(self,postdata,typepost):
         log.debug('')
 
-        # attrcode = int(datetime.datetime.now().timestamp()*1000)
-        # attrcode = str(attrcode)
+        attrcode = int(datetime.datetime.now().timestamp()*1000)
+        attrcode = str(attrcode)
 
         datapost = {
             'utf8': '✓',
             '_method': 'put',
-            'apartment[rooms_attributes][0][name]': 'อพาร์ทเม้น',
-            'apartment[rooms_attributes][0][room_type]': 'R0',
-            'apartment[rooms_attributes][0][size]': postdata['floor_area'],
-            'apartment[rooms_attributes][0][monthly]': 1,
-            'apartment[rooms_attributes][0][min_price_permonth]': postdata['price_baht'],
-            'apartment[rooms_attributes][0][max_price_permonth]': postdata['price_baht'],
-            'apartment[rooms_attributes][0][daily]': 0,
-            'apartment[rooms_attributes][0][min_price_perday]':'',
-            'apartment[rooms_attributes][0][max_price_perday]': '',
-            'apartment[rooms_attributes][0][available]': 1,
-            'apartment[rooms_attributes][0][_destroy]': 'false',
             'apartment[water_price]':'' ,
             'apartment[water_price_monthly_per_person]': '',
             'apartment[water_price_monthly_per_room]': '',
@@ -571,16 +563,42 @@ class residences():
             'apartment[promotion_end]': '',
             'apartment[promotion_description]': '',
             '_wysihtml5_mode': 1,
-            'accepted[term_and_condition]': '1',
+            'accepted[term_and_condition]': 1,
             'apartment[create_level]': 3,
             'ref_action': 'roomtypes',
         }
+
+        if typepost == 'create':
+            datapost['apartment[rooms_attributes]['+attrcode+'][name]']= 'อพาร์ทเม้น'
+            datapost['apartment[rooms_attributes]['+attrcode+'][room_type]']= 'R0'
+            datapost['apartment[rooms_attributes]['+attrcode+'][size]']= postdata['floor_area']
+            datapost['apartment[rooms_attributes]['+attrcode+'][monthly]']= 1
+            datapost['apartment[rooms_attributes]['+attrcode+'][min_price_permonth]']= postdata['price_baht']
+            datapost['apartment[rooms_attributes]['+attrcode+'][max_price_permonth]']= postdata['price_baht']
+            datapost['apartment[rooms_attributes]['+attrcode+'][daily]']= 0
+            datapost['apartment[rooms_attributes]['+attrcode+'][min_price_perday]']=''
+            datapost['apartment[rooms_attributes]['+attrcode+'][max_price_perday]']= ''
+            datapost['apartment[rooms_attributes]['+attrcode+'][available]']= 1,
+            datapost['apartment[rooms_attributes]['+attrcode+'][_destroy]']= 'false'
+        #else: #edit ถ้าเป็น edit จะกลายเป็นเบิ้ล
+            # datapost['apartment[rooms_attributes][0][name]']= 'อพาร์ทเม้น'
+            # datapost['apartment[rooms_attributes][0][room_type]']= 'R0'
+            # datapost['apartment[rooms_attributes][0][size]']= postdata['floor_area']
+            # datapost['apartment[rooms_attributes][0][monthly]']= 1
+            # datapost['apartment[rooms_attributes][0][min_price_permonth]']= postdata['price_baht']
+            # datapost['apartment[rooms_attributes][0][max_price_permonth]']= postdata['price_baht']
+            # datapost['apartment[rooms_attributes][0][daily]']= 0
+            # datapost['apartment[rooms_attributes][0][min_price_perday]']=''
+            # datapost['apartment[rooms_attributes][0][max_price_perday]']= ''
+            # datapost['apartment[rooms_attributes][0][available]']= 1,
+            # datapost['apartment[rooms_attributes][0][_destroy]']= 'false'
 
         return datapost
 
     def create_post_apartment(self, postdata):
         log.debug('')
 
+        #create post apartment จะต้องส่งเอกสารก่อนจึงจะสามารถ publish ได้
        
         success = "true"
         detail = ""
@@ -629,10 +647,9 @@ class residences():
             if success == 'true':
                 soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                 authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
-                #TODO อาจจะต้องใช้ตอน edit apartment[rooms_attributes][0][id]: 17853
-                datapost = self.get_datapost_apartment_roomtype(postdata)
+                datapost = self.get_datapost_apartment_roomtype(postdata,'create')
                 datapost['authenticity_token'] = authenticity_token
-                datapost['accepted[term_and_condition]'] = '1'
+                datapost['accepted[term_and_condition]'] = 1
                 r = httprequestObj.http_post(posturl, data=datapost)       
                 r = httprequestObj.http_get(posturl + '/verify' ,verify=False)
                 if re.search(r'verify', r.url) == None:
@@ -644,7 +661,6 @@ class residences():
                 posturl = soup.find('a',{'class':'lightweight-line'})['href']
                 posturl =  self.primary_domain+posturl          
 
-            #TODO ยอมรับเงื่อนไขและลงประกาศ
         #
         # end process
 
@@ -1076,7 +1092,7 @@ class residences():
         if success == 'true':
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
-            datapost = self.get_datapost_apartment_roomtype(postdata)
+            datapost = self.get_datapost_apartment_roomtype(postdata,'edit')
             datapost['authenticity_token'] = authenticity_token
             datapost['accepted[term_and_condition]'] = '1'
             datapost['apartment[create_level]'] = 4
