@@ -478,7 +478,7 @@ class residences():
                 '_method': 'put',
                 'authenticity_token': str(token),
                 'do_not_validation_listing_images': '0',
-                'accepted[term_and_condition]': '0', #TODO
+                'accepted[term_and_condition]': '1', 
                 'listing[create_level]': '2',
                 'ref_action': 'images',
                 'listing[photos_attributes][][attachment]': ( str(i+1) + '.jpg', open(os.path.abspath(postdata['post_images'][i]), 'rb'), 'image/jpeg'),
@@ -513,7 +513,7 @@ class residences():
             'apartment[central_facility_ids][]': 12,
             'do_not_validation_all_facility': 1,
             'do_not_validation_listing_images': 0,
-            'apartment[create_level]': 4, #3
+            'apartment[create_level]': 3,
             'ref_action': 'amenities',
         }
 
@@ -571,7 +571,8 @@ class residences():
             'apartment[promotion_end]': '',
             'apartment[promotion_description]': '',
             '_wysihtml5_mode': 1,
-            'apartment[create_level]': 4,#3,
+            'accepted[term_and_condition]': '1',
+            'apartment[create_level]': 3,
             'ref_action': 'roomtypes',
         }
 
@@ -789,18 +790,33 @@ class residences():
        
         return success ,detail ,postid ,posturl
 
-    # not have boost post , use edit_post
     def boost_post(self, postdata):
         log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # start process
         #
-        datahandled = self.postdata_handle(postdata)
         success = "true"
         detail = ""
-        post_id = ""
-        log_id = ""
+        
+        success,detail = self.validator(postdata)
+
+        if success == 'true':
+            #login
+            login = self.test_login(postdata)
+            success = login['success']
+            detail = login['detail']
+
+        if success == 'true':
+            #test post is condo or apartment
+            success,detail,posttype,content = self.get_post_type(postdata)
+        
+        if success == 'true':
+            if posttype == 'condo':
+                success,detail = self.boost_post_condo(postdata,content)
+            else:
+                success,detail = self.boost_post_apartment(postdata,content)
+
 
         #
         # end process
@@ -813,86 +829,61 @@ class residences():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            "log_id": log_id,
-            "post_id": post_id,
+            "log_id": postdata['log_id'],
+            "websitename": self.websitename,
         }
         
-    def boost_post_apartment(self, postdata):
+    def boost_post_apartment(self, postdata,content):
         log.debug('')
-        time_start = datetime.datetime.utcnow()
 
-        # start process
-        #
-        datahandled = self.postdata_handle(postdata)
-        success = "true"
-        detail = ""
-        post_id = ""
-        log_id = ""
-
-        # action="/apartments/114489/moveon"
-
+        success = 'true'
+        detail = ''
+      
+        soup = BeautifulSoup(content, self.parser, from_encoding='utf-8')
+        authenticity_token = soup.find('meta',{'name':'csrf-token'})['content']
+        posturl = self.primary_domain + '/apartments/' + postdata['post_id'] + '/moveon'
+        #log.debug(posturl)
         datapost = {
             "utf8": "✓",
-            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q=",
+            "authenticity_token": authenticity_token,
             "commit": "เลื่อนตำแหน่ง"
         }
 
-        r = httprequestObj.http_post(self.primary_domain + '/apartments/' + post_id + '/moveon', data=datapost)
-        data = r.text
+        r = httprequestObj.http_post(self.primary_domain + '/apartments/' + postdata['post_id'] + '/moveon', data=datapost)
+        #f = open("debug_response/residentboost.html", "wb")
+        #f.write(r.text.encode('utf-8').strip())
+        if re.search(r'ได้ส่งคำสั่งเลื่อนอันดับเข้าระบบคิวแล้ว',r.text) == None:
+            success = 'false'
+            detail = 'cannot boost post'
 
-        #
-        # end process
+        return success,detail
 
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
-        return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "detail": detail,
-            "log_id": log_id,
-            "post_id": post_id,
-        }      
-
-    #TODO ยังไม่ได้ทำ
-    def boost_post_condo(self, postdata):
+    def boost_post_condo(self, postdata,content):
         log.debug('')
-        time_start = datetime.datetime.utcnow()
 
-        # start process
-        #
-        datahandled = self.postdata_handle(postdata)
-        success = "true"
-        detail = ""
-        post_id = ""
-        log_id = ""
+        success = 'true'
+        detail = ''
 
-        # action="/apartments/114489/moveon"
-
+        soup = BeautifulSoup(content, self.parser, from_encoding='utf-8')
+        authenticity_token = soup.find('meta',{'name':'csrf-token'})['content']
+        posturl = soup.find('li',{'role':'presentation'}).find('a')['href']
+        posturl = posturl.replace("/information", "/moveup")
+        posturl = self.primary_domain + posturl
+        #log.debug(posturl)
         datapost = {
             "utf8": "✓",
-            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q=",
+            "authenticity_token": authenticity_token,
             "commit": "เลื่อนตำแหน่ง"
         }
 
-        r = httprequestObj.http_post(self.primary_domain + '/apartments/' + post_id + '/moveon', data=datapost)
-        data = r.text
+        r = httprequestObj.http_post(posturl, data=datapost)
+        #f = open("debug_response/residentboost.html", "wb")
+        #f.write(r.text.encode('utf-8').strip())
+        if re.search(r'ได้ส่งคำสั่งเลื่อนอันดับเข้าระบบคิวแล้ว',r.text) == None:
+            success = 'false'
+            detail = 'cannot boost post'
 
-        #
-        # end process
-
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
-        return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "detail": detail,
-            "log_id": log_id,
-            "post_id": post_id,
-        }    
+        return success,detail
 
     def delete_post(self, postdata):
         log.debug('')
@@ -900,18 +891,39 @@ class residences():
 
         # start process
         #
-        datahandled = self.postdata_handle(postdata)
         success = "true"
         detail = ""
-        log_id = ""
-
-        datapost = {
-            "_method": "delete",
-            "authenticity_token": "dv4lzOLDo4iu5i5xNGKn0AITatN9pHDAv3YUk10gA8Q="
-        }
         
-        r = httprequestObj.http_post(self.primary_domain + '/apartments/114489-%E0%B9%83%E0%B8%AB%E0%B9%89%E0%B9%80%E0%B8%8A%E0%B9%88%E0%B8%B2-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-watermark-%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A2%E0%B8%B2%E0%B8%A3%E0%B8%B4%E0%B9%80%E0%B8%A7%E0%B8%A7%E0%B8%AD%E0%B8%AD%E0%B8%A3%E0%B9%8C-105-%E0%B8%95%E0%B8%A3%E0%B8%A1-2-%E0%B8%99%E0%B8%AD%E0%B8%99-2', data=datapost)
-        data = r.text
+        success,detail = self.validator(postdata)
+
+        if success == 'true':
+            #login
+            login = self.test_login(postdata)
+            success = login['success']
+            detail = login['detail']
+
+        if success == 'true':
+            #test post is condo or apartment
+            success,detail,posttype,content = self.get_post_type(postdata)
+        
+        if success == 'true':
+            soup = BeautifulSoup(content, self.parser, from_encoding='utf-8')
+            authenticity_token = soup.find('meta',{'name':'csrf-token'})['content']
+            posturl = soup.find('li',{'role':'presentation'}).find('a')['href']
+            posturl = posturl.replace("/information", "")
+            posturl = self.primary_domain + posturl
+            datapost = {
+                '_method': 'delete',
+                'authenticity_token': authenticity_token
+            }
+            r = httprequestObj.http_post(posturl, data=datapost)
+            #f = open("debug_response/residentdelete.html", "wb")
+            #f.write(r.text.encode('utf-8').strip())
+            pid = postdata['post_id']
+            if re.search(rf"{pid}",r.text) != None:
+                success = 'false'
+                detail = 'cannot delete post'
+
         #
         # end process
 
@@ -923,7 +935,8 @@ class residences():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            "log_id": log_id,
+            "log_id": postdata['log_id'],
+            "websitename": self.websitename,
         }
 
     def get_post_type(self,postdata):
@@ -932,18 +945,18 @@ class residences():
         #test condo
         r = httprequestObj.http_get(self.primary_domain + '/listings/' + str(postdata['post_id']) + '/information',verify=False)
         if r.status_code == 200:
-            log.debug('edit post type condo')
+            log.debug('edit/boost/delete post type condo')
             return 'true','','condo',r.text
             
         
         #test apartment
         r = httprequestObj.http_get(self.primary_domain + '/apartments/' + str(postdata['post_id']) + '/information',verify=False)
         if r.status_code == 200:
-            log.debug('edit post type apartment')
+            log.debug('edit/boost/delete post type apartment')
             return 'true','','apartment',r.text
         
         log.warning('not found post id %s',str(postdata['post_id']))
-        return 'false','cannot found post by post_id',''
+        return 'false','cannot found post by post_id','',''
         
 
 
@@ -955,8 +968,6 @@ class residences():
         #
         success = "true"
         detail = ""
-        postid = ""
-        posturl = ""
         
         success,detail = self.validator(postdata)
 
@@ -1022,5 +1033,64 @@ class residences():
     def edit_post_apartment(self,postdata,content):
         log.debug('')
 
-        #TODO
+        success = 'true'
+        detail = ''
+
+        soup = BeautifulSoup(content, self.parser, from_encoding='utf-8')
+        success,detail,postdata = self.getareaid(postdata , content)
+        posturl = soup.find('li',{'role':'presentation'}).find('a')['href']
+        posturl = self.primary_domain + posturl
+        posturl = posturl.replace("/information", "")
+        authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
+        datapost = self.get_datapost_apartment_general(postdata)
+        datapost['_method']= 'put'
+        datapost['authenticity_token'] = authenticity_token
+        datapost['apartment[create_level]']= 4
+        datapost['ref_action']= 'information'
+        
+        #post general
+        r = httprequestObj.http_post(posturl, data=datapost)
+        r = httprequestObj.http_get(posturl + '/amenities' ,verify=False)
+        if re.search(r'amenities', r.url) == None:
+            success = 'false'
+            detail = 'cannot post in general wizard'
+            if re.search(r'กรุณาคลิกเครื่องหมายถูกในช่อง',r.text) != None:
+                detail = 'cannot post in general wizard '+ '(google anti captcha block)'
+
+        #image and amenities
+        if success == 'true':
+            soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+            authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
+            newrelic = 'UA8CWVBUGwUHUlFVBAM='
+            self.uploadimage_apartment(postdata,authenticity_token,newrelic,posturl,r.text)
+            datapost = self.get_datapost_apartment_amenities()
+            datapost['authenticity_token'] = authenticity_token
+            r = httprequestObj.http_post(posturl, data=datapost)
+            r = httprequestObj.http_get(posturl + '/roomtypes' ,verify=False)
+            #f = open("debug_response/residentroomtype.html", "wb")
+            #f.write(r.text.encode('utf-8').strip())
+            if re.search(r'roomtypes', r.url) == None:
+                success = 'false'
+                detail = 'cannot post in image and amenities'
+            
+        if success == 'true':
+            soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+            authenticity_token = soup.find('input',{'name':'authenticity_token'})['value']
+            datapost = self.get_datapost_apartment_roomtype(postdata)
+            datapost['authenticity_token'] = authenticity_token
+            datapost['accepted[term_and_condition]'] = '1'
+            datapost['apartment[create_level]'] = 4
+            roomid = soup.find('input',id=re.compile('apartment_rooms_attributes_0_id'))['value']
+            log.debug(roomid)
+            datapost['apartment[rooms_attributes][0][id]']: roomid
+            #ต้องลบ งั้นจะกลายเป็นเพิ่ม ห้องพัก
+            # del datapost['apartment[rooms_attributes][0][name]']
+            # del datapost['apartment[rooms_attributes][0][room_type]']
+            # del datapost['apartment[rooms_attributes][0][monthly]']
+            # del datapost['apartment[rooms_attributes][0][daily]']
+            # del datapost['apartment[rooms_attributes][0][min_price_perday]']
+            # del datapost['apartment[rooms_attributes][0][max_price_perday]']
+            # del datapost['apartment[rooms_attributes][0][available]']
+            r = httprequestObj.http_post(posturl, data=datapost)       
+  
         return success,detail
