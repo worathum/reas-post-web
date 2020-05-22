@@ -134,8 +134,8 @@ class quickdealfree():
         post_url = ""
 
 
-        if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
-            if 'project_name' in postdata and postdata['project_name']!=None:
+        if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
+            if 'project_name' in postdata and postdata['project_name'] is not None:
                 postdata['web_project_name'] = postdata['project_name']
             else:
                 postdata['web_project_name'] = postdata['post_title_th']
@@ -161,7 +161,7 @@ class quickdealfree():
         except:
             theprodid = getProdId[str(postdata['property_type'])]
             for i in proid:
-                if proid[i] == postdata['property_type']:
+                if proid[i] == str(postdata['property_type']):
                     postdata['property_type'] = i
 
         province_id = ''
@@ -279,9 +279,9 @@ class quickdealfree():
 
 
         try:
-            theprodid = getProdId[proid[postdata['property_type']]]
+            theprodid = getProdId[proid[str(postdata['property_type'])]]
         except:
-            theprodid = getProdId[postdata['property_type']]
+            theprodid = getProdId[str(postdata['property_type'])]
             for i in proid:
                 if proid[i] == theprodid:
                     postdata['property_type'] = i
@@ -289,7 +289,7 @@ class quickdealfree():
         province_id = ''
 
         # for i in postdata["post_img_url_lists"]:
-        if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
+        if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
             if 'project_name' in postdata and postdata['project_name']!=None:
                 postdata['web_project_name'] = postdata['project_name']
             else:
@@ -337,7 +337,7 @@ class quickdealfree():
                         ('submit', 'Confirm announcement'),
                         ('tag1',postdata['listing_type']),
                         ('tag2',postdata['property_type']),
-                        ('tag3',postdata['project_name']),
+                        ('tag3',postdata['web_project_name']),
                         ('tag4',postdata['addr_near_by']),
                         ('tag5',postdata['addr_district']),
                         ('tag6',postdata['addr_province'])

@@ -67,3 +67,68 @@ post_data : eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7
  "start_time": "2020-04-18 10:50:20.247664",
  "end_time": "2020-04-18 10:50:22.222958"
 }
+
+test_login
+<input>
+eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVkaW4yIiwgImRzX2lkIjogIjQiLCAicG9zdF9pZCI6ICIxNzExNjQiLCAibG9nX2lkIjogIjcxOTc3MyIsICJ1c2VyIjogInRpcnRoLnVwYWRoeWF5YTIwMDEyMDAxQGdtYWlsLmNvbSIsICJwYXNzIjogInRlbXB0ZW1wIn1dfQ==
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "teedin2": {
+   "websitename": "teedin2",
+   "success": "False",
+   "start_time": "2020-05-21 18:29:34.166044",
+   "end_time": "2020-05-21 18:29:34.166056",
+   "detail": "No Login available for this site"
+  }
+ },
+ "usage_time": "0:00:00.078495",
+ "start_time": "2020-05-21 18:29:34.096242",
+ "end_time": "2020-05-21 18:29:34.174737"
+}
+
+register_user
+<input>
+eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVkaW4yIiwgImRzX2lkIjogIjQiLCAicG9zdF9pZCI6ICIxNzExNjQiLCAibG9nX2lkIjogIjcxOTc3MyIsICJ1c2VyIjogInRpcnRoLnVwYWRoeWF5YTIwMDEyMDAxQGdtYWlsLmNvbSIsICJwYXNzIjogInRlbXB0ZW1wIn1dfQ==
+<ouput>
+{
+ "success": "true",
+ "action": "register_user",
+ "web": {
+  "teedin2": {
+   "websitename": "teedin2",
+   "success": "False",
+   "start_time": "2020-05-21 18:31:15.690111",
+   "end_time": "2020-05-21 18:31:15.690123",
+   "detail": "No Registering option available for this site"
+  }
+ },
+ "usage_time": "0:00:00.038915",
+ "start_time": "2020-05-21 18:31:15.660038",
+ "end_time": "2020-05-21 18:31:15.698953"
+}
+
+boost post
+<input>
+eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVkaW4yIiwgImRzX2lkIjogIjQiLCAicG9zdF9pZCI6ICIzOTI0NTkiLCAibG9nX2lkIjogIjcxOTc3MyIsICJ1c2VyIjogInBhcnpvZHVwc29AeWV2bWUuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgifV19
+<output>
+{
+ "success": "true",
+ "action": "boost_post",
+ "web": {
+  "teedin2": {
+   "websitename": "teedin2",
+   "success": "true",
+   "time_usage": "P0DT00H00M01.216406S",
+   "time_start": "2020-05-21T18:09:26.588",
+   "time_end": "2020-05-21T18:09:27.804",
+   "detail": "",
+   "post_id": "392459"
+  }
+ },
+ "usage_time": "0:00:01.307836",
+ "start_time": "2020-05-21 18:09:26.530923",
+ "end_time": "2020-05-21 18:09:27.838759"
+}

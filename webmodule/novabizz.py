@@ -368,6 +368,7 @@ class novabizz():
             }
         if postdata['addr_province']=='กรุงเทพมหานคร':
             postdata['addr_province']='กรุงเทพ'
+
         for (key, value) in provincedata.items():
             if type(value) is str and postdata['addr_province'].strip() in value.strip():
                 province_id = key
@@ -577,7 +578,7 @@ class novabizz():
                         storeI = i
                         break
                 print(storeI['href'])
-                post_url=storeI['href']
+                post_url=storeI['href'][2:]
                 # post_url = 'https://www.novabizz.com/p' + post_id+"/"+ postdata['post_title_th'].replace(' ','-') + '.html'
                 print("16")
 
@@ -645,8 +646,11 @@ class novabizz():
                 'post_url': '',
                 'post_id': ''
             }
+        if postdata['addr_province']=='กรุงเทพมหานคร':
+            postdata['addr_province']='กรุงเทพ'
+        
         for (key, value) in provincedata.items():
-            if type(value) is str and postdata['addr_province'].strip() in value.strip():
+            if type(value) is str and postdata['addr_province'].strip() in value.strip() and value.strip() in postdata['addr_province'].strip():
                 province_id = key
                 break
 
@@ -654,7 +658,7 @@ class novabizz():
             return{
                 'websitename':'novabizz',
                 'success': 'false',
-                'ret': "",
+                'ret': "provinceid",
                 'post_url': "",
                 'post_id': ""
             }
@@ -668,7 +672,7 @@ class novabizz():
             return{
                 'websitename':'novabizz',
                 'success': 'false',
-                'ret': "",
+                'ret': "amphurid",
                 'post_url': "",
                 'post_id': ""
             }
@@ -858,6 +862,7 @@ class novabizz():
             success = "true"
         else:
             success = "false"
+            print("False")
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
