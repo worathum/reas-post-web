@@ -652,23 +652,63 @@ class teesuay():
         time_start = datetime.datetime.utcnow()
 
         post_id = postdata['post_id']
-        log_id = postdata['log_id']
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
 
-        #
-        #
-        #
+        if success=='true':
+            url_list='http://www.teesuay.com/member/list-property.php'
+            r=httprequestObj.http_get(url_list)
+            soup = BeautifulSoup(r.content, 'html5lib')
+            ahref=soup.findAll('a')
+            post_id=''
+            storeI=''
+            print(ahref)
+            for i in ahref:
+                var=i['href']
+                j = len('../property/')
+                post_id = ''
+                # print(i)
+                while j<len(var) and var[j] != '/':
+                    post_id += var[j]
+                    j += 1
+                if post_id == postdata['post_id']:
+                    storeI=i
+                    break;
+            if storeI=='':
+                time_end = datetime.datetime.utcnow()
+                return {
+                    'websitename':'teesuay',
+                    'success':'false',
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "detail": "wrong post id",
+                }
+            posturl="http://www.teesuay.com/member/slide-property.php?post_id="+postdata['post_id']
+            r=httprequestObj.http_get(posturl)
+            time_end = datetime.datetime.utcnow()
+            return {
+                "websitename": "teesuay",
+                "success": "true",
+                "time_usage": time_end - time_start,
+                "time_start": time_start,
+                "time_end": time_end,
+                "detail": "",
+                "post_id": post_id,
+            }
+        else:
+            success = "false"
+            time_end = datetime.datetime.utcnow()
+            time_usage = time_end - time_start
+            return {
+                "websitename": "teesuay",
+                "success": success,
+                "start_time": str(time_start),
+                "end_time": str(time_end),
+                "detail": detail,
+                # "log_id":postdata['log_id'],
+            }
 
-        time_end = datetime.datetime.utcnow()
-        return {
-            "websitename": "teesuay",
-            "success": "false",
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
-            "detail": "",
-            "log_id": log_id,
-            "post_id": post_id,
-        }        
 
 
     def print_debug(self, msg):

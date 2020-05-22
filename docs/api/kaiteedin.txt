@@ -166,25 +166,48 @@ post_data : eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwb3N0X2ltZ191
  "usage_time": "0:00:02.812733",
  "start_time": "2020-05-16 08:38:47.083784",
  "end_time": "2020-05-16 08:38:49.896517"
-}Delete Post
+}
+
+Delete Post
 
 <input>
 access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
-post_data : eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7ImRzX25hbWUiOiAidGVlZGluZGQiLCAiZHNfaWQiOiAiNCIsICJwb3N0X2lkIjogIjU0ODI2NCIsICJsb2dfaWQiOiAiNzE5NzczIiwgInVzZXIiOiAidGlydGgudXBhZGh5YXlhMjAwMTIwMDFAZ21haWwuY29tIiwgInBhc3MiOiAidGVtcHRlbXAifV19
+post_data : eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7ImRzX25hbWUiOiAia2FpdGVlZGluIiwgImRzX2lkIjogIjQiLCAicG9zdF9pZCI6ICIxNzExNjQiLCAibG9nX2lkIjogIjcxOTc3MyIsICJ1c2VyIjogInRpcnRoLnVwYWRoeWF5YTIwMDEyMDAxQGdtYWlsLmNvbSIsICJwYXNzIjogInRlbXB0ZW1wIn1dfQ==
 <output>
 {
  "success": "true",
  "action": "delete_post",
  "web": {
-  "teedindd": {
-   "websitename": "teedindd",
+  "kaiteedin": {
+   "websitename": "kaiteedin",
    "success": "true",
-   "start_time": "2020-04-18 18:43:55.155018",
-   "end_time": "2020-04-18 18:43:56.223226",
+   "start_time": "2020-05-21 18:24:50.275259",
+   "end_time": "2020-05-21 18:24:53.002509",
    "detail": "Deleted"
   }
  },
- "usage_time": "0:00:01.152152",
- "start_time": "2020-04-18 18:43:55.089712",
- "end_time": "2020-04-18 18:43:56.241864"
+ "usage_time": "0:00:02.820235",
+ "start_time": "2020-05-21 18:24:50.217693",
+ "end_time": "2020-05-21 18:24:53.037928"
+}
+Boost Post
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJrYWl0ZWVkaW4iLCAiZHNfaWQiOiAiNCIsICJwb3N0X2lkIjogIjE3MTE2NCIsICJsb2dfaWQiOiAiNzE5NzczIiwgInVzZXIiOiAidGlydGgudXBhZGh5YXlhMjAwMTIwMDFAZ21haWwuY29tIiwgInBhc3MiOiAidGVtcHRlbXAifV19
+<output>
+{
+ "success": "true",
+ "action": "boost_post",
+ "web": {
+  "kaiteedin": {
+   "websitename": "kaiteedin",
+   "success": "true",
+   "start_time": "2020-05-21 18:23:57.664331",
+   "end_time": "2020-05-21 18:24:05.500057",
+   "detail": "edited"
+  }
+ },
+ "usage_time": "0:00:08.042533",
+ "start_time": "2020-05-21 18:23:57.499483",
+ "end_time": "2020-05-21 18:24:05.542016"
 }

@@ -92,8 +92,8 @@ def get_security(flag1, post_id=''):
 
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
-        # with open('temp', 'w') as f:
-        #     f.write(str(soup))
+        with open('temp', 'w') as f:
+            f.write(str(soup))
 
         arr = soup.find_all('script')
         var = ""
@@ -145,8 +145,8 @@ def get_security(flag1, post_id=''):
 
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
-        # with open('temp', 'w') as f:
-        #     f.write(str(soup))
+        with open('temp', 'w') as f:
+            f.write(str(soup))
 
         arr = soup.find_all('script')
         var = ""
@@ -208,8 +208,8 @@ def get_security(flag1, post_id=''):
             'https://www.proptecheasy.com/dashboard/', headers=headers, params=params)
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
-        # with open('temp', 'w') as f:
-        #     f.write(str(soup))
+        with open('temp', 'w') as f:
+            f.write(str(soup))
 
         arr = soup.find_all('script')
         var = ""
@@ -287,10 +287,15 @@ class proptecheasy():
         passwd = postdata['pass'].replace("@", "%40")
         name_th = postdata["name_th"].replace("@", "%40")
         surname_th = postdata["surname_th"].replace("@", "%40")
-        email = postdata['user'].replace("@", "%40")
-        phone = postdata['tel']
-        company_name = postdata['company_name']
-
+        if 'email' in postdata:
+            email = postdata['email'].replace("@", "%40")
+        else:
+            email = postdata['user'].replace('@',"%40")
+        phone = postdata['phone']
+        try:
+            company_name = postdata['company_name']
+        except:
+            company_name = name_th
         # start process
         success = "true"
         detail = ""
@@ -380,9 +385,7 @@ class proptecheasy():
         r = httprequestObj.http_post(
             'https://www.proptecheasy.com/wp-content/plugins/pointfindercoreelements/includes/pfajaxhandler.php', headers=headers, data=datapost)
         get_security(1)
-        print(r.text,"lol1")
         data = json.loads(r.text)
-        print(data,"lol")
         if data['login'] == 'false' or data['login'] == 'False' or data['login'] == False:
             success = "false"
             detail = "cannot login"
@@ -390,7 +393,7 @@ class proptecheasy():
         #     success = "false"
         #     detail = "account suspended"
         else:
-            detail = data
+            detail = "login successful"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -548,25 +551,12 @@ class proptecheasy():
 
             if 'floor_level' not in postdata or postdata['floor_level'] is None:
                 postdata['floor_level'] = ''
-            if postdata['addr_province'] in property_mapping:
-                province = property_mapping[postdata['addr_province']]
-            else:
-                success='false'
-                detail = 'Province Not found'
-                time_end = datetime.datetime.utcnow()
-                time_usage = time_end - time_start
 
-                return {
-                
-                    "websitename": "proptecheasy",
-                    "success": success,
-                    "start_time": str(time_start),
-                    "end_time": str(time_end),
-                    "post_url": post_url,
-                    "post_id": post_id,
-                    "account_type": "null",
-                    "detail": detail,
-                }
+            for pm in property_mapping.keys():
+                if postdata['addr_province'] in pm:
+                    province = property_mapping[pm]
+            else:
+                province = '117'
 
 
             dt = 'pfupload_listingtypes='+str(type_prop)+'&pfupload_listingpid=&pfupload_type=1&pfupload_c=&pfupload_f=&pfupload_p=&radio=211&pfupload_sublistingtypes='+ \
@@ -577,7 +567,6 @@ class proptecheasy():
                 str(postdata['prominent_point'])+'&posttags=&pfuploadfeaturedvideo=&pfupload_locations='+str(province)+'&pflocationselector='+str(province)+'&customlocation=&pfupload_address='+ \
                 str(postdata['addr_road'])+'&leaflet-base-layers_49=on&pfupload_lat='+str(postdata['geo_latitude'])+'&pfupload_lng='+str(postdata['geo_longitude'])+\
                 '&pfuploadimagesrc=' + str(upload_id) + '&pfpackselector=1&pf_lpacks_payment_selection=free&pftermsofuser=1&action=pfget_uploaditem&security='+str(get_security(2))
-            # print(dt,"*******\n\n\ ",postdata['addr_province'],"*****\n\n\n\n")
             data = {
                 'action': 'pfget_itemsystem',
                 'formtype': 'upload',
@@ -714,7 +703,6 @@ class proptecheasy():
             upload_id = ''
             security_code=get_security(1)
             for i in postdata['post_images']:
-                print(i, "image uploading")
                 temp = upload_image(i,security_code)
                 if temp != -1:
                     upload_id = str(upload_id)+'%2c'+temp
@@ -767,25 +755,11 @@ class proptecheasy():
             else:
                 area = str(postdata['floor_area'])
                 prop = 34
-            if postdata['addr_province'] in property_mapping:
-                province = property_mapping[postdata['addr_province']]
+            for pm in property_mapping.keys():
+                if postdata['addr_province'] in pm:
+                    province = property_mapping[pm]
             else:
-                success='false'
-                detail = 'Province Not found'
-                time_end = datetime.datetime.utcnow()
-                time_usage = time_end - time_start
-
-                return {
-                
-                    "websitename": "proptecheasy",
-                    "success": success,
-                    "start_time": str(time_start),
-                    "end_time": str(time_end),
-                    "post_url": post_url,
-                    "post_id": post_id,
-                    "account_type": "null",
-                    "detail": detail,
-                }
+                province = '117'
 
             if 'floor_level' not in postdata or postdata['floor_level'] is None:
                 postdata['floor_level'] = ''
@@ -910,26 +884,54 @@ class proptecheasy():
         }
 
     def boost_post(self, postdata):
+
+        # https://www.proptecheasy.com/dashboard/?ua=myitems&action=pf_extend&i=629031
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+
         post_id = postdata['post_id']
-        log_id = postdata['log_id']
+        params=(
+            ('ua','myitems'),
+            ('action','pf_extend'),
+            ('i',str(post_id))
+        )
 
-        #
-        #
-        #
+        # class2 = 'pfmu-itemlisting-inner pfmu-itemlisting-inner' + \
+        #     str(post_id)+' pf-row clearfix pfmylistingpage'
+        # r2 = httprequestObj.http_get(
+        #     'https://www.proptecheasy.com/dashboard/?ua=myitems')
+        # data2 = r2.text
+        # soup = BeautifulSoup(r2.content, 'html5lib')
+        # try:
+        #     post_url = soup.find("div", {"class": class2}).find("div", {
+        #         "class": 'col-lg-5 col-md-4 col-sm-4 col-xs-9 pfmu-itemlisting-title-wd'}).find("div", {'class': 'pfmu-itemlisting-title'}).find('a')['href']
+        # except Exception:
+        #     post_url=''
 
+        r=httprequestObj.http_get('https://www.proptecheasy.com/dashboard',params=params)
+        # if post_url == '':
+        #     success = 'false'
+        #     detail = 'error while getting post url'            # return "false"
+
+        if 'Item could not extend.' in r.text:
+            success='false'
+            detail='item can not be extended before expiring'
+        else :
+            success='true'
+            detail = 'post boosted'
         time_end = datetime.datetime.utcnow()
         return {
             "websitename": "proptecheasy",
 
-            "success": "false",
+            "success": success,
             "time_usage": time_end - time_start,
             "time_start": time_start,
             "time_end": time_end,
-            "detail": "",
-            "log_id": log_id,
+            "detail": detail,
             "post_id": post_id,
         }
 

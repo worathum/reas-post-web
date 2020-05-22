@@ -194,9 +194,9 @@ class home2all():
                      '5': 7, '6': 5, '7': 4, '8': 9, '9': 9, '10': 9, '25': 11}
 
         try:
-            theprodid = getProdId[proid[postdata['property_type']]]
+            theprodid = getProdId[proid[str(postdata['property_type'])]]
         except:
-            theprodid = getProdId[postdata['property_type']]
+            theprodid = getProdId[str(postdata['property_type'])]
 
         # print(theprodid)
         
@@ -445,9 +445,9 @@ class home2all():
                      '5': 7, '6': 5, '7': 4, '8': 9, '9': 9, '10': 9, '25': 11}
 
         try:
-            theprodid = getProdId[proid[postdata['property_type']]]
+            theprodid = getProdId[proid[str(postdata['property_type'])]]
         except:
-            theprodid = getProdId[postdata['property_type']]
+            theprodid = getProdId[str(postdata['property_type'])]
 
         # print(theprodid)
         

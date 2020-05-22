@@ -860,11 +860,60 @@ class kaiteedin():
             "end_time": str(time_end),
             "detail": detail,
         }
+    def boost_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        # start process
+        # login
+
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        list_url = 'http://kaiteedin.net/mylisting.php'
+        r = httprequestObj.http_get(list_url)
+        soup = r.text
+        if str(postdata['post_id']) not in soup:
+            time_end = datetime.datetime.utcnow()
+            time_usage = time_end - time_start
+            return {
+                "websitename": "kaiteedin",
+                "success": 'false',
+                "start_time": str(time_start),
+                "end_time": str(time_end),
+                "detail": 'Wrong Post id',
+            }
+        if success == "true":
+            datapost=[
+                ('Listing_id',postdata['post_id'])
+            ]
+            r = httprequestObj.http_post(
+                'http://kaiteedin.net/mylisting_edit_save.php', data=datapost)
+            data = r.text
+            if 'ระบบบันทึกข้อมูลของคุณแล้ว' in data:
+                detail="edited"
+            else:
+                success = "False"
+                detail = "Failed to Edit"
+        else:
+            success = "False"
+            detail = "Login Error"
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        return {
+            "websitename": "kaiteedin",
+            "success": success,
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+        }
 
 
 # obj = kaiteedin()
 # postdata = {
-#     'post_id': '173834',
+#     'post_id': '171128',
 #     'user': 'tirth.upadhyaya20012001@gmail.com',
 #     'pass': 'temptemp',
 #     'name': 'temp1234',
@@ -892,3 +941,4 @@ class kaiteedin():
 # print(obj.create_post(postdata))
 # print(obj.edit_post(postdata))
 # print(obj.delete_post(postdata))
+# print(obj.boost_post(postdata))

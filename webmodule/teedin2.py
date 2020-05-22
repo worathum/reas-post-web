@@ -16,7 +16,6 @@ import json
 import datetime
 
 
-
 with open("./static/teedin2.json") as f:
     provincedata = json.load(f)
 
@@ -116,14 +115,14 @@ class teedin2():
                 "end_time": str(time_end),
                 "detail": detail,
             }
-        ul_test="https://www.teedin2.com/topic3Update.php"
-        test={
-            'ID':postdata['post_id'],
-            'action':'2',
-            'thisCPasswordField':postdata['pass']
+        ul_test = "https://www.teedin2.com/topic3Update.php"
+        test = {
+            'ID': postdata['post_id'],
+            'action': '2',
+            'thisCPasswordField': postdata['pass']
         }
         with requests.Session() as s:
-            r = s.post(ul_test,data=test)
+            r = s.post(ul_test, data=test)
         if "A Database Error Occured while counting result Rows" in r.text:
             detail = "wrong post id"
             time_end = datetime.datetime.utcnow()
@@ -234,7 +233,7 @@ class teedin2():
             }
         prod_address = ""
         for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
-            if add is not None or add=="" or add==" ":
+            if add is not None or add == "" or add == " ":
                 prod_address += add + ","
         prod_address = prod_address[:-1]
         postdata['address'] = prod_address
@@ -288,7 +287,7 @@ class teedin2():
         time_usage = time_end - time_start
         return {
             "success": success,
-            'websitename': 'teedin2',    
+            'websitename': 'teedin2',
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": "Edited ",
@@ -409,7 +408,7 @@ class teedin2():
         amphur_id = -1
 
         finalRegion = ""
-        postdata['addr_province']=postdata['addr_province'].replace(' ','')
+        postdata['addr_province'] = postdata['addr_province'].replace(' ', '')
         for i in range(7):
             province_id = str(i)
             for (key, value) in provincedata[province_id+"_province"].items():
@@ -421,7 +420,7 @@ class teedin2():
                 break
         if amphur_id == -1 or finalRegion == "":
             return{
-                'websitename':'teedin2',
+                'websitename': 'teedin2',
                 'success': 'false',
                 'ret': "wrong province",
                 'post_url': "",
@@ -431,7 +430,7 @@ class teedin2():
         print(postdata['addr_province'])
         postdata['addr_province'] = province_id
         postdata['addr_region'] = finalRegion
-        postdata['addr_district']=postdata['addr_district'].replace(' ','')
+        postdata['addr_district'] = postdata['addr_district'].replace(' ', '')
         print(postdata['addr_district'])
         print(postdata['addr_sub_district'])
         url_district = 'https://www.teedin2.com/data/amphurs.php'
@@ -444,8 +443,9 @@ class teedin2():
                 postdata['addr_amphurs'] = i['value']
                 # print(i.text)
         if 'addr_amphurs' not in postdata:
-            postdata['addr_amphurs'] =var[0].value
-        postdata['addr_sub_district']=postdata['addr_sub_district'].replace(' ','')
+            postdata['addr_amphurs'] = var[0].value
+        postdata['addr_sub_district'] = postdata['addr_sub_district'].replace(
+            ' ', '')
         url_district = 'https://www.teedin2.com/data/districts.php'
         r = requests.post(url_district, data={
                           'AmphurID': postdata['addr_amphurs']})
@@ -459,22 +459,22 @@ class teedin2():
             postdata['addr_districts'] = var[0].value
         prod_address = ""
         for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
-            if add is not None or add=="" or add==" ":
+            if add is not None or add == "" or add == " ":
                 prod_address += add + ","
         prod_address = prod_address[:-1]
         postdata['address'] = prod_address
         s = requests.Session()
-        if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None:
-            postdata['land_size_ngan']=0
-        if 'land_size_rai' not in postdata or postdata['land_size_rai']==None:
-            postdata['land_size_rai']=0
-        if 'land_size_wa' not in postdata or postdata['land_size_wa']==None:
-            postdata['land_size_wa']=0
+        if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
+            postdata['land_size_ngan'] = 0
+        if 'land_size_rai' not in postdata or postdata['land_size_rai'] == None:
+            postdata['land_size_rai'] = 0
+        if 'land_size_wa' not in postdata or postdata['land_size_wa'] == None:
+            postdata['land_size_wa'] = 0
         if 'project_name' not in postdata:
-            postdata['project_name']=postdata['post_title_th']
-        if len(postdata['post_images'])==0:
-            postdata['post_images']=['img/tmp/default/white.jpg']
-        
+            postdata['project_name'] = postdata['post_title_th']
+        if len(postdata['post_images']) == 0:
+            postdata['post_images'] = ['img/tmp/default/white.jpg']
+
         datapost = {
             'thisIDField': '',
             'action': '2',
@@ -501,7 +501,7 @@ class teedin2():
             pass
         else:
             datapost['thisHasMapField'] = 1
-        
+
         arr = ["pictureField1"]
         files = {}
         for i in range(len(postdata['post_images'])):
@@ -557,11 +557,15 @@ class teedin2():
 
         success = "true"
         detail = ""
-        post_url = 'https://www.teedin2.com/detail/' + \
-            postdata['post_id']+'.html'
+        ul_test = "https://www.teedin2.com/topic3Update.php"
+        test = {
+            'ID': postdata['post_id'],
+            'action': '2',
+            'thisCPasswordField': postdata['pass']
+        }
         with requests.Session() as s:
-            r = s.post(post_url)
-        if postdata['post_id'] not in r.text:
+            r = s.post(ul_test, data=test)
+        if "A Database Error Occured while counting result Rows" in r.text:
             detail = "wrong post id"
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
@@ -572,6 +576,7 @@ class teedin2():
                 "end_time": str(time_end),
                 "detail": detail,
             }
+
         if success == "true":
             datapost = {
                 'action': '2',
@@ -585,14 +590,15 @@ class teedin2():
             data = r.text
             # print(data,"teedin2")
             post_url = 'https://www.teedin2.com/detail/' + \
-            postdata['post_id']+'.html'
+                postdata['post_id']+'.html'
             with requests.Session() as s:
                 r = s.post(post_url)
-            if postdata['post_id'] in r.text:
+            if postdata['post_id'] not in r.text:
                 success = "false"
                 detail = "Failed to delete"
             else:
                 detail = "Successfully deleted"
+
         else:
             success = "false"
         time_end = datetime.datetime.utcnow()
@@ -605,6 +611,49 @@ class teedin2():
             "detail": detail,
         }
 
+    def boost_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        post_id = postdata['post_id']
+        ul_test = "https://www.teedin2.com/topic3Update.php"
+        test = {
+            'ID': postdata['post_id'],
+            'action': '2',
+            'thisCPasswordField': postdata['pass']
+        }
+        with requests.Session() as s:
+            r = s.post(ul_test, data=test)
+        if "A Database Error Occured while counting result Rows" in r.text:
+            detail = "wrong post id or wrong password"
+            time_end = datetime.datetime.utcnow()
+            time_usage = time_end - time_start
+            return {
+                'websitename': 'teedin2',
+                'success': 'False',
+                "start_time": str(time_start),
+                "end_time": str(time_end),
+                "detail": detail,
+            }
+        posturl = "https://www.teedin2.com/topic4Moveup.php"
+        datapost = {
+            'ID': postdata['post_id'],
+            'action': 2,
+            'thisCPasswordField': postdata['pass']
+        }
+        r = s.post(posturl, data=datapost)
+
+        time_end = datetime.datetime.utcnow()
+        return {
+            "websitename": "teedin2",
+            "success": "true",
+            "time_usage": time_end - time_start,
+            "time_start": time_start,
+            "time_end": time_end,
+            "detail": "",
+            "post_id": post_id,
+        }
+
 
 # obj = teedin2()
 
@@ -614,17 +663,17 @@ class teedin2():
 # )
 
 # postdata = {
-#     'post_id':'389936',
+#     'post_id': '391511',
 #     'property_type': '3',
 #     'post_title_th': 'fasfs',
 #     'post_description_th': 'fasdjnsldjnflflasnkflasdflksdfklalskd',
 #     "addr_province": "กรุงเทพมหานคร",
 #     "addr_district": "คลองเตย",
 #     "addr_sub_district": "คลองตัน",
-#     "addr_road":"",
-#     "addr_soi":"",
-#     "geo_latitude":"23",
-#     "geo_longitude":"32",
+#     "addr_road": "",
+#     "addr_soi": "",
+#     "geo_latitude": "23",
+#     "geo_longitude": "32",
 #     'listing_type': '',
 #     'land_size_rai': '5234',
 #     'land_size_wa': '5234',
@@ -632,12 +681,11 @@ class teedin2():
 #     'name': 'temptemp',
 #     'pass': '12345678',
 #     'mobile': '523452',
-#     'price_baht':'234523',
+#     'price_baht': '234523',
 #     'user': 'temp@gmail.com',
 #     'post_images': ['../Desktop/download.jpeg']
 # }
-# # r = obj.create_post(postdata)
+# r = obj.create_post(postdata)
 # r=obj.edit_post(postdata)
 # r = obj.delete_post(postdata)
-# print()
 # print(r)
