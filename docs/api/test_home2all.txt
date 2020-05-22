@@ -92,6 +92,13 @@ EDIT POST WITH WRONG ID
 <output>
 {\n "success": "true",\n "action": "edit_post",\n "web": {\n  "home2all": {\n   "success": "False",\n   "usage_time": "0:00:11.459421",\n   "start_time": "2020-04-16 10:32:05.867206",\n   "end_time": "2020-04-16 10:32:17.326627",\n   "post_url": "",\n   "post_id": "788688",\n   "account_type": "null",\n   "detail": "Incorrect Post Id"\n  }\n },\n "usage_time": "0:00:12.921285",\n "start_time": "2020-04-16 10:32:04.406112",\n "end_time": "2020-04-16 10:32:17.327397"\n}'
 
+BOOST POST
+
+<input>
+{'access_token': 'YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9', 'post_data': 'eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjciLCAid2ViIjogW3siZHNfbmFtZSI6ICJob21lMmFsbCIsICJkc19pZCI6ICIxMjAiLCAicG9zdF9pZCI6ICI3OTQxMDUiLCAibG9nX2lkIjogIjMzMzMzIiwgInVzZXIiOiAicGFyem9kdXBzb0B5ZXZtZS5jb20iLCAicGFzcyI6ICIxMjM0NTZhYTkifV19'}
+
+<output>
+'{\n "success": "true",\n "action": "boost_post",\n "web": {\n  "home2all": {\n   "websitename": "home2all",\n   "success": "False",\n   "time_usage": "0:00:13.149581",\n   "time_start": "2020-05-22 11:24:10.195851",\n   "time_end": "2020-05-22 11:24:23.345432",\n   "detail": "No boost post  for site",\n   "post_id": "794105"\n  }\n },\n "usage_time": "0:00:13.282677",\n "start_time": "2020-05-22 11:24:10.069038",\n "end_time": "2020-05-22 11:24:23.351715"\n}'
 
 DELETE POST
 
