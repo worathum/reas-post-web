@@ -1,151 +1,236 @@
-## register user :
-### input 
-
-anNvbl9yZWdpc3Rlcj17CiAgICAiYWN0aW9uIjogInJlZ2lzdGVyX3VzZXIiLAogICAgInRpbWVv
-dXQiOiAiNyIsCiAgICAid2ViIjogWwogICAgICAgIHsKICAgICAgICAgICAgImRzX25hbWUiOiAi
-Z29vZHByaWNlcHJvcGVydHkiLAogICAgICAgICAgICAiZHNfaWQiOiAiNCIsCiAgICAgICAgICAg
-ICJ1c2VyIjogImFtYXJpbjUudGFAZ21haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiAiNWs0
-a2szMjUzNDM0IiwKICAgICAgICAgICAgImNvbXBhbnlfbmFtZSI6ICJhbWFyaW4gaW5jIiwKICAg
-ICAgICAgICAgIm5hbWVfdGl0bGUiOiAibXIiLAogICAgICAgICAgICAibmFtZV90aCI6ICLguK3g
-uLHguKHguKPguLTguJnguJfguKPguYwiLAogICAgICAgICAgICAic3VybmFtZV90aCI6ICLguJrg
-uLjguI3guYDguIHguLTguJQiLAogICAgICAgICAgICAibmFtZV9lbiI6ICJBbWFyaW4iLAogICAg
-ICAgICAgICAic3VybmFtZV9lbiI6ICJCb29ua2lydCIsCiAgICAgICAgICAgICJ0ZWwiOiAiMDg5
-MTk5OTQ1MCIsCiAgICAgICAgICAgICJsaW5lIjogImFtYXJpbi50YSIsCiAgICAgICAgICAgICJh
-ZGRyX3Byb3ZpbmNlIjogIuC4geC4suC4rOC4quC4tOC4meC4mOC4uOC5jCIsCiAgICAgICAgICAg
-ICJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4oeC4t+C4reC4h+C4geC4suC4rOC4quC4tOC4meC4mOC4
-uOC5jCIsCiAgICAgICAgfQogICAgXQp9
+REGISTRATION => pass
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data :
+eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ0aW1lb3V0IjogIjciLCAid2ViIjogW3siZHNfbmFtZSI6ICJnb29kcHJpY2Vwcm9wZXJ0eSIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAibWFuYXNAYWticmUuY29tIiwgInBhc3MiOiAiNWs0a2szMjUzNDM0IiwgImNvbXBhbnlfbmFtZSI6ICIiLCAibmFtZV90aXRsZSI6ICIiLCAibmFtZV90aCI6ICJcdTBlNGMiLCAic3VybmFtZV90aCI6ICIiLCAibmFtZV9lbiI6ICIiLCAic3VybmFtZV9lbiI6ICIiLCAidGVsIjogIiIsICJsaW5lIjogIiIsICJhZGRyX3Byb3ZpbmNlIjogIiJ9XX0KCg==
+json :
+{"action": "register_user", "timeout": "7", "web": [{"ds_name": "goodpriceproperty", "ds_id": "4", "user": "manas@akbre.com", "pass": "5k4kk3253434", "company_name": "", "name_title": "", "name_th": "\u0e4c", "surname_th": "", "name_en": "", "surname_en": "", "tel": "", "line": "", "addr_province": ""}]}
 
 
 
 
-### result
-{ "usage_time": "0:00:02.737376", "end_time": "2020-04-06 08:46:10.018210", "web": { "goodpriceproperty": { "detail": "\n", "end_time": "2020-04-06 08:46:10.018012", "start_time": "2020-04-06 08:46:07.281559", "success": "true" } }, "action": "test_login", "success": "true", "start_time": "2020-04-06 08:46:07.280834" }
-
-
-## login
-### input
-
-ewogICAgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKICAgICJ0aW1lb3V0IjogIjciLAogICAgIndl
-YiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImdvb2RwcmljZXByb3BlcnR5
-IiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAidXNlciI6ICJ2aXZhYmEx
-ODkwQGlzbWFpbGd1bC5uZXQiLAogICAgICAgICAgICAicGFzcyI6ICIxMjM0NTY3OCIsCiAgICAg
-ICAgICAgICJjb21wYW55X25hbWUiOiAiYW1hcmluIGluYyIsCiAgICAgICAgICAgICJuYW1lX3Rp
-dGxlIjogIm1yIiwKICAgICAgICAgICAgIm5hbWVfdGgiOiAi4Lit4Lix4Lih4Lij4Li04LiZ4LiX
-4Lij4LmMIiwKICAgICAgICAgICAgInN1cm5hbWVfdGgiOiAi4Lia4Li44LiN4LmA4LiB4Li04LiU
-IiwKICAgICAgICAgICAgIm5hbWVfZW4iOiAiQW1hcmluIiwKICAgICAgICAgICAgInN1cm5hbWVf
-ZW4iOiAiQm9vbmtpcnQiLAogICAgICAgICAgICAidGVsIjogIjA4OTE5OTk0NTAiLAogICAgICAg
-ICAgICAibGluZSI6ICJhbWFyaW4udGEiLAogICAgICAgICAgICAiYWRkcl9wcm92aW5jZSI6ICLg
-uIHguLLguKzguKrguLTguJnguJjguLjguYwiLAogICAgICAgICAgICAiYWRkcl9kaXN0cmljdCI6
-ICLguYDguKHguLfguK3guIfguIHguLLguKzguKrguLTguJnguJjguLjguYwiCiAgICAgICAgfQog
-ICAgXQp9
-
-### result
-{ "usage_time": "0:00:02.737376", "end_time": "2020-04-06 08:46:10.018210", "web": { "goodpriceproperty": { "detail": "\n", "end_time": "2020-04-06 08:46:10.018012", "start_time": "2020-04-06 08:46:07.281559", "success": "true" } }, "action": "test_login", "success": "true", "start_time": "2020-04-06 08:46:07.280834" }
-
-
-
-
-## create_post
-
-### input
-
-
-
-
-## edit
-### input
-json_edit={
-    "action": "edit_post",
-    "timeout": "5",
-    "post_img_url_lists": [
-        "http://imagestore.com/pic1.jpg",
-        "http://imagestore.com/pic2.jpg",
-        "http://imagestore.com/pic3.jpg",
-        "http://imagestore.com/pic4.jpg",
-        "http://imagestore.com/pic5.jpg"
-    ],
-    "name": "xxx",
-    "mobile": "xxx",
-    "email": "xxx",
-    "line": "xxx",
-    "property_id" : "289338",
-    "floorarea_sqm": "พื้นที่",
-    "direction_type" : "11",
-    "addr_road": "ถนน",
-    "addr_soi": "ซอย",
-    "addr_near_by": "สถานที่ใกล้เคียง",
-    "listing_type": "ขาย",    
-    "property_type": "คอนโด",
-    "addr_province": "กาฬสินธุ์",
-    "addr_district": "เมืองกาฬสินธุ์",
-    "addr_sub_district": "ตำบล แขวง",
-    "price_baht": "5",
-    "county": "เขต",
-    "district": "แขวง",
-    "geo_latitude": "13.786862",
-    "geo_longitude": "100.757815",
-    "post_title_th": "xxx",
-    "post_description_th": "xxx",
-    "post_title_en": "",
-    "post_description_en": "adhgdshgdsfhgjdsfhgfdh",
-    "project_name": "ลุมพีนีวิลล รามอินทราหลักสี่",
-    "web": [
-        {
-            "ds_name": "thaihometown",
-            "ds_id": "4",
-            "post_id": "33333",
-            "log_id": "33333",             
-            "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434"
-        },
-        {
-            "ds_name": "ddproperty",
-            "ds_id": "5",
-            "post_id": "4444",
-            "log_id": "44444",             
-            "account_type" : "corperate",
-            "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434",     
-            "web_project_name": "ลุมพีนี รามอินทราหลักสี่"
-        }
-    ]
-}
-### result
-{'success': 'true', 'action': 'edit_post', 'start_time': '2020-04-06 07:24:32.219275', 'end_time': '2020-04-06 07:24:41.535319', 'web': {'thaihometown': {'success': 'true', 'start_time': '2020-04-06 07:24:32.219275', 'end_time': '2020-04-06 07:24:41.535319', 'detail': '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n<meta http-equiv=refresh content=0;URL=../property/289338/รหัส-NPT0086-ขาย--คอนโด-The-Key-Prachachuen-1-ห้องนอน.html>', 'log_id': ''}}}
-
-
-
-## Delete post
-### input 
-
-json_delete={
-    "action": "delete_post",
-    "timeout": "5",
-    "web": [
-        {
-            "ds_name": "thaihometown",
-            "ds_id": "4",
-            "post_id": "289338",
-            "log_id": "33333", 
-            "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434"
-        },
-        {
-            "ds_name": "ddproperty",
-            "ds_id": "4",
-            "post_id": "33333",
-            "log_id": "33333", 
-            "account_type" : "corperate",
-            "user": "amarin.ta@gmail.com",
-            "pass": "5k4kk3253434",            
-        }
-    ]
+<output>
+{
+ "success": "true",
+ "action": "register_user",
+ "web": {
+  "goodpriceproperty": {
+   "success": "true",
+   "websitename": "goodpriceproperty",
+   "start_time": "2020-05-03 13:30:44.754676",
+   "end_time": "2020-05-03 13:30:46.121161",
+   "detail": "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<meta http-equiv=refresh content=0;URL=member/index.php>"
+  }
+ },
+ "usage_time": "0:00:01.995340",
+ "start_time": "2020-05-03 13:30:44.138405",
+ "end_time": "2020-05-03 13:30:46.133745"
 }
 
 
+LOGIN : Correct Pass => Pass
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:
+eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJnb29kcHJpY2Vwcm9wZXJ0eSIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAibWFuYXNAYWticmUuY29tIiwgInBhc3MiOiAiNWs0a2szMjUzNDM0In1dfQo=
 
-### result
-{'success': 'true', 'action': 'delete_post', 'start_time': '2020-04-06 07:38:27.522847', 'end_time': '2020-04-06 07:38:28.550379', 'web': {'thaihometown': {'success': 'true', 'start_time': '2020-04-06 07:38:27.522847', 'end_time': '2020-04-06 07:38:28.550379', 'detail': '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n<meta http-equiv=refresh content=0;URL=list-property.php>', 'log_id': ''}}}
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "goodpriceproperty": {
+   "success": "true",
+   "websitename": "goodpriceproperty",
+   "start_time": "2020-05-03 13:35:44.029259",
+   "end_time": "2020-05-03 13:35:44.687672",
+   "detail": "logged in"
+  }
+ },
+ "usage_time": "0:00:00.720535",
+ "start_time": "2020-05-03 13:35:43.983363",
+ "end_time": "2020-05-03 13:35:44.703898"
+}
+
+LOGIN : Wrong pass => Fail 
+<input >
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:
+eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0aGFpc2Vjb25kaGFuZCIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAibWFuYXNAYWticmUuY29tIiwgInBhc3MiOiAiMTIzNDU2ZDc4In1dfQ==
+
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "thaisecondhand": {
+   "websitename": "thaisecondhand",
+   "success": "False",
+   "start_time": "2020-05-03 13:38:13.360131",
+   "end_time": "2020-05-03 13:38:15.582479",
+   "detail": "Login Unsucessful"
+  }
+ },
+ "usage_time": "0:00:02.379957",
+ "start_time": "2020-05-03 13:38:13.216377",
+ "end_time": "2020-05-03 13:38:15.596334"
+}
+
+LOGIN : Wrong User => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data :
+eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0aGFpc2Vjb25kaGFuZCIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAidGVzdGVySW5jb3JyZWN0QHByb3Rvbm1haWwuY29tIiwgInBhc3MiOiAiMTIzNDU2ZDc4In1dfQ==
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "thaisecondhand": {
+   "websitename": "thaisecondhand",
+   "success": "False",
+   "start_time": "2020-05-03 13:40:50.595686",
+   "end_time": "2020-05-03 13:40:51.964463",
+   "detail": "Login Unsucessful"
+  }
+ },
+ "usage_time": "0:00:01.418760",
+ "start_time": "2020-05-03 13:40:50.564592",
+ "end_time": "2020-05-03 13:40:51.983352"
+}
 
 
+Create Post : no new line => success
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : ewogICAgImFjdGlvbiI6ICJjcmVhdGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICAicG9zdF9pbWdfdXJsX2xpc3RzIjogWwogICAgICAgICJodHRwczovL2ltYWdlLnNodXR0ZXJzdG9jay5jb20vaW1hZ2UtcGhvdG8vd2hpdGUtdHJhbnNwYXJlbnQtbGVhZi1vbi1taXJyb3ItMjYwbnctMTAyOTE3MTY5Ny5qcGciICAgICAgICAKICAgIF0sCiAgICAiZ2VvX2xhdGl0dWRlIjogIjEzLjc4Njg2MiIsCiAgICAiZ2VvX2xvbmdpdHVkZSI6ICIxMDAuNzU3ODE1IiwgICAgCiAgICAicHJvcGVydHlfaWQiIDogIiIsCiAgICAicG9zdF90aXRsZV90aCI6ICJ4eHgiLAogICAgInNob3J0X3Bvc3RfdGl0bGVfdGgiOiAieHh4IiwKICAgICJwb3N0X2Rlc2NyaXB0aW9uX3RoIjogInh4eCIsCiAgICAicG9zdF90aXRsZV9lbiI6ICIiLAogICAgInNob3J0X3Bvc3RfdGl0bGVfZW4iOiAieHh4IiwKICAgICJwb3N0X2Rlc2NyaXB0aW9uX2VuIjogIiIsCiAgICAicHJpY2VfYmFodCI6ICIzMDAwIiwKICAgIAogICAgImxpc3RpbmdfdHlwZSI6ICLguILguLLguKIiLCAgICAKICAgICJwcm9wZXJ0eV90eXBlIjogIjQiLCAgICAKICAgICJmbG9vcl9sZXZlbCIgOiAiMTEiLAogICAgImZsb29yX3RvdGFsIiA6ICIxMSIsCiAgICAiZmxvb3JfYXJlYSIgOiAiMTEiLAogICAgImJhdGhfcm9vbSIgOiAiMTEiLAogICAgImJlZF9yb29tIiA6ICIxMSIsCiAgICAicHJvbWluZW50X3BvaW50IiA6ICLguIjguLjguJTguYDguJTguYjguJkiLCAgICAKICAgICJ2aWV3X3R5cGUiIDogIjExIiwKICAgICJkaXJlY3Rpb25fdHlwZSIgOiAiMTEiLAogICAgImFkZHJfcHJvdmluY2UiOiAi4LiB4Liy4LiN4LiI4LiZ4Lia4Li44Lij4Li1IiwKICAgICJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4oeC4t+C4reC4h+C4geC4suC4jeC4iOC4meC4muC4uOC4o+C4tSIsCiAgICAiYWRkcl9zdWJfZGlzdHJpY3QiOiAi4LiV4Liz4Lia4LilIOC5geC4guC4p+C4hyIsCiAgICAiYWRkcl9yb2FkIjogIuC4luC4meC4mSIsCiAgICAiYWRkcl9zb2kiOiAi4LiL4Lit4LiiIiwKICAgICJhZGRyX25lYXJfYnkiOiAi4Liq4LiW4Liy4LiZ4LiX4Li14LmI4LmD4LiB4Lil4LmJ4LmA4LiE4Li14Lii4LiHIiwKICAgICJmbG9vcmFyZWFfc3FtIjogIuC4nuC4t+C5ieC4meC4l+C4teC5iCIsCiAgICAKICAgICJsYW5kX3NpemVfcmFpIjogIuC4guC4meC4suC4lOC4l+C4teC5iOC4lOC4tOC4meC5gOC4m+C5h+C4meC5hOC4o+C5iCIsCiAgICAibGFuZF9zaXplX25nYW4iOiAi4LiC4LiZ4Liy4LiU4LiX4Li14LmI4LiU4Li04LiZ4LmA4Lib4LmH4LiZ4LiH4Liy4LiZIiwKICAgICJsYW5kX3NpemVfd2EiOiAi4LiC4LiZ4Liy4LiU4LiX4Li14LmI4LiU4Li04LiZ4LmA4Lib4LmH4LiZ4Lin4LiyIiwKICAgIAogICAgIm5hbWUiOiAieHh4IiwKICAgICJtb2JpbGUiOiAieHh4IiwKICAgICJlbWFpbCI6ICJ4ZHNmc2RmeHhAYWJjLmNvbSIsCiAgICAibGluZSI6ICJ4eHgiLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImdvb2RwcmljZXByb3BlcnR5IiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLCAgICAgICAgICAgICAgCiAgICAgICAgICAgICJ1c2VyIjogIm1hbmFzQGFrYnJlLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogIjVrNGtrMzI1MzQzNCIKICAgICAgICB9CiAgICBdCn0=
+ 
+ <output>
+ {
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "goodpriceproperty": {
+   "prop_type": "4",
+   "data_prop_type": 3,
+   "success": "true",
+   "action": "create_post",
+   "websitename": "goodpriceproperty",
+   "start_time": "2020-05-03 13:45:37.335888",
+   "end_time": "2020-05-03 13:45:40.380096",
+   "post_url": "http://www.xn--42cf4b4c7ahl7albb1b.com/property/296039/xxx.html",
+   "post_id": "296039",
+   "account_type": ""
+  }
+ },
+ "usage_time": "0:00:03.242151",
+ "start_time": "2020-05-03 13:45:37.143688",
+ "end_time": "2020-05-03 13:45:40.385839"
+}
 
+
+Create Post : new line => success
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data :ewogICAgImFjdGlvbiI6ICJjcmVhdGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICAicG9zdF9pbWdfdXJsX2xpc3RzIjogWwogICAgICAgICJodHRwczovL2ltYWdlLnNodXR0ZXJzdG9jay5jb20vaW1hZ2UtcGhvdG8vd2hpdGUtdHJhbnNwYXJlbnQtbGVhZi1vbi1taXJyb3ItMjYwbnctMTAyOTE3MTY5Ny5qcGciICAgICAgICAKICAgIF0sCiAgICAiZ2VvX2xhdGl0dWRlIjogIjEzLjc4Njg2MiIsCiAgICAiZ2VvX2xvbmdpdHVkZSI6ICIxMDAuNzU3ODE1IiwgICAgCiAgICAicHJvcGVydHlfaWQiIDogIiIsCiAgICAicG9zdF90aXRsZV90aCI6ICJ4eHgiLAogICAgInNob3J0X3Bvc3RfdGl0bGVfdGgiOiAieHh4IiwKICAgICJwb3N0X2Rlc2NyaXB0aW9uX3RoIjogIkxhbmQgZm9yIHJlbnQgYmFuZ2tsb3lzYWlub2kgXHJcbiA2IHJhaSBzdWl0YWJsZSBmb3IgZGV2ZWxvcGluZ0xhbmQgXHJcbiBTaXplIDYgcmFpV2lkdGggMzAgbWV0ZSIsCiAgICAicG9zdF90aXRsZV9lbiI6ICJMYW5kIGZvciByZW50IGJhbmdrbG95c2Fpbm9pIDYgcmFpIHN1aXRhYmxlIGZvciBkZXZlbG9waW5nTGFuZCBTaXplIDYgcmFpV2lkdGggMzAgbWV0ZSIsCiAgICAic2hvcnRfcG9zdF90aXRsZV9lbiI6ICJ4eHgiLAogICAgInBvc3RfZGVzY3JpcHRpb25fZW4iOiAiIiwKICAgICJwcmljZV9iYWh0IjogIjMwMDAiLAogICAgCiAgICAibGlzdGluZ190eXBlIjogIuC4guC4suC4oiIsICAgIAogICAgInByb3BlcnR5X3R5cGUiOiAiNCIsICAgIAogICAgImZsb29yX2xldmVsIiA6ICIxMSIsCiAgICAiZmxvb3JfdG90YWwiIDogIjExIiwKICAgICJmbG9vcl9hcmVhIiA6ICIxMSIsCiAgICAiYmF0aF9yb29tIiA6ICIxMSIsCiAgICAiYmVkX3Jvb20iIDogIjExIiwKICAgICJwcm9taW5lbnRfcG9pbnQiIDogIuC4iOC4uOC4lOC5gOC4lOC5iOC4mSIsICAgIAogICAgInZpZXdfdHlwZSIgOiAiMTEiLAogICAgImRpcmVjdGlvbl90eXBlIiA6ICIxMSIsCiAgICAiYWRkcl9wcm92aW5jZSI6ICLguIHguLLguI3guIjguJnguJrguLjguKPguLUiLAogICAgImFkZHJfZGlzdHJpY3QiOiAi4LmA4Lih4Li34Lit4LiH4LiB4Liy4LiN4LiI4LiZ4Lia4Li44Lij4Li1IiwKICAgICJhZGRyX3N1Yl9kaXN0cmljdCI6ICLguJXguLPguJrguKUg4LmB4LiC4Lin4LiHIiwKICAgICJhZGRyX3JvYWQiOiAi4LiW4LiZ4LiZIiwKICAgICJhZGRyX3NvaSI6ICLguIvguK3guKIiLAogICAgImFkZHJfbmVhcl9ieSI6ICLguKrguJbguLLguJnguJfguLXguYjguYPguIHguKXguYnguYDguITguLXguKLguIciLAogICAgImZsb29yYXJlYV9zcW0iOiAiMTAiLAogICAgCiAgICAibGFuZF9zaXplX3JhaSI6ICIxMCIsCiAgICAibGFuZF9zaXplX25nYW4iOiAiMTAiLAogICAgImxhbmRfc2l6ZV93YSI6ICIxMCIsCiAgICAKICAgICJuYW1lIjogInh4eCIsCiAgICAibW9iaWxlIjogInh4eCIsCiAgICAiZW1haWwiOiAieGRzZnNkZnh4QGFiYy5jb20iLAogICAgImxpbmUiOiAieHh4IiwKICAgICJ3ZWIiOiBbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ICJnb29kcHJpY2Vwcm9wZXJ0eSIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwgICAgICAgICAgICAgIAogICAgICAgICAgICAidXNlciI6ICJtYW5hc0Bha2JyZS5jb20iLAogICAgICAgICAgICAicGFzcyI6ICI1azRrazMyNTM0MzQiCiAgICAgICAgfQogICAgXQp9Cg==
+<output>
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "goodpriceproperty": {
+   "prop_type": "4",
+   "data_prop_type": 3,
+   "success": "true",
+   "action": "create_post",
+   "websitename": "goodpriceproperty",
+   "start_time": "2020-05-03 14:05:23.465435",
+   "end_time": "2020-05-03 14:05:25.723284",
+   "post_url": "http://www.xn--42cf4b4c7ahl7albb1b.com/property/296041/xxx.html",
+   "post_id": "296041",
+   "account_type": ""
+  }
+ },
+ "usage_time": "0:00:03.136353",
+ "start_time": "2020-05-03 14:05:22.591873",
+ "end_time": "2020-05-03 14:05:25.728226"
+}
+
+
+Edit Post => Pass
+ 
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data :
+ewogICAgImFjdGlvbiI6ICJlZGl0X3Bvc3QiLAogICAgInRpbWVvdXQiOiAiNSIsCiAgICAgInBvc3RfaW1nX3VybF9saXN0cyI6IFsKICAgICAgICAiaHR0cHM6Ly9pbWFnZS5zaHV0dGVyc3RvY2suY29tL2ltYWdlLXBob3RvL3doaXRlLXRyYW5zcGFyZW50LWxlYWYtb24tbWlycm9yLTI2MG53LTEwMjkxNzE2OTcuanBnIiAgICAgICAgCiAgICBdLAogICAgImdlb19sYXRpdHVkZSI6ICIxMy43ODY4NjIiLAogICAgImdlb19sb25naXR1ZGUiOiAiMTAwLjc1NzgxNSIsICAgIAogICAgInByb3BlcnR5X2lkIiA6ICIiLAogICAgInBvc3RfdGl0bGVfdGgiOiAiTmV3IE5hbWUiLAogICAgInNob3J0X3Bvc3RfdGl0bGVfdGgiOiAiQmlnX0NoYW5nZSIsCiAgICAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJMYW5kIGZvciByZW50IGJhbmdrbG95c2Fpbm9pIFxyXG4gNiByYWkgc3VpdGFibGUgZm9yIGRldmVsb3BpbmdMYW5kIFxyXG4gU2l6ZSA2IHJhaVdpZHRoIDMwIG1ldGUiLAogICAgInBvc3RfdGl0bGVfZW4iOiAiTGFuZCBmb3IgcmVudCBiYW5na2xveXNhaW5vaSA2IHJhaSBzdWl0YWJsZSBmb3IgZGV2ZWxvcGluZ0xhbmQgU2l6ZSA2IHJhaVdpZHRoIDMwIG1ldGUiLAogICAgInNob3J0X3Bvc3RfdGl0bGVfZW4iOiAieHh4IiwKICAgICJwb3N0X2Rlc2NyaXB0aW9uX2VuIjogIiIsCiAgICAicHJpY2VfYmFodCI6ICIzMDAwIiwKICAgIAogICAgImxpc3RpbmdfdHlwZSI6ICLguILguLLguKIiLCAgICAKICAgICJwcm9wZXJ0eV90eXBlIjogIjQiLCAgICAKICAgICJmbG9vcl9sZXZlbCIgOiAiMTEiLAogICAgImZsb29yX3RvdGFsIiA6ICIxMSIsCiAgICAiZmxvb3JfYXJlYSIgOiAiMTEiLAogICAgImJhdGhfcm9vbSIgOiAiMTEiLAogICAgImJlZF9yb29tIiA6ICIxMSIsCiAgICAicHJvbWluZW50X3BvaW50IiA6ICLguIjguLjguJTguYDguJTguYjguJkiLCAgICAKICAgICJ2aWV3X3R5cGUiIDogIjExIiwKICAgICJkaXJlY3Rpb25fdHlwZSIgOiAiMTEiLAogICAgImFkZHJfcHJvdmluY2UiOiAi4LiB4Liy4LiN4LiI4LiZ4Lia4Li44Lij4Li1IiwKICAgICJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4oeC4t+C4reC4h+C4geC4suC4jeC4iOC4meC4muC4uOC4o+C4tSIsCiAgICAiYWRkcl9zdWJfZGlzdHJpY3QiOiAi4LiV4Liz4Lia4LilIOC5geC4guC4p+C4hyIsCiAgICAiYWRkcl9yb2FkIjogIuC4luC4meC4mSIsCiAgICAiYWRkcl9zb2kiOiAi4LiL4Lit4LiiIiwKICAgICJhZGRyX25lYXJfYnkiOiAi4Liq4LiW4Liy4LiZ4LiX4Li14LmI4LmD4LiB4Lil4LmJ4LmA4LiE4Li14Lii4LiHIiwKICAgICJmbG9vcmFyZWFfc3FtIjogIuC4nuC4t+C5ieC4meC4l+C4teC5iCIsCiAgICAKICAgICJsYW5kX3NpemVfcmFpIjogIuC4guC4meC4suC4lOC4l+C4teC5iOC4lOC4tOC4meC5gOC4m+C5h+C4meC5hOC4o+C5iCIsCiAgICAibGFuZF9zaXplX25nYW4iOiAi4LiC4LiZ4Liy4LiU4LiX4Li14LmI4LiU4Li04LiZ4LmA4Lib4LmH4LiZ4LiH4Liy4LiZIiwKICAgICJsYW5kX3NpemVfd2EiOiAi4LiC4LiZ4Liy4LiU4LiX4Li14LmI4LiU4Li04LiZ4LmA4Lib4LmH4LiZ4Lin4LiyIiwKICAgIAogICAgIm5hbWUiOiAieHh4IiwKICAgICJtb2JpbGUiOiAieHh4IiwKICAgICJlbWFpbCI6ICJ4ZHNmc2RmeHhAYWJjLmNvbSIsCiAgICAibGluZSI6ICJ4eHgiLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImdvb2RwcmljZXByb3BlcnR5IiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAicG9zdF9pZCIgOiAiMjk0ODk4IiwgCiAgImxvZ19pZCIgOiAiMTEzODk4NTMiLAogICAgICAgICAgICAidXNlciI6ICJhbWFyaW4udGFAZ21haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiAiNWs0a2szMjUzNDM0IgogICAgICAgIH0KICAgIF0KfQ==
+<output>
+{
+ "success": "true",
+ "action": "edit_post",
+ "web": {
+  "goodpriceproperty": {
+   "success": "true",
+   "action": "edit_post",
+   "websitename": "goodpriceproperty",
+   "start_time": "2020-05-03 14: 25: 38.844770",
+   "end_time": "2020-05-03 14: 25: 42.022212",
+   "detail": "<meta http-equiv = \" Content-Type \ "content = \" text / html; charset = utf-8 \ "/> \ n <meta http-equiv = \" Content-Type \ " content = \ "text / html; charset = utf-8 \" /> \ n <meta http-equiv = refresh content = 0; URL = .. / property / 294898 / Commercial building for sale-3.5-floor-area-17-sq.wah-Sukhumvit road -67-near-BTS-Phra Khanong. html> ",
+   "log_id": ""
+  }
+ },
+ "usage_time": "0: 00: 03.998961",
+ "start_time": "2020-05-03 14: 25: 38.044712",
+ "end_time": "2020-05-03 14: 25: 42.043673"
+}
+
+Delete Post => Pass
+ 
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : 
+ewogICAgImFjdGlvbiI6ICJkZWxldGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICJ3ZWIiOiBbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ICJnb29kcHJpY2Vwcm9wZXJ0eSIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwKICAgICAgICAgICAgInBvc3RfaWQiIDogIjI5NjA0MSIsIAogICJsb2dfaWQiIDogIjExMzg5ODUzIiwKICAgICAgICAgICAgInVzZXIiOiAibWFuYXNAYWticmUuY29tIiwKICAgICAgICAgICAgInBhc3MiOiAiNWs0a2szMjUzNDM0IgogICAgICAgIH0KICAgIF0KfQ==
+<output>
+{
+ "success": "true",
+ "action": "delete_post",
+ "web": {
+  "goodpriceproperty": {
+   "success": "true",
+   "action": "delete_post",
+   "websitename": "goodpriceproperty",
+   "start_time": "2020-05-03 14:11:11.135948",
+   "end_time": "2020-05-03 14:11:12.844746",
+   "detail": "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<meta http-equiv=refresh content=0;URL=list-property.php>",
+   "log_id": "11389853"
+  }
+ },
+ "usage_time": "0:00:01.754205",
+ "start_time": "2020-05-03 14:11:11.108199",
+ "end_time": "2020-05-03 14:11:12.862404"
+} 
+
+
+Boost post => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : 
+ewogICAgImFjdGlvbiI6ICJib29zdF9wb3N0IiwKICAgICJ0aW1lb3V0IjogIjUiLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImdvb2RwcmljZXByb3BlcnR5IiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAicG9zdF9pZCIgOiAiMjk0ODk4IiwgCiAgImxvZ19pZCIgOiAiMTEzODk4NTMiLAogICAgICAgICAgICAicGFzcyI6ICI1azRrazMyNTM0MzQiLAogICAgICAgICAgICAidXNlciI6ICJhbWFyaW4udGFAZ21haWwuY29tIgogICAgICAgIH0KICAgIF0KfQ==
+<output>
+{
+ "success": "true",
+ "action": "boost_post",
+ "web": {
+  "goodpriceproperty": {
+   "success": "true",
+   "detail": "logged in",
+   "time_usage": "P0DT00H00M00.803010S",
+   "time_start": "2020-05-03T14:17:41.666",
+   "time_end": "2020-05-03T14:17:42.469",
+   "post_id": "294898",
+   "websitename": "goodpriceproperty"
+  }
+ },
+ "usage_time": "0:00:00.946204",
+ "start_time": "2020-05-03 14:17:41.567600",
+ "end_time": "2020-05-03 14:17:42.513804"
+}
