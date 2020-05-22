@@ -59,7 +59,7 @@ class quickdealfree():
         r = httprequestObj.http_post(
             'http://www.quickdealfree.com/p-register.php', data=datapost)
         data = r.text
-        # print(data)
+
         if data.find("อีเมล์นี้มีอยู่ในระบบแล้ว") != -1:
             success = "false"
             detail = "Email Already registered"
@@ -157,9 +157,9 @@ class quickdealfree():
                      '5': 158, '6': 161, '7': 162, '8': 162, '9': 162, '10': 162, '25':162}
 
         try:
-            theprodid = getProdId[proid[postdata['property_type']]]
+            theprodid = getProdId[proid[str(postdata['property_type'])]]
         except:
-            theprodid = getProdId[postdata['property_type']]
+            theprodid = getProdId[str(postdata['property_type'])]
             for i in proid:
                 if proid[i] == postdata['property_type']:
                     postdata['property_type'] = i
