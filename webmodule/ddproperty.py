@@ -751,6 +751,7 @@ class ddproperty():
                 # self.chrome.save_screenshot("debug_response/newp33.png")
 
                 # longitude ,latitude
+                # test 13.755600646163234,100.55629891052246
                 try:
                     time.sleep(0.5)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
