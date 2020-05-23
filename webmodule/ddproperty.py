@@ -227,13 +227,19 @@ class ddproperty():
         log.debug('input password')
         passtxt.send_keys(Keys.ENTER)
         log.debug('click enter')
-        time.sleep(0.5)
+        time.sleep(1)
         
         matchObj = re.search(r'บัญชีผู้ใช้งานของท่านหมดอายุ', self.chrome.page_source)
         if matchObj:
             success = "false"
-            detail = 'บัญชีผู้ใช้งานของท่านหมดอายุ'
-            log.warning('บัญชีผู้ใช้งานของท่านหมดอายุ')
+            detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
+            log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
+        
+        matchObj = re.search(r'User account is not active', self.chrome.page_source)
+        if matchObj:
+            success = "false"
+            detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
+            log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
         
         if success == "true":
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
