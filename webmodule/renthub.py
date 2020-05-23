@@ -544,9 +544,14 @@ class renthub():
         #title length is not more than 150char
         if len(datahandled['post_title_th']) > 150:
             datahandled['post_title_th'] = datahandled['post_title_th'][:150]
+            log.debug('split post_title_th to %s',datahandled['post_title_th'])
         if len(datahandled['post_title_en']) > 150:
             datahandled['post_title_en'] = datahandled['post_title_en'][:150]
-
+            log.debug('split post_title_en to %s',datahandled['post_title_th'])
+        
+        #replace \r\n to <br>
+        datahandled['post_description_th'] = re.sub(r'\r\n','<br/>',datahandled['post_description_th'])
+        datahandled['post_description_en'] = re.sub(r'\r\n','<br/>',datahandled['post_description_en'])
 
         if detail != "":
             success =  "false"
@@ -793,7 +798,7 @@ class renthub():
             authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
 
             arrimg = self.uploadimage('condo',authenticity_token,datahandled)
-            
+  
             # https://renthub.in.th/condo_listings
             datapost = {
                 'authenticity_token': authenticity_token,
@@ -919,10 +924,12 @@ class renthub():
             data=encoder,
             headers={'Content-Type': encoder.content_type}
             )
-            data = r.json()
-            log.debug(data)
-            arrimg.append('pic_'+str(data['id']))
-        
+            try:
+                data = r.json()
+                log.debug(data)
+                arrimg.append('pic_'+str(data['id']))
+            except:
+                pass
         return arrimg
 
 
@@ -1336,6 +1343,7 @@ class renthub():
         #### ในเว็บจริง เหมือนจะ จำเป็น ว่า ถ้าระบุชื่อโครงการไม่ถูก จะไม่สามารถคลิก edit ได้ ทดสอบจริงก็ไม่ได้ เพราะ google map ไม่ขึ้นให้เลือกตำแหน่ง ซึ่งถ้าเลือกตำแหน่งไม่ได้ ก็ edit ไม่ได้ อยู่ดี
         #### ดังนั้น ถ้าชื่อโครงการไม่มี(หาไม่เจอ) ก็น่าจะ post ไปต่อไม่ได้อยู่ดี
         ####
+
         datapost = {          
             '_method':'put',
             'amenities[air]':0,
