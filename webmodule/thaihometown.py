@@ -542,19 +542,40 @@ class thaihometown():
     def getsizeunit(self,datahandled):
         log.debug('')
 
-        size = datahandled['floor_area']
+        #type unit 1 = ตรม
+        #type unit 2 = ตรว
+
+        size = 0
         typeunit = 1
 
-        if datahandled['property_type'] != 'คอนโดมิเนียม+Condominiem' and datahandled['property_type'] != 'สำนักงาน+Office':
-            typeunit = 2
-            try:
-                size = float(datahandled['floor_area']) / 4
-            except:
+        #condo / office is sqm first
+        if datahandled['property_type'] == 'คอนโดมิเนียม+Condominiem' or datahandled['property_type'] == 'สำนักงาน+Office':
+            typeunit = 1
+            #if defined floor_area
+            if datahandled.get('floor_area',None) != None and datahandled.get('floor_area','') != '' and datahandled.get('floor_area',0) > 0:
                 size = datahandled['floor_area']
-                typeunit = 1
-                log.debug('cannot convert area to sqw')
-        if datahandled['property_type'] == 'ที่ดิน+Land':
-            size = 0
+            #if not defined floor_area
+            else:
+                try:
+                    rai = float(datahandled['land_size_rai'])
+                    size = rai*1600
+                except ValueError:
+                    log.debug('cannot convert area rai to sqm')
+                    pass
+                try:
+                    ngan = float(datahandled['land_size_ngan'])
+                    size = size + (ngan*400)
+                except ValueError:
+                    log.debug('cannot convert area ngan to sqm')
+                    pass
+                try:
+                    wa = float(datahandled['land_size_wa'])
+                    size = size + (wa*4)
+                except ValueError:
+                    log.debug('cannot convert area wa to sqm')
+                    pass    
+        # not condo / office
+        else:
             typeunit = 2
             try:
                 rai = float(datahandled['land_size_rai'])
@@ -574,10 +595,20 @@ class thaihometown():
             except ValueError:
                 log.debug('cannot convert area wa')
                 pass    
+            
+            # if rai ngan wa not defined
             if size == 0:
-                size = datahandled['floor_area']
-                typeunit = 1
-
+                try:
+                    size = float(datahandled['floor_area']) / 4
+                except:
+                    size = datahandled['floor_area']
+                    typeunit = 1
+                    log.debug('cannot convert area to sqw')
+        #last
+        if size == 0: 
+            size = datahandled.get('floor_area',0)
+            typeunit = 1
+                
         log.debug('size %s type %s',size,typeunit)
 
         return size,typeunit
