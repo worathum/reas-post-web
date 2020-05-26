@@ -1,5 +1,3 @@
-import numpy as np
-from PIL import Image
 import base64
 
 from .lib_httprequest import *
