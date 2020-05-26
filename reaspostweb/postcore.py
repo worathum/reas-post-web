@@ -158,7 +158,6 @@ class postcore():
         #with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
         with concurrent.futures.ThreadPoolExecutor() as pool:
             for webitem in weblists:
-
                 websitename = webitem['ds_name']
                 # # if not defind in configs['list_module']
                 # if websitename not in self.list_module:
@@ -208,8 +207,6 @@ class postcore():
 
             for poolresult in concurrent.futures.as_completed(futures):
                 webresult = poolresult.result()
-                print(webresult)
-                print()
                 websitename = webresult["websitename"]
                 response["web"][websitename] = webresult
 

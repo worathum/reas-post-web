@@ -1,0 +1,271 @@
+REGISTRATION => pass
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ0aW1lb3V0IjogIjciLCAid2ViIjogW3siZHNfbmFtZSI6ICJwcmFrYXJkcHJvcGVydHkiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogImFtYXJpbi50YUBnbWFpbC5jb20iLCAicGFzcyI6ICI1azRrazMyNTM0MzQiLCAiY29tcGFueV9uYW1lIjogIiIsICJuYW1lX3RpdGxlIjogIm1yIiwgIm5hbWVfdGgiOiAiXHUwZTJkXHUwZTMxXHUwZTIxXHUwZTIzXHUwZTM0XHUwZTE5XHUwZTE3XHUwZTIzXHUwZTRjIiwgInN1cm5hbWVfdGgiOiAiXHUwZTFhXHUwZTM4XHUwZTBkXHUwZTQwXHUwZTAxXHUwZTM0XHUwZTE0IiwgIm5hbWVfZW4iOiAiQW1hcmluIiwgInN1cm5hbWVfZW4iOiAiQm9vbmtpcnQiLCAidGVsIjogIjA4OTE5OTk0NTAiLCAibGluZSI6ICJhbWFyaW4udGEiLCAiYWRkcl9wcm92aW5jZSI6ICIifV19
+
+<output>
+{'success': 'true',
+ 'action': 'register_user',
+ 'web': {'prakardproperty': {'success': 'True',
+   'start_time': '2020-04-04 23:02:43.392720',
+   'end_time': '2020-04-04 23:02:44.295022',
+   'detail': 'Sucessful Registration'}},
+ 'usage_time': '0:00:00.902999',
+ 'start_time': '2020-04-04 23:02:43.392201',
+ 'end_time': '2020-04-04 23:02:44.295200'}
+
+
+SEARCH POST => Pass
+<input>
+acccess_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data:ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6IlBST1BFUlRZIFRPIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoicHJha2FyZHByb3BlcnR5IiwKICAgICAgICAgICAgImRzX2lkIjoiNCIsCiAgICAgICAgICAgICJsb2dfaWQiOiIzMzMzMyIsCiAgICAgICAgICAgICJ1c2VyIjoidmlqYXQ0MjY0MUB3aG93bGZ0LmNvbSIsCiAgICAgICAgICAgICJwYXNzIjoiIUAjJCIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "prakardproperty": {
+   "success": "True",
+   "usage_time": "0:00:09.761547",
+   "start_time": "2020-05-26 09:19:05.541467",
+   "end_time": "2020-05-26 09:19:15.303014",
+   "detail": "post found successfully",
+   "websitename": "prakardproperty",
+   "log_id": 1,
+   "post_id": "750061",
+   "post_modify_time": "25/05/2020 20:40:20",
+   "post_view": "0 (UIP 0)",
+   "post_url": "https://www.prakardproperty.com/property/show/750061",
+   "post_found": "true"
+  }
+ },
+ "usage_time": "0:00:09.793239",
+ "start_time": "2020-05-26 09:19:05.514657",
+ "end_time": "2020-05-26 09:19:15.307896"
+}
+
+SEARCH POST => Fail
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6IkRFU0siLAogICAgIndlYiI6WwogICAgICAgIHsKICAgICAgICAgICAgImRzX25hbWUiOiJwcmFrYXJkcHJvcGVydHkiLAogICAgICAgICAgICAiZHNfaWQiOiI0IiwKICAgICAgICAgICAgImxvZ19pZCI6IjMzMzMzIiwKICAgICAgICAgICAgInVzZXIiOiJ2aWphdDQyNjQxQHdob3dsZnQuY29tIiwKICAgICAgICAgICAgInBhc3MiOiIhQCMkIgogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "prakardproperty": {
+   "success": "false",
+   "usage_time": "0:00:08.987857",
+   "start_time": "2020-05-26 09:27:04.315038",
+   "end_time": "2020-05-26 09:27:13.302895",
+   "detail": "No post found with given title.",
+   "websitename": "prakardproperty",
+   "log_id": 1,
+   "post_id": "",
+   "post_modify_time": "",
+   "post_view": "",
+   "post_url": "",
+   "post_found": "false"
+  }
+ },
+ "usage_time": "0:00:09.020685",
+ "start_time": "2020-05-26 09:27:04.287766",
+ "end_time": "2020-05-26 09:27:13.308451"
+}
+
+
+
+LOGIN : Corect Pass => Pass
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJwcmFrYXJkcHJvcGVydHkiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogInRlc3RlclJlYWxAcHJvdG9ubWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
+
+<output>
+{'success': 'true',
+ 'action': 'test_login',
+ 'web': {'prakardproperty': {'success': 'True',
+   'start_time': '2020-04-04 22:48:26.519612',
+   'end_time': '2020-04-04 22:48:27.868676',
+   'detail': 'Sucessful Login'}},
+ 'usage_time': '0:00:01.479349',
+ 'start_time': '2020-04-04 22:48:26.389434',
+ 'end_time': '2020-04-04 22:48:27.868783'}
+
+
+LOGIN : Wrong Pass => Pass
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJwcmFrYXJkcHJvcGVydHkiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogInRlc3RlclJlYWxAcHJvdG9ubWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTZkNzgifV19
+
+<output>
+{'success': 'true',
+ 'action': 'test_login',
+ 'web': {'prakardproperty': {'success': 'False',
+   'start_time': '2020-04-06 16:47:08.597698',
+   'end_time': '2020-04-06 16:47:11.103436',
+   'detail': 'Login Unsucessful'}},
+ 'usage_time': '0:00:02.537845',
+ 'start_time': '2020-04-06 16:47:08.565750',
+ 'end_time': '2020-04-06 16:47:11.103595'}
+
+LOGIN : Wrong user => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJwcmFrYXJkcHJvcGVydHkiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogInRlc3RlclJlZGFsQHByb3Rvbm1haWwuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgifV19
+
+<output>
+{'success': 'true',
+ 'action': 'test_login',
+ 'web': {'prakardproperty': {'success': 'False',
+   'start_time': '2020-04-06 16:49:34.717493',
+   'end_time': '2020-04-06 16:49:35.517713',
+   'detail': 'Login Unsucessful'}},
+ 'usage_time': '0:00:00.801164',
+ 'start_time': '2020-04-06 16:49:34.716726',
+ 'end_time': '2020-04-06 16:49:35.517890'}
+
+
+CREATE POST : with new line  => Pass
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiY3JlYXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgInBvc3RfaW1nX3VybF9saXN0cyI6IFsiaHR0cHM6Ly9pbWFnZS5zaHV0dGVyc3RvY2suY29tL2ltYWdlLXBob3RvL2JyaWdodC1zcHJpbmctdmlldy1jYW1lby1pc2xhbmQtMjYwbnctMTA0ODE4NTM5Ny5qcGciLCJodHRwczovL2ltYWdlLnNodXR0ZXJzdG9jay5jb20vaW1hZ2UtcGhvdG8vbW91bnRhaW5zLWR1cmluZy1zdW5zZXQtYmVhdXRpZnVsLW5hdHVyYWwtMjYwbnctNDA3MDIxMTA3LmpwZyJdLCAiZ2VvX2xhdGl0dWRlIjogIjEzLjk5ODk4MzM4NjIxMjQ5NyIsICJnZW9fbG9uZ2l0dWRlIjogIjk5Ljc0NDY0MDI5MDQ2MTQyIiwgInByb3BlcnR5X2lkIjogIiIsICJwb3N0X3RpdGxlX3RoIjogInh4eCIsICJzaG9ydF9wb3N0X3RpdGxlX3RoIjogInh4eCIsICJwb3N0X2Rlc2NyaXB0aW9uX3RoIjogInh4eCIsICJwb3N0X3RpdGxlX2VuIjogImFiY2Rhc2tqZGZnIiwgInNob3J0X3Bvc3RfdGl0bGVfZW4iOiAieHh4IiwgInBvc3RfZGVzY3JpcHRpb25fZW4iOiAiTGFuZCBmb3IgcmVudCBiYW5na2xveXNhaW5vaSBcclxuIDYgcmFpIHN1aXRhYmxlIGZvciBkZXZlbG9waW5nTGFuZCBTaXplIFxyXG4gNiByYWlXaWR0aCAzMCBtZXRlciIsICJwcmljZV9iYWh0IjogMzAwMCwgInByb2plY3RfbmFtZSI6ICJwcm9qZWN0bmFtZWlzZW5ldGVydGVkaGVyZSIsICJsaXN0aW5nX3R5cGUiOiAiXHUwZTAyXHUwZTMyXHUwZTIyIiwgInByb3BlcnR5X3R5cGUiOiAyLCAiZmxvb3JfbGV2ZWwiOiAyLCAiZmxvb3JfdG90YWwiOiAiMTEiLCAiZmxvb3JfYXJlYSI6ICIxMSIsICJiYXRoX3Jvb20iOiAyLCAiYmVkX3Jvb20iOiAzLCAicHJvbWluZW50X3BvaW50IjogIlx1MGUwOFx1MGUzOFx1MGUxNFx1MGU0MFx1MGUxNFx1MGU0OFx1MGUxOSIsICJ2aWV3X3R5cGUgIjogIjExIiwgImRpcmVjdGlvbl90eXBlIjogIjExIiwgImFkZHJfcHJvdmluY2UiOiAiXHUwZTAxXHUwZTMyXHUwZTBkXHUwZTA4XHUwZTE5XHUwZTFhXHUwZTM4XHUwZTIzXHUwZTM1IiwgImFkZHJfZGlzdHJpY3QiOiAiXHUwZTE3XHUwZTQ4XHUwZTMyXHUwZTIxXHUwZTMwXHUwZTAxXHUwZTMyIiwgImFkZHJfc3ViX2Rpc3RyaWN0IjogIlx1MGUxNVx1MGUzMFx1MGUwNFx1MGUyM1x1MGU0OVx1MGUzM1x1MGU0MFx1MGUyZFx1MGUxOSIsICJhZGRyX3JvYWQiOiAiIiwgImFkZHJfc29pIjogIiIsICJhZGRyX25lYXJfYnkiOiAiIiwgImZsb29yYXJlYV9zcW0iOiAxMjM0LCAibGFuZF9zaXplX3JhaSI6IDMyLCAibGFuZF9zaXplX25nYW4iOiAyMSwgImxhbmRfc2l6ZV93YSI6IDEyLCAibmFtZSI6ICJ4eHgiLCAibW9iaWxlIjogInh4eCIsICJlbWFpbCI6ICJ4eHgiLCAibGluZSI6ICJ4eHgiLCAid2ViIjogW3siZHNfbmFtZSI6ICJwcmFrYXJkcHJvcGVydHkiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogInRlc3RlclJlYWxAcHJvdG9ubWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
+
+<output>
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "prakardproperty": {
+   "websitename": "prakardproperty",
+   "success": "True",
+   "time_usage": "0:00:51.565601",
+   "time_start": "2020-04-17 11:40:37.430051",
+   "time_end": "2020-04-17 11:41:28.995652",
+   "ds_id": "4",
+   "post_url": "http://www.prakardproperty.com/property/show/727589",
+   "post_id": "727589",
+   "account_type": "",
+   "detail": "Successful Login \n Images uploaded successfully"
+  }
+ },
+ "usage_time": "0:01:03.221672",
+ "start_time": "2020-04-17 11:40:25.779713",
+ "end_time": "2020-04-17 11:41:29.001385"
+}
+
+
+CREATE POST : no new line => Success
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiY3JlYXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgInBvc3RfaW1nX3VybF9saXN0cyI6IFsiaHR0cHM6Ly9pbWFnZS5zaHV0dGVyc3RvY2suY29tL2ltYWdlLXBob3RvL2JyaWdodC1zcHJpbmctdmlldy1jYW1lby1pc2xhbmQtMjYwbnctMTA0ODE4NTM5Ny5qcGciLCJodHRwczovL2ltYWdlLnNodXR0ZXJzdG9jay5jb20vaW1hZ2UtcGhvdG8vbW91bnRhaW5zLWR1cmluZy1zdW5zZXQtYmVhdXRpZnVsLW5hdHVyYWwtMjYwbnctNDA3MDIxMTA3LmpwZyJdLCAiZ2VvX2xhdGl0dWRlIjogIjEzLjk5ODk4MzM4NjIxMjQ5NyIsICJnZW9fbG9uZ2l0dWRlIjogIjk5Ljc0NDY0MDI5MDQ2MTQyIiwgInByb3BlcnR5X2lkIjogIiIsICJwb3N0X3RpdGxlX3RoIjogInh4eCIsICJzaG9ydF9wb3N0X3RpdGxlX3RoIjogInh4eCIsICJwb3N0X2Rlc2NyaXB0aW9uX3RoIjogInh4eCIsICJwb3N0X3RpdGxlX2VuIjogImFiY2Rhc2tqZGZnIiwgInNob3J0X3Bvc3RfdGl0bGVfZW4iOiAieHh4IiwgInBvc3RfZGVzY3JpcHRpb25fZW4iOiAiTGFuZCBmb3IgcmVudCBiYW5na2xveXNhaW5vaSA2IHJhaSBzdWl0YWJsZSBmb3IgZGV2ZWxvcGluZ0xhbmQgU2l6ZSA2IHJhaVdpZHRoIDMwIG1ldGVyIiwgInByaWNlX2JhaHQiOiAzMDAwLCAicHJvamVjdF9uYW1lIjogInByb2plY3RuYW1laXNlbmV0ZXJ0ZWRoZXJlIiwgImxpc3RpbmdfdHlwZSI6ICJcdTBlMDJcdTBlMzJcdTBlMjIiLCAicHJvcGVydHlfdHlwZSI6IDIsICJmbG9vcl9sZXZlbCI6IDIsICJmbG9vcl90b3RhbCI6ICIxMSIsICJmbG9vcl9hcmVhIjogIjExIiwgImJhdGhfcm9vbSI6IDIsICJiZWRfcm9vbSI6IDMsICJwcm9taW5lbnRfcG9pbnQiOiAiXHUwZTA4XHUwZTM4XHUwZTE0XHUwZTQwXHUwZTE0XHUwZTQ4XHUwZTE5IiwgInZpZXdfdHlwZSAiOiAiMTEiLCAiZGlyZWN0aW9uX3R5cGUiOiAiMTEiLCAiYWRkcl9wcm92aW5jZSI6ICJcdTBlMDFcdTBlMzJcdTBlMGRcdTBlMDhcdTBlMTlcdTBlMWFcdTBlMzhcdTBlMjNcdTBlMzUiLCAiYWRkcl9kaXN0cmljdCI6ICJcdTBlMTdcdTBlNDhcdTBlMzJcdTBlMjFcdTBlMzBcdTBlMDFcdTBlMzIiLCAiYWRkcl9zdWJfZGlzdHJpY3QiOiAiXHUwZTE1XHUwZTMwXHUwZTA0XHUwZTIzXHUwZTQ5XHUwZTMzXHUwZTQwXHUwZTJkXHUwZTE5IiwgImFkZHJfcm9hZCI6ICIiLCAiYWRkcl9zb2kiOiAiIiwgImFkZHJfbmVhcl9ieSI6ICIiLCAiZmxvb3JhcmVhX3NxbSI6IDEyMzQsICJsYW5kX3NpemVfcmFpIjogMzIsICJsYW5kX3NpemVfbmdhbiI6IDIxLCAibGFuZF9zaXplX3dhIjogMTIsICJuYW1lIjogInh4eCIsICJtb2JpbGUiOiAieHh4IiwgImVtYWlsIjogInh4eCIsICJsaW5lIjogInh4eCIsICJ3ZWIiOiBbeyJkc19uYW1lIjogInByYWthcmRwcm9wZXJ0eSIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAidGVzdGVyUmVhbEBwcm90b25tYWlsLmNvbSIsICJwYXNzIjogIjEyMzQ1Njc4In1dfQ==
+
+<output>
+
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "prakardproperty": {
+   "websitename": "prakardproperty",
+   "success": "True",
+   "time_usage": "0:00:36.442049",
+   "time_start": "2020-04-17 11:29:21.212061",
+   "time_end": "2020-04-17 11:29:57.654110",
+   "ds_id": "4",
+   "post_url": "http://www.prakardproperty.com/property/show/727582",
+   "post_id": "727582",
+   "account_type": "",
+   "detail": "Successful Login \n Images uploaded successfully"
+  }
+ },
+ "usage_time": "0:00:39.145962",
+ "start_time": "2020-04-17 11:29:18.525183",
+ "end_time": "2020-04-17 11:29:57.671145"
+}
+
+EDIT POST => PASS
+- images not getting uploaded for some reason, gives response Filetype not allowed
+- all field are correct post
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwb3N0X2ltZ191cmxfbGlzdHMiOiBbImh0dHBzOi8vaW1hZ2Uuc2h1dHRlcnN0b2NrLmNvbS9pbWFnZS1waG90by9icmlnaHQtc3ByaW5nLXZpZXctY2FtZW8taXNsYW5kLTI2MG53LTEwNDgxODUzOTcuanBnIiwiaHR0cHM6Ly9pbWFnZS5zaHV0dGVyc3RvY2suY29tL2ltYWdlLXBob3RvL21vdW50YWlucy1kdXJpbmctc3Vuc2V0LWJlYXV0aWZ1bC1uYXR1cmFsLTI2MG53LTQwNzAyMTEwNy5qcGciXSwgImdlb19sYXRpdHVkZSI6ICIxMy45OTg5ODMzODYyMTI0OTciLCAiZ2VvX2xvbmdpdHVkZSI6ICI5OS43NDQ2NDAyOTA0NjE0MiIsICJwcm9wZXJ0eV9pZCI6ICIiLCAicG9zdF90aXRsZV90aCI6ICJ4eHgiLCAic2hvcnRfcG9zdF90aXRsZV90aCI6ICJ4eHgiLCAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJ4eHgiLCAicG9zdF90aXRsZV9lbiI6ICJhYmNkYXNramRmZyIsICJzaG9ydF9wb3N0X3RpdGxlX2VuIjogInh4eCIsICJwb3N0X2Rlc2NyaXB0aW9uX2VuIjogIkxhbmQgZm9yIHJlbnQgYmFuZ2tsb3lzYWlub2kgXHJcbiA2IHJhaSBzdWl0YWJsZSBmb3IgZGV2ZWxvcGluZ0xhbmQgU2l6ZSBcclxuIDYgcmFpV2lkdGggMzAgbWV0ZXIiLCAicHJpY2VfYmFodCI6IDMwMDAsICJwcm9qZWN0X25hbWUiOiAicHJvamVjdG5hbWVpc2VuZXRlcnRlZGhlcmUiLCAibGlzdGluZ190eXBlIjogIlx1MGUwMlx1MGUzMlx1MGUyMiIsICJwcm9wZXJ0eV90eXBlIjogMiwgImZsb29yX2xldmVsIjogMiwgImZsb29yX3RvdGFsIjogIjExIiwgImZsb29yX2FyZWEiOiAiMTEiLCAiYmF0aF9yb29tIjogMiwgImJlZF9yb29tIjogMywgInByb21pbmVudF9wb2ludCI6ICJcdTBlMDhcdTBlMzhcdTBlMTRcdTBlNDBcdTBlMTRcdTBlNDhcdTBlMTkiLCAidmlld190eXBlICI6ICIxMSIsICJkaXJlY3Rpb25fdHlwZSI6ICIxMSIsICJhZGRyX3Byb3ZpbmNlIjogIlx1MGUwMVx1MGUzMlx1MGUwZFx1MGUwOFx1MGUxOVx1MGUxYVx1MGUzOFx1MGUyM1x1MGUzNSIsICJhZGRyX2Rpc3RyaWN0IjogIlx1MGUxN1x1MGU0OFx1MGUzMlx1MGUyMVx1MGUzMFx1MGUwMVx1MGUzMiIsICJhZGRyX3N1Yl9kaXN0cmljdCI6ICJcdTBlMTVcdTBlMzBcdTBlMDRcdTBlMjNcdTBlNDlcdTBlMzNcdTBlNDBcdTBlMmRcdTBlMTkiLCAiYWRkcl9yb2FkIjogIiIsICJhZGRyX3NvaSI6ICIiLCAiYWRkcl9uZWFyX2J5IjogIiIsICJmbG9vcmFyZWFfc3FtIjogMTIzNCwgImxhbmRfc2l6ZV9yYWkiOiAzMiwgImxhbmRfc2l6ZV9uZ2FuIjogMjEsICJsYW5kX3NpemVfd2EiOiAxMiwgIm5hbWUiOiAieHh4IiwgIm1vYmlsZSI6ICJ4eHgiLCAiZW1haWwiOiAieHh4IiwgImxpbmUiOiAieHh4IiwgIndlYiI6IFt7ImRzX25hbWUiOiAicHJha2FyZHByb3BlcnR5IiwgImRzX2lkIjogIjQiLCAicG9zdF9pZCI6IjcyMDYwOCIsICJsb2dfaWQiOiI3MjA2MDgiLCAidXNlciI6ICJ0ZXN0ZXJSZWFsQHByb3Rvbm1haWwuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgifV19
+
+<output>
+{
+ "success": "true",
+ "action": "edit_post",
+ "web": {
+  "prakardproperty": {
+   "websitename": "prakardproperty",
+   "success": "True",
+   "time_usage": "0:00:42.864668",
+   "time_start": "2020-04-17 11:48:43.811977",
+   "time_end": "2020-04-17 11:49:26.676645",
+   "ds_id": "4",
+   "post_url": "http://www.prakardproperty.com/property/show/720608",
+   "post_id": "720608",
+   "account_type": "",
+   "detail": "Edit Successful \n Images uploaded successfully"
+  }
+ },
+ "usage_time": "0:00:45.572116",
+ "start_time": "2020-04-17 11:48:41.122854",
+ "end_time": "2020-04-17 11:49:26.694970"
+}
+
+
+
+
+DELETE POST => Pass
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7ImRzX25hbWUiOiAicHJha2FyZHByb3BlcnR5IiwgImRzX2lkIjogIjQiLCAicG9zdF9pZCI6ICI3MTk3NzMiLCAibG9nX2lkIjogIjcxOTc3MyIsICJ1c2VyIjogInRlc3RlclJlYWxAcHJvdG9ubWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
+
+<output>
+{'success': 'true',
+ 'action': 'delete_post',
+ 'web': {'prakardproperty': {'success': 'True',
+   'time_usage': 'P0DT00H00M03.397610S',
+   'time_start': '2020-04-05T23:36:56.708',
+   'time_end': '2020-04-05T23:37:00.106',
+   'detail': 'Post sucessfully deleted',
+   'log_id': '719773'}},
+ 'usage_time': '0:00:03.541916',
+ 'start_time': '2020-04-05 23:36:56.564534',
+ 'end_time': '2020-04-05 23:37:00.106450'}
+
+
+Boost POST => Pass
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJwcmFrYXJkcHJvcGVydHkiLCAiZHNfaWQiOiAiNCIsICJwb3N0X2lkIjogIjcyMDYxNCIsICJsb2dfaWQiOiAiNzIwNjE0IiwgInVzZXIiOiAidGVzdGVyUmVhbEBwcm90b25tYWlsLmNvbSIsICJwYXNzIjogIjEyMzQ1Njc4In1dfQ==
+
+<output>
+{
+ "success": "true",
+ "action": "boost_post",
+ "web": {
+  "prakardproperty": {
+   "success": "True",
+   "time_usage": "P0DT00H00M08.607007S",
+   "time_start": "2020-04-15T20:31:51.097",
+   "time_end": "2020-04-15T20:31:59.704",
+   "detail": "Post sucessfully Boosted",
+   "log_id": "720614",
+   "post_id": "720614"
+  }
+ },
+ "usage_time": "0:00:08.618756",
+ "start_time": "2020-04-15 20:31:51.085919",
+ "end_time": "2020-04-15 20:31:59.704675"
+}
+
+

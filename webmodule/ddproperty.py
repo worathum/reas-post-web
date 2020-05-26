@@ -117,7 +117,6 @@ class ddproperty():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "websitename": self.websitename,
             "success": register_success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
@@ -228,13 +227,19 @@ class ddproperty():
         log.debug('input password')
         passtxt.send_keys(Keys.ENTER)
         log.debug('click enter')
-        time.sleep(0.5)
+        time.sleep(1)
         
         matchObj = re.search(r'บัญชีผู้ใช้งานของท่านหมดอายุ', self.chrome.page_source)
         if matchObj:
             success = "false"
-            detail = 'บัญชีผู้ใช้งานของท่านหมดอายุ'
-            log.warning('บัญชีผู้ใช้งานของท่านหมดอายุ')
+            detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
+            log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
+        
+        matchObj = re.search(r'User account is not active', self.chrome.page_source)
+        if matchObj:
+            success = "false"
+            detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
+            log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
         
         if success == "true":
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
@@ -752,6 +757,7 @@ class ddproperty():
                 # self.chrome.save_screenshot("debug_response/newp33.png")
 
                 # longitude ,latitude
+                # test 13.755600646163234,100.55629891052246
                 try:
                     time.sleep(0.5)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
