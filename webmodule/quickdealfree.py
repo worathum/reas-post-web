@@ -59,7 +59,7 @@ class quickdealfree():
         r = httprequestObj.http_post(
             'http://www.quickdealfree.com/p-register.php', data=datapost)
         data = r.text
-        # print(data)
+
         if data.find("อีเมล์นี้มีอยู่ในระบบแล้ว") != -1:
             success = "false"
             detail = "Email Already registered"

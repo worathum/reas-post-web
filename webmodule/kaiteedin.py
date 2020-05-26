@@ -499,7 +499,9 @@ class kaiteedin():
                 post_id = ""
             else:
                 listurl="http://kaiteedin.net/mylisting.php"
+                
                 r=httprequestObj.http_get(listurl)
+                print(r.content)
                 soup=BeautifulSoup(r.content,'html5lib')
                 table=soup.find('table',attrs={'class':'table table-hover'})
                 tr=table.findAll('tr')

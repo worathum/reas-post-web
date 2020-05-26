@@ -547,6 +547,7 @@ class novabizz():
                 'https://www.novabizz.com/post-add.php', data=datapost, files=files)
 
             data = r.text
+            # print(data)
             if data == '-1':
                 post_url=""
                 success = "False"
