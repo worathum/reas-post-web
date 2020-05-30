@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import socket
 import ssl
 import time
-import random
+
 
 from requests_toolbelt import SSLAdapter
 
@@ -22,20 +22,6 @@ class lib_httprequest():
         self.timeout = 30
 
         self.session = requests.Session()
-        self.session.trust_env=False
-        
-        username = 'lum-customer-hl_67deff5b-zone-uszonenew-ip-38.145.94.131'
-        password = '03k8z0bkuk9z'
-        port = 22225
-        session_id = random.random()
-        super_proxy_url = ('http://%s-session-%s:%s@zproxy.lum-superproxy.io:%d' %
-            (username, session_id, password, port))
-
-        proxy_handler = {
-            'http': super_proxy_url,
-        }
-
-        self.session.proxies.update(proxy_handler)
 
         self.session.is_patch = True
         self.session.mount('https://', SSLAdapter())

@@ -10,6 +10,7 @@ import datetime
 import sys
 from urllib.parse import unquote
 import os
+import random
 
 
 httprequestObj = lib_httprequest()
@@ -88,7 +89,26 @@ class thaisecondhand():
 
         email_user = logindata['user']
         email_pass = logindata['pass']
+
+        # username = 'lum-customer-hl_67deff5b-zone-uszonenew-ip-38.145.94.131'
+        # password = '03k8z0bkuk9z'
+        # # username = 'lum-customer-hl_67deff5b-zone-uszone-ip-38.145.90.41'
+        # # password = 'y42i2hjtg6as'
+
+        # port = 22225
+        # session_id = random.random()
+        # super_proxy_url = ('http://%s-session-%s:%s@zproxy.lum-superproxy.io:%d' %
+        #     (username, session_id, password, port))
+        # super_proxy_url2 = ('https://%s-session-%s:%s@zproxy.lum-superproxy.io:%d' %
+        #     (username, session_id, password, port))
+
+        # proxy_handler = {
+        #     'http': super_proxy_url,
+        #     'https': super_proxy_url2,
+        # }
+
         r = httprequestObj.http_get('https://www.thaisecondhand.com/login', verify=False)
+        # r = httprequestObj.http_get_with_headers('https://www.thaisecondhand.com/login', verify=False, proxies=proxy_handler)
         data = r.text
         # print(data)
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -250,57 +270,55 @@ class thaisecondhand():
         # print(datapost["first"])
         # print("debug")
         # print(filestoup)
-        try:
-            if(success == "True"):
-                # print("debug2")
-                r = httprequestObj.http_get('https://www.thaisecondhand.com/post', verify=False)
-                data = r.text
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                authenticityToken = soup.find("input", {"name": "csrf_token"})['value']
-                datapost['csrf_token'] = authenticityToken
-                r = httprequestObj.http_get('https://www.thaisecondhand.com/post/get_json_district?province_id='+str(datapost["province_id"]), verify=False)
-                data = r.json()
-                for key in data:
-                    if(addr_district.find(data[key]["name"]["thai"]) != -1):
-                        datapost["district_id"] = key
-                        break
-                r = httprequestObj.http_post('https://www.thaisecondhand.com/post/submit', data = datapost,files=filestoup)#/property/show
-                print(r)
-                data = r.text
-                print(data)
-                link = re.findall(r'https://www.thaisecondhand.com/product/\d+',data)
-                # print("printing link",link)
-                if len(link) == 0:
-                    success = "False"    
-                    detail = "Cannot post to Thai second hand"
-                    while self.max_image > 1:
-                        self.max_image -= 1               
-                        r = httprequestObj.http_get('https://www.thaisecondhand.com/logout')
-                        return(self.create_post(postdata))
-                        # del datapost[numdict[self.max_image] + "_images_status"]
-                        # del filestoup['images_' + str(self.max_image)]
-                        # r = httprequestObj.http_get('https://www.thaisecondhand.com/post', verify=False)
-                        # data = r.text
-                        # soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                        # authenticityToken = soup.find("input", {"name": "csrf_token"})['value']
-                        # datapost['csrf_token'] = authenticityToken
-                        # print(datapost)
-                        # print(filestoup)
-                        # r = httprequestObj.http_post('https://www.thaisecondhand.com/post/submit', data = datapost,files=filestoup)#/property/show
-                        # data = r.text
-                        # print("REDO", data)
-                        # link = re.findall(r'https://www.thaisecondhand.com/product/\d+',data)
-                        # if(len(link) != 0):
-                        #     post_id = re.findall(r'\d+',link[0])[0]
-                        #     post_url = link
-                        #     success = "True"
-                        #     detail = "Posted with lesser image " + str(self.max_image - 1) 
-                        break  
-                else:
-                    post_id = re.findall(r'\d+',link[0])[0]
-                    post_url = link 
-        except Exception as e:
-            print(e)
+        if(success == "True"):
+            # print("debug2")
+            r = httprequestObj.http_get('https://www.thaisecondhand.com/post', verify=False)
+            data = r.text
+            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            authenticityToken = soup.find("input", {"name": "csrf_token"})['value']
+            datapost['csrf_token'] = authenticityToken
+            r = httprequestObj.http_get('https://www.thaisecondhand.com/post/get_json_district?province_id='+str(datapost["province_id"]), verify=False)
+            data = r.json()
+            for key in data:
+                if(addr_district.find(data[key]["name"]["thai"]) != -1):
+                    datapost["district_id"] = key
+                    break
+            r = httprequestObj.http_post('https://www.thaisecondhand.com/post/submit', data = datapost,files=filestoup)#/property/show
+            print(r)
+            data = r.text
+            print(data)
+            link = re.findall(r'https://www.thaisecondhand.com/product/\d+',data)
+            # print("printing link",link)
+            if len(link) == 0:
+                success = "False"    
+                detail = "Cannot post to Thai second hand"
+                while self.max_image > 1:
+                    self.max_image -= 1               
+                    r = httprequestObj.http_get('https://www.thaisecondhand.com/logout')
+                    return(self.create_post(postdata))
+                    # del datapost[numdict[self.max_image] + "_images_status"]
+                    # del filestoup['images_' + str(self.max_image)]
+                    # r = httprequestObj.http_get('https://www.thaisecondhand.com/post', verify=False)
+                    # data = r.text
+                    # soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                    # authenticityToken = soup.find("input", {"name": "csrf_token"})['value']
+                    # datapost['csrf_token'] = authenticityToken
+                    # print(datapost)
+                    # print(filestoup)
+                    # r = httprequestObj.http_post('https://www.thaisecondhand.com/post/submit', data = datapost,files=filestoup)#/property/show
+                    # data = r.text
+                    # print("REDO", data)
+                    # link = re.findall(r'https://www.thaisecondhand.com/product/\d+',data)
+                    # if(len(link) != 0):
+                    #     post_id = re.findall(r'\d+',link[0])[0]
+                    #     post_url = link
+                    #     success = "True"
+                    #     detail = "Posted with lesser image " + str(self.max_image - 1) 
+                    break  
+            else:
+                post_id = re.findall(r'\d+',link[0])[0]
+                post_url = link 
+        
         time_end = datetime.datetime.utcnow()
         print({
             "websitename": "thaisecondhand",
