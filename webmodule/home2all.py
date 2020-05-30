@@ -223,14 +223,15 @@ class home2all():
             if add is not None:
                 prod_address += add+" "
 
-        if postdata['land_size_rai'] == None:
+        if postdata['land_size_rai'] == None or postdata['land_size_rai'] == '':
             postdata['land_size_rai'] = 0
 
-        if postdata['land_size_ngan'] == None:
+        if postdata['land_size_ngan'] == None or postdata['land_size_ngan'] == '':
             postdata['land_size_ngan'] = 0
 
-        if postdata['land_size_wa'] == None:
+        if postdata['land_size_wa'] == None or postdata['land_size_wa'] == '':
             postdata['land_size_wa'] = 0
+
 
         print(postdata['land_size_wa'])
 
@@ -474,13 +475,13 @@ class home2all():
             if add is not None:
                 prod_address += add+" "
 
-        if postdata['land_size_rai'] == None:
+        if postdata['land_size_rai'] == None or postdata['land_size_rai'] == '':
             postdata['land_size_rai'] = 0
 
-        if postdata['land_size_ngan'] == None:
+        if postdata['land_size_ngan'] == None or postdata['land_size_ngan'] == '':
             postdata['land_size_ngan'] = 0
 
-        if postdata['land_size_wa'] == None:
+        if postdata['land_size_wa'] == None or postdata['land_size_wa'] == '':
             postdata['land_size_wa'] = 0
 
         print(postdata['land_size_wa'])

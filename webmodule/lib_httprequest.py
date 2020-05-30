@@ -5,6 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 import socket
 import ssl
+import time
+import random
 
 from requests_toolbelt import SSLAdapter
 
@@ -20,10 +22,25 @@ class lib_httprequest():
         self.timeout = 30
 
         self.session = requests.Session()
+        self.session.trust_env=False
+        
+        username = 'lum-customer-hl_67deff5b-zone-uszonenew-ip-38.145.94.131'
+        password = '03k8z0bkuk9z'
+        port = 22225
+        session_id = random.random()
+        super_proxy_url = ('http://%s-session-%s:%s@zproxy.lum-superproxy.io:%d' %
+            (username, session_id, password, port))
+
+        proxy_handler = {
+            'http': super_proxy_url,
+        }
+
+        self.session.proxies.update(proxy_handler)
+
         self.session.is_patch = True
         self.session.mount('https://', SSLAdapter())
 
-    def http_get(self, url, params=None, *args, **kwargs):
+    def http_get(self, url, params=None, redirect=True, *args, **kwargs):
         '''
         New version of web_get
         '''
@@ -38,38 +55,13 @@ class lib_httprequest():
         try:
             proxies = {'http': self.proxies,
                        'https': self.proxies} if self.proxies else None
-            r = self.session.get(
-                url, params=params, allow_redirects=True, timeout=self.timeout, proxies=proxies)
+            r = self.session.get(url, params=params, allow_redirects=redirect, timeout=self.timeout, proxies=proxies)
             if hasattr(self, 'encoding'):
                 r.encoding = self.encoding
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
-    
-    def http_get_with_encode(self, url, params=None,encoder='utf-8', *args, **kwargs):
-        '''
-        New version of web_get
-        '''
-
-        def get_soup(self):
-            if not hasattr(self, '_soup'):
-                self._soup = BeautifulSoup(
-                    self.text, self.parser, from_encoding=encoder)
-            # time.sleep(.250)
-            return self._soup
-
-        try:
-            proxies = {'http': self.proxies,
-                       'https': self.proxies} if self.proxies else None
-            r = self.session.get(
-                url, params=params, allow_redirects=True, timeout=self.timeout, proxies=proxies)
-            if hasattr(self, 'encoding'):
-                r.encoding = encoder
-            r.__class__.soup = property(get_soup)
-            return r
-        except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
+            raise requests.exceptions.RequestException(e.message)
 
     def http_get_with_headers(self, url, params=None, *args, **kwargs):
         '''
@@ -83,7 +75,9 @@ class lib_httprequest():
             # time.sleep(.250)
             return self._soup
 
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36', }
+        headers = {'User-Agent': 'Mozilla/5.0 (MacintoshIntel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36', }
+        # headers =  {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:64.0) Gecko/20100101 Firefox/64.0'}
+
         try:
             proxies = {'http': self.proxies,
                        'https': self.proxies} if self.proxies else None
@@ -94,7 +88,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
+            raise requests.exceptions.RequestException(e.message)
 
     def http_post(self, url, data, params=None, *args, **kwargs):
         '''
@@ -110,16 +104,15 @@ class lib_httprequest():
         try:
             proxies = {'http': self.proxies,
                        'https': self.proxies} if self.proxies else None
-            r = self.session.post(url, data=data,  params=params, allow_redirects=True,
-                                  timeout=self.timeout, proxies=proxies, *args, **kwargs)
+            r = self.session.post(url,  data=data,  params=params, allow_redirects=True, timeout=self.timeout, proxies=proxies, *args, **kwargs)
             if hasattr(self, 'encoding'):
                 r.encoding = self.encoding
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
-    
-    def http_post_get_cookies(self, url, data, params=None, *args, **kwargs):
+            raise requests.exceptions.RequestException(e.message)
+
+    def http_post_with_headers(self, url, data, params=None, *args, **kwargs):
         '''
         New version of web_post
         '''
@@ -130,53 +123,7 @@ class lib_httprequest():
                     self.text, self.parser, from_encoding=self.encoding)
             # time.sleep(.255)
             return self._soup
-        try:
-            proxies = {'http': self.proxies,
-                       'https': self.proxies} if self.proxies else None
-            r = self.session.post(url, data=data,  params=params, allow_redirects=True,
-                                  timeout=self.timeout, proxies=proxies, *args, **kwargs)
-            if hasattr(self, 'encoding'):
-                r.encoding = self.encoding
-            r.__class__.soup = property(get_soup)
-            return r , self.session.cookies.get_dict()
-        except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
-    
-    def http_post_with_encode(self, url, data, params=None, encoder='utf-8',*args, **kwargs):
-        '''
-        New version of web_post
-        '''
-
-        def get_soup(self):
-            if not hasattr(self, '_soup'):
-                self._soup = BeautifulSoup(
-                    self.text, self.parser, from_encoding=encoder)
-            # time.sleep(.255)
-            return self._soup
-        try:
-            proxies = {'http': self.proxies,
-                       'https': self.proxies} if self.proxies else None
-            r = self.session.post(url, data=data,  params=params, allow_redirects=True,
-                                  timeout=self.timeout, proxies=proxies, *args, **kwargs)
-            if hasattr(self, 'encoding'):
-                r.encoding = encoder
-            r.__class__.soup = property(get_soup)
-            return r
-        except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
-   
-    def http_post_with_headers(self, url,headers, data, params=None, *args, **kwargs):
-        '''
-        New version of web_post
-        '''
-
-        def get_soup(self):
-            if not hasattr(self, '_soup'):
-                self._soup = BeautifulSoup(
-                    self.text, self.parser, from_encoding=self.encoding)
-            # time.sleep(.255)
-            return self._soup
-        #headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36', }
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36', }
         try:
             proxies = {'http': self.proxies,
                        'https': self.proxies} if self.proxies else None
@@ -187,7 +134,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
+            raise requests.exceptions.RequestException(e.message)
 
     def http_post_json(self, url, jsoncontent, params=None, *args, **kwargs):
         '''
@@ -213,7 +160,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
+            raise requests.exceptions.RequestException(e.message)
 
     def http_post_with_multi_options(self, url, headerreg={}, jsoncontent={}, params=None, *args, **kwargs):
         '''
@@ -237,7 +184,7 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
+            raise requests.exceptions.RequestException(e.message)
 
     def http_put_json(self, url, jsoncontent, params=None, *args, **kwargs):
         '''
@@ -263,4 +210,4 @@ class lib_httprequest():
             r.__class__.soup = property(get_soup)
             return r
         except (ssl.SSLError, socket.error) as e:
-            raise requests.exceptions.RequestException(str(e))
+            raise requests.exceptions.RequestException(e.message)

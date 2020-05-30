@@ -291,7 +291,7 @@ class proptecheasy():
             email = postdata['email'].replace("@", "%40")
         else:
             email = postdata['user'].replace('@',"%40")
-        phone = postdata['phone']
+        phone = postdata['tel']
         try:
             company_name = postdata['company_name']
         except:
@@ -354,7 +354,6 @@ class proptecheasy():
     def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        print("in1")
 
         user = postdata['user'].replace("@", "%40")
         passwd = postdata['pass']
@@ -382,16 +381,11 @@ class proptecheasy():
 
         success = "true"
         detail = ""
-        print("wow")
 
         r = httprequestObj.http_post(
             'https://www.proptecheasy.com/wp-content/plugins/pointfindercoreelements/includes/pfajaxhandler.php', headers=headers, data=datapost)
-        print(r.content,"1")
         get_security(1)
-        print("Lol")
-        print(r.text,"hi")
         data = json.loads(r.text)
-        print(data,"wow")
         if data['login'] == 'false' or data['login'] == 'False' or data['login'] == False:
             success = "false"
             detail = "cannot login"
@@ -417,12 +411,10 @@ class proptecheasy():
         detail = ""
         post_url = ""
         post_id = ""
-        print("yo")
 
         # login
         test_login = self.test_login(postdata)
         success = test_login["success"]
-        print("hahah")
 
         if 'addr_soi' in postdata and postdata['addr_soi'] != None:
             pass
@@ -481,7 +473,6 @@ class proptecheasy():
             prod_address = prod_address[:-1]
             upload_id = ''
             security_code=get_security(1)
-            print("Lol")
 
             for i in postdata['post_images']:
                 temp = upload_image(i,security_code)
@@ -510,7 +501,7 @@ class proptecheasy():
             
 
 
-            
+
             if postdata['listing_type'] == 'ขาย':  # sell
                 type_prop = 13
             else:
@@ -590,7 +581,6 @@ class proptecheasy():
                 url, data=data, headers=headers)
 
             data = r.text
-            print(data)
             # return
             temp_json = json.loads(data)
             post_id = temp_json['returnval']['post_id']
