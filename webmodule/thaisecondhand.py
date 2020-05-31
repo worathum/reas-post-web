@@ -90,22 +90,7 @@ class thaisecondhand():
         email_user = logindata['user']
         email_pass = logindata['pass']
 
-        # username = 'lum-customer-hl_67deff5b-zone-uszonenew-ip-38.145.94.131'
-        # password = '03k8z0bkuk9z'
-        # # username = 'lum-customer-hl_67deff5b-zone-uszone-ip-38.145.90.41'
-        # # password = 'y42i2hjtg6as'
 
-        # port = 22225
-        # session_id = random.random()
-        # super_proxy_url = ('http://%s-session-%s:%s@zproxy.lum-superproxy.io:%d' %
-        #     (username, session_id, password, port))
-        # super_proxy_url2 = ('https://%s-session-%s:%s@zproxy.lum-superproxy.io:%d' %
-        #     (username, session_id, password, port))
-
-        # proxy_handler = {
-        #     'http': super_proxy_url,
-        #     'https': super_proxy_url2,
-        # }
 
         r = httprequestObj.http_get('https://www.thaisecondhand.com/login', verify=False)
         # r = httprequestObj.http_get_with_headers('https://www.thaisecondhand.com/login', verify=False, proxies=proxy_handler)
