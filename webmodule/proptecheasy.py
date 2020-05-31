@@ -18,20 +18,6 @@ import time
 import sys
 import urllib.request
 from urllib.parse import unquote
-import random
-
-username = 'lum-customer-hl_67deff5b-zone-uszonenew-ip-38.145.94.131'
-password = '03k8z0bkuk9z'
-port = 22225
-session_id = random.random()
-super_proxy_url = ('http://%s-session-%s:%s@zproxy.lum-superproxy.io:%d' %
-    (username, session_id, password, port))
-
-proxy_handler = {
-    'http': super_proxy_url,
-    'https': super_proxy_url,
-}
-
 
 property_mapping={'กระบี่': '117', 'กรุงเทพมหานคร': '54', 'กาญจนบุรี': '109', 'กาฬสินธุ์': '87', 'กำแพงเพชร': '102', 'ขอนแก่น': '81', 'จันทบุรี': '66', 'ฉะเชิงเทรา': '68', 'ชลบุรี': '64', 'ชัยนาท': '62', 'ชัยภูมิ': '78', 'ชุมพร': '122', 'ตรัง': '125', 'ตราด': '67', 'ตาก': '103', 'นครนายก': '70', 'นครปฐม': '111', 'นครพนม': '89', 'นครราชสีมา': '72', 'นครศรีธรรมราช': '116', 'นครสวรรค์': '100', 'นนทบุรี': '56', 'นราธิวาส': '129', 'น่าน': '96', 'บุรีรัมย์': '73', 'ปทุมธานี': '57', 'ประจวบคีรีขันธ์': '115', 'ปราจีนบุรี': '69', 'ปัตตานี': '127', 'พระนครศรีอยุธยา': '58', 'พะเยา': '97', 'พังงา': '118', 'พัทลุง': '126', 'พิจิตร': '106', 'พิษณุโลก': '105', 'ภูเก็ต': '119', 'มหาสารคาม': '85', 'มุกดาหาร': '90', 'ยะลา': '128', 'ยโสธร': '77', 'ระนอง': '121', 'ระยอง': '65', 'ราชบุรี': '108', 'ร้อยเอ็ด': '86', 'ลพบุรี': '60', 'ลำปาง': '93', 'ลำพูน': '92', 'ศรีสะเกษ': '75', 'สกลนคร': '88', 'สงขลา': '123', 'สตูล': '124', 'สมุทรปราการ': '55', 'สมุทรสงคราม': '113', 'สมุทรสาคร': '112', 'สระบุรี': '63', 'สระแก้ว': '71', 'สิงห์บุรี': '61', 'สุพรรณบุรี': '110', 'สุราษฎร์ธานี': '120', 'สุรินทร์': '74', 'สุโขทัย': '104', 'หนองคาย': '84', 'หนองบัวลำภู': '80', 'อำนาจเจริญ': '79', 'อุดรธานี': '82', 'อุตรดิตถ์': '94', 'อุทัยธานี': '101', 'อุบลราชธานี': '76', 'อ่างทอง': '59', 'เชียงราย': '98', 'เชียงใหม่': '91', 'เพชรบุรี': '114', 'เพชรบูรณ์': '107', 'เลย': '83', 'แพร่': '95', 'แม่ฮ่องสอน': '99'}
 def get_security(flag1, post_id=''):
@@ -68,7 +54,7 @@ def get_security(flag1, post_id=''):
             'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         }
 
-        web = httprequestObj.http_get(url,headers=headers,proxies=proxy_handler)
+        web = httprequestObj.http_get(url,headers=headers)
         web=web.content
         soup = BeautifulSoup(web, 'lxml')
         # with open('temp','w') as f:
@@ -102,7 +88,7 @@ def get_security(flag1, post_id=''):
         }
 
         web = httprequestObj.http_get(
-            'https://www.proptecheasy.com/dashboard/?ua=newitem', headers=headers,proxies=proxy_handler)
+            'https://www.proptecheasy.com/dashboard/?ua=newitem', headers=headers)
 
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
@@ -134,7 +120,7 @@ def get_security(flag1, post_id=''):
         }
 
         web = httprequestObj.http_get(
-            'https://www.proptecheasy.com/dashboard/?ua=newitem', headers=headers,proxies=proxy_handler)
+            'https://www.proptecheasy.com/dashboard/?ua=newitem', headers=headers)
 
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
@@ -155,7 +141,7 @@ def get_security(flag1, post_id=''):
             'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         }
         web = httprequestObj.http_get(
-            'https://www.proptecheasy.com/dashboard/?ua=newitem', headers=headers,proxies=proxy_handler)
+            'https://www.proptecheasy.com/dashboard/?ua=newitem', headers=headers)
 
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
@@ -192,7 +178,7 @@ def get_security(flag1, post_id=''):
         )
 
         web = httprequestObj.http_get(
-            'https://www.proptecheasy.com/dashboard/', headers=headers, params=params,proxies=proxy_handler)
+            'https://www.proptecheasy.com/dashboard/', headers=headers, params=params)
         web = web.content
         with open('temp.html', 'w') as f:
             f.write(str(web))
@@ -219,7 +205,7 @@ def get_security(flag1, post_id=''):
         )
 
         web = httprequestObj.http_get(
-            'https://www.proptecheasy.com/dashboard/', headers=headers, params=params,proxies=proxy_handler)
+            'https://www.proptecheasy.com/dashboard/', headers=headers, params=params)
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
         with open('temp', 'w') as f:
@@ -926,7 +912,7 @@ class proptecheasy():
         # except Exception:
         #     post_url=''
 
-        r=httprequestObj.http_get('https://www.proptecheasy.com/dashboard',params=params,proxies=proxy_handler)
+        r=httprequestObj.http_get('https://www.proptecheasy.com/dashboard',params=params)
         # if post_url == '':
         #     success = 'false'
         #     detail = 'error while getting post url'            # return "false"
