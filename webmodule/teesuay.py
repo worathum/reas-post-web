@@ -226,7 +226,7 @@ class teesuay():
                 "ds_id": postdata['ds_id']
 
             }
-
+        post_url ""
         if success == "true":
             postdata['post_title_th']=postdata['post_title_th'].replace('%','')
             floor_total, bedroom, bathroom = [''] * 3
@@ -370,7 +370,7 @@ class teesuay():
         # print(test_login)
         success = test_login["success"]
         ashopname = test_login["detail"]
-        post_id = ""
+        post_url = ""
         detail = ""
         post_id = ""
         detail = ""

@@ -417,8 +417,8 @@ class nineasset():
 
         post_id = postdata['post_id']
         log_id = postdata['log_id']
-        email_user = postdata['email_user']
-        email_pass = postdata['email_pass']
+        email_user = postdata['user']
+        email_pass = postdata['pass']
 
         #
         #
@@ -597,9 +597,8 @@ class nineasset():
         for key in province:
             # print("bleh")
             if (addr_province.find(str(province[key]).strip()) != -1) or str(province[key]).find(addr_province) != -1:
-                # print("equuaallll")
                 addr_province = key
-                # print(addr_province)
+                print(addr_province)
                 break
         for key in province[addr_province+"_province"]:
             if(addr_district.find(province[addr_province+"_province"][key].strip()) != -1)  or str(province[addr_province+"_province"][key]).find(addr_district) != -1:
@@ -651,8 +650,8 @@ class nineasset():
             datapost.append(("property_Sell", price_baht))
             datapost.append(("property_PriceSq-hidden" , str(int(price_baht)/int(floorarea))))
         else:
-            datapost["Rent"] =  1
-            datapost["Price_Rent"] = price_baht
+            datapost.append(("Rent", "1"))
+            datapost.append(("Price_Rent", price_baht))
         
         
         if(property_type == "1"):
