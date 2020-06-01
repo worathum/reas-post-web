@@ -149,12 +149,14 @@ class kaiteedin():
                 'websitename': 'kaiteedin',
                 'success': 'false',
                 'detail': 'Missing required field pass',
+                "ds_id": postdata['ds_id'],
             }
         if 'user' not in postdata:
             return{
                 'websitename': 'kaiteedin',
                 'success': 'false',
                 'detail': 'Missing required field email',
+                "ds_id": postdata['ds_id'],
             }
 
         datapost = {
@@ -499,9 +501,7 @@ class kaiteedin():
                 post_id = ""
             else:
                 listurl="http://kaiteedin.net/mylisting.php"
-                
                 r=httprequestObj.http_get(listurl)
-                print(r.content)
                 soup=BeautifulSoup(r.content,'html5lib')
                 table=soup.find('table',attrs={'class':'table table-hover'})
                 tr=table.findAll('tr')
@@ -561,6 +561,7 @@ class kaiteedin():
             "end_time": str(time_end),
             "post_url": post_url,
             "post_id": post_id
+            "ds_id": postdata['ds_id'],
         }
 
     def edit_post(self, postdata):
@@ -809,6 +810,7 @@ class kaiteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "log_id": postdata['log_id'],
         }
 
 
@@ -830,6 +832,7 @@ class kaiteedin():
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
             return {
+                "log_id": postdata['log_id'],
                 "websitename": "kaiteedin",
                 "success": 'false',
                 "start_time": str(time_start),
@@ -856,6 +859,7 @@ class kaiteedin():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            "log_id": postdata['log_id'],
             "websitename": "kaiteedin",
             "success": success,
             "start_time": str(time_start),
@@ -879,6 +883,7 @@ class kaiteedin():
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
             return {
+                "log_id": postdata['log_id'],
                 "websitename": "kaiteedin",
                 "success": 'false',
                 "start_time": str(time_start),
@@ -905,6 +910,7 @@ class kaiteedin():
         time_usage = time_end - time_start
 
         return {
+            "log_id": postdata['log_id'],
             "websitename": "kaiteedin",
             "success": success,
             "start_time": str(time_start),

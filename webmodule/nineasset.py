@@ -403,6 +403,7 @@ class nineasset():
             "time_usage": time_end - time_start,
             "time_start": time_start,
             "time_end": time_end,
+            "ds_id": postdata['ds_id'],
             # "ds_id": "4",
             "post_url": post_url,
             "post_id": post_id,
@@ -469,6 +470,7 @@ class nineasset():
                     "success": "False",
                     "time_usage": time_end - time_start,
                     "time_start": time_start,
+                    "log_id": postdata['log_id'],
                     "time_end": time_end,
                     # "ds_id": "4",
                     "post_url": post_url,
@@ -485,10 +487,11 @@ class nineasset():
             "websitename": "nineasset",
             "success": success,
             "time_usage": time_end - time_start,
+            "log_id": postdata['log_id'],
             "time_start": time_start,
             "time_end": time_end,
             "detail": detail,
-            "log_id": post_id,
+
         }
 
     def edit_post(self, postdata):
@@ -769,6 +772,7 @@ class nineasset():
             "time_start": time_start,
             "time_end": time_end,
             # "ds_id": "4",
+            "log_id": postdata['log_id'],
             "post_url": post_url,
             "post_id": post_id,
             "account_type": "",

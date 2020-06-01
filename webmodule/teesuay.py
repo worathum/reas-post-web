@@ -167,7 +167,9 @@ class teesuay():
                 'success': 'False',
                 'ret': "wrong province id",
                 'post_url': "",
-                'post_id': ""
+                'post_id': "",
+                "ds_id": postdata['ds_id']
+
             }
         for (key, value) in provincedata[province_id+"_province"].items():
             if postdata['addr_district'].strip() in value.strip():
@@ -180,7 +182,9 @@ class teesuay():
                 'success': 'false',
                 'ret': "wrong amphur id",
                 'post_url': "",
-                'post_id': ""
+                'post_id': "",
+                "ds_id": postdata['ds_id']
+
             }
         if 'addr_soi' in postdata and postdata['addr_soi']!=None:
                 pass
@@ -218,7 +222,9 @@ class teesuay():
                 'success': 'false',
                 'ret': "Wrong Property type",
                 'post_url': "",
-                'post_id': ""
+                'post_id': "",
+                "ds_id": postdata['ds_id']
+
             }
 
         if success == "true":
@@ -352,6 +358,7 @@ class teesuay():
             "end_time": str(time_end),
             "post_url": post_url,
             "post_id": post_id,
+            "ds_id": postdata['ds_id']
         }
 
 
@@ -392,6 +399,7 @@ class teesuay():
             return {
                 'websitename':'teesuay',
                 'success':'false',
+                "log_id": postdata['log_id']
             }
         for (key, value) in provincedata.items():
             if type(value) is str and postdata['addr_province'].strip() in value.strip():
@@ -404,7 +412,8 @@ class teesuay():
                 'success': 'false',
                 'ret': "",
                 'post_url': "",
-                'post_id': ""
+                'post_id': "",
+                "log_id": postdata['log_id']
             }
 
         for (key, value) in provincedata[province_id+"_province"].items():
@@ -418,7 +427,9 @@ class teesuay():
                 'success': 'false',
                 'ret': "",
                 'post_url': "",
-                'post_id': ""
+                'post_id': "",
+                "log_id": postdata['log_id']
+
             }
         no = 0
         # img_arr = {}
@@ -458,7 +469,9 @@ class teesuay():
                 'detail':'wrong propertytype',
                 'ret': '',
                 'post_url': '',
-                'post_id': ''
+                'post_id': '',
+                "log_id": postdata['log_id']
+
             }
         if success == "true":
             postdata['post_title_th']=postdata['post_title_th'].replace('%','')
@@ -573,6 +586,8 @@ class teesuay():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "log_id": postdata['log_id']
+
         }
 
 
@@ -606,7 +621,8 @@ class teesuay():
         if storeI=='':
             return {
                 'websitename':'teesuay',
-                'success':'false'
+                'success':'false',
+                "log_id": postdata['log_id']
             }
         r=httprequestObj.http_get('http://www.teesuay.com/member/list-property.php')
             # r=s.post(edit_url,,headers=register_headers)
@@ -626,7 +642,9 @@ class teesuay():
                 'chkDel[]': postdata['post_id'],
                 'type':'2',
                 'Submit':'Proceed',
-                'hdncount':var
+                'hdncount':var,
+                "log_id": postdata['log_id']
+
             }
             r = httprequestObj.http_post('http://www.teesuay.com/member/manage-property-not-sale.php', data=datapost)
             data = r.text
@@ -644,7 +662,7 @@ class teesuay():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            # "log_id":postdata['log_id'],
+            "log_id":postdata['log_id'],
         }
 
     def boost_post(self, postdata):
@@ -683,6 +701,8 @@ class teesuay():
                     "start_time": str(time_start),
                     "end_time": str(time_end),
                     "detail": "wrong post id",
+                    "log_id": postdata['log_id']
+
                 }
             posturl="http://www.teesuay.com/member/slide-property.php?post_id="+postdata['post_id']
             r=httprequestObj.http_get(posturl)
@@ -695,6 +715,8 @@ class teesuay():
                 "time_end": time_end,
                 "detail": "",
                 "post_id": post_id,
+                "log_id": postdata['log_id']
+                
             }
         else:
             success = "false"
@@ -706,7 +728,7 @@ class teesuay():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": detail,
-                # "log_id":postdata['log_id'],
+                "log_id":postdata['log_id'],
             }
 
 

@@ -92,6 +92,7 @@ class thaisecondhand():
 
 
 
+        r = httprequestObj.http_get('https://www.thaisecondhand.com/logout', verify=False)
         r = httprequestObj.http_get('https://www.thaisecondhand.com/login', verify=False)
         # r = httprequestObj.http_get_with_headers('https://www.thaisecondhand.com/login', verify=False, proxies=proxy_handler)
         data = r.text
@@ -324,7 +325,7 @@ class thaisecondhand():
             "time_usage": time_end - time_start,
             "time_start": time_start,
             "time_end": time_end,
-            # "ds_id": "4",
+            "ds_id": postdata['ds_id'],
             "post_url": post_url,
             "post_id": post_id,
             "account_type": "",
@@ -440,7 +441,7 @@ class thaisecondhand():
             "time_start": time_start,
             "time_end": time_end,
             "detail": detail,
-            "log_id": post_id,
+            "log_id": postdata['log_id'],
         }
 
     def edit_post(self, postdata):
@@ -619,7 +620,7 @@ class thaisecondhand():
             "time_usage": time_end - time_start,
             "time_start": time_start,
             "time_end": time_end,
-            # "ds_id": "4",
+            "log_id": postdata['log_id'],
             "post_url": post_url,
             "post_id": post_id,
             "account_type": "",

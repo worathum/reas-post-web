@@ -628,6 +628,7 @@ class proptecheasy():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
+            "ds_id": postdata['ds_id'],
             "post_id": post_id,
             "account_type": "null",
             "detail": detail,
@@ -819,7 +820,7 @@ class proptecheasy():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            # "log_id": postdata['log_id']
+            "log_id": postdata['log_id']
         }
 
     def delete_post(self, postdata):
@@ -881,7 +882,7 @@ class proptecheasy():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            # "log_id": postdata['log_id'],
+            "log_id": postdata['log_id'],
         }
 
     def boost_post(self, postdata):
@@ -927,6 +928,7 @@ class proptecheasy():
         time_end = datetime.datetime.utcnow()
         return {
             "websitename": "proptecheasy",
+            "log_id": postdata['log_id'],
 
             "success": success,
             "time_usage": time_end - time_start,

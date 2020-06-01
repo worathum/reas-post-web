@@ -114,6 +114,7 @@ class teedin2():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": detail,
+                "log_id": postdata['log_id']
             }
         ul_test = "https://www.teedin2.com/topic3Update.php"
         test = {
@@ -133,6 +134,7 @@ class teedin2():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": detail,
+                "log_id": postdata['log_id']
             }
         subcategory = {
             '6': 1,
@@ -156,7 +158,8 @@ class teedin2():
                 'detail': 'wrong propertytype',
                 'ret': '',
                 'post_url': '',
-                'post_id': ''
+                'post_id': '',
+                "log_id": postdata['log_id']
             }
         success = "true"
         post_id = ""
@@ -189,7 +192,9 @@ class teedin2():
                 'success': 'false',
                 'ret': "wrong province",
                 'post_url': "",
-                'post_id': ""
+                'post_id': "",
+                "log_id": postdata['log_id']
+
             }
         province_id = amphur_id
         postdata['addr_province'] = province_id
@@ -210,7 +215,9 @@ class teedin2():
                 'success': 'false',
                 'ret': "wrong district",
                 'post_url': "",
-                'post_id': ""
+                'post_id': "",
+                "log_id": postdata['log_id']
+
             }
 
         url_district = 'https://www.teedin2.com/data/districts.php'
@@ -229,7 +236,9 @@ class teedin2():
                 'success': 'false',
                 'ret': " wrong sub district",
                 'post_url': "",
-                'post_id': ""
+                'post_id': "",
+                "log_id": postdata['log_id']
+
             }
         prod_address = ""
         for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
@@ -291,6 +300,8 @@ class teedin2():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": "Edited ",
+            "log_id": postdata['log_id']
+
         }
 
     def create_post(self, postdata):
@@ -318,7 +329,8 @@ class teedin2():
                 'websitename': 'teedin2',
                 'ret': 'wrong propertytype',
                 'post_url': '',
-                'post_id': ''
+                'post_id': '',
+                "ds_id": postdata['ds_id']
             }
         if 'name' not in postdata:
             return{
@@ -326,7 +338,9 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field name',
                 'post_url': '',
-                'post_id': ''
+                'post_id': '',
+                "ds_id": postdata['ds_id']
+
             }
         if 'mobile' not in postdata:
             return{
@@ -334,7 +348,9 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field mobile',
                 'post_url': '',
-                'post_id': ''
+                'post_id': '',
+                "ds_id": postdata['ds_id']
+
             }
         if 'pass' not in postdata:
             return{
@@ -342,10 +358,13 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field pass',
                 'post_url': '',
-                'post_id': ''
+                'post_id': '',
+                "ds_id": postdata['ds_id'],
+
             }
         if 'user' not in postdata:
             return{
+                "ds_id": postdata['ds_id'],
                 'websitename': 'teedin2',
                 'success': 'false',
                 'ret': 'Missing required field email',
@@ -354,6 +373,7 @@ class teedin2():
             }
         if 'property_type' not in postdata:
             return{
+                "ds_id": postdata['ds_id'],
                 'websitename': 'teedin2',
                 'success': 'false',
                 'ret': 'Missing required field property_type',
@@ -362,6 +382,7 @@ class teedin2():
             }
         if 'listing_type' not in postdata:
             return{
+                "ds_id": postdata['ds_id'],
                 'websitename': 'teedin2',
                 'success': 'false',
                 'ret': 'Missing required field listing_type',
@@ -370,6 +391,7 @@ class teedin2():
             }
         if 'price_baht' not in postdata:
             return{
+                "ds_id": postdata['ds_id'],
                 'websitename': 'teedin2',
                 'success': 'false',
                 'ret': 'Missing required field price',
@@ -378,6 +400,7 @@ class teedin2():
             }
         if 'post_title_th' not in postdata:
             return{
+                "ds_id": postdata['ds_id'],
                 'websitename': 'teedin2',
                 'success': 'false',
                 'detail': 'Missing required field title',
@@ -387,6 +410,7 @@ class teedin2():
             }
         if 'post_description_th' not in postdata:
             return{
+                "ds_id": postdata['ds_id'],
                 'websitename': 'teedin2',
                 'success': 'false',
                 'ret': 'Missing required field description',
@@ -424,6 +448,7 @@ class teedin2():
                 'success': 'false',
                 'ret': "wrong province",
                 'post_url': "",
+                "ds_id": postdata['ds_id'],
                 'post_id': ""
             }
         province_id = amphur_id
@@ -536,6 +561,7 @@ class teedin2():
                 'success': 'true',
                 'ret': var,
                 'post_url': post_url,
+                "ds_id": postdata['ds_id'],
                 'post_id': post_id
             }
         time_end = datetime.datetime.utcnow()
@@ -544,6 +570,7 @@ class teedin2():
             'websitename': 'teedin2',
             "success": success,
             "start_time": str(time_start),
+            "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
             "detail": "Failed to Create Post",
         }
@@ -573,6 +600,7 @@ class teedin2():
                 'websitename': 'teedin2',
                 'success': 'False',
                 "start_time": str(time_start),
+                "log_id": postdata['log_id'],
                 "end_time": str(time_end),
                 "detail": detail,
             }
@@ -604,6 +632,7 @@ class teedin2():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            "log_id": postdata['log_id'],
             'websitename': 'teedin2',
             "success": success,
             "start_time": str(time_start),
@@ -629,6 +658,7 @@ class teedin2():
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
             return {
+                "log_id": postdata['log_id'],
                 'websitename': 'teedin2',
                 'success': 'False',
                 "start_time": str(time_start),
@@ -647,6 +677,7 @@ class teedin2():
         return {
             "websitename": "teedin2",
             "success": "true",
+            "log_id": postdata['log_id'],
             "time_usage": time_end - time_start,
             "time_start": time_start,
             "time_end": time_end,

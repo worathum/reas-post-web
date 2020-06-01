@@ -318,6 +318,7 @@ class aecmarketing():
         return {
             "success": status,
             "start_time": str(start_time),
+            "ds_id": postdata['ds_id'],
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
             "detail": result['result']['description'],
@@ -729,6 +730,7 @@ class aecmarketing():
 
         return {
             "success": result,
+            "log_id": postdata['log_id'],
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
@@ -769,6 +771,7 @@ class aecmarketing():
             "post_id": post_id,
             "start_time": str(start_time),
             "end_time": str(end_time),
+            "log_id": postdata['log_id'],
             "usage_time": str(end_time - start_time),
             "detail": detail,
             "websitename": "aecmarketing"
@@ -1194,6 +1197,7 @@ class aecmarketing():
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
+            "log_id": postdata['log_id'],
             "detail": detail,
             "post_id": post_id,
             "websitename": "aecmarketinghome"

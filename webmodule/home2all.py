@@ -393,6 +393,7 @@ class home2all():
         return {
             "websitename": "home2all",
             "success": success,
+            "ds_id": postdata['ds_id'],
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -653,6 +654,7 @@ class home2all():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
+            "log_id": postdata['log_id'],
             "post_id": postdata['post_id'],
             "account_type": "null",
             "detail": detail,
@@ -698,6 +700,7 @@ class home2all():
             "time_start": str(time_start),
             "time_end": str(time_end),
             "detail": detail,
+            "log_id": postdata['log_id'],
             "post_id": postdata['post_id'],
             "websitename": "home2all"
 
