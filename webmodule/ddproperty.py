@@ -779,6 +779,16 @@ class ddproperty():
                     js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
                     self.chrome.execute_script(js)
                     time.sleep(0.5)
+
+                    #TODO debug
+                    element = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[2]/a'))
+                    self.chrome.execute_script("arguments[0].setAttribute('href','https://maps.google.com/maps?ll=13.649778,100.362285&z=14&t=m&hl=en-US&gl=US&mapclient=apiv3')", element)
+                    time.sleep(0.5)
+                    element = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[7]/div[2]/a'))
+                    self.chrome.execute_script("arguments[0].setAttribute('href','https://www.google.com/maps/@13.649778,100.362285,14z/data=!10m1!1e1!12b1?source=apiv3&rapsrc=apiv3')", element)
+                    time.sleep(0.5)
+                    #TODO debug
+
                    
                 except Exception as e:
                     log.warning('lat lng error ' + str(e))
@@ -1104,18 +1114,20 @@ class ddproperty():
             time.sleep(1)
             log.debug('click next')
 
+            #TODO debug
             #js location inject
-            # js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
-            # js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
-            # self.chrome.execute_script(js)
-            # time.sleep(0.5)
-            # js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
-            # js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
-            # self.chrome.execute_script(js)
-            # time.sleep(0.5)
-            #debug jsalert = 'alert(guruApp.createListing.listingData.listingDetail.result.location.latitude + " " + guruApp.createListing.listingData.listingDetail.result.location.longitude)'
+            js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
+            js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
+            self.chrome.execute_script(js)
+            time.sleep(0.5)
+            js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
+            js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
+            self.chrome.execute_script(js)
+            time.sleep(0.5)
+            # debug jsalert = 'alert(guruApp.createListing.listingData.listingDetail.result.location.latitude + " " + guruApp.createListing.listingData.listingDetail.result.location.longitude)'
             # self.chrome.execute_script(jsalert)
             # time.sleep(1)
+            #TODO debug
             
             if datahandled['action'] == 'edit_post':
                 #บันทึกแล้วออก
