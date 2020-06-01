@@ -63,3 +63,12 @@ active visual env
 deactivate visual env
 #deactivate
 
+
+startlocal service bash script
+#!/bin/bash
+cd /home/arnut/workspace/REASPOSTWEB/
+source py37-venv/bin/activate
+python3.7 -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure &
+gnome-terminal --tab  -- tail -f /home/arnut/workspace/REASPOSTWEB/log/app.log
+
+

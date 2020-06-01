@@ -198,6 +198,7 @@ class ddproperty():
         agent_id = ""
 
         options = Options()
+        # debug by comment option --headless
         options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
@@ -227,19 +228,31 @@ class ddproperty():
         log.debug('input password')
         passtxt.send_keys(Keys.ENTER)
         log.debug('click enter')
-        time.sleep(1)
+        time.sleep(3)
         
         matchObj = re.search(r'บัญชีผู้ใช้งานของท่านหมดอายุ', self.chrome.page_source)
-        if matchObj:
+        matchObj2 = re.search(r'User account is not active', self.chrome.page_source)
+        if matchObj or matchObj2:
             success = "false"
             detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
             log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
-        
-        matchObj = re.search(r'User account is not active', self.chrome.page_source)
+        matchObj = re.search(r'รหัสผ่านของคุณไม่ถูกต้อง', self.chrome.page_source)
         if matchObj:
             success = "false"
-            detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
-            log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
+            detail = 'รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่'
+            log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
+        matchObj = re.search(r'มีข้อผิดพลาดเกิดขึ้น', self.chrome.page_source)
+        if matchObj:
+            success = "false"
+            detail = 'มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง'
+            log.warning('มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง')
+        matchObj = re.search(r'Incorrect Captcha', self.chrome.page_source)
+        matchObj2 = re.search(r'ฉันไม่ใช่โปรแกรมอัตโนมัติ', self.chrome.page_source)
+        matchObj3 = re.search(r'Captcha ไม่ถูกต้อง', self.chrome.page_source)
+        if matchObj or matchObj2 or matchObj3:
+            success = "false"
+            detail = 'login fail by Google reCaptcha'
+            log.warning('login fail by Google reCaptcha')
         
         if success == "true":
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
@@ -766,6 +779,7 @@ class ddproperty():
                     js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
                     self.chrome.execute_script(js)
                     time.sleep(0.5)
+                   
                 except Exception as e:
                     log.warning('lat lng error ' + str(e))
                     pass
@@ -868,16 +882,20 @@ class ddproperty():
             #self.chrome.save_screenshot("debug_response/newp44.png")
 
             # type
+            log.debug('input property type')
             if datahandled['listing_type'] == "SALE":
-                WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[1]/label/span')).click()
+                element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("listing-type-SALE"))
+                self.chrome.execute_script("arguments[0].click();", element)
                 log.debug('input property type SALE')
             elif datahandled['listing_type'] == "RENT":
-                WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[2]/label/span')).click()
+                element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("listing-type-RENT"))
+                self.chrome.execute_script("arguments[0].click();", element)                
                 log.debug('input property type RENT')
             else:
-                WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div[3]/label/span')).click()
+                element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("listing-type-OPT"))
+                self.chrome.execute_script("arguments[0].click();", element)  
                 log.debug('input property type OPT')
-            # self.chrome.save_screenshot("debug_response/newp5.png")
+            #self.chrome.save_screenshot("debug_response/newp5.png")
 
             # price
             try:
@@ -1042,7 +1060,7 @@ class ddproperty():
 
             # next
             try:
-                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
+                WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  
             except WebDriverException as e:
                 log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
                 success = 'false'
@@ -1050,8 +1068,9 @@ class ddproperty():
                 self.chrome.quit()
                 return success, detail, post_id, account_type
 
-            # image
+            # image page
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
+
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
             if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) < 0):
                 log.debug('edit image')
@@ -1078,8 +1097,23 @@ class ddproperty():
             post_id = self.chrome.current_url.split("/")[-1]
             log.debug('post post id %s', post_id)
 
+            #js location inject
+            # TODO
+            js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
+            js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
+            self.chrome.execute_script(js)
+            time.sleep(0.5)
+            js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
+            js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
+            self.chrome.execute_script(js)
+            #debug jsalert = 'alert(guruApp.createListing.listingData.listingDetail.result.location.latitude + " " + guruApp.createListing.listingData.listingDetail.result.location.longitude)'
+            # self.chrome.execute_script(jsalert)
+            # time.sleep(1)
+            
+
+            # next
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')))
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  # next
+            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click() 
             # self.chrome.save_screenshot("debug_response/newp10.png")
             time.sleep(1)
             log.debug('click next')
