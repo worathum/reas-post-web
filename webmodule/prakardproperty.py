@@ -391,7 +391,7 @@ class prakardproperty():
             "time_usage": str(time_end - time_start),
             "time_start": str(time_start),
             "time_end": str(time_end),
-            "ds_id": postdata['ds_id'],
+            "ds_id": webdata['ds_id'],
             "post_url": post_url,
             "post_id": post_id,
             "account_type": "",
