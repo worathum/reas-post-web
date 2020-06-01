@@ -770,7 +770,7 @@ class ddproperty():
                 # self.chrome.save_screenshot("debug_response/newp33.png")
 
                 # longitude ,latitude
-                # test 13.755600646163234,100.55629891052246
+                # TODO
                 try:
                     time.sleep(0.5)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
@@ -1097,32 +1097,35 @@ class ddproperty():
             post_id = self.chrome.current_url.split("/")[-1]
             log.debug('post post id %s', post_id)
 
-            #js location inject
-            # TODO
-            js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
-            js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
-            self.chrome.execute_script(js)
-            time.sleep(0.5)
-            js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
-            js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
-            self.chrome.execute_script(js)
-            #debug jsalert = 'alert(guruApp.createListing.listingData.listingDetail.result.location.latitude + " " + guruApp.createListing.listingData.listingDetail.result.location.longitude)'
-            # self.chrome.execute_script(jsalert)
-            # time.sleep(1)
-            
-
             # next
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')))
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click() 
             # self.chrome.save_screenshot("debug_response/newp10.png")
             time.sleep(1)
             log.debug('click next')
+
+            #js location inject
+            # js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
+            # js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
+            # self.chrome.execute_script(js)
+            # time.sleep(0.5)
+            # js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
+            # js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
+            # self.chrome.execute_script(js)
+            # time.sleep(0.5)
+            #debug jsalert = 'alert(guruApp.createListing.listingData.listingDetail.result.location.latitude + " " + guruApp.createListing.listingData.listingDetail.result.location.longitude)'
+            # self.chrome.execute_script(jsalert)
+            # time.sleep(1)
             
             if datahandled['action'] == 'edit_post':
+                #บันทึกแล้วออก
+                element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
+                self.chrome.execute_script("arguments[0].click();", element)
+                #quit      
                 self.chrome.quit()
                 return success, detail, post_id, account_type
 
-            WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
+            WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
             time.sleep(1.8)
             log.debug('click publish')
             # self.chrome.save_screenshot("debug_response/newp11.png")
@@ -1135,7 +1138,14 @@ class ddproperty():
                 if matchObj:
                     success = "false"
                     detail = 'Active Unit Listing quota exceeded'
-
+                
+        #บันทึกแล้วออก
+        element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
+        self.chrome.execute_script("arguments[0].click();", element)
+        time.sleep(1.8)
+        f = open("debug_response/ddpost.html", "wb")
+        f.write(self.chrome.page_source.encode('utf-8').strip())         
+        #quit        
         self.chrome.quit()
 
         return success, detail, post_id, account_type
