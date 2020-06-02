@@ -161,6 +161,7 @@ class bankumka():
 
         theurl = ""
         post_id = ""
+        print(postdata['mobile'])
 
         # login
         test_login = self.test_login(postdata)
@@ -204,7 +205,7 @@ class bankumka():
             # print(csrf_token)
             for i in alls:
                 # print(i.get_text(), i.get_text == postdata['addr_province'])
-                if postdata['addr_province'].find(i.get_text()) != -1:
+                if postdata['addr_province'].find(i.get_text().strip()) != -1 or i.get_text().find(postdata['addr_province']) != -1:
                     province_id = i['value']
                     break
                 # print(i)
@@ -216,8 +217,14 @@ class bankumka():
                 query_string, verify=False)
             data = json.loads(r.text)
             # print(data)
+            print(postdata['addr_district'])
             for i in data:
-                if postdata['addr_district'].find(i['name']) != -1:
+                # print(i['name'])
+                print(i['name'])
+                print(i['name'].find(postdata['addr_district']))
+                if postdata['addr_district'].replace(" ","").find(i['name'].strip()) != -1 or i['name'].find(postdata['addr_district'].replace(" ","")) != -1:
+                    if i['name'].find(postdata['addr_district'].replace(" ","")) == 6:
+                        continue
                     amphur_id = i['id']
                     break
             # print(amphur_id)
@@ -226,8 +233,11 @@ class bankumka():
                 query_string, verify=False)
             data = json.loads(r.text)
             # print(data)
+            print()
+            print(postdata['addr_sub_district'])
             for i in data:
-                if postdata['addr_sub_district'].find(i['name']) != -1:
+                print(i['name'])
+                if postdata['addr_sub_district'].replace(" ","").find(i['name'].strip()) != -1 or i['name'].find(postdata['addr_sub_district'].replace(" ","")) != -1:
                     tumbon_id = i['id']
                     break
             # print(tumbon_id)
@@ -237,6 +247,18 @@ class bankumka():
             # print(csrf_time)
             csrf_time = 0
             csrf_token = ''
+
+
+            if 'web_project_name' in postdata and postdata['web_project_name'] is not None:
+                project_n = postdata['web_project_name']
+            elif 'project_name' in postdata and postdata['project_name'] is not None:
+                project_n = postdata['project_name']
+            else:
+                project_n = postdata['post_title_th']
+
+
+            print(postdata['mobile'])
+
             # floor_area_sqm = 0
             datapost = [
                 ('timeout', '5'),
@@ -253,12 +275,12 @@ class bankumka():
                 ('prop_bedroom_type', '0'),
                 ('prop_bedroom', postdata['bed_room']),
                 ('prop_bathroom', postdata['bath_room']),
-                ('prop_livingroom', '1'),
+                ('prop_livingroom', ''),
                 ('prop_kitchen', ''),
                 ('prop_parking', ''),
                 ('prop_floor', postdata['floor_total']),
                 ('prop_mainroad', '1'),
-                ('prop_project_name', postdata['post_title_th']),
+                ('prop_project_name', project_n),
                 ('prop_project', '0'),
                 ('prop_project_old', '0'),
                 ('project_prop_province', province_id),
@@ -306,17 +328,17 @@ class bankumka():
                 datapost.append(('prop_area_sqm', postdata['land_size_wa']))
                 datapost.append(('prop_space', postdata['floor_area']))
             if postdata['listing_type'] == 'เช่า':
-                datapost[2] = ('prop_type',33)
-                datapost[7] = ('prop_price','')
-                datapost[9] = ('prop_pricerent',postdata['price_baht'])
+                datapost[2] = ('prop_type', 33)
+                datapost[7] = ('prop_price', '')
+                datapost[9] = ('prop_pricerent', postdata['price_baht'])
             else:
-                datapost[2] = ('prop_type',32)
-                datapost[9] = ('prop_pricerent','')
-                datapost[7] = ('prop_price',postdata['price_baht'])
+                datapost[2] = ('prop_type', 32)
+                datapost[9] = ('prop_pricerent', '')
+                datapost[7] = ('prop_price', postdata['price_baht'])
             r = httprequestObj.http_post(
                 'https://bankumka.com/ajax/checkProperty', data=datapost)
             data = json.loads(r.text)
-            # print(data)
+            print(data)
             if data['status'] == 'OK':
                 datapost = [
                     ('timeout', '5'),
@@ -333,12 +355,12 @@ class bankumka():
                     ('prop_bedroom_type', '0'),
                     ('prop_bedroom', postdata['bed_room']),
                     ('prop_bathroom', postdata['bath_room']),
-                    ('prop_livingroom', '1'),
+                    ('prop_livingroom', ''),
                     ('prop_kitchen', ''),
                     ('prop_parking', ''),
                     ('prop_floor', postdata['floor_total']),
                     ('prop_mainroad', '1'),
-                    ('prop_project_name', postdata['post_title_th']),
+                    ('prop_project_name', project_n),
                     ('prop_project', '0'),
                     ('prop_project_old', '0'),
                     ('project_prop_province', province_id),
@@ -382,26 +404,27 @@ class bankumka():
                         ('prop_area_sqm', postdata['land_size_wa']))
                     datapost.append(('prop_space', postdata['floor_area']))
                 if postdata['listing_type'] == 'เช่า':
-                    datapost[2] = ('prop_type',33)
-                    datapost[7] = ('prop_price','')
-                    datapost[9] = ('prop_pricerent',postdata['price_baht'])
+                    datapost[2] = ('prop_type', 33)
+                    datapost[7] = ('prop_price', '')
+                    datapost[9] = ('prop_pricerent', postdata['price_baht'])
                 else:
-                    datapost[2] = ('prop_type',32)
-                    datapost[9] = ('prop_pricerent','')
-                    datapost[7] = ('prop_price',postdata['price_baht'])
+                    datapost[2] = ('prop_type', 32)
+                    datapost[9] = ('prop_pricerent', '')
+                    datapost[7] = ('prop_price', postdata['price_baht'])
                 files = {}
-                for i in range(len(postdata["post_img_url_lists"])):
-                    resp = requests.get(
-                        postdata["post_img_url_lists"][i], stream=True)
-                    resp.raw.decode_content = True
-                    with open('image'+str(i)+'.jpg', 'wb') as lfile:
-                        shutil.copyfileobj(resp.raw, lfile)
+                for i, myimg in enumerate(postdata['post_images'][:10]):
+                # for i in range(len(postdata["post_img_url_lists"])):
+                    # resp = requests.get(
+                    #     postdata["post_img_url_lists"][i], stream=True)
+                    # resp.raw.decode_content = True
+                    # with open('image'+str(i)+'.jpg', 'wb') as lfile:
+                    #     shutil.copyfileobj(resp.raw, lfile)
 
-                    r = open('image'+str(i)+'.jpg', 'rb')
-                    if i > 10:
-                        break
-                    else:
-                        files["prop_gallery"+str(i+1)] = r
+                    r = open(myimg, 'rb')
+                    # if i > 10:
+                        # break
+                    # else:
+                    files["prop_gallery"+str(i+1)] = r
                     val = {
                         "filename": r,
                         "Content-Type": 'image/jpg'
@@ -430,7 +453,7 @@ class bankumka():
                 success = "false"
                 theurl = ""
         else:
-            post_url = ""
+            # print("wrong_id")
             success = "false"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -460,7 +483,7 @@ class bankumka():
         getProdId = {'1': 2, '2': 1, '3': 1, '4': 3, '5': 4,
                      '6': 5, '7': 37, '8': 37, '9': 37, '10': 37, '25': 37}
         try:
-            theprodid = getProdId[postdata['property_type']]
+            theprodid = getProdId[str(postdata['property_type'])]
         except:
             theprodid = ''
 
@@ -481,6 +504,14 @@ class bankumka():
             if add is not None:
                 prod_address += add
         prod_address = prod_address[:-1]
+        if 'web_project_name' in postdata and postdata['web_project_name'] is not None:
+            project_n = postdata['web_project_name']
+        elif 'project_name' in postdata and postdata['project_name'] is not None:
+            project_n = postdata['project_name']
+        else:
+            project_n = postdata['post_title_th']
+
+
         if success == "true":
             r = httprequestObj.http_get(
                 'https://bankumka.com/member/properties', verify=False)
@@ -503,8 +534,7 @@ class bankumka():
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 alls = soup.findAll("option")
                 for i in alls:
-                    # print(i.get_text(), i.get_text == postdata['addr_province'])
-                    if postdata['addr_province'].find(i.get_text()) != -1:
+                    if postdata['addr_province'].find(i.get_text()) != -1 or i.get_text().find(postdata['addr_province']) != -1:
                         province_id = i['value']
                         break
                     # print(i)
@@ -517,7 +547,8 @@ class bankumka():
                 data = json.loads(r.text)
                 # print(data)
                 for i in data:
-                    if postdata['addr_district'].find(i['name']) != -1:
+                    # print(i['name'])
+                    if postdata['addr_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_district'].replace(" ","")) != -1:
                         amphur_id = i['id']
                         break
                 # print(amphur_id)
@@ -527,7 +558,7 @@ class bankumka():
                 data = json.loads(r.text)
                 # print(data)
                 for i in data:
-                    if postdata['addr_sub_district'].find(i['name']) != -1:
+                    if postdata['addr_sub_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_sub_district'].replace(" ","")) != -1:
                         tumbon_id = i['id']
                         break
                 # print(tumbon_id)
@@ -557,12 +588,12 @@ class bankumka():
                     ('prop_bedroom_type', '0'),
                     ('prop_bedroom', postdata['bed_room']),
                     ('prop_bathroom', postdata['bath_room']),
-                    ('prop_livingroom', '1'),
+                    ('prop_livingroom', ''),
                     ('prop_kitchen', ''),
                     ('prop_parking', ''),
                     ('prop_floor', postdata['floor_total']),
                     ('prop_mainroad', '1'),
-                    ('prop_project_name', postdata['post_title_th']),
+                    ('prop_project_name', project_n),
                     ('prop_project', '0'),
                     ('prop_project_old', '0'),
                     ('prop_active', 1),
@@ -619,17 +650,17 @@ class bankumka():
                         ('prop_area_sqm', postdata['land_size_wa']))
                     datapost.append(('prop_space', postdata['floor_area']))
                 if postdata['listing_type'] == 'เช่า':
-                    datapost[2] = ('prop_type',33)
-                    datapost[7] = ('prop_price','')
-                    datapost[9] = ('prop_pricerent',postdata['price_baht'])
+                    datapost[2] = ('prop_type', 33)
+                    datapost[7] = ('prop_price', '')
+                    datapost[9] = ('prop_pricerent', postdata['price_baht'])
                 else:
-                    datapost[2] = ('prop_type',32)
-                    datapost[9] = ('prop_pricerent','')
-                    datapost[7] = ('prop_price',postdata['price_baht'])
+                    datapost[2] = ('prop_type', 32)
+                    datapost[9] = ('prop_pricerent', '')
+                    datapost[7] = ('prop_price', postdata['price_baht'])
                 r = httprequestObj.http_post(
                     'https://bankumka.com/ajax/checkProperty', data=datapost)
                 data = json.loads(r.text)
-                # print(data)
+                print(data)
                 if data['status'] == 'OK':
                     datapost = [
                         ('timeout', '5'),
@@ -655,7 +686,7 @@ class bankumka():
                         ('prop_parking', ''),
                         ('prop_floor', postdata['floor_total']),
                         ('prop_mainroad', '1'),
-                        ('prop_project_name', postdata['post_title_th']),
+                        ('prop_project_name', project_n),
                         ('prop_project', '0'),
                         ('prop_project_old', '0'),
                         ('project_prop_province', province_id),
@@ -691,41 +722,63 @@ class bankumka():
                         ('prop_id', postdata['post_id'])
                     ]
                     if theprodid == 2:
-                        datapost.append(('prop_area_rai',''))
-                        datapost.append(('prop_area_ngan',''))
-                        datapost.append(('prop_area_sqm',''))
-                        datapost.append(('prop_space',postdata['floor_area']))
+                        datapost.append(('prop_area_rai', ''))
+                        datapost.append(('prop_area_ngan', ''))
+                        datapost.append(('prop_area_sqm', ''))
+                        datapost.append(('prop_space', postdata['floor_area']))
                     elif theprodid == 5:
-                        datapost.append(('prop_area_rai',postdata['land_size_rai']))
-                        datapost.append(('prop_area_ngan',postdata['land_size_ngan']))
-                        datapost.append(('prop_area_sqm',postdata['land_size_wa']))
-                        datapost.append(('prop_space',''))
+                        datapost.append(
+                            ('prop_area_rai', postdata['land_size_rai']))
+                        datapost.append(
+                            ('prop_area_ngan', postdata['land_size_ngan']))
+                        datapost.append(
+                            ('prop_area_sqm', postdata['land_size_wa']))
+                        datapost.append(('prop_space', ''))
                     else:
-                        datapost.append(('prop_area_rai',postdata['land_size_rai']))
-                        datapost.append(('prop_area_ngan',postdata['land_size_ngan']))
-                        datapost.append(('prop_area_sqm',postdata['land_size_wa']))
-                        datapost.append(('prop_space',postdata['floor_area']))
+                        datapost.append(
+                            ('prop_area_rai', postdata['land_size_rai']))
+                        datapost.append(
+                            ('prop_area_ngan', postdata['land_size_ngan']))
+                        datapost.append(
+                            ('prop_area_sqm', postdata['land_size_wa']))
+                        datapost.append(('prop_space', postdata['floor_area']))
                     if postdata['listing_type'] == 'เช่า':
-                        datapost[2] = ('prop_type',33)
-                        datapost[7] = ('prop_price','')
-                        datapost[9] = ('prop_pricerent',postdata['price_baht'])
+                        datapost[2] = ('prop_type', 33)
+                        datapost[7] = ('prop_price', '')
+                        datapost[9] = ('prop_pricerent',
+                                       postdata['price_baht'])
                     else:
-                        datapost[2] = ('prop_type',32)
-                        datapost[9] = ('prop_pricerent','')
-                        datapost[7] = ('prop_price',postdata['price_baht'])
+                        datapost[2] = ('prop_type', 32)
+                        datapost[9] = ('prop_pricerent', '')
+                        datapost[7] = ('prop_price', postdata['price_baht'])
                     files = {}
-                    for i in range(len(postdata["post_img_url_lists"])):
-                        resp = requests.get(
-                            postdata["post_img_url_lists"][i], stream=True)
-                        resp.raw.decode_content = True
-                        with open('image'+str(i)+'.jpg', 'wb') as lfile:
-                            shutil.copyfileobj(resp.raw, lfile)
 
-                        r = open('image'+str(i)+'.jpg', 'rb')
-                        if i > 10:
-                            break
-                        else:
-                            files["prop_gallery"+str(i+1)] = r
+                    for i, myimg in enumerate(postdata['post_images'][:10]):
+                    # for i in range(len(postdata["post_img_url_lists"])):
+                        # resp = requests.get(
+                        #     postdata["post_img_url_lists"][i], stream=True)
+                        # resp.raw.decode_content = True
+                        # with open('image'+str(i)+'.jpg', 'wb') as lfile:
+                        #     shutil.copyfileobj(resp.raw, lfile)
+
+                        r = open(myimg, 'rb')
+                        # if i > 10:
+                            # break
+                        # else:
+                        files["prop_gallery"+str(i+1)] = r
+                    
+                    # for i in range(len(postdata["post_img_url_lists"])):
+                    #     resp = requests.get(
+                    #         postdata["post_img_url_lists"][i], stream=True)
+                    #     resp.raw.decode_content = True
+                    #     with open('image'+str(i)+'.jpg', 'wb') as lfile:
+                    #         shutil.copyfileobj(resp.raw, lfile)
+
+                    #     r = open('image'+str(i)+'.jpg', 'rb')
+                    #     if i > 10:
+                    #         break
+                    #     else:
+                    #         files["prop_gallery"+str(i+1)] = r
                     r = httprequestObj.http_post(
                         'https://bankumka.com/property/save', data=datapost, files=files)
                     # print(r.text)
@@ -1013,7 +1066,8 @@ class bankumka():
             "post_id": postdata['post_id'],
             "account_type": "null",
         }
-    def boost_post(self,postdata):
+
+    def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         test_login = self.test_login(postdata)
@@ -1037,9 +1091,10 @@ class bankumka():
                 success = False
             else:
                 datapost = {
-                    'prop_id':postdata['post_id']
+                    'prop_id': postdata['post_id']
                 }
-                r = httprequestObj.http_post('https://bankumka.com/member/api/pushProp',datapost)
+                r = httprequestObj.http_post(
+                    'https://bankumka.com/member/api/pushProp', datapost)
         else:
             success = "false"
         time_end = datetime.datetime.utcnow()
@@ -1052,6 +1107,7 @@ class bankumka():
             "account_type": "null",
             "websitename": "bankumka"
         }
+
     def print_debug(self, msg):
         if(self.debug == 1):
             print(msg)
