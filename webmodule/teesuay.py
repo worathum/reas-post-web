@@ -151,6 +151,8 @@ class teesuay():
         ashopname = test_login["detail"]
         
 
+
+
         # getProdId = {'1':24,'2':25,'3':26,'4':27,'5':29,'6':34,'7':28,'8':14,'9':31,'10':33}
         # theprodid = getProdId[postdata['property_id']]
         province_id=""
@@ -251,14 +253,20 @@ class teesuay():
                     pass
                 else:
                     bathroom='0'
-            if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None:
+            if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None or postdata['land_size_ngan'] == "": 
                 postdata['land_size_ngan']=0
-            if 'land_size_rai' not in postdata or postdata['land_size_rai']==None:
+            if 'land_size_rai' not in postdata or postdata['land_size_rai']==None or postdata['land_size_rai'] == "":
                 postdata['land_size_rai']=0
-            if 'land_size_wa' not in postdata or postdata['land_size_wa']==None:
+            if 'land_size_wa' not in postdata or postdata['land_size_wa']==None or postdata['land_size_wa'] == "":
                 postdata['land_size_wa']=0
-            if 'project_name' not in postdata:
+
+            if 'web_project_name' in postdata:
+                postdata['project_name']=postdata['web_project_name']
+            elif 'project_name' not in postdata:
                 postdata['project_name']=postdata['post_title_th']
+
+
+
             if len(postdata['post_images'])==0:
                 postdata['post_images']=['imgtmp/default/white.jpg']
             # if 'floor_area' in postdata: floor_area = postdata['floor_area']
@@ -500,14 +508,18 @@ class teesuay():
                     pass
                 else:
                     bathroom='2'
-            if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None:
+            if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None or postdata['land_size_ngan'] == "": 
                 postdata['land_size_ngan']=0
-            if 'land_size_rai' not in postdata or postdata['land_size_rai']==None:
+            if 'land_size_rai' not in postdata or postdata['land_size_rai']==None or postdata['land_size_rai'] == "":
                 postdata['land_size_rai']=0
-            if 'land_size_wa' not in postdata or postdata['land_size_wa']==None:
+            if 'land_size_wa' not in postdata or postdata['land_size_wa']==None or postdata['land_size_wa'] == "":
                 postdata['land_size_wa']=0
-            if 'project_name' not in postdata:
+
+            if 'web_project_name' in postdata:
+                postdata['project_name']=postdata['web_project_name']
+            elif 'project_name' not in postdata:
                 postdata['project_name']=postdata['post_title_th']
+
             if len(postdata['post_images'])==0:
                 postdata['post_images']=['imgtmp/default/white.jpg']
             # if 'floor_area' in postdata: floor_area = postdata['floor_area']

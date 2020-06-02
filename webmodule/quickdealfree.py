@@ -59,7 +59,7 @@ class quickdealfree():
         r = httprequestObj.http_post(
             'http://www.quickdealfree.com/p-register.php', data=datapost)
         data = r.text
-
+        # print(data)
         if data.find("อีเมล์นี้มีอยู่ในระบบแล้ว") != -1:
             success = "false"
             detail = "Email Already registered"
@@ -115,6 +115,7 @@ class quickdealfree():
             "end_time": str(time_end),
             "detail": detail,
             "websitename": "quickdealfree",
+            "ds_id": postdata['ds_id'],
         }
 
     def create_post(self, postdata):
@@ -242,6 +243,7 @@ class quickdealfree():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
+            "ds_id": postdata['ds_id'],
             "post_id": post_id,
             "account_type": "null",
             "detail": detail,
@@ -364,6 +366,7 @@ class quickdealfree():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
+            "log_id": postdata['log_id'],
             # "post_url": "http://www.quickdealfree.com/post-"+postdata['post_id']+'/'+postdata['post_title_th']+".html",
             # "post_id": postdata['post_id'],
             "account_type": "null",
@@ -420,7 +423,7 @@ class quickdealfree():
             "end_time": str(time_end),
             "detail": detail,
             "websitename": "quickdealfree",
-            "log_id": 1,
+            "log_id": postdata['log_id'],
         }
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -470,8 +473,8 @@ class quickdealfree():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "log_id": postdata['log_id'],
             "websitename": "quickdealfree",
-            "log_id": 1,
         }
 
     def print_debug(self, msg):

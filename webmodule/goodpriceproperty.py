@@ -190,6 +190,7 @@ class goodpriceproperty():
         time_usage = time_end - time_start
         return {
             "success": success,
+            "ds_id": postdata['ds_id'],
             "websitename": "goodpriceproperty",
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -290,19 +291,16 @@ class goodpriceproperty():
                 bathroom = str(postdata['bathroom'])
             else:
                 bathroom = '7'
-            if 'land_area_ngan' not in postdata or str(postdata['land_area_ngan']) == None:
-                postdata['land_area_ngan'] = '0'
-            if 'land_area_rai' not in postdata or str(postdata['land_area_rai']) == None:
-                postdata['land_area_rai'] = '0'
-            if 'land_area_wa' not in postdata or str(postdata['land_area_wa']) == None:
-                postdata['land_area_wa'] = '0'
+            if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None or postdata['land_size_ngan'] == "": 
+                postdata['land_size_ngan']=0
+            if 'land_size_rai' not in postdata or postdata['land_size_rai']==None or postdata['land_size_rai'] == "":
+                postdata['land_size_rai']=0
+            if 'land_size_wa' not in postdata or postdata['land_size_wa']==None or postdata['land_size_wa'] == "":
+                postdata['land_size_wa']=0
 
-            if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
-                postdata['land_size_ngan'] = '0'
-            if 'land_size_rai' not in postdata or postdata['land_size_rai'] == None:
-                postdata['land_size_rai'] = '0'
-            if 'land_size_wa' not in postdata or postdata['land_size_wa'] == None:
-                postdata['land_size_wa'] = '0'
+
+
+
             print(postdata['land_size_wa'], postdata['land_size_ngan'],
                   postdata['land_size_rai'], str(postdata['floor_area']))
             print("\n\n\n")
@@ -597,6 +595,7 @@ class goodpriceproperty():
                 'prop_type': postdata['property_type'],
                 'data_prop_type': datapost['cate_id'],
                 'success': 'true',
+                "ds_id": postdata['ds_id'],
                 'action': "create_post",
                 "websitename": "goodpriceproperty",
                 "start_time": str(time_start),
@@ -610,6 +609,7 @@ class goodpriceproperty():
             time_usage = time_end - time_start
 
             return{
+                "ds_id": postdata['ds_id'],
                 'success':'false',
                 'detail':'login error',
                 "websitename": "goodpriceproperty",
@@ -745,19 +745,14 @@ class goodpriceproperty():
                 bathroom = str(postdata['bathroom'])
             else:
                 bathroom = '7'
-            if 'land_area_ngan' not in postdata or str(postdata['land_area_ngan']) == None:
-                postdata['land_area_ngan'] = '0'
-            if 'land_area_rai' not in postdata or str(postdata['land_area_rai']) == None:
-                postdata['land_area_rai'] = '0'
-            if 'land_area_wa' not in postdata or str(postdata['land_area_wa']) == None:
-                postdata['land_area_wa'] = '0'
+            if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None or postdata['land_size_ngan'] == "": 
+                postdata['land_size_ngan']=0
+            if 'land_size_rai' not in postdata or postdata['land_size_rai']==None or postdata['land_size_rai'] == "":
+                postdata['land_size_rai']=0
+            if 'land_size_wa' not in postdata or postdata['land_size_wa']==None or postdata['land_size_wa'] == "":
+                postdata['land_size_wa']=0
 
-            if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
-                postdata['land_size_ngan'] = '0'
-            if 'land_size_rai' not in postdata or postdata['land_size_rai'] == None:
-                postdata['land_size_rai'] = '0'
-            if 'land_size_wa' not in postdata or postdata['land_size_wa'] == None:
-                postdata['land_size_wa'] = '0'
+
             print(postdata['land_size_wa'], postdata['land_size_ngan'],
                   postdata['land_size_rai'], str(postdata['floor_area']))
             print("\n\n\n")
@@ -1023,12 +1018,12 @@ class goodpriceproperty():
                 success = "false"
             return {
                 'success': success,
+                "log_id": postdata['log_id'],
                 "action": "edit_post",
                 "websitename": "goodpriceproperty",
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": data,
-                "log_id": "",
             }
 
     def delete_post(self, postdata):
@@ -1096,7 +1091,7 @@ class goodpriceproperty():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": "Successfully deleted",
-                # "log_id": postdata['log_id'],
+                "log_id": postdata['log_id'],
             }
 
         else:
@@ -1157,6 +1152,7 @@ class goodpriceproperty():
             'detail':detail,
             "time_usage": time_end - time_start,
             "time_start": time_start,
+            "log_id": postdata['log_id'],
             "time_end": time_end,
             # "detail": detail,
             "post_id": post_id,

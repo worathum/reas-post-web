@@ -517,8 +517,8 @@ class kaiteedin():
                         "success": success,
                         "start_time": str(time_start),
                         "end_time": str(time_end),
-                        "post_url": 'post will be approved after 10 minutes',
                         "ds_id": postdata['ds_id'],
+                        "post_url": 'post will be approved after 10 minutes',
                         "post_id": ''
                     }
                 if tdarray[2].text==postdata['post_title_th']:
@@ -532,9 +532,9 @@ class kaiteedin():
                         "websitename": "kaiteedin",
                         "success": success,
                         "start_time": str(time_start),
-                        "ds_id": postdata['ds_id'],
                         "end_time": str(time_end),
                         "post_url": post_url, 
+                        "ds_id": postdata['ds_id'],
                         "post_id": post_id
                     }
                 else:
@@ -542,11 +542,11 @@ class kaiteedin():
                     time_usage = time_end - time_start
                     return {
                         "websitename": "kaiteedin",
-                        "ds_id": postdata['ds_id'],
                         "success": success,
                         "start_time": str(time_start),
                         "end_time": str(time_end),
                         "post_url": 'post will be created after 10 minutes',
+                        "ds_id": postdata['ds_id'],
                         "post_id": ''
                     }
         else:
