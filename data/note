@@ -63,3 +63,44 @@ active visual env
 deactivate visual env
 #deactivate
 
+
+startlocal service bash script
+#!/bin/bash
+cd /home/arnut/workspace/REASPOSTWEB/
+source py37-venv/bin/activate
+python3.7 -W "ignore" manage.py runserver 0.0.0.0:12345 --insecure &
+gnome-terminal --tab  -- tail -f /home/arnut/workspace/REASPOSTWEB/log/app.log
+
+
+
+dd data test
+{"action":"create_post","timeout":"5","post_img_url_lists":["https:\/\/firebasestorage.googleapis.com\/v0\/b\/reas-240123.appspot.com\/o\/my_property%2Fdc3abbf2-b908-42f1-a472-4717c3cc98c2?alt=media&token=05e16e8a-7503-4eb3-9102-95452589645c","https:\/\/firebasestorage.googleapis.com\/v0\/b\/reas-240123.appspot.com\/o\/my_property%2Fc01784bb-ddd0-4114-b0bc-8f60591d736c?alt=media&token=49df064c-1f28-4b4c-a94d-9b6cab8ea0b4"],"geo_latitude":13.649778,"geo_longitude":100.362285,"property_id":"","post_title_th":"\u0e02\u0e32\u0e22  \u0e17\u0e35\u0e48\u0e14\u0e34\u0e19 \u0e16\u0e39\u0e01\u0e17\u0e35\u0e48\u0e2a\u0e38\u0e14\u0e43\u0e19\u0e22\u0e48\u0e32\u0e19\u0e19\u0e35\u0e49 \u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e195 \u0e41\u0e22\u0e0110 40\u0e44\u0e23\u0e48  \u0e2b\u0e48\u0e32\u0e07\u0e16\u0e19\u0e19\u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e195 \u0e41\u0e04\u0e48100\u0e40\u0e21\u0e15\u0e23","short_post_title_th":"\u0e02\u0e32\u0e22 \u0e17\u0e35\u0e48\u0e14\u0e34\u0e19  \u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e195 \u0e41\u0e22\u0e0110 40\u0e44\u0e23\u0e48 ","post_description_th":"\u0e02\u0e32\u0e22  \u0e17\u0e35\u0e48\u0e14\u0e34\u0e19 \u0e16\u0e39\u0e01\u0e17\u0e35\u0e48\u0e2a\u0e38\u0e14\u0e43\u0e19\u0e22\u0e48\u0e32\u0e19\u0e19\u0e35\u0e49 \u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e195 \u0e41\u0e22\u0e0110 40\u0e44\u0e23\u0e48  \u0e2b\u0e48\u0e32\u0e07\u0e16\u0e19\u0e19\u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e195 \u0e41\u0e04\u0e48100\u0e40\u0e21\u0e15\u0e23\n\n:: \u0e08\u0e38\u0e14\u0e40\u0e14\u0e48\u0e19 ::\n\u0e16\u0e39\u0e01\u0e2a\u0e38\u0e14\u0e22\u0e48\u0e32\u0e19\u0e19\u0e35\u0e49\n\u0e17\u0e33\u0e40\u0e25\u0e14\u0e35 \u0e2b\u0e48\u0e32\u0e07\u0e16.\u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e195\u0e41\u0e04\u0e48 100\u0e40\u0e21\u0e15\u0e23\n\u0e40\u0e2b\u0e21\u0e32\u0e30\u0e17\u0e33\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23\u0e08\u0e31\u0e14\u0e2a\u0e23\u0e23\n\n:: \u0e23\u0e32\u0e22\u0e25\u0e30\u0e40\u0e2d\u0e35\u0e22\u0e14\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19 ::\n\n\n\n\n\n\u0e02\u0e19\u0e32\u0e14 40\u0e44\u0e23\u0e48\n\u0e2b\u0e19\u0e49\u0e32\u0e01\u0e27\u0e49\u0e32\u0e07 209 \u0e40\u0e21\u0e15\u0e23\n\u0e16\u0e19\u0e19\u0e01\u0e27\u0e49\u0e32\u0e07 6 \u0e40\u0e21\u0e15\u0e23\n\u0e40\u0e2b\u0e21\u0e32\u0e30\u0e17\u0e33\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23\u0e08\u0e31\u0e14\u0e2a\u0e23\u0e23\n\n\u0e1e\u0e34\u0e01\u0e31\u0e14: http:\/\/maps.google.com\/maps?q=13.649778,100.362285\n\n\u0e23\u0e32\u0e04\u0e32: 260,000,000 \u0e1a\u0e32\u0e17\n\n\u0e2a\u0e19\u0e43\u0e08\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d: \u0e19\u0e38\u0e01\u0e39\u0e25 0885595641\nLine: \n#vinvestor","post_title_en":"","short_post_title_en":"","post_description_en":"","price_baht":260000000,"listing_type":"\u0e02\u0e32\u0e22","property_type":6,"floor_level":null,"floor_total":null,"floor_area":null,"bath_room":null,"bed_room":null,"prominent_point":"\u0e16\u0e39\u0e01\u0e2a\u0e38\u0e14\u0e22\u0e48\u0e32\u0e19\u0e19\u0e35\u0e49\n\u0e17\u0e33\u0e40\u0e25\u0e14\u0e35 \u0e2b\u0e48\u0e32\u0e07\u0e16.\u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e195\u0e41\u0e04\u0e48 100\u0e40\u0e21\u0e15\u0e23\n\u0e40\u0e2b\u0e21\u0e32\u0e30\u0e17\u0e33\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23\u0e08\u0e31\u0e14\u0e2a\u0e23\u0e23","view_type":null,"direction_type":null,
+"addr_province":"\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e21\u0e2b\u0e32\u0e19\u0e04\u0e23",
+"addr_district":"\u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e19",
+"addr_sub_district":"\u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e19",
+"addr_road":"\u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e195",
+"addr_soi":"\u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e195 \u0e0b\u0e2d\u0e2210",
+"addr_near_by":null,
+"floorarea_sqm":null,"land_size_rai":40,"land_size_ngan":null,"land_size_wa":null,"name":"\u0e19\u0e38\u0e01\u0e39\u0e25","mobile":"0885595641","email":"pum704@gmail.com","line":null,"web":[{"ds_name":"ddproperty","ds_id":1,
+"user":"tevawo5733@lerwfv.com",
+"pass":"tsNCXhmh"
+}]}
+
+
+เดิม ๆ
+"lat":13.752222,"lng":100.49389,"zoom":5
+debug put
+13.648492234948638,"longitude":100.36318290957031
+datapost
+"geo_latitude":13.649778,"geo_longitude":100.362285,
+web gen ให้
+"latitude":13.6505774,"longitude":100.3570031
+
+
+webdriver change link
+//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[2]/a
+https://maps.google.com/maps?ll=13.652329,100.253062&z=14&t=m&hl=en-US&gl=US&mapclient=apiv3
+
+//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[7]/div[2]/a
+https://www.google.com/maps/@13.6523289,100.2530621,14z/data=!10m1!1e1!12b1?source=apiv3&rapsrc=apiv3
+
