@@ -953,7 +953,7 @@ class ddproperty():
                 pass
 
             # total floor
-            if datahandled['floor_total'] != None and datahandled['floor_total'] < 0:
+            if datahandled['floor_total'] != None and int(datahandled['floor_total']) < 0:
                 try:
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
@@ -962,7 +962,7 @@ class ddproperty():
                     pass
 
             # floor position
-            if datahandled['floor_level'] != None and datahandled['floor_level'] < 0:
+            if datahandled['floor_level'] != None and int(datahandled['floor_level']) < 0:
                 try:
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
@@ -1144,8 +1144,6 @@ class ddproperty():
             time.sleep(1.8)
             log.debug('click publish')
             # self.chrome.save_screenshot("debug_response/newp11.png")
-            # f = open("debug_response/ddpost.html", "wb")
-            # f.write(self.chrome.page_source.encode('utf-8').strip())
 
             # create post จะสำเร็จก็ต่อเมื่อ publish ได้ด้วย ถ้า editpost แค่ edit ได้ ก็ถือว่าสำเร็จ
             if datahandled['action'] == 'create_post':
@@ -1154,13 +1152,11 @@ class ddproperty():
                     success = "false"
                     detail = 'Active Unit Listing quota exceeded'
                 
-        #บันทึกแล้วออก
-        element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
-        self.chrome.execute_script("arguments[0].click();", element)
-        #f = open("debug_response/ddpost.html", "wb")
-        #f.write(self.chrome.page_source.encode('utf-8').strip())         
-        #quit        
-        self.chrome.quit()
+            #บันทึกแล้วออก
+            element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
+            self.chrome.execute_script("arguments[0].click();", element)
+            #quit        
+            self.chrome.quit()
 
         return success, detail, post_id, account_type
 

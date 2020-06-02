@@ -552,7 +552,7 @@ class thaihometown():
         if datahandled['property_type'] == 'คอนโดมิเนียม+Condominiem' or datahandled['property_type'] == 'สำนักงาน+Office':
             typeunit = 1
             #if defined floor_area
-            if datahandled.get('floor_area',None) != None and datahandled.get('floor_area','') != '' and datahandled.get('floor_area',0) > 0:
+            if datahandled.get('floor_area',None) != None and datahandled.get('floor_area','') != '' and int(datahandled.get('floor_area',0)) > 0:
                 size = datahandled['floor_area']
             #if not defined floor_area
             else:
