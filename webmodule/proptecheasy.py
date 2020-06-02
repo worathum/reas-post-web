@@ -863,7 +863,7 @@ class proptecheasy():
             #     'https://www.ploychao.com/member/', data=datapost)
             data = r.text
             temp_json = json.loads(r.text)
-            if data == '':
+            if data == '' or data.find("Wrong") != -1:
                 success = "false"
                 detail = "post not deleted"
             else:

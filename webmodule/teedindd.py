@@ -176,12 +176,7 @@ class teedindd():
             success = "false"
             detail = "Wrong Password"
         else:
-            if soup.find('input', attrs={'id': 'fname'}):
-                detail = "Logged in"
-            else:
-                success = 'false'
-                detail = "Failed Login"
-
+            detail = "Logged in"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -190,6 +185,7 @@ class teedindd():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id":postdata['ds_id']
         }
 
     def boost_post(self, postdata):
@@ -208,6 +204,7 @@ class teedindd():
             "time_start": time_start,
             "time_end": time_end,
             "detail": "",
+            "log_id":postdata['log_id']
             "post_id": "",
         }        
 
@@ -328,9 +325,8 @@ class teedindd():
             soup = BeautifulSoup(r.content, 'html5lib')
             var = soup.findAll('option')
             for i in var:
-                if i.text == postdata['addr_province']:
+                if i.text in postdata['addr_province'] or postdata['addr_province'] in i.text:
                     postdata['addr_pros'] = i['value']
-                    # print(i.text)
             if 'addr_pros' not in postdata:
                 return{
                     'websitename':'teedindd',
@@ -348,7 +344,7 @@ class teedindd():
             r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(
                 ',')[0], 'name': postdata['addr_pros'].split(',')[1]})
             for i in json.loads(r.text):
-                if i['name'] == postdata['addr_district']:
+                if i['name'] in postdata['addr_district'] or postdata['addr_district'] in i['name']:
                     postdata['addr_dis'] = i
                     break
             if 'addr_dis' not in postdata:
@@ -364,7 +360,7 @@ class teedindd():
             r = httprequestObj.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
             for i in json.loads(r.text):
-                if i['name'] == postdata['addr_sub_district']:
+                if i['name'] in postdata['addr_sub_district'] or postdata['addr_sub_district'] in i['name']:
                     postdata['addr_sub_dis'] = i
                     break
             if 'addr_sub_dis' not in postdata:
@@ -431,8 +427,10 @@ class teedindd():
             }
             filename = "files[]"
             data={}
+
             if len(postdata['post_images'])==0:
-                postdata['post_images']=['imgtmp/default/white.jpg']
+                # postdata['post_images']=['imgtmp/default/white.jpg']
+                data={}
             else:
                 i=postdata['no']
                 data[filename] = (postdata['post_images'][i], open(
@@ -440,7 +438,10 @@ class teedindd():
             response = httprequestObj.http_post(
                 'https://www.teedindd.com/upload-tmp/', data=datapost , files=data)
             res=json.loads(response.text)
-            datapost['photo_name[]']=res['files'][0]['name']
+            if len(postdata['post_images']) != 0:
+                datapost['photo_name[]']=res['files'][0]['name']
+            else:
+                datapost['photo_name[]']=None
             datapost['photo_name_old']=''
             r = httprequestObj.http_post(
                 'https://www.teedindd.com/admin/properties-process.php', data=datapost)
@@ -457,6 +458,7 @@ class teedindd():
             "websitename": "teedindd",
             "success": success,
             "start_time": str(time_start),
+            "log_id": postdata['log_id'],
             "end_time": str(time_end),
             "detail": detail,
         }
@@ -725,6 +727,7 @@ class teedindd():
             "success": success,
             "ret": success,
             "start_time": str(time_start),
+            "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
             "post_url": 'https://www.teedindd.com/property-detail.php?pd='+str(post_id),
             "post_id": post_id,
@@ -732,7 +735,7 @@ class teedindd():
 
     def edit_post(self,postdata):
         k=0
-        while k<=len(postdata['post_images']):
+        while k<len(postdata['post_images']):
             postdata['no']=k
             j=self.editpost(postdata)
             k+=1
@@ -791,6 +794,7 @@ class teedindd():
         return {
             "websitename": "teedindd",
             "success": success,
+            "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,

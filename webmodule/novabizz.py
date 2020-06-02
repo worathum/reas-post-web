@@ -199,6 +199,7 @@ class novabizz():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
         }
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -229,6 +230,7 @@ class novabizz():
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
             return {
+                "log_id": postdata['log_id'],
                 "websitename":"novabizz",
                 "success": "false",
                 "start_time": str(time_start),
@@ -240,6 +242,7 @@ class novabizz():
 
         time_end = datetime.datetime.utcnow()
         return {
+            "log_id": postdata['log_id'],
             "websitename": "novabizz",
             "success": "true",
             "time_usage": time_end - time_start,
@@ -285,6 +288,7 @@ class novabizz():
             time_usage = time_end - time_start
             return {
                 "websitename":"novabizz",
+                "log_id": postdata['log_id'],
                 "success": "false",
                 "start_time": str(time_start),
                 "end_time": str(time_end),
@@ -314,7 +318,7 @@ class novabizz():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            # "log_id":postdata['log_id'],
+            "log_id":postdata['log_id'],
         }
 
     def create_post(self, postdata):
@@ -547,7 +551,6 @@ class novabizz():
                 'https://www.novabizz.com/post-add.php', data=datapost, files=files)
 
             data = r.text
-            # print(data)
             if data == '-1':
                 post_url=""
                 success = "False"
@@ -594,6 +597,7 @@ class novabizz():
             'websitename':'novabizz',
             "success": success,
             "start_time": str(time_start),
+            "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
             "post_url": post_url,
             "post_id": post_id,
@@ -871,6 +875,7 @@ class novabizz():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
+            "log_id": postdata['log_id'],
             "detail": "Edited",
         }
 
