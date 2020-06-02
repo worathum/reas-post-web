@@ -774,7 +774,10 @@ class ddproperty():
                 try:
                     time.sleep(0.5)
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
-                    time.sleep(0.5)
+                    time.sleep(2)
+                    #debug
+                    WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[1]/div[3]/div/div[3]/div')).click()
+                    
                     log.debug('input lat %s lng %s',datahandled['geo_latitude'],datahandled['geo_longitude'])
                     js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
                     self.chrome.execute_script(js)
@@ -782,10 +785,10 @@ class ddproperty():
 
                     #TODO debug
                     element = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[2]/a'))
-                    self.chrome.execute_script("arguments[0].setAttribute('href','https://maps.google.com/maps?ll=13.649778,100.362285&z=14&t=m&hl=en-US&gl=US&mapclient=apiv3')", element)
+                    self.chrome.execute_script("arguments[0].setAttribute('href','https://maps.google.com/maps?ll=13.649778,100.362285&z=14&t=m&hl=en-US&gl=US&mapclient=apiv3');", element)
                     time.sleep(0.5)
                     element = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[7]/div[2]/a'))
-                    self.chrome.execute_script("arguments[0].setAttribute('href','https://www.google.com/maps/@13.649778,100.362285,14z/data=!10m1!1e1!12b1?source=apiv3&rapsrc=apiv3')", element)
+                    self.chrome.execute_script("arguments[0].setAttribute('href','https://www.google.com/maps/@13.649778,100.362285,14z/data=!10m1!1e1!12b1?source=apiv3&rapsrc=apiv3');", element)
                     time.sleep(0.5)
                     #TODO debug
 
@@ -1154,9 +1157,8 @@ class ddproperty():
         #บันทึกแล้วออก
         element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
         self.chrome.execute_script("arguments[0].click();", element)
-        time.sleep(1.8)
-        f = open("debug_response/ddpost.html", "wb")
-        f.write(self.chrome.page_source.encode('utf-8').strip())         
+        #f = open("debug_response/ddpost.html", "wb")
+        #f.write(self.chrome.page_source.encode('utf-8').strip())         
         #quit        
         self.chrome.quit()
 
