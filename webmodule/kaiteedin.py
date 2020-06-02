@@ -560,7 +560,7 @@ class kaiteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
-            "post_id": post_id
+            "post_id": post_id,
             "ds_id": postdata['ds_id'],
         }
 

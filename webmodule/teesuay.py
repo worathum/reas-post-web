@@ -226,7 +226,7 @@ class teesuay():
                 "ds_id": postdata['ds_id']
 
             }
-        post_url ""
+        post_url = ""
         if success == "true":
             postdata['post_title_th']=postdata['post_title_th'].replace('%','')
             floor_total, bedroom, bathroom = [''] * 3
