@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 import os
-from lib_httprequest import *
+from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
 # from urlparse import urlparse
@@ -372,9 +372,9 @@ class goodpriceproperty():
                 'Submit.y': '17',
                 'tel': postdata['mobile']
             }
-            postdata['land_area_rai'] = str(postdata['land_area_rai'])
-            postdata['land_area_ngan'] = str(postdata['land_area_ngan'])
-            postdata['land_area_wa'] = str(postdata['land_area_wa'])
+            # postdata['land_area_rai'] = str(postdata['land_area_rai'])
+            # postdata['land_area_ngan'] = str(postdata['land_area_ngan'])
+            # postdata['land_area_wa'] = str(postdata['land_area_wa'])
             postdata['land_size_rai'] = str(postdata['land_size_rai'])
             postdata['land_size_ngan'] = str(postdata['land_size_ngan'])
             postdata['land_size_wa'] = str(postdata['land_size_wa'])
@@ -827,9 +827,9 @@ class goodpriceproperty():
                 'tel': postdata['mobile']
 
             }
-            postdata['land_area_rai'] = str(postdata['land_area_rai'])
-            postdata['land_area_ngan'] = str(postdata['land_area_ngan'])
-            postdata['land_area_wa'] = str(postdata['land_area_wa'])
+            # postdata['land_area_rai'] = str(postdata['land_area_rai'])
+            # postdata['land_area_ngan'] = str(postdata['land_area_ngan'])
+            # postdata['land_area_wa'] = str(postdata['land_area_wa'])
             postdata['land_size_rai'] = str(postdata['land_size_rai'])
             postdata['land_size_ngan'] = str(postdata['land_size_ngan'])
             postdata['land_size_wa'] = str(postdata['land_size_wa'])
