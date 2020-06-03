@@ -204,7 +204,7 @@ class teedindd():
             "time_start": time_start,
             "time_end": time_end,
             "detail": "",
-            "log_id":postdata['log_id']
+            "log_id":postdata['log_id'],
             "post_id": "",
         }        
 
@@ -458,7 +458,6 @@ class teedindd():
             "websitename": "teedindd",
             "success": success,
             "start_time": str(time_start),
-            "log_id": postdata['log_id'],
             "end_time": str(time_end),
             "detail": detail,
         }
@@ -744,6 +743,9 @@ class teedindd():
         if len(postdata['post_images'])==0:
             postdata['no']=0
             j=self.editpost(postdata)
+
+        j['log_id'] = postdata['log_id']
+
         return j
 
     def delete_post(self, postdata):
