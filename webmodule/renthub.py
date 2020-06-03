@@ -428,25 +428,56 @@ class renthub():
 
         # start process
         #
+        success = "true"
+        detail = "ระบบกำลังส่ง email เพื่อยืนยันการสมัครสมาชิกไปยัง email ที่ให้ไว้ คุณจะได้รับ email ใน 5 นาที กรุณาตรวจสอบ และกด link เพื่อยืนยัน"
+
         datahandled = self.postdata_handle(postdata)
-        user = datahandled['user']
-        passwd = datahandled['pass']
-        company_name = datahandled['company_name']
-        name_title = datahandled["name_title"]
-        name_th = datahandled["name_th"]
-        surname_th = datahandled["surname_th"]
-        name_en = datahandled["name_en"]
-        surname_en = datahandled["surname_en"]
+       
+        fullname = datahandled["name_th"] + ' ' + datahandled["surname_th"]
+        email = datahandled['user']
         tel = datahandled["tel"]
-        line: datahandled["amarin.ta"]
-        addr_province = datahandled["addr_province"]
+        passwd = datahandled['pass']
 
         # POST
         # https://renthub.in.th/signup
-        # authenticity_token=/Ha+oc+M/vFof/rlvlbJdNOtw4/drQPvVs+/VKazQvE=&commit=%E0%B8%AA%E0%B8%A1%E0%B8%B1%E0%B8%84%E0%B8%A3%E0%B8%AA%E0%B8%A1%E0%B8%B2%E0%B8%8A%E0%B8%B4%E0%B8%81&user%5Bemail%5D=kla.arnut@hotmail.com&user%5Bname%5D=arnut&user%5Bpassword%5D=vkIy9b&user%5Bpassword_confirmation%5D=vkIy9b&user%5Bphone%5D=0887779999&user%5Bprovince_code%5D=&user%5Broles%5D=apartment_manager&user%5Bsubscribe_newsletter%5D=0&utf8=%E2%9C%93
+        # authenticity_token=/Ha+oc+M/vFof/rlvlbJdNOtw4/drQPvVs+/VKazQvE=
+        # &commit=%E0%B8%AA%E0%B8%A1%E0%B8%B1%E0%B8%84%E0%B8%A3%E0%B8%AA%E0%B8%A1%E0%B8%B2%E0%B8%8A%E0%B8%B4%E0%B8%81
+        # &user%5Bemail%5D=kla.arnut@hotmail.com
+        # &user%5Bname%5D=arnut
+        # &user%5Bpassword%5D=vkIy9b
+        # &user%5Bpassword_confirmation%5D=vkIy9b
+        # &user%5Bphone%5D=0887779999
+        # &user%5Bprovince_code%5D=
+        # &user%5Broles%5D=apartment_manager
+        # &user%5Bsubscribe_newsletter%5D=0
+        # &utf8=%E2%9C%93
 
-        success = "false"
-        detail = "Under construction"
+        r = httprequestObj.http_get('https://renthub.in.th/signup',verify=False)
+        soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+        authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
+        datapost = {
+            'authenticity_token':authenticity_token,
+            'commit':'สมัครสมาชิก',
+            'user[email]':email,
+            'user[name]':fullname,
+            'user[password]':passwd,
+            'user[password_confirmation]':passwd,
+            'user[phone]':tel,
+            'user[province_code]':'',
+            'user[roles]':'apartment_manager',
+            'user[subscribe_newsletter]':0,
+            'utf8':'✓',
+        }
+
+        r = httprequestObj.http_post('https://renthub.in.th/signup', data=datapost)
+        if re.search(r'ระบบกำลังส่ง email', r.text) == None:
+            log.warning('register error')
+            success = "false"
+            detail = 'register error'
+            if re.search(r'email ที่ระบุเป็นสมาชิกอยู่แล้ว', r.text) != None:
+                log.warning('email ที่ระบุเป็นสมาชิกอยู่แล้ว')
+                detail = 'email ที่ระบุเป็นสมาชิกอยู่แล้ว'
+        
 
         #
         # end process
@@ -502,7 +533,9 @@ class renthub():
         if not matchObj:
             success = "false"
             detail = "cannot login"
-            log.debug('login fail')
+            log.warning('login fail')
+            if re.search(r'คุณยังไม่ได้ยืนยัน email!!', r.text) != None: 
+                detail = "คุณยังไม่ได้ยืนยัน email!! กรุณากด link ใน email ที่ระบบส่งให้เพื่อยืนยันการสมัครสมาชิก"
 
         #
         # end process
