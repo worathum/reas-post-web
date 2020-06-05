@@ -736,7 +736,7 @@ class aecmarketing():
             "usage_time": str(end_time - start_time),
             "detail": detail,
             "post_id": post_id,
-            "websitename": "aecmarketinghome"
+            "websitename": "aecmarketing"
         }
 
     def delete_post(self, postdata):
@@ -1200,6 +1200,74 @@ class aecmarketing():
             "log_id": postdata['log_id'],
             "detail": detail,
             "post_id": post_id,
+            "websitename": "aecmarketing"
+        }
+
+    def search_post(self, postdata):
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        start_time = datetime.datetime.utcnow()
+
+        time_start = datetime.datetime.utcnow()
+        post_url = ""
+        user = postdata['user']
+        password = postdata['pass']
+
+
+        login = self.test_login(postdata)
+
+        if(login['success'] == False):
+            return  login
+
+        itr = 0
+
+        exists = False
+        post_id = 0
+        post_titles = postdata['post_title_th']
+
+        while(exists == False):
+
+            response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/profile/index/'+ str(itr) +'.html')
+            soup = BeautifulSoup(response.content, 'html.parser')
+            post_div = soup.find_all("div", {"class" : "dashboard-wrapper list-mypost"})
+            titles = post_div[0].find_all("div", {"class" : "row"})
+
+            if(len(titles) == 0):
+                break
+
+            for title in titles:
+                    title_text = title.find("div", {"class" : "col-sm-12 col-md-5"}).select("b")
+                    if(post_titles == title_text[0].text[:-2]):
+                        exists = True
+                        post_url = title.select("a")[0].attrs['href']
+                        post_id = int(title.select('a')[1].attrs['href'][46:-5])
+                        break
+
+            itr += 1
+
+        if(exists == True):
+            result = True
+            detail = "Post found successfully"
+
+        else:
+            result = False
+            post_url = ''
+            detail = 'No post found with given title'
+
+        end_time = datetime.datetime.utcnow()
+        return {
+            "success": result,
+            "start_time": str(start_time),
+            "end_time": str(end_time),
+            "usage_time": str(end_time - start_time),
+            "post_found" : result,
+            "log_id" : 1,
+            "account_type" : "",
+            "detail": detail,
+            "post_id": post_id,
+            "post_url" : post_url,
+            "post_create_time": "",
+            "post_modify_time": "",
+            "post_view": "",
             "websitename": "aecmarketinghome"
         }
 

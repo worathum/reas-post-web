@@ -732,6 +732,86 @@ class teedindd():
             "post_id": post_id,
         }
 
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        user = postdata['user']
+        passwd = postdata['pass']
+
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_url = ""
+        post_id = ""
+        post_modify_time = ""
+        post_view = ""
+        post_found = "false"
+        flag=""
+
+        if success == "true":
+            post_title = postdata['post_title_th']
+            # exists, authenticityToken, post_title = self.check_post(post_id)
+            x=['1','2','3','4','5','6','7','8','9','10']
+            for i in x:
+                url = "https://www.teedindd.com/admin/index.php?page="+i    
+                r = httprequestObj.http_get(url)
+                exists = False
+                soup = BeautifulSoup(r.content, 'lxml')
+
+                entry = soup.find('table')
+                for title_row in entry.find_all('tr'):
+                    if title_row is None:
+                        continue
+                    title_1 = title_row.find('td')
+                    if title_1 is None:
+                        continue
+                    title = title_row.find_all('td')
+                    if title is None:
+                        continue
+                    for title_2 in title_row.find_all('td'):
+                        title_3=title_2.find('div')
+                        if title_3 is None:
+                            continue
+                        title_3=title_2.text[1:-29]                
+                        if post_title == title_3:
+                            exists = True
+                            post_id = title_1.text.strip()
+                            post_url = "https://www.teedindd.com/property-detail.php?pd="+post_id
+                            post_modify_time = "NOT SHOWED ON WEBSITE"
+                            post_view = "NOT SHOWED ON WEBSITE"
+                            post_found = "true"
+                            detail = "post found successfully"
+                            flag=1
+                            break
+                    if flag==1:
+                        break                 
+            if flag!=1:
+                success = "false"
+                detail = "No post found with given title."
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": "teedindd",
+            "account_type":None,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": post_id,
+            "post_modify_time": post_modify_time,
+            "post_view": post_view,
+            "post_url": post_url,
+            "post_found": post_found
+        } 
+
+
+
+
     def edit_post(self,postdata):
         k=0
         while k<len(postdata['post_images']):
