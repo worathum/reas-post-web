@@ -211,3 +211,67 @@ post_data : eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3si
  "start_time": "2020-05-21 18:23:57.499483",
  "end_time": "2020-05-21 18:24:05.542016"
 }
+
+
+
+SEARCH POST =>Pass
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6InNReU9OY052SmdNRlRxUndNUlNnIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoia2FpdGVlZGluIiwKICAgICAgICAgICAgImRzX2lkIjoiNCIsCiAgICAgICAgICAgICJsb2dfaWQiOiIzMzMzMyIsCiAgICAgICAgICAgICJ1c2VyIjoiZmVjYWdvNDY3MkBldG95bWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6IjEyMzQ1Njc4YWEiCiAgICAgICAgfQogICAgXQp9
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "kaiteedin": {
+   "success": "true",
+   "usage_time": "0:00:03.783194",
+   "start_time": "2020-05-28 18:53:25.144317",
+   "end_time": "2020-05-28 18:53:28.927511",
+   "detail": "post found successfully",
+   "websitename": "kaiteedin",
+   "log_id": 1,
+   "post_id": "183370",
+   "post_modify_time": "NOT SHOWN ON WEBSITE",
+   "post_view": "NOT SHOWN ON WEBSITE",
+   "post_url": "http://kaiteedin.net/view_property.php?id=183370&&name=sQyONcNvJgMFTqRwMRSg",
+   "post_found": "true"
+  }
+ },
+ "usage_time": "0:00:03.807567",
+ "start_time": "2020-05-28 18:53:25.125105",
+ "end_time": "2020-05-28 18:53:28.932672"
+}
+
+
+
+SEARCH POST => Fail
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6ImhlIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoia2FpdGVlZGluIiwKICAgICAgICAgICAgImRzX2lkIjoiNCIsCiAgICAgICAgICAgICJsb2dfaWQiOiIzMzMzMyIsCiAgICAgICAgICAgICJ1c2VyIjoiZmVjYWdvNDY3MkBldG95bWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6IjEyMzQ1Njc4YWEiCiAgICAgICAgfQogICAgXQp9
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "kaiteedin": {
+   "success": "false",
+   "usage_time": "0:00:02.546219",
+   "start_time": "2020-05-28 18:54:54.457284",
+   "end_time": "2020-05-28 18:54:57.003503",
+   "detail": "No post found with given title.",
+   "websitename": "kaiteedin",
+   "log_id": 1,
+   "post_id": "",
+   "post_modify_time": "",
+   "post_view": "",
+   "post_url": "",
+   "post_found": "false"
+  }
+ },
+ "usage_time": "0:00:02.569724",
+ "start_time": "2020-05-28 18:54:54.437948",
+ "end_time": "2020-05-28 18:54:57.007672"
+}

@@ -94,3 +94,65 @@ DELETE POST
 
 <output>
 '{\n "success": "true",\n "action": "delete_post",\n "web": {\n  "": {\n   "websitename": "",\n   "success": "true",\n   "start_time": "2020-04-21 15:12:43.689471",\n   "end_time": "2020-04-21 15:12:47.561417",\n   "detail": "logged in"\n  }\n },\n "usage_time": "0:00:03.907165",\n "start_time": "2020-04-21 15:12:43.669359",\n "end_time": "2020-04-21 15:12:47.576524"\n}'
+
+
+Search Post => PASS
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6IkxTSk9ZUXdpaGx4ZkxHUEpqU1JkeWlwbUd1bkdycSIsCiAgICAid2ViIjpbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ImJhYW5pYSIsCiAgICAgICAgICAgICJkc19pZCI6IjQiLAogICAgICAgICAgICAibG9nX2lkIjoiMzMzMzMiLAogICAgICAgICAgICAidXNlciI6InZpamF0NDI2NDFAd2hvd2xmdC5jb20iLAogICAgICAgICAgICAicGFzcyI6IiFAIyQlXiIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "baania": {
+   "success": "true",
+   "usage_time": "0:00:02.063726",
+   "start_time": "2020-06-02 17:37:06.180561",
+   "end_time": "2020-06-02 17:37:08.244287",
+   "detail": "post found successfully",
+   "websitename": "baania",
+   "log_id": "33333",
+   "post_id": "5ecd65143d72e5001bda2803",
+   "post_modify_time": "2020-05-26T18:51:01.623Z",
+   "post_view": null,
+   "post_url": "https://www.baania.com/th/listing/LSJOYQwihlxfLGPJjSRdyipmGunGrq-5ecd65143d72e5001bda2803",
+   "post_found": "true"
+  }
+ },
+ "usage_time": "0:00:02.109108",
+ "start_time": "2020-06-02 17:37:06.139342",
+ "end_time": "2020-06-02 17:37:08.248450"
+}
+
+
+Seach post =>Fail
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6IkxTSk9ZUXdpaGx4ZkxHUEpqUyIsCiAgICAid2ViIjpbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ImJhYW5pYSIsCiAgICAgICAgICAgICJkc19pZCI6IjQiLAogICAgICAgICAgICAibG9nX2lkIjoiMzMzMzMiLAogICAgICAgICAgICAidXNlciI6InZpamF0NDI2NDFAd2hvd2xmdC5jb20iLAogICAgICAgICAgICAicGFzcyI6IiFAIyQlXiIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "baania": {
+   "success": "false",
+   "usage_time": "0:00:01.736413",
+   "start_time": "2020-06-02 17:38:33.949229",
+   "end_time": "2020-06-02 17:38:35.685642",
+   "detail": "No post found with given title.",
+   "websitename": "baania",
+   "log_id": "33333",
+   "post_id": "",
+   "post_modify_time": "",
+   "post_view": "",
+   "post_url": "",
+   "post_found": "false"
+  }
+ },
+ "usage_time": "0:00:01.770540",
+ "start_time": "2020-06-02 17:38:33.919758",
+ "end_time": "2020-06-02 17:38:35.690298"
+}

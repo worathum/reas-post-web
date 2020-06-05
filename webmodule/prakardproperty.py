@@ -16,6 +16,7 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 options = Options()
 options.headless = True
+options.incognito = True
 
 
 class prakardproperty():
@@ -317,7 +318,7 @@ class prakardproperty():
 
             r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/addsave', data = postdata)#/property/show
             data = r.text
-            print(data)
+            # print(data)
             # #data)
             matchObj = re.search(r'/property/show', data)
             if not matchObj:
@@ -343,6 +344,8 @@ class prakardproperty():
                         login = driver.find_element_by_class_name('login-button')
                         login.click()
                     except:
+                        print("Login Error?: "+str(e))
+
                         pass
                     driver.get('http://www.prakardproperty.com/properties/edit/'+post_id)
                     for i in range(len(webdata['post_images'])) :
@@ -500,29 +503,6 @@ class prakardproperty():
             "log_id": postdata['log_id'],
         }
 
-
-    def search_post(self,postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
-
-        user = postdata['user']
-        password = postdata['pass']
-
-
-        #
-        #
-        #
-
-        time_end = datetime.datetime.utcnow()
-        return {
-            "websitename": "prakardproperty",
-            "ds_id":postdata['ds_id'],
-            "success": "true",
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
-            "detail": "",
-        }
 
     
     def edit_post(self,postdata):
@@ -847,6 +827,8 @@ class prakardproperty():
             "end_time": str(time_end),
             "detail": detail,
             "websitename": "prakardproperty",
+            "account_type":None,
+            "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_id": post_id,
             "post_modify_time": post_modify_time,
