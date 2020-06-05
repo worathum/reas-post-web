@@ -221,3 +221,64 @@ eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6
  "start_time": "2020-05-04 07:41:09.625938",
  "end_time": "2020-05-04 07:41:11.069384"
 }
+
+
+SEARCH POST=>pass
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6InpuSklEakhJTG1BSk54U0RYTEhOIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoidGVlZGluZGQiLAogICAgICAgICAgICAiZHNfaWQiOiI0IiwKICAgICAgICAgICAgImxvZ19pZCI6IjMzMzMzIiwKICAgICAgICAgICAgInVzZXIiOiJmZWNhZ280NjcyQGV0b3ltYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjoiMTIzNDU2NzhhYSIKICAgICAgICB9CiAgICAgICAgCiAgICBdCn0=
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "teedindd": {
+   "success": "true",
+   "usage_time": "0:00:05.040091",
+   "start_time": "2020-05-28 11:19:04.055271",
+   "end_time": "2020-05-28 11:19:09.095362",
+   "detail": "post found successfully",
+   "websitename": "teedindd",
+   "log_id": 1,
+   "post_id": "313096",
+   "post_modify_time": "NOT SHOWED ON WEBSITE",
+   "post_view": "NOT SHOWED ON WEBSITE",
+   "post_url": "https://www.teedindd.com/property-detail.php?pd=313096",
+   "post_found": "true"
+  }
+ },
+ "usage_time": "0:00:05.076243",
+ "start_time": "2020-05-28 11:19:04.023645",
+ "end_time": "2020-05-28 11:19:09.099888"
+}
+
+
+SEARCH POST=>fail
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6ImhlIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoidGVlZGluZGQiLAogICAgICAgICAgICAiZHNfaWQiOiI0IiwKICAgICAgICAgICAgImxvZ19pZCI6IjMzMzMzIiwKICAgICAgICAgICAgInVzZXIiOiJmZWNhZ280NjcyQGV0b3ltYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjoiMTIzNDU2NzhhYSIKICAgICAgICB9CiAgICAgICAgCiAgICBdCn0=
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "teedindd": {
+   "success": "false",
+   "usage_time": "0:00:04.898810",
+   "start_time": "2020-05-28 11:20:02.229117",
+   "end_time": "2020-05-28 11:20:07.127927",
+   "detail": "No post found with given title.",
+   "websitename": "teedindd",
+   "log_id": 1,
+   "post_id": "",
+   "post_modify_time": "",
+   "post_view": "",
+   "post_url": "",
+   "post_found": "false"
+  }
+ },
+ "usage_time": "0:00:04.936356",
+ "start_time": "2020-05-28 11:20:02.198082",
+ "end_time": "2020-05-28 11:20:07.134438"
+}

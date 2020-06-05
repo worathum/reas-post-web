@@ -215,3 +215,57 @@ boost post => Pass
  "start_time": "2020-05-16 07:52:32.019036",
  "end_time": "2020-05-16 07:52:41.895962"
 }
+
+SEARCH POST=>Pass
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6IuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJrguYnguLLguJnguYDguJTguLXguYjguKLguKcgIOC4muC5ieC4suC4meC4m+C4o+C4teC4lOC4tTE0IOC5geC4ouC4gTIgMiDguIrguLHguYnguJkg4LiC4LiZ4Liy4LiUIDEyMSDguJXguKPguKcuIOC4nuC4t+C5ieC4meC4l+C4teC5iCA0NTgg4LiV4Lij4LihLiA0IOC4q+C5ieC4reC4h+C4meC4reC4mTQg4Lir4LmJ4Lit4LiH4LiZ4LmJ4LizIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoiYWVjbWFya2V0aW5nIiwKICAgICAgICAgICAgImRzX2lkIjoiNCIsCiAgICAgICAgICAgICJsb2dfaWQiOiIzMzMzMyIsCiAgICAgICAgICAgICJ1c2VyIjoidGVzdGZpbmFsQHRlc3QuY29tIiwKICAgICAgICAgICAgInBhc3MiOiJwYXNzd29yZCIKICAgICAgICB9CiAgICBdCn0=
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "aecmarketinghome": {
+   "success": true,
+   "start_time": "2020-05-30 08:46:32.873128",
+   "end_time": "2020-05-30 08:46:34.433933",
+   "usage_time": "0:00:01.560805",
+   "post_found": true,
+   "log_id": 1,
+   "detail": "Post found successfully",
+   "post_id": 46030,
+   "post_url": "https://www.aecmarketinghome.com/th/property/46030-ให้เช่า-บ้านเดี่ยว--บ้านปรีดี14-แยก2-2-ชั้น-ขนาด-1.html",
+   "websitename": "aecmarketinghome"
+  }
+ },
+ "usage_time": "0:00:01.610707",
+ "start_time": "2020-05-30 08:46:32.830198",
+ "end_time": "2020-05-30 08:46:34.440905"
+}
+
+SEARCH POST=>Fail
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6InNmYmtzZmJrc2JmcyIsCiAgICAid2ViIjpbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ImFlY21hcmtldGluZyIsCiAgICAgICAgICAgICJkc19pZCI6IjQiLAogICAgICAgICAgICAibG9nX2lkIjoiMzMzMzMiLAogICAgICAgICAgICAidXNlciI6InRlc3RmaW5hbEB0ZXN0LmNvbSIsCiAgICAgICAgICAgICJwYXNzIjoicGFzc3dvcmQiCiAgICAgICAgfQogICAgXQp9
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "aecmarketinghome": {
+   "success": false,
+   "start_time": "2020-05-30 08:43:43.335695",
+   "end_time": "2020-05-30 08:43:45.838149",
+   "usage_time": "0:00:02.502454",
+   "post_found": false,
+   "log_id": 1,
+   "detail": "No post found with given title",
+   "post_id": 0,
+   "post_url": "",
+   "websitename": "aecmarketinghome"
+  }
+ },
+ "usage_time": "0:00:02.805878",
+ "start_time": "2020-05-30 08:43:43.045843",
+ "end_time": "2020-05-30 08:43:45.851721"
+}
