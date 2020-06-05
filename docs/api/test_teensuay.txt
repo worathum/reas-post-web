@@ -192,3 +192,71 @@ eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6
  "start_time": "2020-05-21 18:21:06.165420",
  "end_time": "2020-05-21 18:21:07.498049"
 }
+
+##Search post
+###input_1 
+{
+  "action":"search_post",
+    "timeout":"5",
+    "post_title_th":"AwgjkoPOlXpXreKTGTUzQCyZRakMNo",
+    "web":[
+        {
+            "ds_name":"teesuay",
+            "ds_id":"4",
+            "log_id":"33333",
+            "user":"harshikaj18@gmail.com",
+            "pass":"abcabcabc"
+        }
+    ]
+}
+
+###output_1
+{
+   "websitename": "teesuay",
+   "ds_name": "teesuay",
+   "success": "true",
+   "start_time": "2020-05-29 21:37:22.037288",
+   "end_time": "2020-05-29 21:37:31.404169",
+   "ds_id": "4",
+   "post_found": "true",
+   "post_url": "http://www.teesuay.com/property-140838/AwgjkoPOlXpXreKTGTUzQCyZRakMNo.html",
+   "post_id": "140838",
+   "account_type": null,
+   "detail": "vให้เช่า bddcsvdf เหมาะทำตลาดให้เช่า ที่ดินด่วน บางกรวยไทรน้อย 6 ไร่ เหมาะทำตลาดรายละเอียดที่ดินขนาด6ไร่หน้ากว้าง 30 เมตรสถานที่ใกล้เคียงถนนนครอินทร์ถนนพระราม5ให้เช่า 100,000 บาทสนใจติดต่อ ช่อทิพย์ 091829384",
+   "post_create_time": " 29 พฤษภาคม 2563",
+   "post_modify_time": " 29 พฤษภาคม 2563 20:53:54 น.",
+   "post_view": "7 "
+}  
+
+###input_2
+{
+    "action":"search_post",
+    "timeout":"5",
+    "post_title_th":"AwgjkoPOlXpXreKkMNo",
+    "web":[
+        {
+            "ds_name":"teesuay",
+            "ds_id":"4",
+            "log_id":"33333",
+            "user":"harshikaj18@gmail.com",
+            "pass":"abcabcabc"
+        }
+    ]
+}
+###output_2
+{
+   "websitename": "teesuay",
+   "ds_name": "teesuay",
+   "success": "true",
+   "start_time": "2020-05-29 21:43:08.544204",
+   "end_time": "2020-05-29 21:43:10.046376",
+   "ds_id": "4",
+   "post_found": "false",
+   "post_url": "",
+   "post_id": "",
+   "account_type": null,
+   "detail": "",
+   "post_create_time": "",
+   "post_modify_time": "",
+   "post_view": ""
+  }

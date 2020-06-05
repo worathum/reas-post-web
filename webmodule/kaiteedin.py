@@ -869,6 +869,87 @@ class kaiteedin():
             "end_time": str(time_end),
             "detail": detail,
         }
+
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        user = postdata['user']
+        passwd = postdata['pass']
+        post_url = ""
+        post_modify_time = ""
+        post_view = ""
+        post_found = "false"
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_id = ""
+        if success == "true":
+            post_title = postdata['post_title_th']
+            # exists, authenticityToken, post_title = self.check_post(post_id)
+
+            url = "http://kaiteedin.net/mylisting.php"
+            r = httprequestObj.http_get(url)
+            exists = False
+            soup = BeautifulSoup(r.content, 'html5lib')
+            post_url = ""
+            post_modify_time = ""
+            post_view = ""
+            post_found = "false"
+            entry_1 = soup.find('table',{'class':'table'})
+            
+            entry_2 = entry_1.find('tbody')
+            
+            entry = entry_2.find_all('tr')
+            for title_row in entry:
+                if title_row is None:
+                    continue
+                title = title_row.find_all('td')[0]
+                print(title)
+                title_1 = title_row.find_all('td')[2]
+                print(title_1)
+                if title is None:
+                    continue
+                # title_2=title_1.text.strip()
+                if post_title == title_1.text:
+                    exists = True
+                    post_id = title.text
+                    post_url = "http://kaiteedin.net/view_property.php?id="+post_id+"&&name="+title_1.text
+                    post_modify_time = "NOT SHOWN ON WEBSITE"
+                    post_view = "NOT SHOWN ON WEBSITE"
+                    post_found = "true"
+                    detail = "post found successfully"
+
+            if not exists:
+                success = "false"
+                detail = "No post found with given title."
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": "kaiteedin",
+            "account_type":None,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": post_id,
+            "post_modify_time": post_modify_time,
+            "post_view": post_view,
+            "post_url": post_url,
+            "post_found": post_found
+        }
+
+
+
+
+
+
+
+
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()

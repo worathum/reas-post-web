@@ -476,6 +476,72 @@ class quickdealfree():
             "log_id": postdata['log_id'],
             "websitename": "quickdealfree",
         }
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        user = postdata['user']
+        passwd = postdata['pass']
+
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_url = ""
+        post_id = ""
+        post_modify_time = ""
+        post_view = ""
+        post_found = "false"
+
+        if success == "true":
+            post_title = postdata['post_title_th']
+            # exists, authenticityToken, post_title = self.check_post(post_id)
+            x=['1','2','3','4','5','6','7','8','9','10']
+            for i in x:
+                url = "http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+i    
+                r = httprequestObj.http_get(url)
+                exists = False
+                soup = BeautifulSoup(r.content, 'lxml')
+
+                entry = soup.find('div', attrs={'class':'table-responsive'})
+                for title_row in entry.find_all('tr'):
+                    if title_row is None:
+                        continue
+                    title = title_row.find('a')
+                    if title is None:
+                        continue                    
+                    if post_title == title.text.strip():
+                        exists = True
+                        post_id = title['href'][8:13]
+                        post_url = "http://www.quickdealfree.com"+title['href'][2:]
+                        post_modify_time = title_row.find('span', attrs={'style':'color:#999999;'}).text[-23:-3]
+                        post_view = title_row.find('span', attrs={'style':'color:#999999;'}).text[7:-44]
+                        post_found = "true"
+                        detail = "post found successfully"
+                        break
+                if exists:
+                    break                    
+            if not exists:
+                success = "false"
+                detail = "No post found with given title."
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": "quickdealfree",
+            "account_type":None,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": post_id,
+            "post_modify_time": post_modify_time,
+            "post_view": post_view,
+            "post_url": post_url,
+            "post_found": post_found
+        }
 
     def print_debug(self, msg):
         if(self.debug == 1):

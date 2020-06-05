@@ -876,6 +876,68 @@ class baania():
             "end_time": str(time_end),
             "detail": detail,
         }
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        user = postdata['user']
+        passwd = postdata['pass']
+
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_id = ""
+        post_url = ""
+        post_modify_time = ""
+        post_view = ""
+        post_found = "false"
+            
+        if success == "true":
+            post_title = postdata['post_title_th']
+            # exists, authenticityToken, post_title = self.check_post(post_id)
+            # print(test_login['login_token'])
+            headers = {
+                'authorization':  'Bearer ' + test_login['login_token'],
+                'content-type': 'application/json',
+                'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
+            }
+
+            url = "https://api.baania.com/api/v1/users/listings?filter[filter_query]={%22$or%22:%20[{%22code%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22title_th%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22keyId%22:%20{%22$regex%22:%22"+post_title+"%22}}]}&sort=-updated_at"
+            r = requests.get(url,headers=headers)
+            myans = json.loads(r.content.decode('utf-8'))
+            if len(myans['data']) > 0 and post_title==myans['data'][0]['title_th']:
+                post_id=myans['data'][0]['keyId']
+                post_found='true'
+                detail = "post found successfully"
+                exists = True
+                post_modify_time = myans['data'][0]['updated_at']
+                post_view = myans['data'][0]['pageviews']
+                post_url = "https://www.baania.com/th/listing/"+post_title+"-"+post_id
+            else:
+                exists = False
+            if not exists:
+                success = "false"
+                detail = "No post found with given title."
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": "baania",
+            "account_type":None,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": post_id,
+            "post_modify_time": post_modify_time,
+            "post_view": post_view,
+            "post_url": post_url,
+            "post_found": post_found
+        }
+
 
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')

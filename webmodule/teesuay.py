@@ -15,6 +15,7 @@ import datetime
 import time
 import sys
 from urllib.parse import unquote
+from urllib.request import urlopen
 
 httprequestObj = lib_httprequest()
 
@@ -26,7 +27,7 @@ with open("./static/teesuay.json") as f:
 class teesuay():
 
     name = 'teesuay'
-
+    httprequestObj = lib_httprequest()
     def __init__(self):
 
         try:
@@ -768,3 +769,91 @@ class teesuay():
             "detail": ""
         }
 
+    #search post
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        ds_name=postdata['ds_name']
+        Title = postdata['post_title_th']
+        ds_id = postdata['ds_id']
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        if(not success):
+            time_end = datetime.datetime.utcnow()
+            return {
+                'websitename' : 'teesuay',
+                "ds_name":ds_name,
+                "success":success,
+                "start_time":str(time_start),
+                "end_time":str(time_end),
+                "log_id": postdata['log_id'],
+                "ds_id":ds_id,
+                "post_found" : "false",
+                "post_url":"",
+                "post_id":"",
+                "account_type": None,
+                "detail":"",
+                "post_create_time":"",
+                "post_modify_time":"",
+                "post_view":""
+            }
+        url_list='http://www.teesuay.com/member/list-property.php'
+        r=httprequestObj.http_get(url_list)
+        soup = BeautifulSoup(r.content, 'html5lib')
+        post_id = ''
+        detail = ''
+        post_url = ''
+        post_found = 'false'
+        account_type = ''
+        detail = ''
+        post_create_time = ''
+        post_modify_time = ''
+        post_view = ''
+        target = soup.find('a', attrs={'title': Title})
+        if(target):
+            ctx = ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+            post_id=''
+            post_url=target['href']
+            temp = ''
+            temp += 'http://www.teesuay.com'
+            temp += post_url[2:]
+            post_url = temp
+            post_found = 'true'
+            var=target['href']
+            j = len('../property/')
+            while j<len(var) and var[j] != '/':
+                post_id += var[j]
+                j += 1
+            html = urlopen(post_url, context=ctx).read()
+            soup = BeautifulSoup(html, "html.parser")
+            table = soup.findAll('table')
+            data = table[9].findAll('tr')[2].text
+            data = data.strip()
+            post_create_time = data[14:30]
+            post_modify_time = data[45:73]
+            post_view = data[81:83]
+            detail = table[37].findAll('td')[0].get_text().strip()
+            time_end = datetime.datetime.utcnow()
+        
+        time_end = datetime.datetime.utcnow()
+        return {
+            'websitename' : 'teesuay',
+            "ds_name" : ds_name,
+            "success": success,
+            "start_time":str(time_start),
+            "end_time":str(time_end),
+            "ds_id": ds_id,
+            "log_id": postdata['log_id'],
+            "post_found" : post_found,
+            "post_url":post_url,
+            "post_id":post_id,
+            "account_type": None,
+            "detail": detail,
+            "post_create_time": post_create_time ,
+            "post_modify_time": post_modify_time ,
+            "post_view": post_view        
+        }

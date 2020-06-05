@@ -37,7 +37,7 @@ class thaisecondhand():
 
     def register_user(self, userdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
         # print("here in register")
 
         email = userdata['user']
@@ -72,20 +72,20 @@ class thaisecondhand():
         else:
             success = "False"
             detail = "Registration Unsuccessful"
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+        end_time = datetime.datetime.utcnow()
+        time_usage = end_time - start_time
         return {
             "websitename": "thaisecondhand",
             "success": success,
-            "start_time": str(time_start),
-            "end_time": str(time_end),
+            "start_time": str(start_time),
+            "end_time": str(end_time),
             "detail": detail,
         }
 
     def test_login(self, logindata):
         # print("Here in test_login")
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
 
         email_user = logindata['user']
         email_pass = logindata['pass']
@@ -120,14 +120,14 @@ class thaisecondhand():
         else:
             success = "False"
             detail = "Login Unsucessful"
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+        end_time = datetime.datetime.utcnow()
+        time_usage = end_time - start_time
         
         return {
             "websitename": "thaisecondhand",
             "success": success,
-            "start_time": str(time_start),
-            "end_time": str(time_end),
+            "start_time": str(start_time),
+            "end_time": str(end_time),
             "detail": detail,
         }
         #
@@ -137,7 +137,7 @@ class thaisecondhand():
     def create_post(self, postdata):
         # https://www.thaisecondhand.com/post/get_json_district?province_id=13   ->     for district
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
         # print(postdata)
         # postdata = postdata
         print(self.max_image)
@@ -305,13 +305,13 @@ class thaisecondhand():
                 post_id = re.findall(r'\d+',link[0])[0]
                 post_url = link 
         
-        time_end = datetime.datetime.utcnow()
+        end_time = datetime.datetime.utcnow()
         print({
             "websitename": "thaisecondhand",
             "success": success,
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "time_usage": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
             # "ds_id": "4",
             "post_url": post_url,
             "post_id": post_id,
@@ -322,9 +322,9 @@ class thaisecondhand():
         return {
             "websitename": "thaisecondhand",
             "success": success,
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "time_usage": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
             "ds_id": postdata['ds_id'],
             "post_url": post_url[0],
             "post_id": post_id,
@@ -334,7 +334,7 @@ class thaisecondhand():
 
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
 
         post_id = postdata['post_id']
         log_id = postdata['log_id']
@@ -370,13 +370,13 @@ class thaisecondhand():
                                     
                 
             print(datapost)
-        time_end = datetime.datetime.utcnow()
+        end_time = datetime.datetime.utcnow()
         return {
             "websitename": "thaisecondhand",
             "success": success ,
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "time_usage": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
             "detail": detail,
             "log_id": log_id,
             "post_id": post_id,
@@ -384,7 +384,7 @@ class thaisecondhand():
 
     def delete_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
         
         datapost = {}
         login = self.test_login(postdata)
@@ -397,13 +397,13 @@ class thaisecondhand():
             r = httprequestObj.http_get(post_url)
             data = r.text
             if (re.search('ขออภัยค่ะ หน้าที่คุณเปิดไม่อยู่ในระบบ', data)):
-                time_end = datetime.datetime.utcnow()
+                end_time = datetime.datetime.utcnow()
                 return {
                     "websitename": "thaisecondhand",
                     "success": "False",
-                    "time_usage": time_end - time_start,
-                    "time_start": time_start,
-                    "time_end": time_end,
+                    "time_usage": end_time - start_time,
+                    "start_time": start_time,
+                    "end_time": end_time,
                     # "ds_id": "4",
                     "post_url": post_url,
                     "post_id": post_id,
@@ -433,13 +433,13 @@ class thaisecondhand():
         #
         #
 
-        time_end = datetime.datetime.utcnow()
+        end_time = datetime.datetime.utcnow()
         return {
             "websitename": "thaisecondhand",
             "success": success,
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "time_usage": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
             "detail": detail,
             "log_id": postdata['log_id'],
         }
@@ -447,7 +447,7 @@ class thaisecondhand():
     def edit_post(self, postdata):
         # https://www.thaisecondhand.com/post/get_json_district?province_id=13   ->     for district
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
         # print(postdata)
         # postdata = postdata
         listing_type = postdata['listing_type']
@@ -562,13 +562,13 @@ class thaisecondhand():
             r = httprequestObj.http_get(post_url)
             data = r.text
             if (re.search('ขออภัยค่ะ หน้าที่คุณเปิดไม่อยู่ในระบบ', data)):
-                time_end = datetime.datetime.utcnow()
+                end_time = datetime.datetime.utcnow()
                 return {
                     "websitename": "thaisecondhand",
                     "success": "False",
-                    "time_usage": time_end - time_start,
-                    "time_start": time_start,
-                    "time_end": time_end,
+                    "time_usage": end_time - start_time,
+                    "start_time": start_time,
+                    "end_time": end_time,
                     # "ds_id": "4",
                     "post_url": post_url,
                     "post_id": post_id,
@@ -601,13 +601,13 @@ class thaisecondhand():
                 success = "True"
                 detail = "Edit post successful"
         
-        time_end = datetime.datetime.utcnow()
+        end_time = datetime.datetime.utcnow()
         print({
             "websitename": "thaisecondhand",
             "success": success,
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "time_usage": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
             # "ds_id": "4",
             "post_url": post_url,
             "post_id": post_id,
@@ -617,9 +617,9 @@ class thaisecondhand():
         return {
             "websitename": "thaisecondhand",
             "success": success,
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "time_usage": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
             "log_id": postdata['log_id'],
             "post_url": post_url[0],
             "post_id": post_id,

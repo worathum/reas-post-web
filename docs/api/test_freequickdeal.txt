@@ -85,3 +85,66 @@ post_data:eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwcm9qZWN0X25hbW
 
 <output>
 {\n "success": "true",\n "action": "edit_post",\n "web": {\n  "quickdealfree": {\n   "success": "true",\n   "usage_time": "0:00:10.377739",\n   "start_time": "2020-05-03 14:00:59.486301",\n   "end_time": "2020-05-03 14:01:09.864040",\n   "account_type": "null",\n   "detail": "",\n   "websitename": "quickdealfree"\n  }\n },\n "usage_time": "0:00:13.187564",\n "start_time": "2020-05-03 14:00:56.684003",\n "end_time": "2020-05-03 14:01:09.871567"\n}
+
+
+
+SEARCH POST=> PASS
+<input>
+access_token=YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data=ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6InFqbElGR1BvWmNZdkNoQ1d3TW5tIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoicXVpY2tkZWFsZnJlZSIsCiAgICAgICAgICAgICJkc19pZCI6IjQiLAogICAgICAgICAgICAibG9nX2lkIjoiMzMzMzMiLAogICAgICAgICAgICAidXNlciI6ImZlY2FnbzQ2NzJAZXRveW1haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiIxMjM0NTY3OGFhIgogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "quickdealfree": {
+   "success": "true",
+   "usage_time": "0:00:02.995222",
+   "start_time": "2020-05-27 13:09:08.486698",
+   "end_time": "2020-05-27 13:09:11.481920",
+   "detail": "post found successfully",
+   "websitename": "quickdealfree",
+   "log_id": 1,
+   "post_id": "98510",
+   "post_modify_time": "7 พ.ค. 2563 17:57:23",
+   "post_view": "3",
+   "post_url": "http://www.quickdealfree.com/post-98510/qjlIFGPoZcYvChCWwMnm.html",
+   "post_found": "true"
+  }
+ },
+ "usage_time": "0:00:03.030923",
+ "start_time": "2020-05-27 13:09:08.455312",
+ "end_time": "2020-05-27 13:09:11.486235"
+}
+
+
+SEARCH POST=>FAIL
+<input>
+access_token=YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data=ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6ImhlIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoicXVpY2tkZWFsZnJlZSIsCiAgICAgICAgICAgICJkc19pZCI6IjQiLAogICAgICAgICAgICAibG9nX2lkIjoiMzMzMzMiLAogICAgICAgICAgICAidXNlciI6ImZlY2FnbzQ2NzJAZXRveW1haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiIxMjM0NTY3OGFhIgogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "quickdealfree": {
+   "success": "false",
+   "usage_time": "0:00:11.604226",
+   "start_time": "2020-05-27 13:10:28.356761",
+   "end_time": "2020-05-27 13:10:39.960987",
+   "detail": "No post found with given title.",
+   "websitename": "quickdealfree",
+   "log_id": 1,
+   "post_id": "",
+   "post_modify_time": "",
+   "post_view": "",
+   "post_url": "",
+   "post_found": "false"
+  }
+ },
+ "usage_time": "0:00:11.634732",
+ "start_time": "2020-05-27 13:10:28.330929",
+ "end_time": "2020-05-27 13:10:39.965661"
+}
