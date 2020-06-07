@@ -1,3 +1,4 @@
+~~~json
 {
     "success":"true",
     "action":"search_post",
@@ -39,3 +40,4 @@
         }
     ]
 }
+~~~
