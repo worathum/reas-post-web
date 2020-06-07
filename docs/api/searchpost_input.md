@@ -1,0 +1,23 @@
+~~~json
+{
+    "action":"search_post",
+    "timeout":"5",
+    "post_title_th":"ขาย Watermark Riverside 2 ห้องนอน 68 ตรม ตกแต่งสวย ราคาพิเศษ",
+    "web":[
+        {
+            "ds_name":"thaihometown",
+            "ds_id":"4",
+            "log_id":"33333",
+            "user":"amarin.ta@gmail.com",
+            "pass":"5k4kk3253434"
+        },
+        {
+            "ds_name":"ddproperty",
+            "ds_id":"5",
+            "log_id":"44444",
+            "user":"amarin.ta@gmail.com",
+            "pass":"5k4kk3253434"
+        }
+    ]
+}
+~~~
