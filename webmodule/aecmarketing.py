@@ -137,6 +137,7 @@ class aecmarketing():
             "start_time": str(time_start),
             "end_time": str(end_time),
             "usage_time": str(end_time - time_start),
+            "ds_id": postdata['ds_id'],
             "detail": detail,
             "websitename": "aecmarketing",
         }
@@ -1255,7 +1256,7 @@ class aecmarketing():
 
         end_time = datetime.datetime.utcnow()
         return {
-            "success": result,
+            "success": "true",
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),

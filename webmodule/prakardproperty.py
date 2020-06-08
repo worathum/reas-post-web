@@ -115,6 +115,7 @@ class prakardproperty():
         return {
             "websitename": "prakardproperty",
             "success": success,
+            "ds_id": postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -380,8 +381,8 @@ class prakardproperty():
         #     "websitename": "prakardproperty",
         #     "success": success,
         #     "time_usage": str(time_end - time_start),
-        #     "time_start": str(time_start),
-        #     "time_end": str(time_end),
+        #     "start_time": str(time_start),
+        #     "end_time": str(time_end),
         #     "ds_id": "4",
         #     "post_url": post_url,
         #     "post_id": post_id,
@@ -392,8 +393,8 @@ class prakardproperty():
             "websitename": "prakardproperty",
             "success": success,
             "time_usage": str(time_end - time_start),
-            "time_start": str(time_start),
-            "time_end": str(time_end),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
             "ds_id": webdata['ds_id'],
             "post_url": post_url,
             "post_id": post_id,
@@ -423,8 +424,8 @@ class prakardproperty():
                     "log_id": postdata['log_id'],
                     "success": "False",
                     "time_usage": time_end - time_start,
-                    "time_start": time_start,
-                    "time_end": time_end,
+                    "start_time": time_start,
+                    "end_time": time_end,
                     "detail": "PostId not Found"
                 }
             
@@ -443,8 +444,8 @@ class prakardproperty():
             "websitename": "prakardproperty",
             "success": success,
             "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "start_time": time_start,
+            "end_time": time_end,
             "detail": detail,
             "log_id": postdata['log_id'],
             "post_id": post_id,
@@ -472,8 +473,8 @@ class prakardproperty():
                     "log_id": postdata['log_id'],
                     "websitename": "prakardproperty",
                     "time_usage": time_end - time_start,
-                    "time_start": time_start,
-                    "time_end": time_end,
+                    "start_time": time_start,
+                    "end_time": time_end,
                     "detail": "PostId not Found"
                 }
             
@@ -497,8 +498,8 @@ class prakardproperty():
             "websitename": "prakardproperty",
             "success": success,
             "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "start_time": time_start,
+            "end_time": time_end,
             "detail": detail,
             "log_id": postdata['log_id'],
         }
@@ -656,8 +657,8 @@ class prakardproperty():
                 return {
                     "success": "False",
                     "time_usage": str(time_end - time_start),
-                    "time_start": str(time_start),
-                    "time_end": str(time_end),
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
                     "ds_id": "4",
                     "post_url": post_url,
                     "post_id": post_id,
@@ -756,8 +757,8 @@ class prakardproperty():
         #     "websitename": "prakardproperty",
         #     "success": success,
         #     "time_usage": str(time_end - time_start),
-        #     "time_start": str(time_start),
-        #     "time_end": str(time_end),
+        #     "start_time": str(time_start),
+        #     "end_time": str(time_end),
         #     "ds_id": "4",
         #     "post_url": post_url,
         #     "post_id": post_id,
@@ -768,8 +769,8 @@ class prakardproperty():
             "websitename": "prakardproperty",
             "success": success,
             "time_usage": str(time_end - time_start),
-            "time_start": str(time_start),
-            "time_end": str(time_end),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
             "log_id": webdata['log_id'],
             "post_url": post_url,
             "post_id": post_id,
@@ -821,7 +822,7 @@ class prakardproperty():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "success": success,
+            "success": "true",
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),

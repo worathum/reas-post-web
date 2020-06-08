@@ -53,52 +53,53 @@ class teedin2():
 
         return {
             "success": "true",
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "time_usage": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
             "detail": ""
         }
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
 
         success = "false"
         detail = "Website does not have Registration"
 
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+        end_time = datetime.datetime.utcnow()
+        time_usage = end_time - start_time
         return {
             "success": success,
             "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
+            "start_time": str(start_time),
+            "end_time": str(end_time),
             "detail": detail,
             "websitename": "teedin2",
         }
 
     def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
 
         success = "false"
         detail = "No Login Option in site"
 
 
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+        end_time = datetime.datetime.utcnow()
+        time_usage = end_time - start_time
         return {
             "success": success,
             "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
+            "start_time": str(start_time),
+            "end_time": str(end_time),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
             "websitename": "teedin2",
         }
 
     def edit_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
 
         post_url = 'https://www.teedin2.com/detail/' + \
             postdata['post_id']+'.html'
@@ -106,13 +107,13 @@ class teedin2():
             r = s.post(post_url)
         if postdata['post_id'] not in r.text:
             detail = "wrong post id"
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
+            end_time = datetime.datetime.utcnow()
+            time_usage = end_time - start_time
             return {
                 'websitename': 'teedin2',
                 'success': 'False',
-                "start_time": str(time_start),
-                "end_time": str(time_end),
+                "start_time": str(start_time),
+                "end_time": str(end_time),
                 "detail": detail,
                 "log_id": postdata['log_id']
             }
@@ -126,13 +127,13 @@ class teedin2():
             r = s.post(ul_test, data=test)
         if "A Database Error Occured while counting result Rows" in r.text:
             detail = "wrong post id"
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
+            end_time = datetime.datetime.utcnow()
+            time_usage = end_time - start_time
             return {
                 'websitename': 'teedin2',
                 'success': 'False',
-                "start_time": str(time_start),
-                "end_time": str(time_end),
+                "start_time": str(start_time),
+                "end_time": str(end_time),
                 "detail": detail,
                 "log_id": postdata['log_id']
             }
@@ -292,13 +293,13 @@ class teedin2():
         with requests.Session() as s:
             r = s.post(post_url)
         success = "true"
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+        end_time = datetime.datetime.utcnow()
+        time_usage = end_time - start_time
         return {
             "success": success,
             'websitename': 'teedin2',
-            "start_time": str(time_start),
-            "end_time": str(time_end),
+            "start_time": str(start_time),
+            "end_time": str(end_time),
             "detail": "Edited ",
             "log_id": postdata['log_id']
 
@@ -306,7 +307,7 @@ class teedin2():
 
     def create_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
 
         subcategory = {
             '6': 1,
@@ -556,31 +557,35 @@ class teedin2():
                 i += 1
             post_url = 'https://www.teedin2.com/detail/' + \
                 post_id+'.html'
+            end_time = datetime.datetime.utcnow()
+            time_usage = end_time - start_time
             return {
                 'websitename': 'teedin2',
                 'success': 'true',
+                "start_time": str(start_time),                
+                "end_time": str(end_time),
                 'ret': var,
                 'post_url': post_url,
                 "ds_id": postdata['ds_id'],
                 'post_id': post_id
             }
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+        end_time = datetime.datetime.utcnow()
+        time_usage = end_time - start_time
         return {
             'websitename': 'teedin2',
             "success": success,
-            "start_time": str(time_start),
+            "start_time": str(start_time),
             "ds_id": postdata['ds_id'],
-            "end_time": str(time_end),
+            "end_time": str(end_time),
             "detail": "Failed to Create Post",
         }
 
     def delete_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
 
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+        end_time = datetime.datetime.utcnow()
+        time_usage = end_time - start_time
 
         success = "true"
         detail = ""
@@ -594,14 +599,14 @@ class teedin2():
             r = s.post(ul_test, data=test)
         if "A Database Error Occured while counting result Rows" in r.text:
             detail = "wrong post id"
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
+            end_time = datetime.datetime.utcnow()
+            time_usage = end_time - start_time
             return {
                 'websitename': 'teedin2',
                 'success': 'False',
-                "start_time": str(time_start),
+                "start_time": str(start_time),
                 "log_id": postdata['log_id'],
-                "end_time": str(time_end),
+                "end_time": str(end_time),
                 "detail": detail,
             }
 
@@ -629,20 +634,20 @@ class teedin2():
 
         else:
             success = "false"
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+        end_time = datetime.datetime.utcnow()
+        time_usage = end_time - start_time
         return {
             "log_id": postdata['log_id'],
             'websitename': 'teedin2',
             "success": success,
-            "start_time": str(time_start),
-            "end_time": str(time_end),
+            "start_time": str(start_time),
+            "end_time": str(end_time),
             "detail": detail,
         }
 
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
 
         post_id = postdata['post_id']
         ul_test = "https://www.teedin2.com/topic3Update.php"
@@ -655,14 +660,14 @@ class teedin2():
             r = s.post(ul_test, data=test)
         if "A Database Error Occured while counting result Rows" in r.text:
             detail = "wrong post id or wrong password"
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
+            end_time = datetime.datetime.utcnow()
+            time_usage = end_time - start_time
             return {
                 "log_id": postdata['log_id'],
                 'websitename': 'teedin2',
                 'success': 'False',
-                "start_time": str(time_start),
-                "end_time": str(time_end),
+                "start_time": str(start_time),
+                "end_time": str(end_time),
                 "detail": detail,
             }
         posturl = "https://www.teedin2.com/topic4Moveup.php"
@@ -673,14 +678,14 @@ class teedin2():
         }
         r = s.post(posturl, data=datapost)
 
-        time_end = datetime.datetime.utcnow()
+        end_time = datetime.datetime.utcnow()
         return {
             "websitename": "teedin2",
             "success": "true",
             "log_id": postdata['log_id'],
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "time_usage": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
             "detail": "",
             "post_id": post_id,
         }

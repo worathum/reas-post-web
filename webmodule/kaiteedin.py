@@ -182,6 +182,7 @@ class kaiteedin():
         return {
             "websitename": "kaiteedin",
             "success": success,
+            "ds_id": postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -927,7 +928,7 @@ class kaiteedin():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "success": success,
+            "success": "true",
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),

@@ -109,6 +109,7 @@ class baania():
                 "websitename": "baania",
                 "success": success,
                 "usage_time": str(time_usage),
+                "ds_id": postdata['ds_id'],
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": detail,
@@ -118,6 +119,7 @@ class baania():
             return {
                 "websitename": "baania",
                 "success": success,
+                "ds_id": postdata['ds_id'],
                 "usage_time": str(time_usage),
                 "start_time": str(time_start),
                 "end_time": str(time_end),
@@ -467,28 +469,7 @@ class baania():
             "detail": detail,
         }
 
-    def search_post(self,postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
-
-        user = postdata['user']
-        password = postdata['pass']
-
-
-        #
-        #
-        #
-
-        time_end = datetime.datetime.utcnow()
-        return {
-            "websitename": "prakardproperty",
-            "log_id": postdata['log_id'],
-            "success": "true",
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
-            "detail": "",
-        }
+  
 
 
     def edit_post(self, postdata):
@@ -922,7 +903,7 @@ class baania():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "success": success,
+            "success": "true",
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
