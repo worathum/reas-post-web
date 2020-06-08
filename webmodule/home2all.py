@@ -32,7 +32,7 @@ class home2all():
 
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
-        self.debug = 0
+        self.debug = False
         self.debugresdata = 0
         self.parser = 'html.parser'
 
@@ -136,7 +136,7 @@ class home2all():
         # print(data)
         if data.find("Email") != -1:
             detail = "cannot login"
-            success = "false"
+            success = "False"
         #
         # end process
 
@@ -147,6 +147,7 @@ class home2all():
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
+            "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
             "detail": detail,
         }
@@ -728,19 +729,53 @@ class home2all():
             "post_id": post_id,
         }
 
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        start_time = datetime.datetime.utcnow()
+        test_login = self.test_login(postdata)
+        if test_login['success'] == "true":
+            post_title = postdata['post_title_th']
+            pages = ["", "/pg/2"]
+            tURL = dict()
+            for page in pages:
+                url = "https://home2all.com/my-post" + page
+                r = httprequestObj.http_get(url)
+                soup = BeautifulSoup(r.content, 'lxml')
+                soup = soup.find('div', attrs={'class':'col-md-8'})
+                result_posts = soup('div', attrs={'class':'row tb-topic_tr_alt'}) + soup('div', attrs={'class':'row tb-topic_tr'})
+                tURL.update({str(post.find('span').string) : post.div.div['onclick'].split('\'')[1] for post in result_posts})
+            self.print_debug(len(tURL))
+            my_res = dict()
+            if tURL.get(post_title):
+                my_res.update({
+                    'success':'true',
+                    'post_found':'true',
+                    'post_url':tURL[post_title],
+                    'post_id':tURL[post_title].split('/')[-1]
+                })
+            else:
+                my_res.update({
+                    'success':'false',
+                    'post_found':'false',
+                    'post_url':'',
+                    'post_id':''
+                })
+            my_res.update({
+                    'websitename':'home2all',
+                    'ds_id':postdata['ds_id'],
+                    'start_time':str(start_time),
+                    'end_time':str(datetime.datetime.utcnow()),
+                    'account_type':'',
+                    'detail':'',
+                    'post_create_time':'',
+                    'post_modify_time':'',
+                    'post_view':''
+                })
+        return my_res
 
     def print_debug(self, msg):
-        if(self.debug == 1):
+        if(self.debug):
             print(msg)
-        return "true"
-
-    def print_debug_data(self, data):
-        if(self.debugdata == 1):
-            print(data)
-        return "true"
-
-        if(self.debugdata == 1):
-            print(data)
         return "true"
 
 

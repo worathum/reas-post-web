@@ -151,6 +151,7 @@ class bankumka():
             "websitename":"bankumka",
             "success": success,
             "start_time": str(time_start),
+            "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
             "detail": detail,
         }
@@ -161,7 +162,7 @@ class bankumka():
 
         theurl = ""
         post_id = ""
-        print(postdata['mobile'])
+        # print(postdata['mobile'])
 
         # login
         test_login = self.test_login(postdata)
@@ -256,10 +257,28 @@ class bankumka():
             else:
                 project_n = postdata['post_title_th']
 
+            mydata = {
+                'query': project_n
+            }
+            resp = requests.post('https://bankumka.com/ajax/listproject/', data=mydata)
+            allres = json.loads(resp.content.decode('utf-8'))["suggestions"]
+            project_id = '0'
 
-            print(postdata['mobile'])
+            if len(allres) != 0:
+                project_id = allres[0]['data']
+                project_n = allres[0]["value"]
 
-            # floor_area_sqm = 0
+                mydata = {'id':project_id}
+                resp1 = requests.post("https://bankumka.com/ajax/getLocationProject/", data=mydata)
+                res1 = json.loads(resp1.content.decode('utf-8'))['result']
+
+                postdata["geo_longitude"] = res1["project_lng"]
+                postdata["geo_latitude"] = res1["project_lat"]
+                province_id = res1["project_province"]
+                amphur_id = res1["project_district"]
+                tumbon_id = res1["project_subdistrict"]
+
+
             datapost = [
                 ('timeout', '5'),
                 ('prop_name', postdata['post_title_th']),
@@ -281,7 +300,7 @@ class bankumka():
                 ('prop_floor', postdata['floor_total']),
                 ('prop_mainroad', '1'),
                 ('prop_project_name', project_n),
-                ('prop_project', '0'),
+                ('prop_project', project_id),
                 ('prop_project_old', '0'),
                 ('project_prop_province', province_id),
                 ('project_prop_district', amphur_id),
@@ -338,7 +357,6 @@ class bankumka():
             r = httprequestObj.http_post(
                 'https://bankumka.com/ajax/checkProperty', data=datapost)
             data = json.loads(r.text)
-            print(data)
             if data['status'] == 'OK':
                 datapost = [
                     ('timeout', '5'),
@@ -361,7 +379,7 @@ class bankumka():
                     ('prop_floor', postdata['floor_total']),
                     ('prop_mainroad', '1'),
                     ('prop_project_name', project_n),
-                    ('prop_project', '0'),
+                    ('prop_project', project_id),
                     ('prop_project_old', '0'),
                     ('project_prop_province', province_id),
                     ('project_prop_district', amphur_id),
@@ -430,7 +448,6 @@ class bankumka():
                         "Content-Type": 'image/jpg'
                     }
                     datapost.append(('prop_gallery'+str(i+1), val))
-                # print(datapost)
                 r = httprequestObj.http_post(
                     'https://bankumka.com/property/save', data=datapost, files=files)
                 # print(r.text)
@@ -462,6 +479,7 @@ class bankumka():
             "websitename":"bankumka",
             "success": success,
             "start_time": str(time_start),
+            "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
             "post_url": theurl,
             "post_id": post_id,
@@ -510,6 +528,27 @@ class bankumka():
             project_n = postdata['project_name']
         else:
             project_n = postdata['post_title_th']
+
+        mydata = {
+            'query': project_n
+        }
+        resp = requests.post('https://bankumka.com/ajax/listproject/', data=mydata)
+        allres = json.loads(resp.content.decode('utf-8'))["suggestions"]
+        project_id = '0'
+
+        if len(allres) != 0:
+            project_id = allres[0]['data']
+            project_n = allres[0]["value"]
+
+            mydata = {'id':project_id}
+            resp1 = requests.post("https://bankumka.com/ajax/getLocationProject/", data=mydata)
+            res1 = json.loads(resp1.content.decode('utf-8'))['result']
+
+            postdata["geo_longitude"] = res1["project_lng"]
+            postdata["geo_latitude"] = res1["project_lat"]
+            province_id = res1["project_province"]
+            amphur_id = res1["project_district"]
+            tumbon_id = res1["project_subdistrict"]
 
 
         if success == "true":
@@ -593,12 +632,12 @@ class bankumka():
                     ('prop_parking', ''),
                     ('prop_floor', postdata['floor_total']),
                     ('prop_mainroad', '1'),
-                    ('prop_project_name', project_n),
-                    ('prop_project', '0'),
-                    ('prop_project_old', '0'),
                     ('prop_active', 1),
                     ('prop_reason', ''),
                     ('prop_cancel', ''),
+                    ('prop_project_name', project_n),
+                    ('prop_project', project_id),
+                    ('prop_project_old', '0'),
                     ('project_prop_province', province_id),
                     ('project_prop_district', amphur_id),
                     ('project_prop_subdistrict', tumbon_id),
@@ -610,6 +649,7 @@ class bankumka():
                     ('prop_zipcode', ''),
                     ('prop_lat', postdata['geo_latitude']),
                     ('prop_lng', postdata['geo_longitude']),
+
                     ('facility[]', ''),
                     ('prop_gallary1', ''),
                     ('prop_gallary2', ''),
@@ -687,7 +727,7 @@ class bankumka():
                         ('prop_floor', postdata['floor_total']),
                         ('prop_mainroad', '1'),
                         ('prop_project_name', project_n),
-                        ('prop_project', '0'),
+                        ('prop_project', project_id),
                         ('prop_project_old', '0'),
                         ('project_prop_province', province_id),
                         ('project_prop_district', amphur_id),
@@ -700,6 +740,8 @@ class bankumka():
                         ('prop_zipcode', ''),
                         ('prop_lat', postdata['geo_latitude']),
                         ('prop_lng', postdata['geo_longitude']),
+
+
                         ('facility[]', ''),
                         ('prop_gallary1', ''),
                         ('prop_gallary2', ''),
@@ -835,6 +877,7 @@ class bankumka():
             "websitename":"bankumka",
             "success": success,
             "start_time": str(time_start),
+            "log_id": postdata['log_id'],
             "end_time": str(time_end),
             "post_url": posturl,
             "post_id": postdata['post_id'],
@@ -1060,6 +1103,7 @@ class bankumka():
         return {
             "websitename":"bankumka",
             "success": success,
+            "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": posturl,
@@ -1101,6 +1145,7 @@ class bankumka():
         time_usage = time_end - time_start
         return {
             "success": success,
+            "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_id": postdata['post_id'],

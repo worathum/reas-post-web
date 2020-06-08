@@ -29,7 +29,7 @@ class nineasset():
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.primarydomain = 'http://www.9asset.com'
-        self.debug = 0
+        self.debug = False
         self.debugresdata = 0
         self.parser = 'html.parser'
 
@@ -120,6 +120,7 @@ class nineasset():
         return {
             "websitename": "nineasset",
             "success": success,
+            "ds_id": postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -241,39 +242,38 @@ class nineasset():
                 break
         
         datapost = [
-           
-("status_upload","true"),
-("TypePosted[]","2" if (listing_type == "ขาย" ) else "1"),
-("category_ID", 1),
-("property_Name", post_title_th),
-("project_Name", project_n),
-("project_ID", ""),
-("Bedroom", bedroom),
-("Bathroom-hidden",""),
-("Bathroom",bathroom),
-("property_Size", floorarea), #usable area
-("Land_Rai",land_size_rai),
-("Land_Nga", land_size_ngan),
-("Land_Sqw", land_size_wah),
-("Land_Size" , ""),#str(400*int(land_size_rai) + 100 * int(land_size_ngan) + 1*int(land_size_wa)),#calc using formula,
-("property_Floor", floor_no),
-("property_Facing",direction),
-("property_View",view),
-("province", addr_province),
-("city", addr_district),
-("Road", ""),
-("Alley", ""),
-("House_No",""),
-("location-lat", geo_latitude),
-("location-lng", geo_longitude),
-("zoom_map",16),
-("others", post_description_th),
-("agent", 2),
-("AgentsSub", 2-3),
-("House_Type", ""),
-("StatusPosted", 1),
-("Issubmit","posted"),
-        ]  
+            ("status_upload","true"),
+            ("TypePosted[]","2" if (listing_type == "ขาย" ) else "1"),
+            ("category_ID", 1),
+            ("property_Name", post_title_th),
+            ("project_Name", project_n),
+            ("project_ID", ""),
+            ("Bedroom", bedroom),
+            ("Bathroom-hidden",""),
+            ("Bathroom",bathroom),
+            ("property_Size", floorarea), #usable area
+            ("Land_Rai",land_size_rai),
+            ("Land_Nga", land_size_ngan),
+            ("Land_Sqw", land_size_wah),
+            ("Land_Size" , ""),#str(400*int(land_size_rai) + 100 * int(land_size_ngan) + 1*int(land_size_wa)),#calc using formula,
+            ("property_Floor", floor_no),
+            ("property_Facing",direction),
+            ("property_View",view),
+            ("province", addr_province),
+            ("city", addr_district),
+            ("Road", ""),
+            ("Alley", ""),
+            ("House_No",""),
+            ("location-lat", geo_latitude),
+            ("location-lng", geo_longitude),
+            ("zoom_map",16),
+            ("others", post_description_th),
+            ("agent", 2),
+            ("AgentsSub", 2-3),
+            ("House_Type", ""),
+            ("StatusPosted", 1),
+            ("Issubmit","posted"),
+        ]
         
         if (listing_type == "ขาย" ):
             datapost.append(("Sell", "1"))
@@ -401,8 +401,8 @@ class nineasset():
             "websitename": "nineasset",
             "success": success,
             "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "start_time": time_start,
+            "end_time": time_end,
             "ds_id": postdata['ds_id'],
             # "ds_id": "4",
             "post_url": post_url,
@@ -429,8 +429,8 @@ class nineasset():
             "websitename": "nineasset",
             "success": "false",
             "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "start_time": time_start,
+            "end_time": time_end,
             "detail": "boost post is paid",
             "log_id": log_id,
             "post_id": post_id,
@@ -469,9 +469,9 @@ class nineasset():
                     "websitename": "nineasset",
                     "success": "False",
                     "time_usage": time_end - time_start,
-                    "time_start": time_start,
+                    "start_time": time_start,
                     "log_id": postdata['log_id'],
-                    "time_end": time_end,
+                    "end_time": time_end,
                     # "ds_id": "4",
                     "post_url": post_url,
                     "post_id": post_id,
@@ -488,8 +488,8 @@ class nineasset():
             "success": success,
             "time_usage": time_end - time_start,
             "log_id": postdata['log_id'],
-            "time_start": time_start,
-            "time_end": time_end,
+            "start_time": time_start,
+            "end_time": time_end,
             "detail": detail,
 
         }
@@ -611,38 +611,37 @@ class nineasset():
 
 
         datapost = [
-           
-("status_upload","true"),
-("TypePosted[]","2" if (listing_type == "ขาย" ) else "1"),
-("category_ID", 1),
-("property_Name", post_title_th),
-("project_Name", project_n),
-("property_Unit", 1), #Default as of now
-("Bedroom", bedroom),
-("Bathroom-hidden",""),
-("Bathroom",bathroom),
-("property_Size", floorarea), #usable area
-("Land_Rai",land_size_rai),
-("Land_Nga", land_size_ngan),
-("Land_Sqw", land_size_wah),
-("Land_Size" , ""),#str(400*int(land_size_rai) + 100 * int(land_size_ngan) + 1*int(land_size_wa)),#calc using formula,
-("property_Floor", floor_no),
-("property_Facing",direction_type[str(direction)]),
-("property_View",view_type[str(view)]),
-("province", addr_province),
-("city", addr_district),
-("Road", ""),
-("Alley", ""),
-("House_No",""),
-("location-lat", geo_latitude),
-("location-lng", geo_longitude),
-("zoom_map",16),
-("others", post_description_th),
-("agent", 2),
-("AgentsSub", 2-3),
-("House_Type", ""),
-("StatusPosted", 1),
-("Issubmit","posted"),
+            ("status_upload","true"),
+            ("TypePosted[]","2" if (listing_type == "ขาย" ) else "1"),
+            ("category_ID", 1),
+            ("property_Name", post_title_th),
+            ("project_Name", project_n),
+            ("property_Unit", 1), #Default as of now
+            ("Bedroom", bedroom),
+            ("Bathroom-hidden",""),
+            ("Bathroom",bathroom),
+            ("property_Size", floorarea), #usable area
+            ("Land_Rai",land_size_rai),
+            ("Land_Nga", land_size_ngan),
+            ("Land_Sqw", land_size_wah),
+            ("Land_Size" , ""),#str(400*int(land_size_rai) + 100 * int(land_size_ngan) + 1*int(land_size_wa)),#calc using formula,
+            ("property_Floor", floor_no),
+            ("property_Facing",direction_type[str(direction)]),
+            ("property_View",view_type[str(view)]),
+            ("province", addr_province),
+            ("city", addr_district),
+            ("Road", ""),
+            ("Alley", ""),
+            ("House_No",""),
+            ("location-lat", geo_latitude),
+            ("location-lng", geo_longitude),
+            ("zoom_map",16),
+            ("others", post_description_th),
+            ("agent", 2),
+            ("AgentsSub", 2-3),
+            ("House_Type", ""),
+            ("StatusPosted", 1),
+            ("Issubmit","posted"),
         ]  
         
         if (listing_type == "ขาย" ):
@@ -768,8 +767,8 @@ class nineasset():
             "websitename": "nineasset",
             "success": success,
             "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "start_time": time_start,
+            "end_time": time_end,
             # "ds_id": "4",
             "log_id": postdata['log_id'],
             "post_url": post_url,
@@ -778,12 +777,52 @@ class nineasset():
             "detail": detail
         }
 
-    def print_debug(self, msg):
-        if(self.debug == 1):
-            print(msg)
-        return True
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        start_time = datetime.datetime.utcnow()
+        test_login = self.test_login(postdata)
+        if test_login['success'] == "True":
+            post_title = postdata['post_title_th']
+            pages = ["", "?page=2", "?page=3"]
+            tURL = dict()
+            for page in pages:
+                url = "https://www.9asset.com/profile" + page
+                r = httprequestObj.http_get(url)
+                soup = BeautifulSoup(r.content, 'lxml')
+                soup = soup.find('table', attrs={'class':'table', 'id':'customers'})
+                result_posts = soup("tr")
+                del result_posts[0]
+                result_posts = [row('td') for row in result_posts]
+                tURL.update({post[1].string : post[-1].find('a', attrs={'class':'btn btn-info'})['href'] for post in result_posts})
+            my_res = dict()
+            if tURL.get(post_title):
+                my_res.update({
+                    'success':'true',
+                    'post_found':'true',
+                    'post_url':tURL[post_title],
+                    'post_id':tURL[post_title].split('/')[-2]
+                })
+            else:
+                my_res.update({
+                    'success':'false',
+                    'post_found':'false',
+                    'post_url':'',
+                    'post_id':''
+                })
+            my_res.update({
+                    'websitename':'nineasset',
+                    'ds_id':postdata['ds_id'],
+                    'start_time':str(start_time),
+                    'end_time':str(datetime.datetime.utcnow()),
+                    'account_type':'',
+                    'detail':'',
+                    'post_create_time':'',
+                    'post_modify_time':'',
+                    'post_view':''
+                })
+        return my_res
 
-    def print_debug_data(self, data):
-        if(self.debugdata == 1):
-            print(data)
+    def print_debug(self, msg):
+        if(self.debug):
+            print(msg)
         return True

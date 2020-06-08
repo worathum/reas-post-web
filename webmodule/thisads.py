@@ -134,6 +134,7 @@ class thisads():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            "ds_id": postdata['ds_id'],
             "websitename": "thisads",
             "success": success,
             "start_time": str(time_start),
@@ -259,8 +260,8 @@ class thisads():
         r = httprequestObj.http_get(
             'http://www.thisads.com/ajax_showproduct.php', headers=headers, verify=False)
         soup = BeautifulSoup(r.content, 'html5lib')
-        with open('temp.html', 'w') as f:
-            f.write(r.text)
+        # with open('temp.html', 'w') as f:
+        #     f.write(r.text)
         flag = 0
         edit_url = ''
         post_url = ''
@@ -290,6 +291,7 @@ class thisads():
 
             "websitename": "thisads",
             "success": success,
+            "ds_id": postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
@@ -407,6 +409,7 @@ class thisads():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
+            "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": detail,
         }
@@ -427,8 +430,8 @@ class thisads():
         r = httprequestObj.http_get(
             'http://www.thisads.com/ajax_showproduct.php', headers=headers, verify=False)
         soup = BeautifulSoup(r.content, 'html5lib')
-        with open('temp.html', 'w') as f:
-            f.write(r.text)
+        # with open('temp.html', 'w') as f:
+        #     f.write(r.text)
         flag = 0
         edit_url = ''
         post_url = ''
@@ -449,6 +452,7 @@ class thisads():
 
         return {
             "websitename": "thisads",
+            "log_id": postdata['log_id'],
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -475,6 +479,7 @@ class thisads():
             detail= 'error while boosting / can only boost once a day'
         return {
             "websitename": "thisads",
+            "log_id": postdata['log_id'],
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -491,8 +496,8 @@ class thisads():
         r = httprequestObj.http_get(
             'http://www.thisads.com/ajax_showproduct.php', headers=headers, verify=False)
         soup = BeautifulSoup(r.content, 'html5lib')
-        with open('temp.html', 'w') as f:
-            f.write(r.text)
+        # with open('temp.html', 'w') as f:
+        #     f.write(r.text)
         flag = 0
         edit_url = ''
         for value in soup.findAll('a'):

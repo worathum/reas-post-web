@@ -93,8 +93,8 @@ def get_security(flag1, post_id=''):
 
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
-        with open('temp', 'w') as f:
-            f.write(str(soup))
+        # with open('temp', 'w') as f:
+        #     f.write(str(soup))
 
         arr = soup.find_all('script')
         var = ""
@@ -146,8 +146,8 @@ def get_security(flag1, post_id=''):
 
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
-        with open('temp', 'w') as f:
-            f.write(str(soup))
+        # with open('temp', 'w') as f:
+        #     f.write(str(soup))
 
         arr = soup.find_all('script')
         var = ""
@@ -181,8 +181,8 @@ def get_security(flag1, post_id=''):
         web = httprequestObj.http_get(
             'https://www.proptecheasy.com/dashboard/', headers=headers, params=params)
         web = web.content
-        with open('temp.html', 'w') as f:
-            f.write(str(web))
+        # with open('temp.html', 'w') as f:
+        #     f.write(str(web))
         soup = BeautifulSoup(web, 'lxml')
         var = soup.find('input', attrs={'name': 'security'})['value']
         return str(var)
@@ -209,8 +209,8 @@ def get_security(flag1, post_id=''):
             'https://www.proptecheasy.com/dashboard/', headers=headers, params=params)
         web = web.content
         soup = BeautifulSoup(web, 'lxml')
-        with open('temp', 'w') as f:
-            f.write(str(soup))
+        # with open('temp', 'w') as f:
+        #     f.write(str(soup))
 
         arr = soup.find_all('script')
         var = ""
@@ -400,6 +400,7 @@ class proptecheasy():
         return {
             "websitename": "proptecheasy",
             "success": success,
+            "ds_id": postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,

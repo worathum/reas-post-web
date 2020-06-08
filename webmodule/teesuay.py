@@ -135,6 +135,7 @@ class teesuay():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
         }
 
 
@@ -785,7 +786,7 @@ class teesuay():
             return {
                 'websitename' : 'teesuay',
                 "ds_name":ds_name,
-                "success":success,
+                "success":"true",
                 "start_time":str(time_start),
                 "end_time":str(time_end),
                 "log_id": postdata['log_id'],
@@ -843,7 +844,7 @@ class teesuay():
         return {
             'websitename' : 'teesuay',
             "ds_name" : ds_name,
-            "success": success,
+            "success": "true",
             "start_time":str(time_start),
             "end_time":str(time_end),
             "ds_id": ds_id,

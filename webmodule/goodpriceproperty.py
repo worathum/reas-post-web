@@ -1151,9 +1151,9 @@ class goodpriceproperty():
             "success": success,
             'detail':detail,
             "time_usage": time_end - time_start,
-            "time_start": time_start,
+            "start_time": time_start,
             "log_id": postdata['log_id'],
-            "time_end": time_end,
+            "end_time": time_end,
             # "detail": detail,
             "post_id": post_id,
             "websitename": "goodpriceproperty"
