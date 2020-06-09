@@ -387,9 +387,41 @@ class baania():
                 # print(postdata["post_images"])
                 # print(postdata)
                 allimages = postdata["post_images"][:21]
-                for i in range(len(allimages)):
-                    im = open(os.getcwd()+"/"+allimages[i], 'rb')
-                    # print(allimages[i])
+
+                if len(allimages) != 0:
+
+                    for i in range(len(allimages)):
+                        im = open(os.getcwd()+"/"+allimages[i], 'rb')
+                        # print(allimages[i])
+                        mr = MultipartEncoder(
+                            fields={
+                                "type": "listing",
+                                "uploadImages": (im.name, im, 'image/'+im.name[-1])
+                            }
+                        )
+                        headers['content-type'] = mr.content_type
+                        r = httprequestObj.http_post(
+                            'https://api.baania.com/api/v1/uploadImages', data=mr, headers=headers)
+                        res = json.loads(r.text)
+                        if r.status_code != 200:
+                            success = "false"
+                            detail = "Problem in images"
+
+                        if success == "false":
+                            break
+                        temp = {
+                            "_source": "FRONTEND_API_SOURCE",
+                            "source": res[0]["source"],
+                            "main": res[0]["main"],
+                            "thumbnail": res[0]["thumbnail"]
+                        }
+                        if i == 0:
+                            files["cover"] = temp
+                        else:
+                            files["images"].append(temp)
+                else:
+                    im = open(os.getcwd()+"/imgtmp/default/white.jpg", 'rb')
+
                     mr = MultipartEncoder(
                         fields={
                             "type": "listing",
@@ -404,18 +436,14 @@ class baania():
                         success = "false"
                         detail = "Problem in images"
 
-                    if success == "false":
-                        break
                     temp = {
                         "_source": "FRONTEND_API_SOURCE",
                         "source": res[0]["source"],
                         "main": res[0]["main"],
                         "thumbnail": res[0]["thumbnail"]
                     }
-                    if i == 0:
-                        files["cover"] = temp
-                    else:
-                        files["images"].append(temp)
+                    files["cover"] = temp
+
 
             if success == "true":
                 headers['content-type'] = 'application/json'
