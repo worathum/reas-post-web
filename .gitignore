@@ -128,7 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /debug_response
-/imgtmp
+imgtmp/[0-9]*/
 /log
 /py37-venv
 .vscode/settings.json
