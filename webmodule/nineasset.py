@@ -120,7 +120,7 @@ class nineasset():
         return {
             "websitename": "nineasset",
             "success": success,
-            "ds_id": postdata['ds_id'],
+            "ds_id": logindata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,

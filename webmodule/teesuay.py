@@ -795,7 +795,7 @@ class teesuay():
                 "post_url":"",
                 "post_id":"",
                 "account_type": None,
-                "detail":"",
+                "detail":"cannot login",
                 "post_create_time":"",
                 "post_modify_time":"",
                 "post_view":""
@@ -829,7 +829,7 @@ class teesuay():
             while j<len(var) and var[j] != '/':
                 post_id += var[j]
                 j += 1
-            html = urlopen(post_url, context=ctx).read()
+            html = requests.get(post_url, verify=False).content
             soup = BeautifulSoup(html, "html.parser")
             table = soup.findAll('table')
             data = table[9].findAll('tr')[2].text

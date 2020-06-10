@@ -1237,7 +1237,7 @@ class aecmarketing():
 
             for title in titles:
                     title_text = title.find("div", {"class" : "col-sm-12 col-md-5"}).select("b")
-                    if(post_titles == title_text[0].text[:-2]):
+                    if(post_titles == title_text[0].text):
                         exists = True
                         post_url = title.select("a")[0].attrs['href']
                         post_id = int(title.select('a')[1].attrs['href'][46:-5])
