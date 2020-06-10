@@ -196,7 +196,7 @@ class aecmarketing():
             living_area = postdata['floor_area']
 
         image_string = []
-        if (postdata['post_images'] != None):
+        if len(postdata['post_images']) != 0:
             allimages = postdata['post_images']
             for i in range(len(allimages)):
                 with open(os.getcwd() + "/" + allimages[i], 'rb') as img_file:
@@ -204,7 +204,7 @@ class aecmarketing():
                 image_string.append(encode)
 
         else:
-            with open(os.getcwd() + "/"+'imgtmp/default/white.png', 'rb') as img_file:
+            with open(os.getcwd() + "/imgtmp/default/white.jpg", 'rb') as img_file:
                 encode = 'data:image/jpeg;base64,' + str(base64.b64encode(img_file.read()))[2:-1]
             image_string.append(encode)
 
@@ -292,7 +292,8 @@ class aecmarketing():
         # file.write(str(ad_data))
 
         response = httprequestObj.http_post('https://www.aecmarketinghome.com/th/post/save_property.html', data=ad_data)
-        #print(response.content)
+        print(response.content)
+
         result = json.loads(response.content.decode('utf-8'))
         #print(result)
         try:
@@ -1117,7 +1118,7 @@ class aecmarketing():
             line_data = ''
 
         image_string = []
-        if (postdata['post_images'] != None):
+        if len(postdata['post_images']) != 0:
             allimages = postdata['post_images']
             for i in range(len(allimages)):
                 with open(os.getcwd() + "/" + allimages[i], 'rb') as img_file:
