@@ -15,6 +15,8 @@ from webmodule.lib_httprequest import *
 httprequestObj = lib_httprequest()
 import re
 import time
+import traceback
+
 
 
 
@@ -205,10 +207,23 @@ class postcore():
                     log.error('import error %s',str(e))
                     continue
 
+            errors = []
             for poolresult in concurrent.futures.as_completed(futures):
-                webresult = poolresult.result()
-                websitename = webresult["websitename"]
-                response["web"][websitename] = webresult
+                try:
+                    webresult = poolresult.result()
+                    websitename = webresult["websitename"]
+                    response["web"][websitename] = webresult
+                except Exception as e:
+                    errors.append([str(traceback.format_exc()),str(e)])
+
+            for webitem in weblists:
+                if webitem['ds_name'] not in response:
+                    for i, error in enumerate(errors):
+                        if webitem['ds_name'] in error[0]:
+                            response["web"][webitem['ds_name']] = {'success':'false','error': error[1]}
+                            del errors[i]
+                            break
+
 
         # remove image tmp
         if os.path.isdir('imgtmp/' + dirtmp) == True:
