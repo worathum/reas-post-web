@@ -187,6 +187,7 @@ class bankumka():
         #         amphur_id = key
         #         break
         province_id = '0'
+        detail = ""
         amphur_id = '26'
         tumbon_id = '01'
         prod_address = ""
@@ -218,11 +219,11 @@ class bankumka():
                 query_string, verify=False)
             data = json.loads(r.text)
             # print(data)
-            print(postdata['addr_district'])
+            # print(postdata['addr_district'])
             for i in data:
                 # print(i['name'])
-                print(i['name'])
-                print(i['name'].find(postdata['addr_district']))
+                # print(i['name'])
+                # print(i['name'].find(postdata['addr_district']))
                 if postdata['addr_district'].replace(" ","").find(i['name'].strip()) != -1 or i['name'].find(postdata['addr_district'].replace(" ","")) != -1:
                     if i['name'].find(postdata['addr_district'].replace(" ","")) == 6:
                         continue
@@ -234,10 +235,10 @@ class bankumka():
                 query_string, verify=False)
             data = json.loads(r.text)
             # print(data)
-            print()
-            print(postdata['addr_sub_district'])
+            # print()
+            # print(postdata['addr_sub_district'])
             for i in data:
-                print(i['name'])
+                # print(i['name'])
                 if postdata['addr_sub_district'].replace(" ","").find(i['name'].strip()) != -1 or i['name'].find(postdata['addr_sub_district'].replace(" ","")) != -1:
                     tumbon_id = i['id']
                     break
@@ -357,6 +358,7 @@ class bankumka():
             r = httprequestObj.http_post(
                 'https://bankumka.com/ajax/checkProperty', data=datapost)
             data = json.loads(r.text)
+            print(data)
             if data['status'] == 'OK':
                 datapost = [
                     ('timeout', '5'),
@@ -430,21 +432,23 @@ class bankumka():
                     datapost[9] = ('prop_pricerent', '')
                     datapost[7] = ('prop_price', postdata['price_baht'])
                 files = {}
-                for i, myimg in enumerate(postdata['post_images'][:10]):
+                # for i, myimg in enumerate(postdata['post_images'][:10]):
+                for i in range(len(postdata['post_images'])):
                 # for i in range(len(postdata["post_img_url_lists"])):
                     # resp = requests.get(
                     #     postdata["post_img_url_lists"][i], stream=True)
                     # resp.raw.decode_content = True
                     # with open('image'+str(i)+'.jpg', 'wb') as lfile:
                     #     shutil.copyfileobj(resp.raw, lfile)
-
-                    r = open(myimg, 'rb')
-                    # if i > 10:
-                        # break
+                    os.rename(postdata['post_images'][i],postdata['post_images'][i].replace('jpeg','jpg'))
+                    r = open(postdata['post_images'][i].replace('jpeg','jpg'), 'rb')
+                    print(r)
+                    if i > 10:
+                        break
                     # else:
                     files["prop_gallery"+str(i+1)] = r
                     val = {
-                        "filename": r,
+                        "filename": postdata['post_images'][i].replace("jpeg","jpg"),
                         "Content-Type": 'image/jpg'
                     }
                     datapost.append(('prop_gallery'+str(i+1), val))
@@ -468,8 +472,12 @@ class bankumka():
             else:
                 post_url = ""
                 success = "false"
+                if data['message'][0].find("10") != -1:
+                    detail = "Posts Limit Reached"
+
                 theurl = ""
         else:
+
             # print("wrong_id")
             success = "false"
         time_end = datetime.datetime.utcnow()
@@ -478,6 +486,7 @@ class bankumka():
         return {
             "websitename":"bankumka",
             "success": success,
+            "detail": detail,
             "start_time": str(time_start),
             "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
@@ -803,24 +812,18 @@ class bankumka():
                         # with open('image'+str(i)+'.jpg', 'wb') as lfile:
                         #     shutil.copyfileobj(resp.raw, lfile)
 
-                        r = open(myimg, 'rb')
-                        # if i > 10:
-                            # break
+                        os.rename(postdata['post_images'][i],postdata['post_images'][i].replace('jpeg','jpg'))
+                        r = open(postdata['post_images'][i].replace('jpeg','jpg'), 'rb')
+                        print(r)
+                        if i > 10:
+                            break
                         # else:
                         files["prop_gallery"+str(i+1)] = r
-                    
-                    # for i in range(len(postdata["post_img_url_lists"])):
-                    #     resp = requests.get(
-                    #         postdata["post_img_url_lists"][i], stream=True)
-                    #     resp.raw.decode_content = True
-                    #     with open('image'+str(i)+'.jpg', 'wb') as lfile:
-                    #         shutil.copyfileobj(resp.raw, lfile)
-
-                    #     r = open('image'+str(i)+'.jpg', 'rb')
-                    #     if i > 10:
-                    #         break
-                    #     else:
-                    #         files["prop_gallery"+str(i+1)] = r
+                        val = {
+                            "filename": postdata['post_images'][i].replace("jpeg","jpg"),
+                            "Content-Type": 'image/jpg'
+                        }
+                        datapost.append(('prop_gallery'+str(i+1), val))
                     r = httprequestObj.http_post(
                         'https://bankumka.com/property/save', data=datapost, files=files)
                     # print(r.text)
@@ -1152,7 +1155,62 @@ class bankumka():
             "account_type": "null",
             "websitename": "bankumka"
         }
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
 
+        theurl = ""
+        post_id = ""
+
+        # login
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        ashopname = test_login["detail"]
+        found = "false"
+        post_id = ""
+        posturl = ""
+        if success == "true":
+            r = httprequestObj.http_get('https://bankumka.com/member/properties', verify = False)
+            data = r.text
+            soup = BeautifulSoup(data,self.parser, from_encoding='utf-8')
+            alldiv = soup.findAll("div",{"class":"my-property-box"})
+            for i in alldiv:
+                # print
+                a = i.find("a",{"class":"my-property-name"})
+                if a['title'] == postdata['post_title_th']:
+                    posturl = a['href']
+                    id1 = a.find("strong").get_text()
+                    flag = False
+                    found = "true"
+                    for j in id1:
+                        if j == ']':
+                            break
+                        if flag == True:
+                            post_id += j
+                        if j == '[':
+                            flag = True
+                         
+                    break
+            post_id = post_id.replace("#","")
+        else:
+            success = "false"
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        return {
+            "websitename": "ddteedin.com",
+            "success": success,
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "post_found": found,
+            "post_url": posturl,
+            "post_id": post_id,
+            "account_type": "null",
+            "detail":"null",
+            "post_create_time":"",
+            "post_modify_time":"",
+            "post_view":""
+        }
     def print_debug(self, msg):
         if(self.debug == 1):
             print(msg)

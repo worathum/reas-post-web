@@ -812,7 +812,6 @@ class teedindd():
 
 
 
-
     def edit_post(self,postdata):
         k=0
         while k<len(postdata['post_images']):
@@ -850,6 +849,7 @@ class teedindd():
             return {
                 "websitename": "teedindd",
                 "success": 'false',
+                "log_id": postdata['log_id'],
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": 'Wrong Post id',
