@@ -881,7 +881,6 @@ class baania():
             "success": success,
             "log_id": postdata['log_id'],
             "start_time": str(time_start),
-            "websitename": "",
             "end_time": str(time_end),
             "detail": detail,
         }
@@ -965,7 +964,7 @@ class baania():
             "time_usage": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
-            "detail": "",
+            "detail": "Cannot Edit & Save the post",            
             "log_id": log_id,
             "post_id": post_id,
         }
