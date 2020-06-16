@@ -1056,9 +1056,13 @@ class goodpriceproperty():
                     break
             if storeI == '':
                 return {
-                    'success': 'false',
-                    'websitename':'goodpriceproperty',
-                    'detail':'Incorrect Post id'
+
+                'websitename':'goodpriceproperty',
+                'success': 'false',
+                'detail':'Incorrect Post id'
+                "start_time": str(time_start),
+                "log_id": postdata['log_id'],
+                "end_time": str(datetime.datetime.utcnow()),
                 }
 
             datapost = [
