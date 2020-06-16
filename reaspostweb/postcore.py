@@ -213,6 +213,13 @@ class postcore():
                     webresult = poolresult.result()
                     websitename = webresult["websitename"]
                     response["web"][websitename] = webresult
+                    try:
+                        if response["web"][websitename]['success'] == "True" or response["web"][websitename]['success'] is True:
+                            response["web"][websitename]['success'] = "true"
+                        if response["web"][websitename]['success'] == "False" or response["web"][websitename]['success'] is False:
+                            response["web"][websitename]['success'] = "false"
+                    except:
+                        pass
                 except Exception as e:
                     errors.append([str(traceback.format_exc()),str(e)])
 
