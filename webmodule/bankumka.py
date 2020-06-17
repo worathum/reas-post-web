@@ -480,6 +480,7 @@ class bankumka():
 
             # print("wrong_id")
             success = "false"
+            detail = "cannot login"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
 

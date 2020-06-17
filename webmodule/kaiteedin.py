@@ -519,6 +519,7 @@ class kaiteedin():
                         "start_time": str(time_start),
                         "end_time": str(time_end),
                         "ds_id": postdata['ds_id'],
+                        'detail': 'post created, but not approved yet',
                         "post_url": 'post will be approved after 10 minutes',
                         "post_id": ''
                     }
@@ -546,6 +547,7 @@ class kaiteedin():
                         "success": success,
                         "start_time": str(time_start),
                         "end_time": str(time_end),
+                        'detail': 'post created, but not approved yet',
                         "post_url": 'post will be created after 10 minutes',
                         "ds_id": postdata['ds_id'],
                         "post_id": ''
@@ -553,6 +555,7 @@ class kaiteedin():
         else:
             post_url = ""
             post_id = ""
+            detail = 'cannot login'
             success = "False"
 
         time_end = datetime.datetime.utcnow()
@@ -564,6 +567,7 @@ class kaiteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
+            'detail': detail,
             "post_id": post_id,
             "ds_id": postdata['ds_id'],
         }

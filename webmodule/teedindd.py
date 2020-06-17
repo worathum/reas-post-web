@@ -475,6 +475,7 @@ class teedindd():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         ashopname = test_login["detail"]
+        detail = ''
 
         if success == "true":
             if 'name' not in postdata:
@@ -703,6 +704,7 @@ class teedindd():
                     return {
                         "websitename": "teedindd",
                         "success": "false",
+                        "detail" : "post not created",
                         "start_time": str(time_start),
                         "end_time": str(time_end),
                         "post_url": '',
@@ -717,6 +719,7 @@ class teedindd():
         else:
             post_url=""
             post_id=""
+            detail = 'cannot login'
             success = "False"
 
         time_end = datetime.datetime.utcnow()
@@ -731,6 +734,7 @@ class teedindd():
             "end_time": str(time_end),
             "post_url": 'https://www.teedindd.com/property-detail.php?pd='+str(post_id),
             "post_id": post_id,
+            'detail': detail
         }
 
     def search_post(self, postdata):
