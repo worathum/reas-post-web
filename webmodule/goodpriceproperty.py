@@ -566,7 +566,7 @@ class goodpriceproperty():
                     "websitename": "goodpriceproperty",
                     "start_time": str(time_start),
                     "end_time": str(time_end),
-
+                    'detail': 'Could not create post',
                     'post_url': '',
                     'post_id': '',
                     'account_type': ''
@@ -592,8 +592,8 @@ class goodpriceproperty():
             if data.find("alert") != -1:
                 success = "false"
             return {
-                'prop_type': postdata['property_type'],
-                'data_prop_type': datapost['cate_id'],
+                # 'prop_type': postdata['property_type'],
+                # 'data_prop_type': datapost['cate_id'],
                 'success': 'true',
                 "ds_id": postdata['ds_id'],
                 'action': "create_post",
@@ -602,7 +602,8 @@ class goodpriceproperty():
                 "end_time": str(time_end),
                 'post_url': post_url,
                 'post_id': post_id,
-                'account_type': ''
+                'account_type': '',
+                'detail': 'Post created!'
             }
         else:
             time_end = datetime.datetime.utcnow()

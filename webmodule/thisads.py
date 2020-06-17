@@ -147,6 +147,7 @@ class thisads():
         time_start = datetime.datetime.utcnow()
         test_login = self.test_login(postdata)
         success = test_login['success']
+        detail = test_login['detail']
         # done
         if postdata['property_type'] == 'คอนโด' or int(postdata['property_type']) == 1:
             prop = 149
