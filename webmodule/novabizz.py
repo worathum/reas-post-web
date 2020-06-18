@@ -343,6 +343,7 @@ class novabizz():
 
         theurl = ""
         post_id = ""
+        detail = ''
         # login
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -602,8 +603,8 @@ class novabizz():
                 print("16")
 
         else:
+            detail = 'cannot login'
             post_url=""
-            print("15")
             success = "False"
 
         time_end = datetime.datetime.utcnow()
@@ -612,6 +613,7 @@ class novabizz():
         return {
             'websitename':'novabizz',
             "success": success,
+            'detail': detail,
             "start_time": str(time_start),
             "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
@@ -880,7 +882,9 @@ class novabizz():
             r = httprequestObj.http_post(
                 url_n, data=datapost, files=files)
             success = "true"
+            detail = 'Edited'
         else:
+            detail = 'cannot login'
             success = "false"
             print("False")
 
@@ -892,7 +896,7 @@ class novabizz():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "log_id": postdata['log_id'],
-            "detail": "Edited",
+            "detail": detail,
         }
 
 

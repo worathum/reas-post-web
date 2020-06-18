@@ -353,9 +353,10 @@ class teesuay():
                     i += 1
                 post_url = 'http://www.teesuay.com/property-' + \
                     post_id+"/"+postdata['post_title_th'].replace(' ','-')+'.html'
-
+            detail = 'created post'
         else:
             success = "False"
+            'detail': "cannot login"
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -368,6 +369,7 @@ class teesuay():
             "end_time": str(time_end),
             "post_url": post_url,
             "post_id": post_id,
+            'detail': detail,
             "ds_id": postdata['ds_id']
         }
 
