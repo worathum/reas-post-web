@@ -227,7 +227,7 @@ class postcore():
                 if webitem['ds_name'] not in response:
                     for i, error in enumerate(errors):
                         if webitem['ds_name'] in error[0]:
-                            response["web"][webitem['ds_name']] = {'success':'false','detail': error[1], 'websitename':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow()}
+                            response["web"][webitem['ds_name']] = {'success':'false','detail': error[0], 'websitename':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow()}
                             if 'ds_id' in webitem:
                                 response["web"][webitem['ds_name']]['ds_id'] = webitem['ds_id']
                             if 'log_id' in webitem:
