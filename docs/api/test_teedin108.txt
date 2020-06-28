@@ -1,0 +1,174 @@
+
+REGISTER
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+'post_data': ewoJImFjdGlvbiI6ICJyZWdpc3Rlcl91c2VyIiwKCSJ0aW1lb3V0IjogIjciLAoJIndlYiI6IFsKICAgIAl7CiAgICAgICAgCSJkc19uYW1lIjogInRlZWRpbjEwOCIsCiAgICAgICAgCSJkc19pZCI6ICI0IiwKICAgICAgICAJInVzZXIiOiAia29kb2thNDEwN0Bwcm93ZXJsLmNvbSIsCiAgICAgICAgCSJwYXNzIjogImFhYWEiLAogICAgICAgIAkiY29tcGFueV9uYW1lIjogImFiY2RlZmciLAogICAgICAgIAkibmFtZV90aXRsZSI6ICJtciIsCiAgICAgICAgCSJuYW1lX3RoIjogIuC4reC4seC4oeC4o+C4tOC4mSIsCiAgICAgICAgCSJzdXJuYW1lX3RoIjogIuC4muC4uOC4jSIsCiAgICAgICAgCSJ0ZWwiOiAiMDg5MTk5OTM1MCIKICAgIAl9CgldCn0KCg==
+
+<output>
+{
+ "success": "true",
+ "action": "register_user",
+ "web": {
+  "teedin108": {
+   "websitename": "teedin108",
+   "success": true,
+   "usage_time": "0:00:01.019266",
+   "start_time": "2020-05-19 14:17:20.951115",
+   "end_time": "2020-05-19 14:17:21.970381",
+   "detail": "Membership is successful. Please confirm your email subscription"
+  }
+ },
+ "usage_time": "0:00:01.040934",
+ "start_time": "2020-05-19 14:17:20.936165",
+ "end_time": "2020-05-19 14:17:21.977099"
+}
+
+
+LOGIN
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+'post_data': ewoJImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKCSJ0aW1lb3V0IjogIjciLAoJIndlYiI6IFsKICAgIAl7CiAgICAgICAgCSJkc19uYW1lIjogInRlZWRpbjEwOCIsCiAgICAgICAgCSJkc19pZCI6ICI0IiwKICAgICAgICAJInVzZXIiOiAia29kb2thNDEwN0Bwcm93ZXJsLmNvbSIsCiAgICAgICAgCSJwYXNzIjogImFzIgogICAgICAgICAgIAl9CgldCn0K 
+
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "teedin108": {
+   "websitename": "teedin108",
+   "success": true,
+   "usage_time": "0:00:00.519782",
+   "start_time": "2020-05-19 14:21:29.673704",
+   "end_time": "2020-05-19 14:21:30.193486",
+   "detail": "Login successful"
+  }
+ },
+ "usage_time": "0:00:00.539708",
+ "start_time": "2020-05-19 14:21:29.660233",
+ "end_time": "2020-05-19 14:21:30.199941"
+}
+
+LOGIN Wrong Pass
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+'post_data': ewoJImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKCSJ0aW1lb3V0IjogIjciLAoJIndlYiI6IFsKICAgIAl7CiAgICAgICAgCSJkc19uYW1lIjogInRlZWRpbjEwOCIsCiAgICAgICAgCSJkc19pZCI6ICI0IiwKICAgICAgICAJInVzZXIiOiAia29kb2thNDEwN0Bwcm93ZXJsLmNvbSIsCiAgICAgICAgCSJwYXNzIjogIndyb25nLXBhc3MiCiAgICAgICAgICAgCX0KCV0KfQo=
+
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "teedin108": {
+   "websitename": "teedin108",
+   "success": false,
+   "usage_time": "0:00:00.501840",
+   "start_time": "2020-05-19 14:22:57.560760",
+   "end_time": "2020-05-19 14:22:58.062600",
+   "detail": "Email or password is incorrect."
+  }
+ },
+ "usage_time": "0:00:00.523607",
+ "start_time": "2020-05-19 14:22:57.545576",
+ "end_time": "2020-05-19 14:22:58.069183"
+}
+
+LOGIN Wrong User
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+'post_data': ewoJImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKCSJ0aW1lb3V0IjogIjciLAoJIndlYiI6IFsKICAgIAl7CiAgICAgICAgCSJkc19uYW1lIjogInRlZWRpbjEwOCIsCiAgICAgICAgCSJkc19pZCI6ICI0IiwKICAgICAgICAJInVzZXIiOiAid3JvbmctdXNlckBwcm93ZXJsLmNvbSIsCiAgICAgICAgCSJwYXNzIjogImFzIgogICAgICAgICAgIAl9CgldCn0K
+
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "teedin108": {
+   "websitename": "teedin108",
+   "success": false,
+   "usage_time": "0:00:00.520120",
+   "start_time": "2020-05-19 14:24:00.980385",
+   "end_time": "2020-05-19 14:24:01.500505",
+   "detail": "Email or password is incorrect."
+  }
+ },
+ "usage_time": "0:00:00.541141",
+ "start_time": "2020-05-19 14:24:00.966752",
+ "end_time": "2020-05-19 14:24:01.507893"
+}
+
+EDIT POST
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+<input>
+postdata = {
+       "post_id": 2107984,
+       "data[lat_lng]": "",
+       "listing_type": "S",
+       "property_type": "L",
+       "addr_province": "",
+       "addr_district": "",
+       "post_title_th": "GGGgsrifcsd",
+       "price_baht": 3000,
+       "post_description_th": "fafefa",
+       "files[]": "(binary)",
+       "photos[name][]": "",
+       "photos[angle][]": 0,
+       "geo_latitude": "",
+       "geo_longitude": "",
+       "name": "asxjiw",
+       "mobile": 12342,
+       "email": "ahishjayant9009@gmail.com",
+       "pass": "aaaa",
+}
+<output>
+{
+	'success': "true", 
+	'usage_time': '0:00:01.276818', 
+	'start_time': '2020-06-06 09:26:57.211918', 
+	'end_time': '2020-06-06 09:26:58.488736', 
+	'detail': 'Given province does not exist in any sector', 
+	'post_id': 2107984
+}
+
+DELETE POST
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+<input>
+postdata = {
+        "log_id": 3232,
+        "post_id": 2107984,
+        "user": "ahishjayant9009@gmail.com",
+        "pass": "aaaa"
+}
+
+<output>
+{
+	'success': 'true', 
+	'websitename': 'teedin108',
+       	'usage_time': '0:00:00.993369',
+       	'start_time': '2020-06-06 11:10:09.444666',
+       	'end_time': '2020-06-06 11:10:10.438035',
+       	'detail': 'Successfully deleted', 
+	'log_id': 3232
+}
+
+SEARCH POST
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+<input>
+data = {
+        'post_title_th': "daws",
+        'user': 'asxjiw'
+}
+
+<output>
+{
+	'websitename': 'teedin108',
+	'success': 'true',
+       	'usage_time': '0:00:06.917221',
+       	'start_time': '2020-06-06 11:16:26.333128',
+       	'end_time': '2020-06-06 11:16:33.250349',
+       	'post_found': 'true',
+       	'post_url': 'https://www.teedin108.com/land/view/2106591/',
+       	'post_id': '2106591'
+}
+

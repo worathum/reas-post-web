@@ -1,0 +1,149 @@
+REGISTRATION => pass
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : ewogICAgImFjdGlvbiI6ICJyZWdpc3Rlcl91c2VyIiwKICAgICJ0aW1lb3V0IjogIjciLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImNvbmRvYWJsZSIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwKICAgICAgICAgICAgInVzZXIiOiAiYW1hcmlhYXNzc2RzZGZobi50YUBnbWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ICI1azRrazMyNTM0MzQiLAogICAgICAgICAgICAiY29tcGFueV9uYW1lIjogImFtYXJpbiBpbmMiLAogICAgICAgICAgICAibmFtZV90aXRsZSI6ICJtciIsCiAgICAgICAgICAgICJuYW1lX3RoIjogIuC4reC4seC4oeC4o+C4tOC4meC4l+C4o+C5jCIsCiAgICAgICAgICAgICJzdXJuYW1lX3RoIjogIuC4muC4uOC4jeC5gOC4geC4tOC4lCIsCiAgICAgICAgICAgICJuYW1lX2VuIjogIkFtYXJpbiIsCiAgICAgICAgICAgICJzdXJuYW1lX2VuIjogIkJvb25raXJ0IiwKICAgICAgICAgICAgInRlbCI6ICIwODkxOTk5NDUwIiwKICAgICAgICAgICAgImxpbmUiOiAiYW1hcmluLnRhIiwKICAgICAgICAgICAgImFkZHJfcHJvdmluY2UiIDogIm5vbnRoYWJ1cmkiICAgICAgICAgICAgCiAgICAgICAgfV19
+
+<output>
+{
+ "success": "true",
+ "action": "register_user",
+ "web": {
+  "condoable": {
+   "websitename": "condoable",
+   "success": "True",
+   "start_time": "2020-05-04 20:09:09.847554",
+   "end_time": "2020-05-04 20:09:10.720390",
+   "detail": "Registered Successfully"
+  }
+ },
+ "usage_time": "0:00:00.917199",
+ "start_time": "2020-05-04 20:09:09.809387",
+ "end_time": "2020-05-04 20:09:10.726586"
+}
+
+
+LOGIN : Correct Pass => Pass
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJjb25kb2FibGUiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogInRlc3RlclJlYWxAcHJvdG9ubWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
+
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "condoable": {
+   "websitename": "condoable",
+   "success": "True",
+   "start_time": "2020-05-04 20:14:50.587381",
+   "end_time": "2020-05-04 20:14:54.841865",
+   "detail": "Sucessful Login"
+  }
+ },
+ "usage_time": "0:00:04.295291",
+ "start_time": "2020-05-04 20:14:50.553074",
+ "end_time": "2020-05-04 20:14:54.848365"
+}
+
+LOGIN : Wrong Pass => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJjb25kb2FibGUiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogInRlc3Rlcm5vdFJlYWxAcHJvdG9ubWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
+
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "condoable": {
+   "websitename": "condoable",
+   "success": "False",
+   "start_time": "2020-05-04 20:16:11.036674",
+   "end_time": "2020-05-04 20:16:12.300880",
+   "detail": "Login Unsucessful"
+  }
+ },
+ "usage_time": "0:00:01.313269",
+ "start_time": "2020-05-04 20:16:11.002306",
+ "end_time": "2020-05-04 20:16:12.315575"
+}
+
+CREATE POST => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : eyJhY3Rpb24iOiAiY3JlYXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgInBvc3RfaW1nX3VybF9saXN0cyI6IFsiaHR0cHM6Ly9pbWFnZS5zaHV0dGVyc3RvY2suY29tL2ltYWdlLXBob3RvL2JyaWdodC1zcHJpbmctdmlldy1jYW1lby1pc2xhbmQtMjYwbnctMTA0ODE4NTM5Ny5qcGciLCJodHRwczovL2ltYWdlLnNodXR0ZXJzdG9jay5jb20vaW1hZ2UtcGhvdG8vbW91bnRhaW5zLWR1cmluZy1zdW5zZXQtYmVhdXRpZnVsLW5hdHVyYWwtMjYwbnctNDA3MDIxMTA3LmpwZyJdLCAiZ2VvX2xhdGl0dWRlIjogIjEzLjk5ODk4MzM4NjIxMjQ5NyIsICJnZW9fbG9uZ2l0dWRlIjogIjk5Ljc0NDY0MDI5MDQ2MTQyIiwgInByb3BlcnR5X2lkIjogIiIsICJwb3N0X3RpdGxlX3RoIjogInh4eCIsICJzaG9ydF9wb3N0X3RpdGxlX3RoIjogInh4eCIsICJwb3N0X2Rlc2NyaXB0aW9uX3RoIjogInh4eCIsICJwb3N0X3RpdGxlX2VuIjogImFiY2Rhc2tqZGZnIiwgInNob3J0X3Bvc3RfdGl0bGVfZW4iOiAieHh4IiwgInBvc3RfZGVzY3JpcHRpb25fZW4iOiAiTGFuZCBmb3IgcmVudCBiYW5na2xveXNhaW5vaSA2IHJhaSBzdWl0YWJsZSBmb3IgZGV2ZWxvcGluZ0xhbmQgU2l6ZSA2IHJhaVdpZHRoIDMwIG1ldGVyIiwgInByaWNlX2JhaHQiOiAiMzAwMCIsICJwcm9qZWN0X25hbWUiOiAicHJvamVjdG5hbWVpc2VuZXRlcnRlZGhlcmUiLCAibGlzdGluZ190eXBlIjogIlx1MGUwMlx1MGUzMlx1MGUyMiIsICJwcm9wZXJ0eV90eXBlIjogMiwgImZsb29yX2xldmVsIjogMiwgImZsb29yX3RvdGFsIjogIjExIiwgImZsb29yX2FyZWEiOiAiMTEiLCAiYmF0aF9yb29tIjogMiwgImJlZF9yb29tIjogMywgInByb21pbmVudF9wb2ludCI6ICJcdTBlMDhcdTBlMzhcdTBlMTRcdTBlNDBcdTBlMTRcdTBlNDhcdTBlMTkiLCAidmlld190eXBlICI6ICIxMSIsICJkaXJlY3Rpb25fdHlwZSI6ICIxMSIsICJhZGRyX3Byb3ZpbmNlIjogIlx1MGUwMVx1MGUzMlx1MGUwZFx1MGUwOFx1MGUxOVx1MGUxYVx1MGUzOFx1MGUyM1x1MGUzNSIsICJhZGRyX2Rpc3RyaWN0IjogIlx1MGUxN1x1MGU0OFx1MGUzMlx1MGUyMVx1MGUzMFx1MGUwMVx1MGUzMiIsICJhZGRyX3N1Yl9kaXN0cmljdCI6ICJcdTBlMTVcdTBlMzBcdTBlMDRcdTBlMjNcdTBlNDlcdTBlMzNcdTBlNDBcdTBlMmRcdTBlMTkiLCAiYWRkcl9yb2FkIjogIiIsICJhZGRyX3NvaSI6ICIiLCAiYWRkcl9uZWFyX2J5IjogIiIsICJmbG9vcmFyZWFfc3FtIjogMTIzNCwgImxhbmRfc2l6ZV9yYWkiOiAzMiwgImxhbmRfc2l6ZV9uZ2FuIjogMjEsICJsYW5kX3NpemVfd2EiOiAxMiwgIm5hbWUiOiAieHh4IiwgIm1vYmlsZSI6ICJ4eHgiLCAiZW1haWwiOiAieHh4IiwgImxpbmUiOiAieHh4IiwgIndlYiI6IFt7ImRzX25hbWUiOiAiY29uZG9hYmxlIiwgImRzX2lkIjogIjQiLCAidXNlciI6ICJ0ZXN0ZXJSZWFsQHByb3Rvbm1haWwuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgifV19
+
+<output>
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "condoable": {
+   "websitename": "condoable",
+   "success": "true",
+   "time_usage": "P0DT00H00M20.372614S",
+   "time_start": "2020-05-10T19:11:04.881",
+   "time_end": "2020-05-10T19:11:25.254",
+   "post_url": "http://condoable.com/viewAdvertise.do?advertiseId=288236",
+   "post_id": "288236",
+   "account_type": "",
+   "detail": "Sucessfully posted"
+  }
+ },
+ "usage_time": "0:00:22.008202",
+ "start_time": "2020-05-10 19:11:03.261692",
+ "end_time": "2020-05-10 19:11:25.269894"
+}
+
+Edit Post => Pass
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwb3N0X2ltZ191cmxfbGlzdHMiOiBbImh0dHBzOi8vaW1hZ2Uuc2h1dHRlcnN0b2NrLmNvbS9pbWFnZS1waG90by9icmlnaHQtc3ByaW5nLXZpZXctY2FtZW8taXNsYW5kLTI2MG53LTEwNDgxODUzOTcuanBnIiwiaHR0cHM6Ly9pbWFnZS5zaHV0dGVyc3RvY2suY29tL2ltYWdlLXBob3RvL21vdW50YWlucy1kdXJpbmctc3Vuc2V0LWJlYXV0aWZ1bC1uYXR1cmFsLTI2MG53LTQwNzAyMTEwNy5qcGciXSwgImdlb19sYXRpdHVkZSI6ICIxMy45OTg5ODMzODYyMTI0OTciLCAiZ2VvX2xvbmdpdHVkZSI6ICI5OS43NDQ2NDAyOTA0NjE0MiIsICJwcm9wZXJ0eV9pZCI6ICIiLCAicG9zdF90aXRsZV90aCI6ICJ4eHgiLCAic2hvcnRfcG9zdF90aXRsZV90aCI6ICJ4eHgiLCAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJFZGl0ZWQgbm93IiwgInBvc3RfdGl0bGVfZW4iOiAiYWJjZGFza2pkZmciLCAic2hvcnRfcG9zdF90aXRsZV9lbiI6ICJ4eHgiLCAicG9zdF9kZXNjcmlwdGlvbl9lbiI6ICJMYW5kIGZvciByZW50IGJhbmdrbG95c2Fpbm9pIDYgcmFpIHN1aXRhYmxlIGZvciBkZXZlbG9waW5nTGFuZCBTaXplIDYgcmFpV2lkdGggMzAgbWV0ZXIiLCAicHJpY2VfYmFodCI6ICIzMDAwIiwgInByb2plY3RfbmFtZSI6ICJwcm9qZWN0bmFtZWlzZW5ldGVydGVkaGVyZSIsICJsaXN0aW5nX3R5cGUiOiAiXHUwZTAyXHUwZTMyXHUwZTIyIiwgInByb3BlcnR5X3R5cGUiOiAyLCAiZmxvb3JfbGV2ZWwiOiAyLCAiZmxvb3JfdG90YWwiOiAiMTEiLCAiZmxvb3JfYXJlYSI6ICIxMSIsICJiYXRoX3Jvb20iOiAyLCAiYmVkX3Jvb20iOiAzLCAicHJvbWluZW50X3BvaW50IjogIlx1MGUwOFx1MGUzOFx1MGUxNFx1MGU0MFx1MGUxNFx1MGU0OFx1MGUxOSIsICJ2aWV3X3R5cGUgIjogIjExIiwgImRpcmVjdGlvbl90eXBlIjogIjExIiwgImFkZHJfcHJvdmluY2UiOiAiXHUwZTAxXHUwZTMyXHUwZTBkXHUwZTA4XHUwZTE5XHUwZTFhXHUwZTM4XHUwZTIzXHUwZTM1IiwgImFkZHJfZGlzdHJpY3QiOiAiXHUwZTE3XHUwZTQ4XHUwZTMyXHUwZTIxXHUwZTMwXHUwZTAxXHUwZTMyIiwgImFkZHJfc3ViX2Rpc3RyaWN0IjogIlx1MGUxNVx1MGUzMFx1MGUwNFx1MGUyM1x1MGU0OVx1MGUzM1x1MGU0MFx1MGUyZFx1MGUxOSIsICJhZGRyX3JvYWQiOiAiIiwgImFkZHJfc29pIjogIiIsICJhZGRyX25lYXJfYnkiOiAiIiwgImZsb29yYXJlYV9zcW0iOiAxMjM0LCAibGFuZF9zaXplX3JhaSI6IDMyLCAibGFuZF9zaXplX25nYW4iOiAyMSwgImxhbmRfc2l6ZV93YSI6IDEyLCAibmFtZSI6ICJ4eHgiLCAibW9iaWxlIjogInh4eCIsICJlbWFpbCI6ICJ4eHgiLCAibGluZSI6ICJ4eHgiLCAid2ViIjogW3siZHNfbmFtZSI6ICJjb25kb2FibGUiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogInRlc3RlclJlYWxAcHJvdG9ubWFpbC5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCIsICJwb3N0X2lkIjoiMjg4MjM2IiwibG9nX2lkIjoiMjg4MjM2In1dfQ==
+
+<output>
+{
+ "success": "true",
+ "action": "edit_post",
+ "web": {
+  "condoable": {
+   "websitename": "condoable",
+   "success": "true",
+   "time_usage": "P0DT00H00M14.564985S",
+   "time_start": "2020-05-10T19:24:32.644",
+   "time_end": "2020-05-10T19:24:47.209",
+   "post_url": "http://condoable.com/viewAdvertise.do?advertiseId=288236",
+   "post_id": "288236",
+   "account_type": "",
+   "detail": "Sucessfully Edited post with id 288236"
+  }
+ },
+ "usage_time": "0:00:15.069410",
+ "start_time": "2020-05-10 19:24:32.155877",
+ "end_time": "2020-05-10 19:24:47.225287"
+}
+
+Delete Post => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : ewogICAgImFjdGlvbiI6ICJkZWxldGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICJ3ZWIiOiBbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ICJjb25kb2FibGUiLAogICAgICAgICAgICAiZHNfaWQiOiAiNCIsCiAgICAgICAgICAgICJwb3N0X2lkIiA6ICIyODgyMzMiLCAKICAibG9nX2lkIiA6ICIxMTM4OTg1MyIsCiAgICAgICAgICAgICJ1c2VyIjogInRlc3RlclJlYWxAcHJvdG9ubWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ICIxMjM0NTY3OCIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+{
+ "success": "true",
+ "action": "delete_post",
+ "web": {
+  "condoable": {
+   "websitename": "condoable",
+   "success": "true",
+   "time_usage": "P0DT00H00M31.022990S",
+   "time_start": "2020-05-10T19:51:20.368",
+   "time_end": "2020-05-10T19:51:51.390",
+   "detail": "Announcement deleted",
+   "log_id": "288233"
+  }
+ },
+ "usage_time": "0:00:31.074562",
+ "start_time": "2020-05-10 19:51:20.333259",
+ "end_time": "2020-05-10 19:51:51.407821"
+}

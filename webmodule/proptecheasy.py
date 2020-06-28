@@ -653,6 +653,65 @@ class proptecheasy():
             "account_type": "null",
             "detail": detail,
         }
+    
+    def search_post(self, postdata):
+
+        time_start = datetime.datetime.utcnow()
+        search_title = postdata['post_title_th']
+        
+        resp = self.test_login(postdata)
+        detail = resp['detail']
+
+        success = False
+        post_url = ''
+        post_id = ''
+        if resp['success'] == 'true':
+            resp = httprequestObj.http_get("https://www.proptecheasy.com/dashboard/?ua=myitems")
+
+            with open("temp-6", "w") as f:
+                f.write(resp.text)
+
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            posts = soup.findAll('div', {'class': 'pfmu-itemlisting-title'})
+
+            titles = []
+            for i in posts:
+                try:
+                    titles += [[i.find(text=True), i.find('a')['href']]]
+                except:
+                    pass
+             
+            detail = 'Not found'
+
+            for title in titles:
+                if title[0] == search_title:
+                    success = True
+                    detail = "Post found"
+                    post_url = title[1]
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        ret = {
+                "websitename": "proptecheasy",
+                "success": "true",
+                "ds_id": postdata['ds_id'], 
+                "log_id": postdata['log_id'], 
+                "post_found": success,
+                "post_url": post_url,
+                "post_id": post_id, 
+                "post_create_time": '',
+                "post_modify_time": '',
+                "post_view": '',
+                "account_type": "null",
+                "detail": detail,
+                "start_time": str(time_start),
+                "end_time": str(time_end),
+                "time_usage": str(time_usage),
+                }
+        return ret
+
+
 
     def edit_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')

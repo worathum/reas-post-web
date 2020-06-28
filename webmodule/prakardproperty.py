@@ -80,7 +80,7 @@ class prakardproperty():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         
-
+        print("Login enter")
         email_user = logindata['user']
         email_pass = logindata['pass']
         
@@ -91,8 +91,10 @@ class prakardproperty():
         #datapost)
         i = 0
         matchObj = False
+        success = ""
+        detail = ""
         while i < 8 and not matchObj:
-
+            print("Entered While Loop")
             r = self.httprequestObj.http_post('http://www.prakardproperty.com/login/checkmember', data=datapost)
             # r = requests.post('http://www.prakardproperty.com/login/checkmember', data=datapost)
             self.httprequestObj.http_get('http://www.prakardproperty.com/properties/add')
@@ -102,6 +104,7 @@ class prakardproperty():
             matchObj = re.search(r'/member/account', data)
             # #matchObj)
             i += 1
+        # print("Broke from while loop")
         if matchObj:
             success = "True"
             detail = "Successful Login"
@@ -111,7 +114,14 @@ class prakardproperty():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        
+        # print({
+        #     "websitename": "prakardproperty",
+        #     "success": success,
+        #     "ds_id": logindata['ds_id'],
+        #     "start_time": str(time_start),
+        #     "end_time": str(time_end),
+        #     "detail": detail,
+        # })
         return {
             "websitename": "prakardproperty",
             "success": success,
@@ -129,7 +139,7 @@ class prakardproperty():
         time_start = datetime.datetime.utcnow()
         # #postdata)
         webdata = postdata
-
+        # print("Create Post")
         listing_type = postdata['listing_type']
         property_type = postdata['property_type']
         allimages = postdata['post_images']
@@ -179,7 +189,7 @@ class prakardproperty():
                 project_name = postdata["project_name"]
             except:
                 project_name = postdata["post_title_th"]
-
+        # print("Next Check")
         proj_url = "http://www.prakardproperty.com/autocomplete/project/?term=" + project_name
         resp = self.httprequestObj.http_get(proj_url, verify=False)
         try:
@@ -226,6 +236,7 @@ class prakardproperty():
 
 
         #property_type)    
+        # print("Pre Check")
         postdata = {
             'data[Properties][running_number]':"",
 'data[Properties][title]': post_title_th,
@@ -277,11 +288,13 @@ class prakardproperty():
             
         # login
         
+        # print("Pre Login")
         login = self.test_login(webdata)
         success = login["success"]
         detail = login["detail"]
         post_id = ""
         post_url = ""
+        # print("Login Success : ", success)
         if success == "True":
             if not isProject:
                 r = self.httprequestObj.http_get('http://www.prakardproperty.com/properties/add', verify=False)
@@ -319,7 +332,7 @@ class prakardproperty():
 
             r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/addsave', data = postdata)#/property/show
             data = r.text
-            # print(data)
+            print(data)
             # #data)
             matchObj = re.search(r'/property/show', data)
             if not matchObj:
