@@ -195,6 +195,7 @@ class bankumka():
             if add is not None:
                 prod_address += add
         prod_address = prod_address[:-1]
+        print(success,"lol")
         if success == "true":
 
             r = httprequestObj.http_get(
@@ -234,7 +235,7 @@ class bankumka():
             r = httprequestObj.http_get(
                 query_string, verify=False)
             data = json.loads(r.text)
-            # print(data)
+            # print(data,"1")
             # print()
             # print(postdata['addr_sub_district'])
             for i in data:
@@ -262,6 +263,7 @@ class bankumka():
                 'query': project_n
             }
             resp = requests.post('https://bankumka.com/ajax/listproject/', data=mydata)
+            print("ji")
             allres = json.loads(resp.content.decode('utf-8'))["suggestions"]
             project_id = '0'
 
@@ -480,7 +482,6 @@ class bankumka():
 
             # print("wrong_id")
             success = "false"
-            detail = "cannot login"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
 
@@ -1199,8 +1200,8 @@ class bankumka():
         time_usage = time_end - time_start
 
         return {
-            "websitename": "ddteedin.com",
-            "success": success,
+            "websitename": "bankumka",
+            "success": "true",
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_found": found,

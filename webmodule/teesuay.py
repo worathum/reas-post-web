@@ -356,7 +356,7 @@ class teesuay():
             detail = 'created post'
         else:
             success = "False"
-            'detail': "cannot login"
+            detail = "cannot login"
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
