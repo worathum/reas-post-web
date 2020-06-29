@@ -1,5 +1,5 @@
-#import numpy as np
-#from PIL import Image
+# import numpy as np
+# from PIL import Image
 import base64
 
 from .lib_httprequest import *
@@ -611,10 +611,14 @@ class kobkid():
             detail = "Unable to Edit The Post"
 
         end_time = datetime.datetime.utcnow()
+        try:
+            log_id = postdata['log_id']
+        except:
+            log_id = ""
         return {
             "success": result,
             "start_time": str(start_time),
-            "log_id": postdata['log_id'],
+            "log_id": log_id,
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
             "detail": detail,
