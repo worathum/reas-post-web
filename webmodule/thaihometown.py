@@ -6,7 +6,7 @@ from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
 # from urlparse import urlparse
-import re
+import re,requests
 import json
 import datetime
 import sys
@@ -23,8 +23,10 @@ try:
     import configs
 except ImportError:
     configs = {}
+'''
 logging.config.dictConfig(getattr(configs, 'logging_config', {}))
 log = logging.getLogger()
+'''
 
 
 class thaihometown():
@@ -44,7 +46,7 @@ class thaihometown():
         self.captchascret = getattr(configs, 'captcha_secret', '')
 
     def postdata_handle(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         if self.handled == True:
             return postdata
@@ -55,7 +57,7 @@ class thaihometown():
             datahandled['listing_type'] = postdata['listing_type']
         except KeyError as e:
             datahandled['listing_type'] = "ประกาศขาย"
-            log.warning(str(e))
+            #log.warning(str(e))
         if datahandled['listing_type'] == "เช่า":
             datahandled['listing_type'] = "ประกาศให้เช่า"
         elif datahandled['listing_type'] == "ขายดาวน์":
@@ -68,7 +70,7 @@ class thaihometown():
             datahandled['property_type'] = postdata['property_type']
         except KeyError as e:
             datahandled['property_type'] = "คอนโดมิเนียม+Condominiem"
-            log.warning(str(e))
+            #log.warning(str(e))
         if datahandled['property_type'] == '2' or datahandled['property_type'] == 2: #2 บ้านเดี่ยว
             datahandled['property_type'] = "บ้านเดี่ยว+Singlehouse"
         elif datahandled['property_type'] == '3' or datahandled['property_type'] == 3: #3 บ้านแฝด
@@ -96,181 +98,181 @@ class thaihometown():
             datahandled['post_img_url_lists'] = postdata['post_img_url_lists']
         except KeyError as e:
             datahandled['post_img_url_lists'] = {}
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['price_baht'] = postdata['price_baht']
         except KeyError as e:
             datahandled['price_baht'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_province'] = postdata['addr_province']
         except KeyError as e:
             datahandled['addr_province'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_district'] = postdata['addr_district']
         except KeyError as e:
             datahandled['addr_district'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_sub_district'] = postdata['addr_sub_district']
         except KeyError as e:
             datahandled['addr_sub_district'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_road'] = postdata['addr_road']
         except KeyError as e:
             datahandled['addr_road'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_near_by'] = postdata['addr_near_by']
         except KeyError as e:
             datahandled['addr_near_by'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_postcode'] = postdata['addr_postcode']
         except KeyError as e:
             datahandled['addr_postcode'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['floor_area'] = postdata['floor_area']
         except KeyError as e:
             datahandled['floor_area'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['geo_latitude'] = postdata['geo_latitude']
         except KeyError as e:
             datahandled['geo_latitude'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['geo_longitude'] = postdata['geo_longitude']
         except KeyError as e:
             datahandled['geo_longitude'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['property_id'] = postdata['property_id']
         except KeyError as e:
             datahandled['property_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_title_th'] = postdata['post_title_th']
         except KeyError as e:
             datahandled['post_title_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_description_th'] = postdata['post_description_th']
         except KeyError as e:
             datahandled['post_description_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_title_en'] = postdata['post_title_en']
         except KeyError as e:
             datahandled['post_title_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_description_en'] = postdata['post_description_en']
         except KeyError as e:
             datahandled['post_description_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['ds_id'] = postdata["ds_id"]
         except KeyError as e:
             datahandled['ds_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['ds_name'] = postdata["ds_name"]
         except KeyError as e:
             datahandled['ds_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['user'] = postdata['user']
         except KeyError as e:
             datahandled['user'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['pass'] = postdata['pass']
         except KeyError as e:
             datahandled['pass'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['project_name'] = postdata["project_name"]
         except KeyError as e:
             datahandled['project_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['name'] = postdata["name"]
         except KeyError as e:
             datahandled['name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['mobile'] = postdata["mobile"]
         except KeyError as e:
             datahandled['mobile'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['email'] = postdata["email"]
         except KeyError as e:
             datahandled['email'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['web_project_name'] = postdata["web_project_name"]
         except KeyError as e:
             datahandled['web_project_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['action'] = postdata["action"]
         except KeyError as e:
             datahandled['action'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['bath_room'] = postdata["bath_room"]
         except KeyError as e:
             datahandled['bath_room'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['bed_room'] = postdata["bed_room"]
         except KeyError as e:
             datahandled['bed_room'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['floor_total'] = postdata["floor_total"]
         except KeyError as e:
             datahandled['floor_total'] = 1
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['floor_level'] = postdata["floor_level"]
         except KeyError as e:
             datahandled['floor_level'] = 1
-            log.warning(str(e))
+            #log.warning(str(e))
 
         
 
@@ -281,85 +283,85 @@ class thaihometown():
             datahandled['post_id'] = postdata["post_id"]
         except KeyError as e:
             datahandled['post_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['log_id'] = postdata["log_id"]
         except KeyError as e:
             datahandled['log_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['land_size_rai'] = str(postdata["land_size_rai"])
         except KeyError as e:
             datahandled['land_size_rai'] = '0'
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['land_size_ngan'] = str(postdata["land_size_ngan"])
         except KeyError as e:
             datahandled['land_size_ngan'] = '0'
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['land_size_wa'] = str(postdata["land_size_wa"])
         except KeyError as e:
             datahandled['land_size_wa'] = '0'
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_road'] = postdata["addr_road"]
         except KeyError as e:
             datahandled['addr_road'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['company_name'] = postdata["company_name"]
         except KeyError as e:
             datahandled['company_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['name_title'] = postdata["name_title"]
         except KeyError as e:
             datahandled['name_title'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['name_th'] = postdata["name_th"]
         except KeyError as e:
             datahandled['name_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['surname_th'] = postdata["surname_th"]
         except KeyError as e:
             datahandled['surname_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['name_en'] = postdata["name_en"]
         except KeyError as e:
             datahandled['name_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['surname_en'] = postdata["surname_en"]
         except KeyError as e:
             datahandled['surname_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['tel'] = postdata["tel"]
         except KeyError as e:
             datahandled['tel'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['line'] = postdata["line"]
         except KeyError as e:
             datahandled['line'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
         
         for key, val in datahandled.items():
             if val == None:
@@ -372,10 +374,10 @@ class thaihometown():
         return datahandled
 
     def register_user(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
-
+        #print('start')
         # start process
         #
         datahandled = self.postdata_handle(postdata)
@@ -393,7 +395,7 @@ class thaihometown():
             code_edit=passwd,
             code_edit2=passwd,
             email=user,
-            firstname=name_th,
+            firstname=datahandled['name_th'],
             mobile=tel,
         )
         r = httprequestObj.http_post('https://www.thaihometown.com/member/register', data=datapost)
@@ -402,7 +404,7 @@ class thaihometown():
 
         # if redirect to register page again
         if re.search('https://www.thaihometown.com/member/register', data):
-            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
             detail = soup.find('span').text
             success = "false"
 
@@ -411,7 +413,9 @@ class thaihometown():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+        #print('here')
         return {
+            "websitename": "thaihometown",
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
@@ -420,7 +424,7 @@ class thaihometown():
         }
 
     def test_login(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
@@ -442,7 +446,7 @@ class thaihometown():
             'user_login': user,
         }
         r = httprequestObj.http_post('https://www.thaihometown.com/member/check', data=datapost)
-        log.debug('post login')
+        #log.debug('post login')
         data = r.text
         # print(data)
         matchObj = re.search(r'member\/[0-9]+', data)
@@ -450,7 +454,7 @@ class thaihometown():
             success = "false"
             detail = "cannot login"
 
-        log.debug('login status %s', success)
+        #log.debug('login status %s', success)
 
         #
         # end process
@@ -468,7 +472,7 @@ class thaihometown():
         }
 
     def validatedatapost(self,datahandled):
-        log.debug('')
+        #log.debug('')
 
         success = 'true'
         detail = ''
@@ -497,42 +501,52 @@ class thaihometown():
         return success,detail
 
     def getprovincedistrictid(self,datahandled):
-        log.debug('')
+        #log.debug('')
 
         datahandled['property_city_bkk'] = ''
         datahandled['property_city_2'] = ''
         datahandled['property_country_2'] = ''
 
+        #print(datahandled['addr_province'])
         #กรุงเทพ
         if datahandled['addr_province'] == 'กรุงเทพมหานคร' or datahandled['addr_province'] == 'กรุงเทพ':
-            r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
             data = r.text
-            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
             try:
                 datahandled['property_city_bkk'] = soup.find('select',{'id':'property_city_bkk'}).find('option',text=re.compile(datahandled['addr_district']))['value']
-                log.debug('bkk district is '+datahandled['property_city_bkk'])
+                #log.debug('bkk district is '+datahandled['property_city_bkk'])
             except:
                 pass
                 
         #ต่างจังหวัด
         else:
-            r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
             data = r.text
-            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            f = open('file.html','w')
+            f.write(data)
+            f.close()
+            soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
             try:
                 datahandled['property_country_2'] = soup.find('select',{'id':'property_country_2'}).find('option',text=re.compile(datahandled['addr_province']))['value']
-                log.debug('province is '+datahandled['property_country_2'])
+                #print('here',datahandled['property_country_2'])
+                #log.debug('province is '+datahandled['property_country_2'])
             except:
                 pass
             if datahandled['property_country_2'] != "":                
                 r = httprequestObj.http_get('https://www.thaihometown.com/search/state2012_addnew.php?PID='+str(datahandled['property_country_2']),verify=False)
                 data = r.text
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
                 try:
                     datahandled['property_city_2'] = soup.find('option',text=re.compile(datahandled['addr_district']))['value']
-                    log.debug('district is '+datahandled['property_city_2'])
+                    #log.debug('district is '+datahandled['property_city_2'])
                 except:
-                    pass                    
+                    pass
+
+        if datahandled['property_country_2'] == '':
+            datahandled['property_country_2'] = '2'
+        if datahandled['property_city_2'] == '':
+            datahandled['property_city_2'] = '53'
 
         if datahandled['property_city_bkk'] == '' and (datahandled['property_city_2'] == '' or datahandled['property_country_2'] == ''):
             return 'false','wrong province or district '+datahandled['addr_province']+' '+datahandled['addr_district'],datahandled
@@ -540,7 +554,7 @@ class thaihometown():
         return 'true','',datahandled
 
     def getsizeunit(self,datahandled):
-        log.debug('')
+        #log.debug('')
 
         #type unit 1 = ตรม
         #type unit 2 = ตรว
@@ -560,19 +574,19 @@ class thaihometown():
                     rai = float(datahandled['land_size_rai'])
                     size = rai*1600
                 except ValueError:
-                    log.debug('cannot convert area rai to sqm')
+                    #log.debug('cannot convert area rai to sqm')
                     pass
                 try:
                     ngan = float(datahandled['land_size_ngan'])
                     size = size + (ngan*400)
                 except ValueError:
-                    log.debug('cannot convert area ngan to sqm')
+                    #log.debug('cannot convert area ngan to sqm')
                     pass
                 try:
                     wa = float(datahandled['land_size_wa'])
                     size = size + (wa*4)
                 except ValueError:
-                    log.debug('cannot convert area wa to sqm')
+                    #log.debug('cannot convert area wa to sqm')
                     pass    
         # not condo / office
         else:
@@ -581,19 +595,19 @@ class thaihometown():
                 rai = float(datahandled['land_size_rai'])
                 size = rai*400
             except ValueError:
-                log.debug('cannot convert area rai')
+                #log.debug('cannot convert area rai')
                 pass
             try:
                 ngan = float(datahandled['land_size_ngan'])
                 size = size + (ngan*100)
             except ValueError:
-                log.debug('cannot convert area ngan')
+                #log.debug('cannot convert area ngan')
                 pass
             try:
                 wa = float(datahandled['land_size_wa'])
                 size = size + wa
             except ValueError:
-                log.debug('cannot convert area wa')
+                #log.debug('cannot convert area wa')
                 pass    
             
             # if rai ngan wa not defined
@@ -603,27 +617,27 @@ class thaihometown():
                 except:
                     size = datahandled['floor_area']
                     typeunit = 1
-                    log.debug('cannot convert area to sqw')
+                    #log.debug('cannot convert area to sqw')
         #last
         if size == 0: 
             size = datahandled.get('floor_area',0)
             typeunit = 1
                 
-        log.debug('size %s type %s',size,typeunit)
+        #log.debug('size %s type %s',size,typeunit)
 
         return size,typeunit
 
 
     def create_post(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
-
+        #print('here')
         # start process
         #
         datahandled = self.postdata_handle(postdata)
         ds_id = postdata["ds_id"]
-
+        #print('here1')
         rent_price=''
         selling_price=''
         if datahandled['listing_type'] == 'ประกาศขาย' or datahandled['listing_type'] == 'ประกาศขายดาวน์':
@@ -638,7 +652,7 @@ class thaihometown():
         detail = ""
         post_id = ""
         post_url = ""
-
+        #print('here2')
         success,detail = self.validatedatapost(datahandled)
             
         # login
@@ -646,23 +660,25 @@ class thaihometown():
             test_login = self.test_login(datahandled)
             success = test_login["success"]
             detail = test_login["detail"]
-
+        #print('here3')
         if success == "true":
             #get provice district id
             success,detail,datahandled = self.getprovincedistrictid(datahandled)
-            
+            #print('got')
             if success == 'true':
                 #get post authen value
                 r = httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
                 data = r.text
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                #print('here4')
                 #f = open("thihomepost.html", "wb")
                 #f.write(data.encode('utf-8').strip())
                 postlimit = soup.find("div",{"id":"posted_limit2"})
                 if postlimit:
                     success = "false"
                     detail = 'คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป'
-                    log.debug('คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป')
+                    #log.debug('คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป')
+                #print('here5')
                 if success == 'true':
                     string2 = soup.find("input", {"name": "string2"})['value']
                     string1 = string2
@@ -673,6 +689,7 @@ class thaihometown():
                     firstname = soup.find("input", {"name": "firstname"})['value']
                     mobile = soup.find("input", {"name": "mobile"})['value']
                     date_signup = soup.find("input", {"name": "date_signup"})['value']
+                    #print('here6')
 
                     # https://www.thaihometown.com/addcontacts
                     datapost = {
@@ -720,6 +737,7 @@ class thaihometown():
                     }
 
                     #log.debug(datapost)
+                    #print('here7')
                     r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
                     data = r.text
                     # print(data)
@@ -729,7 +747,7 @@ class thaihometown():
                     matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
                     if not matchObj:
                         success = "false"
-                        soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                        soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
                         txtresponse = soup.find("font").text
                         detail = unquote(txtresponse)
                     else:
@@ -741,7 +759,7 @@ class thaihometown():
                         #upload image
                         self.uploadimage(datahandled,post_id)
 
-        
+        #print('finish')
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -758,10 +776,10 @@ class thaihometown():
         }
     
     def getposturl(self,post_id):
-        log.debug('')
+        #log.debug('')
 
         post_url = 'https://www.thaihometown.com/home/'+str(post_id)
-        r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/edit/'+str(post_id),encoder='cp874', verify=False)
+        r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(post_id),encoder='cp874', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         # post is publish
@@ -776,7 +794,7 @@ class thaihometown():
             #https://www.thaihometown.com/singlehouse/2226300/idcode/e8859755bce1195f9746e244789dd023
             if soup.find('a',text=re.compile('ดูตัวอย่างประกาศของคุณ')):
                 post_url = soup.find('a',text=re.compile('ดูตัวอย่างประกาศของคุณ'))['href']
-                log.debug(re.search(r'(https:\/\/www.thaihometown.com\/\w+\/\d+)',post_url))
+                #log.debug(re.search(r'(https:\/\/www.thaihometown.com\/\w+\/\d+)',post_url))
                 post_url = re.search(r'(https:\/\/www.thaihometown.com\/\w+\/\d+)',post_url).group(1)
         except:
             pass
@@ -785,29 +803,29 @@ class thaihometown():
 
     
     def uploadimage(self,datahandled,post_id):
-        log.debug('')
+        #log.debug('')
 
         r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(post_id), verify=False)
         data = r.text
-        soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+        soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
         uploadcode = ''
         uploadlink = ''
         try:
             uploadlink = soup.find('a',href=re.compile('memberupload'))['href']
-            log.debug('upload link ' +uploadlink)
+            #log.debug('upload link ' +uploadlink)
             uploadcode = parse_qs(urlparse(uploadlink).query)['Mag'][0]
         except:
             pass
-            log.warning('cannot get uploadlink and uploadcode')
-        log.debug('uploadcode ' +uploadcode)
+            #log.warning('cannot get uploadlink and uploadcode')
+        #log.debug('uploadcode ' +uploadcode)
 
         #if find image when editpost , to delete before new upload
         try:
             r = httprequestObj.http_get(uploadlink, verify=False)
             data = r.text
-            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
             allimage = soup.find_all('img',src=re.compile('small.jpg'))
-            log.debug('find all old image '+str(len(allimage)))
+            #log.debug('find all old image '+str(len(allimage)))
             if len(datahandled['post_images']) > 0:
                 for img in allimage:
                     imgid = re.search(r'-(\d+)_small',str(img)).group(1)
@@ -822,7 +840,7 @@ class thaihometown():
                     'https://www.thaihometown.com/form/memberupload/delete.php',
                     data=datapost,
                     )
-                    log.debug('remove image id '+str(imgid))
+                    #log.debug('remove image id '+str(imgid))
         except:
             pass
 
@@ -843,16 +861,16 @@ class thaihometown():
             data=encoder,
             headers={'Content-Type': encoder.content_type}
             )
-            log.debug('image upload '+r.text)
+            #log.debug('image upload '+r.text)
         
         #fix black image //thaihometown bug
         try:
-            log.debug('fix black image')
+            #log.debug('fix black image')
             r = httprequestObj.http_get('https://www.thaihometown.com/form/memberupload/image_update_copy.php?code='+str(uploadcode)+'&id='+str(post_id), verify=False)
             #log.debug(r.text)
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             is_total = soup.find('input',{'name':'is_total'})['value']
-            log.debug('image total '+is_total)
+            #log.debug('image total '+is_total)
             allimage = soup.find_all('input',id=re.compile('imag'))
             #log.debug(allimage)
             datapost = {
@@ -861,21 +879,21 @@ class thaihometown():
                 'is_total':is_total
             }
             for img in allimage:
-                log.debug("image name %s image value %s",img['id'],img['value'])
+                #log.debug("image name %s image value %s",img['id'],img['value'])
                 datapost[img['id']] = img['value']
             #log.debug(datapost)
             r = httprequestObj.http_post('https://www.thaihometown.com/form/memberupload/image_update_copy.php?code='+str(uploadcode)+'&id='+str(post_id), data=datapost)
             matchObj = re.search(r'&#3649;&#3585;&#3657;&#3652;&#3586;&#3619;&#3641;&#3611;&#3616;&#3634;&#3614;&#3648;&#3619;&#3637;&#3618;&#3610;&#3619;&#3657;&#3629;&#3618;', r.text) #แก้ไขรูปภาพเรียบร้อย
-            if matchObj:
-                log.debug('fixed black image success')
+            #if matchObj:
+                #log.debug('fixed black image success')
         except:
-            log.debug('post edit black image error')
+            #log.debug('post edit black image error')
             pass
          
         return True
 
     def boost_post_bak(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
@@ -1001,7 +1019,7 @@ class thaihometown():
         return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": log_id, "post_id": post_id}
 
     def delete_post(self, postdata):
-        log.debug('')
+        #log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
@@ -1027,16 +1045,16 @@ class thaihometown():
             #get code , it same upload code
             r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(datahandled['post_id']), verify=False)
             data = r.text
-            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+            soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
             uploadcode = ''
             try:
                 uploadlink = soup.find('a',href=re.compile('memberupload'))['href']
-                log.debug('upload link ' +uploadlink)
+                #log.debug('upload link ' +uploadlink)
                 uploadcode = parse_qs(urlparse(uploadlink).query)['Mag'][0]
-                log.debug('uploadcode ' +uploadcode)
+                #log.debug('uploadcode ' +uploadcode)
             except:
                 pass
-                log.error("cannot get post code , not found post id "+datahandled['post_id'])
+                #log.error("cannot get post code , not found post id "+datahandled['post_id'])
                 success = "false"
                 detail = "cannot get post code , not found post id "+datahandled['post_id']
         
@@ -1045,19 +1063,19 @@ class thaihometown():
             for i in range(5):
                 success = "true"
 
-                log.debug('try solve captcha image loop '+str(i+1))
+                #log.debug('try solve captcha image loop '+str(i+1))
 
                 #go to delete page
-                r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode,encoder='cp874',verify=False)
+                r = httprequestObj.http_get('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode,verify=False)
                 data = r.text
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
                 #log.debug(data)
                 #detect if post can delete
                 checkform = soup.find("form", {"name": "checkForm"})
                 if not checkform:
                     success = "false"
                     detail = soup.text
-                    log.debug(soup.text)
+                    #log.debug(soup.text)
                     break
             
                 if success == "true":
@@ -1074,14 +1092,14 @@ class thaihometown():
                     #log.debug('download image '+imgname)
                     imgnum = self.ImgToTextResolve(imgname)
                     os.unlink(imgname)
-                    log.debug(imgnum)
+                    #log.debug(imgnum)
                     #if anti captcha is error
                     if imgnum['errorId'] < 0:
                         success = 'false'
                         detail = imgnum['errorDescription']
-                        log.debug(imgnum['errorDescription'])
+                        #log.debug(imgnum['errorDescription'])
                         if imgnum['errorCode'] == 'ERROR_KEY_DOES_NOT_EXIST' or imgnum['errorCode'] == 'ERROR_ZERO_BALANCE' or imgnum['errorCode'] == 'ERROR_IP_NOT_ALLOWED' or imgnum['errorCode'] == 'ERROR_IP_BLOCKED':
-                            log.debug('break')
+                            #log.debug('break')
                             break
                         continue
 
@@ -1091,7 +1109,7 @@ class thaihometown():
                         'scode' : scode,
                         'contacts_id' : contacts_id
                     }
-                    r = httprequestObj.http_post_with_encode('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode,encoder='cp874', data=datapost)
+                    r = httprequestObj.http_post('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode, data=datapost)
                     data = r.text
                     # f = open("editpostthaihometown.html", "wb")
                     # f.write(data.encode('utf-8').strip())
@@ -1099,18 +1117,17 @@ class thaihometown():
                     if matchObj:
                         success = "false"
                         detail = "ใส่รหัส captcha image ไม่ถูกต้อง"
-                        log.debug("ใส่รหัส captcha image ไม่ถูกต้อง")
                         continue
                     else:
                         success = "true"
-                        log.debug("post id %s deleted success",datahandled['post_id'])
-                        log.debug('break')
+                        #log.debug("post id %s deleted success",datahandled['post_id'])
+                        #log.debug('break')
                         break
                     
 
         #
         # end process
-
+        #print('finish')
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -1125,7 +1142,7 @@ class thaihometown():
         }
     
     def ImgToTextResolve(self,imgname):
-        log.debug('')
+        #log.debug('')
 
         #{'errorId': 0, 'balance': 1.9321}
         #{'errorId': 1, 'errorCode': 'ERROR_KEY_DOES_NOT_EXIST', 'errorDescription': 'Account authorization key not found in the system'}
@@ -1148,7 +1165,7 @@ class thaihometown():
         
 
     def boost_post(self,postdata):
-        log.debug('')
+        #log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # start proces
@@ -1170,7 +1187,7 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
-            r = httprequestObj.http_get_with_encode('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1270,7 +1287,7 @@ class thaihometown():
 
 
     def edit_post(self, postdata):
-        log.debug('')
+        #log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # start proces

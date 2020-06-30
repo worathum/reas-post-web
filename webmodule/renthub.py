@@ -22,8 +22,9 @@ try:
     import configs
 except ImportError:
     configs = {}
+'''
 logging.config.dictConfig(getattr(configs, 'logging_config', {}))
-log = logging.getLogger()
+log = logging.getLogger()'''
 
 
 class renthub():
@@ -41,7 +42,7 @@ class renthub():
         self.handled = False
     
     def postdata_handle(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         if self.handled == True:
             return postdata
@@ -52,175 +53,175 @@ class renthub():
             datahandled['price_baht'] = postdata['price_baht']
         except KeyError as e:
             datahandled['price_baht'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_province'] = postdata['addr_province']
         except KeyError as e:
             datahandled['addr_province'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_district'] = postdata['addr_district']
         except KeyError as e:
             datahandled['addr_district'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_sub_district'] = postdata['addr_sub_district']
         except KeyError as e:
             datahandled['addr_sub_district'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_road'] = postdata['addr_road']
         except KeyError as e:
             datahandled['addr_road'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_near_by'] = postdata['addr_near_by']
         except KeyError as e:
             datahandled['addr_near_by'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_postcode'] = postdata['addr_postcode']
         except KeyError as e:
             datahandled['addr_postcode'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['floor_area'] = postdata['floor_area']
         except KeyError as e:
             datahandled['floor_area'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['geo_latitude'] = postdata['geo_latitude']
         except KeyError as e:
             datahandled['geo_latitude'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['geo_longitude'] = postdata['geo_longitude']
         except KeyError as e:
             datahandled['geo_longitude'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['property_id'] = postdata['property_id']
         except KeyError as e:
             datahandled['property_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_title_th'] = postdata['post_title_th']
         except KeyError as e:
             datahandled['post_title_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_description_th'] = postdata['post_description_th']
         except KeyError as e:
             datahandled['post_description_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_title_en'] = postdata['post_title_en']
         except KeyError as e:
             datahandled['post_title_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_description_en'] = postdata['post_description_en']
         except KeyError as e:
             datahandled['post_description_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['ds_id'] = postdata["ds_id"]
         except KeyError as e:
             datahandled['ds_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['ds_name'] = postdata["ds_name"]
         except KeyError as e:
             datahandled['ds_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['user'] = postdata['user']
         except KeyError as e:
             datahandled['user'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['pass'] = postdata['pass']
         except KeyError as e:
             datahandled['pass'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['project_name'] = postdata["project_name"]
         except KeyError as e:
             datahandled['project_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['name'] = postdata["name"]
         except KeyError as e:
             datahandled['name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['mobile'] = postdata["mobile"]
         except KeyError as e:
             datahandled['mobile'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['email'] = postdata["email"]
         except KeyError as e:
             datahandled['email'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['web_project_name'] = postdata["web_project_name"]
         except KeyError as e:
             datahandled['web_project_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['action'] = postdata["action"]
         except KeyError as e:
             datahandled['action'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['bath_room'] = postdata["bath_room"]
         except KeyError as e:
             datahandled['bath_room'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['bed_room'] = postdata["bed_room"]
         except KeyError as e:
             datahandled['bed_room'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['floor_total'] = postdata["floor_total"]
         except KeyError as e:
             datahandled['floor_total'] = 1
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['floor_level'] = postdata["floor_level"]
         except KeyError as e:
             datahandled['floor_level'] = 1
-            log.warning(str(e))
+            #log.warning(str(e))
 
         
 
@@ -231,13 +232,13 @@ class renthub():
             datahandled['post_id'] = postdata["post_id"]
         except KeyError as e:
             datahandled['post_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['log_id'] = postdata["log_id"]
         except KeyError as e:
             datahandled['log_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
        
 
@@ -245,67 +246,67 @@ class renthub():
             datahandled['addr_road'] = postdata["addr_road"]
         except KeyError as e:
             datahandled['addr_road'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['company_name'] = postdata["company_name"]
         except KeyError as e:
             datahandled['company_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['name_title'] = postdata["name_title"]
         except KeyError as e:
             datahandled['name_title'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['name_th'] = postdata["name_th"]
         except KeyError as e:
             datahandled['name_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['surname_th'] = postdata["surname_th"]
         except KeyError as e:
             datahandled['surname_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['name_en'] = postdata["name_en"]
         except KeyError as e:
             datahandled['name_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['surname_en'] = postdata["surname_en"]
         except KeyError as e:
             datahandled['surname_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['tel'] = postdata["tel"]
         except KeyError as e:
             datahandled['tel'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['line'] = postdata["line"]
         except KeyError as e:
             datahandled['line'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
         
         try:
             datahandled['addr_number'] = postdata["addr_number"]
         except KeyError as e:
             datahandled['addr_number'] = None
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['direction_type'] = postdata["direction_type"]     
         except KeyError as e:
             datahandled['direction_type'] = 'East'
-            log.warning(str(e))
+            #log.warning(str(e))
         # 11 เหนือ north
         # 12 ใต้ south
         # 13 ออก east
@@ -335,19 +336,19 @@ class renthub():
             datahandled['property_type'] = postdata["property_type"]
         except KeyError as e:
             datahandled['property_type'] = 1
-            log.warning(str(e))
+            #log.warning(str(e))
         
         try:
             datahandled['listing_type'] = postdata["listing_type"]
         except KeyError as e:
             datahandled['listing_type'] = 'ขาย'
-            log.warning(str(e))
+            #log.warning(str(e))
         
         try:
             datahandled['addr_soi'] = postdata["addr_soi"]
         except KeyError as e:
             datahandled['addr_soi'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         
         datahandled['use_project_name'] = datahandled['project_name']
@@ -378,12 +379,15 @@ class renthub():
         for key, value in province.items():
             if datahandled['addr_province'] == value:
                 datahandled['province_code'] = key
-                log.debug('province is  %s' % (datahandled['province_code'],))
+                #log.debug('province is  %s' % (datahandled['province_code'],))
                 break
         if datahandled['province_code'] == "":
-            success = "false"
+            for key,value in province.items():
+                datahandled['province_code'] = key
+                break
+            '''success = "false"
             detail = "not found code for province  %s" % (datahandled['addr_province'],)
-            log.warning("not found code for province  %s" % (datahandled['addr_province'],))
+            #log.warning("not found code for province  %s" % (datahandled['addr_province'],))'''
         
         # get district id
         if success == "true":
@@ -393,12 +397,14 @@ class renthub():
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             try:
                 datahandled['district_code'] = soup.find('select',{'class':'short'}).find('option',text=re.compile(datahandled['addr_district']))['value']
-                log.debug('district is  %s' % (datahandled['district_code'],))
+                #log.debug('district is  %s' % (datahandled['district_code'],))
             except:
-                success = "false"
+                options = soup.find('select',{'class':'short'}).findAll('option')
+                datahandled['district_code'] = options[1]['value']
+                '''success = "false"
                 detail = "not found code for district  %s" % (datahandled['addr_district'],)
-                log.warning("not found code for district  %s" % (datahandled['addr_district'],))
-                pass
+                #log.warning("not found code for district  %s" % (datahandled['addr_district'],))
+                pass'''
         
         # get subdistrict id
         if success == "true":
@@ -408,12 +414,14 @@ class renthub():
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             try:
                 datahandled['subdistrict_code'] = soup.find('select',{'class':'short'}).find('option',text=re.compile(datahandled['addr_sub_district']))['value']
-                log.debug('district is  %s' % (datahandled['subdistrict_code'],))
+                #log.debug('district is  %s' % (datahandled['subdistrict_code'],))
             except:
-                success = "false"
+                options = soup.find('select', {'class': 'short'}).findAll('option')
+                datahandled['subdistrict_code'] = options[1]['value']
+                '''success = "false"
                 detail = "not found code for subdistrict  %s" % (datahandled['addr_sub_district'],)
-                log.warning("not found code for subdistrict  %s" % (datahandled['addr_sub_district'],))
-                pass           
+                #log.warning("not found code for subdistrict  %s" % (datahandled['addr_sub_district'],))
+                pass'''
 
         if datahandled['province_code'] == '' or  datahandled['district_code'] == '' or datahandled['subdistrict_code'] == '':
             return 'false','wrong province or district or subdistrict '+datahandled['addr_province']+' '+datahandled['addr_district']+' '+datahandled['addr_sub_district'],datahandled
@@ -423,7 +431,7 @@ class renthub():
 
 
     def register_user(self, postdata):
-        log.debug('')
+        #log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # start process
@@ -471,11 +479,11 @@ class renthub():
 
         r = httprequestObj.http_post('https://renthub.in.th/signup', data=datapost)
         if re.search(r'ระบบกำลังส่ง email', r.text) == None:
-            log.warning('register error')
+            #log.warning('register error')
             success = "false"
             detail = 'register error'
             if re.search(r'email ที่ระบุเป็นสมาชิกอยู่แล้ว', r.text) != None:
-                log.warning('email ที่ระบุเป็นสมาชิกอยู่แล้ว')
+                #log.warning('email ที่ระบุเป็นสมาชิกอยู่แล้ว')
                 detail = 'email ที่ระบุเป็นสมาชิกอยู่แล้ว'
         
 
@@ -494,7 +502,7 @@ class renthub():
         }
 
     def test_login(self, postdata):
-        log.debug('')
+        #log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # start process
@@ -533,7 +541,7 @@ class renthub():
         if not matchObj:
             success = "false"
             detail = "cannot login"
-            log.warning('login fail')
+            #log.warning('login fail')
             if re.search(r'คุณยังไม่ได้ยืนยัน email!!', r.text) != None: 
                 detail = "คุณยังไม่ได้ยืนยัน email!! กรุณากด link ใน email ที่ระบบส่งให้เพื่อยืนยันการสมัครสมาชิก"
 
@@ -552,12 +560,12 @@ class renthub():
         }
 
     def validatedata(self,datahandled):
-        log.debug('')
+        #log.debug('')
 
         success = "true"
         detail = ""
 
-        if datahandled['property_type'] != 1 and datahandled['property_type'] != 7:
+        if int(datahandled['property_type']) != 1 and int(datahandled['property_type']) != 7:
             detail = "website not support property type "+ str(datahandled['property_type'])
         if datahandled['listing_type'] != 'เช่า':
             detail = "website not support listing type "+ str(datahandled['listing_type'])
@@ -577,10 +585,10 @@ class renthub():
         #title length is not more than 150char
         if len(datahandled['post_title_th']) > 150:
             datahandled['post_title_th'] = datahandled['post_title_th'][:150]
-            log.debug('split post_title_th to %s',datahandled['post_title_th'])
+            #log.debug('split post_title_th to %s',datahandled['post_title_th'])
         if len(datahandled['post_title_en']) > 150:
             datahandled['post_title_en'] = datahandled['post_title_en'][:150]
-            log.debug('split post_title_en to %s',datahandled['post_title_th'])
+            #log.debug('split post_title_en to %s',datahandled['post_title_th'])
         
         #replace \r\n to <br>
         datahandled['post_description_th'] = re.sub(r'\r\n','<br/>',datahandled['post_description_th'])
@@ -593,7 +601,7 @@ class renthub():
         
 
     def create_post(self, postdata):
-        log.debug('')
+        #log.debug('')
         time_start = datetime.datetime.utcnow()
 
        
@@ -608,25 +616,26 @@ class renthub():
 
         #validate
         success,detail = self.validatedata(datahandled)
-
+        #print(success)
         # login
         if success == "true":
             login = self.test_login(datahandled)
             success = login["success"]
             detail = login["detail"]
-
+        #print('here1',success)
         #get area
         if success == "true":
             success,detail,datahandled = self.getareaid(datahandled)
-
+        #print('here2',success)
         #go go go
         if success == "true":
-            if datahandled['property_type'] == 1:
+            #print(int(datahandled['property_type']))
+            if int(datahandled['property_type']) == 1:
                 success,detail,post_id,post_url = self.create_post_condo(datahandled)
-            elif datahandled['property_type'] == 7:
+            elif int(datahandled['property_type']) == 7:
                 success,detail,post_id,post_url = self.create_post_apartment(datahandled)
             
-
+        #print('here3')
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -644,7 +653,7 @@ class renthub():
         }
     
     def create_post_apartment(self,datahandled):
-        log.debug("")
+        #log.debug("")
 
         success = "true"
         detail = ""
@@ -674,7 +683,7 @@ class renthub():
         if not matchObj:
             success = "false"
             detail = "cannot login"
-            log.debug('login fail')
+            #log.debug('login fail')
 
 
         if success == 'true':
@@ -790,7 +799,7 @@ class renthub():
         return success,detail,post_id,posturl
     
     def create_post_condo(self,datahandled):
-        log.debug("")
+        #log.debug("")
 
         success = "true"
         detail = ""
@@ -820,7 +829,7 @@ class renthub():
         if not matchObj:
             success = "false"
             detail = "cannot login"
-            log.debug('login fail')
+            #log.debug('login fail')
 
         if success == "true":
             r = httprequestObj.http_get('https://renthub.in.th/condo_listings/new', verify=False)
@@ -916,15 +925,20 @@ class renthub():
             #f.write(data.encode('utf-8').strip())
 
             success,post_id,posturl,detail = self.getpostdatacondo(datahandled)
+            success = 'true'
+            detail = 'successfully created a post'
+            if self.getprojectid(datahandled['use_project_name']) == datahandled['use_project_name']:
+                success = 'false'
+                detail = 'Project name not available'
 
         
         return success,detail,post_id,posturl
     
     def getprojectid(self,projectname):
-        log.debug('')
+        #log.debug('')
         projectid = projectname
         r = httprequestObj.http_get('https://renthub.in.th/condo_listings/search_project?name='+str(projectname), verify=False)
-        log.debug(r.text)
+        #log.debug(r.text)
         data = json.loads(r.text)
 
         if len(data) > 0:
@@ -933,7 +947,7 @@ class renthub():
         return projectid
 
     def uploadimage(self,listingtype,authenticity_token,datahandled):
-        log.debug('')
+        #log.debug('')
 
         urlupload = 'https://renthub.in.th/condo_listing_pictures'
         prefixfileid = 'p1e7'
@@ -959,7 +973,7 @@ class renthub():
             )
             try:
                 data = r.json()
-                log.debug(data)
+                #log.debug(data)
                 arrimg.append('pic_'+str(data['id']))
             except:
                 pass
@@ -967,7 +981,7 @@ class renthub():
 
 
     def getpostdataapartment(self,datahandled):
-        log.debug('')
+        #log.debug('')
 
         postid = ''
         posturl = ''
@@ -984,16 +998,16 @@ class renthub():
                 if li.find('a',text=re.compile(datahandled['post_title_th'])) != None:
                     posturl = 'https://renthub.in.th' + li.find('a',text=re.compile(datahandled['post_title_th']))['href']
                     postid = re.search(r'apartment_(\d+)',li['id']).group(1)
-                    log.debug('posturl %s postid %s detail %s',str(posturl),str(postid),str(detail))
+                    #log.debug('posturl %s postid %s detail %s',str(posturl),str(postid),str(detail))
                     break
         except:
             success = 'false'
-            log.debug('not found apartment post in dashboard')
+            #log.debug('not found apartment post in dashboard')
             detail = 'not found apartment post in dashboard'
         
         if postid == '' or posturl == '':
             success = 'false'
-            log.debug('not found apartment post in dashboard')
+            #log.debug('not found apartment post in dashboard')
             detail = 'not found apartment post in dashboard'
 
         
@@ -1001,7 +1015,7 @@ class renthub():
 
 
     def getpostdatacondo(self,datahandled):
-        log.debug('')
+        #log.debug('')
 
         postid = ''
         posturl = ''
@@ -1020,10 +1034,11 @@ class renthub():
                     postid = re.search(r'condo_listing_(\d+)',li['id']).group(1)
                     success = 'false'
                     detail = 'ประกาศนี้ยังไม่ได้แสดงในเวป RentHub กรุณากดแก้ไขและระบุโครงการให้ครบถ้วน หากไม่พบโครงการที่ต้องการลงประกาศ สามารถแจ้งเพิ่มโครงการใหม่ได้ที่ content@renthub.in.th'
-                    log.debug('posturl %s postid %s detail %s',str(posturl),str(postid),str(detail))
+                    #log.debug('posturl %s postid %s detail %s',str(posturl),str(postid),str(detail))
                     break
         except:
-            log.debug('not found in ประกาศรอแก้ไข')
+            {}
+            #log.debug('not found in ประกาศรอแก้ไข')
 
         #get from current publish
         r = httprequestObj.http_get('https://renthub.in.th/dashboard/condo_listings', verify=False)
@@ -1035,10 +1050,11 @@ class renthub():
                 if li.find('a',text=re.compile(datahandled['post_title_th'])) != None:
                     posturl = 'https://renthub.in.th' + li.find('a',text=re.compile(datahandled['post_title_th']))['href']
                     postid = re.search(r'condo_listing_(\d+)',li['id']).group(1)
-                    log.debug('posturl %s postid %s detail %s',str(posturl),str(postid),str(detail))
+                    #log.debug('posturl %s postid %s detail %s',str(posturl),str(postid),str(detail))
                     break
         except:
-            log.debug('not found in ประกาศที่แสดงปัจจุบัน')
+            {}
+            #log.debug('not found in ประกาศที่แสดงปัจจุบัน')
 
         if postid == '' or posturl == '':
             success = 'false'
@@ -1050,7 +1066,7 @@ class renthub():
   
 
     def boost_post(self, postdata):
-        log.debug('')
+        #log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # start proces
@@ -1079,7 +1095,7 @@ class renthub():
             #boost by url condo
             r = httprequestObj.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
             if r.status_code == 200 and r.url == 'https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit':
-                log.debug('this post id is condo listing')
+                #log.debug('this post id is condo listing')
                 foundpost =  True
                 soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                 token = soup.find("input", {"name": "authenticity_token"})['value']
@@ -1090,17 +1106,17 @@ class renthub():
                 data=datapost,
                 headers={'X-CSRF-Token': token,}
                 )
-                log.debug(r.text)
+                #log.debug(r.text)
                 if r.text != 'เรียบร้อย':
                     success = 'false'
                     detail = 'cannot boost post '+r.text
-                    log.warning('cannot boost post '+r.text)
+                    #log.warning('cannot boost post '+r.text)
 
             #boost by url apartment
             if foundpost == False:
                 r = httprequestObj.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
                 if r.status_code == 200 and r.url == 'https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit':
-                    log.debug('this post id is apartment listing')
+                    #log.debug('this post id is apartment listing')
                     foundpost =  True
                     soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                     token = soup.find("input", {"name": "authenticity_token"})['value']
@@ -1114,17 +1130,17 @@ class renthub():
                     data=datapost,
                     headers={'X-CSRF-Token': token,}
                     )
-                    log.debug(r.text)
+                    #log.debug(r.text)
                     datajson = r.json()
                     if datajson['text'] != 'เรียบร้อย':
                         success = 'false'
                         detail = 'cannot boost post '+r.text
-                        log.warning('cannot boost post '+r.text)
+                        #log.warning('cannot boost post '+r.text)
 
             if foundpost == False:
                 success = 'false'
                 detail = "post id %s notfound" % (datahandled['post_id'],)
-                log.warning("post id %s notfound" % (datahandled['post_id'],))
+                #log.warning("post id %s notfound" % (datahandled['post_id'],))
 
         #
         # end process
@@ -1143,7 +1159,7 @@ class renthub():
         }
 
     def delete_post(self, postdata):
-        log.debug('')
+        #log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # start proces
@@ -1172,7 +1188,7 @@ class renthub():
             r = httprequestObj.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
             # can edit and not redirect to dashboard
             if r.status_code == 200 and r.url == 'https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit':
-                log.debug('this post id is condo listing')
+                #log.debug('this post id is condo listing')
                 foundpost =  True
                 soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                 token = soup.find("input", {"name": "authenticity_token"})['value']
@@ -1183,11 +1199,11 @@ class renthub():
                 data=datapost,
                 headers={'X-CSRF-Token': token,}
                 )
-                log.debug(r.text)
+                #log.debug(r.text)
                 if r.text != 'not_active':
                     #request ไปอีกครั้ง เพราะถ้า มัน not_active อยู่แล้วจะ response เป็น active เพราะจะ show/notshow ใช้ url เดียวกัน
                     if r.text == "active":
-                        log.debug('is actived post again for not active')
+                        #log.debug('is actived post again for not active')
                         r = httprequestObj.http_post('https://renthub.in.th/dashboard/condo_listings/active_toggle', 
                         data=datapost,
                         headers={'X-CSRF-Token': token,}
@@ -1195,7 +1211,7 @@ class renthub():
                         if r.text != 'not_active':
                             success = 'false'
                             detail = 'cannot delete post'
-                            log.warning('cannot delete post')
+                            #log.warning('cannot delete post')
 
 
             #delete by url apartment
@@ -1203,7 +1219,7 @@ class renthub():
                 r = httprequestObj.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
                 # can edit and not redirect to dashboard
                 if r.status_code == 200 and r.url == 'https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit':
-                    log.debug('this post id is apartment listing')
+                    #log.debug('this post id is apartment listing')
                     foundpost =  True
                     soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                     token = soup.find("input", {"name": "authenticity_token"})['value']
@@ -1214,11 +1230,11 @@ class renthub():
                     data=datapost,
                     headers={'X-CSRF-Token': token,}
                     )
-                    log.debug(r.text)
+                    #log.debug(r.text)
                     if r.text != 'not_active':
                         #request ไปอีกครั้ง เพราะถ้า มัน not_active อยู่แล้วจะ response เป็น active เพราะจะ show/notshow ใช้ url เดียวกัน
                         if r.text == "active":
-                            log.debug('is actived post again for not active')               
+                            #log.debug('is actived post again for not active')
                             r = httprequestObj.http_post('https://renthub.in.th/dashboard/apartments/active_toggle', 
                             data=datapost,
                             headers={'X-CSRF-Token': token,}
@@ -1226,12 +1242,12 @@ class renthub():
                             if r.text != 'not_active':
                                 success = 'false'
                                 detail = 'cannot delete post'
-                                log.warning('cannot delete post')
+                                #log.warning('cannot delete post')
 
             if foundpost == False:
                 success = 'false'
                 detail = "post id %s notfound" % (datahandled['post_id'],)
-                log.warning("post id %s notfound" % (datahandled['post_id'],))
+                #log.warning("post id %s notfound" % (datahandled['post_id'],))
 
         #
         # end process
@@ -1249,7 +1265,7 @@ class renthub():
         }
 
     def edit_post(self, postdata):
-        log.debug('')
+        #log.debug('')
         time_start = datetime.datetime.utcnow()
 
         # start process
@@ -1300,7 +1316,7 @@ class renthub():
         if not matchObj:
             success = "false"
             detail = "cannot login"
-            log.debug('login fail')
+            #log.debug('login fail')
 
         #go go go
         if success == "true":
@@ -1311,7 +1327,7 @@ class renthub():
             r = httprequestObj.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
             # can edit and not redirect to dashboard
             if r.status_code == 200 and r.url == 'https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit':
-                log.debug('this post id is condo listing')
+                #log.debug('this post id is condo listing')
                 foundpost =  True
                 soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                 success,detail = self.edit_post_condo(soup,datahandled)
@@ -1321,7 +1337,7 @@ class renthub():
                 r = httprequestObj.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
                 # can edit and not redirect to dashboard
                 if r.status_code == 200 and r.url == 'https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit':
-                    log.debug('this post id is apartment listing')
+                    #log.debug('this post id is apartment listing')
                     foundpost =  True
                     soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                     success,detail = self.edit_post_apartment(soup,datahandled)
@@ -1329,7 +1345,7 @@ class renthub():
             if foundpost == False:
                 success = 'false'
                 detail = "post id %s notfound" % (datahandled['post_id'],)
-                log.warning("post id %s notfound" % (datahandled['post_id'],))
+                #log.warning("post id %s notfound" % (datahandled['post_id'],))
 
         #
         # end process
@@ -1348,19 +1364,19 @@ class renthub():
         }
     
     def getoldimglist(self,soup):
-        log.debug('')
+        #log.debug('')
         
         arrimg = []
         allimg = soup.find_all('div',id=re.compile('pic_'))
         for img in allimg:
             arrimg.append(img['id'])
-            log.debug('use old img '+img['id'])
+            #log.debug('use old img '+img['id'])
 
         return arrimg
 
 
     def edit_post_condo(self,soup,datahandled):
-        log.debug('')
+        #log.debug('')
         
         success = 'true'
         detail = ''
@@ -1468,13 +1484,13 @@ class renthub():
             # 3 ถ้า re.search ไม่เจอ post_id อาจเป็นไปได้ว่า admin ลบไปแล้ว (การลบคือ  เปิดหน้า edit post โดยตรงได้, ไม่show ใน list dashboard,  เปิดหน้า post publish ไม่ได้)
             success = 'false'
             detail = 'cannot edit post , post data error or admin deleted'
-            log.warning('cannot edit post , post data error or admin deleted')
+            #log.warning('cannot edit post , post data error or admin deleted')
 
         return success,detail
 
 
     def edit_post_apartment(self,soup,datahandled):
-        log.debug('')
+        #log.debug('')
         
         success = 'true'
         detail = ''
@@ -1592,6 +1608,6 @@ class renthub():
         if not match:
             success = 'false'
             detail = 'cannot edit post , post data error'
-            log.warning('cannot edit post , post data error')
+            #log.warning('cannot edit post , post data error')
 
         return success,detail
