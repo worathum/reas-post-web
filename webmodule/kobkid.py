@@ -90,6 +90,7 @@ class kobkid():
                 "start_time": str(start_time),
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
+                'ds_id': postdata['ds_id'],
                 "detail": detail,
                 "websitename": "kobkid",
             }
@@ -105,6 +106,7 @@ class kobkid():
             return {
                 "success": False,
                 "start_time": str(start_time),
+                'ds_id': postdata['ds_id'],
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
@@ -122,6 +124,7 @@ class kobkid():
             return {
                 "success": True,
                 "start_time": str(start_time),
+                'ds_id': postdata['ds_id'],
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
@@ -134,6 +137,7 @@ class kobkid():
             return {
                 "success": False,
                 "start_time": str(start_time),
+                'ds_id': postdata['ds_id'],
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
@@ -452,25 +456,25 @@ class kobkid():
 
         login = self.test_login(postdata)
         if(login['success'] == False):
-            return login
-
-        post_id = postdata['post_id']
-
-        delete_post = {
-          'action': 'delpost',
-          'postid': post_id
-        }
-
-        response = httprequestObj.http_post('https://www.kobkid.com/market/postaction.php', data=delete_post)
-        result = json.loads(response.content.decode('utf-8'))['actionSuccess']
-
-        if(result == True):
-            detail = "Post Deleted"
-
+            result = False
+            detail = "cannot login"
         else:
-            detail = "Could not delete the post"
-        end_time = datetime.datetime.utcnow()
+            post_id = postdata['post_id']
 
+            delete_post = {
+              'action': 'delpost',
+              'postid': post_id
+            }
+
+            response = httprequestObj.http_post('https://www.kobkid.com/market/postaction.php', data=delete_post)
+            result = json.loads(response.content.decode('utf-8'))['actionSuccess']
+
+            if(result == True):
+                detail = "Post Deleted"
+            else:
+                detail = "Could not delete the post"
+
+        end_time = datetime.datetime.utcnow()
         return {
             "success": result,
             "start_time": str(start_time),

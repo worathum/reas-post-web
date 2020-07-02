@@ -15,6 +15,24 @@ import random
 
 httprequestObj = lib_httprequest()
 
+with open("./static/ips.txt",'r') as f:
+    allips = f.read()
+ips = allips.split('\n')
+
+username = ips[random.randint(0,len(ips)-2)].split(":")[2]
+password = 'v1y3mbh26qk9'
+port = 22225
+super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
+        (username, password, port))
+
+proxy_handler = {
+    'http': super_proxy_url,
+    'https': super_proxy_url,
+}
+
+httprequestObj.session.proxies.update(proxy_handler)
+
+
 
 class thaisecondhand():
 
@@ -80,6 +98,7 @@ class thaisecondhand():
             "start_time": str(start_time),
             "end_time": str(end_time),
             "detail": detail,
+            'ds_id': userdata['ds_id']
         }
 
     def test_login(self, logindata):

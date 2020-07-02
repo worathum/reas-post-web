@@ -365,6 +365,7 @@ class proptecheasy():
         return {
             "websitename": "proptecheasy",
             "success": success,
+            'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
             "usage_time": str(time_usage),
             "end_time": str(time_end),

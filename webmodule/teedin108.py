@@ -104,6 +104,7 @@ class teedin108():
         time_usage = time_end - time_start
         return {
             "websitename": "teedin108",
+            'ds_id': postdata['ds_id'],
             "success": success,
             "usage_time": time_usage,
             "start_time": time_start,
