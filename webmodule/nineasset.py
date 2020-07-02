@@ -74,6 +74,7 @@ class nineasset():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            'ds_id':userdata['ds_id']
         }
 
     def test_login(self, logindata):
