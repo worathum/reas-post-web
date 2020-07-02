@@ -65,6 +65,7 @@ class property2share():
                 "success": "true",
                 "time_usage": str(time_end - time_start),
                 "time_start": str(time_start),
+                'ds_id': postdata['ds_id'],
                 "time_end": str(time_end),
                 "detail": "Unable to solve captcha",
                 "websitename" : "property2share"
@@ -88,6 +89,7 @@ class property2share():
         resp = {
             "success": True,
             "time_usage": str(time_end - time_start),
+            'ds_id': postdata['ds_id'],
             "time_start": str(time_start),
             "time_end": str(time_end),
             "detail": "",

@@ -59,6 +59,7 @@ class prakardproperty():
         
         r = self.httprequestObj.http_post('http://www.prakardproperty.com/register/save', data=datapost)
         data = r.text
+        print(data)
         matchObj = re.search(r'/register/resentmail', data)
         if matchObj:
             success = "True"
@@ -71,6 +72,7 @@ class prakardproperty():
         return {
             "websitename": "prakardproperty",
             "success": success,
+            'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,

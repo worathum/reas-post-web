@@ -81,6 +81,7 @@ class propertyadvantage():
         return {
             "websitename": "propertyadvantage",
             "success": result['success'],
+            'ds_id': postdata['ds_id'],
             "start_time": result['start_time'],
             "ds_id": result["ds_id"],
             "end_time": result['end_time'],

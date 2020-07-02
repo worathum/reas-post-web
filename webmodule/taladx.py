@@ -109,6 +109,7 @@ class taladx():
 
         return {
             "websitename": "taladx",
+            'ds_id': postdata['ds_id'],
             "success": success,
             "start_time": str(start_time),
             "end_time": str(end_time),

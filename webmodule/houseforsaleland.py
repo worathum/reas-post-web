@@ -76,6 +76,7 @@ class houseforsaleland():
         return {
             "success": success,
             "usage_time": str(time_usage),
+            'ds_id': postdata['ds_id'],
             "start_time": str(start_time),
             "end_time": str(end_time),
             "detail": detail,
@@ -185,7 +186,7 @@ class houseforsaleland():
             return{
                 'success': 'false',
                 'websitename': 'houseforsaleland',
-                'ret': 'wrong propertytype',
+                'detail': 'wrong propertytype',
                 'post_url': '',
                 'post_id': ''
             }
@@ -216,7 +217,7 @@ class houseforsaleland():
             return{
                 'websitename': 'houseforsaleland',
                 'success': 'false',
-                'ret': "wrong province",
+                'detail': "wrong province",
                 'post_url': "",
                 'post_id': ""
             }
@@ -232,7 +233,7 @@ class houseforsaleland():
             return{
                 'websitename': 'houseforsaleland',
                 'success': 'false',
-                'ret': "wrong amphur id"+str(postdata['addr_district']),
+                'detail': "wrong amphur id"+str(postdata['addr_district']),
                 'post_url': "",
                 'post_id': ""
             }
@@ -379,7 +380,7 @@ class houseforsaleland():
             return{
                 'success': 'false',
                 'websitename': 'houseforsaleland',
-                'ret': 'wrong propertytype',
+                'detail': 'wrong propertytype',
                 'post_url': '',
                 'post_id': ''
             }
@@ -408,7 +409,7 @@ class houseforsaleland():
             return{
                 'websitename': 'houseforsaleland',
                 'success': 'false',
-                'ret': "wrong province",
+                'detail': "wrong province",
                 'post_url': "",
                 'post_id': ""
             }
@@ -425,7 +426,7 @@ class houseforsaleland():
             return{
                 'websitename': 'houseforsaleland',
                 'success': 'false',
-                'ret': "wrong amphur id"+str(postdata['addr_district']),
+                'detail': "wrong amphur id"+str(postdata['addr_district']),
                 'post_url': "",
                 'post_id': ""
             }
@@ -597,7 +598,7 @@ class houseforsaleland():
                     return {
                         'websitename': 'houseforsaleland',
                         'success': 'true',
-                        'ret': var,
+                        'detail': var,
                         'post_url': post_url,
                         'post_id': post_id
                     }
@@ -621,7 +622,7 @@ class houseforsaleland():
                 return {
                     'websitename': 'houseforsaleland',
                     'success': 'true',
-                    'ret': var,
+                    'detail': var,
                     'post_url': post_url,
                     'post_id': post_id
                 }
