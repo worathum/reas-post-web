@@ -62,6 +62,8 @@ false message
             "start_time": "0:00:00.771743",
             "end_time": "0:00:00.771743",
             "detail": "",
+            "ds_id": "4",
+            "post_id": "33333",
             "log_id": "33333",            
         },
         "ddproperty": {
@@ -69,6 +71,8 @@ false message
             "start_time": "0:00:00.771743",
             "end_time": "0:00:00.771743",
             "detail": "",
+            "ds_id": "5",
+            "post_id": "33333",
             "log_id": "33333",
         }
     }

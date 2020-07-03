@@ -344,6 +344,8 @@ class propertyadvantage():
             "usage_time": result['usage_time'],
             "start_time": result['start_time'],
             "end_time": result['end_time'],
+            "post_id": postdata["post_id"],
+            "ds_id": postdata["ds_id"],
             "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": result['detail'],
@@ -610,7 +612,9 @@ class propertyadvantage():
             "end_time": result["end_time"],
             "detail": result['detail'],
             "websitename": "propertyadvantage",
-            "log_id": result['log_id']
+            "post_id": postdata["post_id"],
+            "ds_id": postdata["ds_id"],
+            "log_id": postdata['log_id']
         } 
 
     def boost_post(self,postdata):
@@ -688,7 +692,9 @@ class propertyadvantage():
             "end_time": result["end_time"],
             "detail": result['detail'],
             "websitename": "propertyadvantage",
-            "log_id": result['log_id']
+            "post_id": postdata["post_id"],
+            "ds_id": postdata["ds_id"],
+            "log_id": postdata['log_id'],
         }
 
 

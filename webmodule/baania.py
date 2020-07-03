@@ -70,6 +70,7 @@ class baania():
         time_usage = time_end - time_start
         return {
             "websitename": "baania",
+                'ds_id': postdata['ds_id'],
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
@@ -831,6 +832,7 @@ class baania():
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "end_time": str(time_end),
             "post_url": post_url,
@@ -879,6 +881,7 @@ class baania():
         return {
             "websitename": "baania",
             "success": success,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -965,6 +968,7 @@ class baania():
             "start_time": time_start,
             "end_time": time_end,
             "detail": "Cannot Edit & Save the post",            
+            'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
         }

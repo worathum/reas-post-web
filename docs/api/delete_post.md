@@ -42,7 +42,9 @@ false message
     "end_time": "0:00:00.771743",
     "web": {
         "thaihometown": {
-            "success": "true",      
+            "success": "true",   
+            "post_id": "33333",
+            "ds_id": "4",
             "log_id": "33333",
             "start_time": "0:00:00.771743",
             "end_time": "0:00:00.771743",
@@ -50,6 +52,8 @@ false message
         },
         "ddproperty": {
             "success": "false",
+            "post_id": "33333",
+            "ds_id": "4",
             "log_id": "33333",
             "start_time": "0:00:00.771743",
             "end_time": "0:00:00.771743",

@@ -91,7 +91,7 @@ class taladx():
             detail = "Password must be atleast 6 characters long"
         else:
             try:
-                response = httprequestObj.http_post('http://www.taladx.com/register.php', data = data,headers = headers)
+                response = httprequestObj.http_post('http://www.taladx.com/register.php', data = data, headers = headers)
                 #if response.text.find("มีอยู่ในระบบแล้ว") != -1:
                 if response.url == 'http://www.taladx.com/register.php':
                     success = "false"
@@ -111,6 +111,7 @@ class taladx():
             "websitename": "taladx",
             'ds_id': postdata['ds_id'],
             "success": success,
+            "ds_id": str(postdata['ds_id']),
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
@@ -145,8 +146,10 @@ class taladx():
             try:
                 response = httprequestObj.http_post('http://www.taladx.com/member.php', data = data, headers = headers)
                 #print(response.url) 
+                
                 soup = BeautifulSoup(response.content , features = "html")
                 if soup.find_all("h3", attrs={'class':"fail"}):
+                #if (response.url == 'http://www.estate.in.th/login.php' or response.url == 'http://www.estate.in.th/signup.php'):
                     success = "false"
                     detail = 'Incorrect Username or Password !!'
                 else:
@@ -183,7 +186,7 @@ class taladx():
         }
 
         if (login["success"] == "true"):
-            if 'web_project_name' not in postdata or postdata['web_project_name'] =="":
+            if 'web_project_name' not in postdata or postdata['web_project_name'] == "":
                 if 'project_name' in postdata and postdata['project_name'] != "":
                     postdata['web_project_name'] = postdata['project_name']
                 else:
@@ -326,7 +329,7 @@ class taladx():
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
             "post_url": post_url,
-            "ds_id": postdata['ds_id'],
+            "ds_id": str(postdata['ds_id']),
             "post_id": post_id,
             "detail": detail,
             "account_type": "null"
@@ -388,6 +391,8 @@ class taladx():
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
             "detail": detail,
+            "post_id": str(postdata['post_id']),
+            "ds_id": str(postdata['ds_id']),
             "log_id": postdata['log_id']
         }
 
@@ -446,6 +451,8 @@ class taladx():
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
             "detail": detail,
+            "post_id": str(postdata['post_id']),
+            "ds_id": str(postdata['ds_id']),
             "log_id": postdata['log_id']
         }
 
@@ -625,8 +632,10 @@ class taladx():
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
+            "post_id": str(postdata['post_id']),
             "log_id": postdata['log_id'],
             "account_type": "null",
+            "ds_id": str(postdata['ds_id']),
             "detail": detail
         }
 

@@ -123,6 +123,7 @@ class teedindd():
         return {
             "websitename": "teedindd",
             "success": success,
+                'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -205,6 +206,7 @@ class teedindd():
             "start_time": time_start,
             "end_time": time_end,
             "detail": "",
+                'ds_id': postdata['ds_id'],
             "log_id":postdata['log_id'],
             "post_id": "",
         }        
@@ -852,6 +854,7 @@ class teedindd():
             time_usage = time_end - time_start
             return {
                 "websitename": "teedindd",
+                'ds_id': postdata['ds_id'],
                 "success": 'false',
                 "log_id": postdata['log_id'],
                 "start_time": str(time_start),
@@ -881,6 +884,7 @@ class teedindd():
         return {
             "websitename": "teedindd",
             "success": success,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),

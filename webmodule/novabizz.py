@@ -247,6 +247,7 @@ class novabizz():
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
             return {
+            'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id'],
                 "websitename":"novabizz",
                 "success": "false",
@@ -259,6 +260,7 @@ class novabizz():
 
         time_end = datetime.datetime.utcnow()
         return {
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "websitename": "novabizz",
             "success": "true",
@@ -305,6 +307,7 @@ class novabizz():
             time_usage = time_end - time_start
             return {
                 "websitename":"novabizz",
+            'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id'],
                 "success": "false",
                 "start_time": str(time_start),
@@ -334,6 +337,7 @@ class novabizz():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
+            'ds_id': postdata['ds_id'],
             "detail": detail,
             "log_id":postdata['log_id'],
         }
@@ -896,6 +900,7 @@ class novabizz():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "detail": detail,
         }

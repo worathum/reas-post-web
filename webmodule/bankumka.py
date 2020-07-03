@@ -883,6 +883,7 @@ class bankumka():
             "websitename":"bankumka",
             "success": success,
             "start_time": str(time_start),
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "end_time": str(time_end),
             "post_url": posturl,
@@ -1109,6 +1110,7 @@ class bankumka():
         return {
             "websitename":"bankumka",
             "success": success,
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -1151,6 +1153,7 @@ class bankumka():
         time_usage = time_end - time_start
         return {
             "success": success,
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -1199,13 +1202,18 @@ class bankumka():
             success = "false"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-
+        log_id = ""
+        if 'log_id' in postdata:
+            log_id = postdata['log_id']
+        
         return {
             "websitename": "bankumka",
             "success": "true",
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_found": found,
+            'ds_id': postdata['ds_id'],
+            'log_id': log_id,
             "post_url": posturl,
             "post_id": post_id,
             "account_type": "null",

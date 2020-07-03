@@ -78,7 +78,8 @@ class baan2day():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            "websitename": self.name
+            "websitename": self.name,
+            "ds_id": postdata['ds_id']
         }
 
 
@@ -118,7 +119,7 @@ class baan2day():
             "end_time": str(time_end),
             "detail": detail,
             "websitename": self.name,
-            "ds_id": postdata['ds_id'],
+            "ds_id": postdata['ds_id']
         }
 
     
@@ -386,10 +387,12 @@ class baan2day():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
+            "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": detail,
-            "websitename": self.name
+            "websitename": self.name,
+            "ds_id": postdata['ds_id']
         }
 
 
@@ -425,7 +428,9 @@ class baan2day():
             "end_time": str(time_end),
             "detail": detail,
             "websitename": self.name,
+            "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
+            "ds_id": postdata['ds_id']
         }
 
 
@@ -512,59 +517,6 @@ class baan2day():
                     detail = "No post found with given id"
             else:
                 detail = 'Unable to boost post. An Error has occurred with response_code '+str(response.status_code) 
-            '''
-            r = httprequestObj.http_get(self.site_name+'/member_property_add.php?id='+postdata['post_id'])
-            soup = BeautifulSoup(r.text, features=self.parser)
-            form = soup.find(attrs={'name': 'fproperty_member'})
-
-            property_type = form.find(attrs={'name': 'property_type'}).find_all('option', selected=True)
-            if property_type:
-                property_type = property_type[-1].get('value')
-                property_format = form.find(attrs={'name': 'property_format'}).find_all('option', selected=True)
-                if property_format:
-                    property_format = property_format[-1].get('value')  
-                tprovince = form.find(attrs={'name': 'tprovince'}).find_all('option', selected=True)
-                if tprovince:
-                    tprovince = tprovince[-1].get('value')
-                tamphur = form.find(attrs={'name': 'tamphur'}).find_all('option', selected=True)
-                if tamphur:
-                    tamphur = tamphur[-1].get('value')
-
-                datapost = {
-                    "property_type": str(property_type),
-                    "property_format": str(property_format),
-                    "thomedetail_title": form.find(attrs={'name': 'thomedetail_title'}).get('value'),
-                    "thomedetail_name": form.find(attrs={'name': 'thomedetail_name'}).get('value'),
-                    "thomedetail_address": form.find(attrs={'name': 'thomedetail_address'}).getText(),
-                    "tprovince": str(tprovince),
-                    "tamphur": str(tamphur),
-                    "thomedetail_detail": form.find(attrs={'name': 'thomedetail_detail'}).getText(),
-                    "thomedetail_floor": form.find(attrs={'name': 'thomedetail_floor'}).get('value'),
-                    "thomedetail_room": "",
-                    "thomedetail_bathroom": form.find(attrs={'name': 'thomedetail_bathroom'}).get('value'),
-                    "thomedetail_area": form.find(attrs={'name': 'thomedetail_area'}).get('value'),
-                    "thomedetail_price": form.find(attrs={'name': 'thomedetail_price'}).get('value'),
-                    "tuser_name": form.find(attrs={'name': 'tuser_name'}).get('value'),
-                    "tuser_tel": form.find(attrs={'name': 'tuser_tel'}).get('value'),
-                    "tuser_email": form.find(attrs={'name': 'tuser_email'}).get('value'),
-                    "latitude": form.find(attrs={'name': 'latitude'}).get('value'),
-                    "longitude": form.find(attrs={'name': 'longitude'}).get('value')
-                }
-                files = {}
-                response = httprequestObj.http_post(self.site_name+'/member_property_aed.php?typ=edit&id='+str(postdata['post_id']), data=datapost, files=files)
-            
-                success = "false"
-                detail = "Unable to boost post"
-                if response.status_code==200:
-                    if "window.location.href='member_property_list.php" in response.text:
-                        success = "true"
-                        detail = "Post boosted successfully!"
-                else:
-                        detail = 'Unable to boost post. An Error has occurred with response_code '+str(response.status_code) 
-            else:
-                success = "false"
-                detail = "No post found with given id"
-        '''
         else:
             detail = "Cannot login"
 
@@ -576,10 +528,11 @@ class baan2day():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
             "websitename": self.name,
+            "ds_id": postdata['ds_id']
         }
-
 
 
     def print_debug(self, msg):

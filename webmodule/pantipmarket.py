@@ -547,6 +547,7 @@ class pantipmarket():
             "time_usage": end_time - start_time,
             "start_time": start_time,
             "end_time": end_time,
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "detail": detail,
             "post_id": post_id,
@@ -619,6 +620,7 @@ class pantipmarket():
             "websitename":"pantipmarket",
             "success": success,
             "time_usage": end_time - start_time,
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "start_time": start_time,
             "end_time": end_time,
@@ -882,6 +884,7 @@ class pantipmarket():
         return {
             "websitename":"pantipmarket",
             "success": success,
+            'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id'],
             "time_usage": end_time - start_time,
             "start_time": start_time,

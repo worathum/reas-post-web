@@ -95,6 +95,7 @@ class teesuay():
         return {
             "websitename": "teesuay",
             "success": success,
+                'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -423,6 +424,7 @@ class teesuay():
                 'websitename':'teesuay',
                 'success': 'false',
                 'ret': "",
+                'ds_id': postdata['ds_id'],
                 'post_url': "",
                 'post_id': "",
                 "log_id": postdata['log_id']
@@ -439,6 +441,7 @@ class teesuay():
                 'success': 'false',
                 'ret': "",
                 'post_url': "",
+                'ds_id': postdata['ds_id'],
                 'post_id': "",
                 "log_id": postdata['log_id']
 
@@ -602,6 +605,7 @@ class teesuay():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id']
 
         }
@@ -659,6 +663,7 @@ class teesuay():
                 'type':'2',
                 'Submit':'Proceed',
                 'hdncount':var,
+                'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id']
 
             }
@@ -677,6 +682,7 @@ class teesuay():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
+                'ds_id': postdata['ds_id'],
             "detail": detail,
             "log_id":postdata['log_id'],
         }
@@ -715,6 +721,7 @@ class teesuay():
                     'websitename':'teesuay',
                     'success':'false',
                     "start_time": str(time_start),
+                'ds_id': postdata['ds_id'],
                     "end_time": str(time_end),
                     "detail": "wrong post id",
                     "log_id": postdata['log_id']
@@ -729,6 +736,7 @@ class teesuay():
                 "time_usage": time_end - time_start,
                 "start_time": time_start,
                 "end_time": time_end,
+                'ds_id': postdata['ds_id'],
                 "detail": "",
                 "post_id": post_id,
                 "log_id": postdata['log_id']
@@ -739,6 +747,7 @@ class teesuay():
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
             return {
+                'ds_id': postdata['ds_id'],
                 "websitename": "teesuay",
                 "success": success,
                 "start_time": str(time_start),

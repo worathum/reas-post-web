@@ -436,6 +436,7 @@ class prakardproperty():
                 time_end = datetime.datetime.utcnow()
                 return {
                     "websitename": "prakardproperty",
+            'ds_id': postdata['ds_id'],
                     "log_id": postdata['log_id'],
                     "success": "False",
                     "time_usage": time_end - time_start,
@@ -461,6 +462,7 @@ class prakardproperty():
             "time_usage": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
+            'ds_id': postdata['ds_id'],
             "detail": detail,
             "log_id": postdata['log_id'],
             "post_id": post_id,
@@ -485,6 +487,7 @@ class prakardproperty():
                 time_end = datetime.datetime.utcnow()
                 return {
                     "success": "False",
+            'ds_id': postdata['ds_id'],
                     "log_id": postdata['log_id'],
                     "websitename": "prakardproperty",
                     "time_usage": time_end - time_start,
@@ -516,6 +519,7 @@ class prakardproperty():
             "start_time": time_start,
             "end_time": time_end,
             "detail": detail,
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
         }
 
@@ -786,6 +790,7 @@ class prakardproperty():
             "time_usage": str(time_end - time_start),
             "start_time": str(time_start),
             "end_time": str(time_end),
+            'ds_id': postdata['ds_id'],
             "log_id": webdata['log_id'],
             "post_url": post_url,
             "post_id": post_id,
