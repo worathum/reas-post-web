@@ -136,6 +136,7 @@ class houseforsaleland():
         return {
             "success": success,
             'websitename': 'houseforsaleland',
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -349,6 +350,8 @@ class houseforsaleland():
         return {
             "success": success,
             'websitename': 'houseforsaleland',
+            'ds_id': postdata['ds_id'],
+            "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": "Edited ",
@@ -492,6 +495,7 @@ class houseforsaleland():
                 'websitename': 'houseforsaleland',
                 "success": success,
                 'post_url': '',
+                'ds_id': postdata['ds_id'],
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": "Captcha Image Retrieval failed",
@@ -506,6 +510,7 @@ class houseforsaleland():
             return {
                 'websitename': 'houseforsaleland',
                 "success": success,
+                'ds_id': postdata['ds_id'],
                 'post_url': '',
                 "start_time": str(time_start),
                 "end_time": str(time_end),
@@ -543,6 +548,7 @@ class houseforsaleland():
                     "success": success,
                     'post_url': '',
                     "start_time": str(time_start),
+                    'ds_id': postdata['ds_id'],
                     "end_time": str(time_end),
                     "detail": "Captcha Image Retrieval failed",
                 }
@@ -557,6 +563,7 @@ class houseforsaleland():
                     'websitename': 'houseforsaleland',
                     "success": success,
                     'post_url': '',
+                    'ds_id': postdata['ds_id'],
                     "start_time": str(time_start),
                     "end_time": str(time_end),
                     "detail": "Captcha fail",
@@ -623,6 +630,7 @@ class houseforsaleland():
                     'websitename': 'houseforsaleland',
                     'success': 'true',
                     'detail': var,
+                    'ds_id': postdata['ds_id'],
                     'post_url': post_url,
                     'post_id': post_id
                 }
@@ -632,6 +640,7 @@ class houseforsaleland():
         time_usage = time_end - time_start
         return {
             'websitename': 'houseforsaleland',
+            'ds_id': postdata['ds_id'],
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -689,6 +698,8 @@ class houseforsaleland():
         return {
             'websitename': 'houseforsaleland',
             "success": success,
+            'ds_id': postdata['ds_id'],
+            "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,

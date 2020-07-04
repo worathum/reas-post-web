@@ -88,9 +88,9 @@ class onlineoops():
             'ds_id': postdata['ds_id'],
             "end_time": str(time_end),
             "detail": detail,
-            "websitename": self.name
+            "websitename": self.name,
+            "ds_id": postdata['ds_id']
         }
-
 
 
     def test_login(self, postdata):
@@ -382,12 +382,13 @@ class onlineoops():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
+            "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": detail,
-            "websitename": self.name
+            "websitename": self.name,
+            "ds_id": postdata['ds_id']
         }
-
 
 
     def delete_post(self, postdata):
@@ -425,7 +426,9 @@ class onlineoops():
             "end_time": str(time_end),
             "detail": detail,
             "websitename": self.name,
+            "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
+            "ds_id": postdata['ds_id']
         }
 
 
@@ -556,8 +559,10 @@ class onlineoops():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
             "websitename": self.name,
+            "ds_id": postdata['ds_id']
         }
 
 

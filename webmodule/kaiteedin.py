@@ -134,6 +134,7 @@ class kaiteedin():
             "websitename": "kaiteedin",
             "success": success,
             "start_time": str(time_start),
+            'ds_id': postdata['ds_id'],
             "end_time": str(time_end),
             "detail": detail,
         }
@@ -818,6 +819,7 @@ class kaiteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
         }
 
@@ -840,6 +842,7 @@ class kaiteedin():
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
             return {
+            'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id'],
                 "websitename": "kaiteedin",
                 "success": 'false',
@@ -867,6 +870,7 @@ class kaiteedin():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "websitename": "kaiteedin",
             "success": success,
@@ -931,6 +935,9 @@ class kaiteedin():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+        log_id = ""
+        if 'log_id' in postdata:
+            log_id = postdata['log_id']        
         return {
             "success": "true",
             "usage_time": str(time_usage),
@@ -940,7 +947,7 @@ class kaiteedin():
             "websitename": "kaiteedin",
             "account_type":None,
             "ds_id": postdata['ds_id'],
-            "log_id": postdata['log_id'],
+            "log_id": log_id,
             "post_id": post_id,
             "post_modify_time": post_modify_time,
             "post_view": post_view,
@@ -999,6 +1006,7 @@ class kaiteedin():
         time_usage = time_end - time_start
 
         return {
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "websitename": "kaiteedin",
             "success": success,

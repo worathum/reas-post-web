@@ -718,6 +718,7 @@ class homedd():
             "usage_time": str(end_time - start_time),
             "start_time": str(start_time),
             "end_time": str(end_time),
+'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_url": post_url,
             "post_id": post_id,
@@ -773,6 +774,7 @@ class homedd():
             "usage_time": str(end_time - start_time),
             "start_time": str(start_time),
             "end_time": str(end_time),
+'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "detail": detail,
             "websitename": "homedd",
@@ -828,6 +830,7 @@ class homedd():
         return {
             "success": success,
             "usage_time": str(end_time - start_time),
+'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "start_time": str(start_time),
             "end_time": str(end_time),

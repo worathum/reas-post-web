@@ -75,6 +75,7 @@ class quickdealfree():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
+                'ds_id': postdata['ds_id'],
             "detail": detail,
             "websitename": "quickdealfree",
         }
@@ -365,6 +366,7 @@ class quickdealfree():
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
+                'ds_id': postdata['ds_id'],
             "end_time": str(time_end),
             "log_id": postdata['log_id'],
             # "post_url": "http://www.quickdealfree.com/post-"+postdata['post_id']+'/'+postdata['post_title_th']+".html",
@@ -423,6 +425,7 @@ class quickdealfree():
             "end_time": str(time_end),
             "detail": detail,
             "websitename": "quickdealfree",
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
         }
     def boost_post(self, postdata):
@@ -473,6 +476,7 @@ class quickdealfree():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "websitename": "quickdealfree",
         }

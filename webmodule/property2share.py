@@ -369,6 +369,8 @@ class property2share():
             return {
                 "success": success,
                 "time_usage": str(time_end - time_start),
+                'ds_id': postdata['ds_id'],
+                'log_id': postdata['log_id'],
                 "time_start": str(time_start),
                 "time_end": str(time_end),
                 "detail": detail,
@@ -481,6 +483,7 @@ class property2share():
             "time_end": str(time_end),
             "detail": detail,
             "post_link" :'https://www.property2share.com/property-'+str(post_id),
+            'ds_id': postdata['ds_id'],
             "post_id": post_id,
             "log_id" : log_id,
             "websitename": "property2share"
@@ -538,6 +541,7 @@ class property2share():
             "time_start": str(time_start),
             "time_end": str(time_end),
             "detail": detail,
+            'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "websitename": "property2share"
         }
@@ -716,6 +720,7 @@ class property2share():
             "post_url": posturl,
             "post_id": post_id,
             "detail": posted,
+            'ds_id': postdata['ds_id'],
             "log_id" : log_id,
             "websitename": "property2share"
         }
@@ -771,7 +776,7 @@ class property2share():
 
         return {
             "success": success,
-            "ds_id" : "4",
+            'ds_id': postdata['ds_id'],
             "log_id" : log_id,
             "usage_time": str(time_end - time_start),
             "start_time": str(time_start),

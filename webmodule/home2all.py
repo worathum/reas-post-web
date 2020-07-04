@@ -100,6 +100,7 @@ class home2all():
             "websitename": "home2all",
             "success": success,
             "usage_time": str(time_usage),
+            'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -648,6 +649,9 @@ class home2all():
             detail = "cannot login"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+        log_id = ""
+        if 'log_id' in postdata:
+            log_id = postdata['log_id']
         return {
             "websitename": "home2all",
             "success": success,
@@ -655,7 +659,8 @@ class home2all():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
-            "log_id": postdata['log_id'],
+            'ds_id': postdata['ds_id'],
+            "log_id": log_id,
             "post_id": postdata['post_id'],
             "account_type": "null",
             "detail": detail,
@@ -701,6 +706,7 @@ class home2all():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_id": postdata['post_id'],
             "websitename": "home2all"
@@ -725,6 +731,7 @@ class home2all():
             "start_time": time_start,
             "end_time": time_end,
             "detail": "Cannot Edit & Save the post",
+            'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
         }
@@ -760,9 +767,13 @@ class home2all():
                     'post_url':'',
                     'post_id':''
                 })
+            log_id = ""
+            if 'log_id' in postdata:
+                log_id = postdata['log_id']            
             my_res.update({
                     'websitename':'home2all',
                     'ds_id':postdata['ds_id'],
+                    'log_id':log_id,
                     'start_time':str(start_time),
                     'end_time':str(datetime.datetime.utcnow()),
                     'account_type':'',

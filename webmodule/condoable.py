@@ -361,6 +361,7 @@ class condoable():
             "time_start": time_start,
             "time_end": time_end,
             "detail": detail,
+            'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
         }
@@ -408,7 +409,9 @@ class condoable():
             "time_start": time_start,
             "time_end": time_end,
             "detail": detail,
-            "log_id": post_id,
+            'ds_id': postdata['ds_id'],
+            'log_id': postdata['log_id'],
+            "post_id": post_id,
         }
 
     def edit_post(self, postdata):

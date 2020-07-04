@@ -398,6 +398,7 @@ class thaisecondhand():
             "start_time": start_time,
             "end_time": end_time,
             "detail": detail,
+                'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
         }
@@ -461,6 +462,7 @@ class thaisecondhand():
             "start_time": start_time,
             "end_time": end_time,
             "detail": detail,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
         }
 
@@ -640,6 +642,7 @@ class thaisecondhand():
             "time_usage": end_time - start_time,
             "start_time": start_time,
             "end_time": end_time,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_url": post_url[0],
             "post_id": post_id,

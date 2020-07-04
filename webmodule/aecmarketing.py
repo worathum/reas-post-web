@@ -86,6 +86,7 @@ class aecmarketing():
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
+                'ds_id': postdata['ds_id'],
                 "websitename": "aecmarketing",
             }
 
@@ -98,6 +99,7 @@ class aecmarketing():
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
+                'ds_id': postdata['ds_id'],
                 "websitename": "aecmarketing",
             }
 
@@ -732,6 +734,7 @@ class aecmarketing():
 
         return {
             "success": result,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "start_time": str(start_time),
             "end_time": str(end_time),
@@ -773,6 +776,7 @@ class aecmarketing():
             "post_id": post_id,
             "start_time": str(start_time),
             "end_time": str(end_time),
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "usage_time": str(end_time - start_time),
             "detail": detail,
@@ -1199,6 +1203,7 @@ class aecmarketing():
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "detail": detail,
             "post_id": post_id,
@@ -1256,13 +1261,18 @@ class aecmarketing():
             detail = 'No post found with given title'
 
         end_time = datetime.datetime.utcnow()
+        log_id = ""
+        if 'log_id' in postdata:
+            log_id = postdata['log_id']
+
         return {
             "success": "true",
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
             "post_found" : result,
-            "log_id" : 1,
+            'ds_id': postdata['ds_id'],
+            "log_id" : postdata['log_id'],
             "account_type" : "",
             "detail": detail,
             "post_id": post_id,

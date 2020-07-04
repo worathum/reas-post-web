@@ -900,6 +900,7 @@ class proptecheasy():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id']
         }
 
@@ -962,6 +963,7 @@ class proptecheasy():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
         }
 
@@ -1008,6 +1010,7 @@ class proptecheasy():
         time_end = datetime.datetime.utcnow()
         return {
             "websitename": "proptecheasy",
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
 
             "success": success,

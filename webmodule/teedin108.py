@@ -426,6 +426,7 @@ class teedin108():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+                'ds_id': postdata['ds_id'],
             "log_id": log_id,
         }
 
@@ -606,6 +607,7 @@ class teedin108():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             # "log_id": log_id,
             "post_id": post_id
@@ -713,6 +715,7 @@ class teedin108():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+                'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id
         }

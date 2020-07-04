@@ -440,6 +440,7 @@ class kobkid():
         return {
             "success": result,
             "start_time": str(start_time),
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
@@ -479,6 +480,7 @@ class kobkid():
             "success": result,
             "start_time": str(start_time),
             "end_time": str(end_time),
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "usage_time": str(end_time - start_time),
             "detail": detail,
@@ -521,7 +523,8 @@ class kobkid():
                 "success": result,
                 "start_time": str(start_time),
                 "end_time": str(end_time),
-            "log_id": postdata['log_id'],
+                'ds_id': postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
                 "websitename": "kobkid"
@@ -568,6 +571,7 @@ class kobkid():
                         "success": False,
                         "start_time": str(start_time),
                         "end_time": str(end_time),
+                        'ds_id': postdata['ds_id'],
                         "log_id": postdata['log_id'],
                         "usage_time": str(end_time - start_time),
                         "detail": "Unable To Post Images",
@@ -622,6 +626,7 @@ class kobkid():
         return {
             "success": result,
             "start_time": str(start_time),
+            'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
@@ -679,6 +684,9 @@ class kobkid():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+        log_id = ""
+        if 'log_id' in postdata:
+            log_id = postdata['log_id']
         return {
             "success": success,
             "usage_time": str(time_usage),
@@ -687,7 +695,7 @@ class kobkid():
             "detail": detail,
             "websitename": "kobkid",
             "ds_id": postdata['ds_id'],
-            "log_id": postdata['log_id'],
+            "log_id": log_id,
             "post_id": post_id,
             "post_modify_time": post_modify_time,
             "post_view": post_view,

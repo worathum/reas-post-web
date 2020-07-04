@@ -92,6 +92,7 @@ class thisads():
         return {
             "websitename": "thisads",
             "success": success,
+                'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
             "usage_time": str(time_usage),
             "end_time": str(time_end),
@@ -410,6 +411,7 @@ class thisads():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": detail,
@@ -453,6 +455,7 @@ class thisads():
 
         return {
             "websitename": "thisads",
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "success": success,
             "start_time": str(time_start),
@@ -480,6 +483,7 @@ class thisads():
             detail= 'error while boosting / can only boost once a day'
         return {
             "websitename": "thisads",
+                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "success": success,
             "start_time": str(time_start),

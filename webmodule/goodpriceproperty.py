@@ -142,6 +142,7 @@ class goodpriceproperty():
             "success": success,
             "websitename": "goodpriceproperty",
             "start_time": str(time_start),
+            'ds_id': postdata['ds_id'],
             "end_time": str(time_end),
             "detail": detail,
 
@@ -1023,6 +1024,7 @@ class goodpriceproperty():
                 "action": "edit_post",
                 "websitename": "goodpriceproperty",
                 "start_time": str(time_start),
+                'ds_id': postdata['ds_id'],
                 "end_time": str(time_end),
                 "detail": data,
             }
@@ -1062,6 +1064,7 @@ class goodpriceproperty():
                 'success': 'false',
                 'detail':'Incorrect Post id',
                 "start_time": str(time_start),
+                'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id'],
                 "end_time": str(datetime.datetime.utcnow()),
                 }
@@ -1095,6 +1098,7 @@ class goodpriceproperty():
                 "websitename": "goodpriceproperty",
                 "start_time": str(time_start),
                 "end_time": str(time_end),
+                'ds_id': postdata['ds_id'],
                 "detail": "Successfully deleted",
                 "log_id": postdata['log_id'],
             }
@@ -1108,6 +1112,7 @@ class goodpriceproperty():
             "websitename": "goodpriceproperty",
             "start_time": str(time_start),
             "end_time": str(time_end),
+            'ds_id': postdata['ds_id'],
             "detail": detail,
             "log_id": postdata['log_id']
             # "detail": "under construction",
@@ -1157,6 +1162,7 @@ class goodpriceproperty():
             'detail':detail,
             "time_usage": time_end - time_start,
             "start_time": time_start,
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "end_time": time_end,
             # "detail": detail,

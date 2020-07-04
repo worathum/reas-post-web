@@ -110,6 +110,7 @@ class ddteedin():
         return {
             "websitename": "ddteedin",
             "success": success,
+            'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -616,6 +617,7 @@ class ddteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": query_string,
+            'ds_id': postdata['ds_id'],
             "post_id": postdata['post_id'],
             "account_type": "null",
         }
@@ -700,6 +702,7 @@ class ddteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": query_string,
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_id": id,
             "account_type": "null",
@@ -751,7 +754,9 @@ class ddteedin():
             success = "false"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-
+        log_id = ""
+        if 'log_id' in postdata:
+            log_id = postdata['log_id']
         return {
             "websitename": "ddteedin",
             "success": success,
@@ -759,7 +764,7 @@ class ddteedin():
             "end_time": str(time_end),
             "post_found": found,
             "ds_id": postdata['ds_id'],
-            "log_id": postdata['log_id'],
+            "log_id": log_id,
             "post_url": posturl,
             "post_id": post_id,
             "account_type": "null",
@@ -833,6 +838,7 @@ class ddteedin():
             "start_time": time_start,
             "end_time": time_end,
             "detail": "",
+            'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
         }
