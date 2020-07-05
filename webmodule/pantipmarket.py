@@ -123,7 +123,7 @@ class pantipmarket():
             "websitename":"pantipmarket",
             "success": success,
             "time_usage": time_end - time_start,
-            'ds_id': postdata['ds_id'],
+            'ds_id': userdata['ds_id'],
             "start_time": time_start,
             "end_time": time_end,
             "detail": "Registered Successfully " if registered else "Registration Failed. Either email is already registered or company name has 2 letters occurring consecutively which is not allowed by this site. "
@@ -885,7 +885,7 @@ class pantipmarket():
             "websitename":"pantipmarket",
             "success": success,
             'ds_id': postdata['ds_id'],
-                "log_id": postdata['log_id'],
+            "log_id": postdata['log_id'],
             "time_usage": end_time - start_time,
             "start_time": start_time,
             "end_time": end_time,

@@ -20,7 +20,7 @@ from urllib.request import urlopen
 httprequestObj = lib_httprequest()
 
 
-with open("./static/teesuay.json") as f:
+with open("./static/teesuay.json",encoding='utf-8') as f:
     provincedata = json.load(f)
 
 
@@ -53,16 +53,16 @@ class teesuay():
         success = "true"
         detail = ""
         passwd = postdata['pass']
-        add = 'กรุงเทพ'
+        add = "กรุงเทพ"
         tel = postdata["tel"]
         email = postdata["user"]
         website = ""
         for (key, value) in provincedata.items():
-            if type(value) is str and 'กรุงเทพ' in value.strip():
+            if type(value) is str and "กรุงเทพ" in value.strip():
                 province_id = key
                 break
         for (key, value) in provincedata[str(province_id)+"_province"].items():
-            if 'พญาไท' in value.strip():
+            if "พญาไท" in value.strip():
                 amphur_id = key
                 break
         datapost = dict(
@@ -163,7 +163,7 @@ class teesuay():
         postdata['addr_province']=postdata['addr_province'].replace(" ","")
         postdata['addr_district']=postdata['addr_district'].replace(" ","")
         for (key, value) in provincedata.items():
-            if type(value) is str and postdata['addr_province'].strip() in value.strip():
+            if type(value) is str and (postdata['addr_province'].strip() in value.strip() or value.strip() in postdata['addr_province'].strip()):
                 province_id = key
                 break
         if province_id=="":
@@ -177,7 +177,7 @@ class teesuay():
 
             }
         for (key, value) in provincedata[province_id+"_province"].items():
-            if postdata['addr_district'].strip() in value.strip():
+            if postdata['addr_district'].strip() in value.strip() or value.strip() in postdata['addr_district'].strip():
                 amphur_id = key
                 break
 
@@ -219,6 +219,7 @@ class teesuay():
             '8':7,
             '3':2
             }
+        #property type is being expected to be a number in the code
         try:
             postdata['cate_id']=propertytype[str(postdata['property_type'])]
         except:
@@ -342,8 +343,7 @@ class teesuay():
                 list_url = 'http://www.teesuay.com/member/list-property.php'
                 r = httprequestObj.http_get(list_url)
                 soup = BeautifulSoup(r.content, 'html5lib')
-                var = soup.find('a', attrs={'title': postdata['post_title_th']})[
-                    'href']
+                var = soup.find('a', attrs={'title': postdata['post_title_th']})['href']
                 # for i in '../property/':
                 i = len('../property/')
                 # post_id=''
@@ -407,7 +407,7 @@ class teesuay():
                 j += 1
             if post_id == postdata['post_id']:
                 storeI=i
-                break;
+                break
         if storeI=='':
             return {
                 'websitename':'teesuay',
@@ -485,7 +485,8 @@ class teesuay():
                 'ret': '',
                 'post_url': '',
                 'post_id': '',
-                "log_id": postdata['log_id']
+                "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id']
 
             }
         if success == "true":
@@ -531,7 +532,7 @@ class teesuay():
                 postdata['post_images']=['imgtmp/default/white.jpg']
             # if 'floor_area' in postdata: floor_area = postdata['floor_area']
             floorarea='0'
-            print(postdata['property_type'])
+            #print(postdata['property_type'])
             if postdata['property_type']=='1' or postdata['property_type']=='9' or postdata['property_type']=='10' or postdata['property_type']=='25':
                 if 'floor_area' not in postdata:
                     postdata['floor_area']=0
@@ -584,19 +585,21 @@ class teesuay():
                 datapost['class_type_id']=1    
             arr = ["fileshow", "file1", "file2", "file3", "file4"]
             files={}
-            for i in range(len(postdata['post_images'][:5])):
+            for i in range(len(postdata['post_images'])):
                 datapost[arr[i]] = postdata['post_images'][i]
                 files[arr[i]] = (postdata['post_images'][i], open(postdata['post_images'][i], "rb"), "image/jpg")
 
             url_n='http://www.teesuay.com/member/p-edit-property.php'
-
+            
             r=httprequestObj.http_post(url_n,datapost)
-
+           
             detail=r.text
+            print(detail)
             success="true"
+            
         else:
             success = "false"
-
+       
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -605,8 +608,9 @@ class teesuay():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-                'ds_id': postdata['ds_id'],
-            "log_id": postdata['log_id']
+            'ds_id': postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id":postdata["post_id"]
 
         }
 
@@ -637,7 +641,7 @@ class teesuay():
                 j += 1
             if post_id == postdata['post_id']:
                 storeI=i
-                break;
+                break
         if storeI=='':
             return {
                 'websitename':'teesuay',
@@ -654,7 +658,8 @@ class teesuay():
                 'success': 'false',
                 'ret': "",
                 'post_url': "",
-                'post_id': ""
+                'post_id': "",
+                'ds_id':postdata['ds_id']
             }
         if success == "true":
             datapost = {
@@ -682,7 +687,7 @@ class teesuay():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "detail": detail,
             "log_id":postdata['log_id'],
         }
@@ -714,7 +719,7 @@ class teesuay():
                     j += 1
                 if post_id == postdata['post_id']:
                     storeI=i
-                    break;
+                    break
             if storeI=='':
                 time_end = datetime.datetime.utcnow()
                 return {
@@ -737,7 +742,7 @@ class teesuay():
                 "start_time": time_start,
                 "end_time": time_end,
                 'ds_id': postdata['ds_id'],
-                "detail": "",
+                "detail": "Boosted Successfully",
                 "post_id": post_id,
                 "log_id": postdata['log_id']
                 

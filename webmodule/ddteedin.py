@@ -114,6 +114,7 @@ class ddteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id']
         }
 
     def test_login(self, postdata):
@@ -150,7 +151,7 @@ class ddteedin():
             "ds_id": postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "detail": detail,
+            "detail": detail
         }
 
     def create_post(self, postdata):
@@ -620,6 +621,7 @@ class ddteedin():
             'ds_id': postdata['ds_id'],
             "post_id": postdata['post_id'],
             "account_type": "null",
+            "ds_id": postdata['ds_id']
         }
 
     def delete_post(self, postdata):
@@ -706,6 +708,7 @@ class ddteedin():
             "log_id": postdata['log_id'],
             "post_id": id,
             "account_type": "null",
+            "ds_id": postdata['ds_id']
         }
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -841,6 +844,7 @@ class ddteedin():
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
+            "ds_id": postdata['ds_id']
         }
 
     def print_debug(self, msg):

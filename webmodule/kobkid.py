@@ -90,7 +90,7 @@ class kobkid():
                 "start_time": str(start_time),
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
-                'ds_id': postdata['ds_id'],
+                'ds_id': passdata['ds_id'],
                 "detail": detail,
                 "websitename": "kobkid",
             }
@@ -106,7 +106,7 @@ class kobkid():
             return {
                 "success": False,
                 "start_time": str(start_time),
-                'ds_id': postdata['ds_id'],
+                'ds_id': passdata['ds_id'],
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
@@ -124,7 +124,7 @@ class kobkid():
             return {
                 "success": True,
                 "start_time": str(start_time),
-                'ds_id': postdata['ds_id'],
+                'ds_id': passdata['ds_id'],
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
@@ -137,7 +137,7 @@ class kobkid():
             return {
                 "success": False,
                 "start_time": str(start_time),
-                'ds_id': postdata['ds_id'],
+                'ds_id': passdata['ds_id'],
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
@@ -482,6 +482,7 @@ class kobkid():
             "end_time": str(end_time),
             'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
+            "post_id":postdata['post_id'],
             "usage_time": str(end_time - start_time),
             "detail": detail,
             "websitename": "kobkid"

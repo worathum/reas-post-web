@@ -77,30 +77,35 @@ class kaiteedin():
                 'websitename': 'kaiteedin',
                 'success': 'false',
                 'detail': 'Missing required field name',
+                "ds_id": postdata['ds_id']
             }
         if 'name_th' not in postdata:
             return{
                 'websitename': 'kaiteedin',
                 'success': 'false',
                 'detail': 'Missing required field name',
+                "ds_id": postdata['ds_id']
             }
         if 'tel' not in postdata:
             return{
                 'websitename': 'kaiteedin',
                 'success': 'false',
                 'detail': 'Missing required field tel',
+                "ds_id": postdata['ds_id']
             }
         if 'pass' not in postdata:
             return{
                 'websitename': 'kaiteedin',
                 'success': 'false',
                 'detail': 'Missing required field pass',
+                "ds_id": postdata['ds_id']
             }
         if 'user' not in postdata:
             return{
                 'websitename': 'kaiteedin',
                 'success': 'false',
                 'detail': 'Missing required field email',
+                "ds_id": postdata['ds_id']
             }
         prod_address = "พญาไท, กรุงเทพ"
         datapost = dict(
@@ -136,7 +141,8 @@ class kaiteedin():
             "start_time": str(time_start),
             'ds_id': postdata['ds_id'],
             "end_time": str(time_end),
-            "detail": detail,
+            "ds_id": postdata['ds_id'],
+            "detail": detail
         }
 
     def test_login(self, postdata):
@@ -220,6 +226,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field name',
+                    "ds_id": postdata['ds_id']
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -229,6 +236,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field mobile',
+                    "ds_id": postdata['ds_id']
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -238,6 +246,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field pass',
+                    "ds_id": postdata['ds_id']
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -247,6 +256,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field email',
+                    "ds_id": postdata['ds_id']
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -256,6 +266,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field property_type',
+                    "ds_id": postdata['ds_id']
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -265,6 +276,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field listing_type',
+                    "ds_id": postdata['ds_id']
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -274,6 +286,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field price',
+                    "ds_id": postdata['ds_id']
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -283,6 +296,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field title',
+                    "ds_id": postdata['ds_id']
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -292,6 +306,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field description',
+                    "ds_id": postdata['ds_id']
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -321,6 +336,7 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'ret': " Wrong property type",
+                    "ds_id": postdata['ds_id']
                     'post_url': "",
                     'post_id': ""
                 }
@@ -591,6 +607,8 @@ class kaiteedin():
                 'websitename': 'kaiteedin',
                 'success': 'false',
                 'detail': 'Missing required field name',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -600,6 +618,8 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field mobile',
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -609,6 +629,8 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field pass',
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -618,6 +640,8 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field email',
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -627,6 +651,8 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field property_type',
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -636,6 +662,8 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field listing_type',
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -645,6 +673,8 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field price',
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -654,6 +684,8 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field title',
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -663,6 +695,8 @@ class kaiteedin():
                     'websitename': 'kaiteedin',
                     'success': 'false',
                     'detail': 'Missing required field description',
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
                     'ret': '',
                     'post_url': '',
                     'post_id': ''
@@ -678,6 +712,9 @@ class kaiteedin():
                     "websitename": "kaiteedin",
                     "success": 'false',
                     "start_time": str(time_start),
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
+                    "post_id": postdata['post_id'],
                     "end_time": str(time_end),
                     "detail": 'Wrong Post id'
                 }
@@ -721,6 +758,8 @@ class kaiteedin():
                     'success': 'false',
                     'ret': " Wrong property type",
                     'post_url': "",
+                    "ds_id": postdata['ds_id'],
+                    "log_id": postdata['log_id'],
                     'post_id': ""
                 }
             
@@ -819,8 +858,9 @@ class kaiteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            'ds_id': postdata['ds_id'],
-            "log_id": postdata['log_id'],
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id'],
+            "log_id": postdata['log_id']
         }
 
 
@@ -844,6 +884,8 @@ class kaiteedin():
             return {
             'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id'],
+                "post_id": postdata['post_id'],
                 "websitename": "kaiteedin",
                 "success": 'false',
                 "start_time": str(time_start),
@@ -877,6 +919,8 @@ class kaiteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id']
         }
 
     def search_post(self, postdata):
@@ -980,6 +1024,8 @@ class kaiteedin():
             time_usage = time_end - time_start
             return {
                 "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id'],
+                "post_id": postdata['post_id'],
                 "websitename": "kaiteedin",
                 "success": 'false',
                 "start_time": str(time_start),
@@ -1013,6 +1059,8 @@ class kaiteedin():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id']
         }
 
 
