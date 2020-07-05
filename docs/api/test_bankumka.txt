@@ -12,7 +12,8 @@ post_data:eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ0aW1lb3V0IjogIjciLCAid2ViIjogW3
             "success": "true",
             "start_time": "2020-05-03 05:54:56.197272",
             "end_time": "2020-05-03 05:55:04.049133",
-            "detail": "Registered"
+            "detail": "Registered",
+            "ds_id": "4"
             }
         },
         "usage_time": "0:00:07.852904",
@@ -27,20 +28,24 @@ access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
 post_data:eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJiYW5rdW1rYSIsICJkc19pZCI6ICI0IiwgInVzZXIiOiAid3RmQHdobWFpbHRvcC5jb20iLCAicGFzcyI6ICIxMjM0NTY3ODkifV19
 <output>
 {
-    "success": "true",
-    "action": "test_login",
-    "web": {
-        "bankumka": {
-        "success": "true",
-        "start_time": "2020-05-03 05:55:04.063687",
-        "end_time": "2020-05-03 05:55:04.049351",
-        "detail": "login successfull"
-        }
-    },
-    "usage_time": "0:00:07.852904",
-    "start_time": "2020-05-03 05:54:56.196447",
-    "end_time": "2020-05-03 05:55:04.049351"
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "bankumka": {
+   "websitename": "bankumka",
+   "success": "true",
+   "start_time": "2020-07-04 21:33:46.219018",
+   "ds_id": "4",
+   "end_time": "2020-07-04 21:33:48.679366",
+   "detail": "login successfull"
+  }
+ },
+ "usage_time": "0:00:02.516439",
+ "start_time": "2020-07-04 21:33:46.180752",
+ "end_time": "2020-07-04 21:33:48.697191"
 }
+
+
 CREATE POST
 
 <input>
@@ -57,13 +62,16 @@ post_data:5X3Byb3BlcnR5JTJGOTA0NjQzNTQtNTFkMi00M2Q1LWIwMmQtMzJhNzM1YWY2ODM0P2Fsd
             "end_time": "2020-05-03 06:11:49.169892",
             "post_url": "https://bankumka.com/property/845eae6591bfc50",
             "post_id": "321059", 
-            "account_type": "null"
+            "account_type": "null",
+            "ds_id": "4"
         }
     },
     "usage_time": "0:00:26.557412",
     "start_time": "2020-05-03 06:11:22.612631",
     "end_time": "2020-05-03 06:11:49.170043"
 }
+
+
 EDIT POST
 
 <input>
@@ -80,13 +88,16 @@ post_data:eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwb3N0X2ltZ191cm
             "end_time": "2020-05-03 06:18:58.428611",
             "post_url": "https://bankumka.com/property/845eae6591bfc50/edit",
             "post_id": "321059",
-            "account_type": "null"
+            "log_id": "321059",
+            "account_type": "null",
+            "ds_id": "4"
         }
     },
     "usage_time": "0:00:21.805439",
     "start_time": "2020-05-03 06:18:36.623593",
     "end_time": "2020-05-03 06:18:58.429032"
 }
+
 DELETE POST
 
 <input>
@@ -103,13 +114,16 @@ post_data:eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7Im
             "end_time": "2020-05-03 10:37:39.698924",
             "post_url": "https://bankumka.com/property/845eae6591bfc50/edit",
             "post_id": "321059",
-            "account_type": "null"
+            "log_id": "321059",
+            "account_type": "null",
+            "ds_id": "4"
         }
     },
     "usage_time": "0:00:11.096967",
     "start_time": "2020-05-03 10:37:28.602186",
     "end_time": "2020-05-03 10:37:39.699153"
 }
+
 
 BOOST POST
 
@@ -126,7 +140,9 @@ post_data:access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichai
             "start_time": "2020-05-03 14:54:07.366130",
             "end_time": "2020-05-03 14:54:11.030633",
             "post_id": "320996",
-            "account_type": "null"
+            "log_id": "320996",
+            "account_type": "null",
+            "ds_id" : "4"
         }
     },
     "usage_time": "0:00:03.664915",

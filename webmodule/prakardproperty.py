@@ -521,6 +521,7 @@ class prakardproperty():
             "detail": detail,
             'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
+            "post_id":postdata['post_id']
         }
 
 

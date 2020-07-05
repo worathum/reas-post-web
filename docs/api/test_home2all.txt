@@ -6,7 +6,7 @@ REGISTER  WITH PREVIOS REGISTERED NAME
 
 
 <output>
-{\n "success": "true",\n "action": "register_user",\n "web": {\n  "home2all": {\n   "success": "False",\n   "usage_time": "0:00:01.171974",\n   "start_time": "2020-04-16 09:46:57.809765",\n   "end_time": "2020-04-16 09:46:58.981739",\n   "detail": "Same Display name"\n  }\n },\n "usage_time": "0:00:01.172527",\n "start_time": "2020-04-16 09:46:57.809530",\n "end_time": "2020-04-16 09:46:58.982057"\n}'
+{\n "success": "true",\n "action": "register_user",\n "web": {\n  "home2all": {\n   "success": "False",\n   "usage_time": "0:00:01.171974",\n   "start_time": "2020-04-16 09:46:57.809765",\n   "ds_id": "4",\n "end_time": "2020-04-16 09:46:58.981739",\n   "detail": "Same Display name"\n  }\n },\n "usage_time": "0:00:01.172527",\n "start_time": "2020-04-16 09:46:57.809530",\n "end_time": "2020-04-16 09:46:58.982057"\n}'
 
 CORRECT REGISTER
 
@@ -16,7 +16,7 @@ CORRECT REGISTER
 
 
 <output>
-{\n "success": "true",\n "action": "register_user",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:05.992969",\n   "start_time": "2020-04-16 09:48:15.216588",\n   "end_time": "2020-04-16 09:48:21.209557",\n   "detail": ""\n  }\n },\n "usage_time": "0:00:05.993675",\n "start_time": "2020-04-16 09:48:15.216355",\n "end_time": "2020-04-16 09:48:21.210030"\n}'
+{\n "success": "true",\n "action": "register_user",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:05.992969",\n   "start_time": "2020-04-16 09:48:15.216588",\n   "end_time": "2020-04-16 09:48:21.209557",\n   "ds_id": "4",\n "detail": ""\n  }\n },\n "usage_time": "0:00:05.993675",\n "start_time": "2020-04-16 09:48:15.216355",\n "end_time": "2020-04-16 09:48:21.210030"\n}'
 
 RIGHT LOGIN
 
@@ -26,7 +26,7 @@ RIGHT LOGIN
 
 
 <output>
-{\n "success": "true",\n "action": "test_login",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:08.651979",\n   "start_time": "2020-04-16 09:54:25.140313",\n   "end_time": "2020-04-16 09:54:33.792292",\n   "detail": "logged in"\n  }\n },\n "usage_time": "0:00:08.652477",\n "start_time": "2020-04-16 09:54:25.140099",\n "end_time": "2020-04-16 09:54:33.792576"\n}'
+{\n "success": "true",\n "action": "test_login",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:08.651979",\n   "start_time": "2020-04-16 09:54:25.140313",\n   "end_time": "2020-04-16 09:54:33.792292",\n   "ds_id": "4",\n "detail": "logged in"\n  }\n },\n "usage_time": "0:00:08.652477",\n "start_time": "2020-04-16 09:54:25.140099",\n "end_time": "2020-04-16 09:54:33.792576"\n}'
 
 
 WRONG PASS LOGIN
@@ -37,7 +37,7 @@ WRONG PASS LOGIN
 
 
 <output>
-{\n "success": "true",\n "action": "test_login",\n "web": {\n  "home2all": {\n   "success": "false",\n   "usage_time": "0:00:01.583039",\n   "start_time": "2020-04-16 09:58:14.878755",\n   "end_time": "2020-04-16 09:58:16.461794",\n   "detail": "cannot login"\n  }\n },\n "usage_time": "0:00:01.583747",\n "start_time": "2020-04-16 09:58:14.878455",\n "end_time": "2020-04-16 09:58:16.462202"\n}'
+{\n "success": "true",\n "action": "test_login",\n "web": {\n  "home2all": {\n   "success": "false",\n   "usage_time": "0:00:01.583039",\n   "start_time": "2020-04-16 09:58:14.878755",\n   "end_time": "2020-04-16 09:58:16.461794",\n   "ds_id": "4",\n "detail": "cannot login"\n  }\n },\n "usage_time": "0:00:01.583747",\n "start_time": "2020-04-16 09:58:14.878455",\n "end_time": "2020-04-16 09:58:16.462202"\n}'
 
 
 WRONG USER LOGIN
@@ -48,7 +48,7 @@ WRONG USER LOGIN
 
 
 <output>
-{\n "success": "true",\n "action": "test_login",\n "web": {\n  "home2all": {\n   "success": "false",\n   "usage_time": "0:00:01.515729",\n   "start_time": "2020-04-16 09:59:16.362148",\n   "end_time": "2020-04-16 09:59:17.877877",\n   "detail": "cannot login"\n  }\n },\n "usage_time": "0:00:01.516280",\n "start_time": "2020-04-16 09:59:16.361880",\n "end_time": "2020-04-16 09:59:17.878160"\n}
+{\n "success": "true",\n "action": "test_login",\n "web": {\n  "home2all": {\n   "success": "false",\n   "usage_time": "0:00:01.515729",\n   "start_time": "2020-04-16 09:59:16.362148",\n   "end_time": "2020-04-16 09:59:17.877877",\n   "ds_id": "4",\n "detail": "cannot login"\n  }\n },\n "usage_time": "0:00:01.516280",\n "start_time": "2020-04-16 09:59:16.361880",\n "end_time": "2020-04-16 09:59:17.878160"\n}
 
 
 CREATE POST NO LINE
@@ -59,7 +59,7 @@ CREATE POST NO LINE
 
 
 <output>
-'{\n "success": "true",\n "action": "create_post",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:19.589299",\n   "start_time": "2020-04-16 10:23:54.192355",\n   "end_time": "2020-04-16 10:24:13.781654",\n   "post_url": "https://home2all.com/post/topicid/788686",\n   "post_id": "788686",\n   "account_type": "null",\n   "detail": "logged in"\n  }\n },\n "usage_time": "0:00:21.311708",\n "start_time": "2020-04-16 10:23:52.470287",\n "end_time": "2020-04-16 10:24:13.781995"\n}'
+'{\n "success": "true",\n "action": "create_post",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:19.589299",\n   "start_time": "2020-04-16 10:23:54.192355",\n   "end_time": "2020-04-16 10:24:13.781654",\n   "ds_id": "120",\n "post_url": "https://home2all.com/post/topicid/788686",\n   "post_id": "788686",\n   "account_type": "null",\n   "detail": "logged in"\n  }\n },\n "usage_time": "0:00:21.311708",\n "start_time": "2020-04-16 10:23:52.470287",\n "end_time": "2020-04-16 10:24:13.781995"\n}'
 
 
 
@@ -71,7 +71,7 @@ CREATE POST WITH LINE
 
 
 <output>
-{\n "success": "true",\n "action": "create_post",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:22.215466",\n   "start_time": "2020-04-16 10:25:45.451552",\n   "end_time": "2020-04-16 10:26:07.667018",\n   "post_url": "https://home2all.com/post/topicid/788688",\n   "post_id": "788688",\n   "account_type": "null",\n   "detail": "logged in"\n  }\n },\n "usage_time": "0:00:23.797410",\n "start_time": "2020-04-16 10:25:43.870103",\n "end_time": "2020-04-16 10:26:07.667513"\n}
+{\n "success": "true",\n "action": "create_post",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:22.215466",\n   "start_time": "2020-04-16 10:25:45.451552",\n   "end_time": "2020-04-16 10:26:07.667018",\n   "ds_id": "120",\n "post_url": "https://home2all.com/post/topicid/788688",\n   "post_id": "788688",\n   "account_type": "null",\n   "detail": "logged in"\n  }\n },\n "usage_time": "0:00:23.797410",\n "start_time": "2020-04-16 10:25:43.870103",\n "end_time": "2020-04-16 10:26:07.667513"\n}
 
 
 EDIT POST WITH CORRECT ID
@@ -80,7 +80,7 @@ EDIT POST WITH CORRECT ID
 {{'access_token': 'YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9', 'post_data': 'eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwcm9qZWN0X25hbWUiOiAiXHUwZTI1XHUwZTM4XHUwZTIxXHUwZTFlXHUwZTM1XHUwZTE5XHUwZTM1XHUwZTI3XHUwZTM0XHUwZTI1XHUwZTI1IiwgInBvc3RfaW1nX3VybF9saXN0cyI6IFsiaHR0cHM6Ly96aWdubmV0LnNncDEuZGlnaXRhbG9jZWFuc3BhY2VzLmNvbS9saXZpbmdqb2luL2NsYXNzaWZpZWQvMTg5Njg5L2JpZy8yMTAxMjAyMzUyMTU1MDA5OTEuanBnIiwgImh0dHBzOi8vemlnbm5ldC5zZ3AxLmRpZ2l0YWxvY2VhbnNwYWNlcy5jb20vbGl2aW5nam9pbi9jbGFzc2lmaWVkLzE4OTY4OS9vdGhlci9iaWcvMjEwMTIwMjM1MjIwMzE3OTE4LmpwZyJdLCAiZ2VvX2xhdGl0dWRlIjogIjEzLjc4Njg2MiIsICJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLCAicHJvcGVydHlfaWQiOiAiY2h1MDAxIiwgInBvc3RfdGl0bGVfdGgiOiAibmV3IGVkaXRlZCBcdTBlNDNcdTBlMmJcdTBlNDlcdTBlNDBcdTBlMGFcdTBlNDhcdTBlMzIgXHUwZTE3XHUwZTM1XHUwZTQ4XHUwZTE0XHUwZTM0XHUwZTE5XHUwZTE0XHUwZTQ4XHUwZTI3XHUwZTE5IFx1MGUxYVx1MGUzMlx1MGUwN1x1MGUwMVx1MGUyM1x1MGUyN1x1MGUyMlx1MGU0NFx1MGUxN1x1MGUyM1x1MGUxOVx1MGU0OVx1MGUyZFx1MGUyMiA2IFx1MGU0NFx1MGUyM1x1MGU0OCBcdTBlNDBcdTBlMmJcdTBlMjFcdTBlMzJcdTBlMzBcdTBlMTdcdTBlMzNcdTBlMTVcdTBlMjVcdTBlMzJcdTBlMTQiLCAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJXaGF0IGlzIGRlc2NyaXB0aW9uIiwgInBvc3RfdGl0bGVfZW4iOiAiTGFuZCBmb3IgcmVudCBiYW5na2xveXNhaW5vaSA2IHJhaSBzdWl0YWJsZSBmb3IgZGV2ZWxvcGluZyIsICJwb3N0X2Rlc2NyaXB0aW9uX2VuIjogIkxhbmQgZm9yIHJlbnQgYmFuZ2tsb3lzYWlub2kgNiByYWkgc3VpdGEgYmxlIGZvciBkZXZlbG9waW5nIiwgInByaWNlX2JhaHQiOiAiMTAwMDAwIiwgImxpc3RpbmdfdHlwZSI6ICJcdTBlNDBcdTBlMGFcdTBlNDhcdTBlMzIiLCAicHJvcGVydHlfdHlwZSI6ICI2IiwgInByb21pbmVudF9wb2ludCAiOiAiXHUwZTJiXHUwZTE5XHUwZTQ5XHUwZTMyXHUwZTAxXHUwZTI3XHUwZTQ5XHUwZTMyXHUwZTA3XHUwZTIxXHUwZTMyXHUwZTAxIFx1MGU0M1x1MGUyYlx1MGU0OVx1MGU0MFx1MGUwYVx1MGU0OFx1MGUzMlx1MGUxNlx1MGUzOVx1MGUwMVx1MGUyYVx1MGUzOFx1MGUxNCIsICJkaXJlY3Rpb25fdHlwZSI6ICIxMSIsICJhZGRyX3Byb3ZpbmNlIjogIlx1MGUxOVx1MGUxOVx1MGUxN1x1MGUxYVx1MGUzOFx1MGUyM1x1MGUzNSIsICJhZGRyX2Rpc3RyaWN0IjogIlx1MGU0MFx1MGUyMVx1MGUzN1x1MGUyZFx1MGUwN1x1MGUxOVx1MGUxOVx1MGUxN1x1MGUxYVx1MGUzOFx1MGUyM1x1MGUzNSIsICJhZGRyX3N1Yl9kaXN0cmljdCI6ICJcdTBlMWFcdTBlMzJcdTBlMDdcdTBlMDFcdTBlMjNcdTBlMjdcdTBlMjIiLCAiYWRkcl9yb2FkIjogIlx1MGUxYVx1MGUzMlx1MGUwN1x1MGUwMVx1MGUyM1x1MGUyN1x1MGUyMi1cdTBlNDRcdTBlMTdcdTBlMjNcdTBlMTlcdTBlNDlcdTBlMmRcdTBlMjIiLCAiYWRkcl9zb2kiOiAiXHUwZTBiXHUwZTJkXHUwZTIyXHUwZTFhXHUwZTMyXHUwZTA3XHUwZTAxXHUwZTIzXHUwZTI3XHUwZTIyLVx1MGU0NFx1MGUxN1x1MGUyM1x1MGUxOVx1MGU0OVx1MGUyZFx1MGUyMiAzNCIsICJhZGRyX25lYXJfYnkiOiAiXHUwZTE2XHUwZTE5XHUwZTE5XHUwZTFlXHUwZTIzXHUwZTMwXHUwZTIzXHUwZTMyXHUwZTIxNVxuXHUwZTE2XHUwZTE5XHUwZTE5XHUwZTE5XHUwZTA0XHUwZTIzXHUwZTJkXHUwZTM0XHUwZTE5XHUwZTE3XHUwZTIzXHUwZTRjIiwgImxhbmRfc2l6ZV9yYWkiOiAiNiIsICJsYW5kX3NpemVfbmdhbiI6ICIwIiwgImxhbmRfc2l6ZV93YSI6ICIwIiwgIm5hbWUiOiAiXHUwZTBhXHUwZTM5IiwgIm1vYmlsZSI6ICIwOTkyODk5OTk5IiwgImVtYWlsIjogInBhbnV3YXQucnVhbmdyYWtAZ21haWwuY29tIiwgImxpbmUiOiAiMDk5Mjg5OTk5OSIsICJ3ZWIiOiBbeyJkc19uYW1lIjogImhvbWUyYWxsIiwgImRzX2lkIjogIjEyMCIsICJ1c2VyIjogInRlbXBAMmdvLW1haWwuY29tIiwgInBhc3MiOiAiMTIzNDU2YWEiLCAicG9zdF9pZCI6ICI3ODg2ODYiLCAibG9nX2lkIjogIjQ0NDQ0IiwgImFjY291bnRfdHlwZSI6ICJjb3JwZXJhdGUifV19'}
 
 <output>
-'{\n "success": "true",\n "action": "edit_post",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:23.218997",\n   "start_time": "2020-04-16 10:35:36.922185",\n   "end_time": "2020-04-16 10:36:00.141182",\n   "post_url": "",\n   "post_id": "788686",\n   "account_type": "null",\n   "detail": "logged in"\n  }\n },\n "usage_time": "0:00:24.122865",\n "start_time": "2020-04-16 10:35:36.018694",\n "end_time": "2020-04-16 10:36:00.141559"\n}'
+'{\n "success": "true",\n "action": "edit_post",\n "web": {\n  "home2all": {\n   "success": "true",\n   "usage_time": "0:00:23.218997",\n   "start_time": "2020-04-16 10:35:36.922185",\n   "end_time": "2020-04-16 10:36:00.141182",\n   "ds_id": "120",\n "log_id": "44444",\n "post_url": "",\n   "post_id": "788686",\n   "account_type": "null",\n   "detail": "logged in"\n  }\n },\n "usage_time": "0:00:24.122865",\n "start_time": "2020-04-16 10:35:36.018694",\n "end_time": "2020-04-16 10:36:00.141559"\n}'
 
 
 EDIT POST WITH WRONG ID
@@ -90,7 +90,7 @@ EDIT POST WITH WRONG ID
 'post_data': 'eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwcm9qZWN0X25hbWUiOiAiXHUwZTI1XHUwZTM4XHUwZTIxXHUwZTFlXHUwZTM1XHUwZTE5XHUwZTM1XHUwZTI3XHUwZTM0XHUwZTI1XHUwZTI1IiwgInBvc3RfaW1nX3VybF9saXN0cyI6IFsiaHR0cHM6Ly96aWdubmV0LnNncDEuZGlnaXRhbG9jZWFuc3BhY2VzLmNvbS9saXZpbmdqb2luL2NsYXNzaWZpZWQvMTg5Njg5L2JpZy8yMTAxMjAyMzUyMTU1MDA5OTEuanBnIiwgImh0dHBzOi8vemlnbm5ldC5zZ3AxLmRpZ2l0YWxvY2VhbnNwYWNlcy5jb20vbGl2aW5nam9pbi9jbGFzc2lmaWVkLzE4OTY4OS9vdGhlci9iaWcvMjEwMTIwMjM1MjIwMzE3OTE4LmpwZyJdLCAiZ2VvX2xhdGl0dWRlIjogIjEzLjc4Njg2MiIsICJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLCAicHJvcGVydHlfaWQiOiAiY2h1MDAxIiwgInBvc3RfdGl0bGVfdGgiOiAibmV3IGVkaXRlZCBcdTBlNDNcdTBlMmJcdTBlNDlcdTBlNDBcdTBlMGFcdTBlNDhcdTBlMzIgXHUwZTE3XHUwZTM1XHUwZTQ4XHUwZTE0XHUwZTM0XHUwZTE5XHUwZTE0XHUwZTQ4XHUwZTI3XHUwZTE5IFx1MGUxYVx1MGUzMlx1MGUwN1x1MGUwMVx1MGUyM1x1MGUyN1x1MGUyMlx1MGU0NFx1MGUxN1x1MGUyM1x1MGUxOVx1MGU0OVx1MGUyZFx1MGUyMiA2IFx1MGU0NFx1MGUyM1x1MGU0OCBcdTBlNDBcdTBlMmJcdTBlMjFcdTBlMzJcdTBlMzBcdTBlMTdcdTBlMzNcdTBlMTVcdTBlMjVcdTBlMzJcdTBlMTQiLCAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJXaGF0IGlzIGRlc2NyaXB0aW9uIiwgInBvc3RfdGl0bGVfZW4iOiAiTGFuZCBmb3IgcmVudCBiYW5na2xveXNhaW5vaSA2IHJhaSBzdWl0YWJsZSBmb3IgZGV2ZWxvcGluZyIsICJwb3N0X2Rlc2NyaXB0aW9uX2VuIjogIkxhbmQgZm9yIHJlbnQgYmFuZ2tsb3lzYWlub2kgNiByYWkgc3VpdGEgYmxlIGZvciBkZXZlbG9waW5nIiwgInByaWNlX2JhaHQiOiAiMTAwMDAwIiwgImxpc3RpbmdfdHlwZSI6ICJcdTBlNDBcdTBlMGFcdTBlNDhcdTBlMzIiLCAicHJvcGVydHlfdHlwZSI6ICI2IiwgInByb21pbmVudF9wb2ludCAiOiAiXHUwZTJiXHUwZTE5XHUwZTQ5XHUwZTMyXHUwZTAxXHUwZTI3XHUwZTQ5XHUwZTMyXHUwZTA3XHUwZTIxXHUwZTMyXHUwZTAxIFx1MGU0M1x1MGUyYlx1MGU0OVx1MGU0MFx1MGUwYVx1MGU0OFx1MGUzMlx1MGUxNlx1MGUzOVx1MGUwMVx1MGUyYVx1MGUzOFx1MGUxNCIsICJkaXJlY3Rpb25fdHlwZSI6ICIxMSIsICJhZGRyX3Byb3ZpbmNlIjogIlx1MGUxOVx1MGUxOVx1MGUxN1x1MGUxYVx1MGUzOFx1MGUyM1x1MGUzNSIsICJhZGRyX2Rpc3RyaWN0IjogIlx1MGU0MFx1MGUyMVx1MGUzN1x1MGUyZFx1MGUwN1x1MGUxOVx1MGUxOVx1MGUxN1x1MGUxYVx1MGUzOFx1MGUyM1x1MGUzNSIsICJhZGRyX3N1Yl9kaXN0cmljdCI6ICJcdTBlMWFcdTBlMzJcdTBlMDdcdTBlMDFcdTBlMjNcdTBlMjdcdTBlMjIiLCAiYWRkcl9yb2FkIjogIlx1MGUxYVx1MGUzMlx1MGUwN1x1MGUwMVx1MGUyM1x1MGUyN1x1MGUyMi1cdTBlNDRcdTBlMTdcdTBlMjNcdTBlMTlcdTBlNDlcdTBlMmRcdTBlMjIiLCAiYWRkcl9zb2kiOiAiXHUwZTBiXHUwZTJkXHUwZTIyXHUwZTFhXHUwZTMyXHUwZTA3XHUwZTAxXHUwZTIzXHUwZTI3XHUwZTIyLVx1MGU0NFx1MGUxN1x1MGUyM1x1MGUxOVx1MGU0OVx1MGUyZFx1MGUyMiAzNCIsICJhZGRyX25lYXJfYnkiOiAiXHUwZTE2XHUwZTE5XHUwZTE5XHUwZTFlXHUwZTIzXHUwZTMwXHUwZTIzXHUwZTMyXHUwZTIxNVxuXHUwZTE2XHUwZTE5XHUwZTE5XHUwZTE5XHUwZTA0XHUwZTIzXHUwZTJkXHUwZTM0XHUwZTE5XHUwZTE3XHUwZTIzXHUwZTRjIiwgImxhbmRfc2l6ZV9yYWkiOiAiNiIsICJsYW5kX3NpemVfbmdhbiI6ICIwIiwgImxhbmRfc2l6ZV93YSI6ICIwIiwgIm5hbWUiOiAiXHUwZTBhXHUwZTM5IiwgIm1vYmlsZSI6ICIwOTkyODk5OTk5IiwgImVtYWlsIjogInBhbnV3YXQucnVhbmdyYWtAZ21haWwuY29tIiwgImxpbmUiOiAiMDk5Mjg5OTk5OSIsICJ3ZWIiOiBbeyJkc19uYW1lIjogImhvbWUyYWxsIiwgImRzX2lkIjogIjEyMCIsICJ1c2VyIjogInRlbXBAMmdvLW1haWwuY29tIiwgInBhc3MiOiAiMTIzNDU2YWEiLCAicG9zdF9pZCI6ICI3ODg2ODgiLCAibG9nX2lkIjogIjQ0NDQ0IiwgImFjY291bnRfdHlwZSI6ICJjb3JwZXJhdGUifV19'}
 
 <output>
-{\n "success": "true",\n "action": "edit_post",\n "web": {\n  "home2all": {\n   "success": "False",\n   "usage_time": "0:00:11.459421",\n   "start_time": "2020-04-16 10:32:05.867206",\n   "end_time": "2020-04-16 10:32:17.326627",\n   "post_url": "",\n   "post_id": "788688",\n   "account_type": "null",\n   "detail": "Incorrect Post Id"\n  }\n },\n "usage_time": "0:00:12.921285",\n "start_time": "2020-04-16 10:32:04.406112",\n "end_time": "2020-04-16 10:32:17.327397"\n}'
+{\n "success": "true",\n "action": "edit_post",\n "web": {\n  "home2all": {\n   "success": "False",\n   "usage_time": "0:00:11.459421",\n   "start_time": "2020-04-16 10:32:05.867206",\n   "end_time": "2020-04-16 10:32:17.326627",\n   "ds_id": "120",\n "log_id": "44444",\n "post_url": "",\n   "post_id": "788688",\n   "account_type": "null",\n   "detail": "Incorrect Post Id"\n  }\n },\n "usage_time": "0:00:12.921285",\n "start_time": "2020-04-16 10:32:04.406112",\n "end_time": "2020-04-16 10:32:17.327397"\n}'
 
 BOOST POST
 
@@ -98,7 +98,7 @@ BOOST POST
 {'access_token': 'YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9', 'post_data': 'eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjciLCAid2ViIjogW3siZHNfbmFtZSI6ICJob21lMmFsbCIsICJkc19pZCI6ICIxMjAiLCAicG9zdF9pZCI6ICI3OTQxMDUiLCAibG9nX2lkIjogIjMzMzMzIiwgInVzZXIiOiAicGFyem9kdXBzb0B5ZXZtZS5jb20iLCAicGFzcyI6ICIxMjM0NTZhYTkifV19'}
 
 <output>
-'{\n "success": "true",\n "action": "boost_post",\n "web": {\n  "home2all": {\n   "websitename": "home2all",\n   "success": "False",\n   "time_usage": "0:00:13.149581",\n   "time_start": "2020-05-22 11:24:10.195851",\n   "time_end": "2020-05-22 11:24:23.345432",\n   "detail": "No boost post  for site",\n   "post_id": "794105"\n  }\n },\n "usage_time": "0:00:13.282677",\n "start_time": "2020-05-22 11:24:10.069038",\n "end_time": "2020-05-22 11:24:23.351715"\n}'
+'{\n "success": "true",\n "action": "boost_post",\n "web": {\n  "home2all": {\n   "websitename": "home2all",\n   "success": "False",\n   "time_usage": "0:00:13.149581",\n   "time_start": "2020-05-22 11:24:10.195851",\n   "time_end": "2020-05-22 11:24:23.345432",\n   "detail": "No boost post  for site",\n   "ds_id": "120",\n "log_id": "33333",\n "post_id": "794105"\n  }\n },\n "usage_time": "0:00:13.282677",\n "start_time": "2020-05-22 11:24:10.069038",\n "end_time": "2020-05-22 11:24:23.351715"\n}'
 
 DELETE POST
 
@@ -107,4 +107,68 @@ DELETE POST
 'post_data': 'eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7ImRzX25hbWUiOiAiaG9tZTJhbGwiLCAiZHNfaWQiOiAiMTIwIiwgInBvc3RfaWQiOiAiNzg4Njg4IiwgImxvZ19pZCI6ICIzMzMzMyIsICJ1c2VyIjogInRlbXBAMmdvLW1haWwuY29tIiwgInBhc3MiOiAiMTIzNDU2YWEifV19'}
 
 <output>
-{\n "success": "true",\n "action": "delete_post",\n "web": {\n  "home2all": {\n   "success": "true",\n   "time_usage": "0:00:10.552447",\n   "time_start": "2020-04-16 10:29:06.306772",\n   "time_end": "2020-04-16 10:29:16.859219",\n   "detail": "logged in",\n   "post_id": "788688"\n  }\n },\n "usage_time": "0:00:10.553333",\n "start_time": "2020-04-16 10:29:06.306112",\n "end_time": "2020-04-16 10:29:16.859445"\n}
+{\n "success": "true",\n "action": "delete_post",\n "web": {\n  "home2all": {\n   "success": "true",\n   "time_usage": "0:00:10.552447",\n   "time_start": "2020-04-16 10:29:06.306772",\n   "time_end": "2020-04-16 10:29:16.859219",\n   "detail": "logged in",\n   "ds_id": "120",\n "post_id": "788688",\n "log_id": "33333",\n  }\n },\n "usage_time": "0:00:10.553333",\n "start_time": "2020-04-16 10:29:06.306112",\n "end_time": "2020-04-16 10:29:16.859445"\n}
+
+SEARCH POST => True
+<input>
+acccess_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6IlhManBQQnhLUHNxaVpGVHNBeGZLclB6eVJBSHZZdCIsCiAgICAid2ViIjpbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ImhvbWUyYWxsIiwKICAgICAgICAgICAgImRzX2lkIjoiNCIsCiAgICAgICAgICAgICJsb2dfaWQiOiIzMzMzMyIsCiAgICAgICAgICAgICJ1c2VyIjoicG9uYWo5NzA5NkBseXdlbncuY29tIiwKICAgICAgICAgICAgInBhc3MiOiJmNHN5Q0ZQbXB1d0tGUjciCiAgICAgICAgfQogICAgXQp9
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "home2all": {
+   "success": "true",
+   "post_found": "true",
+   "post_url": "https://home2all.com/post/topicid/805066",
+   "post_id": "805066",
+   "websitename": "home2all",
+   "ds_id": "4",
+   "log_id":"33333",
+   "start_time": "2020-06-02 22:58:04.744637",
+   "end_time": "2020-06-02 22:58:15.946336",
+   "account_type": "",
+   "detail": "",
+   "post_create_time": "",
+   "post_modify_time": "",
+   "post_view": ""
+  }
+ },
+ "usage_time": "0:00:11.360197",
+ "start_time": "2020-06-02 22:58:04.597780",
+ "end_time": "2020-06-02 22:58:15.957977"
+}
+
+SEARCH POST => False
+<input>
+acccess_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6Inh5emFiYyIsCiAgICAid2ViIjpbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ImhvbWUyYWxsIiwKICAgICAgICAgICAgImRzX2lkIjoiNCIsCiAgICAgICAgICAgICJsb2dfaWQiOiIzMzMzMyIsCiAgICAgICAgICAgICJ1c2VyIjoicG9uYWo5NzA5NkBseXdlbncuY29tIiwKICAgICAgICAgICAgInBhc3MiOiJmNHN5Q0ZQbXB1d0tGUjciCiAgICAgICAgfQogICAgXQp9
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "home2all": {
+   "success": "false",
+   "post_found": "false",
+   "post_url": "",
+   "post_id": "",
+   "websitename": "home2all",
+   "ds_id": "4",
+   "log_id":"33333",
+   "start_time": "2020-06-02 22:59:10.517387",
+   "end_time": "2020-06-02 22:59:21.052868",
+   "account_type": "",
+   "detail": "",
+   "post_create_time": "",
+   "post_modify_time": "",
+   "post_view": ""
+  }
+ },
+ "usage_time": "0:00:10.695671",
+ "start_time": "2020-06-02 22:59:10.370800",
+ "end_time": "2020-06-02 22:59:21.066471"
+}

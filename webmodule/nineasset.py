@@ -394,8 +394,10 @@ class nineasset():
                                 if(temp == 4 and i != '/'):
                                     post_id += i
                                 if(i == '/'):
-                                    temp += 1                                
+                                    temp += 1
+                            detail = 'Successful Post'
                             break
+
                     except :
                         continue
         time_end = datetime.datetime.utcnow()
@@ -476,8 +478,6 @@ class nineasset():
                     'ds_id': postdata['ds_id'],
                     "log_id": postdata['log_id'],
                     "end_time": time_end,
-                    # "ds_id": "4",
-                    "post_url": post_url,
                     "post_id": post_id,
                     "account_type": "",
                     "detail": "Post_id Invalid"
@@ -501,6 +501,7 @@ class nineasset():
 
     def edit_post(self, postdata):
         # https://www.thaisecondhand.com/post/get_json_district?province_id=13   ->     for district
+        #print('start')
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         # print(postdata)
@@ -541,6 +542,7 @@ class nineasset():
             project_n = postdata['post_title_th']
         # post_title_en = postdata['post_title_en']
         # post_description_en = postdata['post_description_en']
+
         try:
             floor_no = postdata['floor_level']
         except:
@@ -610,12 +612,12 @@ class nineasset():
             if(addr_district.find(province[addr_province+"_province"][key].strip()) != -1)  or str(province[addr_province+"_province"][key]).find(addr_district) != -1:
                 addr_district = key
                 break
-            
 
 
 
 
 
+        #print('here')
         datapost = [
             ("status_upload","true"),
             ("TypePosted[]","2" if (listing_type == "ขาย" ) else "1"),
@@ -649,7 +651,7 @@ class nineasset():
             ("StatusPosted", 1),
             ("Issubmit","posted"),
         ]  
-        
+        #print('sw')
         if (listing_type == "ขาย" ):
             datapost.append(("Sell", "1"))
             datapost.append(("property_Sell", price_baht))
@@ -658,7 +660,7 @@ class nineasset():
             datapost.append(("Rent", "1"))
             datapost.append(("Price_Rent", price_baht))
         
-        
+        #print('mid')
         if(property_type == "1"):
             #Condo
             datapost.append(("category_ID" , "1"))
@@ -714,6 +716,8 @@ class nineasset():
             #factory
             datapost.append(("category_ID", "16"))
 
+        #print('here')
+
         # login
         login = self.test_login(postdata)
         success = login["success"]
@@ -725,7 +729,8 @@ class nineasset():
         imagename = []
         
         # print(datapost["first"])
-        # print("debug")
+        #print("debug")
+        #print(success)
         # print(filestoup)
         if(success == "True"):
             for i in range(len(postdata['post_images'][:10])):
@@ -807,22 +812,25 @@ class nineasset():
                     'success':'true',
                     'post_found':'true',
                     'post_url':tURL[post_title],
+                    'detail':'Post found',
                     'post_id':tURL[post_title].split('/')[-2]
                 })
             else:
                 my_res.update({
                     'success':'false',
                     'post_found':'false',
+                    'detail': 'Post not found',
                     'post_url':'',
                     'post_id':''
                 })
             my_res.update({
                     'websitename':'nineasset',
                     'ds_id':postdata['ds_id'],
+                    'log_id':postdata['log_id'],
+                    'post_id':postdata['post_id'],
                     'start_time':str(start_time),
                     'end_time':str(datetime.datetime.utcnow()),
                     'account_type':'',
-                    'detail':'',
                     'post_create_time':'',
                     'post_modify_time':'',
                     'post_view':''

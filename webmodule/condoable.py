@@ -47,14 +47,14 @@ class condoable():
         
         datapost={
             "email": email,
-"password": passwd,
-"checkPassword": passwd,
-"firstName": first_name,
-"lastName": last_name,
-"phone": mobile,
-"homePhone": "",
-"officePhone": "",
-"agree": "on"
+            "password": passwd,
+            "checkPassword": passwd,
+            "firstName": first_name,
+            "lastName": last_name,
+            "phone": mobile,
+            "homePhone": "",
+            "officePhone": "",
+            "agree": "on"
         }
 
         r = httprequestObj.http_get('http://condoable.com/checkUserId.do?function=register&userId='+email)
@@ -80,6 +80,7 @@ class condoable():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": userdata['ds_id']
         }
 
     def test_login(self, logindata):
@@ -118,6 +119,7 @@ class condoable():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": logindata['ds_id']
         }
         #
         #
@@ -312,7 +314,8 @@ class condoable():
             "post_url": post_url,
             "post_id": post_id,
             "account_type": "",
-            "detail": detail
+            "detail": detail,
+            "ds_id": postdata['ds_id']
         }
 
     def boost_post(self, postdata):
@@ -364,6 +367,7 @@ class condoable():
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
+            "ds_id": postdata['ds_id']
         }
 
     def delete_post(self, postdata):
@@ -409,9 +413,9 @@ class condoable():
             "time_start": time_start,
             "time_end": time_end,
             "detail": detail,
-            'ds_id': postdata['ds_id'],
-            'log_id': postdata['log_id'],
             "post_id": post_id,
+            "log_id": postdata['log_id'],
+            "ds_id": postdata['ds_id']
         }
 
     def edit_post(self, postdata):
@@ -589,8 +593,10 @@ class condoable():
             # "ds_id": "4",
             "post_url": post_url,
             "post_id": post_id,
+            "log_id": postdata['log_id'],
             "account_type": "",
-            "detail": detail
+            "detail": detail,
+            "ds_id": postdata['ds_id']
         }
 
     def print_debug(self, msg):

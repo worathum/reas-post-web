@@ -88,6 +88,7 @@ class aecmarketing():
                 "detail": detail,
                 'ds_id': postdata['ds_id'],
                 "websitename": "aecmarketing",
+                "ds_id": passdata['ds_id']
             }
 
         else:
@@ -101,6 +102,7 @@ class aecmarketing():
                 "detail": detail,
                 'ds_id': postdata['ds_id'],
                 "websitename": "aecmarketing",
+                "ds_id": passdata['ds_id']
             }
 
     def test_login(self, postdata):
@@ -141,7 +143,7 @@ class aecmarketing():
             "usage_time": str(end_time - time_start),
             "ds_id": postdata['ds_id'],
             "detail": detail,
-            "websitename": "aecmarketing",
+            "websitename": "aecmarketing"
         }
 
     def create_post(self, postdata):
@@ -741,7 +743,8 @@ class aecmarketing():
             "usage_time": str(end_time - start_time),
             "detail": detail,
             "post_id": post_id,
-            "websitename": "aecmarketing"
+            "websitename": "aecmarketing",
+            "ds_id": postdata['ds_id']
         }
 
     def delete_post(self, postdata):
@@ -780,7 +783,8 @@ class aecmarketing():
             "log_id": postdata['log_id'],
             "usage_time": str(end_time - start_time),
             "detail": detail,
-            "websitename": "aecmarketing"
+            "websitename": "aecmarketing",
+            "ds_id": postdata['ds_id']
         }
 
     def edit_post(self, postdata):
@@ -1207,7 +1211,8 @@ class aecmarketing():
             "log_id": postdata['log_id'],
             "detail": detail,
             "post_id": post_id,
-            "websitename": "aecmarketing"
+            "websitename": "aecmarketing",
+            "ds_id": postdata['ds_id']
         }
 
     def search_post(self, postdata):
@@ -1280,7 +1285,8 @@ class aecmarketing():
             "post_create_time": "",
             "post_modify_time": "",
             "post_view": "",
-            "websitename": "aecmarketinghome"
+            "websitename": "aecmarketinghome",
+            "ds_id": postdata['ds_id']
         }
 
 

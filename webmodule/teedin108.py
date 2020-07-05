@@ -157,7 +157,7 @@ class teedin108():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-                "websitename": "teedin108",
+            "websitename": "teedin108",
             "ds_id": postdata['ds_id'],
             "success": success,
             "usage_time": str(time_usage),
@@ -169,7 +169,7 @@ class teedin108():
     def create_post(self, postdata):
 
         time_start = datetime.datetime.utcnow()
-        
+        # print("In create")
         # login
         login = self.test_login(postdata)
         success = login["success"]
@@ -196,6 +196,8 @@ class teedin108():
             datajson = r.json()
             #f = open("debug_response/teedinajax.html", "wb")
             # f.write(data.encode('utf-8').strip())
+
+            # print("Post bancheck")
 
             if datajson["success"] != True:
                 success = False
@@ -227,12 +229,19 @@ class teedin108():
                             s_found = 1
 
                 if sect == "":
-                    detail = "Given province does not exist in any sector"
+                    s=provincedata[0]
+                    p=provincedata[s]
+                    prov_val = provincedata[s][p]["value"]
+                    prov_found = p
+                    sect=s
+                    # detail = "Given province does not exist in any sector"
                     # success = False
 
                 # if not (distr in provincedata[sect][prov]):
                     # detail = "Given district does not exist in the province"
                     # success = False
+
+                # print("Sector selected")
 
                 distr_val = 33
                 try:
@@ -302,6 +311,8 @@ class teedin108():
                     "files[]": open(img_path, "rb")  
                 }
 
+                # print("Before file upload")
+
                 r = httprequestObj.http_post("https://www.teedin108.com/post/ajaxupload/", data={}, files = files)
                 r_json = r.json()
 
@@ -344,8 +355,6 @@ class teedin108():
 
                 url = ""
 
-                print(data)
-
                 if success:
                     resp = httprequestObj.http_post("https://www.teedin108.com/post/add", data=data)
 
@@ -362,7 +371,7 @@ class teedin108():
                             post_id = temp[i+1]
                     detail = "Posted successfully"
                 else:
-                    if success == True:
+                    if not success:
                         success = False
                         detail = "Unexpected error"
 
@@ -373,7 +382,6 @@ class teedin108():
 
         return {
             "websitename": "teedin108",
-            "data": data,
             "success": success,
             "ds_id": postdata['ds_id'],
             "usage_time": str(time_usage),
@@ -426,8 +434,9 @@ class teedin108():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": log_id,
+            "post_id": postdata['post_id']
         }
 
     def edit_post(self, postdata):
@@ -461,15 +470,13 @@ class teedin108():
         if distr == "":
             distr = "พญาไท"
 
+
         s_found = 0
         prov_val = 1
         prov_found = ""
         for s in provincedata:
-            # if prov in provincedata[s]:
-            #     sect = s
-            #     s_found = 1
-            for prov in provincedata[s]:
-                if prov in p or p in prov:
+            for p in provincedata[s]:
+                if (prov in p) or (p in prov):
                     prov_val = provincedata[s][p]["value"]
                     prov_found = p
                     sect = s
@@ -478,6 +485,7 @@ class teedin108():
         if sect == "":
             detail = "Given province does not exist in any sector"
             # success = False
+
 
         # if s_found:
         #     if not (distr in provincedata[sect][prov]):
@@ -502,6 +510,7 @@ class teedin108():
         except:
             sect_val = 2
 
+
         # listing type
         post_type = "S" #default value
         if (postdata["listing_type"] == "เช่า"):
@@ -510,6 +519,7 @@ class teedin108():
             post_type = "B"
         elif (postdata["listing_type"] == "เช่า"):
             post_type = "L"
+
 
         # property type code
         property_type_code = "L" #default value
@@ -556,6 +566,7 @@ class teedin108():
                     img = r_json["files"][0]["name"]
                 except:
                     img = ""
+
 
         #map use
         map_data = ""
@@ -607,9 +618,8 @@ class teedin108():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
-            # "log_id": log_id,
             "post_id": post_id
         }
 
@@ -681,7 +691,10 @@ class teedin108():
                 "end_time": str(time_end),
                 "post_found": post_found,
                 "post_url": post_url,
-                "post_id": post_id
+                "post_id": post_id,
+                "post_create_time": '',
+                "post_modified_time": '',
+                "post_view": ''
                 }
         return ret
 
@@ -699,7 +712,9 @@ class teedin108():
         }
 
         r = httprequestObj.http_post("https://www.teedin108.com/post/verify/", data=data)
+
         r = httprequestObj.http_get('https://www.teedin108.com/post/edit/'+str(post_id)+'/')
+
         data = {}
         resp = httprequestObj.http_post('https://www.teedin108.com/post/save/'+post_id+'/', data=data)
 
@@ -710,12 +725,13 @@ class teedin108():
         time_usage = time_end - time_start
 
         return {
+            "websitename": "teedin108",
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id
         }

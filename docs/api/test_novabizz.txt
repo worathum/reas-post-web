@@ -10,6 +10,7 @@ post_data: eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ0aW1lb3V0IjogIjciLCAid2ViIjogW
   "novabizz": {
    "websitename": "novabizz",
    "success": "true",
+   "ds_id":"4",
    "start_time": "2020-04-18 09:43:57.862978",
    "end_time": "2020-04-18 09:43:59.520246",
    "detail": "Registered"
@@ -35,6 +36,7 @@ post_data: eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZ
   "novabizz": {
    "websitename": "novabizz",
    "success": "true",
+   "ds_id":"4",
    "start_time": "2020-04-18 09:52:40.181953",
    "end_time": "2020-04-18 09:52:41.977513",
    "detail": "logged in"
@@ -58,6 +60,7 @@ eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6
   "novabizz": {
    "websitename": "novabizz",
    "success": "false",
+   "ds_id":"4",
    "start_time": "2020-05-03 11:16:02.184507",
    "end_time": "2020-05-03 11:16:03.388663",
    "detail": "Failed Login"
@@ -82,6 +85,7 @@ eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6
   "novabizz": {
    "websitename": "novabizz",
    "success": "false",
+   "ds_id":"4",
    "start_time": "2020-05-03 11:18:23.723245",
    "end_time": "2020-05-03 11:18:24.627937",
    "detail": "Failed Login"
@@ -110,7 +114,8 @@ post_data : eyJhY3Rpb24iOiAiY3JlYXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgInBvc3RfaW1n
    "start_time": "2020-05-03 11:42:02.657148",
    "end_time": "2020-05-03 11:42:07.671399",
    "post_url": "//www.novabizz.com/p555199/xxx.html",
-   "post_id": "555199"
+   "post_id": "555199",
+   "ds_id":"4"
   }
  },
  "usage_time": "0:00:05.341399",
@@ -134,7 +139,8 @@ post_data : eyJhY3Rpb24iOiAiY3JlYXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgInBvc3RfaW1n
    "start_time": "2020-05-03 11:43:51.644446",
    "end_time": "2020-05-03 11:43:53.916418",
    "post_url": "//www.novabizz.com/p555201/xxx.html",
-   "post_id": "555201"
+   "post_id": "555201",
+   "ds_id":"4"
   }
  },
  "usage_time": "0:00:02.433991",
@@ -158,6 +164,9 @@ post_data : eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwb3N0X2ltZ191
    "success": "true",
    "start_time": "2020-04-18 16:51:23.592921",
    "end_time": "2020-04-18 16:51:25.854671",
+   "log_id": "444444",
+   "ds_id":"4",
+   "post_id": "548264",
    "detail": "Edited"
   }
  },
@@ -181,6 +190,9 @@ post_data : eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7
    "success": "true",
    "start_time": "2020-04-18 16:52:23.993404",
    "end_time": "2020-04-18 16:52:25.812967",
+   "ds_id": "4",
+   "post_id": "548264",
+   "log_id": "719773",
    "detail": "Deleted Post"
   }
  },
@@ -202,11 +214,77 @@ eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6
    "time_usage": "P0DT00H00M08.336686S",
    "time_start": "2020-05-04T07:55:04.576",
    "time_end": "2020-05-04T07:55:12.912",
-   "detail": "",
-   "post_id": "554794"
+   "ds_id": "4",
+   "post_id": "554794",
+   "log_id": "719773",
+   "detail": ""
   }
  },
  "usage_time": "0:00:08.391882",
  "start_time": "2020-05-04 07:55:04.522593",
  "end_time": "2020-05-04 07:55:12.914475"
+}
+
+
+SEARCH POST=>PASS
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6IldOdnZ0Vm5Ic0VVT3dBbVhNeGNQIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoibm92YWJpenoiLAogICAgICAgICAgICAiZHNfaWQiOiI0IiwKICAgICAgICAgICAgImxvZ19pZCI6IjMzMzMzIiwKICAgICAgICAgICAgInVzZXIiOiJkZXZnb2RzQHByb3Rvbm1haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiIxMjM0NTY3OCIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "novabizz": {
+   "success": "true",
+   "usage_time": "0:00:03.214117",
+   "start_time": "2020-05-27 20:01:05.217591",
+   "end_time": "2020-05-27 20:01:08.431708",
+   "detail": "post found successfully",
+   "websitename": "novabizz",
+   "ds_id":"4",
+   "log_id": 1,
+   "post_id": "567858",
+   "post_modify_time": "วันนี้02:12",
+   "post_view": "7",
+   "post_url": "http://www.novabizz.com/p567858/WNvvtVnHsEUOwAmXMxcP.html",
+   "post_found": "true"
+  }
+ },
+ "usage_time": "0:00:03.247946",
+ "start_time": "2020-05-27 20:01:05.188140",
+ "end_time": "2020-05-27 20:01:08.436086"
+}
+
+
+SEARCH POST =>Fail
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6ImhlIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoibm92YWJpenoiLAogICAgICAgICAgICAiZHNfaWQiOiI0IiwKICAgICAgICAgICAgImxvZ19pZCI6IjMzMzMzIiwKICAgICAgICAgICAgInVzZXIiOiJkZXZnb2RzQHByb3Rvbm1haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiIxMjM0NTY3OCIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "novabizz": {
+   "success": "false",
+   "usage_time": "0:00:07.850743",
+   "start_time": "2020-05-27 20:02:11.231384",
+   "end_time": "2020-05-27 20:02:19.082127",
+   "detail": "No post found with given title.",
+   "websitename": "novabizz",
+   "ds_id":"4",
+   "log_id": 1,
+   "post_id": "",
+   "post_modify_time": "",
+   "post_view": "",
+   "post_url": "",
+   "post_found": "false"
+  }
+ },
+ "usage_time": "0:00:07.883626",
+ "start_time": "2020-05-27 20:02:11.203337",
+ "end_time": "2020-05-27 20:02:19.086963"
 }

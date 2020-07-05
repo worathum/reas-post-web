@@ -365,8 +365,8 @@ class proptecheasy():
         return {
             "websitename": "proptecheasy",
             "success": success,
-            'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
+            'ds_id': postdata['ds_id'],
             "usage_time": str(time_usage),
             "end_time": str(time_end),
             "detail": detail,
@@ -628,13 +628,14 @@ class proptecheasy():
                 r2 = httprequestObj.http_get(
                     'https://www.proptecheasy.com/dashboard/?ua=myitems')
                 data2 = r2.text
-                soup = BeautifulSoup(r2.content, 'html5lib')
+                soup = BeautifulSoup(r2.content, 'html.parser')
                 post_url = soup.find("div", {"class": class2}).find("div", {
                     "class": 'col-lg-5 col-md-4 col-sm-4 col-xs-9 pfmu-itemlisting-title-wd'}).find("div", {'class': 'pfmu-itemlisting-title'}).find('a')['href']
                 if post_url == '':
                     success = 'false'
                     detail = 'error while getting post url'
-                # else :
+                else:
+                    detail='Post created successfully'
 
         else:
             detail = test_login["detail"]
@@ -654,65 +655,6 @@ class proptecheasy():
             "account_type": "null",
             "detail": detail,
         }
-    
-    def search_post(self, postdata):
-
-        time_start = datetime.datetime.utcnow()
-        search_title = postdata['post_title_th']
-        
-        resp = self.test_login(postdata)
-        detail = resp['detail']
-
-        success = False
-        post_url = ''
-        post_id = ''
-        if resp['success'] == 'true':
-            resp = httprequestObj.http_get("https://www.proptecheasy.com/dashboard/?ua=myitems")
-
-            with open("temp-6", "w") as f:
-                f.write(resp.text)
-
-            soup = BeautifulSoup(resp.text, 'html.parser')
-            posts = soup.findAll('div', {'class': 'pfmu-itemlisting-title'})
-
-            titles = []
-            for i in posts:
-                try:
-                    titles += [[i.find(text=True), i.find('a')['href']]]
-                except:
-                    pass
-             
-            detail = 'Not found'
-
-            for title in titles:
-                if title[0] == search_title:
-                    success = True
-                    detail = "Post found"
-                    post_url = title[1]
-
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
-
-        ret = {
-                "websitename": "proptecheasy",
-                "success": "true",
-                "ds_id": postdata['ds_id'], 
-                "log_id": postdata['log_id'], 
-                "post_found": success,
-                "post_url": post_url,
-                "post_id": post_id, 
-                "post_create_time": '',
-                "post_modify_time": '',
-                "post_view": '',
-                "account_type": "null",
-                "detail": detail,
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                "time_usage": str(time_usage),
-                }
-        return ret
-
-
 
     def edit_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -730,7 +672,7 @@ class proptecheasy():
         r2 = httprequestObj.http_get(
             'https://www.proptecheasy.com/dashboard/?ua=myitems')
         data2 = r2.text
-        soup = BeautifulSoup(r2.content, 'html5lib')
+        soup = BeautifulSoup(r2.content, 'html.parser')
         try:
             post_url = soup.find("div", {"class": class2}).find("div", {
                 "class": 'col-lg-5 col-md-4 col-sm-4 col-xs-9 pfmu-itemlisting-title-wd'}).find("div", {'class': 'pfmu-itemlisting-title'}).find('a')['href']
@@ -900,8 +842,9 @@ class proptecheasy():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-                'ds_id': postdata['ds_id'],
-            "log_id": postdata['log_id']
+            "log_id": postdata['log_id'],
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id']
         }
 
     def delete_post(self, postdata):
@@ -963,8 +906,9 @@ class proptecheasy():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id']
         }
 
     def boost_post(self, postdata):
@@ -1010,7 +954,6 @@ class proptecheasy():
         time_end = datetime.datetime.utcnow()
         return {
             "websitename": "proptecheasy",
-                'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
 
             "success": success,
@@ -1019,7 +962,65 @@ class proptecheasy():
             "end_time": time_end,
             "detail": detail,
             "post_id": post_id,
+            "ds_id": postdata['ds_id']
         }
+
+    def search_post(self, postdata):
+
+        time_start = datetime.datetime.utcnow()
+        search_title = postdata['post_title_th']
+        
+        resp = self.test_login(postdata)
+        detail = resp['detail']
+
+        success = False
+        post_url = ''
+        post_id = ''
+        if resp['success'] == 'true':
+            resp = httprequestObj.http_get("https://www.proptecheasy.com/dashboard/?ua=myitems")
+
+            with open("temp-6", "w") as f:
+                f.write(resp.text)
+
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            posts = soup.findAll('div', {'class': 'pfmu-itemlisting-title'})
+
+            titles = []
+            for i in posts:
+                try:
+                    titles += [[i.find(text=True), i.find('a')['href']]]
+                except:
+                    pass
+             
+            detail = 'Not found'
+
+            for title in titles:
+                if title[0] == search_title:
+                    success = True
+                    detail = "Post found"
+                    post_url = title[1]
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        ret = {
+                "websitename": "proptecheasy",
+                "success": "true",
+                "ds_id": postdata['ds_id'], 
+                "log_id": postdata['log_id'], 
+                "post_found": success,
+                "post_url": post_url,
+                "post_id": post_id, 
+                "post_create_time": '',
+                "post_modify_time": '',
+                "post_view": '',
+                "account_type": "null",
+                "detail": detail,
+                "start_time": str(time_start),
+                "end_time": str(time_end),
+                "time_usage": str(time_usage),
+                }
+        return ret
 
     def print_debug(self, msg):
         if(self.debug == 1):
@@ -1129,3 +1130,4 @@ class proptecheasy():
 # for i in range(len(temp))
 # obj = proptecheasy()
 # Ask about promenint point default, building number
+

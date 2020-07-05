@@ -11,6 +11,7 @@ postdata:eyJhY3Rpb24iOiAiY3JlYXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgInBvc3RfaW1nX3V
   "houseforsaleland": {
    "websitename": "houseforsaleland",
    "success": "true",
+   "ds_id": "4",
    "ret": "<script>window.parent.msg_complete(1,203220);</script>",
    "post_url": "https://www.xn--22c0bihcc9cwhcxj2ui.com/page-postfree-detail.php?pID=203220",
    "post_id": "203220"
@@ -35,6 +36,9 @@ postdata:eyJhY3Rpb24iOiAiZWRpdF9wb3N0IiwgInRpbWVvdXQiOiAiNSIsICJwb3N0X2ltZ191cmx
    "websitename": "houseforsaleland",
    "start_time": "2020-06-27 17:16:12.432346",
    "end_time": "2020-06-27 17:17:05.211520",
+   "ds_id": "4",
+   "post_id": "203220",
+   "log_id": "444444",
    "detail": "Edited "
   }
  },
@@ -58,6 +62,9 @@ post_data : eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7
    "success": "true",
    "start_time": "2020-06-28 16:26:05.789717",
    "end_time": "2020-06-28 16:26:07.998333",
+   "ds_id": "4",
+   "post_id": "203291",
+   "log_id": "719773",
    "detail": "Successfully deleted"
   }
  },
@@ -79,6 +86,7 @@ eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6
    "success": "False",
    "start_time": "2020-06-28 16:27:33.975657",
    "end_time": "2020-06-28 16:27:33.975667",
+   "ds_id": "4",
    "detail": "No Login available for this site"
   }
  },
@@ -99,6 +107,7 @@ eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFt
    "success": "False",
    "start_time": "2020-06-28 16:28:38.039262",
    "end_time": "2020-06-28 16:28:38.039274",
+   "ds_id": "4",
    "detail": "No Registering option available for this site"
   }
  },
@@ -120,6 +129,9 @@ eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6
    "websitename": "houseforsaleland",
    "start_time": "2020-06-28 16:32:17.933662",
    "end_time": "2020-06-28 16:32:19.238729",
+   "ds_id": "4",
+   "post_id": "203292",
+   "log_id": "719773",
    "detail": "boosted"
   }
  },

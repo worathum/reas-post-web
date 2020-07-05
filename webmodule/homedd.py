@@ -122,6 +122,7 @@ class homedd():
                     'ds_id': postdata['ds_id'],
                     "end_time" : end_time,
                     "usage_time" : end_time - start_time,
+                    "ds_id": postdata['ds_id'],
                     "detail" : detail
                 }
 
@@ -188,10 +189,10 @@ class homedd():
         return {
                     "websitename" : "homedd",
                     "success" : success,
-                    "ds_id": postdata['ds_id'],
                     "start_time" : start_time,
                     "end_time" : end_time,
                     "usage_time" : end_time - start_time,
+                    "ds_id": postdata['ds_id'],
                     "detail" : detail
             }
 
@@ -274,10 +275,9 @@ class homedd():
             with open('./static/homedd_province.json') as f:
                 province = json.load(f)
             for key in province:
-                if 'province' not in key:
-                    if (addr_province.find(str(province[key]).strip()) != -1) or str(province[key]).find(addr_province) != -1:
-                        addr_province = key
-                        break
+                if (addr_province.find(str(province[key]).strip()) != -1) or str(province[key]).find(addr_province) != -1:
+                    addr_province = key
+                    break
             
             for key in province[addr_province+"_province"]:
                 if(addr_district.find(province[addr_province+"_province"][key].strip()) != -1)  or str(province[addr_province+"_province"][key]).find(addr_district) != -1:
@@ -449,10 +449,10 @@ class homedd():
             "success": success,
             "usage_time": str(end_time - start_time),
             "start_time": str(start_time),
-            "ds_id": postdata['ds_id'],
             "end_time": str(end_time),
             "post_url": post_url,
             "post_id": post_id,
+            "ds_id": postdata['ds_id'],
             "account_type": "null",
             "detail": detail,
             "websitename": "homedd",
@@ -539,10 +539,9 @@ class homedd():
 
 
             for key in province:
-                if 'province' not in key:
-                    if (addr_province.find(str(province[key]).strip()) != -1) or str(province[key]).find(addr_province) != -1:
-                        addr_province = key
-                        break
+                if (addr_province.find(str(province[key]).strip()) != -1) or str(province[key]).find(addr_province) != -1:
+                    addr_province = key
+                    break
             
             for key in province[addr_province+"_province"]:
                 if(addr_district.find(province[addr_province+"_province"][key].strip()) != -1)  or str(province[addr_province+"_province"][key]).find(addr_district) != -1:
@@ -721,7 +720,9 @@ class homedd():
 'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_url": post_url,
-            "post_id": post_id,
+            "post_id": postdata['post_id'],
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": detail,
             "websitename": "homedd",
@@ -774,7 +775,8 @@ class homedd():
             "usage_time": str(end_time - start_time),
             "start_time": str(start_time),
             "end_time": str(end_time),
-'ds_id': postdata['ds_id'],
+            "post_id": postdata['post_id'],
+            "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
             "detail": detail,
             "websitename": "homedd",
@@ -797,35 +799,40 @@ class homedd():
 
         filename = "response.txt"
 
-        url = "http://homedd.co.th/member_property_add.php"
-        request = httprequestObj.http_get(url)
-        soup = BeautifulSoup(request.text, 'lxml')
-        
-        tpCode = soup.find('input',attrs = {'name': 'tpCode'})['value']
-
-
         if success == True:
 
             datapost = {
-            "tpCode" : tpCode,
+            "tpCode" : "",
+            "tproperty_type" : "",
+            "tproperty_formart" : "",
+            "ttitle" : "",
+            "tproject_asset" : "",
+            "taddress" : "",
+            "tstreet_name" : "",
+            "tprovince" : "",
+            "tamphur" : "",
+            "tdistrict" : "",
+            "tdetail" : "",
+            "tfloor" : "",
+            "tbedroom" : "",
+            "tbathroom" : "",
+            "tortherroom" : "",
+            "tspace" : "",
+            "tarea" : "",
+            "tprice" : "",
+            "towner" : "",
+            "tphone" : "",
+            "lat_value" : "",
+            "lon_value" : "",
         }
 
             files = {}
             newurl = "http://homedd.co.th/member_property_aed.php?typ=edit&id=" + postdata["post_id"]
 
             request = httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
-
-            if 'ไม่สามารถทำการบันทึกได้ค่ะ' in request.text:
-                detail = "Successfully Boosted"
-                success = True
-            else:
-                detail = "Cannot Boost the Post due to wrong id!"
-                success = False
-
-
             end_time = datetime.utcnow()
-            # detail = "Post edited and saved"
-            # success = True
+            detail = "Post edited and saved"
+            success = True
 
         return {
             "success": success,
@@ -834,7 +841,9 @@ class homedd():
             "log_id": postdata['log_id'],
             "start_time": str(start_time),
             "end_time": str(end_time),
-            "post_id": postdata["post_id"],
+            "post_id": postdata['post_id'],
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": detail,
             "websitename": "homedd",

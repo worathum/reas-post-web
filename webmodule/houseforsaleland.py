@@ -80,6 +80,7 @@ class houseforsaleland():
             "start_time": str(start_time),
             "end_time": str(end_time),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
             "websitename": "houseforsaleland",
         }
 
@@ -141,6 +142,8 @@ class houseforsaleland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": "boosted",
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id']
         }
 
 
@@ -166,7 +169,10 @@ class houseforsaleland():
                 'success': 'False',
                 "start_time": str(time_start),
                 "end_time": str(time_end),
-                "detail": detail,
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
+                "post_id": postdata['post_id'],
+                "detail": detail
             }
         subcategory = {
             '6': 1,
@@ -189,7 +195,9 @@ class houseforsaleland():
                 'websitename': 'houseforsaleland',
                 'detail': 'wrong propertytype',
                 'post_url': '',
-                'post_id': ''
+                'post_id': '',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id']
             }
         success = "true"
         post_id = ""
@@ -218,7 +226,9 @@ class houseforsaleland():
             return{
                 'websitename': 'houseforsaleland',
                 'success': 'false',
-                'detail': "wrong province",
+                'ret': "wrong province",
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id']
                 'post_url': "",
                 'post_id': ""
             }
@@ -234,7 +244,9 @@ class houseforsaleland():
             return{
                 'websitename': 'houseforsaleland',
                 'success': 'false',
-                'detail': "wrong amphur id"+str(postdata['addr_district']),
+                'ret': "wrong amphur id"+str(postdata['addr_district']),
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id']
                 'post_url': "",
                 'post_id': ""
             }
@@ -285,10 +297,7 @@ class houseforsaleland():
         url_n = 'https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=editpostfree&id=' + \
             postdata['post_id']
 
-        options = Options()
-        options.headless = True
-        driver = webdriver.Firefox(options=options)
-        driver.implicitly_wait(4)
+        driver = webdriver.Firefox()
 
         post_url = urlpost+'/page-postfree-detail.php?pID='+postdata['post_id']
         driver.get(post_url)
@@ -355,6 +364,9 @@ class houseforsaleland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": "Edited ",
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": postdata['post_id']
         }
 
     def create_post(self, postdata):
@@ -385,7 +397,8 @@ class houseforsaleland():
                 'websitename': 'houseforsaleland',
                 'detail': 'wrong propertytype',
                 'post_url': '',
-                'post_id': ''
+                'post_id': '',
+                'ds_id': postdata['ds_id']
             }
         success = "true"
         post_id = ""
@@ -412,7 +425,8 @@ class houseforsaleland():
             return{
                 'websitename': 'houseforsaleland',
                 'success': 'false',
-                'detail': "wrong province",
+                'ret': "wrong province",
+                'ds_id': postdata['ds_id'],
                 'post_url': "",
                 'post_id': ""
             }
@@ -498,7 +512,8 @@ class houseforsaleland():
                 'ds_id': postdata['ds_id'],
                 "start_time": str(time_start),
                 "end_time": str(time_end),
-                "detail": "Captcha Image Retrieval failed",
+                'ds_id': postdata['ds_id'],
+                "detail": "Captcha Image Retrieval failed"
             }
             print('Image Couldn\'t be retreived')
         r = captcha.imageCaptcha(filename)
@@ -513,8 +528,9 @@ class houseforsaleland():
                 'ds_id': postdata['ds_id'],
                 'post_url': '',
                 "start_time": str(time_start),
+                'ds_id': postdata['ds_id'],
                 "end_time": str(time_end),
-                "detail": "Captcha fail",
+                "detail": "Captcha fail"
             }
         url_n = "https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=addpostfree"
         r = s.post(url_n, data=datapost, files=files)
@@ -550,7 +566,8 @@ class houseforsaleland():
                     "start_time": str(time_start),
                     'ds_id': postdata['ds_id'],
                     "end_time": str(time_end),
-                    "detail": "Captcha Image Retrieval failed",
+                    'ds_id': postdata['ds_id'],
+                    "detail": "Captcha Image Retrieval failed"
                 }
                 print('Image Couldn\'t be retreived')
             r = captcha.imageCaptcha(filename)
@@ -566,7 +583,8 @@ class houseforsaleland():
                     'ds_id': postdata['ds_id'],
                     "start_time": str(time_start),
                     "end_time": str(time_end),
-                    "detail": "Captcha fail",
+                    'ds_id': postdata['ds_id'],
+                    "detail": "Captcha fail"
                 }
             url_n = "https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=addpostfree"
             r = s.post(url_n, data=datapost, files=files)
@@ -587,6 +605,7 @@ class houseforsaleland():
                     "end_time": str(time_end),
                     'post_url': '',
                     "detail": str(r.content),
+                    'ds_id': postdata['ds_id']
                 }
             else:
                 if 'msg_complete' in r.text:
@@ -607,7 +626,8 @@ class houseforsaleland():
                         'success': 'true',
                         'detail': var,
                         'post_url': post_url,
-                        'post_id': post_id
+                        'post_id': post_id,
+                        'ds_id': postdata['ds_id']
                     }
                 else:
                     success = "False"
@@ -632,7 +652,8 @@ class houseforsaleland():
                     'detail': var,
                     'ds_id': postdata['ds_id'],
                     'post_url': post_url,
-                    'post_id': post_id
+                    'post_id': post_id,
+                    'ds_id': postdata['ds_id']
                 }
             else:
                 success = "False"
@@ -646,6 +667,7 @@ class houseforsaleland():
             "end_time": str(time_end),
             'post_url': '',
             "detail": "Failed to Create Post",
+            'ds_id': postdata['ds_id']
         }
 
     def delete_post(self, postdata):
@@ -671,6 +693,9 @@ class houseforsaleland():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": detail,
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
+                "post_id": postdata['post_id']
             }
         if success == "true":
             urlpost = "https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php"
@@ -703,6 +728,9 @@ class houseforsaleland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": postdata['post_id']
         }
 
 

@@ -80,7 +80,7 @@ class thisads():
             'http://thisads.com/ajax_register.php', headers=headers, data=data)
 
         data = r.text
-        print(data,r.content)
+        #print(data,r.content)
         if data != '\ufeff1':
             success = 'false'
             detail = 'unable to register'
@@ -237,8 +237,8 @@ class thisads():
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0',
         }
-        r = httprequestObj.http_post(
-            'http://thisads.com/ajax_fullpost.php', headers=headers, data=data, files=files)
+        r = httprequestObj.http_post('http://thisads.com/ajax_fullpost.php', headers=headers, data=data, files=files)
+        #print(r.text)
         if str(r.text) != '\ufeff1':
             success = 'false'
             detail = 'duplicate name or error while posting 1'
@@ -271,11 +271,17 @@ class thisads():
 
             if 'edit' in str(value['href']):
                 edit_url = value['href']
-                flag = 1
-
+                if flag==1:
+                    break
+                else :
+                    flag=1
             if str(value.text) == str(postdata['post_title_th']) or (str(value.txt) in str(postdata['post_title_th']) and str(value.txt) != ''):
                 post_url = value['href']
-                break
+                if flag==1:
+                    break
+                else :
+                    flag=1
+        #print(edit_url,post_url)
         detail = test_login['detail']
         if edit_url == '' or post_url == '':
             success = 'false'
@@ -398,7 +404,7 @@ class thisads():
         }
         r = httprequestObj.http_post(
             'http://www.thisads.com/ajax_fulledit.php', headers=headers, data=data, files=files)
-        print(str(r.text),str(r.content))
+        #print(str(r.text),str(r.content))
         if str(r.text) != '\ufeff1':
             success = 'false'
             detail = 'Unable to edit post'
@@ -411,10 +417,11 @@ class thisads():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
-                'ds_id': postdata['ds_id'],
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
             "account_type": "null",
-            "detail": detail,
+            "detail": detail
         }
 
     def delete_post(self, postdata):
@@ -483,8 +490,9 @@ class thisads():
             detail= 'error while boosting / can only boost once a day'
         return {
             "websitename": "thisads",
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
+            "post_id":postdata['post_id'],
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),

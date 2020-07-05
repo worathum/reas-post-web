@@ -144,6 +144,7 @@ class goodpriceproperty():
             "start_time": str(time_start),
             'ds_id': postdata['ds_id'],
             "end_time": str(time_end),
+            "ds_id": postdata['ds_id'],
             "detail": detail,
 
         }
@@ -236,7 +237,8 @@ class goodpriceproperty():
             return{
                 "websitename": "goodpriceproperty",
                 'success': 'false',
-                'websitename': 'goodpriceproperty',
+                
+                "ds_id": postdata['ds_id'],
                 'ret': "",
                 'post_url': "",
                 'post_id': "",
@@ -253,8 +255,10 @@ class goodpriceproperty():
             return{
                 "websitename": "goodpriceproperty",
                 'province': province_id,
+
+                "ds_id": postdata['ds_id'],
                 'success': 'false',
-                'websitename': 'goodpriceproperty',
+                
                 'ret': "",
                 'post_url': "",
                 'post_id': "",
@@ -326,7 +330,8 @@ class goodpriceproperty():
             if len(var) == 0:
                 return{
                     "websitename": "goodpriceproperty",
-
+                    
+                    "ds_id": postdata['ds_id'],
                     'success': 'false',
                     'websitename': 'goodpriceproperty',
                     'ret': "",
@@ -564,6 +569,8 @@ class goodpriceproperty():
                 return {
                     'success': 'false',
                     'action': "create_post",
+                    
+                    "ds_id": postdata['ds_id'],
                     "websitename": "goodpriceproperty",
                     "start_time": str(time_start),
                     "end_time": str(time_end),
@@ -617,7 +624,8 @@ class goodpriceproperty():
                 "websitename": "goodpriceproperty",
                 "start_time": str(time_start),
                 "end_time": str(time_end),
-                
+                'post_url': post_url,
+                'post_id': post_id
             }
 
     def edit_post(self, postdata):
@@ -643,8 +651,9 @@ class goodpriceproperty():
         if province_id == "" or success != 'true':
             return{
                 "websitename": "goodpriceproperty",
+                "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id'],
                 'success': 'false',
-                'websitename': 'goodpriceproperty',
                 'ret': "",
                 'post_url': "",
                 'post_id': "",
@@ -671,9 +680,10 @@ class goodpriceproperty():
         if storeI == '':
             return {
                 "websitename": "goodpriceproperty",
-
+                "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id'],
                 'success': 'false',
-                                'ret': "",
+                'ret': "",
                 'post_url': "",
                 'post_id': "",
                 'detail': 'cannot find the given post_id',
@@ -687,7 +697,8 @@ class goodpriceproperty():
         if amphur_id == "":
             return{
                 "websitename": "goodpriceproperty",
-
+                "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id'],
                 'success': 'false',
                 'websitename': 'goodpriceproperty',
                 'ret': "",
@@ -780,7 +791,8 @@ class goodpriceproperty():
             if len(var) == 0:
                 return{
                     "websitename": "goodpriceproperty",
-
+                    "log_id": postdata['log_id'],
+                    "ds_id": postdata['ds_id'],
                     'success': 'false',
                     'websitename': 'goodpriceproperty',
                     'ret': "",
@@ -1027,6 +1039,8 @@ class goodpriceproperty():
                 'ds_id': postdata['ds_id'],
                 "end_time": str(time_end),
                 "detail": data,
+                "ds_id": postdata['ds_id'],
+                "post_id": postdata['post_id']
             }
 
     def delete_post(self, postdata):
@@ -1066,6 +1080,8 @@ class goodpriceproperty():
                 "start_time": str(time_start),
                 'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id'],
+                "post_id": postdata['post_id'],
                 "end_time": str(datetime.datetime.utcnow()),
                 }
 
@@ -1101,6 +1117,8 @@ class goodpriceproperty():
                 'ds_id': postdata['ds_id'],
                 "detail": "Successfully deleted",
                 "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id'],
+                "post_id": postdata['post_id']
             }
 
         else:
@@ -1114,7 +1132,9 @@ class goodpriceproperty():
             "end_time": str(time_end),
             'ds_id': postdata['ds_id'],
             "detail": detail,
-            "log_id": postdata['log_id']
+            "log_id": postdata['log_id'],
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id']
             # "detail": "under construction",
         }
 
@@ -1167,6 +1187,8 @@ class goodpriceproperty():
             "end_time": time_end,
             # "detail": detail,
             "post_id": post_id,
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id']
             "websitename": "goodpriceproperty"
         }
 

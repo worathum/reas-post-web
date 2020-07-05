@@ -118,6 +118,7 @@ class bankumka():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id']
         }
 
     def test_login(self, postdata):
@@ -155,6 +156,7 @@ class bankumka():
             "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id']
         }
 
     def create_post(self, postdata):
@@ -889,6 +891,7 @@ class bankumka():
             "post_url": posturl,
             "post_id": postdata['post_id'],
             "account_type": "null",
+            "ds_id": postdata['ds_id']
         }
 
     def delete_post(self, postdata):
@@ -1117,6 +1120,7 @@ class bankumka():
             "post_url": posturl,
             "post_id": postdata['post_id'],
             "account_type": "null",
+            "ds_id": postdata['ds_id']
         }
 
     def boost_post(self, postdata):
@@ -1159,8 +1163,11 @@ class bankumka():
             "end_time": str(time_end),
             "post_id": postdata['post_id'],
             "account_type": "null",
-            "websitename": "bankumka"
+            "websitename": "bankumka",
+            "ds_id": postdata['ds_id']
         }
+
+
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
@@ -1215,12 +1222,14 @@ class bankumka():
             'ds_id': postdata['ds_id'],
             'log_id': log_id,
             "post_url": posturl,
+            "log_id": postdata['log_id'],
             "post_id": post_id,
             "account_type": "null",
             "detail":"null",
             "post_create_time":"",
             "post_modify_time":"",
-            "post_view":""
+            "post_view":"",
+            "ds_id": postdata['ds_id']
         }
     def print_debug(self, msg):
         if(self.debug == 1):

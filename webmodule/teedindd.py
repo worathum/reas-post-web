@@ -19,7 +19,7 @@ from urllib.parse import unquote
 httprequestObj = lib_httprequest()
 
 
-with open("./static/ploychao_province.json") as f:
+with open("./static/ploychao_province.json",encoding = 'utf-8') as f:
     provincedata = json.load(f)
 
 
@@ -161,13 +161,13 @@ class teedindd():
             'https://www.teedindd.com/login-check.php', data=datapost)
         data = r.text
         soup = BeautifulSoup(r.content, 'html5lib')
-        classfind = soup.findAll('div', attrs={'class': 'pt20'})
-        # print(classfind)
+        classfind = soup.findAll('div', attrs={'class': 'pt20 pb20'})
+        print(classfind)
         for i in classfind:
-            if i.text == "กรุณายืนยันอีเมล์ก่อนเข้าใช้งาน":
+            if "ไม่พบอีเมล์ในระบบกรุณา" in  i.text:  
                 data = ''
                 break
-            if i.text == "รหัสผ่านไม่ถูกต้อง":
+            if "รหัสผ่านไม่ถูกต้อง" in i.text:
                 data = "WP"
                 break
         if data == '':
@@ -208,7 +208,7 @@ class teedindd():
             "detail": "",
                 'ds_id': postdata['ds_id'],
             "log_id":postdata['log_id'],
-            "post_id": "",
+            "post_id": postdata['post_id'],
         }        
 
     def editpost(self, postdata):
@@ -326,7 +326,8 @@ class teedindd():
             url_post+=postdata['post_id']
             r = httprequestObj.http_get(url_post)
             soup = BeautifulSoup(r.content, 'html5lib')
-            var = soup.findAll('option')
+            #changed line
+            var = soup.find('select',attrs={'name':'province'}).findAll('option')
             for i in var:
                 if i.text in postdata['addr_province'] or postdata['addr_province'] in i.text:
                     postdata['addr_pros'] = i['value']
@@ -334,6 +335,8 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
+                    'log_id': postdata['log_id'],
+                    'ds_id': postdata['ds_id'],
                     'ret': " Wrong Province",
                     'post_url': "",
                     'post_id': ""
@@ -342,10 +345,18 @@ class teedindd():
             uid = soup.find('input', attrs={'name': 'uid'})
             pd = soup.find('input', attrs={'name': 'pd'})
             PropAction = soup.find('input', attrs={'name': 'PropAction'})
-
+            
             url_district = 'https://www.teedindd.com/admin/step-process.php'
-            r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(
-                ',')[0], 'name': postdata['addr_pros'].split(',')[1]})
+            print(postdata['addr_pros'])
+            r = httprequestObj.http_post(
+                url_district,
+                data={'pid': postdata['addr_pros'].split(',')[0],
+                      'name': postdata['addr_pros'].split(',')[1]
+                      }
+             )
+            #error below
+            print(r.text)
+            
             for i in json.loads(r.text):
                 if i['name'] in postdata['addr_district'] or postdata['addr_district'] in i['name']:
                     postdata['addr_dis'] = i
@@ -354,14 +365,17 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
+                    'log_id': postdata['log_id'],
+                    'ds_id': postdata['ds_id'],
                     'ret': " Wrong district",
                     'post_url': "",
                     'post_id': ""
                 }
-
+            
             url_district = 'https://www.teedindd.com/admin/step-process.php'
             r = httprequestObj.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
+            
             for i in json.loads(r.text):
                 if i['name'] in postdata['addr_sub_district'] or postdata['addr_sub_district'] in i['name']:
                     postdata['addr_sub_dis'] = i
@@ -370,11 +384,14 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
+                    'log_id': postdata['log_id'],
+                    'ds_id': postdata['ds_id'],
                     'ret': " Wrong sub district",
                     'post_url': "",
                     'post_id': ""
                 }
             prod_address = ""
+            
             for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
                 if add is not None or add=="" or add==" ": 
                     prod_address += add + ","
@@ -401,11 +418,13 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
+                    'log_id': postdata['log_id'],
+                    'ds_id': postdata['ds_id'],
                     'ret': "",
                     'post_url': "",
                     'post_id': ""
                 }
-
+            
             datapost = {
                 'sr': postdata['listing_type'],
                 'cid2': postdata['cate_id'],
@@ -432,8 +451,9 @@ class teedindd():
             data={}
 
             if len(postdata['post_images'])==0:
-                # postdata['post_images']=['imgtmp/default/white.jpg']
-                data={}
+                postdata['post_images']=['imgtmp/default/white.jpg']
+                data[filename] = (postdata['post_images'][0], open(
+                    postdata['post_images'][0], "rb"), "image/jpg")
             else:
                 i=postdata['no']
                 data[filename] = (postdata['post_images'][i], open(
@@ -449,6 +469,7 @@ class teedindd():
             r = httprequestObj.http_post(
                 'https://www.teedindd.com/admin/properties-process.php', data=datapost)
             data = r.text
+            
             detail="edited"
         else:
             success = "False"
@@ -460,6 +481,9 @@ class teedindd():
         return {
             "websitename": "teedindd",
             "success": success,
+            'log_id': postdata['log_id'],
+            'ds_id': postdata['ds_id'],
+            'post_id':postdata['post_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -764,7 +788,7 @@ class teedindd():
                 url = "https://www.teedindd.com/admin/index.php?page="+i    
                 r = httprequestObj.http_get(url)
                 exists = False
-                soup = BeautifulSoup(r.content, 'lxml')
+                soup = BeautifulSoup(r.content, 'html5lib')
 
                 entry = soup.find('table')
                 for title_row in entry.find_all('tr'):
@@ -780,8 +804,9 @@ class teedindd():
                         title_3=title_2.find('div')
                         if title_3 is None:
                             continue
-                        title_3=title_2.text[1:-29]                
-                        if post_title == title_3:
+                        title_3=title_2.text[1:-29]  
+                        print(title_3)              
+                        if post_title in title_3:
                             exists = True
                             post_id = title_1.text.strip()
                             post_url = "https://www.teedindd.com/property-detail.php?pd="+post_id
@@ -922,3 +947,6 @@ class teedindd():
 # # print(obj.edit_post(postdata))
 # # print(obj.delete_post(postdata))
 # print(obj.boost_post(postdata))
+'''
+{"action": "edit_post", "timeout": "5", "post_img_url_lists": ["https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg"], "geo_latitude": "13.998983386212497", "geo_longitude": "99.74464029046142", "property_id": "", "post_title_th": "xYx", "short_post_title_th": "xxx", "post_description_th": "xxx", "post_title_en": "abcdaskjdfg", "short_post_title_en": "xxx", "post_description_en": "Editted with newline\r\nnewline\r\nnewline", "price_baht": 3000, "project_name": "projectnameisenetertedhere", "listing_type": "\u0e02\u0e32\u0e22", "property_type": 2, "floor_level": 2, "floor_total": "11", "floor_area": "11", "bath_room": 2, "bed_room": 3,"duration":30, "prominent_point": "\u0e08\u0e38\u0e14\u0e40\u0e14\u0e48\u0e19", "view_type ": "11", "direction_type": "11", "addr_province": "\u0e01\u0e32\u0e0d\u0e08\u0e19\u0e1a\u0e38\u0e23\u0e35", "addr_district": "\u0e17\u0e48\u0e32\u0e21\u0e30\u0e01\u0e32", "addr_sub_district": "\u0e15\u0e30\u0e04\u0e23\u0e49\u0e33\u0e40\u0e2d\u0e19", "addr_road": "", "addr_soi": "", "addr_near_by": "", "floorarea_sqm": 1234, "land_size_rai": 32, "land_size_ngan": 21, "land_size_wa": 12, "name": "xxx", "mobile": "xxx", "email": "xxx", "line": "xxx", "web": [{"ds_name": "teedindd", "ds_id": "4", "user": "wemica1039@farmdeu.com", "pass": "12345678", "post_id": "326914", "log_id": "444444"}]}
+'''

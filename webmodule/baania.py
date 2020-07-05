@@ -76,6 +76,7 @@ class baania():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id']
         }
 
     def test_login(self, postdata):
@@ -500,7 +501,6 @@ class baania():
 
   
 
-
     def edit_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
@@ -839,6 +839,7 @@ class baania():
             "post_id": post_id,
             "account_type": "null",
             "detail": detail,
+            "ds_id": postdata['ds_id']
         }
 
     def delete_post(self, postdata):
@@ -883,9 +884,11 @@ class baania():
             "success": success,
                 'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
+            "post_id": postdata['post_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id']
         }
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -946,7 +949,8 @@ class baania():
             "post_modify_time": post_modify_time,
             "post_view": post_view,
             "post_url": post_url,
-            "post_found": post_found
+            "post_found": post_found,
+            "ds_id": postdata['ds_id']
         }
 
 
@@ -971,6 +975,7 @@ class baania():
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
+            "ds_id": postdata['ds_id']
         }
 
     def print_debug(self, msg):

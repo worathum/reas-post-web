@@ -2,177 +2,178 @@
 ### input 
 
 access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
-post_data: eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ3ZWIiOiBbeyJ0ZWwiOiAiMDg5MTk5OTQ1MCIsICJkc19pZCI6ICI0IiwgImxpbmUiOiAiYW1hcmluLnRhIiwgInVzZXIiOiAicmV0ZWgzNzY4MUBmZnQtbWFpbC5jb20iLCAiZHNfbmFtZSI6ICJ0ZWVuc3VheSIsICJjb21wYW55X25hbWUiOiAiYW1hcmtqamsiLCAibmFtZV9lbiI6ICJBbWFyaW4iLCAibmFtZV90aXRsZSI6ICJtciIsICJwYXNzIjogIjEyMzQ1Njc4IiwgImFkZHJfcHJvdmluY2UiOiAiXHUwZTE5XHUwZTE5XHUwZTE3XHUwZTFhXHUwZTM4XHUwZTIzXHUwZTM1IiwgImFkZHJfZGlzdHJpY3QiOiAiXHUwZTQwXHUwZTIxXHUwZTM3XHUwZTJkXHUwZTA3XHUwZTE5XHUwZTE5XHUwZTE3XHUwZTFhXHUwZTM4XHUwZTIzXHUwZTM1IiwgIm5hbWVfdGgiOiAiXHUwZTJkXHUwZTMxXHUwZTIxXHUwZTIzXHUwZTM0XHUwZTE5XHUwZTE3XHUwZTIzXHUwZTRjIiwgInN1cm5hbWVfdGgiOiAiXHUwZTFhXHUwZTM4XHUwZTBkXHUwZTQwXHUwZTAxXHUwZTM0XHUwZTE0IiwgInN1cm5hbWVfZW4iOiAiQm9vbmtpcnQifV0sICJ0aW1lb3V0IjogIjcifQ==
-
-
-
-
+post_data: eyJhY3Rpb24iOiAicmVnaXN0ZXJfdXNlciIsICJ0aW1lb3V0IjogIjciLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVzdWF5IiwgImRzX2lkIjogIjQiLCAidXNlciI6ICJ3ZW1pY2ExMDM5QGZhcm1kZXUuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgiLCAiY29tcGFueV9uYW1lIjogIiIsICJuYW1lX3RpdGxlIjogIm1yIiwgIm5hbWVfdGgiOiAiXHUwZTJkXHUwZTMxXHUwZTIxXHUwZTIzXHUwZTM0XHUwZTE5XHUwZTE3XHUwZTIzXHUwZTRjIiwgInN1cm5hbWVfdGgiOiAiXHUwZTFhXHUwZTM4XHUwZTBkXHUwZTQwXHUwZTAxXHUwZTM0XHUwZTE0IiwgIm5hbWVfZW4iOiAiQW1hcmluIiwgInN1cm5hbWVfZW4iOiAiQm9vbmtpcnQiLCAidGVsIjogIjA4OTE5OTk0NTAiLCAibGluZSI6ICJhbWFyaW4udGEiLCAiYWRkcl9wcm92aW5jZSI6ICIifV19
 
 ### result
 {
-  "detail": "registered", 
-  "end_time": "2020-04-06 13:47:14.330629", 
-  "start_time": "2020-04-06 13:47:14.093396", 
-  "success": "true"
+ "success": "true",
+ "action": "register_user",
+ "web": {
+  "teesuay": {
+   "websitename": "teesuay",
+   "success": "true",
+   "ds_id": "4",
+   "start_time": "2020-07-05 18:48:53.050238",
+   "end_time": "2020-07-05 18:48:53.830222",
+   "detail": "registered"
+  }
+ },
+ "usage_time": "0:00:01.567550",
+ "start_time": "2020-07-05 18:48:52.335438",
+ "end_time": "2020-07-05 18:48:53.902988"
 }
 
 
 
 ## create
-### input
- json_create = {
-
-        "action": "create_post",
-        "timeout": "5",
-        "post_img_url_lists": [
-            "https://images.freeimages.com/images/small-previews/ffa/water-lilly-1368676.jpg",
-            "https://images.freeimages.com/images/small-previews/ffa/water-lilly-1368676.jpg",
-        ],
-		"class_type_id":"1",
-		"cate_id":"2",
-        "geo_latitude": "13.786862",
-        "geo_longitude": "100.757815",
-        "property_id": "289191",
-        "post_title_th": "xxsx_new",
-        "short_post_title_th": "xxx",
-        "post_description_th": "xxx",
-        "post_title_en": "DFhgh_nre232",
-        "short_post_title_en": "sdgxxx",
-        "post_description_en": "",
-        "price_baht": "3000",
-
-        "listing_type": "ขาย",
-        "property_type": "คอนโด",
-        "floor_level": "11",
-        "floor_total": "11",
-        "floor_area": "11",
-        "bathroom": "11",
-        "bedroom": "11",
-        "prominent_point": "จุดเด่น",
-        "view_type": "11",
-        "direction_type": "11",
-        "addr_province": "กาฬสินธุ์",
-        "addr_district": "กระบ",
-        "addr_sub_district": "ตำบล แขวง",
-        "addr_road": "ถนน",
-        "addr_soi": "ซอย",
-        "addr_near_by": "สถานที่ใกล้เคียง",
-        "floorarea_sqm": "พื้นที่",
-
-        "land_size_rai": "ขนาดที่ดินเป็นไร่",
-        "land_size_ngan": "ขนาดที่ดินเป็นงาน",
-        "land_size_wa": "ขนาดที่ดินเป็นวา",
-
-        "name": "xxx",
-        "mobile": "xxx",
-        'email': "temp@gmail.com",
-		'pass': "temp",
-        "line": "xxx",
-        "project_name": "ลุมพีนีวิลล รามอินทราหลักสี่",
-    }
+### input:ewoKICAgICAgICAiYWN0aW9uIjogImNyZWF0ZV9wb3N0IiwKICAgICAgICAidGltZW91dCI6ICI1IiwKICAgICAgICAicG9zdF9pbWdfdXJsX2xpc3RzIjogWwogICAgICAgICAgICAiaHR0cHM6Ly9pbWFnZXMuZnJlZWltYWdlcy5jb20vaW1hZ2VzL3NtYWxsLXByZXZpZXdzL2ZmYS93YXRlci1saWxseS0xMzY4Njc2LmpwZyIsCiAgICAgICAgICAgICJodHRwczovL2ltYWdlcy5mcmVlaW1hZ2VzLmNvbS9pbWFnZXMvc21hbGwtcHJldmlld3MvZmZhL3dhdGVyLWxpbGx5LTEzNjg2NzYuanBnIgogICAgICAgIF0sCgkJImNsYXNzX3R5cGVfaWQiOiIxIiwKCQkiY2F0ZV9pZCI6IjIiLAogICAgICAgICJnZW9fbGF0aXR1ZGUiOiAiMTMuNzg2ODYyIiwKICAgICAgICAiZ2VvX2xvbmdpdHVkZSI6ICIxMDAuNzU3ODE1IiwKICAgICAgICAicHJvcGVydHlfaWQiOiAiMjg5MTkxIiwKICAgICAgICAicG9zdF90aXRsZV90aCI6ICJ4eHN4X25ldyIsCiAgICAgICAgInNob3J0X3Bvc3RfdGl0bGVfdGgiOiAieHh4IiwKICAgICAgICAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJ4eHgiLAogICAgICAgICJwb3N0X3RpdGxlX2VuIjogIkRGaGdoX25yZTIzMiIsCiAgICAgICAgInNob3J0X3Bvc3RfdGl0bGVfZW4iOiAic2RneHh4IiwKICAgICAgICAicG9zdF9kZXNjcmlwdGlvbl9lbiI6ICIiLAogICAgICAgICJwcmljZV9iYWh0IjogIjMwMDAiLAoKICAgICAgICAibGlzdGluZ190eXBlIjogIuC4guC4suC4oiIsCiAgICAgICAgInByb3BlcnR5X3R5cGUiOiAiNiIsCiAgICAgICAgImZsb29yX2xldmVsIjogIjExIiwKICAgICAgICAiZmxvb3JfdG90YWwiOiAiMTEiLAogICAgICAgICJmbG9vcl9hcmVhIjogIjExIiwKICAgICAgICAiYmF0aHJvb20iOiAiMTEiLAogICAgICAgICJiZWRyb29tIjogIjExIiwKICAgICAgICAicHJvbWluZW50X3BvaW50IjogIuC4iOC4uOC4lOC5gOC4lOC5iOC4mSIsCiAgICAgICAgInZpZXdfdHlwZSI6ICIxMSIsCiAgICAgICAgImRpcmVjdGlvbl90eXBlIjogIjExIiwKICAgICAgICAiYWRkcl9wcm92aW5jZSI6ICLguIHguLLguKzguKrguLTguJnguJjguLjguYwiLAogICAgICAgICJhZGRyX2Rpc3RyaWN0IjogIuC4meC4suC4oeC4mSIsCiAgICAgICAgImFkZHJfc3ViX2Rpc3RyaWN0IjogIuC4leC4s+C4muC4pSDguYHguILguKfguIciLAogICAgICAgICJhZGRyX3JvYWQiOiAi4LiW4LiZ4LiZIiwKICAgICAgICAiYWRkcl9zb2kiOiAi4LiL4Lit4LiiIiwKICAgICAgICAiYWRkcl9uZWFyX2J5IjogIuC4quC4luC4suC4meC4l+C4teC5iOC5g+C4geC4peC5ieC5gOC4hOC4teC4ouC4hyIsCiAgICAgICAgImZsb29yYXJlYV9zcW0iOiAi4Lie4Li34LmJ4LiZ4LiX4Li14LmIIiwKCiAgICAgICAgImxhbmRfc2l6ZV9yYWkiOiAiMTAiLAogICAgICAgICJsYW5kX3NpemVfbmdhbiI6ICIxMCIsCiAgICAgICAgImxhbmRfc2l6ZV93YSI6ICIzIiwKCiAgICAgICAgIm5hbWUiOiAieHh4IiwKICAgICAgICAibW9iaWxlIjogInh4eCIsCiAgICAgICAgImVtYWlsIjogInRlbXBAZ21haWwuY29tIiwKICAgICAgICAibGluZSI6ICJ4eHgiLAogICAgICAgICJwcm9qZWN0X25hbWUiOiAi4Lil4Li44Lih4Lie4Li14LiZ4Li14Lin4Li04Lil4LilIOC4o+C4suC4oeC4reC4tOC4meC4l+C4o+C4suC4q+C4peC4seC4geC4quC4teC5iCIsCiJ3ZWIiOiBbeyJkc19uYW1lIjogInRlZXN1YXkiLCAiZHNfaWQiOiAiNCIsICJ1c2VyIjogIndlbWljYTEwMzlAZmFybWRldS5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XQogICAgfQ==
 ### result
 {
-  "post_id": "122615", 
-  "post_url": "http://www.teesuay.com/property/122615/dfhgh_nre232.html", 
-  "ret": "../property-122615/dfhgh_nre232.html", 
-  "success": "true"
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "teesuay": {
+   "websitename": "teesuay",
+   "success": "true",
+   "ret": "true",
+   "start_time": "2020-07-05 19:13:31.587293",
+   "end_time": "2020-07-05 19:13:34.699196",
+   "post_url": "http://www.teesuay.com/property-152961/xxsx_new.html",
+   "post_id": "152961",
+   "detail": "created post",
+   "ds_id": "4"
+  }
+ },
+ "usage_time": "0:00:06.978513",
+ "start_time": "2020-07-05 19:13:27.823636",
+ "end_time": "2020-07-05 19:13:34.802149"
 }
 
 
 
-## login
+## login Correct credentials
+
 ### input
 access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
-post_data: eyJ3ZWIiOiBbeyJkc19uYW1lIjogInRlZW5zdWF5IiwgInVzZXIiOiAicmV0ZWgzNzY4MUBmZnQtbWFpbC5jb20iLCAiZHNfaWQiOiAiNCIsICJwYXNzIjogIjEyMzQ1Njc4In1dLCAidGltZW91dCI6ICI1IiwgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIn0=
-
+post_data: eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVzdWF5IiwgImRzX2lkIjogIjQiLCAidXNlciI6ICJ3ZW1pY2ExMDM5QGZhcm1kZXUuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgifV19
 
 ### result
 {
-  "detail": "logged in", 
-  "end_time": "2020-04-06 13:46:36.805135", 
-  "start_time": "2020-04-06 13:46:36.476261", 
-  "success": "true"
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "teesuay": {
+   "websitename": "teesuay",
+   "success": "true",
+   "start_time": "2020-07-05 18:49:54.241263",
+   "end_time": "2020-07-05 18:49:54.681597",
+   "detail": "logged in",
+   "ds_id": "4"
+  }
+ },
+ "usage_time": "0:00:01.122869",
+ "start_time": "2020-07-05 18:49:53.634104",
+ "end_time": "2020-07-05 18:49:54.756973"
+}
+
+
+LOGIN : Wrong Pass => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVzdWF5IiwgImRzX2lkIjogIjQiLCAidXNlciI6ICJ3ZW1pY2ExMDM5QGZhcm1kZXUuY29tIiwgInBhc3MiOiAiMTIzNTY3OCJ9XX0=
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "teesuay": {
+   "websitename": "teesuay",
+   "success": "false",
+   "start_time": "2020-07-05 18:50:41.206515",
+   "end_time": "2020-07-05 18:50:45.203098",
+   "detail": "",
+   "ds_id": "4"
+  }
+ },
+ "usage_time": "0:00:04.674153",
+ "start_time": "2020-07-05 18:50:40.606738",
+ "end_time": "2020-07-05 18:50:45.280891"
+}
+
+LOGIN : Wrong User => Pass
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:eyJhY3Rpb24iOiAidGVzdF9sb2dpbiIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVzdWF5IiwgImRzX2lkIjogIjQiLCAidXNlciI6ICJ3ZW1pYzEwMzlAZmFybWRldS5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
+<output>
+
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "teesuay": {
+   "websitename": "teesuay",
+   "success": "false",
+   "start_time": "2020-07-05 18:51:47.227988",
+   "end_time": "2020-07-05 18:51:47.605428",
+   "detail": "",
+   "ds_id": "4"
+  }
+ },
+ "usage_time": "0:00:01.143389",
+ "start_time": "2020-07-05 18:51:46.539830",
+ "end_time": "2020-07-05 18:51:47.683219"
 }
 
 
 ## edit
-### input
- json_create = {
-
-        "action": "create_post",
-        "timeout": "5",
-        "post_img_url_lists": [
-            "https://images.freeimages.com/images/small-previews/ffa/water-lilly-1368676.jpg",
-            "https://images.freeimages.com/images/small-previews/ffa/water-lilly-1368676.jpg",
-        ],
-		"class_type_id":"1",
-		"cate_id":"2",
-        "geo_latitude": "13.786862",
-        "geo_longitude": "100.757815",
-        "property_id": "289191",
-        "post_title_th": "xxsx_new",
-        "short_post_title_th": "xxx",
-        "post_description_th": "xxx",
-        "post_title_en": "DFhgh_nre232",
-        "short_post_title_en": "sdgxxx",
-        "post_description_en": "",
-        "price_baht": "3000",
-
-        "listing_type": "ขาย",
-        "property_type": "คอนโด",
-        "floor_level": "11",
-        "floor_total": "11",
-        "floor_area": "11",
-        "bathroom": "11",
-        "bedroom": "11",
-        "prominent_point": "จุดเด่น",
-        "view_type": "11",
-        "direction_type": "11",
-        "addr_province": "กาฬสินธุ์",
-        "addr_district": "กระบ",
-        "addr_sub_district": "ตำบล แขวง",
-        "addr_road": "ถนน",
-        "addr_soi": "ซอย",
-        "addr_near_by": "สถานที่ใกล้เคียง",
-        "floorarea_sqm": "พื้นที่",
-		"property_id":"122608",
-
-        "land_size_rai": "ขนาดที่ดินเป็นไร่",
-        "land_size_ngan": "ขนาดที่ดินเป็นงาน",
-        "land_size_wa": "ขนาดที่ดินเป็นวา",
-
-        "name": "xxx",
-        "mobile": "xxx",
-        'email': "temp@gmail.com",
-		'pass': "temp",
-        "line": "xxx",
-        "project_name": "ลุมพีนีวิลล รามอินทราหลักสี่",
-    }
+### input:ewoKICAgICAgICAiYWN0aW9uIjogImVkaXRfcG9zdCIsCiAgICAgICAgInRpbWVvdXQiOiAiNSIsCiAgICAgICAgInBvc3RfaW1nX3VybF9saXN0cyI6IFsKImh0dHBzOi8vaW1hZ2VzLmZyZWVpbWFnZXMuY29tL2ltYWdlcy9zbWFsbC1wcmV2aWV3cy9mZmEvd2F0ZXItbGlsbHktMTM2ODY3Ni5qcGciLAogICAgICAgICAgICAiaHR0cHM6Ly9pbWFnZXMuZnJlZWltYWdlcy5jb20vaW1hZ2VzL3NtYWxsLXByZXZpZXdzL2ZmYS93YXRlci1saWxseS0xMzY4Njc2LmpwZyIKXSwKCQkiY2xhc3NfdHlwZV9pZCI6IjEiLAoJCSJjYXRlX2lkIjoiMiIsCiAgICAgICAgImdlb19sYXRpdHVkZSI6ICIxMy43ODY4NjIiLAogICAgICAgICJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLAogICAgICAgICJwcm9wZXJ0eV9pZCI6ICIyODkxOTEiLAogICAgICAgICJwb3N0X3RpdGxlX3RoIjogInh4c3hDaGFuZ2UiLAogICAgICAgICJzaG9ydF9wb3N0X3RpdGxlX3RoIjogInh4eCIsCiAgICAgICAgInBvc3RfZGVzY3JpcHRpb25fdGgiOiAieHh4IiwKICAgICAgICAicG9zdF90aXRsZV9lbiI6ICJERmhnaF9ucmUyMzIiLAogICAgICAgICJzaG9ydF9wb3N0X3RpdGxlX2VuIjogInNkZ3h4eCIsCiAgICAgICAgInBvc3RfZGVzY3JpcHRpb25fZW4iOiAiIiwKICAgICAgICAicHJpY2VfYmFodCI6ICI2MDAwIiwKCiAgICAgICAgImxpc3RpbmdfdHlwZSI6ICLguILguLLguKIiLAogICAgICAgICJwcm9wZXJ0eV90eXBlIjogIjYiLAogICAgICAgICJmbG9vcl9sZXZlbCI6ICIxMSIsCiAgICAgICAgImZsb29yX3RvdGFsIjogIjExIiwKICAgICAgICAiZmxvb3JfYXJlYSI6ICIxMSIsCiAgICAgICAgImJhdGhyb29tIjogIjExIiwKICAgICAgICAiYmVkcm9vbSI6ICIxMSIsCiAgICAgICAgInByb21pbmVudF9wb2ludCI6ICLguIjguLjguJTguYDguJTguYjguJkiLAogICAgICAgICJ2aWV3X3R5cGUiOiAiMTEiLAogICAgICAgICJkaXJlY3Rpb25fdHlwZSI6ICIxMSIsCiAgICAgICAgImFkZHJfcHJvdmluY2UiOiAi4LiB4Liy4Lis4Liq4Li04LiZ4LiY4Li44LmMIiwKICAgICAgICAiYWRkcl9kaXN0cmljdCI6ICLguJnguLLguKHguJkiLAogICAgICAgICJhZGRyX3N1Yl9kaXN0cmljdCI6ICLguJXguLPguJrguKUg4LmB4LiC4Lin4LiHIiwKICAgICAgICAiYWRkcl9yb2FkIjogIuC4luC4meC4mSIsCiAgICAgICAgImFkZHJfc29pIjogIuC4i+C4reC4oiIsCiAgICAgICAgImFkZHJfbmVhcl9ieSI6ICLguKrguJbguLLguJnguJfguLXguYjguYPguIHguKXguYnguYDguITguLXguKLguIciLAogICAgICAgICJmbG9vcmFyZWFfc3FtIjogIuC4nuC4t+C5ieC4meC4l+C4teC5iCIsCgogICAgICAgICJsYW5kX3NpemVfcmFpIjogIjEwIiwKICAgICAgICAibGFuZF9zaXplX25nYW4iOiAiMTAiLAogICAgICAgICJsYW5kX3NpemVfd2EiOiAiMyIsCgogICAgICAgICJuYW1lIjogInh4eCIsCiAgICAgICAgIm1vYmlsZSI6ICJ4eHgiLAogICAgICAgICJlbWFpbCI6ICJ0ZW1wQGdtYWlsLmNvbSIsCiAgICAgICAgImxpbmUiOiAieHh4IiwKICAgICAgICAicHJvamVjdF9uYW1lIjogIuC4peC4uOC4oeC4nuC4teC4meC4teC4p+C4tOC4peC4pSDguKPguLLguKHguK3guLTguJnguJfguKPguLLguKvguKXguLHguIHguKrguLXguYgiLAoid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVzdWF5IiwgImRzX2lkIjogIjQiLCAidXNlciI6ICJ3ZW1pY2ExMDM5QGZhcm1kZXUuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgiLCJwb3N0X2lkIjoiMTUyOTYxIiwibG9nX2lkIjoiNDQ0NCJ9XQogICAgfQ==
 ### result
-{'success': 'true'}
-
-
+{
+ "success": "true",
+ "action": "edit_post",
+ "web": {
+  "teesuay": {
+   "websitename": "teesuay",
+   "success": "true",
+   "start_time": "2020-07-05 19:50:48.828852",
+   "end_time": "2020-07-05 19:50:52.188037",
+   "detail": "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<meta http-equiv=refresh content=0;URL=edit-real-estate-features.php?post_id=152961>",
+   "ds_id": "4",
+   "log_id": "4444",
+   "post_id": "152961"
+  }
+ },
+ "usage_time": "0:00:09.320311",
+ "start_time": "2020-07-05 19:50:43.002367",
+ "end_time": "2020-07-05 19:50:52.322678"
+}
 
 ## Delete post
-### input 
-
-  postdata = {'email': "temp@gmail.com", 'pass': "temp", 'btlogin.x': 22, 'btlogin.y': 21, 'name': '1234abcd', 'add': '1234a', 'province': '64', 'amphur': '864',
-                'tel': '1234a', 'website': 'http://1234a.com', 'email': '12345abcd@gmail.com', 'pass': '1234','property_id':'122615'
-                }
-
-
+### input : eyJhY3Rpb24iOiAiZGVsZXRlX3Bvc3QiLCAidGltZW91dCI6ICI1IiwgIndlYiI6IFt7ImRzX25hbWUiOiAidGVlc3VheSIsICJkc19pZCI6ICI0IiwgInBvc3RfaWQiOiAiMTUyOTYxIiwgImxvZ19pZCI6ICI3MTk3NzMiLCAidXNlciI6ICJ3ZW1pY2ExMDM5QGZhcm1kZXUuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgifV19
 
 ### result
 {
-  "detail": "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<meta http-equiv='refresh' content='0;url=list-property.php'>", 
-  "end_time": "2020-04-06 13:50:15.754901", 
-  "start_time": "2020-04-06 13:50:13.042620", 
-  "success": "true"
+ "success": "true",
+ "action": "delete_post",
+ "web": {
+  "teesuay": {
+   "websitename": "teesuay",
+   "success": "true",
+   "start_time": "2020-07-05 19:53:46.344188",
+   "end_time": "2020-07-05 19:53:51.217605",
+   "ds_id": "4",
+   "detail": "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<meta http-equiv='refresh' content='0;url=list-property.php'>",
+   "log_id": "719773"
+  }
+ },
+ "usage_time": "0:00:06.825329",
+ "start_time": "2020-07-05 19:53:44.501982",
+ "end_time": "2020-07-05 19:53:51.327311"
 }
 
 boost post
 <input>
-eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVzdWF5IiwgImRzX2lkIjogIjQiLCAicG9zdF9pZCI6ICIxMzAxNzYiLCAibG9nX2lkIjogIjcxOTc3MyIsICJ1c2VyIjogInRlbXBAZ21haWwuY29tIiwgInBhc3MiOiAidGVtcCJ9XX0=
+eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6ICJ0ZWVzdWF5IiwgImRzX2lkIjogIjQiLCAicG9zdF9pZCI6ICIxNTI5NjciLCAibG9nX2lkIjogIjcxOTc3MyIsICJ1c2VyIjogIndlbWljYTEwMzlAZmFybWRldS5jb20iLCAicGFzcyI6ICIxMjM0NTY3OCJ9XX0=
 <output>
 {
  "success": "true",
@@ -181,82 +182,47 @@ eyJhY3Rpb24iOiAiYm9vc3RfcG9zdCIsICJ0aW1lb3V0IjogIjUiLCAid2ViIjogW3siZHNfbmFtZSI6
   "teesuay": {
    "websitename": "teesuay",
    "success": "true",
-   "time_usage": "P0DT00H00M01.232429S",
-   "time_start": "2020-05-21T18:21:06.235",
-   "time_end": "2020-05-21T18:21:07.467",
-   "detail": "",
-   "post_id": "130176"
+   "time_usage": "P0DT00H00M02.440803S",
+   "start_time": "2020-07-05T19:57:42.864",
+   "end_time": "2020-07-05T19:57:45.305",
+   "ds_id": "4",
+   "detail": "Boosted Successfully",
+   "post_id": "152967",
+   "log_id": "719773"
   }
  },
- "usage_time": "0:00:01.332629",
- "start_time": "2020-05-21 18:21:06.165420",
- "end_time": "2020-05-21 18:21:07.498049"
+ "usage_time": "0:00:04.628575",
+ "start_time": "2020-07-05 19:57:40.783274",
+ "end_time": "2020-07-05 19:57:45.411849"
 }
 
 ##Search post
-###input_1 
-{
-  "action":"search_post",
-    "timeout":"5",
-    "post_title_th":"AwgjkoPOlXpXreKTGTUzQCyZRakMNo",
-    "web":[
-        {
-            "ds_name":"teesuay",
-            "ds_id":"4",
-            "log_id":"33333",
-            "user":"harshikaj18@gmail.com",
-            "pass":"abcabcabc"
-        }
-    ]
-}
+###input : ewogICJhY3Rpb24iOiJzZWFyY2hfcG9zdCIsCiAgICAidGltZW91dCI6IjUiLAogICAgInBvc3RfdGl0bGVfdGgiOiJ4eHN4X25ldyIsCiAgICAid2ViIjpbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6InRlZXN1YXkiLAogICAgICAgICAgICAiZHNfaWQiOiI0IiwKICAgICAgICAgICAgImxvZ19pZCI6IjMzMzMzIiwKICAgICAgICAgICAgInVzZXIiOiJ3ZW1pY2ExMDM5QGZhcm1kZXUuY29tIiwgInBhc3MiOiAiMTIzNDU2NzgiCiAgICAgICAgfQogICAgXQp9 
 
-###output_1
+###output
 {
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "teesuay": {
    "websitename": "teesuay",
    "ds_name": "teesuay",
    "success": "true",
-   "start_time": "2020-05-29 21:37:22.037288",
-   "end_time": "2020-05-29 21:37:31.404169",
+   "start_time": "2020-07-05 20:00:00.962782",
+   "end_time": "2020-07-05 20:00:04.739098",
    "ds_id": "4",
+   "log_id": "33333",
    "post_found": "true",
-   "post_url": "http://www.teesuay.com/property-140838/AwgjkoPOlXpXreKTGTUzQCyZRakMNo.html",
-   "post_id": "140838",
+   "post_url": "http://www.teesuay.com/property-152967/xxsx_new.html",
+   "post_id": "152967",
    "account_type": null,
-   "detail": "vให้เช่า bddcsvdf เหมาะทำตลาดให้เช่า ที่ดินด่วน บางกรวยไทรน้อย 6 ไร่ เหมาะทำตลาดรายละเอียดที่ดินขนาด6ไร่หน้ากว้าง 30 เมตรสถานที่ใกล้เคียงถนนนครอินทร์ถนนพระราม5ให้เช่า 100,000 บาทสนใจติดต่อ ช่อทิพย์ 091829384",
-   "post_create_time": " 29 พฤษภาคม 2563",
-   "post_modify_time": " 29 พฤษภาคม 2563 20:53:54 น.",
-   "post_view": "7 "
-}  
-
-###input_2
-{
-    "action":"search_post",
-    "timeout":"5",
-    "post_title_th":"AwgjkoPOlXpXreKkMNo",
-    "web":[
-        {
-            "ds_name":"teesuay",
-            "ds_id":"4",
-            "log_id":"33333",
-            "user":"harshikaj18@gmail.com",
-            "pass":"abcabcabc"
-        }
-    ]
-}
-###output_2
-{
-   "websitename": "teesuay",
-   "ds_name": "teesuay",
-   "success": "true",
-   "start_time": "2020-05-29 21:43:08.544204",
-   "end_time": "2020-05-29 21:43:10.046376",
-   "ds_id": "4",
-   "post_found": "false",
-   "post_url": "",
-   "post_id": "",
-   "account_type": null,
-   "detail": "",
-   "post_create_time": "",
-   "post_modify_time": "",
-   "post_view": ""
+   "detail": "xxx",
+   "post_create_time": " 6 กรกฎาคม 2563 ",
+   "post_modify_time": "6 กรกฎาคม 2563 02:55:44 น. เ",
+   "post_view": "คร"
   }
+ },
+ "usage_time": "0:00:05.746849",
+ "start_time": "2020-07-05 19:59:59.104059",
+ "end_time": "2020-07-05 20:00:04.850908"
+}

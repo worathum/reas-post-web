@@ -1,0 +1,139 @@
+
+REGISTER
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6ICJyZWdpc3Rlcl91c2VyIiwKICAgICJ0aW1lb3V0IjogIjciLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogInBsb3ljaGFvIiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAidXNlciI6ICJraXJpa2EyMzIyQHN2cG1haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiAiMTIzNDU2NzgiLAogICAgICAgICAgICAiY29tcGFueV9uYW1lIjogImFtYXJramprIiwKICAgICAgICAgICAgIm5hbWVfdGl0bGUiOiAibXIiLAogICAgICAgICAgICAibmFtZV90aCI6ICLguK3guLHguKHguKPguLTguJnguJfguKPguYwiLAogICAgICAgICAgICAic3VybmFtZV90aCI6ICLguJrguLjguI3guYDguIHguLTguJQiLAogICAgICAgICAgICAibmFtZV9lbiI6ICJBbWFyaW4iLAogICAgICAgICAgICAic3VybmFtZV9lbiI6ICJCb29ua2lydCIsCiAgICAgICAgICAgICJ0ZWwiOiAiMDg5MTk5OTQ1MCIsCiAgICAgICAgICAgICJsaW5lIjogImFtYXJpbi50YSIsCiAgICAgICAgICAgICJhZGRyX3Byb3ZpbmNlIiA6ICJub250aGFidXJpIiAgICAgICAgICAgIAogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+
+{ "start_time": "2020-04-01 11:02:13.330957", "success": "true", "usage_time": "0:00:06.239663", "end_time": "2020-04-01 11:02:19.570620", "action": "register_user", "web": { "ploychao": { "start_time": "2020-04-01 11:02:13.730169", "success": "true", "detail": "amarkjjk", "usage_time": "0:00:05.839678", "end_time": "2020-04-01 11:02:19.569847" } } }
+
+
+LOGIN
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKICAgICJ0aW1lb3V0IjogIjUiLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogInBsb3ljaGFvIiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAidXNlciI6ICJkaXhlc2E3MTgyQG1haWxib3h0LmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogIjEyMzQ1Njc4IgogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+{ "start_time": "2020-04-01 11:02:58.719862", "success": "true", "usage_time": "0:00:01.193194", "end_time": "2020-04-01 11:02:59.913056", "action": "test_login", "web": { "ploychao": { "start_time": "2020-04-01 11:02:58.721051", "success": "false", "detail": "account suspended", "end_time": "2020-04-01 11:02:59.912774" } } }
+
+
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKICAgICJ0aW1lb3V0IjogIjUiLAogICAgIndl↵YiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogInBsb3ljaGFvIiwKICAgICAg↵ICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAidXNlciI6ICJkaXhlc2E3MTgyQG1haWxi↵b3h0LmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogIjEyMzQ1Njc4IgogICAgICAgIH0KICAgIF0K↵fQ==
+
+<output>
+{
+    "action": "test_login",
+    "end_time": "2020-04-03 10:11:40.253862",
+    "web": {
+        "ploychao": {
+            "detail": "account suspended",
+            "end_time": "2020-04-03 10:11:40.253717",
+            "success": "false",
+            "start_time": "2020-04-03 10:11:40.039976"
+        }
+    },
+    "usage_time": "0:00:00.216540",
+    "success": "true",
+    "start_time": "2020-04-03 10:11:40.037322"
+}
+
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKICAgICJ0aW1lb3V0IjogIjUiLAogICAgIndl↵YiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogInBsb3ljaGFvIiwKICAgICAg↵ICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAidXNlciI6ICJub3BhYzg0NzgwQG1haWxi↵b3h0LmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogIjEyMzQ1NjciCiAgICAgICAgfQogICAgXQp9
+
+<output>
+{
+    "action": "test_login",
+    "end_time": "2020-04-03 10:13:37.063895",
+    "web": {
+        "ploychao": {
+            "detail": "cannot login",
+            "end_time": "2020-04-03 10:13:37.063651",
+            "success": "false",
+            "start_time": "2020-04-03 10:13:36.849577"
+        }
+    },
+    "usage_time": "0:00:00.217748",
+    "success": "true",
+    "start_time": "2020-04-03 10:13:36.846147"
+}
+
+
+
+CREATE POST
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6ICJjcmVhdGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICAicG9zdF9pbWdfdXJsX2xpc3RzIjogWwogICAgICAgICJodHRwOi8vaW1hZ2VzdG9yZS5jb20vcGljMS5qcGciLAogICAgICAgICJodHRwOi8vaW1hZ2VzdG9yZS5jb20vcGljMi5qcGciICAgICAgIAogICAgXSwKICAgICJnZW9fbGF0aXR1ZGUiOiAiMTMuNzg2ODYyIiwKICAgICJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLCAgICAKICAgICJwcm9wZXJ0eV9pZCIgOiAiIiwKICAgICJwb3N0X3RpdGxlX3RoIjogInh4eCIsCiAgICAic2hvcnRfcG9zdF90aXRsZV90aCI6ICJ4eHgiLAogICAgInBvc3RfZGVzY3JpcHRpb25fdGgiOiAieHh4IiwKICAgICJwb3N0X3RpdGxlX2VuIjogIiIsCiAgICAic2hvcnRfcG9zdF90aXRsZV9lbiI6ICJ4eHgiLAogICAgInBvc3RfZGVzY3JpcHRpb25fZW4iOiAiIiwKICAgICJwcmljZV9iYWh0IjogIjMwMDAiLAogICAgCiAgICAibGlzdGluZ190eXBlIjogIuC4guC4suC4oiIsICAgIAogICAgInByb3BlcnR5X3R5cGUiOiAiMSIsICAgIAogICAgImZsb29yX2xldmVsICAiIDogIjExIiwKICAgICJmbG9vcl90b3RhbCAgIiA6ICIxMSIsCiAgICAiZmxvb3JfYXJlYSAgIiA6ICIxMSIsCiAgICAiYmF0aF9yb29tICAiIDogIjExIiwKICAgICJiZWRfcm9vbSAgIiA6ICIxMSIsCiAgICAicHJvbWluZW50X3BvaW50ICAiIDogIuC4iOC4uOC4lOC5gOC4lOC5iOC4mSIsICAgIAogICAgInZpZXdfdHlwZSAiIDogIjExIiwKICAgICJkaXJlY3Rpb25fdHlwZSIgOiAiMTEiLAogICAgImFkZHJfcHJvdmluY2UiOiAi4LiB4Lij4Li44LiH4LmA4LiX4Lie4Lih4Lir4Liy4LiZ4LiE4LijIiwKCiAgICAiYWRkcl9kaXN0cmljdCI6ICLguJTguLjguKrguLTguJUiLAogICAgImFkZHJfc3ViX2Rpc3RyaWN0IjogIuC4leC4s+C4muC4pSDguYHguILguKfguIciLAogICAgImFkZHJfcm9hZCI6ICLguJbguJnguJkiLAogICAgImFkZHJfc29pIjogIuC4i+C4reC4oiIsCiAgICAiYWRkcl9uZWFyX2J5IjogIuC4quC4luC4suC4meC4l+C4teC5iOC5g+C4geC4peC5ieC5gOC4hOC4teC4ouC4hyIsCiAgICAiZmxvb3JhcmVhX3NxbSI6ICLguJ7guLfguYnguJnguJfguLXguYgiLAogICAgCiAgICAibGFuZF9zaXplX3JhaSI6ICLguILguJnguLLguJTguJfguLXguYjguJTguLTguJnguYDguJvguYfguJnguYTguKPguYgiLAogICAgImxhbmRfc2l6ZV9uZ2FuIjogIuC4guC4meC4suC4lOC4l+C4teC5iOC4lOC4tOC4meC5gOC4m+C5h+C4meC4h+C4suC4mSIsCiAgICAibGFuZF9zaXplX3dhIjogIuC4guC4meC4suC4lOC4l+C4teC5iOC4lOC4tOC4meC5gOC4m+C5h+C4meC4p+C4siIsCiAgICAKICAgICJuYW1lIjogInh4eCIsCiAgICAibW9iaWxlIjogInh4eCIsCiAgICAiZW1haWwiOiAieHh4IiwKICAgICJsaW5lIjogInh4eCIsCiAgICAid2ViIjogWwogICAgICAgIHsKICAgICAgICAgICAgImRzX25hbWUiOiAicGxveWNoYW8iLAogICAgICAgICAgICAiZHNfaWQiOiAiNCIsICAgICAgICAgICAgICAKICAgICAgICAgICAgInVzZXIiOiAia2lyaWthMjMyMkBzdnBtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogIjEyMzQ1Njc4IgogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+{ "start_time": "2020-04-01 11:03:00.598483", "success": "true", "usage_time": "0:00:44.235031", "end_time": "2020-04-01 11:03:44.833514", "action": "create_post", "web": { "ploychao": { "success": "true", "start_time": "2020-04-01 11:03:00.600100", "end_time": "2020-04-01 11:03:44.832925", "post_url": "https://www.ploychao.com/product/xxx/33104/", "account_type": "null", "post_id": "33104", "detail": "" } } }
+
+
+DELETE POST
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6ICJkZWxldGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICJ3ZWIiOiBbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ICJwbG95Y2hhbyIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwKICAgICAgICAgICAgInBvc3RfaWQiOiAiMzMwODkiLAogICAgICAgICAgICAibG9nX2lkIjogIjMzMzMzIiwgCiAgICAgICAgICAgICJ1c2VyIjogImtpcmlrYTIzMjJAc3ZwbWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ICIxMjM0NTY3OCIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+{ "start_time": "2020-04-01 11:03:02.282475", "success": "true", "usage_time": "0:00:00.352553", "end_time": "2020-04-01 11:03:02.635028", "action": "delete_post", "web": { "ploychao": { "start_time": "2020-04-01 11:03:02.284143", "success": "true", "detail": "deleted", "log_id": "33333", "end_time": "2020-04-01 11:03:02.634776" } } }
+
+
+
+
+
+
+EDIT POST
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6ICJlZGl0X3Bvc3QiLAogICAgInRpbWVvdXQiOiAiNSIsCiAgICAgInBvc3RfaW1nX3VybF9saXN0cyI6IFsKImh0dHBzOi8vemlnbm5ldC5zZ3AxLmRpZ2l0YWxvY2VhbnNwYWNlcy5jb20vbGl2aW5nam9pbi9jbGFzc2lmaWVkLzE4OTY4OS9iaWcvMjEwMTIwMjM1MjE1NTAwOTkxLmpwZyIsCiJodHRwczovL3ppZ25uZXQuc2dwMS5kaWdpdGFsb2NlYW5zcGFjZXMuY29tL2xpdmluZ2pvaW4vY2xhc3NpZmllZC8xODk2ODkvb3RoZXIvYmlnLzIxMDEyMDIzNTIyMDMxNzkxOC5qcGciCl0sCiAgICAiZ2VvX2xhdGl0dWRlIjogIjEzLjc4Njg2MiIsCiAgICAiZ2VvX2xvbmdpdHVkZSI6ICIxMDAuNzU3ODE1IiwKICAgICJwcm9wZXJ0eV9pZCIgOiAiY2h1MDAxIiwKICAgICJwb3N0X3RpdGxlX3RoIjogIuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lCIsCiAgICAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJXaGF0IGlzIGRlc2NyaXB0aW9uIiwKICAgICJwb3N0X3RpdGxlX2VuIjogIkxhbmQgZm9yIHJlbnQgYmFuZ2tsb3lzYWlub2kgNiByYWkgc3VpdGFibGUgZm9yIGRldmVsb3BpbmciLAogICAgInBvc3RfZGVzY3JpcHRpb25fZW4iOiAiTGFuZCBmb3IgcmVudCBiYW5na2xveXNhaW5vaSA2IHJhaSBzdWl0YSBibGUgZm9yIGRldmVsb3BpbmciLAogICAgInByaWNlX2JhaHQiOiAiMTAwMDAwIiwKICAgICJsaXN0aW5nX3R5cGUiOiAi4LmA4LiK4LmI4LiyIiwgICAgCiAgICAicHJvcGVydHlfdHlwZSI6ICI2IiwKICAgICJwcm9taW5lbnRfcG9pbnQgICIgOiAi4Lir4LiZ4LmJ4Liy4LiB4Lin4LmJ4Liy4LiH4Lih4Liy4LiBIOC5g+C4q+C5ieC5gOC4iuC5iOC4suC4luC4ueC4geC4quC4uOC4lCIsICAgIAogICAgImRpcmVjdGlvbl90eXBlIiA6ICIxMSIsCiAgICAiYWRkcl9wcm92aW5jZSI6ICLguJnguJnguJfguJrguLjguKPguLUiLAogICAgImFkZHJfZGlzdHJpY3QiOiAi4LmA4Lih4Li34Lit4LiH4LiZ4LiZ4LiX4Lia4Li44Lij4Li1IiwKICAgICJhZGRyX3N1Yl9kaXN0cmljdCI6ICLguJrguLLguIfguIHguKPguKfguKIiLAogICAgImFkZHJfcm9hZCI6ICLguJrguLLguIfguIHguKPguKfguKIt4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIiwKICAgICJhZGRyX3NvaSI6ICLguIvguK3guKLguJrguLLguIfguIHguKPguKfguKIt4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDM0IiwKICAgICJhZGRyX25lYXJfYnkiOiAi4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNVxu4LiW4LiZ4LiZ4LiZ4LiE4Lij4Lit4Li04LiZ4LiX4Lij4LmMIiwKICAgICJsYW5kX3NpemVfcmFpIjogIjYiLAogICAgImxhbmRfc2l6ZV9uZ2FuIjogIjAiLAogICAgImxhbmRfc2l6ZV93YSI6ICIwIiwKICAgIAogICAgIm5hbWUiOiAi4LiK4Li5IiwKICAgICJtb2JpbGUiOiAiMDk5Mjg5OTk5OSIsCiAgICAiZW1haWwiOiAicGFudXdhdC5ydWFuZ3Jha0BnbWFpbC5jb20iLAogICAgImxpbmUiOiAiMDk5Mjg5OTk5OSIsCiAgICAid2ViIjogWwogICAgICAgIHsKICAgICAgICAgICAgImRzX25hbWUiOiAicGxveWNoYW8iLAogICAgICAgICAgICAiZHNfaWQiOiAiMTIwIiwgICAgICAgICAgICAgIAogICAgICAgICAgICAidXNlciI6ICJub3BhYzg0NzgwQG1haWxib3h0LmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogIjEyMzQ1Njc4IiwKICAgICAgICAgICAgInBvc3RfaWQiOiAiMzMzMzkiLAogICAgICAgICAgICAibG9nX2lkIjogIjQ0NDQ0IiwgICAgICAgICAgICAgCiAgICAgICAgICAgICJhY2NvdW50X3R5cGUiIDogImNvcnBlcmF0ZSIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+{
+    "success": "true",
+    "start_time": "2020-04-03 11:05:15.863583",
+    "usage_time": "0:00:30.174858",
+    "end_time": "2020-04-03 11:05:46.038441",
+    "web": {
+        "ploychao": {
+            "end_time": "2020-04-03 11:05:46.038068",
+            "detail": "",
+            "success": "true",
+            "start_time": "2020-04-03 11:05:17.380030",
+            "log_id": "44444"
+        }
+    },
+    "action": "edit_post"
+}
+
+
+
+BOOST POST
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6ICJib29zdF9wb3N0IiwKICAgICJ0aW1lb3V0IjogIjciLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogInBsb3ljaGFvIiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAicG9zdF9pZCI6ICIzMzMzMyIsCiAgICAgICAgICAgICJsb2dfaWQiOiAiMzMzMzMiLCAgICAgICAgICAgIAogICAgICAgICAgICAidXNlciI6ICJhbWFyaW4udGFAZ21haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiAiNWs0a2szMjUzNDM0IgogICAgICAgIH0KICAgIF0KfQ==
+
+
+<output>
+{
+    "success": "true",
+    "end_time": "2020-04-03 11:08:08.948550",
+    "start_time": "2020-04-03 11:08:08.643319",
+    "action": "boost_post",
+    "usage_time": "0:00:00.305231",
+    "web": {
+        "ploychao": {
+            "success": "false",
+            "detail": "'email_user'"
+        }
+    }
+}

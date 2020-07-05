@@ -75,7 +75,7 @@ class quickdealfree():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "detail": detail,
             "websitename": "quickdealfree",
         }
@@ -227,7 +227,7 @@ class quickdealfree():
             # print(data)
             r = httprequestObj.http_get(
                 "http://www.quickdealfree.com/member/list-classifieds.php")
-            soup = BeautifulSoup(r.text, 'lxml')
+            soup = BeautifulSoup(r.text, 'html.parser')
             post_url = soup.select(
                 "#frmMain > div > table > tbody > tr:nth-child(2) > td:nth-child(1) > a")[0]['href']
             post_id = post_url[8:13]
@@ -314,7 +314,7 @@ class quickdealfree():
         if success == "true":
             r = httprequestObj.http_get(
                 "http://www.quickdealfree.com/member/list-classifieds.php")
-            soup = BeautifulSoup(r.text, 'lxml')
+            soup = BeautifulSoup(r.text, 'html.parser')
             post_url = soup.select(
                 "#frmMain > div > table > tbody > tr > td> a")
             success = "false"
@@ -355,6 +355,7 @@ class quickdealfree():
 
                     r = httprequestObj.http_post(
                         'http://www.quickdealfree.com/member/p-edit-classifieds-post.php', data=datapost, files=files)
+                    detail= "Post edited successfully"
                 else:
                     detail = "No post found with given id."
         else:
@@ -366,11 +367,11 @@ class quickdealfree():
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "end_time": str(time_end),
             "log_id": postdata['log_id'],
             # "post_url": "http://www.quickdealfree.com/post-"+postdata['post_id']+'/'+postdata['post_title_th']+".html",
-            # "post_id": postdata['post_id'],
+            "post_id": postdata['post_id'],
             "account_type": "null",
             "detail": detail,
             "websitename": "quickdealfree",
@@ -383,7 +384,7 @@ class quickdealfree():
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
         r = httprequestObj.http_get(
             "http://www.quickdealfree.com/member/list-classifieds.php")
-        soup = BeautifulSoup(r.text, 'lxml')
+        soup = BeautifulSoup(r.text, 'html.parser')
         post_url = soup.select(
             "#frmMain > div > table > tbody > tr > td> a")
         success = "false"
@@ -402,7 +403,7 @@ class quickdealfree():
         if success == "true":
             r = httprequestObj.http_get(
                 "http://www.quickdealfree.com/member/list-classifieds.php")
-            soup = BeautifulSoup(r.text, 'lxml')
+            soup = BeautifulSoup(r.text, 'html.parser')
             post_url = soup.select(
                 "#frmMain > div > table > tbody > tr > td> a")
             success = "false"
@@ -412,6 +413,7 @@ class quickdealfree():
             if success == "true":
                 r = httprequestObj.http_get(
                     'http://www.quickdealfree.com/member/del-classifieds.php?id='+postdata['post_id'])
+                detail = "Post deleted successfully"
             else:
                 detail = "No post found with given id."
         else:
@@ -425,8 +427,9 @@ class quickdealfree():
             "end_time": str(time_end),
             "detail": detail,
             "websitename": "quickdealfree",
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
+            "post_id": postdata['post_id']
         }
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -435,7 +438,7 @@ class quickdealfree():
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
         r = httprequestObj.http_get(
             "http://www.quickdealfree.com/member/list-classifieds.php")
-        soup = BeautifulSoup(r.text, 'lxml')
+        soup = BeautifulSoup(r.text, 'html.parser')
         post_url = soup.select(
             "#frmMain > div > table > tbody > tr > td> a")
         success = "false"
@@ -454,7 +457,7 @@ class quickdealfree():
         if success == "true":
             r = httprequestObj.http_get(
                 "http://www.quickdealfree.com/member/list-classifieds.php")
-            soup = BeautifulSoup(r.text, 'lxml')
+            soup = BeautifulSoup(r.text, 'html.parser')
             post_url = soup.select(
                 "#frmMain > div > table > tbody > tr > td> a")
             success = "false"
@@ -462,6 +465,7 @@ class quickdealfree():
                 if i['href'][8:13] == postdata['post_id']:
                     success = "true"
             if success == "true":
+                detail = "Post boosted successfully"
                 r = httprequestObj.http_get(
                     'http://www.quickdealfree.com/member/slide-classified-post.php?id='+postdata['post_id'])
             else:
@@ -476,8 +480,9 @@ class quickdealfree():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
+            "post_id": postdata['post_id'],
             "websitename": "quickdealfree",
         }
     def search_post(self, postdata):
@@ -504,7 +509,7 @@ class quickdealfree():
                 url = "http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+i    
                 r = httprequestObj.http_get(url)
                 exists = False
-                soup = BeautifulSoup(r.content, 'lxml')
+                soup = BeautifulSoup(r.content, 'html.parser')
 
                 entry = soup.find('div', attrs={'class':'table-responsive'})
                 for title_row in entry.find_all('tr'):

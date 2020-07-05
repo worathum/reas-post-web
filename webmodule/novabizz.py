@@ -170,9 +170,9 @@ class novabizz():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            'ds_id': postdata['ds_id'],
             "websitename":"novabizz",
             "success": success,
-            'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": "Registered",
@@ -247,8 +247,8 @@ class novabizz():
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
             return {
-            'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id'],
                 "websitename":"novabizz",
                 "success": "false",
                 "start_time": str(time_start),
@@ -260,8 +260,8 @@ class novabizz():
 
         time_end = datetime.datetime.utcnow()
         return {
-            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
+            "ds_id": postdata['ds_id'],
             "websitename": "novabizz",
             "success": "true",
             "time_usage": time_end - time_start,
@@ -307,8 +307,9 @@ class novabizz():
             time_usage = time_end - time_start
             return {
                 "websitename":"novabizz",
-            'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id'],
+                "post_id":postdata['post_id'],
                 "success": "false",
                 "start_time": str(time_start),
                 "end_time": str(time_end),
@@ -337,9 +338,10 @@ class novabizz():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
-            'ds_id': postdata['ds_id'],
             "detail": detail,
             "log_id":postdata['log_id'],
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id']
         }
 
     def create_post(self, postdata):
@@ -348,7 +350,6 @@ class novabizz():
 
         theurl = ""
         post_id = ""
-        detail = ''
         # login
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -608,8 +609,8 @@ class novabizz():
                 print("16")
 
         else:
-            detail = 'cannot login'
             post_url=""
+            print("15")
             success = "False"
 
         time_end = datetime.datetime.utcnow()
@@ -618,13 +619,83 @@ class novabizz():
         return {
             'websitename':'novabizz',
             "success": success,
-            'detail': detail,
             "start_time": str(time_start),
             "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
             "post_url": post_url,
             "post_id": post_id,
         }
+
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        user = postdata['user']
+        passwd = postdata['pass']
+
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_url = ""
+        post_id = ""
+        post_modify_time = ""
+        post_view = ""
+        post_found = "false"
+
+        if success == "true":
+            post_title = postdata['post_title_th']
+            # exists, authenticityToken, post_title = self.check_post(post_id)
+            x=['1','2','3','4','5','6','7','8','9','10']
+            for i in x:
+                url = "https://www.novabizz.com/manage-post.php?page="+i    
+                r = httprequestObj.http_get(url)
+                exists = False
+                soup = BeautifulSoup(r.content, 'lxml')
+
+                entry = soup.find('div', attrs={'class':'postlist'})
+                for title_row in entry.find_all('ul',{'class':'lileft'}):
+                    if title_row is None:
+                        continue
+                    title = title_row.find('a')
+                    # print(title)
+                    # print(title['href'][27:47])
+                    # title_1=title['href'][27:47]
+                    if title is None:
+                        continue                    
+                    if post_title == title['href'][27:47]:
+                        exists = True
+                        post_id = title['href'][20:26]
+                        post_url = "http://"+title['href'][2:]
+                        post_modify_time = title_row.find('li', attrs={'class':'date'}).text[7:-14]
+                        post_view = title_row.find('span', attrs={'class':'pageview'}).text[7:]
+                        post_found = "true"
+                        detail = "post found successfully"
+                        break
+                if exists:
+                    break                    
+            if not exists:
+                success = "false"
+                detail = "No post found with given title."
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": "novabizz",
+            "ds_id":postdata['ds_id'],
+            "log_id": 1,
+            "post_id": post_id,
+            "post_modify_time": post_modify_time,
+            "post_view": post_view,
+            "post_url": post_url,
+            "post_found": post_found
+        } 
+
+
 
     def edit_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -649,6 +720,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'wrong propertytype',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -660,6 +733,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field district',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -669,6 +744,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field province',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -686,6 +763,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'ret': "provinceid",
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'post_url': "",
                 'post_id': ""
             }
@@ -700,6 +779,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'ret': "amphurid",
+                "ds_id":postdata['ds_id'],
+                "log_id":postdata['log_id'],
                 'post_url': "",
                 'post_id': ""
             }
@@ -732,6 +813,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'ret': " Does not exist",
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'post_url': "",
                 'post_id': ""
             }
@@ -746,6 +829,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field name',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -755,6 +840,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field mobile',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -764,6 +851,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field password',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -773,6 +862,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field user',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -782,6 +873,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field property type',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -791,6 +884,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -809,6 +904,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field price',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -818,6 +915,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field title',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -827,6 +926,8 @@ class novabizz():
                 'websitename':'novabizz',
                 'success': 'false',
                 'detail': 'Missing required field description',
+                "ds_id": postdata['ds_id'],
+                "log_id": postdata['log_id'],
                 'ret': '',
                 'post_url': '',
                 'post_id': ''
@@ -887,9 +988,7 @@ class novabizz():
             r = httprequestObj.http_post(
                 url_n, data=datapost, files=files)
             success = "true"
-            detail = 'Edited'
         else:
-            detail = 'cannot login'
             success = "false"
             print("False")
 
@@ -900,9 +999,10 @@ class novabizz():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
-            'ds_id': postdata['ds_id'],
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
-            "detail": detail,
+            "detail": "Edited",
         }
 
 

@@ -104,6 +104,7 @@ class home2all():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id']
         }
 
     def test_login(self, postdata):
@@ -659,8 +660,8 @@ class home2all():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
-            'ds_id': postdata['ds_id'],
-            "log_id": log_id,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
             "post_id": postdata['post_id'],
             "account_type": "null",
             "detail": detail,
@@ -706,7 +707,7 @@ class home2all():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            'ds_id': postdata['ds_id'],
+            "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_id": postdata['post_id'],
             "websitename": "home2all"
@@ -734,6 +735,7 @@ class home2all():
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
+            "ds_id": postdata['ds_id']
         }
 
     def search_post(self, postdata):
@@ -775,6 +777,7 @@ class home2all():
                     'ds_id':postdata['ds_id'],
                     'log_id':log_id,
                     'start_time':str(start_time),
+                    "log_id": postdata['log_id'],
                     'end_time':str(datetime.datetime.utcnow()),
                     'account_type':'',
                     'detail':'',

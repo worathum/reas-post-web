@@ -65,7 +65,7 @@ class property2share():
                 "success": "true",
                 "time_usage": str(time_end - time_start),
                 "time_start": str(time_start),
-                'ds_id': postdata['ds_id'],
+                'ds_id': userdata['ds_id'],
                 "time_end": str(time_end),
                 "detail": "Unable to solve captcha",
                 "websitename" : "property2share"
@@ -89,7 +89,7 @@ class property2share():
         resp = {
             "success": True,
             "time_usage": str(time_end - time_start),
-            'ds_id': postdata['ds_id'],
+            'ds_id': userdata['ds_id'],
             "time_start": str(time_start),
             "time_end": str(time_end),
             "detail": "",
@@ -132,12 +132,12 @@ class property2share():
 
         resp = {
             "success": True,
+            "ds_id": logindata["ds_id"],
             "time_usage": str(en_time-st_time),
             "websitename": "property2share",
             "time_start": str(st_time),
             "time_end": str(en_time),
-            "detail": "Logged in successfully",
-            "websitename": "property2share"
+            "detail": "Logged in successfully"
         }
 
         if('ชื่อหรือรหัสผ่านผิด' in decoded_result):
@@ -251,30 +251,30 @@ class property2share():
         # REQUEST FOR CREATE POST
         url = 'https://www.property2share.com/pageuser/submitNewPublish.php?type=2'
         data = {
-	    'find_broker': 'on',
-	    'type_publish': post_type,
-	    'asset_type': type_mapping[int(property_type)],
-	    'location_home': 'on',
-	    'publish_title': post_title_th,
-	    'txtDescription': post_description_th,
-	    'publish_special': '',
-	    'location_detail': addr_province,
-	    'province_id': province_id,
-	    'amphur_id': amphur_id,
-	    'latLngPublish': '(' + str(geo_latitude)+', '+str(geo_longitude)+')',
-	    'station_type': 0,
-	    'station_id': 0,
-	    'publish_price': price_baht,
-	    'unit_price': 1,
-	    'area_rai': rai_size,
-	    'area_ngan': ngan_size,
-	    'area_va2': wa_size,
-	    'area_use': floorarea,
-	    'contact_name': postdata['name'],
-	    'contact_tel': postdata['mobile'],
-	    'contact_mobile': postdata['mobile'],
-	    'contact_email': postdata['email'],
-	    'contact_website': ''
+        'find_broker': 'on',
+        'type_publish': post_type,
+        'asset_type': type_mapping[int(property_type)],
+        'location_home': 'on',
+        'publish_title': post_title_th,
+        'txtDescription': post_description_th,
+        'publish_special': '',
+        'location_detail': addr_province,
+        'province_id': province_id,
+        'amphur_id': amphur_id,
+        'latLngPublish': '(' + str(geo_latitude)+', '+str(geo_longitude)+')',
+        'station_type': 0,
+        'station_id': 0,
+        'publish_price': price_baht,
+        'unit_price': 1,
+        'area_rai': rai_size,
+        'area_ngan': ngan_size,
+        'area_va2': wa_size,
+        'area_use': floorarea,
+        'contact_name': postdata['name'],
+        'contact_tel': postdata['mobile'],
+        'contact_mobile': postdata['mobile'],
+        'contact_email': postdata['email'],
+        'contact_website': ''
         }
 
         #POST REQUEST WITH DATA
@@ -319,6 +319,7 @@ class property2share():
             "post_url": posturl,
             "post_id": post_id,
             "log_id" : log_id,
+            "ds_id": postdata["ds_id"],
             "detail": posted,
             "websitename": "property2share"
         }
@@ -517,6 +518,9 @@ class property2share():
                 "time_start": str(time_start),
                 "time_end": str(time_end),
                 "detail": detail,
+                'ds_id': postdata['ds_id'],
+                "log_id": log_id,
+                "post_id": postdata["post_id"],
                 "websitename": "property2share"
             }
 
@@ -543,6 +547,7 @@ class property2share():
             "detail": detail,
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
+            "post_id": postdata["post_id"],
             "websitename": "property2share"
         }
 
@@ -587,6 +592,9 @@ class property2share():
                 "time_start": str(time_start),
                 "time_end": str(time_end),
                 "detail": detail,
+                'ds_id': postdata['ds_id'],
+                "log_id": log_id,
+                "post_id": postdata["post_id"],
                 "websitename": "property2share"
             }
 
