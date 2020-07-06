@@ -1188,7 +1188,7 @@ class goodpriceproperty():
             # "detail": detail,
             "post_id": post_id,
             "ds_id": postdata['ds_id'],
-            "post_id": postdata['post_id']
+            "post_id": postdata['post_id'],
             "websitename": "goodpriceproperty"
         }
 

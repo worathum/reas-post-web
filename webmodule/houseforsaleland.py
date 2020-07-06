@@ -228,7 +228,7 @@ class houseforsaleland():
                 'success': 'false',
                 'ret': "wrong province",
                 "ds_id": postdata['ds_id'],
-                "log_id": postdata['log_id']
+                "log_id": postdata['log_id'],
                 'post_url': "",
                 'post_id': ""
             }
@@ -246,7 +246,7 @@ class houseforsaleland():
                 'success': 'false',
                 'ret': "wrong amphur id"+str(postdata['addr_district']),
                 "ds_id": postdata['ds_id'],
-                "log_id": postdata['log_id']
+                "log_id": postdata['log_id'],
                 'post_url': "",
                 'post_id': ""
             }
@@ -365,7 +365,6 @@ class houseforsaleland():
             "end_time": str(time_end),
             "detail": "Edited ",
             "ds_id": postdata['ds_id'],
-            "log_id": postdata['log_id'],
             "post_id": postdata['post_id']
         }
 
