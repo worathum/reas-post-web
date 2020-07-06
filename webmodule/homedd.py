@@ -119,10 +119,9 @@ class homedd():
                     "websitename" : 'homedd',
                     "success" : success,
                     "start_time" : start_time,
-                    'ds_id': postdata['ds_id'],
                     "end_time" : end_time,
                     "usage_time" : end_time - start_time,
-                    "ds_id": postdata['ds_id'],
+                    "ds_id": userdata['ds_id'],
                     "detail" : detail
                 }
 
