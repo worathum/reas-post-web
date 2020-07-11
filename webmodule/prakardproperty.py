@@ -762,10 +762,14 @@ class prakardproperty():
                             submit = driver.find_element_by_class_name('prakard-button')
                             submit.click()
                             detail += " \n Images uploaded successfully"
-                            driver.close()
+                            driver.quit()
                         except:
                             detail += " \n Images not uploaded successfully"
-                    
+                            try:
+                                driver.quit()
+                            except:
+                                pass
+
                 except:
                     success = "False"
                     detail = "Edit Unsuccessful"

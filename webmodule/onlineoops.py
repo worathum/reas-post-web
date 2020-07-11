@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import random
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
