@@ -81,6 +81,7 @@ class novabizz():
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        httprequestObj.http_get('https://www.novabizz.com/logout.php')
 
         if 'name_th' not in postdata:
             return{
