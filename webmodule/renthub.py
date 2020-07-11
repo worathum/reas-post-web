@@ -438,6 +438,7 @@ class renthub():
         #
         success = "true"
         detail = "ระบบกำลังส่ง email เพื่อยืนยันการสมัครสมาชิกไปยัง email ที่ให้ไว้ คุณจะได้รับ email ใน 5 นาที กรุณาตรวจสอบ และกด link เพื่อยืนยัน"
+        httprequestObj.http_get('https://renthub.in.th/logout', verify=False)
 
         datahandled = self.postdata_handle(postdata)
        
@@ -516,7 +517,7 @@ class renthub():
         detail = ""
 
         #clear session
-        r = httprequestObj.http_get('https://renthub.in.th/logout', verify=False)
+        httprequestObj.http_get('https://renthub.in.th/logout', verify=False)
 
         r = httprequestObj.http_get('https://renthub.in.th/login', verify=False)
         data = r.text
