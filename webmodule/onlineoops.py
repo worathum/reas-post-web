@@ -108,7 +108,6 @@ class onlineoops():
             "end_time": str(time_end),
             "detail": detail,
             "websitename": self.name,
-            "ds_id": postdata['ds_id']
         }
 
 
@@ -119,7 +118,7 @@ class onlineoops():
         # start process
         success = "false"
         detail = 'An Error has Occurred'
-        response = httprequestObj.http_post(self.site_name+'/user/logout', data=datapost)
+        response = httprequestObj.http_get(self.site_name+'/user/logout')
 
 
         r = httprequestObj.http_get(self.site_name+'/user/login')
