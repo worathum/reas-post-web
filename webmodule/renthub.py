@@ -554,6 +554,7 @@ class renthub():
         return {
             "websitename": self.websitename,
             "success": success,
+            "ds_id": postdata['ds_id'],
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -1154,6 +1155,7 @@ class renthub():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
             "log_id": datahandled['log_id'],
             "post_id": datahandled['post_id'],
             "websitename": self.websitename,
@@ -1260,6 +1262,7 @@ class renthub():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
             "log_id": datahandled['log_id'],
             "post_id": datahandled['post_id'],
             "websitename": self.websitename,
@@ -1359,6 +1362,7 @@ class renthub():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
             "log_id": datahandled['log_id'],
             "post_id": datahandled['post_id'],
             "websitename": self.websitename

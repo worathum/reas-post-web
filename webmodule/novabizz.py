@@ -17,22 +17,22 @@ import random
 
 
 httprequestObj = lib_httprequest()
-with open("./static/ips.txt",'r') as f:
-    allips = f.read()
-ips = allips.split('\n')
+# with open("./static/ips.txt",'r') as f:
+#     allips = f.read()
+# ips = allips.split('\n')
 
-username = ips[random.randint(0,len(ips)-2)].split(":")[2]
-password = 'v1y3mbh26qk9'
-port = 22225
-super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
-        (username, password, port))
+# username = ips[random.randint(0,len(ips)-2)].split(":")[2]
+# password = 'v1y3mbh26qk9'
+# port = 22225
+# super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
+#         (username, password, port))
 
-proxy_handler = {
-    'http': super_proxy_url,
-    'https': super_proxy_url,
-}
+# proxy_handler = {
+#     'http': super_proxy_url,
+#     'https': super_proxy_url,
+# }
 
-httprequestObj.session.proxies.update(proxy_handler)
+# httprequestObj.session.proxies.update(proxy_handler)
 
 with open("./static/novabizz.json") as f:
     provincedata = json.load(f)
@@ -184,6 +184,7 @@ class novabizz():
 
         email = postdata['user']
         passwd = postdata['pass']
+        httprequestObj.http_get('https://www.novabizz.com/logout.php')
         r = httprequestObj.http_get('https://www.novabizz.com/member.php')
         soup = BeautifulSoup(r.content, 'html5lib')
         save = soup.find('input', attrs={'name': 'save'})['value']
