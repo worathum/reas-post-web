@@ -8,6 +8,7 @@ import json
 import datetime
 import sys
 import requests
+import random
 
 province_list = ['กรุงเทพมหานคร', 'สมุทรปราการ', 'นนทบุรี', 'ปทุมธานี', 'พระนครศรีอยุธยา', 'อ่างทอง', 'ลพบุรี', 'สิงห์บุรี', 'ชัยนาท', 'สระบุรี', 'ชลบุรี', 'ระยอง', 'จันทบุรี', 'ตราด', 'ฉะเชิงเทรา', 'ปราจีนบุรี', 'นครนายก', 'สระแก้ว', 'นครราชสีมา', 'บุรีรัมย์', 'สุรินทร์', 'ศรีสะเกษ', 'อุบลราชธานี', 'ยโสธร', 'ชัยภูมิ', 'อำนาจเจริญ', 'หนองบัวลำภู', 'ขอนแก่น', 'อุดรธานี', 'เลย', 'หนองคาย', 'มหาสารคาม', 'ร้อยเอ็ด', 'กาฬสินธุ์', 'สกลนคร', 'นครพนม', 'มุกดาหาร', 'เชียงใหม่', 'ลำพูน', 'ลำปาง', 'อุตรดิตถ์', 'แพร่', 'น่าน', 'พะเยา', 'เชียงราย', 'แม่ฮ่องสอน', 'นครสวรรค์', 'อุทัยธานี', 'กำแพงเพชร', 'ตาก', 'สุโขทัย', 'พิษณุโลก', 'พิจิตร', 'เพชรบูรณ์', 'ราชบุรี', 'กาญจนบุรี', 'สุพรรณบุรี', 'นครปฐม', 'สมุทรสาคร', 'สมุทรสงคราม', 'เพชรบุรี', 'ประจวบคีรีขันธ์', 'นครศรีธรรมราช', 'กระบี่', 'พังงา', 'ภูเก็ต', 'สุราษฎร์ธานี', 'ระนอง', 'ชุมพร', 'สงขลา', 'สตูล', 'ตรัง', 'พัทลุง', 'ปัตตานี', 'ยะลา', 'นราธิวาส', 'บึงกาฬ']
 property_types = {
@@ -25,22 +26,22 @@ property_types = {
 }
 httprequestObj = lib_httprequest()
 
-with open("./static/ips.txt",'r') as f:
-    allips = f.read()
-ips = allips.split('\n')
+# with open("./static/ips.txt",'r') as f:
+#     allips = f.read()
+# ips = allips.split('\n')
 
-username = ips[random.randint(0,len(ips)-2)].split(":")[2]
-password = 'v1y3mbh26qk9'
-port = 22225
-super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
-        (username, password, port))
+# username = ips[random.randint(0,len(ips)-2)].split(":")[2]
+# password = 'v1y3mbh26qk9'
+# port = 22225
+# super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
+#         (username, password, port))
 
-proxy_handler = {
-    'http': super_proxy_url,
-    'https': super_proxy_url,
-}
+# proxy_handler = {
+#     'http': super_proxy_url,
+#     'https': super_proxy_url,
+# }
 
-httprequestObj.session.proxies.update(proxy_handler)
+# httprequestObj.session.proxies.update(proxy_handler)
 
 
 class onlineoops():
@@ -118,6 +119,8 @@ class onlineoops():
         # start process
         success = "false"
         detail = 'An Error has Occurred'
+        response = httprequestObj.http_post(self.site_name+'/user/logout', data=datapost)
+
 
         r = httprequestObj.http_get(self.site_name+'/user/login')
         soup = BeautifulSoup(r.content, features=self.parser)
@@ -127,8 +130,7 @@ class onlineoops():
             "_csrf": csrf,
             "LoginForm[username]": postdata['user'],
             "LoginForm[password]": postdata['pass'],
-            "LoginForm[rememberMe]": 0,
-            "LoginForm[rememberMe]": 1  
+            "LoginForm[rememberMe]": 0
         }
 
         response = httprequestObj.http_post(self.site_name+'/user/login', data=datapost)
