@@ -445,8 +445,8 @@ class bankumka():
                     # resp.raw.decode_content = True
                     # with open('image'+str(i)+'.jpg', 'wb') as lfile:
                     #     shutil.copyfileobj(resp.raw, lfile)
-                    os.rename(postdata['post_images'][i],postdata['post_images'][i].replace('jpeg','jpg'))
-                    r = open(postdata['post_images'][i].replace('jpeg','jpg'), 'rb')
+                    # os.rename(postdata['post_images'][i],postdata['post_images'][i].replace('jpeg','jpg'))
+                    r = (postdata['post_images'][i].replace('jpeg','jpg'), open(postdata['post_images'][i], 'rb'), "image/jpg")
                     print(r)
                     if i > 10:
                         break
@@ -817,8 +817,9 @@ class bankumka():
                         # with open('image'+str(i)+'.jpg', 'wb') as lfile:
                         #     shutil.copyfileobj(resp.raw, lfile)
 
-                        os.rename(postdata['post_images'][i],postdata['post_images'][i].replace('jpeg','jpg'))
-                        r = open(postdata['post_images'][i].replace('jpeg','jpg'), 'rb')
+                        # os.rename(postdata['post_images'][i],postdata['post_images'][i].replace('jpeg','jpg'))
+                        r = (postdata['post_images'][i].replace('jpeg','jpg'), open(postdata['post_images'][i], 'rb'), "image/jpg")
+                        # r = open(postdata['post_images'][i].replace('jpeg','jpg'), 'rb')
                         print(r)
                         if i > 10:
                             break
