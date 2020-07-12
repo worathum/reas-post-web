@@ -56,6 +56,8 @@ class pantipmarket():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.utcnow()
 
+        httprequestObj.http_get('https://www.pantipmarket.com/member/logout.php')
+
         for x in ['user','pass','name_th','surname_th','tel','company_name']:
             # print(x)
             if x not in userdata:
@@ -132,6 +134,7 @@ class pantipmarket():
     def test_login(self, logindata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.utcnow()
+        httprequestObj.http_get('https://www.pantipmarket.com/member/logout.php')
         success = True
         headers = {
             'authority': 'www.pantipmarket.com',
