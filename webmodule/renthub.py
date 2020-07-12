@@ -351,7 +351,10 @@ class renthub():
             #log.warning(str(e))
 
         
-        datahandled['use_project_name'] = datahandled['project_name']
+        datahandled['use_project_name'] = datahandled['post_title_th']
+        if datahandled['project_name'] != None and datahandled['project_name'] != '':
+            datahandled['use_project_name'] = datahandled['project_name']
+
         if datahandled['web_project_name'] != None and datahandled['web_project_name'] != '':
             datahandled['use_project_name'] = datahandled['web_project_name']
         

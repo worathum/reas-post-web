@@ -335,7 +335,7 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    'log_id': postdata['log_id'],
+                    # 'log_id': postdata['log_id'],
                     'ds_id': postdata['ds_id'],
                     'ret': " Wrong Province",
                     'post_url': "",
@@ -365,7 +365,7 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    'log_id': postdata['log_id'],
+                    # 'log_id': postdata['log_id'],
                     'ds_id': postdata['ds_id'],
                     'ret': " Wrong district",
                     'post_url': "",
@@ -384,7 +384,7 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    'log_id': postdata['log_id'],
+                    # 'log_id': postdata['log_id'],
                     'ds_id': postdata['ds_id'],
                     'ret': " Wrong sub district",
                     'post_url': "",
@@ -418,7 +418,7 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    'log_id': postdata['log_id'],
+                    # 'log_id': postdata['log_id'],
                     'ds_id': postdata['ds_id'],
                     'ret': "",
                     'post_url': "",
@@ -481,7 +481,7 @@ class teedindd():
         return {
             "websitename": "teedindd",
             "success": success,
-            'log_id': postdata['log_id'],
+            # 'log_id': postdata['log_id'],
             'ds_id': postdata['ds_id'],
             'post_id':postdata['post_id'],
             "start_time": str(time_start),

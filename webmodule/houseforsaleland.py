@@ -297,7 +297,9 @@ class houseforsaleland():
         url_n = 'https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=editpostfree&id=' + \
             postdata['post_id']
 
-        driver = webdriver.Firefox()
+        options = Options()
+        options.headless = True
+        driver = webdriver.Firefox(options=options)
 
         post_url = urlpost+'/page-postfree-detail.php?pID='+postdata['post_id']
         driver.get(post_url)
@@ -350,7 +352,7 @@ class houseforsaleland():
         time.sleep(5)
 
         driver.find_element_by_id('submit').click()
-        driver.close()
+        driver.quit()
 
 
         success = "true"
