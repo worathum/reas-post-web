@@ -64,6 +64,7 @@ class onlineoops():
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        httprequestObj.http_post(self.site_name+'/user/logout', data=datapost)
 
         # start process
         success = "false"
@@ -119,7 +120,7 @@ class onlineoops():
         # start process
         success = "false"
         detail = 'An Error has Occurred'
-        response = httprequestObj.http_post(self.site_name+'/user/logout', data=datapost)
+        httprequestObj.http_post(self.site_name+'/user/logout', data=datapost)
 
 
         r = httprequestObj.http_get(self.site_name+'/user/login')

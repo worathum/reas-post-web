@@ -38,6 +38,8 @@ class taladx():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
+        httprequestObj.http_get('http://www.taladx.com/logout.php')
+        
 
         headers = {
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
@@ -124,6 +126,7 @@ class taladx():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
+        httprequestObj.http_get('http://www.taladx.com/logout.php')
 
         data = {
             'save': 'pr1sb7ul4pvmuaogt7pk3aepj5',

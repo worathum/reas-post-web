@@ -114,7 +114,7 @@ class pantipmarket():
         success = True
         r = httprequestObj.http_post('https://www.pantipmarket.com/member/register_2012.php',data=datapost)
         print(r.text)        
-        registered = "<script>window.location.href ='https://www.pantipmarket.com/member/register_result_2012.php?code=" in r.content.decode('utf-8')
+        registered = "คุณเป็นสมาชิก" in r.content.decode('utf-8')
         if registered == False:
             success = False
         time_end = datetime.utcnow()
