@@ -64,9 +64,9 @@ class property2share():
             return {
                 "success": "true",
                 "time_usage": str(time_end - time_start),
-                "time_start": str(time_start),
+                "start_time": str(time_start),
                 'ds_id': userdata['ds_id'],
-                "time_end": str(time_end),
+                "end_time": str(time_end),
                 "detail": "Unable to solve captcha",
                 "websitename" : "property2share"
             }
@@ -90,8 +90,8 @@ class property2share():
             "success": True,
             "time_usage": str(time_end - time_start),
             'ds_id': userdata['ds_id'],
-            "time_start": str(time_start),
-            "time_end": str(time_end),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
             "detail": "",
             "websitename" : 'property2share'
         }
@@ -135,8 +135,8 @@ class property2share():
             "ds_id": logindata["ds_id"],
             "time_usage": str(en_time-st_time),
             "websitename": "property2share",
-            "time_start": str(st_time),
-            "time_end": str(en_time),
+            "start_time": str(st_time),
+            "end_time": str(en_time),
             "detail": "Logged in successfully"
         }
 
@@ -314,8 +314,8 @@ class property2share():
         return {
             "success": success,
             "time_usage": str(time_end - time_start),
-            "time_start": str(time_start),
-            "time_end": str(time_end),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
             "post_url": posturl,
             "post_id": post_id,
             "log_id" : log_id,
@@ -372,8 +372,8 @@ class property2share():
                 "time_usage": str(time_end - time_start),
                 'ds_id': postdata['ds_id'],
                 'log_id': postdata['log_id'],
-                "time_start": str(time_start),
-                "time_end": str(time_end),
+                "start_time": str(time_start),
+                "end_time": str(time_end),
                 "detail": detail,
                 "websitename": "property2share"
             }
@@ -480,8 +480,8 @@ class property2share():
         return {
             "success": success,
             "time_usage": str(time_end - time_start),
-            "time_start": str(time_start),
-            "time_end": str(time_end),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
             "detail": detail,
             "post_link" :'https://www.property2share.com/property-'+str(post_id),
             'ds_id': postdata['ds_id'],
@@ -515,8 +515,8 @@ class property2share():
             return {
                 "success": success,
                 "time_usage": str(time_end - time_start),
-                "time_start": str(time_start),
-                "time_end": str(time_end),
+                "start_time": str(time_start),
+                "end_time": str(time_end),
                 "detail": detail,
                 'ds_id': postdata['ds_id'],
                 "log_id": log_id,
@@ -542,8 +542,8 @@ class property2share():
         return {
             "success": success,
             "time_usage": str(time_end - time_start),
-            "time_start": str(time_start),
-            "time_end": str(time_end),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
             "detail": detail,
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
@@ -589,8 +589,8 @@ class property2share():
             return {
                 "success": success,
                 "time_usage": str(time_end - time_start),
-                "time_start": str(time_start),
-                "time_end": str(time_end),
+                "start_time": str(time_start),
+                "end_time": str(time_end),
                 "detail": detail,
                 'ds_id': postdata['ds_id'],
                 "log_id": log_id,
@@ -723,8 +723,8 @@ class property2share():
         return {
             "success": success,
             "time_usage": str(time_end - time_start),
-            "time_start": str(time_start),
-            "time_end": str(time_end),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
             "post_url": posturl,
             "post_id": post_id,
             "detail": posted,
