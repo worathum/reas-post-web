@@ -296,7 +296,22 @@ class baania():
                 }
             }
         resp = requests.post('https://search.baania.com/api/v1/project', data=mydata)
-        allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
+        try:
+            allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
+        except:
+            
+            return {
+            "websitename": "baania",
+            "success": "false",
+            "detail": str(resp.content.decode('utf-8')),
+            "start_time": str(time_start),
+            "end_time": str(datetime.datetime.utcnow()),
+            "ds_id": postdata['ds_id'],
+            "post_url": "",
+            "post_id": ""
+            }
+
+
         project_id = None
         if len(allres) != 0:
             project_id = allres[0]["_id"]
@@ -483,7 +498,7 @@ class baania():
 
         else:
             detail = "cannot login"
-        # print(detail)
+        # print(detail)resp.contentresp.content
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
