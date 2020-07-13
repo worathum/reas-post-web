@@ -622,9 +622,14 @@ class houseforsaleland():
                     post_url = urlpost+'/page-postfree-detail.php?pID='+post_id
                     tempotempo['post_id']=post_id
                     r=self.edit_post(tempotempo)
+                    time_end = datetime.datetime.utcnow()
+                    time_usage = time_end - time_start
+    
                     return {
                         'websitename': 'houseforsaleland',
                         'success': 'true',
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
                         'detail': var,
                         'post_url': post_url,
                         'post_id': post_id,
@@ -647,10 +652,15 @@ class houseforsaleland():
                 post_url = urlpost+'/page-postfree-detail.php?pID='+post_id
                 tempotempo['post_id']=post_id
                 r=self.edit_post(tempotempo)
+
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
                 return {
                     'websitename': 'houseforsaleland',
                     'success': 'true',
                     'detail': var,
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
                     'post_url': post_url,
                     'post_id': post_id,
                     'ds_id': postdata['ds_id']
