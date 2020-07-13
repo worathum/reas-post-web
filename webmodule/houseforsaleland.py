@@ -142,12 +142,15 @@ class houseforsaleland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": "boosted",
-            "ds_id": postdata['ds_id'],
             "post_id": postdata['post_id']
         }
 
 
     def edit_post(self, postdata):
+        try:
+            logid = postdata['log_id']
+        except:
+            postdata['log_id'] = ""
         print("in edit")
         # print(postdata)
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -445,6 +448,7 @@ class houseforsaleland():
                 'websitename': 'houseforsaleland',
                 'success': 'false',
                 'detail': "wrong amphur id"+str(postdata['addr_district']),
+                'ds_id': postdata['ds_id'],
                 'post_url': "",
                 'post_id': ""
             }
@@ -513,7 +517,6 @@ class houseforsaleland():
                 'ds_id': postdata['ds_id'],
                 "start_time": str(time_start),
                 "end_time": str(time_end),
-                'ds_id': postdata['ds_id'],
                 "detail": "Captcha Image Retrieval failed"
             }
             print('Image Couldn\'t be retreived')
@@ -526,7 +529,6 @@ class houseforsaleland():
             return {
                 'websitename': 'houseforsaleland',
                 "success": success,
-                'ds_id': postdata['ds_id'],
                 'post_url': '',
                 "start_time": str(time_start),
                 'ds_id': postdata['ds_id'],
@@ -565,7 +567,6 @@ class houseforsaleland():
                     "success": success,
                     'post_url': '',
                     "start_time": str(time_start),
-                    'ds_id': postdata['ds_id'],
                     "end_time": str(time_end),
                     'ds_id': postdata['ds_id'],
                     "detail": "Captcha Image Retrieval failed"
@@ -584,7 +585,6 @@ class houseforsaleland():
                     'ds_id': postdata['ds_id'],
                     "start_time": str(time_start),
                     "end_time": str(time_end),
-                    'ds_id': postdata['ds_id'],
                     "detail": "Captcha fail"
                 }
             url_n = "https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=addpostfree"
@@ -651,7 +651,6 @@ class houseforsaleland():
                     'websitename': 'houseforsaleland',
                     'success': 'true',
                     'detail': var,
-                    'ds_id': postdata['ds_id'],
                     'post_url': post_url,
                     'post_id': post_id,
                     'ds_id': postdata['ds_id']
@@ -662,7 +661,6 @@ class houseforsaleland():
         time_usage = time_end - time_start
         return {
             'websitename': 'houseforsaleland',
-            'ds_id': postdata['ds_id'],
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
