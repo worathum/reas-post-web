@@ -73,17 +73,20 @@ class teedindd():
             return{
                 'websitename': 'teedindd',
                 'success': 'false',
+                    'ds_id': postdata['ds_id'],
                 'detail': 'Missing required field name',
             }
         if 'name_th' not in postdata:
             return{
                 'websitename': 'teedindd',
+                    'ds_id': postdata['ds_id'],
                 'success': 'false',
                 'detail': 'Missing required field name',
             }
         if 'pass' not in postdata:
             return{
                 'websitename': 'teedindd',
+                    'ds_id': postdata['ds_id'],
                 'success': 'false',
                 'detail': 'Missing required field pass',
             }
@@ -91,6 +94,7 @@ class teedindd():
             return{
                 'websitename': 'teedindd',
                 'success': 'false',
+                    'ds_id': postdata['ds_id'],
                 'detail': 'Missing required field email',
             }
 
@@ -186,8 +190,7 @@ class teedindd():
             "ds_id": postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "detail": detail,
-            "ds_id":postdata['ds_id']
+            "detail": detail
         }
 
     def boost_post(self, postdata):
@@ -229,7 +232,7 @@ class teedindd():
                 'websitename': 'teedindd',
                 'success': 'false',
                 'detail': 'Missing required field name',
-                'ret': '',
+                'detail': '',
                 'post_url': '',
                 'post_id': ''
             }
@@ -238,7 +241,7 @@ class teedindd():
                     'websitename': 'teedindd',
                     'success': 'false',
                     'detail': 'Missing required field mobile',
-                    'ret': '',
+                    'detail': '',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -247,7 +250,7 @@ class teedindd():
                     'websitename': 'teedindd',
                     'success': 'false',
                     'detail': 'Missing required field pass',
-                    'ret': '',
+                    'detail': '',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -256,7 +259,7 @@ class teedindd():
                     'websitename': 'teedindd',
                     'success': 'false',
                     'detail': 'Missing required field email',
-                    'ret': '',
+                    'detail': '',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -265,7 +268,7 @@ class teedindd():
                     'websitename': 'teedindd',
                     'success': 'false',
                     'detail': 'Missing required field property_type',
-                    'ret': '',
+                    'detail': '',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -274,7 +277,7 @@ class teedindd():
                     'websitename': 'teedindd',
                     'success': 'false',
                     'detail': 'Missing required field listing_type',
-                    'ret': '',
+                    'detail': '',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -283,7 +286,7 @@ class teedindd():
                     'websitename': 'teedindd',
                     'success': 'false',
                     'detail': 'Missing required field price',
-                    'ret': '',
+                    'detail': '',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -292,7 +295,7 @@ class teedindd():
                     'websitename': 'teedindd',
                     'success': 'false',
                     'detail': 'Missing required field title',
-                    'ret': '',
+                    'detail': '',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -301,7 +304,7 @@ class teedindd():
                     'websitename': 'teedindd',
                     'success': 'false',
                     'detail': 'Missing required field description',
-                    'ret': '',
+                    'detail': '',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -337,7 +340,7 @@ class teedindd():
                     'success': 'false',
                     # 'log_id': postdata['log_id'],
                     'ds_id': postdata['ds_id'],
-                    'ret': " Wrong Province",
+                    'detail': " Wrong Province",
                     'post_url': "",
                     'post_id': ""
                 }
@@ -367,7 +370,7 @@ class teedindd():
                     'success': 'false',
                     # 'log_id': postdata['log_id'],
                     'ds_id': postdata['ds_id'],
-                    'ret': " Wrong district",
+                    'detail': " Wrong district",
                     'post_url': "",
                     'post_id': ""
                 }
@@ -386,7 +389,7 @@ class teedindd():
                     'success': 'false',
                     # 'log_id': postdata['log_id'],
                     'ds_id': postdata['ds_id'],
-                    'ret': " Wrong sub district",
+                    'detail': " Wrong sub district",
                     'post_url': "",
                     'post_id': ""
                 }
@@ -420,7 +423,7 @@ class teedindd():
                     'success': 'false',
                     # 'log_id': postdata['log_id'],
                     'ds_id': postdata['ds_id'],
-                    'ret': "",
+                    'detail': "",
                     'post_url': "",
                     'post_id': ""
                 }
@@ -508,15 +511,17 @@ class teedindd():
                 return{
                 'websitename': 'teedindd',
                 'success': 'false',
-                'ret': 'Missing required field name',
+                'detail': 'Missing required field name',
                 'post_url': '',
+                'ds_id': postdata['ds_id'],
                 'post_id': ''
             }
             if 'mobile' not in postdata:
                 return{
                     'websitename': 'teedindd',
                     'success': 'false',
-                    'ret': 'Missing required field mobile',
+                'ds_id': postdata['ds_id'],
+                    'detail': 'Missing required field mobile',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -524,7 +529,8 @@ class teedindd():
                 return{
                     'websitename': 'teedindd',
                     'success': 'false',
-                    'ret': 'Missing required field property_type',
+                    'detail': 'Missing required field property_type',
+                'ds_id': postdata['ds_id'],
                     'post_url': '',
                     'post_id': ''
                 }
@@ -532,15 +538,17 @@ class teedindd():
                 return{
                     'websitename': 'teedindd',
                     'success': 'false',
-                    'ret': 'Missing required field listing_type',
+                    'detail': 'Missing required field listing_type',
                     'post_url': '',
+                'ds_id': postdata['ds_id'],
                     'post_id': ''
                 }
             if 'price_baht' not in postdata:
                 return{
                     'websitename': 'teedindd',
+                'ds_id': postdata['ds_id'],
                     'success': 'false',
-                    'ret': 'Missing required field price',
+                    'detail': 'Missing required field price',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -548,15 +556,17 @@ class teedindd():
                 return{
                     'websitename': 'teedindd',
                     'success': 'false',
-                    'ret': 'Missing required field title',
+                    'detail': 'Missing required field title',
                     'post_url': '',
+                'ds_id': postdata['ds_id'],
                     'post_id': ''
                 }
             if 'post_description_th' not in postdata:
                 return{
                     'websitename': 'teedindd',
                     'success': 'false',
-                    'ret': 'Missing required field description',
+                    'ds_id': postdata['ds_id'],
+                    'detail': 'Missing required field description',
                     'post_url': '',
                     'post_id': ''
                 }
@@ -585,8 +595,9 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    'ret': " Wrong Province",
+                    'detail': " Wrong Province",
                     'post_url': "",
+                    'ds_id': postdata['ds_id'],
                     'post_id': ""
                 }
 
@@ -605,8 +616,9 @@ class teedindd():
                return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    'ret': " Wrong district",
+                    'detail': " Wrong district",
                     'post_url': "",
+                    'ds_id': postdata['ds_id'],
                     'post_id': ""
                 }
             url_district = 'https://www.teedindd.com/admin/step-process.php'
@@ -620,8 +632,9 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    'ret': " Wrong subdistrict",
+                    'detail': " Wrong subdistrict",
                     'post_url': "",
+                    'ds_id': postdata['ds_id'],
                     'post_id': ""
                 }
             if 'post_images' in postdata and len(postdata['post_images'])>0:
@@ -656,8 +669,9 @@ class teedindd():
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    'ret': " Wrong property type",
+                    'detail': " Wrong property type",
                     'post_url': "",
+                    'ds_id': postdata['ds_id'],
                     'post_id': ""
                 }
             datapost = {
@@ -733,6 +747,7 @@ class teedindd():
                         "detail" : "post not created",
                         "start_time": str(time_start),
                         "end_time": str(time_end),
+                        'ds_id': postdata['ds_id'],
                         "post_url": '',
                         "post_id": '',
                     }
@@ -754,7 +769,7 @@ class teedindd():
         return {
             "websitename": "teedindd",
             "success": success,
-            "ret": success,
+            "detail": success,
             "start_time": str(time_start),
             "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
@@ -856,6 +871,7 @@ class teedindd():
             j=self.editpost(postdata)
 
         j['log_id'] = postdata['log_id']
+        j['ds_id'] = postdata['ds_id']
 
         return j
 
