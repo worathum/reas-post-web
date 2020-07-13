@@ -70,7 +70,7 @@ class baania():
         time_usage = time_end - time_start
         return {
             "websitename": "baania",
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
@@ -125,7 +125,7 @@ class baania():
                 "usage_time": str(time_usage),
                 "start_time": str(time_start),
                 "end_time": str(time_end),
-                "detail": detail,
+                "detail": detail
             }
 
     def create_post(self, postdata):
@@ -496,7 +496,7 @@ class baania():
             "post_url": post_url,
             "post_id": post_id,
             "account_type": "null",
-            "detail": detail,
+            "detail": detail
         }
 
   
@@ -832,7 +832,7 @@ class baania():
             "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "end_time": str(time_end),
             "post_url": post_url,
@@ -882,13 +882,12 @@ class baania():
         return {
             "websitename": "baania",
             "success": success,
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_id": postdata['post_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "detail": detail,
-            "ds_id": postdata['ds_id']
+            "detail": detail
         }
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
