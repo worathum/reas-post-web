@@ -351,7 +351,10 @@ class renthub():
             #log.warning(str(e))
 
         
-        datahandled['use_project_name'] = datahandled['project_name']
+        datahandled['use_project_name'] = datahandled['post_title_th']
+        if datahandled['project_name'] != None and datahandled['project_name'] != '':
+            datahandled['use_project_name'] = datahandled['project_name']
+
         if datahandled['web_project_name'] != None and datahandled['web_project_name'] != '':
             datahandled['use_project_name'] = datahandled['web_project_name']
         
@@ -438,7 +441,7 @@ class renthub():
         #
         success = "true"
         detail = "ระบบกำลังส่ง email เพื่อยืนยันการสมัครสมาชิกไปยัง email ที่ให้ไว้ คุณจะได้รับ email ใน 5 นาที กรุณาตรวจสอบ และกด link เพื่อยืนยัน"
-
+        httprequestObj.http_get('https://renthub.in.th/logout', verify=False)
         datahandled = self.postdata_handle(postdata)
        
         fullname = datahandled["name_th"] + ' ' + datahandled["surname_th"]
