@@ -144,7 +144,7 @@ class nineasset():
         addr_province = postdata['addr_province']
         addr_district = postdata['addr_district']
         try:
-            direction = postdata['direction_type']
+            direction = str(int(postdata['direction_type']))
         except:
             direction = "-1"
         try:
@@ -514,7 +514,7 @@ class nineasset():
         addr_province = postdata['addr_province']
         addr_district = postdata['addr_district']
         try:
-            direction = postdata['direction_type']
+            direction = str(int(postdata['direction_type']))
         except:
             direction = "-1"
         try:

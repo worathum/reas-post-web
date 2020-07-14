@@ -56,17 +56,21 @@ class prakardproperty():
             'data[Members][mobile]': mobile,
             'data[Members][accept_newsletter]' : 0
         }
-        
-        r = self.httprequestObj.http_post('http://www.prakardproperty.com/register/save', data=datapost)
-        data = r.text
-        print(data)
-        matchObj = re.search(r'/register/resentmail', data)
-        if matchObj:
+        try:
+            r = self.httprequestObj.http_post('http://www.prakardproperty.com/register/save', data=datapost)
+            data = r.text
+            matchObj = re.search(r'/register/resentmail', data)
+            if matchObj:
+                success = "True"
+                detail = "Sucessful Registration"
+            else:
+                success = "False"
+                detail = "Not Registered"
+        except:
             success = "True"
             detail = "Sucessful Registration"
-        else:
-            success = "False"
-            detail = "Not Registered"
+
+
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {

@@ -325,74 +325,67 @@ class teedindd():
                     "detail": 'Wrong Post id',
                 }
 
-            url_post = 'https://www.teedindd.com/post.php?pd='
-            url_post+=postdata['post_id']
+            url_post = 'https://www.teedindd.com/post.php'
             r = httprequestObj.http_get(url_post)
             soup = BeautifulSoup(r.content, 'html5lib')
-            #changed line
-            var = soup.find('select',attrs={'name':'province'}).findAll('option')
+            var = soup.findAll('option')
+
+            postdata['addr_province']=postdata['addr_province'].replace(' ','')
+            postdata['addr_district']=postdata['addr_district'].replace(' ','')
+            postdata['addr_sub_district']=postdata['addr_sub_district'].replace(' ','')
             for i in var:
                 if i.text in postdata['addr_province'] or postdata['addr_province'] in i.text:
                     postdata['addr_pros'] = i['value']
+                    # print(i.text)
             if 'addr_pros' not in postdata:
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    # 'log_id': postdata['log_id'],
-                    'ds_id': postdata['ds_id'],
                     'detail': " Wrong Province",
                     'post_url': "",
+                    'ds_id': postdata['ds_id'],
                     'post_id': ""
                 }
 
             uid = soup.find('input', attrs={'name': 'uid'})
             pd = soup.find('input', attrs={'name': 'pd'})
             PropAction = soup.find('input', attrs={'name': 'PropAction'})
-            
+
             url_district = 'https://www.teedindd.com/admin/step-process.php'
-            print(postdata['addr_pros'])
-            r = httprequestObj.http_post(
-                url_district,
-                data={'pid': postdata['addr_pros'].split(',')[0],
-                      'name': postdata['addr_pros'].split(',')[1]
-                      }
-             )
-            #error below
-            print(r.text)
+            r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
             
             for i in json.loads(r.text):
                 if i['name'] in postdata['addr_district'] or postdata['addr_district'] in i['name']:
                     postdata['addr_dis'] = i
                     break
             if 'addr_dis' not in postdata:
-                return{
+               return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    # 'log_id': postdata['log_id'],
-                    'ds_id': postdata['ds_id'],
                     'detail': " Wrong district",
                     'post_url': "",
+                    'ds_id': postdata['ds_id'],
                     'post_id': ""
                 }
-            
             url_district = 'https://www.teedindd.com/admin/step-process.php'
             r = httprequestObj.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
-            
             for i in json.loads(r.text):
                 if i['name'] in postdata['addr_sub_district'] or postdata['addr_sub_district'] in i['name']:
                     postdata['addr_sub_dis'] = i
-                    break
+                    break   
             if 'addr_sub_dis' not in postdata:
                 return{
                     'websitename':'teedindd',
                     'success': 'false',
-                    # 'log_id': postdata['log_id'],
-                    'ds_id': postdata['ds_id'],
-                    'detail': " Wrong sub district",
+                    'detail': " Wrong subdistrict",
                     'post_url': "",
+                    'ds_id': postdata['ds_id'],
                     'post_id': ""
                 }
+
+
+
             prod_address = ""
             
             for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
@@ -588,7 +581,7 @@ class teedindd():
             postdata['addr_district']=postdata['addr_district'].replace(' ','')
             postdata['addr_sub_district']=postdata['addr_sub_district'].replace(' ','')
             for i in var:
-                if i.text in postdata['addr_province']:
+                if i.text in postdata['addr_province'] or postdata['addr_province'] in i.text:
                     postdata['addr_pros'] = i['value']
                     # print(i.text)
             if 'addr_pros' not in postdata:
@@ -606,10 +599,10 @@ class teedindd():
             PropAction = soup.find('input', attrs={'name': 'PropAction'})
 
             url_district = 'https://www.teedindd.com/admin/step-process.php'
-            r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(
-                ',')[0], 'name': postdata['addr_pros'].split(',')[1]})
+            r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
+            
             for i in json.loads(r.text):
-                if i['name'] in postdata['addr_district']:
+                if i['name'] in postdata['addr_district'] or postdata['addr_district'] in i['name']:
                     postdata['addr_dis'] = i
                     break
             if 'addr_dis' not in postdata:
@@ -625,7 +618,7 @@ class teedindd():
             r = httprequestObj.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
             for i in json.loads(r.text):
-                if i['name'] in postdata['addr_sub_district']:
+                if i['name'] in postdata['addr_sub_district'] or postdata['addr_sub_district'] in i['name']:
                     postdata['addr_sub_dis'] = i
                     break   
             if 'addr_sub_dis' not in postdata:
