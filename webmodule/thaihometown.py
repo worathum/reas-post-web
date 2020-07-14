@@ -40,6 +40,7 @@ class thaihometown():
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
+        self.logid = ''
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.handled = False
@@ -454,7 +455,15 @@ class thaihometown():
         if not matchObj:
             success = "false"
             detail = "cannot login"
+        else:
 
+            txt = str(r.text)
+            ind = txt.find('member')+7
+            self.logid = ''
+            while txt[ind]!="'":
+                self.logid+=txt[ind]
+                ind+=1
+    
         #log.debug('login status %s', success)
 
         #
@@ -1444,6 +1453,83 @@ class thaihometown():
                     else:
                         success = "false"
                         detail = unquote(data)
+
+    def search_post(self,data):
+        start_time = datetime.datetime.utcnow()
+
+        test_login = self.test_login(data)
+        print('in')
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_id = ''
+        post_url = ''
+        post_found = ''
+        post_title = data['post_title_th']
+        if success == 'true':
+
+            url = 'https://www.thaihometown.com/member/'+str(self.logid)
+
+            req = httprequestObj.http_get(url)
+            soup = BeautifulSoup(req.text,'html.parser')
+            posts = soup.find('div',{'id':'show_listings'}).findAll('div')[2:]
+            valid_ids = []
+            valid_urls = []
+            valid_titles = []
+            print(len(posts))
+            for post in posts:
+                #print('id' in post)
+                if post.has_attr('id') and post['id'] is not None and str(post['id'])[:9] == 'indivList':
+                    id = str(post['id'])[13:]
+                    valid_ids.append(str(post['id'])[13:])
+                    print('here1')
+                    urls = post.findAll('a')
+                    if str(urls[0]).find('member')!=-1:
+                        valid_titles.append(str(urls[1].text).strip())
+                    else:
+                        valid_titles.append(str(urls[0].text).strip())
+                    print('here2')
+                    for url in urls:
+                        print(url)
+                        if str(url['href']).find(id)+len(id) == len(url['href']):
+                            valid_urls.append(str(url['href']))
+                            print('here3')
+                            break
+            print('out')
+            print(valid_titles)
+            print(valid_urls)
+            print(valid_ids)
+            if post_title.strip() in valid_titles:
+                post_found = 'true'
+                detail = 'Post found'
+                for i in range(len(valid_titles)):
+                    if valid_titles[i] == post_title:
+                        post_id = valid_ids[i]
+                        post_url = valid_urls[i]
+                        break
+            else:
+                post_found = 'false'
+                detail = 'Post not found'
+
+
+        end_time = datetime.datetime.utcnow()
+        result = {
+            "success": "true",
+            "usage_time": str(end_time - start_time),
+            "start_time": str(start_time),
+            "end_time": str(end_time),
+            "detail": detail,
+            'ds_id': data['ds_id'],
+            "log_id": data['log_id'],
+            "post_found": post_found,
+            "post_id": post_id,
+            'post_url': post_url,
+            "post_create_time": '',
+            "post_modify_time": '',
+            "post_view": '',
+            'websitename': 'thaihometown'
+        }
+        return result
+
 
         #
         # end process

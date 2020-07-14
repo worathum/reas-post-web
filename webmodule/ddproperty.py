@@ -23,12 +23,14 @@ import string
 import random
 from selenium.webdriver.support import expected_conditions as EC
 
+
 try:
     import configs
 except ImportError:
     configs = {}
+'''
 logging.config.dictConfig(getattr(configs, 'logging_config', {}))
-log = logging.getLogger()
+log = logging.getLogger()'''
 
 
 class ddproperty():
@@ -44,7 +46,7 @@ class ddproperty():
         self.handled = False
 
     def register_user(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
@@ -125,7 +127,7 @@ class ddproperty():
         }
 
     def test_login_httpreq(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         user = postdata['user']
         passwd = postdata['pass']
@@ -146,7 +148,7 @@ class ddproperty():
             'email': user,
         }
         r = httprequestObj.http_post('https://agentnet.ddproperty.com/is_authentic_user', data=datapost)
-        log.debug('email post')
+        #log.debug('email post')
         data = r.text
         #f = open("debug_response/ddauthentic.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -166,7 +168,7 @@ class ddproperty():
                 'userid': user,
             }
             r = httprequestObj.http_post('https://agentnet.ddproperty.com/ex_login_ajax', data=datapost)
-            log.debug('post login')
+            #log.debug('post login')
             data = r.text
             #f = open("debug_response/logindd.html", "wb")
             #f.write(data.encode('utf-8').strip())
@@ -177,14 +179,14 @@ class ddproperty():
                 success = "false"
                 detail = "cannot login " + data
 
-        log.debug('login status %s', success)
+        #log.debug('login status %s', success)
         #
         # end process
 
         return {"success": success, "detail": detail, "agent_id": agent_id}
 
     def test_login_headless(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         # ref https://developer.mozilla.org/en-US/docs/Web/WebDriver
         # รอจนกว่าจะมี element h3>a ขึ้นมา ค่อยทำงานต่อ
@@ -208,7 +210,7 @@ class ddproperty():
         options.add_argument("window-size=1024,768")
         prefs = {"profile.managed_default_content_settings.images": 2}
         options.add_experimental_option("prefs", prefs)
-        chrome_driver_binary = "/bin/chromedriver"
+        chrome_driver_binary = "/usr/bin/chromedriver"
         self.chrome = webdriver.Chrome(chrome_driver_binary, options=options)
 
         # open login page
@@ -217,17 +219,17 @@ class ddproperty():
         # input email and enter
         emailtxt = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("emailInput"))
         emailtxt.send_keys(postdata['user'])
-        log.debug('input email')
+        #log.debug('input email')
         WebDriverWait(self.chrome, 5).until(EC.element_to_be_clickable((By.ID, "next"))).click()
-        log.debug('click next')
+        #log.debug('click next')
         time.sleep(1.8)
 
         # input password and enter
         passtxt = WebDriverWait(self.chrome, 30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
         passtxt.send_keys(postdata['pass'])
-        log.debug('input password')
+        #log.debug('input password')
         passtxt.send_keys(Keys.ENTER)
-        log.debug('click enter')
+        #log.debug('click enter')
         time.sleep(3)
         
         matchObj = re.search(r'บัญชีผู้ใช้งานของท่านหมดอายุ', self.chrome.page_source)
@@ -235,24 +237,24 @@ class ddproperty():
         if matchObj or matchObj2:
             success = "false"
             detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
-            log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
+            #log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
         matchObj = re.search(r'รหัสผ่านของคุณไม่ถูกต้อง', self.chrome.page_source)
         if matchObj:
             success = "false"
             detail = 'รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่'
-            log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
+            #log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
         matchObj = re.search(r'มีข้อผิดพลาดเกิดขึ้น', self.chrome.page_source)
         if matchObj:
             success = "false"
             detail = 'มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง'
-            log.warning('มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง')
+            #log.warning('มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง')
         matchObj = re.search(r'Incorrect Captcha', self.chrome.page_source)
         matchObj2 = re.search(r'ฉันไม่ใช่โปรแกรมอัตโนมัติ', self.chrome.page_source)
         matchObj3 = re.search(r'Captcha ไม่ถูกต้อง', self.chrome.page_source)
         if matchObj or matchObj2 or matchObj3:
             success = "false"
             detail = 'login fail by Google reCaptcha'
-            log.warning('login fail by Google reCaptcha')
+            #log.warning('login fail by Google reCaptcha')
         
         if success == "true":
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
@@ -262,17 +264,17 @@ class ddproperty():
             # find text
             soup = BeautifulSoup(self.chrome.page_source, self.parser, from_encoding='utf-8')
             titletxt = soup.find('title').text
-            log.debug('title %s',titletxt)
+            #log.debug('title %s',titletxt)
             matchObj = re.search(r'Dashboard', titletxt)
             if not matchObj:
                 success = "false"
                 detail = 'cannot login'
-                log.warning('cannot login')
+                #log.warning('cannot login')
             if success == "true":
                 # agent_id = re.search(r'optimize_agent_id = (\d+);', self.chrome.page_source).group(1)
                 agent_id = re.search(r'{"user":{"id":(\d+),', self.chrome.page_source).group(1)
 
-        log.debug("login status %s agent id %s", success, agent_id)
+        #log.debug("login status %s agent id %s", success, agent_id)
 
         if (postdata['action'] == 'test_login'):
             self.chrome.quit()
@@ -283,7 +285,7 @@ class ddproperty():
         return {"success": success, "detail": detail, "agent_id": agent_id}
 
     def test_login(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
@@ -310,7 +312,7 @@ class ddproperty():
         return response
 
     def postdata_handle(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         if self.handled == True:
             return postdata
@@ -322,7 +324,7 @@ class ddproperty():
             datahandled['listing_type'] = postdata['listing_type']
         except KeyError as e:
             datahandled['listing_type'] = "SALE"
-            log.warning(str(e))
+            #log.warning(str(e))
         if datahandled['listing_type'] == "เช่า":
             datahandled['listing_type'] = "RENT"
         elif datahandled['listing_type'] == "ขายดาวน์":
@@ -335,7 +337,7 @@ class ddproperty():
             datahandled['property_type'] = postdata['property_type']
         except KeyError as e:
             datahandled['property_type'] = "CONDO"
-            log.warning(str(e))
+            #log.warning(str(e))
         if datahandled['property_type'] == '2' or datahandled['property_type'] == 2 or datahandled['property_type'] == "บ้านเดี่ยว":
             datahandled['property_type'] = "BUNG"
         elif datahandled['property_type'] == '3' or datahandled['property_type'] == 3 or datahandled['property_type'] == "บ้านแฝด":
@@ -363,31 +365,31 @@ class ddproperty():
             datahandled['post_img_url_lists'] = postdata['post_img_url_lists']
         except KeyError as e:
             datahandled['post_img_url_lists'] = {}
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['price_baht'] = postdata['price_baht']
         except KeyError as e:
             datahandled['price_baht'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_province'] = postdata['addr_province']
         except KeyError as e:
             datahandled['addr_province'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_district'] = postdata['addr_district']
         except KeyError as e:
             datahandled['addr_district'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_sub_district'] = postdata['addr_sub_district']
         except KeyError as e:
             datahandled['addr_sub_district'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_road'] = postdata['addr_road']
@@ -395,157 +397,157 @@ class ddproperty():
                 datahandled['addr_road'] = ""
         except KeyError as e:
             datahandled['addr_road'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_near_by'] = postdata['addr_near_by']
         except KeyError as e:
             datahandled['addr_near_by'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['addr_postcode'] = postdata['addr_postcode']
         except KeyError as e:
             datahandled['addr_postcode'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['floor_area'] = postdata['floor_area']
         except KeyError as e:
             datahandled['floor_area'] = '0'
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['geo_latitude'] = str(postdata['geo_latitude'])
         except KeyError as e:
             datahandled['geo_latitude'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['geo_longitude'] = str(postdata['geo_longitude'])
         except KeyError as e:
             datahandled['geo_longitude'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['property_id'] = postdata['property_id']
         except KeyError as e:
             datahandled['property_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_title_th'] = postdata['post_title_th']
         except KeyError as e:
             datahandled['post_title_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_description_th'] = postdata['post_description_th']
         except KeyError as e:
             datahandled['post_description_th'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_title_en'] = postdata['post_title_en']
         except KeyError as e:
             datahandled['post_title_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['post_description_en'] = postdata['post_description_en']
         except KeyError as e:
             datahandled['post_description_en'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['ds_id'] = postdata["ds_id"]
         except KeyError as e:
             datahandled['ds_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['ds_name'] = postdata["ds_name"]
         except KeyError as e:
             datahandled['ds_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['user'] = postdata['user']
         except KeyError as e:
             datahandled['user'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['pass'] = postdata['pass']
         except KeyError as e:
             datahandled['pass'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['project_name'] = postdata["project_name"]
         except KeyError as e:
             datahandled['project_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['name'] = postdata["name"]
         except KeyError as e:
             datahandled['name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['mobile'] = postdata["mobile"]
         except KeyError as e:
             datahandled['mobile'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['email'] = postdata["email"]
         except KeyError as e:
             datahandled['email'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['web_project_name'] = postdata["web_project_name"]
         except KeyError as e:
             datahandled['web_project_name'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['action'] = postdata["action"]
         except KeyError as e:
             datahandled['action'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['bath_room'] = postdata["bath_room"]
         except KeyError as e:
             datahandled['bath_room'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['bed_room'] = postdata["bed_room"]
         except KeyError as e:
             datahandled['bed_room'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['floor_total'] = postdata["floor_total"]
         except KeyError as e:
             datahandled['floor_total'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['floor_level'] = postdata["floor_level"]
         except KeyError as e:
             datahandled['floor_level'] = 0
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['direction_type'] = postdata["direction_type"]
         except KeyError as e:
             datahandled['direction_type'] = "ทิศเหนือ"
-            log.warning(str(e))
+            #log.warning(str(e))
         if datahandled['direction_type'] == '11' or datahandled['direction_type'] == 11:
             datahandled['direction_type'] = "ทิศเหนือ"
         elif datahandled['direction_type'] == '12' or datahandled['direction_type'] == 12:
@@ -570,13 +572,13 @@ class ddproperty():
             datahandled['post_id'] = postdata["post_id"]
         except KeyError as e:
             datahandled['post_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['log_id'] = postdata["log_id"]
         except KeyError as e:
             datahandled['log_id'] = ''
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['land_size_rai'] = str(postdata["land_size_rai"])
@@ -584,7 +586,7 @@ class ddproperty():
                 postdata["land_size_rai"] = '0'
         except KeyError as e:
             datahandled['land_size_rai'] = '0'
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['land_size_ngan'] = str(postdata["land_size_ngan"])
@@ -592,7 +594,7 @@ class ddproperty():
                 postdata["land_size_ngan"] = '0'
         except KeyError as e:
             datahandled['land_size_ngan'] = '0'
-            log.warning(str(e))
+            #log.warning(str(e))
 
         try:
             datahandled['land_size_wa'] = str(postdata["land_size_wa"])
@@ -600,26 +602,30 @@ class ddproperty():
                 postdata["land_size_wa"] = '0'
         except KeyError as e:
             datahandled['land_size_wa'] = '0'
-            log.warning(str(e))
+            #log.warning(str(e))
 
         self.handled = True
 
         return datahandled
 
     def create_post(self, postdata):
-        log.debug('')
+        #print('here')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
         # start process
         #
-        datahandled = self.postdata_handle(postdata)
 
+        #print("here1")
+        datahandled = self.postdata_handle(postdata)
+        #print("here2")
         # login
         test_login = self.test_login(datahandled)
         success = test_login["success"]
         detail = test_login["detail"]
         agent_id = test_login["agent_id"]
+        #print("here3")
         post_id = ""
         account_type = "normal"
 
@@ -627,14 +633,16 @@ class ddproperty():
 
             self.chrome.get('https://agentnet.ddproperty.com/create-listing/location')
             time.sleep(1)
+            #print('here4')
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
+            #print('here5')
             # self.chrome.save_screenshot("debug_response/location.png")
 
             success, detail = self.inputpostgeneral(datahandled)
             if success == 'true':
                 success, detail, post_id, account_type = self.inputpostdetail(datahandled)
 
-        log.debug('create post done')
+        #log.debug('create post done')
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -652,7 +660,7 @@ class ddproperty():
         }
 
     def inputpostgeneral(self, datahandled):
-        log.debug('')
+        #log.debug('')
 
         success = 'true'
         detail = ''
@@ -683,7 +691,7 @@ class ddproperty():
         # case no result projectname
         matchObj = re.search(r'ol class="no-match"', self.chrome.page_source)
         if matchObj:
-            log.debug('not found property name %s', projectname)
+            #log.debug('not found property name %s', projectname)
             if (datahandled['addr_province'] == '' or datahandled['addr_district'] == '' or datahandled['addr_sub_district'] == ''):
                 success = 'false'
                 detail = 'for a new project name, ddproperty must require province , district and sub_district'
@@ -755,7 +763,7 @@ class ddproperty():
                 except Exception as e:
                     success = 'false'
                     detail = 'for a new project name, province , district , subdistrict error'
-                    log.error('area error ' + str(e))
+                    #log.error('area error ' + str(e))
 
                 # road
                 try:
@@ -766,7 +774,7 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'])
                 except Exception as e:
                     pass
-                    log.warning('road error ' + str(e))
+                    #log.warning('road error ' + str(e))
                 # self.chrome.save_screenshot("debug_response/newp33.png")
 
                 # longitude ,latitude
@@ -778,7 +786,7 @@ class ddproperty():
                     #debug
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[1]/div[3]/div/div[3]/div')).click()
                     
-                    log.debug('input lat %s lng %s',datahandled['geo_latitude'],datahandled['geo_longitude'])
+                    #log.debug('input lat %s lng %s',datahandled['geo_latitude'],datahandled['geo_longitude'])
                     js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
                     self.chrome.execute_script(js)
                     time.sleep(0.5)
@@ -794,7 +802,7 @@ class ddproperty():
 
                    
                 except Exception as e:
-                    log.warning('lat lng error ' + str(e))
+                    #log.warning('lat lng error ' + str(e))
                     pass
 
                 if (success == 'true'):
@@ -806,7 +814,7 @@ class ddproperty():
 
         # case match choose first argument
         else:
-            log.debug('found property name %s', projectname)
+            #log.debug('found property name %s', projectname)
             # self.chrome.save_screenshot("debug_response/newp3.png")
             # select li first
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]/a')).click()
@@ -857,7 +865,7 @@ class ddproperty():
         return success, detail
 
     def inputpostdetail(self, datahandled):
-        log.debug('')
+        #log.debug('')
 
         success = "true"
         detail = ''
@@ -895,26 +903,26 @@ class ddproperty():
             #self.chrome.save_screenshot("debug_response/newp44.png")
 
             # type
-            log.debug('input property type')
+            #log.debug('input property type')
             if datahandled['listing_type'] == "SALE":
                 element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("listing-type-SALE"))
                 self.chrome.execute_script("arguments[0].click();", element)
-                log.debug('input property type SALE')
+                #log.debug('input property type SALE')
             elif datahandled['listing_type'] == "RENT":
                 element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("listing-type-RENT"))
                 self.chrome.execute_script("arguments[0].click();", element)                
-                log.debug('input property type RENT')
+                #log.debug('input property type RENT')
             else:
                 element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_id("listing-type-OPT"))
                 self.chrome.execute_script("arguments[0].click();", element)  
-                log.debug('input property type OPT')
+                #log.debug('input property type OPT')
             #self.chrome.save_screenshot("debug_response/newp5.png")
 
             # price
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
             except WebDriverException as e:
-                log.warning('cannot input price '+str(e))
+                #log.warning('cannot input price '+str(e))
                 pass
 
             # bed room
@@ -926,7 +934,7 @@ class ddproperty():
                     else:
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room']) + ' ห้องนอน')).click()
             except WebDriverException as e:
-                log.warning('cannot input bed room '+str(e))
+                #log.warning('cannot input bed room '+str(e))
                 pass
 
             # bath room
@@ -939,7 +947,7 @@ class ddproperty():
                 else:
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text('9 ห้องน้ำ')).click()
             except WebDriverException as e:
-                log.warning('cannot input bath room '+str(e))
+                #log.warning('cannot input bath room '+str(e))
                 pass
 
             # floor area sqm
@@ -949,7 +957,7 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floor_area']))
             except WebDriverException as e:
-                log.warning('cannot input floor area sqm '+str(e))
+                #log.warning('cannot input floor area sqm '+str(e))
                 pass
 
             # total floor
@@ -958,7 +966,7 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
                 except WebDriverException as e:
-                    log.warning('cannot input total floor '+str(e))
+                    #log.warning('cannot input total floor '+str(e))
                     pass
 
             # floor position
@@ -967,7 +975,7 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
                 except WebDriverException as e:
-                    log.warning('cannot input floor position '+str(e))
+                    #log.warning('cannot input floor position '+str(e))
                     pass
 
             # title thai
@@ -976,10 +984,10 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.DELETE)
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(datahandled['post_title_th'])
-                log.debug('input title thai ')
+                #log.debug('input title thai ')
             except WebDriverException as e:
                 pass
-                log.warning('cannot input title thai '+str(e))
+                #log.warning('cannot input title thai '+str(e))
 
             # title en
             try:
@@ -987,10 +995,10 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.DELETE)  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(datahandled['post_title_en'])
-                log.debug('input title en')
+                #log.debug('input title en')
             except WebDriverException as e:
                 pass
-                log.warning('cannot input title en '+str(e))
+                #log.warning('cannot input title en '+str(e))
             #self.chrome.save_screenshot("debug_response/newp00.png")
 
             # desc thai
@@ -999,10 +1007,10 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.DELETE)  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
-                log.debug('input desc thai')
+                #log.debug('input desc thai')
             except WebDriverException as e:
                 pass
-                log.warning('cannot input desc thai '+str(e))
+                #log.warning('cannot input desc thai '+str(e))
             #self.chrome.save_screenshot("debug_response/newp11.png")
 
             # desc en
@@ -1011,10 +1019,10 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.DELETE)  # clear for edit action
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
-                log.debug('input desc en')
+                #log.debug('input desc en')
             except WebDriverException as e:
                 pass
-                log.warning('cannot input post_description_en '+str(e))
+                #log.warning('cannot input post_description_en '+str(e))
             #self.chrome.save_screenshot("debug_response/newp22.png")
 
             # หันหน้าทางทิศ
@@ -1023,9 +1031,9 @@ class ddproperty():
                 self.chrome.execute_script("arguments[0].click();", element)
                 element = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['direction_type'])))
                 self.chrome.execute_script("arguments[0].click();", element)
-                log.debug('input direction type')
+                #log.debug('input direction type')
             except WebDriverException as e:
-                log.warning('cannot input direction type '+str(e))
+                #log.warning('cannot input direction type '+str(e))
                 pass
             #self.chrome.save_screenshot("debug_response/newp33.png")
 
@@ -1043,7 +1051,7 @@ class ddproperty():
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(datahandled['land_size_ngan'])
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(datahandled['land_size_wa'])
             except WebDriverException as e:
-                log.warning('cannot input area '+str(e))
+                #log.warning('cannot input area '+str(e))
                 pass
             #self.chrome.save_screenshot("debug_response/newp12.png")
 
@@ -1051,7 +1059,7 @@ class ddproperty():
             matchObj = re.search(r'รายละเอียดตัวแทน', self.chrome.page_source)
             if matchObj:
                 account_type = 'corporate'
-                log.debug('account_type corporate')
+                #log.debug('account_type corporate')
                 try:
                     if datahandled['action'] == 'edit_post':
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
@@ -1064,7 +1072,7 @@ class ddproperty():
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
                     WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
                 except WebDriverException as e:
-                    log.warning('cannot input corporate data '+str(e))
+                    #log.warning('cannot input corporate data '+str(e))
                     pass
 
             self.chrome.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
@@ -1075,18 +1083,19 @@ class ddproperty():
             try:
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  
             except WebDriverException as e:
-                log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
+                #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
                 success = 'false'
                 detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set'
                 self.chrome.quit()
                 return success, detail, post_id, account_type
 
             # image page
+            time.sleep(5)
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
 
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
             if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) < 0):
-                log.debug('edit image')
+                #log.debug('edit image')
                 imgdiv = WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
                 for imgli in imglis:
@@ -1094,7 +1103,7 @@ class ddproperty():
                     if imgid != None:
                         imgli.click()
                         WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
-                        log.debug('delete image')
+                        #log.debug('delete image')
                         alert = self.chrome.switch_to.alert
                         alert.accept()
                         time.sleep(1.5)
@@ -1102,31 +1111,33 @@ class ddproperty():
             for img in datahandled['post_images']:
                 time.sleep(1)
                 WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
-                log.debug('post image %s', img)
+                #log.debug('post image %s', img)
                 time.sleep(1)
                 self.chrome.refresh()
-            log.debug('image success')
-
+            #log.debug('image success')
+            #print('here1')
             post_id = self.chrome.current_url.split("/")[-1]
-            log.debug('post post id %s', post_id)
+            #log.debug('post post id %s', post_id)
 
             # next
             WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')))
             WebDriverWait(self.chrome, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click() 
             # self.chrome.save_screenshot("debug_response/newp10.png")
             time.sleep(1)
-            log.debug('click next')
-
+            #log.debug('click next')
+            #print('here2')
             #TODO debug
             #js location inject
-            js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
-            js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
-            self.chrome.execute_script(js)
-            time.sleep(0.5)
-            js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
-            js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
-            self.chrome.execute_script(js)
-            time.sleep(0.5)
+            if datahandled['action'] == 'edit_post':
+                js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
+                js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
+                self.chrome.execute_script(js)
+                time.sleep(0.5)
+                js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
+                js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
+                self.chrome.execute_script(js)
+                #print('here3')
+                time.sleep(0.5)
             # debug jsalert = 'alert(guruApp.createListing.listingData.listingDetail.result.location.latitude + " " + guruApp.createListing.listingData.listingDetail.result.location.longitude)'
             # self.chrome.execute_script(jsalert)
             # time.sleep(1)
@@ -1142,7 +1153,8 @@ class ddproperty():
 
             WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
             time.sleep(1.8)
-            log.debug('click publish')
+            #print('here4')
+            #log.debug('click publish')
             # self.chrome.save_screenshot("debug_response/newp11.png")
 
             # create post จะสำเร็จก็ต่อเมื่อ publish ได้ด้วย ถ้า editpost แค่ edit ได้ ก็ถือว่าสำเร็จ
@@ -1151,17 +1163,18 @@ class ddproperty():
                 if matchObj:
                     success = "false"
                     detail = 'Active Unit Listing quota exceeded'
-                
+            #print('here5')
             #บันทึกแล้วออก
             element = WebDriverWait(self.chrome, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
             self.chrome.execute_script("arguments[0].click();", element)
+            #print('here6')
             #quit        
             self.chrome.quit()
 
         return success, detail, post_id, account_type
 
     def create_post_bak(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
@@ -1418,7 +1431,7 @@ class ddproperty():
         }
 
     def boost_post(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
@@ -1454,7 +1467,7 @@ class ddproperty():
         return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "post_id": datahandled['post_id'], "websitename": self.websitename}
 
     def delete_post(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
@@ -1490,6 +1503,7 @@ class ddproperty():
             data = r.text
             # f = open("debug_response/dddelete.html", "wb")
             # f.write(data.encode('utf-8').strip())
+            detail = 'Post deleted successfully'
             matchObj = re.search(r'message":"deleted', data)
             if matchObj:
                 # ใกล้ความจริง แต่จะ delete สำเร็จหรือไม่มันก็ return deleted หมด ดังนั้นต้องเช็คจาก post id อีกทีว่า response 404 ป่าว
@@ -1517,7 +1531,7 @@ class ddproperty():
         }
 
     def edit_post_bak(self, post_id,datahandled):
-        log.debug('')
+        #log.debug('')
 
         # start proces
         #
@@ -1924,7 +1938,7 @@ class ddproperty():
         return {"success": success}
 
     def edit_post(self, postdata):
-        log.debug('')
+        #log.debug('')
 
         time_start = datetime.datetime.utcnow()
 
@@ -1940,7 +1954,7 @@ class ddproperty():
 
         if (success == "true"):
             self.chrome.get('https://agentnet.ddproperty.com/create-listing/detail/' + str(datahandled['post_id']))
-            log.debug('search post id %s', str(datahandled['post_id']))
+            #log.debug('search post id %s', str(datahandled['post_id']))
             # self.chrome.save_screenshot("debug_response/edit1.png")
             matchObj = re.search(r'500 Internal Server Error', self.chrome.page_source)
             if matchObj:
@@ -1948,17 +1962,110 @@ class ddproperty():
                 detail = 'not found ddproperty post id ' + datahandled['post_id']
             if success == 'true':
                 self.chrome.get('https://agentnet.ddproperty.com/create-listing/location/' + str(datahandled['post_id']))
-                log.debug('go to edit post %s', str(datahandled['post_id']))
+                #log.debug('go to edit post %s', str(datahandled['post_id']))
                 time.sleep(0.5)
                 WebDriverWait(self.chrome, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
                 success, detail = self.inputpostgeneral(datahandled)
                 if success == 'true':
                     success, detail, post_id, account_type = self.inputpostdetail(datahandled)
 
-        log.debug('edit post done')
+        #log.debug('edit post done')
         #
         # end process
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "websitename": self.websitename}
+
+    def search_post(self,postdata):
+
+        time_start = datetime.datetime.utcnow()
+
+        datahandled = self.postdata_handle(postdata)
+
+        # login
+        test_login = self.test_login(datahandled)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_found = 'false'
+        post_url = ''
+        post_id = ''
+        if (success == "true"):
+
+
+            valid_ids = []
+            valid_titles = []
+            valid_urls = []
+            flag = True
+            page = 1
+            while flag == True:
+
+                url = 'https://agentnet.ddproperty.com/listing_management_data'
+                data = {
+                    'statusCode': 'ACT',
+                    'params[listingSubTypeCode]': 'ALL',
+                    'params[tierType]': 'ALL',
+                    'params[propertyId]': '0',
+                    'params[propertyType]': 'ALL',
+                    'params[listType]': 'ALL',
+                    'params[page]': str(page),
+                    'params[featStatusCode]': 'CUR',
+                    'params[limit]': '20',
+                    'params[listingId]':'',
+                    'sort[column]': 'end_date',
+                    'sort[direction]': 'DESC'
+                }
+                page += 1
+                headers = {
+                    'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+                }
+                req = httprequestObj.http_post(url,data=data,headers=headers)
+
+                soup = BeautifulSoup(req.text,'html.parser')
+                check = soup.find('div',{'class':'row listing-item'})
+                #print('here1')
+                if check is not None:
+                    #print('here2')
+                    posts = soup.findAll('div',{'class':'row listing-item'})
+
+                    for post in posts:
+                        valid_ids.append(post['data-listing-id'])
+                        valid_titles.append(post['data-listing-title'])
+                        url = post.find('a')
+                        valid_urls.append(url['href'])
+                    #print(valid_ids)
+                else:
+                    flag = False
+
+
+
+            if datahandled['post_title_th'] in valid_titles:
+                post_found = 'true'
+                for i in range(len(valid_titles)):
+                    if valid_titles[i] == datahandled['post_title_th']:
+                        post_url = valid_urls[i]
+                        post_id = valid_ids[i]
+
+
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        res = {
+            'success':success,
+            'post_id':postdata['post_id'],
+            'log_id':postdata['log_id'],
+            'ds_id':postdata['ds_id'],
+            'websitename': 'ddproperty',
+            'start_time':str(time_start),
+            'end_time':str(time_end),
+            'usage_time':str(time_usage),
+            'post_url':post_url,
+            'account_type': '',
+            'post_found':post_found,
+            'post_create_time': '',
+            'post_modify_time': '',
+            'post_view': '',
+            'detail':detail
+        }
+        return res

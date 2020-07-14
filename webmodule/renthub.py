@@ -351,10 +351,7 @@ class renthub():
             #log.warning(str(e))
 
         
-        datahandled['use_project_name'] = datahandled['post_title_th']
-        if datahandled['project_name'] != None and datahandled['project_name'] != '':
-            datahandled['use_project_name'] = datahandled['project_name']
-
+        datahandled['use_project_name'] = datahandled['project_name']
         if datahandled['web_project_name'] != None and datahandled['web_project_name'] != '':
             datahandled['use_project_name'] = datahandled['web_project_name']
         
@@ -441,7 +438,6 @@ class renthub():
         #
         success = "true"
         detail = "ระบบกำลังส่ง email เพื่อยืนยันการสมัครสมาชิกไปยัง email ที่ให้ไว้ คุณจะได้รับ email ใน 5 นาที กรุณาตรวจสอบ และกด link เพื่อยืนยัน"
-        httprequestObj.http_get('https://renthub.in.th/logout', verify=False)
 
         datahandled = self.postdata_handle(postdata)
        
@@ -520,7 +516,7 @@ class renthub():
         detail = ""
 
         #clear session
-        httprequestObj.http_get('https://renthub.in.th/logout', verify=False)
+        r = httprequestObj.http_get('https://renthub.in.th/logout', verify=False)
 
         r = httprequestObj.http_get('https://renthub.in.th/login', verify=False)
         data = r.text
@@ -1620,3 +1616,111 @@ class renthub():
             #log.warning('cannot edit post , post data error')
 
         return success,detail
+
+    def search_post(self,data):
+
+        start_time = datetime.datetime.utcnow()
+        login = self.test_login(data)
+
+        success = login["success"]
+        detail = login["detail"]
+        post_id = ''
+        post_url = ''
+        post_found = ''
+        post_view = ''
+        post_title = data['post_title_th']
+        if success == 'true':
+            valid_ids = []
+            valid_titles = []
+            valid_urls = []
+            views = []
+            url = 'https://www.renthub.in.th/dashboard/condo_listings'
+            req = httprequestObj.http_get(url)
+            soup = BeautifulSoup(req.text,'html.parser')
+            posts = soup.find('div',{'class':'result_panel'}).findAll('li')
+            for post in posts:
+                url = 'https://www.renthub.in.th'+str(post.find('a')['href'])
+
+                valid_urls.append(url)
+                #print(valid_urls)
+                title = str(post.find('a').text)
+                tit = ''
+                for ind in range(len(title)):
+                    if title[ind] == ':':
+                        tit=title[ind+1:]
+                        break
+                    ind+=1
+                valid_titles.append(tit.strip())
+
+                valid_ids.append(str(post['id'])[14:])
+                view = str(post.find('div',{'class':'stat'}).text).strip()
+                count = ''
+                for ch in view:
+                    if ord(ch)>=48 and ord(ch)<=57:
+                        count+=ch
+                views.append(count)
+
+
+            url = 'https://www.renthub.in.th/dashboard/apartments'
+            req = httprequestObj.http_get(url)
+            soup = BeautifulSoup(req.text, 'html.parser')
+            posts = soup.find('div', {'class': 'result_panel'}).findAll('li')
+            for post in posts:
+                url = 'https://www.renthub.in.th' + str(post.find('a')['href'])
+                valid_urls.append(url)
+                # print(valid_urls)
+                title = str(post.find('a').text)
+                tit = ''
+                for ind in range(len(title)):
+                    if title[ind] == ':':
+                        tit = title[ind + 1:]
+                        break
+                    ind += 1
+                valid_titles.append(tit.strip())
+
+                valid_ids.append(str(post['id'])[10:])
+                view = str(post.find('div', {'class': 'stat'}).text).strip()
+                count = ''
+                for ch in view:
+                    if ord(ch) >= 48 and ord(ch) <= 57:
+                        count += ch
+                views.append(count)
+
+            print(valid_ids)
+            print(valid_titles)
+            print(valid_urls)
+            print(views)
+            if post_title in valid_titles:
+                post_found = 'true'
+                detail = 'Post found'
+                for i in range(len(valid_titles)):
+                    if valid_titles[i] == post_title.strip():
+                        post_id = valid_ids[i]
+                        post_url = valid_urls[i]
+                        post_view = views[i]
+                        break
+            else:
+                post_found = 'false'
+                detail = 'Post not found'
+
+        end_time = datetime.datetime.utcnow()
+        result = {
+            "success": "true",
+            "usage_time": str(end_time - start_time),
+            "start_time": str(start_time),
+            "end_time": str(end_time),
+            "detail": detail,
+            'ds_id': data['ds_id'],
+            "log_id": data['log_id'],
+            "post_found": post_found,
+            "post_id": post_id,
+            'post_url': post_url,
+            "post_create_time": '',
+            "post_modify_time": '',
+            "post_view": post_view,
+            'websitename': 'renthub'
+        }
+        return result
+
+
+
