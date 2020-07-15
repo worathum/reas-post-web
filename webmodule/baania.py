@@ -570,6 +570,8 @@ class baania():
             "road": postdata["addr_road"],
             "post_code": ""
         }
+
+
         r = requests.get("https://api.baania.com/api/v1/provinces")
         prov = json.loads(r.text)
         for i in prov:
@@ -579,30 +581,47 @@ class baania():
                     "id": i['data']['id'],
                     "name": postdata["addr_province"]
                 }
-        # print(province_id)
-        # print(address["province"])
+
         r = requests.get(
             "https://api.baania.com/api/v1/provinces/"+province_id+"/districts")
         prov = json.loads(r.text)
-        for j in prov:
-            if j['data']['title']['title_th'].strip() in postdata['addr_district'].strip() or postdata['addr_district'] in j['data']['title']['title_th']:
+        
+        if postdata['addr_district'] =='บางบอน':
+            for j in prov:
                 amphur_id = j['data']['id']
                 address["district"] = {
-                    "id": j['data']['id'],
-                    "name": postdata["addr_district"]
-                }
-        # print(amphur_id)
-        # print(address["district"])
+                        "id": j['data']['id'],
+                        "name": postdata["addr_district"]
+                    }
+                break
+        else: 
+            for j in prov:
+                if j['data']['title']['title_th'].strip() in postdata['addr_district'].strip() or postdata['addr_district'] in j['data']['title']['title_th']:
+                    amphur_id = j['data']['id']
+                    address["district"] = {
+                        "id": j['data']['id'],
+                        "name": postdata["addr_district"]
+                    }
         r = requests.get(
             "https://api.baania.com/api/v1/districts/"+amphur_id+"/subdistricts")
         prov = json.loads(r.text)
-
-        for j in prov:
-            if j['data']['title']['title_th'].strip() in postdata["addr_sub_district"].strip() or postdata["addr_sub_district"].strip() in j['data']['title']['title_th']:
+        
+        if postdata['addr_district'] =='บางบอน':
+            for j in prov:
                 address["sub_district"] = {
-                    "id": i['data']['id'],
-                    "name": postdata["addr_sub_district"]
-                }
+                        "id": j['data']['id'],
+                        "name": postdata["addr_district"]
+                    }
+                break
+        else: 
+            for j in prov:
+                if j['data']['title']['title_th'].strip() in postdata["addr_sub_district"].strip() or postdata["addr_sub_district"].strip() in j['data']['title']['title_th']:
+                    address["sub_district"] = {
+                        "id": i['data']['id'],
+                        "name": postdata["addr_sub_district"]
+                    }
+
+
 
         address["post_code"] = "88888"
         if postdata['land_size_rai'] is None or postdata['land_size_rai'] == '':
@@ -660,7 +679,22 @@ class baania():
                 }
             }
         resp = requests.post('https://search.baania.com/api/v1/project', data=mydata)
-        allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
+        try:
+            allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
+        except:
+            
+            return {
+            "websitename": "baania",
+            "success": "false",
+            "detail": str(resp.content.decode('utf-8')),
+            "start_time": str(time_start),
+            "end_time": str(datetime.datetime.utcnow()),
+            "ds_id": postdata['ds_id'],
+            "post_url": "",
+            "post_id": ""
+            }
+
+
         project_id = None
         if len(allres) != 0:
             project_id = allres[0]["_id"]
