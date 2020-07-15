@@ -251,7 +251,7 @@ class homechoice():
                             for post in all_posts[::-1]:
                                 if post.find('h3').getText()==postdata['post_title_th']:
                                     post_link = post.find('a').get('href')
-                                    post_id = post_link.replace('/post/', '').replace('html','')
+                                    post_id = post_link.replace('/post/', '').replace('.html','')
                                     post_url = self.site_name + post_link
                                     break
                         detail = popup_responses[parsed_response[1][0]] 
