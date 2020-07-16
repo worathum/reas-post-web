@@ -207,13 +207,19 @@ class bankumka():
             # print(data)
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             alls = soup.findAll("option")
-            # csrf_token = soup.find("input",{"name":"csrf_token"})['value']
-            # print(csrf_token)
+
+            province_found = False
             for i in alls:
-                # print(i.get_text(), i.get_text == postdata['addr_province'])
-                if postdata['addr_province'].find(i.get_text().strip()) != -1 or i.get_text().find(postdata['addr_province']) != -1:
+                if postdata['addr_province'].replace(" ","").strip() == i.get_text().replace(" ","").strip():
                     province_id = i['value']
+                    province_found = True
                     break
+            if province_found is False:
+                for i in alls:
+                    if postdata['addr_province'].replace(" ","").find(i.get_text()) != -1 or i.get_text().replace(" ","").find(postdata['addr_province']) != -1:
+                        province_id = i['value']
+                        break
+
                 # print(i)
                 # print(i.get_text())
                 # print("data: "+i.text+" value: "+i.value)
@@ -223,29 +229,36 @@ class bankumka():
                 query_string, verify=False)
             data = json.loads(r.text)
             # print(data)
-            # print(postdata['addr_district'])
+            amphur_found = False
             for i in data:
                 # print(i['name'])
-                # print(i['name'])
-                # print(i['name'].find(postdata['addr_district']))
-                if postdata['addr_district'].replace(" ","").find(i['name'].strip()) != -1 or i['name'].find(postdata['addr_district'].replace(" ","")) != -1:
-                    if i['name'].find(postdata['addr_district'].replace(" ","")) == 6:
-                        continue
+                if postdata['addr_district'].replace(" ","") == i['name']:
+                    amphur_found = True
                     amphur_id = i['id']
                     break
+            if amphur_found is False:
+                for i in data:
+                    if postdata['addr_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_district'].replace(" ","")) != -1:
+                        amphur_id = i['id']
+                        break
             # print(amphur_id)
             query_string = 'https://bankumka.com/ajax/listcities/'+amphur_id
             r = httprequestObj.http_get(
                 query_string, verify=False)
             data = json.loads(r.text)
-            # print(data,"1")
-            # print()
-            # print(postdata['addr_sub_district'])
+            # print(data)
+            tumbon_found = False
             for i in data:
-                # print(i['name'])
-                if postdata['addr_sub_district'].replace(" ","").find(i['name'].strip()) != -1 or i['name'].find(postdata['addr_sub_district'].replace(" ","")) != -1:
+                if postdata['addr_sub_district'] == i['name']:
                     tumbon_id = i['id']
+                    tumbon_found = True
                     break
+            if tumbon_found is False:
+                for i in data:
+                    if postdata['addr_sub_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_sub_district'].replace(" ","")) != -1:
+                        tumbon_id = i['id']
+                        break
+
             # print(tumbon_id)
             # browser.get("https://bankumka.com/property/announce")
             # csrf_token = browser.find_element_by_name("csrf_token").get_attribute("value")
@@ -506,7 +519,7 @@ class bankumka():
 
         theurl = ""
         post_id = ""
-
+        detail = ""
         # login
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -586,10 +599,18 @@ class bankumka():
                 # print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 alls = soup.findAll("option")
+                province_found = False
                 for i in alls:
-                    if postdata['addr_province'].find(i.get_text()) != -1 or i.get_text().find(postdata['addr_province']) != -1:
+                    if postdata['addr_province'].replace(" ","").strip() == i.get_text().replace(" ","").strip():
                         province_id = i['value']
+                        province_found = True
                         break
+                if province_found is False:
+                    for i in alls:
+                        if postdata['addr_province'].replace(" ","").find(i.get_text()) != -1 or i.get_text().replace(" ","").find(postdata['addr_province']) != -1:
+                            province_id = i['value']
+                            break
+
                     # print(i)
                     # print(i.get_text())
                     # print("data: "+i.text+" value: "+i.value)
@@ -599,21 +620,35 @@ class bankumka():
                     query_string, verify=False)
                 data = json.loads(r.text)
                 # print(data)
+                amphur_found = False
                 for i in data:
                     # print(i['name'])
-                    if postdata['addr_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_district'].replace(" ","")) != -1:
+                    if postdata['addr_district'].replace(" ","") == i['name']:
+                        amphur_found = True
                         amphur_id = i['id']
                         break
+                if amphur_found is False:
+                    for i in data:
+                        if postdata['addr_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_district'].replace(" ","")) != -1:
+                            amphur_id = i['id']
+                            break
                 # print(amphur_id)
                 query_string = 'https://bankumka.com/ajax/listcities/'+amphur_id
                 r = httprequestObj.http_get(
                     query_string, verify=False)
                 data = json.loads(r.text)
                 # print(data)
+                tumbon_found = False
                 for i in data:
-                    if postdata['addr_sub_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_sub_district'].replace(" ","")) != -1:
+                    if postdata['addr_sub_district'] == i['name']:
                         tumbon_id = i['id']
+                        tumbon_found = True
                         break
+                if tumbon_found is False:
+                    for i in data:
+                        if postdata['addr_sub_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_sub_district'].replace(" ","")) != -1:
+                            tumbon_id = i['id']
+                            break
                 # print(tumbon_id)
                 # browser.get(posturl)
                 # try:
@@ -877,6 +912,7 @@ class bankumka():
                 # print(r.text)
                 # print(r.status_code)
         else:
+            detail = "cannot login"
             success = "false"
 
         time_end = datetime.datetime.utcnow()
@@ -885,6 +921,7 @@ class bankumka():
         return {
             "websitename":"bankumka",
             "success": success,
+            "detail": detail,
             "start_time": str(time_start),
             'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
