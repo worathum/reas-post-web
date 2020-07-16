@@ -639,13 +639,13 @@ class property2share():
                 amphur_id = int(districts['AMPHUR_ID'])
 
         rai_size = 0
-        if ('land_size_rai' not in postdata or postdata['land_size_rai'] == None):
+        if ('land_size_rai' not in postdata or postdata['land_size_rai'] == None or postdata['land_size_rai'] == ""):
             rai_size = 0
         else:
             rai_size = int(postdata['land_size_rai'])
 
         ngan_size = 0
-        if ('land_size_ngan' not in postdata or postdata['land_size_ngan'] == None):
+        if ('land_size_ngan' not in postdata or postdata['land_size_ngan'] == None or postdata['land_size_ngan'] == ""):
             ngan_size = 0
 
         else:
@@ -653,7 +653,7 @@ class property2share():
 
         wa_size = 0
 
-        if ('land_size_wa' not in postdata or postdata['land_size_wa'] == None):
+        if ('land_size_wa' not in postdata or postdata['land_size_wa'] == None or postdata['land_size_wa'] == ""):
             wa_size = 0
 
         else:
@@ -662,11 +662,11 @@ class property2share():
         sqm_size = (400 * rai_size) + (100 * ngan_size) + (wa_size)
 
         floorarea_sqm = 0
-        if (floorarea_sqm not in postdata or postdata['floorarea_sqm'] == None):
+        if (floorarea_sqm not in postdata or postdata['floor_area'] == None or postdata['floor_area'] == ""):
             floorarea_sqm = 0
 
         else:
-            floorarea_sqm = postdata['floorarea_sqm']
+            floorarea_sqm = postdata['floor_area']
 
         # create post request to add post
         url = 'https://www.property2share.com/pageuser/submitEdit_Publish.php?id='+str(post_id) + '&type=2'
