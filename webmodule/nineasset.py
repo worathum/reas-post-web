@@ -518,7 +518,7 @@ class nineasset():
         except:
             direction = "-1"
         try:
-            view = postdata['view_type']
+            view = str(int(postdata['view_type']))
         except:
             view = "-1"
         # addr_sub_district = postdata['addr_sub_district']
