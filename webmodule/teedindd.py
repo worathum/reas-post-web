@@ -333,9 +333,18 @@ class teedindd():
             postdata['addr_province']=postdata['addr_province'].replace(' ','')
             postdata['addr_district']=postdata['addr_district'].replace(' ','')
             postdata['addr_sub_district']=postdata['addr_sub_district'].replace(' ','')
+            
+
+
             for i in var:
-                if i.text in postdata['addr_province'] or postdata['addr_province'] in i.text:
+                if i.text == postdata['addr_province']:
                     postdata['addr_pros'] = i['value']
+
+            if 'addr_pros' not in postdata:
+                for i in var:
+                    if i.text in postdata['addr_province'] or postdata['addr_province'] in i.text:
+                        postdata['addr_pros'] = i['value']
+                        break
                     # print(i.text)
             if 'addr_pros' not in postdata:
                 return{
@@ -355,9 +364,15 @@ class teedindd():
             r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
             
             for i in json.loads(r.text):
-                if i['name'] in postdata['addr_district'] or postdata['addr_district'] in i['name']:
+                if i['name'] == postdata['addr_district']:
                     postdata['addr_dis'] = i
                     break
+            
+            if 'addr_dis' not in postdata:
+                for i in json.loads(r.text):
+                    if i['name'] in postdata['addr_district'] or postdata['addr_district'] in i['name']:
+                        postdata['addr_dis'] = i
+                        break
             if 'addr_dis' not in postdata:
                return{
                     'websitename':'teedindd',
@@ -371,9 +386,16 @@ class teedindd():
             r = httprequestObj.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
             for i in json.loads(r.text):
-                if i['name'] in postdata['addr_sub_district'] or postdata['addr_sub_district'] in i['name']:
+                if i['name'] == postdata['addr_sub_district']:
                     postdata['addr_sub_dis'] = i
-                    break   
+                    break
+
+            if 'addr_sub_dis' not in postdata:
+                for i in json.loads(r.text):
+                    if i['name'] in postdata['addr_sub_district'] or postdata['addr_sub_district'] in i['name']:
+                        postdata['addr_sub_dis'] = i
+                        break   
+
             if 'addr_sub_dis' not in postdata:
                 return{
                     'websitename':'teedindd',
@@ -581,8 +603,14 @@ class teedindd():
             postdata['addr_district']=postdata['addr_district'].replace(' ','')
             postdata['addr_sub_district']=postdata['addr_sub_district'].replace(' ','')
             for i in var:
-                if i.text in postdata['addr_province'] or postdata['addr_province'] in i.text:
+                if i.text == postdata['addr_province']:
                     postdata['addr_pros'] = i['value']
+
+            if 'addr_pros' not in postdata:
+                for i in var:
+                    if i.text in postdata['addr_province'] or postdata['addr_province'] in i.text:
+                        postdata['addr_pros'] = i['value']
+                        break
                     # print(i.text)
             if 'addr_pros' not in postdata:
                 return{
@@ -602,9 +630,15 @@ class teedindd():
             r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
             
             for i in json.loads(r.text):
-                if i['name'] in postdata['addr_district'] or postdata['addr_district'] in i['name']:
+                if i['name'] == postdata['addr_district']:
                     postdata['addr_dis'] = i
                     break
+            
+            if 'addr_dis' not in postdata:
+                for i in json.loads(r.text):
+                    if i['name'] in postdata['addr_district'] or postdata['addr_district'] in i['name']:
+                        postdata['addr_dis'] = i
+                        break
             if 'addr_dis' not in postdata:
                return{
                     'websitename':'teedindd',
@@ -618,9 +652,16 @@ class teedindd():
             r = httprequestObj.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
             for i in json.loads(r.text):
-                if i['name'] in postdata['addr_sub_district'] or postdata['addr_sub_district'] in i['name']:
+                if i['name'] == postdata['addr_sub_district']:
                     postdata['addr_sub_dis'] = i
-                    break   
+                    break
+
+            if 'addr_sub_dis' not in postdata:
+                for i in json.loads(r.text):
+                    if i['name'] in postdata['addr_sub_district'] or postdata['addr_sub_district'] in i['name']:
+                        postdata['addr_sub_dis'] = i
+                        break   
+
             if 'addr_sub_dis' not in postdata:
                 return{
                     'websitename':'teedindd',

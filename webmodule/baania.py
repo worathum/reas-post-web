@@ -189,46 +189,53 @@ class baania():
         r = requests.get("https://api.baania.com/api/v1/provinces")
         prov = json.loads(r.text)
         for i in prov:
-            if i['data']['title']['title_th'].strip() in postdata["addr_province"].strip() or postdata["addr_province"] in i['data']['title']['title_th']:
+            if i['data']['title']['title_th'].strip() == postdata["addr_province"].strip():
                 province_id = i['data']['id']
                 address["province"] = {
                     "id": i['data']['id'],
                     "name": postdata["addr_province"]
                 }
+        if 'province' not in address:
+            for i in prov:
+                if i['data']['title']['title_th'].strip() in postdata["addr_province"].strip() or postdata["addr_province"] in i['data']['title']['title_th']:
+                    province_id = i['data']['id']
+                    address["province"] = {
+                        "id": i['data']['id'],
+                        "name": postdata["addr_province"]
+                    }
 
         r = requests.get(
             "https://api.baania.com/api/v1/provinces/"+province_id+"/districts")
         prov = json.loads(r.text)
         
-        if postdata['addr_district'] =='บางบอน':
-            for j in prov:
+        for j in prov:
+            if j['data']['title']['title_th'].strip() == postdata['addr_district'].strip():
                 amphur_id = j['data']['id']
                 address["district"] = {
-                        "id": j['data']['id'],
-                        "name": postdata["addr_district"]
-                    }
-                break
-        else: 
-            for j in prov:
+                    "id": j['data']['id'],
+                    "name": postdata["addr_district"]
+                }
+        if 'district' not in address:
+            for j in province:
                 if j['data']['title']['title_th'].strip() in postdata['addr_district'].strip() or postdata['addr_district'] in j['data']['title']['title_th']:
                     amphur_id = j['data']['id']
                     address["district"] = {
                         "id": j['data']['id'],
                         "name": postdata["addr_district"]
                     }
+
         r = requests.get(
             "https://api.baania.com/api/v1/districts/"+amphur_id+"/subdistricts")
         prov = json.loads(r.text)
         
-        if postdata['addr_district'] =='บางบอน':
-            for j in prov:
+        for j in prov:
+            if j['data']['title']['title_th'].strip() == postdata["addr_sub_district"].strip():
                 address["sub_district"] = {
-                        "id": j['data']['id'],
-                        "name": postdata["addr_district"]
-                    }
-                break
-        else: 
-            for j in prov:
+                    "id": i['data']['id'],
+                    "name": postdata["addr_sub_district"]
+                }
+        if 'sub_district' not in address:
+            for j in province:
                 if j['data']['title']['title_th'].strip() in postdata["addr_sub_district"].strip() or postdata["addr_sub_district"].strip() in j['data']['title']['title_th']:
                     address["sub_district"] = {
                         "id": i['data']['id'],
@@ -575,52 +582,58 @@ class baania():
         r = requests.get("https://api.baania.com/api/v1/provinces")
         prov = json.loads(r.text)
         for i in prov:
-            if i['data']['title']['title_th'].strip() in postdata["addr_province"].strip() or postdata["addr_province"] in i['data']['title']['title_th']:
+            if i['data']['title']['title_th'].strip() == postdata["addr_province"].strip():
                 province_id = i['data']['id']
                 address["province"] = {
                     "id": i['data']['id'],
                     "name": postdata["addr_province"]
                 }
+        if 'province' not in address:
+            for i in prov:
+                if i['data']['title']['title_th'].strip() in postdata["addr_province"].strip() or postdata["addr_province"] in i['data']['title']['title_th']:
+                    province_id = i['data']['id']
+                    address["province"] = {
+                        "id": i['data']['id'],
+                        "name": postdata["addr_province"]
+                    }
 
         r = requests.get(
             "https://api.baania.com/api/v1/provinces/"+province_id+"/districts")
         prov = json.loads(r.text)
         
-        if postdata['addr_district'] =='บางบอน':
-            for j in prov:
+        for j in prov:
+            if j['data']['title']['title_th'].strip() == postdata['addr_district'].strip():
                 amphur_id = j['data']['id']
                 address["district"] = {
-                        "id": j['data']['id'],
-                        "name": postdata["addr_district"]
-                    }
-                break
-        else: 
-            for j in prov:
+                    "id": j['data']['id'],
+                    "name": postdata["addr_district"]
+                }
+        if 'district' not in address:
+            for j in province:
                 if j['data']['title']['title_th'].strip() in postdata['addr_district'].strip() or postdata['addr_district'] in j['data']['title']['title_th']:
                     amphur_id = j['data']['id']
                     address["district"] = {
                         "id": j['data']['id'],
                         "name": postdata["addr_district"]
                     }
+
         r = requests.get(
             "https://api.baania.com/api/v1/districts/"+amphur_id+"/subdistricts")
         prov = json.loads(r.text)
         
-        if postdata['addr_district'] =='บางบอน':
-            for j in prov:
+        for j in prov:
+            if j['data']['title']['title_th'].strip() == postdata["addr_sub_district"].strip():
                 address["sub_district"] = {
-                        "id": j['data']['id'],
-                        "name": postdata["addr_district"]
-                    }
-                break
-        else: 
-            for j in prov:
+                    "id": i['data']['id'],
+                    "name": postdata["addr_sub_district"]
+                }
+        if 'sub_district' not in address:
+            for j in province:
                 if j['data']['title']['title_th'].strip() in postdata["addr_sub_district"].strip() or postdata["addr_sub_district"].strip() in j['data']['title']['title_th']:
                     address["sub_district"] = {
                         "id": i['data']['id'],
                         "name": postdata["addr_sub_district"]
                     }
-
 
 
         address["post_code"] = "88888"
