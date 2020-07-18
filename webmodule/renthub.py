@@ -933,7 +933,7 @@ class renthub():
             success = 'true'
             detail = 'successfully created a post'
             if self.getprojectid(datahandled['use_project_name']) == datahandled['use_project_name']:
-                success = 'false'
+                success = 'true'
                 detail = 'Project name not available'
 
         

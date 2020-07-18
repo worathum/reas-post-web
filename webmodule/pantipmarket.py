@@ -475,7 +475,7 @@ class pantipmarket():
             "success": success,
             "post_url": post_url,
             "start_time":start_time,
-            "endtime" : end_time,
+            "end_time" : end_time,
             "time_usage": end_time - start_time,
             "ds_id": postdata['ds_id'],
             "post_id": post_id,

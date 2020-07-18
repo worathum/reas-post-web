@@ -185,9 +185,14 @@ class condoable():
 
         try:
             project_name = postdata['web_project_name']
+            if project_name == "":
+                raise Exception
+
         except:
             try : 
                 project_name = postdata['project_name']
+                if project_name == "":
+                    raise Exception
             except :
                 project_name = postdata['post_title_th']
 
@@ -196,6 +201,9 @@ class condoable():
 
         resp = requests.get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
         allres = json.loads(resp.content.decode('utf-8').replace('""', '"'), strict = False)
+        # print("check", allres)
+
+
         condoprojectid = None
         if len(allres) != 0:
             condoprojectid = allres[0]['id']
