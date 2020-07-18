@@ -91,6 +91,17 @@ class postcore():
         except:
             pass
 
+        # correcting input
+        for key in datarequest.keys():
+            if datarequest[key] == "\n":
+                datarequest[key] = ""
+        check_int = ['land_size_rai', 'land_size_ngan', 'land_size_wa', 'floor_area']
+        for item in check_int:
+            try:
+                a = int(datarequest[item])
+            except:
+                datarequest[item] = '0'
+
         
         # check action in list
         action = datarequest['action']

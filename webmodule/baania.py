@@ -703,6 +703,7 @@ class baania():
             "start_time": str(time_start),
             "end_time": str(datetime.datetime.utcnow()),
             "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
             "post_url": "",
             "post_id": ""
             }
@@ -901,7 +902,6 @@ class baania():
             "post_id": post_id,
             "account_type": "null",
             "detail": detail,
-            "ds_id": postdata['ds_id']
         }
 
     def delete_post(self, postdata):

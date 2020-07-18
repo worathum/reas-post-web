@@ -725,7 +725,7 @@ class khaidee():
 
                 if "ERROR" in edit_post.text:
                     success = "false"
-                    detail = "There is some problem with edit_post on the site"
+                    detail = "Post couldn't be edited due to some error from website."
 
 
             else:
