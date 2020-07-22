@@ -618,7 +618,7 @@ class ddproperty():
         #
 
         #print("here1")
-        datahandled = self.postdata_handle()
+        datahandled = self.postdata_handle(postdata)
         #print("here2")
         # login
         test_login = self.test_login(datahandled)
