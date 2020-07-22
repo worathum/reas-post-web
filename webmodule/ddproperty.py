@@ -618,7 +618,7 @@ class ddproperty():
         #
 
         #print("here1")
-        datahandled = self.postdata_handle(postdata)
+        datahandled = self.postdata_handle()
         #print("here2")
         # login
         test_login = self.test_login(datahandled)
@@ -1085,7 +1085,7 @@ class ddproperty():
             except WebDriverException as e:
                 #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
                 success = 'false'
-                detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set'
+                detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits'
                 self.firefox.quit()
                 return success, detail, post_id, account_type
 
