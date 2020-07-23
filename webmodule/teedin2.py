@@ -690,6 +690,27 @@ class teedin2():
             "post_id": post_id,
         }
 
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        log_id = postdata['log_id']
+
+        #
+        #
+        #
+
+        time_end = datetime.datetime.utcnow()
+        return {
+            "websitename": "teedin2",
+            "success": "false",
+            "time_usage": time_end - time_start,
+            "start_time": time_start,
+            "end_time": time_end,
+            "detail": "Search Post is not possible, since no registration",
+            'ds_id': postdata['ds_id'],
+            "log_id": log_id,
+        }
 
 # obj = teedin2()
 

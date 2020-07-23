@@ -217,6 +217,74 @@ post_data : eyJ0aW1lb3V0IjogIjUiLCAiYWN0aW9uIjogImRlbGV0ZV9wb3N0IiwgIndlYiI6IFt7
     }
 }
 
+SEARCH POST Correct title => PASS
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : eyJhY3Rpb24iOiAic2VhcmNoX3Bvc3QiLCAidGltZW91dCI6ICIyMCIsICJwb3N0X3RpdGxlX3RoIjogIkVEQ1NYQSIsICJ3ZWIiOiBbeyJkc19uYW1lIjogImhvbWVkZCIsICJkc19pZCI6ICIxMjAiLCAibG9nX2lkIjogIjMzMzMzIiwgInVzZXIiOiAicm9qZW4xMjM0NUBjaG9yZG1pLmNvbSIsICJwYXNzIjogIjEyMzQ1In1dfQ==
+
+<output>
+{
+    "action": "search_post",
+    "end_time": "2020-07-13 07:41:15.187499",
+    "start_time": "2020-07-13 07:41:13.458337",
+    "success": "true",
+    "usage_time": "0:00:01.729162",
+    "web": {
+        "homedd": {
+            "account_type": null,
+            "detail": "Post Found",
+            "ds_id": "120",
+            "end_time": "2020-07-13 07:41:15.179734",
+            "log_id": "33333",
+            "post_created": "",
+            "post_id": "340907",
+            "post_modified": "2020-05-28 01:49:45",
+            "post_url": "http://www.homedd.co.th/property_display.php?id=340907",
+            "post_view": "16",
+            "start_time": "2020-07-13 07:41:13.490695",
+            "success": "true",
+            "usage_time": "0:00:01.689039",
+            "websitename": "homedd"
+        }
+    }
+}
+
+SEARCH POST Wrong title => FAIL
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : eyJhY3Rpb24iOiAic2VhcmNoX3Bvc3QiLCAidGltZW91dCI6ICIyMCIsICJwb3N0X3RpdGxlX3RoIjogIkVEQ1NYQUIiLCAid2ViIjogW3siZHNfbmFtZSI6ICJob21lZGQiLCAiZHNfaWQiOiAiMTIwIiwgImxvZ19pZCI6ICIzMzMzMyIsICJ1c2VyIjogInJvamVuMTIzNDVAY2hvcmRtaS5jb20iLCAicGFzcyI6ICIxMjM0NSJ9XX0=
+
+<output>
+{
+    "action": "search_post",
+    "end_time": "2020-07-13 07:41:35.023350",
+    "start_time": "2020-07-13 07:41:33.754634",
+    "success": "true",
+    "usage_time": "0:00:01.268716",
+    "web": {
+        "homedd": {
+            "account_type": null,
+            "detail": "No post with given title",
+            "ds_id": "120",
+            "end_time": "2020-07-13 07:41:35.017704",
+            "log_id": "33333",
+            "post_created": "",
+            "post_id": "",
+            "post_modified": "",
+            "post_url": "",
+            "post_view": "",
+            "start_time": "2020-07-13 07:41:33.777886",
+            "success": "false",
+            "usage_time": "0:00:01.239818",
+            "websitename": "homedd"
+        }
+    }
+}
+
+
+
 
 
 

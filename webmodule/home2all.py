@@ -742,49 +742,69 @@ class home2all():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
         test_login = self.test_login(postdata)
+        my_res = dict()
+        my_res.update({
+                    'websitename':'home2all',
+                    'ds_id':postdata['ds_id'],
+                    'start_time':str(start_time)
+        })
+        #https://home2all.com/post/topicid/832359
         if test_login['success'] == "true":
             post_title = postdata['post_title_th']
+            print(post_title)
             pages = ["", "/pg/2"]
             tURL = dict()
+            date = []
             for page in pages:
                 url = "https://home2all.com/my-post" + page
                 r = httprequestObj.http_get(url)
-                soup = BeautifulSoup(r.content, 'lxml')
+                soup = BeautifulSoup(r.content, 'html5lib')
                 soup = soup.find('div', attrs={'class':'col-md-8'})
                 result_posts = soup('div', attrs={'class':'row tb-topic_tr_alt'}) + soup('div', attrs={'class':'row tb-topic_tr'})
                 tURL.update({str(post.find('span').string) : post.div.div['onclick'].split('\'')[1] for post in result_posts})
+                
             self.print_debug(len(tURL))
-            my_res = dict()
-            if tURL.get(post_title):
-                my_res.update({
-                    'success':'true',
-                    'post_found':'true',
-                    'post_url':tURL[post_title],
-                    'post_id':tURL[post_title].split('/')[-1]
-                })
+            
+            flag=0
+            ind=0
+            for i in tURL.keys():
+                print(i,":",post_title)
+                
+                if i == post_title:
+                    
+                    my_res.update({
+                        'success':'true',
+                        'post_found':'true',
+                        'post_url':tURL[post_title],
+                        'post_id':tURL[post_title].split('/')[-1],
+                        'detail':'Post Successfully Found',
+                        'post_modify_time':result_posts[ind].find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl01_lblUpdateDate'}).text
+                    })
+                    flag=1
+                    break
+                ind+=1
+            if flag==1:
+                pass
             else:
                 my_res.update({
                     'success':'false',
                     'post_found':'false',
                     'post_url':'',
-                    'post_id':''
+                    'post_id':'',
+                    'detail':'Post Not Found',
+                    'post_modify_time':''
                 })
+
             log_id = ""
             if 'log_id' in postdata:
                 log_id = postdata['log_id']            
             my_res.update({
-                    'websitename':'home2all',
-                    'ds_id':postdata['ds_id'],
                     'log_id':log_id,
-                    'start_time':str(start_time),
-                    "log_id": postdata['log_id'],
                     'end_time':str(datetime.datetime.utcnow()),
                     'account_type':'',
-                    'detail':'',
                     'post_create_time':'',
-                    'post_modify_time':'',
                     'post_view':''
-                })
+            })
         return my_res
 
     def print_debug(self, msg):

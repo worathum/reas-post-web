@@ -607,6 +607,76 @@ class condoable():
             "ds_id": postdata['ds_id']
         }
 
+    def search_post(self, postdata):
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        time_start = datetime.datetime.utcnow()
+
+        user = postdata['user']
+        passwd = postdata['pass']
+
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_url = ""
+        post_id = ""
+        post_created = ""
+
+        if success:
+            r = httprequestObj.http_get('http://condoable.com/myAdvertise.jsp')
+            # print(r.url)
+            # print(r.status_code)
+
+            soup = BeautifulSoup(r.content, self.parser)
+            all_posts = soup.find_all('tr')[1:]
+            # print(all_posts[0])
+
+            post_found = False
+
+            for post in all_posts:
+                info = post.find_all('td')
+                title = info[3].find('a').string
+                if title == postdata['post_title_th']:
+                    # print('Post Found')
+                    post_found = True
+                    post_id = info[1].string.strip()
+                    post_url = 'http://condoable.com/viewAdvertise.do?advertiseId='+post_id
+                    r = httprequestObj.http_get(post_url)
+                    # print(r.url)
+                    # print(r.status_code)
+                    soup = BeautifulSoup(r.content, self.parser)
+                    post_created = str(soup.find('div', 'createdOn').contents[-1])
+                    break
+
+            if post_found:
+                success = True
+                detail = "Post Found"
+            else:
+                success = False
+                detail = "No post with given title"
+        else:
+            success = False
+            detail = "Couldnot login"
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": "condoable",
+            "account_type": None,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": post_id,
+            "post_created": post_created,
+            "post_modified": "",
+            "post_view": "",
+            "post_url": post_url,
+        }
+
+
     def print_debug(self, msg):
         if(self.debug == 1):
             print(msg)

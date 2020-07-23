@@ -171,6 +171,11 @@ class postcore():
         #with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
         with concurrent.futures.ThreadPoolExecutor() as pool:
             for webitem in weblists:
+                check_ids = ['log_id', 'ds_id', 'post_id']
+                for anid in check_ids:
+                    if anid not in webitem:
+                        webitem[anid] = ""
+
                 websitename = webitem['ds_name']
                 # # if not defind in configs['list_module']
                 # if websitename not in self.list_module:

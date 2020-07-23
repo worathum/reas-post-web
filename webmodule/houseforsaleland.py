@@ -76,7 +76,6 @@ class houseforsaleland():
         return {
             "success": success,
             "usage_time": str(time_usage),
-            'ds_id': postdata['ds_id'],
             "start_time": str(start_time),
             "end_time": str(end_time),
             "detail": detail,
@@ -369,7 +368,6 @@ class houseforsaleland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": "Edited ",
-            "ds_id": postdata['ds_id'],
             "post_id": postdata['post_id']
         }
 
@@ -741,6 +739,29 @@ class houseforsaleland():
             "log_id": postdata['log_id'],
             "post_id": postdata['post_id']
         }
+
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        log_id = postdata['log_id']
+
+        #
+        #
+        #
+
+        time_end = datetime.datetime.utcnow()
+        return {
+            "websitename": "houseforsaleland",
+            "success": "false",
+            "time_usage": time_end - time_start,
+            "start_time": time_start,
+            "end_time": time_end,
+            "detail": "Search Post is not possible, since no registration",
+            'ds_id': postdata['ds_id'],
+            "log_id": log_id,
+        }
+
 
 
 # obj = houseforsaleland()

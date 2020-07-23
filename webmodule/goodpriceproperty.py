@@ -1191,6 +1191,108 @@ class goodpriceproperty():
             "post_id": postdata['post_id'],
             "websitename": "goodpriceproperty"
         }
+    def search_post(self, postdata):
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        time_start = datetime.datetime.utcnow()
+
+        user = postdata['user']
+        passwd = postdata['pass']
+
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_url = ""
+        post_id = ""
+        post_created = ""
+        post_modified = ""
+        post_view = ""
+
+        if success:
+            i = 0
+            while True:
+                try:
+                    i += 1
+                    url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=' + str(
+                        i)
+                    # print(url)
+                    r = httprequestObj.http_get(url)
+                    # print(r.url)
+
+                    # print(r.status_code)
+
+                    soup = BeautifulSoup(r.content, self.parser)
+                    all_posts = soup.find_all('table',
+                                              {'width': '640', 'border': '0', 'align': 'center', 'cellpadding': '0',
+                                               'cellspacing': '0'})[:-1]
+                    # print(all_posts[0])
+                    if (len(all_posts)) == 0:
+                        success = False
+                        detail = "No post with given title"
+                        break
+
+                    post_found = False
+
+                    for post in all_posts:
+                        info = post.find('tr').find('td').find('strong').find('font').contents
+                        # print(info)
+                        title = info[1].get('title').strip()
+                        # print(title)
+                        if title == postdata['post_title_th']:
+                            # print('Post Found')
+                            post_found = True
+                            post_id = info[1].get('href').split('/')[-2]
+                            # print(post_id)
+                            post_url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/property/' + post_id + '/' + title + '.html'
+                            r = httprequestObj.http_get(post_url)
+                            # print(r.url)
+                            # print(r.status_code)
+                            soup = BeautifulSoup(r.content, self.parser)
+                            det_info = soup.find_all('table', {'width': '320', 'border': '0', 'align': 'center',
+                                                               'cellpadding': '0', 'cellspacing': '0'})[1].find_all(
+                                'tr')
+                            # print(det_info)
+                            post_created = det_info[3].find_all('td')[2].find('font').string.strip()
+                            # print(post_created)
+                            post_modified = det_info[4].find_all('td')[2].find('font').string.strip()
+                            # print(post_modified)
+                            post_view = soup.find('td', {'align': 'right',
+                                                         'style': 'font-size:16px; font-weight:bold; color:#FFFFFF;'}).string.split(
+                                ' ')[2]
+                            # print(post_view)
+                            break
+
+                    if post_found:
+                        success = True
+                        detail = "Post Found"
+                        break
+
+                except Exception as e:
+                    # print(e)
+                    success = False
+                    detail = "No post with given title"
+                    break
+        else:
+            success = False
+            detail = "Couldnot login"
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": "goodpriceproperty",
+            "account_type": None,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": post_id,
+            "post_created": post_created,
+            "post_modified": post_modified,
+            "post_view": post_view,
+            "post_url": post_url,
+        }
 
     def print_debug(self, msg):
         if(self.debug == 1):

@@ -1,0 +1,68 @@
+
+SEARCH POST Correct title => PASS
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAic2VhcmNoX3Bvc3QiLCAidGltZW91dCI6ICIyMCIsICJwb3N0X3RpdGxlX3RoIjogIlx1MGU0M1x1MGUyYlx1MGU0OVx1MGU0MFx1MGUwYVx1MGU0OFx1MGUzMiBcdTBlNDJcdTBlMjNcdTBlMDdcdTBlMDdcdTBlMzJcdTBlMTkgXHUwZTAyXHUwZTE5XHUwZTMyXHUwZTE0IDU3IFx1MGU0NFx1MGUyM1x1MGU0OCAzIFx1MGUwN1x1MGUzMlx1MGUxOSA3OSBcdTBlMTVcdTBlMjNcdTBlMjcuIFx1MGUxZVx1MGUzN1x1MGU0OVx1MGUxOVx1MGUxN1x1MGUzNVx1MGU0OCAxMzY0MCBcdTBlMTVcdTBlMjNcdTBlMjEuIiwgIndlYiI6IFt7ImRzX25hbWUiOiAibGl2aW5naW5zaWRlciIsICJkc19pZCI6ICIxMjAiLCAibG9nX2lkIjogIjMzMzMzIiwgInVzZXIiOiAidGhldmludmVzdG9yQGdtYWlsLmNvbSIsICJwYXNzIjogInZpbnZlc3RvciJ9XX0=
+
+<output>
+{
+    "action": "search_post",
+    "end_time": "2020-07-15 08:20:51.720329",
+    "start_time": "2020-07-15 08:20:45.189300",
+    "success": "true",
+    "usage_time": "0:00:06.531029",
+    "web": {
+        "livinginsider": {
+            "account_type": null,
+            "detail": "Post Found",
+            "ds_id": "120",
+            "end_time": "2020-07-15 08:20:51.714836",
+            "log_id": "33333",
+            "post_created": "",
+            "post_id": "511568",
+            "post_modified": " 2020-06-25 17:07\u00a0\n        ",
+            "post_url": "https://www.livinginsider.com/livingdetail/511568/%E0%B9%83%E0%B8%AB%E0%B9%89%E0%B9%80%E0%B8%8A%E0%B9%88%E0%B8%B2-%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B8%87%E0%B8%B2%E0%B8%99-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-57-%E0%B9%84%E0%B8%A3%E0%B9%88-3-%E0%B8%87%E0%B8%B2%E0%B8%99-79-%E0%B8%95%E0%B8%A3%E0%B8%A7-%E0%B8%9E%E0%B8%B7%E0%B9%89%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88-13640-%E0%B8%95%E0%B8%A3%E0%B8%A1.html",
+            "post_view": " 29",
+            "start_time": "2020-07-15 08:20:45.215279",
+            "success": "true",
+            "usage_time": "0:00:06.499557",
+            "websitename": "livinginsider"
+        }
+    }
+}
+
+
+
+SEARCH POST Wrong title => FAIL
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9,
+post_data : eyJhY3Rpb24iOiAic2VhcmNoX3Bvc3QiLCAidGltZW91dCI6ICIyMCIsICJwb3N0X3RpdGxlX3RoIjogIlx1MGU0M1x1MGUyYlx1MGU0OVx1MGU0MFx1MGUwYVx1MGU0OFx1MGUzMiBcdTBlNDJcdTBlMjNcdTBlMDdcdTBlMDdcdTBlMzJcdTBlMTkgXHUwZTAyXHUwZTE5XHUwZTMyXHUwZTE0IDU3IFx1MGU0NFx1MGUyM1x1MGU0OCAzIFx1MGUwN1x1MGUzMlx1MGUxOSA3OSBcdTBlMTVcdTBlMjNcdTBlMjcuIFx1MGUxZVx1MGUzN1x1MGU0OVx1MGUxOVx1MGUxN1x1MGUzNVx1MGU0OCAxMzY0MiBcdTBlMTVcdTBlMjNcdTBlMjEuIiwgIndlYiI6IFt7ImRzX25hbWUiOiAibGl2aW5naW5zaWRlciIsICJkc19pZCI6ICIxMjAiLCAibG9nX2lkIjogIjMzMzMzIiwgInVzZXIiOiAidGhldmludmVzdG9yQGdtYWlsLmNvbSIsICJwYXNzIjogInZpbnZlc3RvciJ9XX0=
+
+<output>
+{
+    "action": "search_post",
+    "end_time": "2020-07-15 10:24:41.988681",
+    "start_time": "2020-07-15 10:24:13.445974",
+    "success": "true",
+    "usage_time": "0:00:28.542707",
+    "web": {
+        "livinginsider": {
+            "account_type": null,
+            "detail": "No post with given post_title",
+            "ds_id": "120",
+            "end_time": "2020-07-15 10:24:41.977455",
+            "log_id": "33333",
+            "post_created": "",
+            "post_id": "",
+            "post_modified": "",
+            "post_url": "",
+            "post_view": "",
+            "start_time": "2020-07-15 10:24:13.463425",
+            "success": "false",
+            "usage_time": "0:00:28.514030",
+            "websitename": "livinginsider"
+        }
+    }
+}

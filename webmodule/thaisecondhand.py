@@ -656,6 +656,92 @@ class thaisecondhand():
             "account_type": "",
             "detail": detail
         }
+
+    def search_post(self,postdata):
+        start_time = datetime.datetime.utcnow()
+
+        login = self.test_login(postdata)
+        post_found = "False"
+        post_id = ''
+        post_url = ''
+        post_view = ''
+        post_modify_time = ''
+        post_create_time = ''
+        detail = 'No post with this title'
+        title = ''
+        if (login['success'] == 'True'):
+
+            
+            all_posts_url = 'https://www.thaisecondhand.com/member'
+
+            all_posts = httprequestObj.http_get(all_posts_url)
+
+            page = BeautifulSoup(all_posts.content, features = "html5lib")
+
+            print(page)
+            divi = page.find('div', attrs = {'class':'list-post'})
+            print(divi)
+            prodList = divi.findAll('p',attrs={'class':'pd-name'})
+            #print(xyz,len(xyz))
+            
+            if prodList == None:
+                detail = "Post Not Found"
+            else:
+                flag= 0
+                for prd in prodList:
+                    one = prd.find('a')
+                    if one.has_attr('target') and one.text==postdata['post_title_th']:
+                        post_url = "https:"+str(one['href'])
+                        pid = post_url.split('/')[-1]
+                        print("yha phuncha",post_url)
+                        
+                        #print(post_url,end = '\n')
+                        post_found = "True"
+                        postPage = httprequestObj.http_get(post_url)
+                        print("yha phuncha 1")
+                        ppage = BeautifulSoup(postPage.text,'html5lib').find('ul',attrs={'class':'info-post'}).findAll('li')
+                        print("yha phuncha 2")
+                        time = ppage[-3].find('span').text
+                        view = ppage[-1].find('span').text
+                        post_modify_time = time
+                        post_id = pid
+
+                        post_view = view
+                                            
+                        detail = "Post Found "
+                        flag=1
+                        break
+                if flag==0:
+                    detail = "Post Not Found"
+                    post_found = 'False'
+                    #print("yha se gya")
+                      
+                    
+        else :
+            detail = 'Can not log in'
+            post_found = 'False'
+
+        end_time = datetime.datetime.utcnow()
+        
+
+        return {
+            "websitename": "thaisecondhand",
+            "success": post_found,
+            "start_time": str(start_time),
+            "end_time": str(end_time),
+            "usage_time": str(end_time - start_time),
+            "detail": detail,
+            "account_type":"null",
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": post_id,
+            "post_url": post_url,
+            "post_modify_time": post_modify_time,
+            "post_create_time" : post_create_time,
+            "post_view": post_view,
+            "post_found": post_found
+        }
+    
     
     def print_debug(self, msg):
         if(self.debug == 1):

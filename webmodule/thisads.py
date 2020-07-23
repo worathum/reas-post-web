@@ -544,6 +544,123 @@ class thisads():
                 r = httprequestObj.http_get(
                     'http://www.thisads.com/ajax_deleteproduct.php', headers=headers, params=params)
 
+    def search_post(self,postdata):
+        start_time = datetime.datetime.utcnow()
+
+        login = self.test_login(postdata)
+        post_found = "false"
+        post_id = ''
+        post_url = ''
+        post_view = ''
+        post_modify_time = ''
+        post_create_time = ''
+        detail = 'No post with this title'
+        title = ''
+        if (login['success'] == 'true'):
+
+            
+            #'http://thisads.com/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%82%E0%B8%AD%E0%B8%87%E0%B8%84%E0%B8%B8%E0%B8%93.html'
+
+            all_posts_url = 'http://thisads.com/ajax_showproduct.php'
+            cookies = {
+                'PHPSESSID': 'd6594er797ku4k8j9k13r92kl1',
+                'fcspersistslider1': '1',
+                'producttabs2': '0',
+                'producttabs': '0',
+                'HstCfa1057552': '1594641567283',
+                'HstCmu1057552': '1594641567283',
+                'HstCnv1057552': '1',
+                '__dtsu': '6D0015943150553C303F1543554130A6',
+                'HstCns1057552': '2',
+                'HstCla1057552': '1594642569220',
+                'HstPn1057552': '9',
+                'HstPt1057552': '9',
+            }
+
+            headers = {
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                'Accept-Language': 'en-US,en;q=0.9,hi;q=0.8',
+            }
+            pi_url  = 'http://thisads.com/member.php'
+            pi = httprequestObj.http_get(pi_url)
+            #print(pi.text)
+            all_posts = httprequestObj.http_get(all_posts_url)
+
+            page = BeautifulSoup(all_posts.text, features = "html5lib")
+            
+            #print(page)
+            divi = page.find('div', attrs = {'id':'productlist'})
+            #print(divi)
+            prodList = divi.findAll('li')
+            #print(xyz,len(xyz))
+            
+            if prodList == None:
+                detail = "Post Not Found"
+            else:
+                flag= 0
+                for prd in prodList:
+                    on = prd.findAll('a')
+                    for one in on:
+                        if one.has_attr('target'):
+                            print(one.text)
+                        if one.has_attr('target') and one.text==postdata['post_title_th']:
+                            post_url = one['href']
+                            print("yha Phunch gya",post_url)
+                            pid = post_url.split('/')[-2]
+                            sz = len(pid)-1
+                            while sz>=0:
+                                if '0'<=pid[sz]<='9' :
+                                    sz-=1
+                                else:
+                                    break
+                            pid = pid[sz+1:]
+                        
+                            #print(post_url,end = '\n')
+                            post_found = "true"
+                            time = prd.find('span',attrs={'class':'date'}).text
+                            view = prd.find('span',attrs = {'class':'view'}).find('span',attrs = {'title':'จำนวนคนดู'}).text
+
+                            post_create_time = time
+                            post_id = pid
+
+                            post_view = view
+                                                
+                            detail = "Post Found "
+                            flag=1
+                            break
+                if flag==0:
+                    detail = "Post Not Found"
+                    post_found = 'false'
+                    #print("yha se gya")
+                
+                    
+        else :
+            detail = 'Can not log in'
+            post_found = 'false'
+
+        end_time = datetime.datetime.utcnow()
+        
+
+        return {
+            "websitename": "thisads",
+            "success": post_found,
+            "start_time": str(start_time),
+            "end_time": str(end_time),
+            "usage_time": str(end_time - start_time),
+            "detail": detail,
+            "account_type":"null",
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": post_id,
+            "post_url": post_url,
+            "post_modify_time": post_modify_time,
+            "post_create_time" : post_create_time,
+            "post_view": post_view,
+            "post_found": post_found
+        }
 
 # temp = {'user': 'amarin.ta@gmail.com', 'pass': '123456',
 #         'addr_province': '\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e21\u0e2b\u0e32\u0e19\u0e04\u0e23', 'property_type': '1', 'post_title_th': 'cdge dsfhjkdfg', 'post_description_th': '\u0e02\u0e32\u0e22 \u0e04\u0e2d\u0e19\u0e42\u0e14 watermark \u0e40\u0e08\u0e49\u0e32\u0e1e\u0e23\u0e30\u0e22\u0e32\u0e23\u0e34\u0e40\u0e27\u0e2d\u0e23\u0e4c 105 \u0e15\u0e23\u0e21. 2 \u0e19\u0e2d\u0e19 2 \u0e19\u0e49\u0e33 \u0e0a\u0e31\u0e49\u0e19 33 \u0e17\u0e34\u0e28 \u0e40\u0e2b\u0e19\u0e37\u0e2d \u0e27\u0e34\u0e27 \u0e40\u0e21\u0e37\u0e2d\u0e07 Fully furnished\r\n\r\n:: \u0e23\u0e32\u0e22\u0e25\u0e30\u0e40\u0e2d\u0e35\u0e22\u0e14\u0e2b\u0e49\u0e2d\u0e07 ::\r\n - \u0e02\u0e19\u0e32\u0e14 105 \u0e15\u0e23\u0e21.\r\n - \u0e0a\u0e19\u0e34\u0e14 2 \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e2d\u0e19 2 \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e49\u0e33 \r\n - \u0e2d\u0e32\u0e04\u0e32\u0e23 1 \u0e0a\u0e31\u0e49\u0e19 33\r\n - \u0e23\u0e30\u0e40\u0e1a\u0e35\u0e22\u0e07\u0e2b\u0e31\u0e19\u0e17\u0e32\u0e07\u0e17\u0e34\u0e28 \u0e40\u0e2b\u0e19\u0e37\u0e2d \u0e27\u0e34\u0e27 \u0e40\u0e21\u0e37\u0e2d\u0e07\r\n\r\n\r\n:: \u0e23\u0e32\u0e22\u0e25\u0e30\u0e40\u0e2d\u0e35\u0e22\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23 ::\r\n - \u0e0a\u0e37\u0e48\u0e2d\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23: watermark \u0e40\u0e08\u0e49\u0e32\u0e1e\u0e23\u0e30\u0e22\u0e32\u0e23\u0e34\u0e40\u0e27\u0e2d\u0e23\u0e4c\r\n\r\n\r\n\r\nProject Owner: Major Development\r\nProject Area: 11 Rai\r\nNumber of building: 2\r\n52 floors 486 units\r\n\r\n:: \u0e2a\u0e16\u0e32\u0e19\u0e17\u0e35\u0e48\u0e43\u0e01\u0e25\u0e49\u0e40\u0e15\u0e35\u0e22\u0e07 ::\r\n- Senan fest: 1.2 km\r\n- icon SIAM : 2km\r\n\u0e1e\u0e34\u0e01\u0e31\u0e14: http:\/\/maps.google.com\/maps?q=13.710968,100.498459\r\n\r\n\u0e23\u0e32\u0e04\u0e32: 13,900,000 \u0e1a\u0e32\u0e17\r\n\r\n\u0e2a\u0e19\u0e43\u0e08\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d: NADECHAuto 0852546523\r\nLine: Pokajg\r\n#\u0e13\u0e40\u0e14\u0e0a\u0e1e\u0e23\u0e47\u0e2d\u0e1e\u0e14\u0e1e\u0e2d\u0e23\u0e4c\u0e15\u0e35\u0e49","post_title_en":"Condo for sale at watermark ChaoPhraya River, 105 Sqm, 33th floor, fully furnished","short_post_title_en":"","post_description_en":":: Room Details ::\r\n- Size 105 sqm.\r\n- Type 2 bed 2 bath\r\n- Fully furnished and electric appliances\r\n- Building 1, Floor 33\r\n- Balcony facing the city view\r\n\r\n:: Project Details ::\r\nProject Name: WaterMark Chaopraya River\r\nProject Owner: Major Development\r\nProject Area: 11 Rai\r\nNumber of building: 2\r\n52 floors 486 units', 'price_baht': '12312321', 'listing_type': 'ขาย', 'post_images': [os.getcwd() + '/download.jpeg']}
