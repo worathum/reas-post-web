@@ -847,3 +847,78 @@ class homedd():
             "detail": detail,
             "websitename": "homedd",
         }
+
+
+    def search_post(self, postdata):
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        time_start = datetime.utcnow()
+
+        user = postdata['user']
+        passwd = postdata['pass']
+
+        test_login = self.test_login(postdata)
+        success = test_login["success"]
+        detail = test_login["detail"]
+        post_url = ""
+        post_id = ""
+        post_modified = ""
+        post_view = ""
+
+        if success:
+            r = httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php')
+            # print(r.url)
+            # print(r.status_code)
+
+            soup = BeautifulSoup(r.content, 'html.parser')
+            all_posts = soup.find_all('tr')[2:]
+            # print(all_posts[0])
+
+            post_found = False
+
+            for post in all_posts:
+                info = post.find_all('td')
+                title = info[1].string
+                # print(title)
+                if title == postdata['post_title_th']:
+                    # print('Post Found')
+                    post_found = True
+                    post_id = info[3].find('a').get('href').split('=')[-1]
+                    # print(post_id)
+                    post_url = 'http://www.homedd.co.th/property_display.php?id='+post_id
+                    r = httprequestObj.http_get(post_url)
+                    # print(r.url)
+                    # print(r.status_code)
+                    soup = BeautifulSoup(r.content, 'html.parser')
+                    post_modified = soup.find('font', {'style': 'color:#888; font-size:14px;'}).string.split(' ')[2:]
+                    post_modified = post_modified[0] + ' ' + post_modified[1]
+                    post_view = soup.find('h2', {'style': 'margin:0px; font-size:20px;'}).string.split(' ')[-14]
+                    break
+
+            if post_found:
+                success = True
+                detail = "Post Found"
+            else:
+                success = False
+                detail = "No post with given title"
+        else:
+            success = False
+            detail = "Couldnot login"
+
+        time_end = datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": "homedd",
+            "account_type": None,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": post_id,
+            "post_created": "",
+            "post_modified": post_modified,
+            "post_view": post_view,
+            "post_url": post_url,
+        }

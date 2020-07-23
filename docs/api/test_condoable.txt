@@ -158,3 +158,70 @@ post_data : ewogICAgImFjdGlvbiI6ICJkZWxldGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwK
  "start_time": "2020-07-04 22:17:43.125068",
  "end_time": "2020-07-04 22:17:47.417260"
 }
+
+Search Post Correct title => PASS
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : eyJhY3Rpb24iOiAic2VhcmNoX3Bvc3QiLCAidGltZW91dCI6ICIxMCIsICJwb3N0X3RpdGxlX3RoIjogInh4eCIsICJ3ZWIiOiBbeyJkc19uYW1lIjogImNvbmRvYWJsZSIsICJkc19pZCI6ICIxMjAiLCAibG9nX2lkIjogIjMzMzMzIiwgInVzZXIiOiAidGVzdGVyUmVhbEBwcm90b25tYWlsLmNvbSIsICJwYXNzIjogIjEyMzQ1Njc4In1dfQ==
+
+<output>
+{
+    "action": "search_post",
+    "end_time": "2020-07-13 07:01:31.963101",
+    "start_time": "2020-07-13 07:01:29.582133",
+    "success": "true",
+    "usage_time": "0:00:02.380968",
+    "web": {
+        "condoable": {
+            "account_type": null,
+            "detail": "Post Found",
+            "ds_id": "120",
+            "end_time": "2020-07-13 07:01:31.959113",
+            "log_id": "33333",
+            "post_created": " 2020-07-05 05:14:51.0 ",
+            "post_id": "288471",
+            "post_modified": "",
+            "post_url": "http://condoable.com/viewAdvertise.do?advertiseId=288471",
+            "post_view": "",
+            "start_time": "2020-07-13 07:01:29.605880",
+            "success": "true",
+            "usage_time": "0:00:02.353233",
+            "websitename": "condoable"
+        }
+    }
+}
+
+
+Search Post Wrong title => FAIL
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data : eyJhY3Rpb24iOiAic2VhcmNoX3Bvc3QiLCAidGltZW91dCI6ICIxMCIsICJwb3N0X3RpdGxlX3RoIjogInh4eSIsICJ3ZWIiOiBbeyJkc19uYW1lIjogImNvbmRvYWJsZSIsICJkc19pZCI6ICIxMjAiLCAibG9nX2lkIjogIjMzMzMzIiwgInVzZXIiOiAidGVzdGVyUmVhbEBwcm90b25tYWlsLmNvbSIsICJwYXNzIjogIjEyMzQ1Njc4In1dfQ==
+
+<output>
+{
+    "action": "search_post",
+    "end_time": "2020-07-13 07:02:36.363005",
+    "start_time": "2020-07-13 07:02:34.427953",
+    "success": "true",
+    "usage_time": "0:00:01.935052",
+    "web": {
+        "condoable": {
+            "account_type": null,
+            "detail": "No post with given title",
+            "ds_id": "120",
+            "end_time": "2020-07-13 07:02:36.356167",
+            "log_id": "33333",
+            "post_created": "",
+            "post_id": "",
+            "post_modified": "",
+            "post_url": "",
+            "post_view": "",
+            "start_time": "2020-07-13 07:02:34.446686",
+            "success": "false",
+            "usage_time": "0:00:01.909481",
+            "websitename": "condoable"
+        }
+    }
+}
