@@ -40,7 +40,7 @@ class livinginsider():
 
         user = postdata['user']
         passwd = postdata['pass']
-
+        username = user.replace("@","").replace(".","")
         # start process
         #
         success = "true"
@@ -50,7 +50,7 @@ class livinginsider():
             "email": user,
             "password": passwd,
             "repassword": passwd,
-            "username": 'mrmbrttk', #postdata['name_th']+'_'+postdata['surname_th'],
+            "username": username,
             "mem_tel": postdata['tel']
         }
         # print(datapost)
@@ -82,7 +82,7 @@ class livinginsider():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        user = postdata['user']
+        user = postdata['user'].replace("@","").replace(".","")
         passwd = postdata['pass']
         # start process
         #
@@ -712,15 +712,105 @@ class livinginsider():
         except:
             theprodid = getProdId[postdata['property_type']]
 
-        province_id = ''
+        if 'web_project_name' not in postdata or postdata['web_project_name'] != None:
+            if 'project_name' in postdata and postdata['project_name'] != None:
+                postdata['web_project_name'] = postdata['project_name']
+            else:
+                postdata['web_project_name'] = postdata['post_title_th']
 
+        if 'floor_total' not in postdata:
+            postdata['floor_total'] = 1
+        elif postdata['floor_total'] == None or postdata['floor_total'] == '':
+            postdata['floor_total'] = 1
+
+        if 'floor_level' not in postdata:
+            postdata['floor_level'] = 1
+        elif postdata['floor_level'] == None or postdata['floor_level'] == '':
+            postdata['floor_level'] = 1
+
+        if 'bath_room' not in postdata:
+            postdata['bath_room'] = 1
+        elif postdata['bath_room'] == None or postdata['bath_room'] == '':
+            postdata['bath_room'] = 1
+
+        if 'bed_room' not in postdata:
+            postdata['bed_room'] = 1
+        elif postdata['bed_room'] == None or postdata['bed_room'] == '':
+            postdata['bed_room'] = 1
+
+        if int(postdata['bed_room']) > 10:
+            postdata['bed_room'] = 11
+
+        if int(postdata['bath_room']) > 5:
+            postdata['bath_room'] = 6
+
+        if postdata['land_size_rai'] == None:
+            land_size_rai = 0
+        else:
+            land_size_rai = postdata['land_size_rai']
+
+        if postdata['land_size_ngan'] == None:
+            land_size_ngan = 0
+        else:
+            land_size_ngan = postdata['land_size_ngan']
+        
+        if postdata['land_size_wa'] == None:
+            land_size_wa = 0
+        else:
+            land_size_wa = postdata['land_size_wa']
+
+
+        province_id = ''
+        term = postdata['web_project_name'].replace(' ', '+')
+
+        data = requests.get(
+            'https://www.livinginsider.com/a_project_list_json.php?term='+term+'&_type=query&q='+term)
+        # print(data.url)
+        data = json.loads(data.text)
+
+        if len(data) == 1:
+            term = postdata['addr_district']+'+'+postdata['addr_province']
+            data = requests.get(
+                'https://www.livinginsider.com/a_project_list_json.php?term='+term+'&_type=query&q='+term)
+            data = json.loads(data.text)
+            print("data", data)
+            try: 
+                idzone = data[1]['id']
+            except:
+                idzone = data[0]['id']
+        else:
+            idzone = data[1]['id']
+        print("idzone", idzone)
+
+        data = requests.post(
+            'https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
+        data = json.loads(data.text)
+        print("data", data)
+        r = data['value']
+        if r == '':
+            data = requests.get(
+                'https://www.livinginsider.com/a_project_list_json.php?term=a&_type=query&q=a')
+            data = json.loads(data.text)
+            try:
+                idzone = data[1]['id']
+            except:
+                idzone = data[0]['id']
+            data = requests.post(
+                'https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
+            data = json.loads(data.text)
+            r = data['value']
+
+
+        soap = BeautifulSoup(r,'html.parser')
+        option = soap.find('option')
+        option = option['value']
         # for i in postdata["post_img_url_lists"]:
 
-        for (key, value) in provincedata.items():
-            if type(value) is str and postdata['addr_province'].strip() in value.strip():
-                province_id = key
-                print("yes")
-                break
+        # for (key, value) in provincedata.items():
+        #     if type(value) is str and postdata['addr_province'].strip() in value.strip():
+        #         province_id = key
+        #         print("yes")
+        #         break
 
         prod_address = ""
         for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
@@ -740,10 +830,11 @@ class livinginsider():
                 ('post_price_type', '2'),
                 ('post_price', postdata['price_baht']),
                 ('add', prod_address),
-                ('province', province_id),
+                # ('province', province_id),
                 ('name', postdata['name']),
                 ('email', postdata['email']),
                 ('tel', postdata['mobile']),
+                ('web_zone_id', option),
                 ('rands', 'ZF71'),
                 ('capcha', 'ZF71'),
                 ('submit', 'Confirm announcement'),
@@ -757,7 +848,7 @@ class livinginsider():
                     files["file"+str(i)] = r
 
             r = httprequestObj.http_post(
-                'http://www.quickdealfree.com/member/p-edit-classifieds-post.php', data=datapost, files=files)
+                'http://www.livinginsider.com/a_edit_living.php', data=datapost, files=files)
             data = r.text
             print(data)
         else:
@@ -770,7 +861,6 @@ class livinginsider():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "post_url": "http://www.quickdealfree.com/post-"+postdata['post_id']+'/'+postdata['post_title_th']+".html",
             "post_id": postdata['post_id'],
             "account_type": "null",
             "detail": detail,

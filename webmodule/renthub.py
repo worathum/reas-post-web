@@ -1484,7 +1484,7 @@ class renthub():
         #f.write(r.text.encode('utf-8').strip())
 
         pid = datahandled['post_id']
-        match = re.search(rf"{pid}", r.text)
+        match = re.search(r"%s" % str(pid), r.text)
         #log.debug(r.url)
         if not match:
             # 1 ถ้า get project id ไม่ได้ (search ไม่เจอ) ก็จะ post ไม่ได้ response 500
@@ -1611,7 +1611,7 @@ class renthub():
         # f.write(r.text.encode('utf-8').strip())
 
         pid = datahandled['post_id']
-        match = re.search(rf"{pid}", r.text)
+        match = re.search(r"%s" % str(pid), r.text)
         #log.debug(r.url)
         if not match:
             success = 'false'

@@ -29,7 +29,7 @@ class khaidee():
         self.primarydomain = ''
         self.debug = 0
         self.debugresdata = 0
-        self.baseurl = 'https://www.khaidee.co.in'
+        self.baseurl = 'https://www.khaidee.co.th'
         self.parser = 'html.parser'
 
 

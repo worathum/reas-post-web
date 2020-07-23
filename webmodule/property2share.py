@@ -150,9 +150,8 @@ class property2share():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.utcnow()
 
-        if ('log_id' not in postdata or postdata['log_id'] == None):
+        if ('log_id' not in postdata or postdata['log_id'] == None or postdata['log_id'] == ""):
             log_id = ''
-
 
         else:
             log_id = int(postdata['log_id'])
@@ -356,7 +355,7 @@ class property2share():
             return login
 
         check_posted = self.check_posted(postdata)
-        if ('log_id' not in postdata or postdata['log_id'] == None):
+        if ('log_id' not in postdata or postdata['log_id'] == None or log_id == ""):
             log_id = ''
 
 
@@ -494,7 +493,7 @@ class property2share():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.utcnow()
 
-        if ('log_id' not in postdata or postdata['log_id'] == None):
+        if ('log_id' not in postdata or postdata['log_id'] == None or log_id == ""):
             log_id = ''
 
 
@@ -555,7 +554,7 @@ class property2share():
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
 
-        if ('log_id' not in postdata or postdata['log_id'] == None):
+        if ('log_id' not in postdata or postdata['log_id'] == None or log_id == ""):
             log_id = ''
 
 
@@ -740,7 +739,7 @@ class property2share():
 
         login = self.test_login(postdata)
 
-        if ('log_id' not in postdata or postdata['log_id'] == None):
+        if ('log_id' not in postdata or postdata['log_id'] == None or log_id == ""):
             log_id = ''
 
 

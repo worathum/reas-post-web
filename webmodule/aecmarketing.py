@@ -86,7 +86,6 @@ class aecmarketing():
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
-                'ds_id': postdata['ds_id'],
                 "websitename": "aecmarketing",
                 "ds_id": passdata['ds_id']
             }
@@ -100,7 +99,6 @@ class aecmarketing():
                 "end_time": str(end_time),
                 "usage_time": str(end_time - start_time),
                 "detail": detail,
-                'ds_id': postdata['ds_id'],
                 "websitename": "aecmarketing",
                 "ds_id": passdata['ds_id']
             }
@@ -1285,7 +1283,7 @@ class aecmarketing():
             "post_create_time": "",
             "post_modify_time": "",
             "post_view": "",
-            "websitename": "aecmarketinghome",
+            "websitename": "aecmarketing",
             "ds_id": postdata['ds_id']
         }
 

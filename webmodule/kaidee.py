@@ -10,7 +10,7 @@ import datetime
 import sys
 import requests
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -52,13 +52,12 @@ class kaidee():
         self.parser = 'html.parser'
 
         self.options = Options()
-        self.options.add_argument("--headless")  # Runs Chrome in headless mode.
+        self.options.add_argument("--headless")  # Runs Firefox in headless mode.
         self.options.add_argument('--no-sandbox')  # Bypass OS security model
         self.options.add_argument('start-maximized')
         self.options.add_argument('disable-infobars')
         self.options.add_argument("--disable-extensions")
         self.options.add_argument("window-size=1024,768")
-        self.chromedriver_binary = "/usr/bin/chromedriver"
 
 
     def register_user(self, postdata):
@@ -544,7 +543,7 @@ class kaidee():
             post_found = "false"
             detail = "No post found with given title"
 
-            chrome = webdriver.Chrome(self.chromedriver_binary, options=self.options)
+            chrome = webdriver.Firefox(options=self.options)
             delay = 10
 
             if self.selenium_login(chrome, postdata['user'], postdata['pass']):
