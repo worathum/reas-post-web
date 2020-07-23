@@ -55,15 +55,15 @@ class ddproperty():
         datahandled = self.postdata_handle(postdata)
         user = datahandled['user']
         passwd = datahandled['pass']
-        company_name = datahandled['company_name']
-        name_title = datahandled["name_title"]
-        name_th = datahandled["name_th"]
-        surname_th = datahandled["surname_th"]
-        name_en = datahandled["name_en"]
-        surname_en = datahandled["surname_en"]
-        tel = datahandled["tel"]
-        line = datahandled["line"]
-        addr_province = datahandled["addr_province"]
+        company_name = postdata['company_name']
+        name_title = postdata["name_title"]
+        name_th = postdata["name_th"]
+        surname_th = postdata["surname_th"]
+        # name_en = postdata["name_en"]
+        # surname_en = postdata["surname_en"]
+        tel = postdata["tel"]
+        line = postdata["line"]
+        # addr_province = postdata["addr_province"]
         tel = list(tel)
         del tel[0]
         newtel = ''.join(tel)
@@ -119,6 +119,7 @@ class ddproperty():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
+            "websitename": "ddproperty",
             "success": register_success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),

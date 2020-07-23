@@ -1204,7 +1204,7 @@ class thaihometown():
 
             # check respone py post id
             pid = datahandled['post_id']
-            matchObj = re.search(rf"{pid}", data)
+            matchObj = re.search(r"%s" % str(pid), data)
             if not matchObj:
                 success = "false"
                 detail = "not found this post_id " + datahandled['post_id']
@@ -1343,7 +1343,7 @@ class thaihometown():
 
                 # check respone py post id
                 pid = datahandled['post_id']
-                matchObj = re.search(rf"{pid}", data)
+                matchObj = re.search(r"%s" % str(pid), data)
                 if not matchObj:
                     success = "false"
                     detail = "not found this post_id " + datahandled['post_id']

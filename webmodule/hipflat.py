@@ -91,6 +91,7 @@ class hipflat():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
+        httprequestObj.http_get_with_headers('https://www.hipflat.co.th/logout')
 
         headers = {
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
@@ -167,6 +168,23 @@ class hipflat():
         
         start_time = datetime.datetime.utcnow()
 
+        headers = {
+            'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
+        }
+
+        response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
+        soup = BeautifulSoup(response.content, features = "html")
+        # soup.split('name="csrf-token"')[0].split("content="'')[-1]
+        # print(soup.find("meta",{"name":"csrf-token"}))
+        post_data = {
+        '_method':'delete',
+        'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
+        }
+
+        # data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
+        httprequestObj.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
+
+
         data = {
             'utf8': '',
             'authenticity_token': '',
@@ -179,9 +197,6 @@ class hipflat():
         success = "false"
         detail = ""
         
-        headers = {
-            'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
-        }
 
         if data['user[email]'] == "":
             detail = "Invalid username"
@@ -1209,7 +1224,7 @@ class hipflat():
         end_time = datetime.datetime.utcnow()
         
         return {
-            "websitename": "boost",
+            "websitename": "hipflat",
             "success": success,
             "start_time": str(start_time),
             "end_time": str(end_time),

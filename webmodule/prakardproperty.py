@@ -169,8 +169,8 @@ class prakardproperty():
         property_id = postdata['property_id']
         post_title_th = postdata['post_title_th']
         post_description_th = postdata['post_description_th']
-        post_title_en = postdata['post_title_en']
-        post_description_en = postdata['post_description_en']
+        # post_title_en = postdata['post_title_en']
+        # post_description_en = postdata['post_description_en']
         try:
             floor_no = postdata['floor_level']
         except:
@@ -550,8 +550,8 @@ class prakardproperty():
         property_id = postdata['property_id']
         post_title_th = postdata['post_title_th']
         post_description_th = postdata['post_description_th']
-        post_title_en = postdata['post_title_en']
-        post_description_en = postdata['post_description_en']
+        # post_title_en = postdata['post_title_en']
+        # post_description_en = postdata['post_description_en']
         prod_address = ""
         for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
             if add is not None:
@@ -622,7 +622,7 @@ class prakardproperty():
             property_type = "8"
         postdata = {
             'data[Properties][id]':webdata['post_id'],
-'data[Properties][title]': post_title_en,
+'data[Properties][title]': post_title_th,
 'data[Properties][property_type_id]': property_type, # number between 1-9
 'data[Properties][property_post_type_id]': listing_type,               #number between 1-9
 'data[Properties][size_square_metre]': floorarea_sqm,
@@ -650,7 +650,7 @@ class prakardproperty():
 'data[PropertyDetails][location_datail]': "",
 'files[]': [],
 'data[Properties][youtube]':"", 
-'data[PropertyDetails][detail]':post_description_en
+'data[PropertyDetails][detail]':post_description_th
         }
         list_dict = {'ขาย' : 1, 'เช่า':2,'ขายดาวน์':3,'เซ้ง':4,'ขาย/ให้เช่า':5}
         listing_type = list_dict[listing_type]

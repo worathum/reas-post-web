@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PantipMarket.com : My</title>
+<link href="https://www.pantipmarket.com/css/main.css?v56" rel="stylesheet" type="text/css" />
+<link href="https://www.pantipmarket.com/css/member_my.css?v4" rel="stylesheet" type="text/css" />
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var LANG = 'th';
+var BASE_PATH = '/';
+var BASE_URL = 'https://www.pantipmarket.com/';
+var full_url = 'https://www.pantipmarket.com/member/my/?view=ads';
+var curr_date = '2020-07-24 06:14:07';
+var res_msg = '';
+//--><!]]></script>
+<script type="text/javascript" src="https://www.pantipmarket.com/common.js?v37" charset="utf-8"></script>
+<script type="text/javascript" src="https://www.pantipmarket.com/_source/js/sack.js" charset="utf-8"></script>
+<script type="text/javascript" src="https://www.pantipmarket.com/_source/js/validate.js" charset="utf-8"></script>
+<script type="text/javascript" src="https://www.pantipmarket.com/_include/js/member_my.js?v5" charset="utf-8"></script>
+<link rel="stylesheet" href="https://www.pantipmarket.com/_source/js/dhtmlmodal/windowfiles/dhtmlwindow.css" type="text/css" />
+<script type="text/javascript" src="https://www.pantipmarket.com/_source/js/dhtmlmodal/windowfiles/dhtmlwindow.js" charset="utf-8"></script>
+<link rel="stylesheet" href="https://www.pantipmarket.com/_source/js/dhtmlmodal/modalfiles/modal.css" type="text/css" />
+<script type="text/javascript" src="https://www.pantipmarket.com/_source/js/dhtmlmodal/modalfiles/modal.js" charset="utf-8"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+//--><!]]></script>
+<link rel="stylesheet" href="https://www.pantipmarket.com/_source/js/jquery/theme/jquery.ui.all.css" />
+<script src="https://www.pantipmarket.com/_source/js/jquery/jquery.min.js"></script>
+<script src="https://www.pantipmarket.com/_source/js/jquery/ui/jquery.ui.core.js"></script>
+<script src="https://www.pantipmarket.com/_source/js/jquery/ui/jquery.ui.widget.js"></script>
+<script src="https://www.pantipmarket.com/_source/js/jquery/ui/jquery.ui.datepicker.js"></script>
+<script src="https://www.pantipmarket.com/_source/js/jquery/ui/i18n/jquery.ui.datepicker-th.js"></script>
+<link rel="stylesheet" type="text/css" href="https://www.pantipmarket.com/_source/js/jquery/fancybox/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+<script type="text/javascript" src="https://www.pantipmarket.com/_source/js/jquery/fancybox/fancybox/jquery.fancybox-1.3.4.js"></script>
+<style type="text/css">
+/* Overide css code กำหนดความกว้างของปฏิทินและอื่นๆ */
+.ui-datepicker{
+	width:170px;
+	font-family:tahoma;
+	font-size:11px;
+	text-align:center;
+}
+</style>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-5811015-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script type="text/javascript" src="https://www.pantipmarket.com/_include/js/shiftboard.js?v4" charset="utf-8"></script> <!-- chonnavee -->
+</head>
+<body>
+
+<script type="text/javascript" src="https://www.pantipmarket.com/_source/js/wz_tooltip/wz_tooltip.js"></script>
+<div style="padding: 0px;overflow: hidden;visibility: hidden;position: absolute;width: 0px;left: 0px;top: 0px;z-index: 1010;" id="WzTtDiV"> </div>
+
+<!--[ HEADER : begin ]-->
+<!--/ @ฉ|2017-11-23 11:54 /-->
+<div id="pmk_header" class="wrapper">
+  <div id="pmk_header_inner"><span><a href="https://www.pantipmarket.com/" title="ลงโฆษณาฟรี ลงประกาศฟรี ขายของมือสอง ร้านค้าออนไลน์ ecommerce หางาน สมัครงาน PantipMarket.com" target="_parent"><img src="https://www.pantipmarket.com/image/layout/logo_pantipmarket.png" width="387" height="68" alt="ลงโฆษณาฟรี ลงประกาศฟรี ขายของมือสอง ร้านค้าออนไลน์ ecommerce หางาน สมัครงาน PantipMarket.com" /></a></span></div>
+  <div style="height: 68px;padding: 0px;text-align: right;position: absolute;right: 0;top: 0;">
+	<span style="display: block;float: left;padding: 0px;"><img src="https://www.pantipmarket.com/image/app/pmk_button_dwnapp_01.png" alt="" /></span>
+	<a style="display: block;float: left;padding: 0px;" href="https://itunes.apple.com/th/app/pantipmarket/id1198877332" target="_blank" title="Download on the App Store"><img src="https://www.pantipmarket.com/image/app/pmk_button_dwnapp_02.png" alt="" /></a>
+    <a style="display: block;float: left;padding: 0px;" href="https://play.google.com/store/apps/details?id=com.pantipmarket.app" target="_blank" title="Android app on Google Play"><img src="https://www.pantipmarket.com/image/app/pmk_button_dwnapp_03.png" alt="" /></a>
+    	<br style="clear: both;" />
+  </div>
+</div>
+<div class="wrapper sep_header"><img src="https://www.pantipmarket.com/image/spacer.gif" width="1" height="4" /></div><!--[ HEADER : end ]-->
+
+<!--[ EXTENDED BANNER : begin ]-->
+<!--[ EXTENDED BANNER : end ]-->
+
+<!--[ BUTTON : begin ]-->
+<!--@ฉ|2012-08-28 16:30-->
+<div id="pmk_mb_my_button_box" class="wrapper">
+  <div class="my_button_box_inner_left"><a href="https://www.pantipmarket.com/member/my/?view=detail">[ ข้อมูลสมาชิก ]</a> <a href="https://www.pantipmarket.com/member/my/?view=agreement">[ ข้อตกลงสมาชิก ]</a> <a href="https://www.pantipmarket.com/member/my/?view=cancel&hash=1595546046">[ ยกเลิกสมาชิก ]</a></div>
+  <div class="my_button_box_inner">
+    <span><a href="http://www.pantip.com/members/helpdesk/market.php" target="_blank">[ ติดต่อทีมงาน ]</a> <a href="https://www.pantipmarket.com/">[ กลับหน้าแรก pantipmarket.com ]</a></span>
+      <input type="button" name="btn_logout_market" id="btn_logout_market" value="Logout" onclick="window.location.href='https://www.pantipmarket.com/member/logout.php?hash=1595546046';" title="Logout จาก Pantipmarket.com" class="btn1" />  </div>
+</div><!--[ BUTTON : end ]-->
+
+<!--[ TAB MENU : begin ]-->
+<!--/ @ฉ|2015-06-17 15:22 /-->
+<div id="pmk_tab_menu" class="wrapper sub_tab_menu_bg">
+  <div class="clear_line_height">
+    <div class="main_tab_menu">
+      <ul>
+        <li><a href="https://www.pantipmarket.com/member/my/?view=news" style="position:relative;"><span id="inbox_menu" style="color:#F30;">ข่าว</span><span id="inbox_unread_counter"><i></i><b id="iuc_number">21</b></span></a></li>
+        <li class="current_tab_menu"><a href="https://www.pantipmarket.com/member/my/?view=ads"><span>ประกาศของฉัน</span></a></li>
+		
+				
+		<li ><a href="https://www.pantipmarket.com/member/my/?view=seller" title="ท่านสามารถ save ข้อมูลเกี่ยวผู้ขาย เช่น ชื่อ เบอร์โทร อีเมล ที่อยู่ผู้ลงประกาศ ฯลฯ เมื่อทำการลงประกาศ จะไม่ต้องกรอกข้อมูลดังกล่าวใหม่"><span>ที่อยู่ติดต่อในประกาศ</span></a></li>
+        
+				<li  >
+		<a href="https://www.pantipmarket.com/member/my/?view=confirm" style="position:relative;" ><span>ยืนยันตัวตน</span>				<div style="display: block; position: absolute; width: 31px; height: 15px; right: -8px; top: 0px; background: url(https://www.pantipmarket.com/image/click_motion_c.gif) no-repeat;"></div>
+				</a>
+		</li>
+				
+				<li><a href="https://www.pantipmarket.com/member/my/?view=announcement"><span>จัดการ iPage</span></a></li>
+				<li><a href="https://www.pantipmarket.com/ads/" target="_blank"><span>สั่งซื้อโฆษณา</span></a></li>
+		      </ul>
+	  <div class="main_tab_menu_right_box">
+	  <!--IPAGE MENU-->
+	  ใช้หน้านี้เป็นหน้าหลัก : <select name="selectIPage" onchange="selectMyPageURL(this.options[this.selectedIndex].value);"><option value="https://www.pantipmarket.com/member/my/?ipage_id=0" selected="selected">iamtester09@protonmail.com</option><option value="shop_na">ไปที่ร้านค้าออนไลน์</option></select>
+	<script type="text/javascript">
+	function selectMyPageURL(val) {
+		if (val == 'shop_na') {
+			alert("กรุณายืนยันตัวตนของคุณ ด้วยข้อมูลบัตรประชาชน และรอการตรวจสอบของเจ้าหน้าที่ ภายใน 3 วันทำการ\nเมื่อตรวจผ่านเรียบร้อยแล้ว จึงจะสามารถเปิดการใช้งานร้านค้าออนไลน์ได้ค่ะ");
+			window.location.replace('https://www.pantipmarket.com/member/my/?view=ads');
+		} else {
+			window.location.href = val;
+		}
+	}
+	</script>	  <!--IPAGE MENU-->
+	  </div>
+    </div>
+  </div>
+</div>
+<div class="wrapper">
+  <div class="clear_line_height sub_tabmenu">
+    <ul>
+      <li><a href="https://www.pantipmarket.com/member/my/?view=ads" class="selected">ประกาศ</a></li>
+      <li><a href="https://www.pantipmarket.com/post/" target="_blank">ลงประกาศใหม่</a></li>
+      <li><a href="https://www.pantipmarket.com/member/my/?view=import">นำประกาศเข้าสู่ระบบสมาชิก</a></li>
+            <li><a href="https://www.pantipmarket.com/member/my/?view=favorite">รายการโปรดของฉัน</a></li>
+          </ul> 
+  </div>
+</div>
+<div class="wrapper sep_header"><img src="/image/spacer.gif" width="1" height="4" /></div>
+<!--[ TAB MENU : end ]-->
+
+<!--[ CONTENT : begin ]-->
+<div id="pmk_mb_my_content_box" class="wrapper">
+  <div class="padding10 clear_line_height">
+        <!--[@ฉ 2015-06-17 15:12]
+	* @last modified   |   @Modify by   |  @Detail     |
+	*	2011-08-08			L.Apichai 		เพิ่ม onkeyup="detectMemberPassword(this);" ที่ ช่อง password
+	*	2011-10-17			L.Apichai2 		เพิ่ม ส่งค่า mode
+	*	2014-10-10			Chonnavee 		เพิ่มแสดงวันหมดอายุในรายการ order
+	*	2015-01-05			Chonnavee 		เพิ่มข้อมูลเกี่ยวกับการสั่งซื้อ package
+	-->
+    <div>
+	  <div style="padding-bottom:8px;"><div style="line-height:45px;" ><strong class="text_blue">ขอต้อนรับคุณ iamtester09@protonmail.com สู่ระบบสมาชิก (N530532 : สมาชิกที่รอยืนยันบัตรประชาชน)</strong></div>
+	 <!-- chonnavee begin -->
+	 				<!-- รายการสินค้าใกล้หมดอายุ -->
+	
+	
+	<!-- chonnavee end -->
+
+	    </div>
+    <br />
+    <div>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tb_boxA">
+        <tbody>
+          <tr>
+            <td class="td_corner_size"><img src="/image/box/boxA_01.gif" width="4" height="4" /></td>
+            <td class="td_top_bg"><img src="/image/spacer.gif" width="1" height="4" /></td>
+            <td class="td_corner_size"><img src="/image/box/boxA_03.gif" width="4" height="4" /></td>
+          </tr>
+          <tr valign="top">
+            <td class="td_left_bg"><img src="/image/spacer.gif" width="4" height="1" /></td>
+            <td class="padding5" bgcolor="#FFFFFF">
+              <div class="headbar_blue">
+                <form name="frm_add_board" id="frm_add_board" method="post" action="action.php" target="target_action" onsubmit="return changeToBoardMember(this);"><!-- target="_blank"-->
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" height="28">
+                    <tbody>
+                      <tr>
+                        <td width="7">&nbsp;</td>
+                        <td class="text_header_white">โฆษณา Standard Post</td>
+                        <td>&nbsp;</td>
+                        <td width="140"><strong style="font-size:13px;">ID:</strong> <input type="text" name="board_id" id="board_id:add_board" size="15" onkeyup="res(this,numb);" /></td>
+                        <!--L.Apichai-->
+						<td width="191"><strong style="font-size:13px;">Password:</strong> <input type="password" name="Password" id="Password:add_board" size="15" onkeyup="detectMemberPassword(this);" /></td>
+                        <!--L.Apichai end-->
+						<td width="44">
+                          <input type="submit" name="btn_add_board" id="btn_add_board" value="Add" class="btn1 btn_board_id_add" />
+                          <input type="hidden" name="act" id="act:add_board" value="add_board" />
+                          <input type="hidden" name="url" id="url:add_board" value="https://www.pantipmarket.com/member/my/?view=ads" />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
+              </div>
+                            <div class="sep7"> </div>
+              <div class="margin_LR1" style="position:relative;">
+			  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+						<tr>
+							<td colspan="7">
+							  		<div id="my_tab_menu">
+			<div class="my_tab_menu">
+				<ul>
+					<li class="curr"><a name="ads" href="?view=ads&adsmode=ads#ads"><span>ประกาศที่แสดงอยู่</span></a></li>
+					<li><a name="package" href="?view=ads&adsmode=package#package"><span style="color:#FF0000;">เลื่อนตำแหน่งประกาศอัตโนมัติ</span></a></li>
+					<li><a name="status_post" href="?view=ads&adsmode=status_post#status_post"><span>สถานะประกาศที่แสดง</span></a></li>
+					<li><a name="delads" href="?view=ads&adsmode=delads#delads"><span>ลบประกาศ</span></a></li>
+					<li><a name="exads" href="?view=ads&adsmode=exads#exads"><span>กู้ประกาศที่หมดอายุ</span></a></li>
+				</ul>
+			</div>
+		</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>                
+				<form name="frm_standard_post" id="frm_standard_post" method="post" action="action.php" target="target_action">
+                  <table width="100%" border="1" bordercolor="#D5D3D3" cellspacing="0" cellpadding="0" class="tb_data">
+                    <tbody>
+                      <tr class="tr_header2">
+                        <td width="90">รูป</td>
+                        <td>รายละเอียด</td>
+                        <td width="120">ราคา</td>
+                        <td width="100">แก้ไขข้อความ</td>
+						<td width="150">เลื่อนวันหมดอายุ</td>	
+                        <td width="55" nowrap>เลื่อนตำแหน่ง<br><font size=1>เหลือ <span style="color:#066">3</span> ครั้ง</font></td>
+                        
+<td width="100">Package เลื่อน<br>เหลือ <span style="color:#066">0</span> บาท</td>
+                        <td width="100">เลื่อนอัตโนมัติ</td>
+						<!--<td width="55">ลบ</td>-->
+                      </tr>                      <tr class="tr_data">
+					    <td colspan="8" style="padding:5px 0;font-size:14px;font-style:italic;">-ไม่พบข้อมูลประกาศ-</td>
+					  </tr>
+					</tbody>                
+                  </table>
+                </form>
+              </div>
+			  <div class="sep7"> </div>	        <div>
+                <strong style="color:#C00;">
+			         <ul>
+						<li>ท่านสามารถเลื่อนตำแหน่งประกาศเกินกว่าจำนวนที่ทางเว็บกำหนด โดยพิมพ์ เลขที่ประกาศของท่าน แล้วส่ง sms มาที่ 4264545 (ค่าบริการครั้งละ 5 บาทไม่รวม vat) <br/>หรือซื้อแพ็คเกจเลื่อนตำแหน่งประกาศ (ครั้งละ 2 บาท รวม vat ) สนใจอ่านรายละเอียดเพิ่มเติมได้ <a href="//www.pantipmarket.com/special_tools.php?mode=2" target="_blank">ที่นี่</a></li>
+						<li>ท่านสามารถเลื่อนตำแหน่งประกาศ และวันหมดอายุประกาศ จากสมาร์ทโฟนของท่าน ทาง <a href="//m.pantipmarket.com" target="_blank">m.pantipmarket.com</a> หรือสแกน <a href="//m.pantipmarket.com" target="_blank"><img src="/image/qr/qr_m_pantipmarket.png" width="50px" height="50px" /></a></li>
+						
+					 </ul>
+			     </strong>
+			</div>
+              <div class="sep7"> </div>
+              <div class="blue_box">
+                <a href="https://www.pantipmarket.com/post/" style="color:#F60;text-decoration:underline;" target="_blank"><strong>ลงประกาศฟรี ที่นี่</strong></a><br />
+                <strong>หมายเหตุ:</strong><br />
+                - การเลื่อนโฆษณาให้อยู่ด้านบนสุด สามารถทำผ่านทางอินเตอร์เน็ต ได้วันละครั้ง<br />
+                - หากต้องการเก็บ โฆษณา Standard Post ไว้ในหน้านี้ สามารถทำได้โดย นำหมายเลขประกาศ และพาสเวิร์ด ไปใส่ไว้ในช่องด้านบน
+              </div>
+            </td>
+            <td class="td_right_bg"><img src="/image/spacer.gif" width="4" height="1" /></td>
+          </tr>
+          <tr>
+            <td class="td_corner_size"><img src="/image/box/boxA_07.gif" width="4" height="4" /></td>
+            <td class="td_foot_bg"><img src="/image/spacer.gif" width="1" height="4" /></td>
+            <td class="td_corner_size"><img src="/image/box/boxA_09.gif" width="4" height="4" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+<script>
+// chonnavee ตัวแปร package
+var sPageShow = 'notWork';
+// chonnavee ตัวแปร package end
+</script>
+    
+  </div>
+</div>
+<div id="loading" class="loading-invisible">
+		 <p>Loading...</p>
+</div>
+<!--[ CONTENT : end ]-->
+
+<!--[ FOOTER : begin ]-->
+<div class="wrapper sep_footer"><img src="https://www.pantipmarket.com/image/spacer.gif" width="1" height="6" /></div>
+<div id="pmk_footer" class="wrapper">
+  <div id="pmk_footer_link"><a href="http://www.pantip.com" target="_blank">Pantip</a><span>|</span><a href="https://www.pantipmarket.com/">Pantip Market</a><span>|</span><a href="http://www.pantown.com" target="_blank">Pantown</a><span>|</span><a href="http://www.bloggang.com" target="_blank">Bloggang</a></div>
+  <div align="center">
+    <div id="pmk_footer_address" style="width: 725px;">
+	  <a href="https://www.pantipmarket.com/ads/" class="link_footer">ดูราคาโฆษณาตำแหน่งพิเศษ ได้ที่นี่</a> หรือที่ E-mail : <a href="mailto:info@pantipmarket.com" class="link_footer">info@pantipmarket.com</a> หรือ <!--<img src="https://www.pantipmarket.com/image/layout/label_tel4.png" alt="tel" />-->Line: @pantipmarket (มีแอด@ข้างหน้า) Tel: 086-570-6825<br /> 
+	  <a href="http://www.pantip.com/members/helpdesk/market.php" class="link_footer">หากต้องการ สอบถามเกี่ยวกับการลงประกาศฟรี คลิกที่นี่</a>
+    </div>
+  </div>
+</div>
+<br class="clear" />
+<style type="text/css">
+.pt-snackbar{font-family:Arial,Helvetica,Sans-serif,Geneva,Tahoma;font-size:0.85rem;z-index:102;margin:8px;position:fixed;right:0;bottom:32px;left:0;display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;-webkit-align-items:center;-moz-align-items:center;-ms-align-items:center;align-items:center;-webkit-justify-content:center;-moz-justify-content:center;-ms-justify-content:center;justify-content:center;-ms-flex-pack:center;pointer-events:none;-webkit-tap-highlight-color:transparent}.pt-snackbar .pt-snackbar__surface{display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;-webkit-align-items:center;-moz-align-items:center;-ms-align-items:center;align-items:center;-webkit-justify-content:flex-start;-moz-justify-content:flex-start;-ms-justify-content:flex-start;justify-content:flex-start;-ms-flex-pack:flex-start;max-width:672px;min-width:344px;background-color:#212121;opacity:0;-webkit-box-shadow:0 3px 8px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08);box-shadow:0 3px 8px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08);border-radius:0.25rem;-webkit-transform:scale(0.8);-ms-transform:scale(0.8);transform:scale(0.8)}.pt-snackbar__label{font-weight:400;line-height:1.5;-webkit-flex-grow:1;-moz-flex-grow:1;-ms-flex-grow:1;flex-grow:1;margin:0;padding:14px 16px;color:#e9e5f6}.pt-snackbar__actions{margin-left:0;margin-right:8px;display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;-webkit-align-items:center;-moz-align-items:center;-ms-align-items:center;align-items:center;-webkit-flex-shrink:0;-moz-flex-shrink:0;-ms-flex-shrink:0;flex-shrink:0}.pt-snackbar--open .pt-snackbar__surface{opacity:1;pointer-events:auto;-webkit-transform:scale(1);-ms-transform:scale(1);transform:scale(1);-webkit-transition:opacity 0.15s cubic-bezier(0, 0, 0.2, 1) 0ms, -webkit-transform 0.15s cubic-bezier(0, 0, 0.2, 1) 0ms;transition:opacity 0.15s cubic-bezier(0, 0, 0.2, 1) 0ms, -webkit-transform 0.15s cubic-bezier(0, 0, 0.2, 1) 0ms;-o-transition:opacity 0.15s 0ms cubic-bezier(0, 0, 0.2, 1), transform 0.15s 0ms cubic-bezier(0, 0, 0.2, 1);transition:opacity 0.15s cubic-bezier(0, 0, 0.2, 1) 0ms, transform 0.15s cubic-bezier(0, 0, 0.2, 1) 0ms;transition:opacity 0.15s cubic-bezier(0, 0, 0.2, 1) 0ms, transform 0.15s cubic-bezier(0, 0, 0.2, 1) 0ms, -webkit-transform 0.15s cubic-bezier(0, 0, 0.2, 1) 0ms}.pt-snackbar--close .pt-snackbar__surface{-webkit-transform:scale(1);-ms-transform:scale(1);transform:scale(1);-webkit-transition:opacity 0.15s cubic-bezier(0.4, 0, 1, 1) 0ms;-o-transition:opacity 0.15s 0ms cubic-bezier(0.4, 0, 1, 1);transition:opacity 0.15s cubic-bezier(0.4, 0, 1, 1) 0ms}.pt-snackbar--stacked .pt-snackbar__surface{-webkit-flex-direction:column;-moz-flex-direction:column;-ms-flex-direction:column;flex-direction:column;-webkit-align-items:flex-start;-moz-align-items:flex-start;-ms-align-items:flex-start;align-items:flex-start}.pt-snackbar--stacked .pt-snackbar__actions{-webkit-align-items:flex-end;-moz-align-items:flex-end;-ms-align-items:flex-end;align-items:flex-end;-webkit-align-self:flex-end;-moz-align-self:flex-end;-ms-align-self:flex-end;align-self:flex-end;margin-bottom:8px}.pt-snackbar--stacked .pt-snackbar__actions.pt-action-policy{width:100%;padding-left:16px;justify-content:space-between}.pt-snackbar--leading{-webkit-justify-content:flex-start;-moz-justify-content:flex-start;-ms-justify-content:flex-start;justify-content:flex-start;-ms-flex-pack:flex-start}.pt-cookie-btn{background:#9575CD radial-gradient(circle, transparent 1%, #9575CD 1%) center/15000%;border-color:#9575CD;color:white}.pt-snackbar .btn{display:inline-block;line-height:1.25;text-align:center;white-space:nowrap;vertical-align:middle;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid transparent;padding:0.8em;font-size:1em;-webkit-border-radius:3px;-moz-border-radius:3px;-ms-border-radius:3px;border-radius:3px;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;transition:all .2s ease-in-out;cursor:pointer;outline:none;color:white}.pt-snackbar .btn:link, .pt-snackbar .btn:visited{text-transform:uppercase;text-decoration:none;font-weight:400;font-size:15px;display:inline-block;border-radius:2px;transition:all .2s;position:relative;text-align:center;color:#ffffff;border-radius:2px;padding:5px 8px;width:90px;cursor:pointer;overflow:hidden;transform:translate3d(0, 0, 0)}.pt-snackbar .btn:hover{transform:translateY(-0.3rem)}.pt-snackbar .btn:hover::after{content:"";display:block;position:absolute;width:100%;height:100%;top:0;left:0;pointer-events:none;background-image:radial-gradient(circle, #fff 10%, transparent 10.01%);background-repeat:no-repeat;background-position:50%;transform:scale(10, 10);opacity:0;transition:transform .5s, opacity 1s}.pt-snackbar .btn:active::after{transform:scale(0, 0);opacity:.3;transition:0s}.pt-snackbar .m-r-8{margin-right:8px !important}.pt-snackbar a:link, .pt-snackbar a:visited{color:#e5c700;text-decoration:none}.pt-snackbar a:hover{color:#d1c4e9;text-decoration:underline}</style>
+
+<div id="pmk_snackbar_policy" class="pt-snackbar pt-snackbar--open">
+	<div class="pt-snackbar__surface">
+		<div class="pt-snackbar__label">
+			โปรดศึกษาและยอมรับนโยบายข้อมูลส่วนบุคคลก่อนเริ่มใช้งาน <a class="deeppurple-100 font-weight-bold" href="https://www.pantipmarket.com/privacy" target="_blank">อ่านเพิ่มเติมได้ที่นี่</a>
+		</div>
+		<div class="pt-snackbar__actions pt-action-policy">
+			<button id="pmk_except_policy_btn" class="btn m-r-8 pt-cookie-btn" style="padding: 4px 12px;">ยอมรับ</button>
+		</div>
+	</div>
+</div>
+
+<script>;var PmkPrivacyPolicy=(function(){'use strict';var opts={"ck_name":"pmkpolicy","ck_value":"1","ck_domain":".pantipmarket.com"};function bindButton(){$("#pmk_except_policy_btn").on('click',function(e){e.preventDefault();$("#pmk_snackbar_policy").hide();setCookie(opts.ck_value);});};function createCookie(name,value,days){if(days){var date=new Date();date.setTime(date.getTime()+(days*24*60*60*1000));var expires=";expires="+date.toGMTString();}else var expires="";//document.cookie=name+"="+escape(value)+expires+";path=/;domain="+opts.ck_domain;{document.cookie=name+"="+escape(value)+expires+";path=/;domain="+opts.ck_domain+";SameSite=None;Secure";}};function readCookie(name){var nameEQ=name+"=";var ca=document.cookie.split(';');for(var i=0;i<ca.length;i++){var c=ca[i];while(c.charAt(0)=='')c=c.substring(1,c.length);{if(c.indexOf(nameEQ)==0)return c.substring(nameEQ.length,c.length);}}{return null;}};function eraseCookie(name){createCookie(name,"",-1);};function setCookie(val){var value=val||opts.ck_value;createCookie(opts.ck_name,value,365);};function PmkPrivacyPolicy(){this.version='1.0.0';};var proto=PmkPrivacyPolicy.prototype;proto.init=function(){bindButton();};return PmkPrivacyPolicy;}());$(document).ready(function(){new PmkPrivacyPolicy().init();});</script><!--[ FOOTER : end ]-->
+
+<iframe name="target_action" id="target_action" src="about:blank" frameborder="0"></iframe><!-- style="width:1000px;height:400px;display:block;"-->
+<!--<iframe name="msgbox_frame" id="msgbox_frame" src="http://www.pantipmarket.com/mall/center/BackOffice/ajax/checkMsgBox_noshop.php" frameborder="0" style="width:0px;height:0px;display:none;"></iframe>-->
+<div id="modaldivloading" style="display:none;">กำลังประมวลผล...</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+function alertMessage(msg,url) {
+	if(msg == '') return;
+	
+	alert(msg);
+	if(typeof url != "undefined" && url != '') {
+		window.location.replace(url);
+	}
+}
+//--><!]]></script>
+<script type="text/javascript">
+</script>
+</body>
+</html>
