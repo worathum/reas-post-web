@@ -263,7 +263,7 @@ class postcore():
         # remove image tmp
         if os.path.isdir('imgtmp/' + dirtmp) == True:
             shutil.rmtree(os.path.abspath('imgtmp/' + dirtmp))
-            loggingdebug('removed image temp imgtmp/%s', dirtmp)
+            logging.debug('removed image temp imgtmp/%s', dirtmp)
 
     #    if action == 'register_user':
     #         re    sponse["action"] = action
