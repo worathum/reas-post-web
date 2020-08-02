@@ -31,8 +31,6 @@ log = logging.getLogger()
 
 class thaihometown():
 
-    name = 'thaihometown'
-
     def __init__(self):
 
         self.websitename = 'thaihometown'
@@ -1026,7 +1024,15 @@ class thaihometown():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": log_id, "post_id": post_id}
+        return {
+            "success": success, 
+            "usage_time": str(time_usage), 
+            "start_time": str(time_start), 
+            "end_time": str(time_end), 
+            "detail": detail,
+            "ds_id": postdata['ds_id'], 
+            "log_id": log_id, 
+            "post_id": post_id}
 
     def delete_post(self, postdata):
         #log.debug('')
@@ -1148,6 +1154,7 @@ class thaihometown():
             "detail": detail,
             "log_id": datahandled['log_id'],
             "ds_id": datahandled['ds_id'],
+            "post_id": post_id,
             "websitename": self.websitename
         }
     
@@ -1204,7 +1211,7 @@ class thaihometown():
 
             # check respone py post id
             pid = datahandled['post_id']
-            matchObj = re.search(r"%s" % str(pid), data)
+            matchObj = re.search(rf"{pid}", data)
             if not matchObj:
                 success = "false"
                 detail = "not found this post_id " + datahandled['post_id']
@@ -1343,7 +1350,7 @@ class thaihometown():
 
                 # check respone py post id
                 pid = datahandled['post_id']
-                matchObj = re.search(r"%s" % str(pid), data)
+                matchObj = re.search(rf"{pid}", data)
                 if not matchObj:
                     success = "false"
                     detail = "not found this post_id " + datahandled['post_id']
@@ -1453,6 +1460,20 @@ class thaihometown():
                     else:
                         success = "false"
                         detail = unquote(data)
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success, 
+            "usage_time": str(time_usage), 
+            "start_time": str(time_start), 
+            "end_time": str(time_end), 
+            "detail": detail, 
+            "ds_id": postdata['ds_id'],
+            "log_id": datahandled['log_id'],
+            "ds_id": postdata['ds_id'], 
+            "post_id": datahandled['post_id'],
+            "websitename": self.websitename
+        }
 
     def search_post(self,data):
         start_time = datetime.datetime.utcnow()

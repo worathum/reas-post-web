@@ -14,7 +14,7 @@ from urllib.parse import unquote
 
 httprequestObj = lib_httprequest()
 
-with open("./static/home2all_province.json") as f:
+with open("./static/home2all_province.json",encoding = 'utf-8') as f:
     provincedata = json.load(f)
 
 

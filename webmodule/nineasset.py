@@ -144,7 +144,7 @@ class nineasset():
         addr_province = postdata['addr_province']
         addr_district = postdata['addr_district']
         try:
-            direction = str(int(postdata['direction_type']))
+            direction = postdata['direction_type']
         except:
             direction = "-1"
         try:
@@ -493,6 +493,7 @@ class nineasset():
             "time_usage": time_end - time_start,
             'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
+            'post_id': postdata['post_id'],
             "start_time": time_start,
             "end_time": time_end,
             "detail": detail,
@@ -514,11 +515,11 @@ class nineasset():
         addr_province = postdata['addr_province']
         addr_district = postdata['addr_district']
         try:
-            direction = str(int(postdata['direction_type']))
+            direction = postdata['direction_type']
         except:
             direction = "-1"
         try:
-            view = str(int(postdata['view_type']))
+            view = postdata['view_type']
         except:
             view = "-1"
         # addr_sub_district = postdata['addr_sub_district']
@@ -793,47 +794,76 @@ class nineasset():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
         test_login = self.test_login(postdata)
+        post_create=""
+        post_view = ""
+        my_res = dict()
+        my_res.update({
+                'websitename':'9asset',
+                'ds_id':postdata['ds_id'],
+                'start_time':str(start_time)
+        })
         if test_login['success'] == "True":
-            post_title = postdata['post_title_th']
+            print('login')
+            post_title = str(postdata['post_title_th'])
             pages = ["", "?page=2", "?page=3"]
             tURL = dict()
             for page in pages:
                 url = "https://www.9asset.com/profile" + page
                 r = httprequestObj.http_get(url)
-                soup = BeautifulSoup(r.content, 'lxml')
+                soup = BeautifulSoup(r.content, 'html5lib')
                 soup = soup.find('table', attrs={'class':'table', 'id':'customers'})
+                if soup == None:
+                    break
                 result_posts = soup("tr")
-                del result_posts[0]
-                result_posts = [row('td') for row in result_posts]
-                tURL.update({post[1].string : post[-1].find('a', attrs={'class':'btn btn-info'})['href'] for post in result_posts})
-            my_res = dict()
-            if tURL.get(post_title):
-                my_res.update({
-                    'success':'true',
-                    'post_found':'true',
-                    'post_url':tURL[post_title],
-                    'detail':'Post found',
-                    'post_id':tURL[post_title].split('/')[-2]
-                })
+                result_posts = [row.findAll('td') for row in result_posts]
+                tURL.update({post[1].string : post[-1].find('a', attrs={'class':'btn btn-info'})['href'] for post in result_posts if len(post)>=2})
+                
+                
+            flag = 0
+            ind = 0
+            
+            for i in tURL.keys():
+                
+                if str(i) == post_title:
+                    pg = httprequestObj.http_get(tURL[i])
+                    page = BeautifulSoup(pg.text,'html5lib')
+                    
+                    date = page.findAll('div',attrs = {'class':'col-xs-8 nopadding'})
+                    
+                    post_create = (date[-1].text).replace('\n','').replace('\t','')
+                    
+                    my_res.update({
+                        'success':'true',
+                        'post_found':'true',
+                        'post_url':tURL[post_title],  
+                        'detail':'Post found',
+                        'post_id':tURL[post_title].split('/')[-2],
+                        'post_create_time':post_create[13:],
+                        'post_view':post_view,
+                        'websitename': 'nineasset'
+                    })
+                    flag=1
+                    break
+                ind+=1
+            
+            if flag==1:
+                pass
             else:
                 my_res.update({
                     'success':'false',
                     'post_found':'false',
                     'detail': 'Post not found',
                     'post_url':'',
-                    'post_id':''
+                    'post_id':'',
+                    'post_create_time':'',
+                    'post_view':''
                 })
             my_res.update({
-                    'websitename':'nineasset',
-                    'ds_id':postdata['ds_id'],
+                    
                     'log_id':postdata['log_id'],
-                    'post_id':postdata['post_id'],
-                    'start_time':str(start_time),
                     'end_time':str(datetime.datetime.utcnow()),
                     'account_type':'',
-                    'post_create_time':'',
-                    'post_modify_time':'',
-                    'post_view':''
+                    'post_modify_time':''
                 })
         return my_res
 

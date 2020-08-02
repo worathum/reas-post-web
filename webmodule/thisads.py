@@ -238,7 +238,7 @@ class thisads():
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0',
         }
         r = httprequestObj.http_post('http://thisads.com/ajax_fullpost.php', headers=headers, data=data, files=files)
-        #print(r.text)
+        print(r.text)
         if str(r.text) != '\ufeff1':
             success = 'false'
             detail = 'duplicate name or error while posting 1'
