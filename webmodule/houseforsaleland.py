@@ -151,6 +151,11 @@ class houseforsaleland():
 
 
     def edit_post(self, postdata):
+        try:
+            logid = postdata['log_id']
+        except:
+            postdata['log_id'] = ""
+
         print("in edit")
         # print(postdata)
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')

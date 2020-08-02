@@ -185,9 +185,14 @@ class condoable():
 
         try:
             project_name = postdata['web_project_name']
+            if project_name == "":
+                raise Exception
+
         except:
             try : 
                 project_name = postdata['project_name']
+                if project_name == "":
+                    raise Exception
             except :
                 project_name = postdata['post_title_th']
 
@@ -295,8 +300,8 @@ class condoable():
             "websitename": "condoable",
             "success": success,
             "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "start_time": time_start,
+            "end_time": time_end,
             # "ds_id": "4",
             "post_url": post_url,
             "post_id": post_id,
@@ -573,8 +578,8 @@ class condoable():
             "websitename": "condoable",
             "success": success,
             "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
+            "start_time": time_start,
+            "end_time": time_end,
             # "ds_id": "4",
             "post_url": post_url,
             "post_id": post_id,
