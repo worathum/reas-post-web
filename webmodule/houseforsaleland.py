@@ -24,10 +24,6 @@ with open("./static/houseforsale,land.json") as f:
 with open("./static/houseforsaleProvincedistrict.json") as f:
     provinceDistrictdata = json.load(f)
 
-options = Options()
-options.headless = True
-driver = webdriver.Firefox(options=options)
-
 
 class houseforsaleland():
 
@@ -80,7 +76,6 @@ class houseforsaleland():
         return {
             "success": success,
             "usage_time": str(time_usage),
-            'ds_id': postdata['ds_id'],
             "start_time": str(start_time),
             "end_time": str(end_time),
             "detail": detail,
@@ -155,7 +150,6 @@ class houseforsaleland():
             logid = postdata['log_id']
         except:
             postdata['log_id'] = ""
-
         print("in edit")
         # print(postdata)
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -305,7 +299,9 @@ class houseforsaleland():
         url_n = 'https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=editpostfree&id=' + \
             postdata['post_id']
 
-        # driver = webdriver.Firefox()
+        options = Options()
+        options.headless = True
+        driver = webdriver.Firefox(options=options)
 
         post_url = urlpost+'/page-postfree-detail.php?pID='+postdata['post_id']
         driver.get(post_url)
@@ -358,7 +354,7 @@ class houseforsaleland():
         time.sleep(5)
 
         driver.find_element_by_id('submit').click()
-        driver.close()
+        driver.quit()
 
 
         success = "true"
@@ -450,6 +446,7 @@ class houseforsaleland():
                 'websitename': 'houseforsaleland',
                 'success': 'false',
                 'detail': "wrong amphur id"+str(postdata['addr_district']),
+                'ds_id': postdata['ds_id'],
                 'post_url': "",
                 'post_id': ""
             }
@@ -518,7 +515,6 @@ class houseforsaleland():
                 'ds_id': postdata['ds_id'],
                 "start_time": str(time_start),
                 "end_time": str(time_end),
-                'ds_id': postdata['ds_id'],
                 "detail": "Captcha Image Retrieval failed"
             }
             print('Image Couldn\'t be retreived')
@@ -531,7 +527,6 @@ class houseforsaleland():
             return {
                 'websitename': 'houseforsaleland',
                 "success": success,
-                'ds_id': postdata['ds_id'],
                 'post_url': '',
                 "start_time": str(time_start),
                 'ds_id': postdata['ds_id'],
@@ -570,7 +565,6 @@ class houseforsaleland():
                     "success": success,
                     'post_url': '',
                     "start_time": str(time_start),
-                    'ds_id': postdata['ds_id'],
                     "end_time": str(time_end),
                     'ds_id': postdata['ds_id'],
                     "detail": "Captcha Image Retrieval failed"
@@ -589,7 +583,6 @@ class houseforsaleland():
                     'ds_id': postdata['ds_id'],
                     "start_time": str(time_start),
                     "end_time": str(time_end),
-                    'ds_id': postdata['ds_id'],
                     "detail": "Captcha fail"
                 }
             url_n = "https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=addpostfree"
@@ -627,9 +620,14 @@ class houseforsaleland():
                     post_url = urlpost+'/page-postfree-detail.php?pID='+post_id
                     tempotempo['post_id']=post_id
                     r=self.edit_post(tempotempo)
+                    time_end = datetime.datetime.utcnow()
+                    time_usage = time_end - time_start
+    
                     return {
                         'websitename': 'houseforsaleland',
                         'success': 'true',
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
                         'detail': var,
                         'post_url': post_url,
                         'post_id': post_id,
@@ -651,13 +649,16 @@ class houseforsaleland():
                     i += 1
                 post_url = urlpost+'/page-postfree-detail.php?pID='+post_id
                 tempotempo['post_id']=post_id
-                tempotempo['log_id'] = '1'
                 r=self.edit_post(tempotempo)
+
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
                 return {
                     'websitename': 'houseforsaleland',
                     'success': 'true',
                     'detail': var,
-                    'ds_id': postdata['ds_id'],
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
                     'post_url': post_url,
                     'post_id': post_id,
                     'ds_id': postdata['ds_id']
@@ -668,7 +669,6 @@ class houseforsaleland():
         time_usage = time_end - time_start
         return {
             'websitename': 'houseforsaleland',
-            'ds_id': postdata['ds_id'],
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -735,6 +735,8 @@ class houseforsaleland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
             "post_id": postdata['post_id']
         }
 
@@ -759,6 +761,7 @@ class houseforsaleland():
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
         }
+
 
 
 # obj = houseforsaleland()
