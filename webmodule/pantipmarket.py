@@ -770,6 +770,7 @@ class pantipmarket():
 
             if post_title_th != None:
                 driver.find_element_by_name('topic_th').clear()
+            print(post_title_th)
             driver.find_element_by_name("topic_th").send_keys(post_title_th)
 
             if post_description_th != None:
@@ -869,7 +870,7 @@ class pantipmarket():
             move = ActionChains(driver)
             move.click_and_hold(slider).move_by_offset(379.005, 0).release().perform()
             try:
-                element = WebDriverWait(driver,10).until(
+                element = WebDriverWait(driver,20).until(
                     EC.presence_of_element_located((By.NAME,"jqi_state0_buttonOk"))
                 )
                 driver.find_element_by_name('jqi_state0_buttonOk').click()

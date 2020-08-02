@@ -836,18 +836,15 @@ class homedd():
         return {
             "success": success,
             "usage_time": str(end_time - start_time),
-'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "start_time": str(start_time),
             "end_time": str(end_time),
             "post_id": postdata['post_id'],
             "ds_id": postdata['ds_id'],
-            "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": detail,
             "websitename": "homedd",
         }
-
 
     def search_post(self, postdata):
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
@@ -911,14 +908,15 @@ class homedd():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
+            "post_found": post_found,
             "detail": detail,
             "websitename": "homedd",
             "account_type": None,
             "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_id": post_id,
-            "post_created": "",
-            "post_modified": post_modified,
+            "post_create_time": "",
+            "post_modify_time": post_modified,
             "post_view": post_view,
             "post_url": post_url,
         }

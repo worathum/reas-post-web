@@ -201,7 +201,6 @@ class estate():
                 'title': str(postdata['post_title_th'].replace("\n","<br>")),
                 'project': str(postdata['web_project_name'].replace("\n","<br>")),
                 'add': '-',
-
                 'province': '64',
                 'amphur': '864',
                 'map_lat': str(postdata['geo_latitude']),
@@ -269,8 +268,8 @@ class estate():
 
 
                 data['area'] = str(str(float(postdata['land_size_rai'])*400 + float(postdata['land_size_ngan'])*100 + float(postdata['land_size_wa'])) + 'ตรว.')
-                #data['bedroom'] = str(postdata['bed_room'])
-                #data['bathroom'] = str(postdata['bath_room'])
+                data['bedroom'] = str(postdata['bed_room'])
+                data['bathroom'] = str(postdata['bath_room'])
                 data['floors'] = str(postdata['floor_total'])
 
             province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
@@ -589,7 +588,6 @@ class estate():
                     'add': '-',
                     'province': '64',
                     'amphur': '864',
-
                     'map_lat': str(postdata['geo_latitude']),
                     'map_lng': str(postdata['geo_longitude']),
                     'map_zoom': '',
@@ -649,8 +647,8 @@ class estate():
 
 
                     data['area'] = str(str(float(postdata['land_size_rai'])*400 + float(postdata['land_size_ngan'])*100 + float(postdata['land_size_wa'])) + 'ตรว.')
-                    #data['bedroom'] = str(postdata['bed_room'])
-                    #data['bathroom'] = str(postdata['bath_room'])
+                    data['bedroom'] = str(postdata['bed_room'])
+                    data['bathroom'] = str(postdata['bath_room'])
                     data['floors'] = str(postdata['floor_total'])
 
 

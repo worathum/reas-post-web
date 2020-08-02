@@ -201,9 +201,6 @@ class condoable():
 
         resp = requests.get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
         allres = json.loads(resp.content.decode('utf-8').replace('""', '"'), strict = False)
-        # print("check", allres)
-
-
         condoprojectid = None
         if len(allres) != 0:
             condoprojectid = allres[0]['id']
@@ -315,7 +312,7 @@ class condoable():
         return {
             "websitename": "condoable",
             "success": success,
-            "time_usage": time_end - time_start,
+            "usage_time": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
             # "ds_id": "4",
@@ -344,7 +341,8 @@ class condoable():
         login = self.test_login(postdata)
         success = login["success"]
         detail = login["detail"]
-        if(success == "True"):
+        # print(login)
+        if success == "True":
             r = httprequestObj.http_get('https://www.condoable.com/member', verify=False)
             data = r.text
             print(data)
@@ -361,21 +359,18 @@ class condoable():
             else:
                 success = "False"
                 detail = "Wrong Post ID"
-                                    
-                
-            print(datapost)
+          
         time_end = datetime.datetime.utcnow()
         return {
             "websitename": "condoable",
             "success": success ,
-            "time_usage": time_end - time_start,
+            "usage_time": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
             "detail": detail,
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
-            "ds_id": postdata['ds_id']
         }
 
     def delete_post(self, postdata):
@@ -417,7 +412,7 @@ class condoable():
         return {
             "websitename": "condoable",
             "success": success,
-            "time_usage": time_end - time_start,
+            "usage_time": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
             "detail": detail,
@@ -595,7 +590,7 @@ class condoable():
         return {
             "websitename": "condoable",
             "success": success,
-            "time_usage": time_end - time_start,
+            "usage_time": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
             # "ds_id": "4",
@@ -606,6 +601,16 @@ class condoable():
             "detail": detail,
             "ds_id": postdata['ds_id']
         }
+
+    def print_debug(self, msg):
+        if(self.debug == 1):
+            print(msg)
+        return True
+
+    def print_debug_data(self, data):
+        if(self.debugdata == 1):
+            print(data)
+        return True
 
     def search_post(self, postdata):
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
@@ -676,13 +681,3 @@ class condoable():
             "post_url": post_url,
         }
 
-
-    def print_debug(self, msg):
-        if(self.debug == 1):
-            print(msg)
-        return True
-
-    def print_debug_data(self, data):
-        if(self.debugdata == 1):
-            print(data)
-        return True

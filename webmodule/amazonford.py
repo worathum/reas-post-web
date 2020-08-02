@@ -268,8 +268,8 @@ class amazonford():
 
 
                 data['area'] = str(str(float(postdata['land_size_rai'])*400 + float(postdata['land_size_ngan'])*100 + float(postdata['land_size_wa'])) + 'ตรว.')
-                #data['bedroom'] = str(postdata['bed_room'])
-                #data['bathroom'] = str(postdata['bath_room'])
+                data['bedroom'] = str(postdata['bed_room'])
+                data['bathroom'] = str(postdata['bath_room'])
                 data['floors'] = str(postdata['floor_total'])
 
             province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
@@ -645,8 +645,8 @@ class amazonford():
 
 
                     data['area'] = str(str(float(postdata['land_size_rai'])*400 + float(postdata['land_size_ngan'])*100 + float(postdata['land_size_wa'])) + 'ตรว.')
-                    #data['bedroom'] = str(postdata['bed_room'])
-                    #data['bathroom'] = str(postdata['bath_room'])
+                    data['bedroom'] = str(postdata['bed_room'])
+                    data['bathroom'] = str(postdata['bath_room'])
                     data['floors'] = str(postdata['floor_total'])
 
 

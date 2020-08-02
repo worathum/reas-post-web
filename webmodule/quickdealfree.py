@@ -224,10 +224,19 @@ class quickdealfree():
             r = httprequestObj.http_post(
                 'http://www.quickdealfree.com/member/p-classifieds-post.php', data=datapost, files=files)
             data = r.text
+            print(r.url)
+            print(r.status_code)
             # print(data)
+            with open('rough.html', 'w') as f:
+                f.write(r.text)
+
             r = httprequestObj.http_get(
                 "http://www.quickdealfree.com/member/list-classifieds.php")
             soup = BeautifulSoup(r.text, 'html.parser')
+            with open('rough.html', 'w') as f:
+                f.write(r.text)
+            print(soup.select(
+                "#frmMain > div > table > tbody > tr:nth-child(2) > td:nth-child(1) > a"))
             post_url = soup.select(
                 "#frmMain > div > table > tbody > tr:nth-child(2) > td:nth-child(1) > a")[0]['href']
             post_id = post_url[8:13]
@@ -516,6 +525,7 @@ class quickdealfree():
                     if title_row is None:
                         continue
                     title = title_row.find('a')
+                    print(title)
                     if title is None:
                         continue                    
                     if post_title == title.text.strip():

@@ -642,21 +642,20 @@ class teedin108():
 
         div_container = []
         try:
-            div_container = soup.find('div', class_='col-xs-12 postlist')
+            div_container = soup.find_all('div', class_='col-xs-12 postlist')
         except:
             pass
 
         sites = []
-        try:
-            for atag in div_container.find_all('a'):
-
-                try:
-                    if (atag["title"] == title):
-                        sites += [atag["href"]]
-                except:
-                    pass
-        except:
-            pass
+        # try:
+        for post in div_container:
+            div_title = post.find('div', 'row').find('div', 'col-xs-12').find('a').get('title')
+            post_url = post.find('div', 'row').find('div', 'col-xs-12').find('a').get('href')
+            # print(title)
+            if (div_title == title):
+                sites.append(post_url)
+        # except:
+        #     pass
         
         success = False
         post_found = False
@@ -666,17 +665,21 @@ class teedin108():
         for site in sites:
             r = httprequestObj.http_get(site)
             soup = BeautifulSoup(r.text, 'html.parser')
-            div_container = soup.find('div', class_='poster-detail')
-
-            for a in div_container.find_all('a'):
-                if (a.contents[0] == postdata['user']):
-                    post_found = True
-                    post_url = site
-                    success = True
-                    try:
-                        post_id = post_url.split("/")[5]
-                    except:
-                        pass
+            div_container = soup.find_all('div', class_='poster-detail')[1]
+            # print(postdata['user'])
+            info = div_container.contents
+            # print(info)
+            # print(a.contents[0])
+            if True:
+                post_found = True
+                post_url = site
+                success = True
+                post_modify_time = str(info[5])
+                post_view = str(info[9].string)
+                try:
+                    post_id = post_url.split("/")[5]
+                except:
+                    pass
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -684,6 +687,7 @@ class teedin108():
         ret = {
                 "websitename": "teedin108",
                 "success": success,
+                "post_found": post_found,
                 "ds_id": postdata['ds_id'],
                 "log_id": postdata['log_id'],
                 "usage_time": str(time_usage),
@@ -693,8 +697,8 @@ class teedin108():
                 "post_url": post_url,
                 "post_id": post_id,
                 "post_create_time": '',
-                "post_modified_time": '',
-                "post_view": ''
+                "post_modify_time": post_modify_time,
+                "post_view": post_view
                 }
         return ret
 
