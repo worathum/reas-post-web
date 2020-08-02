@@ -144,11 +144,11 @@ class nineasset():
         addr_province = postdata['addr_province']
         addr_district = postdata['addr_district']
         try:
-            direction = postdata['direction_type']
+            direction = str(int(postdata['direction_type']))
         except:
             direction = "-1"
         try:
-            view = postdata['view_type']
+            view = str(int(postdata['view_type']))
         except:
             view = "-1"
         # addr_sub_district = postdata['addr_sub_district']
@@ -212,12 +212,12 @@ class nineasset():
         # 24 ตตฉต south west 
         # print(direction)
         try:
-            direction = direction_type[str(direction)]
+            direction = str(int(direction_type[str(direction)]))
         except:
             direction = ""
         view_type = {"-1":"","15" :"6", "16":"1", "17":"3", "18":"2", "19":"7", "20":"5" } 
         try:
-            view = view_type[str(view)]
+            view = str(int(view_type[str(view)]))
         except:
             view = ""
         # 15 rivers
@@ -515,11 +515,11 @@ class nineasset():
         addr_province = postdata['addr_province']
         addr_district = postdata['addr_district']
         try:
-            direction = postdata['direction_type']
+            direction = str(int(postdata['direction_type']))
         except:
             direction = "-1"
         try:
-            view = postdata['view_type']
+            view = str(int(postdata['view_type']))
         except:
             view = "-1"
         # addr_sub_district = postdata['addr_sub_district']
@@ -635,8 +635,8 @@ class nineasset():
             ("Land_Sqw", land_size_wah),
             ("Land_Size" , ""),#str(400*int(land_size_rai) + 100 * int(land_size_ngan) + 1*int(land_size_wa)),#calc using formula,
             ("property_Floor", floor_no),
-            ("property_Facing",direction_type[str(direction)]),
-            ("property_View",view_type[str(view)]),
+            ("property_Facing",str(int(direction_type[str(direction)]))),
+            ("property_View",str(int(view_type[str(view)]))),
             ("province", addr_province),
             ("city", addr_district),
             ("Road", ""),
