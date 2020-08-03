@@ -91,7 +91,6 @@ class hipflat():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
-        httprequestObj.http_get_with_headers('https://www.hipflat.co.th/logout')
 
         headers = {
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
@@ -121,7 +120,7 @@ class hipflat():
             try:
                 response = httprequestObj.http_get('https://www.hipflat.co.th/signup', headers = headers)
 
-                soup = BeautifulSoup(response.content, features = "html")
+                soup = BeautifulSoup(response.content, features = "html.parser")
 
                 data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
 
@@ -165,25 +164,10 @@ class hipflat():
 
     def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        
+        print('0')
         start_time = datetime.datetime.utcnow()
 
-        headers = {
-            'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
-        }
-
-        response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
-        soup = BeautifulSoup(response.content, features = "html")
-        # soup.split('name="csrf-token"')[0].split("content="'')[-1]
-        # print(soup.find("meta",{"name":"csrf-token"}))
-        post_data = {
-        '_method':'delete',
-        'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
-        }
-
-        # data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
-        httprequestObj.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
-
+        print('1')
 
         data = {
             'utf8': '',
@@ -197,6 +181,9 @@ class hipflat():
         success = "false"
         detail = ""
         
+        headers = {
+            'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
+        }
 
         if data['user[email]'] == "":
             detail = "Invalid username"
@@ -206,7 +193,7 @@ class hipflat():
             try:
                 response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
 
-                soup = BeautifulSoup(response.content, features = "html")
+                soup = BeautifulSoup(response.content, features = "html.parser")
 
                 data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
 
@@ -342,7 +329,7 @@ class hipflat():
             #'listing[bedrooms]': str(postdata['bed_room']),
             #    'listing[bathrooms]': str(postdata['bath_room']),
 
-            #print('1')
+            print('1')
 
             data = {
                 'utf8': '',
@@ -470,9 +457,14 @@ class hipflat():
                 data['listing[condo_id]'] = '5119af8eef23779a61000713'
 
             response = httprequestObj.http_get('https://www.hipflat.co.th/listings/add', headers = headers)
-            #print("4")
+            print(response.url)
+            print(response.status_code)
 
-            soup = BeautifulSoup(response.content, features = "html")
+            # with open('b.html', 'w') as f:
+            #     f.write(response.text)
+            # print("4")
+
+            soup = BeautifulSoup(response.content, features = "html.parser")
 
             data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
             #print(data['utf8'])
@@ -492,10 +484,12 @@ class hipflat():
                 data['listing[sale_availability_status]'] = 'true'
                 data['listing[sale_price]'] = str(postdata['price_baht'])
 
-            #print("5")
+            print("5")
 
             r = httprequestObj.http_post('https://www.hipflat.co.th/listings/add', data = data, headers = headers)
-            #print("6")
+            print(r.url)
+            print(r.status_code)
+            print("6")
 
             success = "true"
             detail = "Post created successfully"
@@ -511,11 +505,20 @@ class hipflat():
             #print(data)
             link = ''
             aaas = []
-            soup = BeautifulSoup(data, features = "html")
+            self.test_login(postdata)
+            r = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/free')
+            print(r.url)
+            print(r.status_code)
+            data=r.text
+            # print('1')
+            # with open('b.html', 'w') as f:
+            #     f.write(data)
+            soup = BeautifulSoup(data, features = "html.parser")
             #aas = soup.findAll("a")
             for i in soup.find_all('a'):
+                # print(i['href'])
                 try:
-                    if i['href'].find('/edit') != -1:
+                    if i.get('href').find('/edit') != -1:
                         # link = i['href']
                         aaas.append(i['href'])
                 except:
@@ -814,7 +817,7 @@ class hipflat():
 
                 response = httprequestObj.http_get(str('https://www.hipflat.co.th/listings/'+req_post_id+'/edit'), headers = headers)
 
-                soup = BeautifulSoup(response.content, features = "html")
+                soup = BeautifulSoup(response.content, features = "html.parser")
 
                 data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
 
@@ -924,7 +927,7 @@ class hipflat():
 
             aaas = []
 
-            soup = BeautifulSoup(res, features = "html")
+            soup = BeautifulSoup(res, features = "html.parser")
             #aas = soup.findAll("a")
             for i in soup.find_all('a'):
                 try:
@@ -1081,7 +1084,7 @@ class hipflat():
 
                 response = httprequestObj.http_get(str('https://www.hipflat.co.th/listings/'+req_post_id+'/edit'), headers = headers)
 
-                soup = BeautifulSoup(response.content, features = "html")
+                soup = BeautifulSoup(response.content, features = "html.parser")
 
                 data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
 
@@ -1195,7 +1198,7 @@ class hipflat():
 
                 response = httprequestObj.http_get(str('https://www.hipflat.co.th/listings/'+req_post_id+'/edit'), headers = headers)
 
-                soup = BeautifulSoup(response.content, features = "html")
+                soup = BeautifulSoup(response.content, features = "html.parser")
 
                 data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
 
@@ -1266,7 +1269,7 @@ class hipflat():
 
             all_posts = httprequestObj.http_get(all_posts_url, headers = headers).text
 
-            soup = BeautifulSoup(all_posts, features = "html")
+            soup = BeautifulSoup(all_posts, features = "html.parser")
 
             req_post_title = str(postdata['post_title_th'])
             
