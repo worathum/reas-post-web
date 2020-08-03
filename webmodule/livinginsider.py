@@ -39,7 +39,7 @@ class livinginsider():
 
         user = postdata['user']
         passwd = postdata['pass']
-
+        username = user.replace("@","").replace(".","")
         success = "true"
         detail = ""
         username = user.split('@')

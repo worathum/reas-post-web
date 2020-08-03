@@ -91,6 +91,7 @@ class hipflat():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
+        httprequestObj.http_get_with_headers('https://www.hipflat.co.th/logout')
 
         headers = {
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
@@ -166,7 +167,6 @@ class hipflat():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         print('0')
         start_time = datetime.datetime.utcnow()
-
         print('1')
 
         data = {
@@ -184,6 +184,7 @@ class hipflat():
         headers = {
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
         }
+        httprequestObj.http_get_with_headers('https://www.hipflat.co.th/logout')
 
         if data['user[email]'] == "":
             detail = "Invalid username"
