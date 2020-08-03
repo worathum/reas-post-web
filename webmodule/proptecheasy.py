@@ -353,7 +353,7 @@ class proptecheasy():
         data = r.text
         temp_json = json.loads(data)
 
-        if data == '' or data == '0' or data == '-1' or 'Success' not in temp_json['mes']:
+        if data == '' or data == '0' or data == '-1' or ('Success' not in temp_json['mes'] and 'User created' not in temp_json['mes']):
             success = "false"
         else:
             detail = temp_json['mes']
