@@ -347,7 +347,7 @@ class thaisecondhand():
             "start_time": start_time,
             "end_time": end_time,
             "ds_id": postdata['ds_id'],
-            "post_url": post_url[0],
+            "post_url": post_url,
             "post_id": post_id,
             "account_type": "",
             "detail": detail
