@@ -47,6 +47,7 @@ class teesuay():
     def register_user(self, postdata):        
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        httprequestObj.http_get("http://www.teesuay.com/member/logout.php")
 
         province_id=0
         amphur_id=0
@@ -106,6 +107,7 @@ class teesuay():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
+        httprequestObj.http_get("http://www.teesuay.com/member/logout.php")
         email = postdata['user']
         passwd = postdata['pass']
         btloginx=22
@@ -123,7 +125,8 @@ class teesuay():
 
         r = httprequestObj.http_post('http://www.teesuay.com/login.php', data=datapost)
         data = r.text
-        if data.find("ขออภัยครับ") != -1:
+        print(data)
+        if data.find("ขออภัยครับ") != -1 or email == "" or passwd == "":
             success = "false"
         else:
             detail = "logged in"

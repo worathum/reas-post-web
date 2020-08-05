@@ -324,7 +324,7 @@ class thaisecondhand():
                     break  
             else:
                 post_id = re.findall(r'\d+',link[0])[0]
-                post_url = link 
+                post_url = link[0] 
         
         end_time = datetime.datetime.utcnow()
         print({

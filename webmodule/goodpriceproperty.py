@@ -229,7 +229,7 @@ class goodpriceproperty():
         amphur_id = ""
 
         for (key, value) in provincedata.items():
-            if type(value) is str and postdata['addr_province'].strip() in value.strip():
+            if type(value) is str and (postdata['addr_province'].strip() in value.strip() or value.strip() in postdata['addr_province'].strip()):
                 province_id = key
                 break
         if province_id == "" or success!='true':
@@ -242,12 +242,12 @@ class goodpriceproperty():
                 'ret': "",
                 'post_url': "",
                 'post_id': "",
-                'detail': 'cannot find province id or amphur',
+                'detail': 'cannot find province id',
                 # 'data': postdata
             }
 
         for (key, value) in provincedata[province_id+"_province"].items():
-            if postdata['addr_district'].replace(" ", "") in value.replace(" ", ""):
+            if postdata['addr_district'].replace(" ", "") in value.replace(" ", "") or value.replace(" ", "") in postdata['addr_district'].replace(" ", ""):
                 amphur_id = key
                 break
 
@@ -262,7 +262,7 @@ class goodpriceproperty():
                 'ret': "",
                 'post_url': "",
                 'post_id': "",
-                'detail': 'cannot find province id or amphur2',
+                'detail': 'cannot find amphur',
                 # 'data': postdata
             }
         if 'addr_soi' in postdata and postdata['addr_soi'] != None:
@@ -644,7 +644,7 @@ class goodpriceproperty():
         amphur_id = ""
 
         for (key, value) in provincedata.items():
-            if type(value) is str and postdata['addr_province'].strip() in value.strip():
+            if type(value) is str and (postdata['addr_province'].strip() in value.strip() or value.strip() in postdata['addr_province'].strip()):
                 province_id = key
                 break
 
@@ -691,7 +691,7 @@ class goodpriceproperty():
             }
 
         for (key, value) in provincedata[province_id+"_province"].items():
-            if postdata['addr_district'].replace(" ", "") in value.replace(" ", ""):
+            if postdata['addr_district'].replace(" ", "") in value.replace(" ", "") or value.replace(" ", "") in postdata['addr_district'].replace(" ", ""):
                 amphur_id = key
                 break
         if amphur_id == "":
