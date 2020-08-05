@@ -87,6 +87,7 @@ class postcore():
         # replace string \n to \r\n , \t to ''
         # TODO how to replace all dict by foreach or array walk?
         try:
+            datarequest['post_title_th'] = datarequest['post_title_th'].strip()
             datarequest['post_title_th'] = re.sub(r'\n','\r\n',datarequest['post_title_th'])
             datarequest['post_title_en'] = re.sub(r'\n','\r\n',datarequest['post_title_en'])
             datarequest['short_post_title_th'] = re.sub(r'\n','\r\n',datarequest['short_post_title_th'])
@@ -105,7 +106,6 @@ class postcore():
 # ===========================================================================
 # correcting input
 # ===========================================================================
-        datarequest['post_title_th'] = datarequest['post_title_th'].strip()
 
         for key in datarequest.keys():
             if datarequest[key] == "\n":
@@ -289,13 +289,7 @@ class postcore():
                     errors.append([str(traceback.format_exc()),str(e)])
 
 
-
             for webitem in weblists:
-
-                response["web"][webitem['ds_name']]['ds_id'] = webitem['ds_id']      
-                response["web"][webitem['ds_name']]['log_id'] = webitem['log_id']    
-                if 'post_id' not in response["web"][webitem['ds_name']]:  
-                    response["web"][webitem['ds_name']]['post_id'] = webitem['post_id']      
 
                 if webitem['ds_name'] not in response:
                     for i, error in enumerate(errors):
@@ -317,13 +311,13 @@ class postcore():
                             logging.info("")
 
                             response["web"][webitem['ds_name']] = {'success':'false','detail': error[0], 'websitename':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow()}
-                            if 'ds_id' in webitem:
-                                response["web"][webitem['ds_name']]['ds_id'] = webitem['ds_id']
-                            if 'log_id' in webitem:
-                                response["web"][webitem['ds_name']]['log_id'] = webitem['ds_id']                        
-                            del errors[i]
                             break
 
+
+                response["web"][webitem['ds_name']]['ds_id'] = webitem['ds_id']      
+                response["web"][webitem['ds_name']]['log_id'] = webitem['log_id']    
+                if 'post_id' not in response["web"][webitem['ds_name']]:  
+                    response["web"][webitem['ds_name']]['post_id'] = webitem['post_id']      
 
         # remove image tmp
         if os.path.isdir('imgtmp/' + dirtmp) == True:
