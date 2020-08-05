@@ -526,6 +526,8 @@ class novabizz():
         postdata['address'] = prod_address
         if 'website' not in postdata or postdata['website']==None:
             postdata['website']=' '
+
+        detail = ""
         if success == "true":
             if postdata['listing_type'] == 'เช่า':
                 postdata['listing_type'] = 'forrent'
@@ -614,6 +616,7 @@ class novabizz():
             post_url=""
             print("15")
             success = "False"
+            detail = "cannot login"
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -626,6 +629,7 @@ class novabizz():
             "end_time": str(time_end),
             "post_url": post_url,
             "post_id": post_id,
+            "detail" : detail
         }
 
     def search_post(self, postdata):

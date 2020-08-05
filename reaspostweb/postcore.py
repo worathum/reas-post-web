@@ -44,6 +44,16 @@ class postcore():
 
     def coreworker(self, access_token, postdata):
 
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.info("INPUT POST DATA:")
+        logging.warning(postdata) 
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+
+
         # check secret key
         if self.secret_key != access_token:
             logging.error('wrong access token.')
@@ -92,19 +102,30 @@ class postcore():
         except:
             pass
 
-        # correcting input
+# ===========================================================================
+# correcting input
+# ===========================================================================
+        datarequest['post_title_th'] = datarequest['post_title_th'].strip()
+
         for key in datarequest.keys():
             if datarequest[key] == "\n":
                 datarequest[key] = ""
+        if 'project_name' in datarequest and datarequest['project_name'] == "":
+            datarequest['project_name'] = None
+ 
         check_int = ['land_size_rai', 'land_size_ngan', 'land_size_wa', 'floor_area']
         for item in check_int:
             try:
                 a = int(datarequest[item])
             except:
                 datarequest[item] = '0'
+# ===========================================================================
+# ===========================================================================
 
         
-        # check action in list
+# ===========================================================================
+# check action in list
+# ===========================================================================
         action = datarequest['action']
         if (action not in self.list_action):
             logging.error('action %s not allow', datarequest['action'])
@@ -112,6 +133,8 @@ class postcore():
                 "success": "false",
                 "detail": "Action not allow",
             }
+# ===========================================================================
+# ===========================================================================
 
         # default response
         response = {
@@ -120,13 +143,15 @@ class postcore():
             "web": {},
         }
 
-        # store image in img tmp
+# ===========================================================================
+# store image in img tmp
+# ===========================================================================
         try:
             allimages = datarequest["post_img_url_lists"]
         except KeyError as e:
             allimages = {}
             logging.warning(str(e))
-        #dirtmp = str(os.getpid())+'_'+str(datetime.datetime.utcnow().strftime("%Y%m%d%H:%M:%S"))
+
         for i in range(6):
             dirtmp = 'imgupload_' + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
             if os.path.isdir('imgtmp/' + dirtmp) == False:
@@ -137,6 +162,8 @@ class postcore():
                 except:
                     pass
                 break
+# ===========================================================================
+# ===========================================================================
 
         datarequest['post_images'] = []
         imgcount = 1
@@ -163,35 +190,30 @@ class postcore():
             else:
                 logging.warning('image url response error %s', res.status_code)
 
-        # define all website list
+
+
+# ===========================================================================
+# define & call all website list
+# ===========================================================================
+
         weblists = datarequest['web']
         del (datarequest['web'])
         futures = []
 
-        #with concurrent.futures.ProcessPoolExecutor() as pool:
-        #with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+
         with concurrent.futures.ThreadPoolExecutor() as pool:
             for webitem in weblists:
+
+                # correcting input
                 check_ids = ['log_id', 'ds_id', 'post_id']
                 for anid in check_ids:
                     if anid not in webitem:
                         webitem[anid] = ""
+                if 'web_project_name' in webitem and webitem['web_project_name'] == "": 
+                    webitem['web_project_name'] = None
 
                 websitename = webitem['ds_name']
-                # # if not defind in configs['list_module']
-                # if websitename not in self.list_module:
-                #     response["web"][websitename] = {}
-                #     response["web"][websitename]["success"] = "false"
-                #     response["web"][websitename]["detail"] = "not found website class"
-                #     response["web"][websitename]["ds_id"] = webitem['ds_id']
-                #     response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
-                #     response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
-                #     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
-                #     response["web"][websitename]["post_url"] = ''
-                #     response["web"][websitename]["post_id"] = ''
-                #     logging.error('websitename %s is not in allow list module',websitename)
-                #     continue
-                # if file not exists websitename.py to next
+         
                 if os.path.isfile('webmodule/' + websitename + '.py') == False:
                     response["web"][websitename] = {}
                     response["web"][websitename]["success"] = "false"
@@ -235,21 +257,64 @@ class postcore():
                             response["web"][websitename]['success'] = "true"
                         if response["web"][websitename]['success'] == "False" or response["web"][websitename]['success'] is False:
                             response["web"][websitename]['success'] = "false"
+                        
+                        if 'detail' not in response["web"][websitename]:
+                            response["web"][websitename]['detail'] = ""
+                        if 'ret' in response["web"][websitename]:
+                            response["web"][websitename]['detail'] += str(ret)
+                        if 'time_start' in response["web"][websitename]:
+                            response["web"][websitename]['start_time'] = response["web"][websitename]['time_start']
+                        if 'time_end' in response["web"][websitename]:
+                            response["web"][websitename]['end_time'] = response["web"][websitename]['time_end']
+                        if 'account_type' not in response["web"][websitename]:
+                            response["web"][websitename]['account_type'] = ""
+                        if 'post_url' not in response["web"][websitename] and (action == "create_post" or action == "search_post"):
+                            response["web"][websitename]['post_url'] = ""
+                        if 'post_create_time' not in response["web"][websitename] and action == "search_post":
+                            response["web"][websitename]['post_create_time'] = ""
+                        if 'post_modify_time' not in response["web"][websitename] and action == "search_post":
+                            response["web"][websitename]['post_modify_time'] = ""
+                        if 'post_view' not in response["web"][websitename] and action == "search_post":
+                            response["web"][websitename]['post_view'] = ""
+                        if 'post_found' not in response["web"][websitename] and action == "search_post":
+                            response["web"][websitename]['post_found'] = "true" if response["web"][websitename]['post_url'] != "" else "false"
+                        if 'ds_name' not in response["web"][websitename]:
+                            response["web"][websitename]['ds_name'] = str(websitename)
+
                     except:
                         pass
+
+
                 except Exception as e:
                     errors.append([str(traceback.format_exc()),str(e)])
 
+
+
             for webitem in weblists:
+
+                response["web"][webitem['ds_name']]['ds_id'] = webitem['ds_id']      
+                response["web"][webitem['ds_name']]['log_id'] = webitem['log_id']    
+                if 'post_id' not in response["web"][webitem['ds_name']]:  
+                    response["web"][webitem['ds_name']]['post_id'] = webitem['post_id']      
+
                 if webitem['ds_name'] not in response:
                     for i, error in enumerate(errors):
                         if webitem['ds_name'] in error[0]:
+                            logging.info("")
+                            logging.info("")
+                            logging.info("==============================================================================")
+                            logging.info("=^=^=^=^=^=^=^=E-R-R-O-R=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^")
+                            logging.info("==============================================================================")
+                            logging.info("")
                             logging.info("WEBSITE NAME:")
                             logging.info(webitem['ds_name'])
-                            logging.info("INPUT POST DATA:")
-                            logging.warning(postdata) 
                             logging.info("ERROR REPORTED:")
                             logging.error(error[0]) 
+                            logging.info("")
+                            logging.info("==============================================================================")
+                            logging.info("==============================================================================")
+                            logging.info("")
+                            logging.info("")
 
                             response["web"][webitem['ds_name']] = {'success':'false','detail': error[0], 'websitename':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow()}
                             if 'ds_id' in webitem:
