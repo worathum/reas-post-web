@@ -249,6 +249,7 @@ class postcore():
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
                     logging.error('import error %s',str(e))
                     continue
+            all_start_time = datetime.datetime.utcnow()
 
             errors = []
             for poolresult in concurrent.futures.as_completed(futures):
@@ -284,6 +285,11 @@ class postcore():
                             response["web"][websitename]['post_found'] = "true" if response["web"][websitename]['post_url'] != "" else "false"
                         if 'ds_name' not in response["web"][websitename]:
                             response["web"][websitename]['ds_name'] = str(websitename)
+                        if 'start_time' not in response["web"][websitename]:
+                            response["web"][websitename]['start_time'] = all_start_time
+                        if 'end_time' not in response["web"][websitename]:
+                            response["web"][websitename]['end_time'] = datetime.datetime.utcnow()
+
 
                     except:
                         pass
