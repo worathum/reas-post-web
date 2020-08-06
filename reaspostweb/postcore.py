@@ -318,6 +318,23 @@ class postcore():
                 response["web"][webitem['ds_name']]['log_id'] = webitem['log_id']    
                 if 'post_id' not in response["web"][webitem['ds_name']]:  
                     response["web"][webitem['ds_name']]['post_id'] = webitem['post_id']      
+                if 'post_url' not in response["web"][webitem['ds_name']] and action == 'create_post':  
+                    response["web"][webitem['ds_name']]['post_url'] = ''      
+
+                logging.info("")
+                logging.info("")
+                logging.info("==============================================================================")
+                logging.info("=^=^=^=^=^=^=S-T-A-R-T---O-U-T-P-U-T=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^")
+                logging.info("==============================================================================")
+                logging.info("")
+                logging.error(json.dumps(json.loads(response), indent=4, sort_keys=True)) 
+                logging.info("")
+                logging.info("==============================================================================")
+                logging.info("=^=^=^=^=^=^=^=E-N-D---O-U-T-P-U-T=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^")
+                logging.info("==============================================================================")
+                logging.info("")
+                logging.info("")
+
 
         # remove image tmp
         if os.path.isdir('imgtmp/' + dirtmp) == True:
