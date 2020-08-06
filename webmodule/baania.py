@@ -216,7 +216,7 @@ class baania():
                     "name": postdata["addr_district"]
                 }
         if 'district' not in address:
-            for j in province:
+            for j in prov:
                 if j['data']['title']['title_th'].strip() in postdata['addr_district'].strip() or postdata['addr_district'] in j['data']['title']['title_th']:
                     amphur_id = j['data']['id']
                     address["district"] = {
@@ -235,7 +235,7 @@ class baania():
                     "name": postdata["addr_sub_district"]
                 }
         if 'sub_district' not in address:
-            for j in province:
+            for j in prov:
                 if j['data']['title']['title_th'].strip() in postdata["addr_sub_district"].strip() or postdata["addr_sub_district"].strip() in j['data']['title']['title_th']:
                     address["sub_district"] = {
                         "id": i['data']['id'],
