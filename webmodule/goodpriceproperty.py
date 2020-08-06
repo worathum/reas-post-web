@@ -330,11 +330,11 @@ class goodpriceproperty():
             if len(var) == 0:
                 return{
                     "websitename": "goodpriceproperty",
-                    
+                    "start_time": str(time_start),
+                    "end_time": str(datetime.datetime.utcnow()),
                     "ds_id": postdata['ds_id'],
                     'success': 'false',
                     'websitename': 'goodpriceproperty',
-                    'ret': "",
                     'post_url': "",
                     'post_id': "",
                     'detail': 'Un successful post'
@@ -654,7 +654,8 @@ class goodpriceproperty():
                 "log_id": postdata['log_id'],
                 "ds_id": postdata['ds_id'],
                 'success': 'false',
-                'ret': "",
+                "start_time": str(time_start),
+                "end_time": str(datetime.datetime.utcnow()),
                 'post_url': "",
                 'post_id': "",
                 'detail': 'cannot find province id or amphur',
@@ -683,7 +684,8 @@ class goodpriceproperty():
                 "log_id": postdata['log_id'],
                 "ds_id": postdata['ds_id'],
                 'success': 'false',
-                'ret': "",
+                "start_time": str(time_start),
+                "end_time": str(datetime.datetime.utcnow()),
                 'post_url': "",
                 'post_id': "",
                 'detail': 'cannot find the given post_id',
@@ -699,9 +701,10 @@ class goodpriceproperty():
                 "websitename": "goodpriceproperty",
                 "log_id": postdata['log_id'],
                 "ds_id": postdata['ds_id'],
+                "start_time": str(time_start),
+                "end_time": str(datetime.datetime.utcnow()),
                 'success': 'false',
                 'websitename': 'goodpriceproperty',
-                'ret': "",
                 'post_url': "",
                 'post_id': ""
             }
@@ -792,10 +795,12 @@ class goodpriceproperty():
                 return{
                     "websitename": "goodpriceproperty",
                     "log_id": postdata['log_id'],
+                    "start_time": str(time_start),
+                    "end_time": str(datetime.datetime.utcnow()),
+
                     "ds_id": postdata['ds_id'],
                     'success': 'false',
                     'websitename': 'goodpriceproperty',
-                    'ret': "",
                     'post_url': "",
                     'post_id': ""
                 }
