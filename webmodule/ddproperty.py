@@ -153,14 +153,18 @@ class ddproperty():
         data = r.text
         #f = open("debug_response/ddauthentic.html", "wb")
         #f.write(data.encode('utf-8').strip())
-        print(data)
-        print("ddprop json ^^")
-        datajson = r.json()
-        # if logged in ,session is 0 cause  {"status":0,"name":"\u0e14\u0e39\u0e14\u0e35 \u0e14\u0e2d\u0e17\u0e04\u0e2d\u0e21","email":"kla.arnut@hotmail.com","profile":"https:\/\/th1-cdn.pgimgs.com\/agent\/10760807\/APHO.74655966.C100X100.jpg"}
-        if datajson['status'] and datajson['status'] == 0:
-            if datajson['email'] != user:
-                success = "false"
-                detail = data
+        # print(data)
+        # print("ddprop json ^^")
+        try:
+            datajson = r.json()
+            # if logged in ,session is 0 cause  {"status":0,"name":"\u0e14\u0e39\u0e14\u0e35 \u0e14\u0e2d\u0e17\u0e04\u0e2d\u0e21","email":"kla.arnut@hotmail.com","profile":"https:\/\/th1-cdn.pgimgs.com\/agent\/10760807\/APHO.74655966.C100X100.jpg"}
+            if datajson['status'] and datajson['status'] == 0:
+                if datajson['email'] != user:
+                    success = "false"
+                    detail = data
+        except:
+            success = "false"
+            detail = "Access denied"
         if success == "true":
             datapost = {
                 'password': passwd,

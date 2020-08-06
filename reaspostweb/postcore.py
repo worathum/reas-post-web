@@ -42,6 +42,10 @@ class postcore():
         self.encoding = 'utf-8'
         logging.debug('load app config success.')
 
+    def myconverter(o):
+        if isinstance(o, datetime.datetime):
+            return o.__str__()
+
     def coreworker(self, access_token, postdata):
 
         logging.info("==============================================================================")
@@ -327,7 +331,7 @@ class postcore():
                 logging.info("=^=^=^=^=^=^=S-T-A-R-T---O-U-T-P-U-T=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^")
                 logging.info("==============================================================================")
                 logging.info("")
-                logging.error(json.dumps(json.loads(response), indent=4, sort_keys=True)) 
+                logging.error(json.dumps(response, default = self.myconverter, indent=4, sort_keys=True))
                 logging.info("")
                 logging.info("==============================================================================")
                 logging.info("=^=^=^=^=^=^=^=E-N-D---O-U-T-P-U-T=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^=^")
