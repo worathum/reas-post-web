@@ -286,7 +286,8 @@ class postcore():
                             response["web"][websitename]['start_time'] = all_start_time
                         if 'end_time' not in response["web"][websitename]:
                             response["web"][websitename]['end_time'] = datetime.datetime.utcnow()
-
+                        if 'http' not in response["web"][websitename]['post_url'] and response["web"][websitename]['post_url'] != '':
+                            response["web"][websitename]['post_url'] = "http://" + response["web"][websitename]['post_url']
 
                     except:
                         pass

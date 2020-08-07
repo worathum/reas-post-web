@@ -627,7 +627,7 @@ class novabizz():
             "start_time": str(time_start),
             "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
-            "post_url": post_url,
+            "post_url": 'https://' + post_url,
             "post_id": post_id,
             "detail" : detail
         }
@@ -671,7 +671,7 @@ class novabizz():
                     if post_title == title['href'][27:47]:
                         exists = True
                         post_id = title['href'][20:26]
-                        post_url = "http://"+title['href'][2:]
+                        post_url = "https://"+title['href'][2:]
                         post_modify_time = title_row.find('li', attrs={'class':'date'}).text[7:-14]
                         post_view = title_row.find('span', attrs={'class':'pageview'}).text[7:]
                         post_found = "true"
