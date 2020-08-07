@@ -446,6 +446,15 @@ class postcore():
     #             response["web"][websitename] = module_instance.test_login(
     #                 datareq)
 
+
+        try:
+            os.command("pkill -kill geckodriver")
+            os.command("pkill -kill firefox")
+            os.command("rm geckodriver.log")
+        except Exception as e2:
+            logging.info("Lol error os: " + str(e2))
+
+
         return response
 
     def coreworker_test(self, postdatajson):
