@@ -263,7 +263,7 @@ class postcore():
                         if 'detail' not in response["web"][websitename]:
                             response["web"][websitename]['detail'] = ""
                         if 'ret' in response["web"][websitename]:
-                            response["web"][websitename]['detail'] += str(ret)
+                            response["web"][websitename]['detail'] += str(response["web"][websitename]['ret'])
                         if 'time_start' in response["web"][websitename]:
                             response["web"][websitename]['start_time'] = response["web"][websitename]['time_start']
                         if 'time_end' in response["web"][websitename]:
@@ -289,8 +289,9 @@ class postcore():
                         if 'http' not in response["web"][websitename]['post_url'] and response["web"][websitename]['post_url'] != '':
                             response["web"][websitename]['post_url'] = "http://" + response["web"][websitename]['post_url']
 
-                    except:
-                        pass
+                    except Exception as e1:
+                        print("sed")
+                        print(str(e1))
 
 
                 except Exception as e:
