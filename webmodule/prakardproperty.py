@@ -385,15 +385,17 @@ class prakardproperty():
                     submit = driver.find_element_by_class_name('prakard-button')
                     submit.click()
                     detail += " \n Images uploaded successfully"
-                    driver.quit()
                 except Exception as e:
                     print(e)
-                    driver.quit()
                     detail += " \n Images not uploaded successfully"
-                
             #
         #
         #
+        try:
+            driver.close()
+            driver.quit()
+        except:
+            pass
 
         time_end = datetime.datetime.utcnow()
         # #{
@@ -766,18 +768,18 @@ class prakardproperty():
                             submit = driver.find_element_by_class_name('prakard-button')
                             submit.click()
                             detail += " \n Images uploaded successfully"
-                            driver.quit()
                         except:
                             detail += " \n Images not uploaded successfully"
-                            try:
-                                driver.quit()
-                            except:
-                                pass
 
                 except:
                     success = "False"
                     detail = "Edit Unsuccessful"
         #
+        try:
+            driver.close()
+            driver.quit()
+        except:
+            pass
         #
 
         time_end = datetime.datetime.utcnow()

@@ -1,11 +1,9 @@
-from selenium import webdriver
 from urllib.parse import unquote
 import sys
 import time
 from .lib_httprequest import *
 import os
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.chrome.options import Options
+
 from bs4 import BeautifulSoup
 import os.path
 from urllib import parse
