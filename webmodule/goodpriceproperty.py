@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 import requests
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.remote.webelement import WebElement
 import os
 from .lib_httprequest import *
 from bs4 import BeautifulSoup

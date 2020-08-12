@@ -442,7 +442,6 @@ class pantipmarket():
             success = True
             detail = 'Created the post successfully'
             end_time = datetime.utcnow()
-            driver.quit()
 
             time.sleep(4)
             test_login = self.test_login(postdata)
@@ -455,17 +454,22 @@ class pantipmarket():
 
                 regex = 'id=\"tr[0-9]+\"'
                 idn = re.findall(regex,str(request.text))
-                idnn = idn[len(idn)-1]
-                post_id = idnn[6:len(idnn)-1]
-                print(post_id)
+                try:
+                    idnn = idn[len(idn)-1]
+                    post_id = idnn[6:len(idnn)-1]
+                    print(post_id)
 
-                post_url = 'https://www.pantipmarket.com/items/' + post_id
+                    post_url = 'https://www.pantipmarket.com/items/' + post_id
+                except:
+                    detail = "couldn't create post"
+                    post_id = ""
+                    post_url = ""
                 # print(post_url)
         else:
             end_time = datetime.utcnow()
-            driver.quit()
 
         try:
+            driver.close()
             driver.quit()
         except:
             pass
@@ -760,7 +764,6 @@ class pantipmarket():
             success = False
             detail = "The post doesn't exist"
             end_time = datetime.utcnow()
-            driver.quit()
         else:
             success = True
 
@@ -880,10 +883,14 @@ class pantipmarket():
 
             post_url = "https://www.pantipmarket.com/items/" + post_id
             detail = "Successfully edited the post"
-            driver.quit()
             success = True
             end_time = datetime.utcnow()
 
+        try:
+            driver.close()
+            driver.quit()
+        except:
+            pass
 
         return {
             "websitename":"pantipmarket",

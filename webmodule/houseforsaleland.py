@@ -354,6 +354,7 @@ class houseforsaleland():
         time.sleep(5)
 
         driver.find_element_by_id('submit').click()
+        driver.close()
         driver.quit()
 
 

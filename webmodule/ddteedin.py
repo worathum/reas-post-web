@@ -393,6 +393,12 @@ class ddteedin():
         else:
             success = "false"
 
+        try:
+            browser.close()
+            browser.quit()
+        except:
+            pass
+
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
 
@@ -603,14 +609,17 @@ class ddteedin():
                 browser.find_element_by_name('btn_submit').click()
                 browser.get('https://www.ddteedin.com/logout/')
                 query_string = 'https://www.ddteedin.com/'+postdata['post_id']
-                # browser.close()
             # print(r.text)
         else:
             success = "false"
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-
+        try:
+            browser.close()
+            browser.quit()
+        except:
+            pass
         return {
             "websitename": "ddteedin",
             "success": success,

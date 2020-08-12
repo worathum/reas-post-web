@@ -17,10 +17,6 @@ from selenium.webdriver.support.expected_conditions import presence_of_element_l
 from selenium.webdriver.common.by import By
 
 httprequestObj = lib_httprequest()
-options = Options()
-options.set_headless(True)
-browser = webdriver.Firefox(options=options)
-browser.implicitly_wait(10)
 
 with open("./static/hipflat_province.json") as f:
     provincedata = json.load(f)
@@ -49,6 +45,11 @@ class hipflat():
 
 
     def upload_file(self,postdata,post_id):
+
+        options = Options()
+        options.set_headless(True)
+        browser = webdriver.Firefox(options=options)
+        browser.implicitly_wait(10)
 
         browser.get('https://www.hipflat.co.th/login')
         time.sleep(1)
@@ -80,8 +81,8 @@ class hipflat():
         browser.find_element_by_name('commit').click()
         browser.get('https://www.hipflat.co.th/logout')
 
+        browser.close()
         browser.quit()
-
 
 
 
