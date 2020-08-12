@@ -233,15 +233,19 @@ class aecmarketing():
                     zone_id = i + 1
                     break
 
+
         addr_subdis = postdata['addr_sub_district']
         response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/'+str(zone_id))
         result = json.loads(response.content.decode('utf-8'))
 
         subdistrict_id = ''
         for i in range(len(result)):
-            if(addr_subdis in result[i]['subdistrict_name']):
+            if (addr_subdis in result[i]['subdistrict_name']) or (result[i]['subdistrict_name'] in addr_subdis):
                 subdistrict_id = result[i]['subdistrict_id']
                 break
+        if subdistrict_id == '':
+            subdistrict_id = result[0]['subdistrict_id']
+
         try:
             line_data = postdata['line']
             if(line_data == None):
@@ -297,19 +301,26 @@ class aecmarketing():
         print(response.content)
 
         result = json.loads(response.content.decode('utf-8'))
-        #print(result)
+        print(result, "hi")
         try:
             ids = result['result']['redirect'][45:]
             ids = ids.split('-')
             ids = ids[0]
         except:
             ids = 0
-
-        if(result['result']['status_code'] == 200):
-            status = True
-
-        else:
+        if 'status_code' in result and result['status_code'] != 200:
             status = False
+            detail = result['description'] 
+        else:
+            if 'status_code' in result and result['status_code'] != 200:
+                status = True
+                detail = result['description'] 
+            else:
+                if(result['result']['status_code'] == 200):
+                    status = True
+                else:
+                    status = False
+                detail = result['result']['description'] 
 
         end_time = datetime.datetime.utcnow()
         try:
@@ -325,7 +336,7 @@ class aecmarketing():
             "ds_id": postdata['ds_id'],
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
-            "detail": result['result']['description'],
+            "detail": detail,
             "post_url" : post_url,
             "post_id" : ids,
             "websitename": "aecmarketing"
@@ -662,6 +673,8 @@ class aecmarketing():
             if (addr_subdis in result[i]['subdistrict_name']):
                 subdistrict_id = result[i]['subdistrict_id']
                 break
+        if subdistrict_id == '':
+            subdistrict_id = result[0]['subdistrict_id']
 
         try:
             line_data = postdata['line']

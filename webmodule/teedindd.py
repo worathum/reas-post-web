@@ -347,14 +347,7 @@ class teedindd():
                         break
                     # print(i.text)
             if 'addr_pros' not in postdata:
-                return{
-                    'websitename':'teedindd',
-                    'success': 'false',
-                    'detail': " Wrong Province",
-                    'post_url': "",
-                    'ds_id': postdata['ds_id'],
-                    'post_id': ""
-                }
+                postdata['addr_pros'] = var[0]['value']
 
             uid = soup.find('input', attrs={'name': 'uid'})
             pd = soup.find('input', attrs={'name': 'pd'})
@@ -374,14 +367,9 @@ class teedindd():
                         postdata['addr_dis'] = i
                         break
             if 'addr_dis' not in postdata:
-               return{
-                    'websitename':'teedindd',
-                    'success': 'false',
-                    'detail': " Wrong district",
-                    'post_url': "",
-                    'ds_id': postdata['ds_id'],
-                    'post_id': ""
-                }
+                postdata['addr_dis'] = json.loads(r.text)[0]
+
+
             url_district = 'https://www.teedindd.com/admin/step-process.php'
             r = httprequestObj.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
@@ -397,15 +385,7 @@ class teedindd():
                         break   
 
             if 'addr_sub_dis' not in postdata:
-                return{
-                    'websitename':'teedindd',
-                    'success': 'false',
-                    'detail': " Wrong subdistrict",
-                    'post_url': "",
-                    'ds_id': postdata['ds_id'],
-                    'post_id': ""
-                }
-
+                postdata['addr_sub_dis'] = json.loads(r.text)[0]
 
 
             prod_address = ""
@@ -613,14 +593,7 @@ class teedindd():
                         break
                     # print(i.text)
             if 'addr_pros' not in postdata:
-                return{
-                    'websitename':'teedindd',
-                    'success': 'false',
-                    'detail': " Wrong Province",
-                    'post_url': "",
-                    'ds_id': postdata['ds_id'],
-                    'post_id': ""
-                }
+                postdata['addr_pros'] = var[0]['value']
 
             uid = soup.find('input', attrs={'name': 'uid'})
             pd = soup.find('input', attrs={'name': 'pd'})
@@ -640,14 +613,8 @@ class teedindd():
                         postdata['addr_dis'] = i
                         break
             if 'addr_dis' not in postdata:
-               return{
-                    'websitename':'teedindd',
-                    'success': 'false',
-                    'detail': " Wrong district",
-                    'post_url': "",
-                    'ds_id': postdata['ds_id'],
-                    'post_id': ""
-                }
+                postdata['addr_dis'] = json.loads(r.text)[0]
+
             url_district = 'https://www.teedindd.com/admin/step-process.php'
             r = httprequestObj.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
@@ -663,14 +630,8 @@ class teedindd():
                         break   
 
             if 'addr_sub_dis' not in postdata:
-                return{
-                    'websitename':'teedindd',
-                    'success': 'false',
-                    'detail': " Wrong subdistrict",
-                    'post_url': "",
-                    'ds_id': postdata['ds_id'],
-                    'post_id': ""
-                }
+                postdata['addr_sub_dis'] = json.loads(r.text)[0]
+
             if 'post_images' in postdata and len(postdata['post_images'])>0:
                 pass
             else:

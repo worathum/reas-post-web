@@ -232,15 +232,10 @@ class teedin2():
                 postdata['addr_districts'] = i['value']
                 # print(i.text)
         if 'addr_districts' not in postdata:
-            return{
-                'websitename': 'teedin2',
-                'success': 'false',
-                'ret': " wrong sub district",
-                'post_url': "",
-                'post_id': "",
-                "log_id": postdata['log_id']
+            for i in var[1:]:
+                postdata['addr_districts'] = i['value']
+                break
 
-            }
         prod_address = ""
         for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
             if add is not None or add == "" or add == " ":
@@ -477,12 +472,16 @@ class teedin2():
                           'AmphurID': postdata['addr_amphurs']})
         soup = BeautifulSoup(r.content, 'html5lib')
         var = soup.findAll('option')
+        print(var)
         for i in var:
             if i.text in postdata['addr_sub_district']:
                 postdata['addr_districts'] = i['value']
-                print(i.text)
+                break
+
         if 'addr_districts' not in postdata:
-            postdata['addr_districts'] = var[0].value
+            for i in var[1:]:
+                postdata['addr_districts'] = i['value']
+                break
         prod_address = ""
         for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
             if add is not None or add == "" or add == " ":
@@ -547,8 +546,8 @@ class teedin2():
             success = "False"
         else:
             soup = BeautifulSoup(r.content, 'html5lib')
-            var = soup.find('input', attrs={'class': 'button', 'type': 'button'})[
-                'onclick']
+            # print(soup)
+            var = soup.find('input', attrs={'class': 'button', 'type': 'button'})['onclick']
             # print(var)
             i = len("window.location = 'https://www.teedin2.com/detail/")
             post_id = ''

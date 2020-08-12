@@ -218,7 +218,10 @@ class bankumka():
                 for i in alls:
                     if postdata['addr_province'].replace(" ","").find(i.get_text()) != -1 or i.get_text().replace(" ","").find(postdata['addr_province']) != -1:
                         province_id = i['value']
+                        province_found = True
                         break
+                if province_found is False:
+                    province_id = data[0]['id']
 
                 # print(i)
                 # print(i.get_text())
@@ -240,7 +243,11 @@ class bankumka():
                 for i in data:
                     if postdata['addr_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_district'].replace(" ","")) != -1:
                         amphur_id = i['id']
+                        amphur_found = True
                         break
+                if amphur_found is False:
+                    amphur_id = data[0]['id']
+
             # print(amphur_id)
             query_string = 'https://bankumka.com/ajax/listcities/'+amphur_id
             r = httprequestObj.http_get(
@@ -257,7 +264,11 @@ class bankumka():
                 for i in data:
                     if postdata['addr_sub_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_sub_district'].replace(" ","")) != -1:
                         tumbon_id = i['id']
+                        tumbon_found = True
                         break
+                if tumbon_found is False:
+                    tumbon_id = data[0]['id']
+
 
             # print(tumbon_id)
             # browser.get("https://bankumka.com/property/announce")
@@ -279,7 +290,6 @@ class bankumka():
                 'query': project_n
             }
             resp = requests.post('https://bankumka.com/ajax/listproject/', data=mydata)
-            print("ji")
             allres = json.loads(resp.content.decode('utf-8'))["suggestions"]
             project_id = '0'
 
@@ -488,11 +498,11 @@ class bankumka():
                         if (i.get_text()).find(post_id) != -1:
                             theurl += i['href']
             else:
-                post_url = ""
                 success = "false"
                 if data['message'][0].find("10") != -1:
                     detail = "Posts Limit Reached"
-
+                else:
+                    detail = str(data['message'])     
                 theurl = ""
         else:
 
