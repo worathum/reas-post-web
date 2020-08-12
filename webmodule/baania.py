@@ -231,16 +231,22 @@ class baania():
         for j in prov:
             if j['data']['title']['title_th'].strip() == postdata["addr_sub_district"].strip():
                 address["sub_district"] = {
-                    "id": i['data']['id'],
+                    "id": j['data']['id'],
                     "name": postdata["addr_sub_district"]
                 }
         if 'sub_district' not in address:
             for j in prov:
                 if j['data']['title']['title_th'].strip() in postdata["addr_sub_district"].strip() or postdata["addr_sub_district"].strip() in j['data']['title']['title_th']:
                     address["sub_district"] = {
-                        "id": i['data']['id'],
+                        "id": j['data']['id'],
                         "name": postdata["addr_sub_district"]
                     }
+        if 'sub_district' not in address:
+            address["sub_district"] = {
+                "id": prov[0]['data']['id'],
+                "name": prov[0]['data']['title']['title_th']
+            }
+
 
         address["post_code"] = "88888"
         if postdata['land_size_rai'] is None or postdata['land_size_rai'] == '':
@@ -624,16 +630,22 @@ class baania():
         for j in prov:
             if j['data']['title']['title_th'].strip() == postdata["addr_sub_district"].strip():
                 address["sub_district"] = {
-                    "id": i['data']['id'],
+                    "id": j['data']['id'],
                     "name": postdata["addr_sub_district"]
                 }
         if 'sub_district' not in address:
             for j in prov:
                 if j['data']['title']['title_th'].strip() in postdata["addr_sub_district"].strip() or postdata["addr_sub_district"].strip() in j['data']['title']['title_th']:
                     address["sub_district"] = {
-                        "id": i['data']['id'],
+                        "id": j['data']['id'],
                         "name": postdata["addr_sub_district"]
                     }
+
+        if 'sub_district' not in address:
+            address["sub_district"] = {
+                "id": prov[0]['data']['id'],
+                "name": prov[0]['data']['title']['title_th']
+            }
 
 
         address["post_code"] = "88888"

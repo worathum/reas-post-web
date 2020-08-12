@@ -47,9 +47,13 @@ class terrabkk():
         tel = userdata['tel']
         line = userdata['line']
         nmaetitledic = { "ms": 'นางสาว', "mrs":'นาง', "mr" : 'นาย'}
+        try:
+            prefix = nmaetitledic[name_title]
+        except:
+            prefix = 'นาย'
         datapost={
             "hid_mode": "add",
-            "txt_prefix": nmaetitledic[name_title],
+            "txt_prefix": prefix,
             "txt_prefix_more" : "",
             "txt_firstname": name_th,
             "txt_lastname": surname_th,
@@ -402,7 +406,7 @@ class terrabkk():
             datapost['freepost_detail-property_finished_year']= '0'
             datapost['freepost_detail-property_buy_year']= '0'
             datapost['freepost_detail-facing']='0',
-            datapost['detail-sell_price_type']:''
+            datapost['detail-sell_price_type']=''
         elif(str(property_type) == str(5)):
             datapost['freepost-house_type'] = '10'
             datapost['freepost_detail-landarea_sqw'] = land_area_sq
@@ -543,9 +547,9 @@ class terrabkk():
                 datapost['freepost_detail-bathrooms'] = '0'
             datapost['freepost_detail-parking'] = '0'
             datapost['freepost-sell_price_type'] = '26'
-            datapost['freepost_detail-livingrooms']:'' 
-            datapost['freepost_detail-parking']: ''
-            datapost['freepost_detail-extrarooms']:'' 
+            datapost['freepost_detail-livingrooms']='' 
+            datapost['freepost_detail-parking']=''
+            datapost['freepost_detail-extrarooms']='' 
             datapost['freepost_detail-property_finished_year']= '0'
             datapost['freepost_detail-property_buy_year']= '0'
             datapost['freepost_detail-facing']='0'
