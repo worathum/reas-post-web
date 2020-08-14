@@ -189,7 +189,7 @@ class baan2day():
                     postdata['land_size_wa'] = int(postdata['land_size_wa'])
                 except ValueError:
                     postdata['land_size_wa'] = 0
-                area = 4*(400 * postdata["land_size_rai"] + 100 * postdata["land_size_ngan"] + intpostdata["land_size_wa"])
+                area = 4*(400 * postdata["land_size_rai"] + 100 * postdata["land_size_ngan"] + postdata["land_size_wa"])
             
             floor_total, bath_room = '', ''
             if 'floor_total' in postdata:
@@ -329,7 +329,7 @@ class baan2day():
                     postdata['land_size_wa'] = int(postdata['land_size_wa'])
                 except ValueError:
                     postdata['land_size_wa'] = 0
-                area = 4*(400 * postdata["land_size_rai"] + 100 * postdata["land_size_ngan"] + intpostdata["land_size_wa"])
+                area = 4*(400 * postdata["land_size_rai"] + 100 * postdata["land_size_ngan"] + postdata["land_size_wa"])
 
             floor_total, bath_room = '0', '0'
             if 'floor_total' in postdata:

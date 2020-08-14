@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>ระบบจัดการข้อมูลสมาชิก | Quickdealfree</title>
+    <meta name="robots" content="index,nofollow">
+    <!-- Bootstrap Core CSS -->
+    <link href="http://www.quickdealfree.com/css/bootstrap.css" rel="stylesheet">
+    <!-- Theme CSS -->
+    <link href="http://www.quickdealfree.com/css/theme.css" rel="stylesheet">
+    <!-- Main CSS -->
+    <link href="http://www.quickdealfree.com/css/main.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="http://www.quickdealfree.com/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Pagination CSS -->
+    <link href="http://www.quickdealfree.com/css/pagination.css" rel="stylesheet">
+    <script language="JavaScript">
+        function ClickCheckAll(vol)
+        {
+                var i=1;
+            for(i=1;i<=document.frmMain.hdnCount.value;i++)
+            {
+                if(vol.checked == true)
+                {
+                    eval("document.frmMain.chkDel"+i+".checked=true");
+                }
+                else
+                {
+                    eval("document.frmMain.chkDel"+i+".checked=false");
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+		body {
+			background-color: #ffffff;
+					}
+	</style>
+</head>
+<body>
+<!-- Header -->
+	<!-- Navbar Header -->
+	<nav class="navbar navbar-default-ghost navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbarActive">
+			    <span class="sr-only">MENU</span>
+			    <span class="icon-bar"></span>
+			    <span class="icon-bar"></span>
+			    <span class="icon-bar"></span>
+			  </button>
+			  <a href="http://www.quickdealfree.com" title="Quickdealfree">
+			  	<img src="http://www.quickdealfree.com/logo-img/quickdealfree.png" class="img-responsive" border="0" title="Quickdealfree" alt="Quickdealfree">
+			  </a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbarActive">
+				<ul class="nav navbar-nav navbar-right">
+			        <li class="active"><a href="http://www.quickdealfree.com">หน้าแรก</a></li>
+			        			        <li><a href="http://www.quickdealfree.com/member/classifieds-post.php">ลงประกาศฟรี</a></li>
+			        			        <li><a href="http://www.quickdealfree.com/all-classifieds.php">ค้นหาประกาศ</a></li>
+			        <li class="dropdown">
+			        	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">เกี่ยวกับเรา <span class="caret"></span></a>
+			        	<ul class="dropdown-menu" role="menu">
+				          	<li><a href="http://www.quickdealfree.com/aboutus.php">เกี่ยวกับเรา</a></li>
+				          	<li><a href="http://www.quickdealfree.com/rules.php">กฏกติกา</a></li>
+				          	<li><a href="http://www.quickdealfree.com/service-policy.php">นโยบายการให้บริการ</a></li>
+				          	<li><a href="http://www.quickdealfree.com/ads.php">อัตราค่าลงโฆษณา</a></li>
+				          	<li><a href="http://www.quickdealfree.com/payment.php">การชำระเงิน</a></li>
+				          	<li><a href="http://www.quickdealfree.com/contact.php">ติดต่อเรา</a></li>
+			        	</ul>
+			        </li>
+			        			        <li class="dropdown">
+			        	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">ข้อมูลสมาชิก <span class="caret"></span></a>
+			        	<ul class="dropdown-menu" role="menu">
+				          	<li><a href="http://www.quickdealfree.com/member/">หน้าหลักสมาชิก</a></li>
+				          	<li><a href="http://www.quickdealfree.com/member/classifieds-post.php">เพิ่มประกาศใหม่</a></li>
+				          	<li><a href="http://www.quickdealfree.com/member/list-classifieds.php">รายการลงประกาศฟรี</a></li>
+				          	<li><a href="http://www.quickdealfree.com/member/list-classifieds-exp.php">รายการลงประกาศฟรีหมดอายุ</a></li>
+				          	<li><a href="http://www.quickdealfree.com/member/logout.php">ออกจากระบบ</a></li>
+			        	</ul>
+			        </li>
+			        				</ul>
+			</div>
+		</div>
+	</nav><div class="container-ghost">
+	<!-- Google Translate & Search -->
+		<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="search">
+			<div class="row">
+				<form action="http://www.quickdealfree.com/search-result.php" role="form" method="post" enctype="multipart/form-data">
+					<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+						<div class="form-group">
+                            <select class="form-control" name="province_id" id="province_id">
+                                <option value="">- ทุกจังหวัด -</option>
+                                                            <option value="64">กระบี่</option>
+                                                            <option value="1">กรุงเทพมหานคร</option>
+                                                            <option value="56">กาญจนบุรี</option>
+                                                            <option value="34">กาฬสินธุ์</option>
+                                                            <option value="49">กำแพงเพชร</option>
+                                                            <option value="28">ขอนแก่น</option>
+                                                            <option value="13">จันทบุรี</option>
+                                                            <option value="15">ฉะเชิงเทรา</option>
+                                                            <option value="11">ชลบุรี</option>
+                                                            <option value="9">ชัยนาท</option>
+                                                            <option value="25">ชัยภูมิ</option>
+                                                            <option value="69">ชุมพร</option>
+                                                            <option value="45">เชียงราย</option>
+                                                            <option value="38">เชียงใหม่</option>
+                                                            <option value="72">ตรัง</option>
+                                                            <option value="14">ตราด</option>
+                                                            <option value="50">ตาก</option>
+                                                            <option value="17">นครนายก</option>
+                                                            <option value="58">นครปฐม</option>
+                                                            <option value="36">นครพนม</option>
+                                                            <option value="19">นครราชสีมา</option>
+                                                            <option value="63">นครศรีธรรมราช</option>
+                                                            <option value="47">นครสวรรค์</option>
+                                                            <option value="3">นนทบุรี</option>
+                                                            <option value="76">นราธิวาส</option>
+                                                            <option value="43">น่าน</option>
+                                                            <option value="77">บึงกาฬ</option>
+                                                            <option value="20">บุรีรัมย์</option>
+                                                            <option value="4">ปทุมธานี</option>
+                                                            <option value="62">ประจวบคีรีขันธ์</option>
+                                                            <option value="16">ปราจีนบุรี</option>
+                                                            <option value="74">ปัตตานี</option>
+                                                            <option value="5">พระนครศรีอยุธยา</option>
+                                                            <option value="44">พะเยา</option>
+                                                            <option value="65">พังงา</option>
+                                                            <option value="73">พัทลุง</option>
+                                                            <option value="53">พิจิตร</option>
+                                                            <option value="52">พิษณุโลก</option>
+                                                            <option value="61">เพชรบุรี</option>
+                                                            <option value="54">เพชรบูรณ์</option>
+                                                            <option value="42">แพร่</option>
+                                                            <option value="66">ภูเก็ต</option>
+                                                            <option value="32">มหาสารคาม</option>
+                                                            <option value="37">มุกดาหาร</option>
+                                                            <option value="46">แม่ฮ่องสอน</option>
+                                                            <option value="24">ยโสธร</option>
+                                                            <option value="75">ยะลา</option>
+                                                            <option value="33">ร้อยเอ็ด</option>
+                                                            <option value="68">ระนอง</option>
+                                                            <option value="12">ระยอง</option>
+                                                            <option value="55">ราชบุรี</option>
+                                                            <option value="7">ลพบุรี</option>
+                                                            <option value="40">ลำปาง</option>
+                                                            <option value="39">ลำพูน</option>
+                                                            <option value="30">เลย</option>
+                                                            <option value="22">ศรีสะเกษ</option>
+                                                            <option value="35">สกลนคร</option>
+                                                            <option value="70">สงขลา</option>
+                                                            <option value="71">สตูล</option>
+                                                            <option value="2">สมุทรปราการ</option>
+                                                            <option value="60">สมุทรสงคราม</option>
+                                                            <option value="59">สมุทรสาคร</option>
+                                                            <option value="18">สระแก้ว</option>
+                                                            <option value="10">สระบุรี</option>
+                                                            <option value="8">สิงห์บุรี</option>
+                                                            <option value="51">สุโขทัย</option>
+                                                            <option value="57">สุพรรณบุรี</option>
+                                                            <option value="67">สุราษฎร์ธานี</option>
+                                                            <option value="21">สุรินทร์</option>
+                                                            <option value="31">หนองคาย</option>
+                                                            <option value="27">หนองบัวลำภู</option>
+                                                            <option value="6">อ่างทอง</option>
+                                                            <option value="26">อำนาจเจริญ</option>
+                                                            <option value="29">อุดรธานี</option>
+                                                            <option value="41">อุตรดิตถ์</option>
+                                                            <option value="48">อุทัยธานี</option>
+                                                            <option value="23">อุบลราชธานี</option>
+                                                        </select>
+                        </div>
+					</div>
+					<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+						<div class="form-group">
+                            <select class="form-control" name="cate_id" id="cate_id">
+                                <option value="">- ทุกหมวดหมู่ -</option>
+                                                            <option value="1">กล้อง อุปกรณ์ถ่ายภาพ</option>
+                                                            <option value="2">การศึกษา</option>
+                                                            <option value="5">ของสะสม ของเก่า</option>
+                                                            <option value="6">คอมพิวเตอร์</option>
+                                                            <option value="7">เครื่องใช้ไฟฟ้า</option>
+                                                            <option value="8">เครื่องดนตรี</option>
+                                                            <option value="13">จิวเวลลี่ เครื่องประดับ</option>
+                                                            <option value="9">ต้นไม้ สัตว์เลี้ยง</option>
+                                                            <option value="11">ท่องเที่ยว ทัวร์ ที่พัก</option>
+                                                            <option value="12">ธุรกิจ งาน</option>
+                                                            <option value="14">บันเทิง เพลง ดนตรี</option>
+                                                            <option value="15">เฟอร์นิเจอร์</option>
+                                                            <option value="16">แฟชั่น เสื้อผ้า</option>
+                                                            <option value="17">มือถือ อุปกรณ์สื่อสาร</option>
+                                                            <option value="18">แม่และเด็ก</option>
+                                                            <option value="19">รถ ยานพาหนะ</option>
+                                                            <option value="21">เสริมสวย สุขภาพ</option>
+                                                            <option value="22">หนังสือ</option>
+                                                            <option value="20">หัตถกรรม ของที่ระลึก</option>
+                                                            <option value="23">อสังหาริมทรัพย์</option>
+                                                            <option value="24">อาหาร</option>
+                                                            <option value="27">อื่นๆ</option>
+                                                            <option value="25">อุตสาหกรรม เครื่องจักร</option>
+                                                            <option value="26">อุปกรณ์สำนักงาน</option>
+                                                        </select>
+                        </div>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+						<div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="keys" id="keys" placeholder="ระบุคำค้นหา">
+                                <span class="input-group-btn"><button class="btn btn-warning" type="submit">ค้นหาประกาศ</button></span>
+                            </div>
+                        </div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>	<!-- Main -->
+		<div class="row">
+			<!-- Main Data -->
+				<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
+					<!-- Ads Banner -->
+												<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ads">
+								<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- http://www.quickdealfree.com/ -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3727483041835136"
+     data-ad-slot="4814679204"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>							</div>
+						</div>
+											<!-- Main Detail -->
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<div class="row">
+									<div class="col-sm-12 col-md-12 col-lg-12 box-title">
+										<h3>รายการลงประกาศฟรี</h3>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<p class="box-title-line"></p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<form action="manage-classifieds.php" role="form" method="post" name="frmMain" id="frmMain" onsubmit="return onDelete();"> 
+		                                    <div class="table-responsive">
+		                                        <table class="table table-hover">
+		                                            <tbody>
+		                                                <tr>
+		                                                    <td class="text-right" colspan="3">
+		                                                        <label for="Check">เลือก/ไม่เลือก</label> <input name="CheckAll" type="checkbox" id="CheckAll" value="Y" onclick="ClickCheckAll(this);">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-120404/dcsd-ksd-ขาย-ที่ดิน-ซอยพงษ์เพชรนิเวศน์-แยก-4-200-ตรว.-เหมาะทำโครงการจัดสรร-ทำเลดีมาก.html" title="dcsd ksd ขาย ที่ดิน ซอยพงษ์เพชรนิเวศน์ แยก 4 200 ตรว. เหมาะทำโครงการจัดสรร ทำเลดีมาก" target="_blank">dcsd ksd ขาย ที่ดิน ซอยพงษ์เพชรนิเวศน์ แยก 4 200 ตรว. เหมาะทำโครงการจัดสรร ทำเลดีมาก</a> 
+		                                                        <span style="color:#999999;">เข้าชม 0 ครั้ง อัพเดทล่าสุด 15 ส.ค. 2563 04:23:18 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=120404">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=120404">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel1" value="120404">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-118836/ขาย-คอนโด-ราคาดี-คาซ่า-วีว่า-คอนโดมิเนียม-50-ตรม.-3-นอน-4-น้ำ-ชั้น-1--ทดสอบ.html" title="ขาย คอนโด ราคาดี คาซ่า วีว่า คอนโดมิเนียม 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ" target="_blank">ขาย คอนโด ราคาดี คาซ่า วีว่า คอนโดมิเนียม 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 9 ส.ค. 2563 21:56:50 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=118836">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=118836">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel2" value="118836">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-118817/ขาย-คอนโด-ราคาดี-TaiPing-Towers-สุขุมวิท-63-(ไท-ปิง-ทาวเวอร์ส-สุขุมวิท-63)-50-ตรม.-3-นอน-4-น้ำ-ชั้น-1--ทดสอบ.html" title="ขาย คอนโด ราคาดี TaiPing Towers สุขุมวิท 63 (ไท ปิง ทาวเวอร์ส สุขุมวิท 63) 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ" target="_blank">ขาย คอนโด ราคาดี TaiPing Towers สุขุมวิท 63 (ไท ปิง ทาวเวอร์ส สุขุมวิท 63) 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 9 ส.ค. 2563 17:47:29 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=118817">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=118817">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel3" value="118817">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-118815/ขาย-คอนโด-ราคาดี-TaiPing-Towers-สุขุมวิท-63-(ไท-ปิง-ทาวเวอร์ส-สุขุมวิท-63)-50-ตรม.-3-นอน-4-น้ำ-ชั้น-1--ทดสอบ.html" title="ขาย คอนโด ราคาดี TaiPing Towers สุขุมวิท 63 (ไท ปิง ทาวเวอร์ส สุขุมวิท 63) 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ" target="_blank">ขาย คอนโด ราคาดี TaiPing Towers สุขุมวิท 63 (ไท ปิง ทาวเวอร์ส สุขุมวิท 63) 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 9 ส.ค. 2563 17:19:03 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=118815">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=118815">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel4" value="118815">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-118809/ขาย-คอนโด-ราคาดี-ญาดา-เรสซิเด้นท์ทัล-คอนโดมิเนียม-50-ตรม.-3-นอน-4-น้ำ-ชั้น-1--ทดสอบ.html" title="ขาย คอนโด ราคาดี ญาดา เรสซิเด้นท์ทัล คอนโดมิเนียม 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ" target="_blank">ขาย คอนโด ราคาดี ญาดา เรสซิเด้นท์ทัล คอนโดมิเนียม 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 9 ส.ค. 2563 16:29:16 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=118809">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=118809">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel5" value="118809">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-118804/ขาย-คอนโด-ราคาดี-ญาดา-เรสซิเด้นท์ทัล-คอนโดมิเนียม-50-ตรม.-3-นอน-4-น้ำ-ชั้น-1--ทดสอบ.html" title="ขาย คอนโด ราคาดี ญาดา เรสซิเด้นท์ทัล คอนโดมิเนียม 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ" target="_blank">ขาย คอนโด ราคาดี ญาดา เรสซิเด้นท์ทัล คอนโดมิเนียม 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 9 ส.ค. 2563 16:15:43 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=118804">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=118804">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel6" value="118804">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112745/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์125-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์125 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์125 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 17 ก.ค. 2563 12:26:34 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112745">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112745">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel7" value="112745">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112605/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์124-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 22:36:49 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112605">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112605">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel8" value="112605">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112604/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์124-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 22:34:20 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112604">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112604">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel9" value="112604">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112594/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์124-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 21:59:20 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112594">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112594">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel10" value="112594">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112568/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์124-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 20:35:09 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112568">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112568">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel11" value="112568">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112567/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์124-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 20:20:03 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112567">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112567">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel12" value="112567">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112558/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์124-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 19:15:23 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112558">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112558">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel13" value="112558">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112555/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์124-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์124 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 19:02:24 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112555">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112555">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel14" value="112555">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112546/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์121-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์121 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์121 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 18:12:00 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112546">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112546">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel15" value="112546">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ให้เช่า		                                                        ]
+		                                                        <a href="../post-112544/ให้เช่า-คอนโด-ถูกสุดๆ-จันทร์-58-ตรม.-2-นอน-2-น้ำ-ชั้น-11--ด่วนมากๆ.html" title="ให้เช่า คอนโด ถูกสุดๆ จันทร์ 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ" target="_blank">ให้เช่า คอนโด ถูกสุดๆ จันทร์ 58 ตรม. 2 นอน 2 น้ำ ชั้น 11  ด่วนมากๆ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 1 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 17:59:28 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112544">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112544">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel16" value="112544">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-112526/ขาย-คอนโด-ราคาดี-Royal-Castle-สุขุมวิท-(รอยัล-คาสเซอร์-สุขุมวิท)-50-ตรม.-3-นอน-4-น้ำ-ชั้น-1--ทดสอบ.html" title="ขาย คอนโด ราคาดี Royal Castle สุขุมวิท (รอยัล คาสเซอร์ สุขุมวิท) 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ" target="_blank">ขาย คอนโด ราคาดี Royal Castle สุขุมวิท (รอยัล คาสเซอร์ สุขุมวิท) 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 16:59:19 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112526">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112526">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel17" value="112526">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-112521/ขาย-คอนโด-ราคาดี-33-Tower-Condominium-50-ตรม.-3-นอน-4-น้ำ-ชั้น-1--ทดสอบ.html" title="ขาย คอนโด ราคาดี 33 Tower Condominium 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ" target="_blank">ขาย คอนโด ราคาดี 33 Tower Condominium 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 0 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 16:42:28 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112521">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112521">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel18" value="112521">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-112512/ขาย-คอนโด-ราคาดี-Turn-Burry-Condominium-50-ตรม.-3-นอน-4-น้ำ-ชั้น-1--ทดสอบ.html" title="ขาย คอนโด ราคาดี Turn Burry Condominium 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ" target="_blank">ขาย คอนโด ราคาดี Turn Burry Condominium 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 2 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 15:49:24 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112512">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112512">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel19" value="112512">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;">
+		                                                        [
+		                                                        ต้องการขาย		                                                        ]
+		                                                        <a href="../post-112505/ขาย-คอนโด-ราคาดี-บ้านมิตรา-Condominium-50-ตรม.-3-นอน-4-น้ำ-ชั้น-1--ทดสอบ.html" title="ขาย คอนโด ราคาดี บ้านมิตรา Condominium 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ" target="_blank">ขาย คอนโด ราคาดี บ้านมิตรา Condominium 50 ตรม. 3 นอน 4 น้ำ ชั้น 1  ทดสอบ</a> 
+		                                                        <span style="color:#999999;">เข้าชม 0 ครั้ง อัพเดทล่าสุด 16 ก.ค. 2563 15:32:31 น.</span>
+		                                                    </td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="select" id="select" onchange="window.open(this.options[this.selectedIndex].value,'_self')">
+		                                                            <option value="" selected="selected">- เลือก -</option>
+		                                                            <option value="slide-classified-post.php?id=112505">เลื่อนประกาศ</option>
+		                                                            <option value="edit-classifieds-post.php?id=112505">แก้ไขประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="checkbox" name="chkDel[]" id="chkDel20" value="112505">
+		                                                    </td>
+		                                                </tr>
+		                                            		                                                <tr>
+		                                                    <td style="width:75%;"></td>
+		                                                    <td style="width:20%;">
+		                                                        <select class="form-control" name="type" id="type">
+		                                                            <option selected="selected">- การกระทำ -</option>
+		                                                            <option value="1">ปรับหมดอายุ</option>
+		                                                            <option value="2">ลบประกาศ</option>
+		                                                        </select>
+		                                                    </td>
+		                                                    <td style="width:5%;" class="text-right">
+		                                                        <input type="submit" name="Submit" id="Submit" value="ดำเนินการ">
+		                                                        <input type="hidden" name="hdnCount" value="20">
+		                                                    </td>
+		                                                </tr>
+		                                            </tbody>
+		                                        </table>
+		                                    </div>
+		                                </form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" style="margin-bottom: 10px;">
+								<a class="current" href="#">1</a> <a class="paginate" href="/member/list-classifieds.php?QueryString=value&Page=2">2</a> <a class="paginate" href="/member/list-classifieds.php?QueryString=value&Page=3">3</a> <a class="paginate" href="/member/list-classifieds.php?QueryString=value&Page=4">4</a> <a class="paginate" href="/member/list-classifieds.php?QueryString=value&Page=5">5</a> 							</div>
+						</div>
+				</div>
+			<!-- Menu Right -->
+				<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 menu-right">
+	<!-- Google Translate -->
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<div id="google_translate_element"></div>
+				<script>
+				function googleTranslateElementInit() {
+				  new google.translate.TranslateElement({
+				    pageLanguage: 'th',
+				    includedLanguages: 'ko,zh-TW,zh-CN,ja,th,fr,ms,de,en'
+				  }, 'google_translate_element');
+				}
+				</script><script src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+			</div>
+		</div>
+	<!-- Ads Banner -->
+				<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ads">
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- quickdealfree อัติโนมัติ -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3727483041835136"
+     data-ad-slot="6291412408"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>			</div>
+		</div>
+        		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ads">
+							<a href="https://www.thegems.net/" title="บิซเลอร์" target="_blank">
+            		<img class="img-responsive" src="http://www.quickdealfree.com/ads-img/14012019215648bizzler09_orig.jpg" alt="บิซเลอร์" title="บิซเลอร์">
+				</a>
+						</div>
+		</div>
+        		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ads">
+			<a href="https://support.hostneverdie.com/aff.php?aff=3852"><img src="http://www.hostneverdie.com/banner/250x250.gif" width="250" height="250" border="0"></a>			</div>
+		</div>
+        		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ads">
+							<a href="https://www.youpik2u.com/" title="Youpik  ยูพิค รายได้เสริม งานออนไลน์ รายได้เสริมผ่านเน็ต" target="_blank">
+            		<img class="img-responsive" src="http://www.quickdealfree.com/ads-img/05082020222804youpik1.jpg" alt="Youpik  ยูพิค รายได้เสริม งานออนไลน์ รายได้เสริมผ่านเน็ต" title="Youpik  ยูพิค รายได้เสริม งานออนไลน์ รายได้เสริมผ่านเน็ต">
+				</a>
+						</div>
+		</div>
+            <!-- State -->
+	    <div class="row">
+	    	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ads">
+	    		<div class="panel panel-state">
+				    <div class="panel-heading"><h3 class="panel-title">สถิติการใช้งาน</h3></div>
+				    <ul class="list-group">
+				    	  						<li class="list-group-item">
+  							<i class="glyphicon glyphicon-list-alt"></i> ประกาศใหม่วันนี้ 39 รายการ
+  						</li>
+  						  						<li class="list-group-item">
+							<i class="glyphicon glyphicon-folder-open"></i> ประกาศทั้งหมด 109,676 รายการ
+  						</li>
+  						  						<li class="list-group-item">
+							<i class="glyphicon glyphicon-user"></i> สมาชิกทั้งหมด 1,388 คน
+  						</li>
+  						  						<li class="list-group-item">
+							<i class="glyphicon glyphicon-eye-open"></i> ผู้เข้าชมทั้งหมด 8,664,084 ครั้ง
+  						</li>
+					</ul>
+				</div>
+	    	</div>
+	    </div>
+    <!-- Fanpage -->
+				<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<iframe src="//www.facebook.com/plugins/likebox.php?href=https://www.facebook.com/pages/Quickdealfreedotcom/171374733067950&width=265&height=280&colorscheme=light&show_faces=true&border_color&stream=false&header=false" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:265px; height:280px;" allowTransparency="true"></iframe> <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- quickdealfree all responsive -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3727483041835136"
+     data-ad-slot="9982512805"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			</div>
+		</div>
+		</div>		</div>
+	<!-- Footer -->
+		﻿<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="footer">
+			<div class="row">
+			<!-- About -->
+				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+					<p class="link-color" style="font-weight: bolder;">สงวนลิขสิทธิ์ &copy; 2558 <a href="http://www.quickdealfree.com" title="Quickdealfree">Quickdealfree</a></p>
+					<p>โทร. 089-7296997 Fax. ไม่ระบุ Email : s4340216@hotmail.com</p>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-right">
+					<div class="row">
+						<!-- Copyright -->
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
+								<p class="link-footer">
+									<a href="http://www.quickdealfree.com" title="หน้าแรก">หน้าแรก</a> | 
+									<a href="http://www.quickdealfree.com/aboutus.php" title="เกี่ยวกับเรา">เกี่ยวกับเรา</a> | 
+									<a href="http://www.quickdealfree.com/rules.php" title="กฏกติกา">กฏกติกา</a> | 
+									<a href="http://www.quickdealfree.com/service-policy.php" title="นโยบายการให้บริการ">นโยบายการให้บริการ</a> | 
+									<a href="http://www.quickdealfree.com/ads.php" title="ลงโฆษณา">ลงโฆษณา</a> | 
+									<a href="http://www.quickdealfree.com/payment.php" title="การชำระเงิน">การชำระเงิน</a> | 
+									<a href="http://www.quickdealfree.com/contact.php" title="ติดต่อเรา">ติดต่อเรา</a>
+								</p>
+							</div>
+					</div>
+					<div class="row">
+						<!-- Design By -->
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
+								<p class="link-footer">Design By <a href="http://www.quickdealfree.com/" title="ลงประกาศฟรี" target="_blank">ลงประกาศฟรี</a> <!-- Histats.com  START  (standard)-->
+<script type="text/javascript">document.write(unescape("%3Cscript src=%27http://s10.histats.com/js15.js%27 type=%27text/javascript%27%3E%3C/script%3E"));</script>
+<a href="http://www.histats.com" target="_blank" title="web statistics" ><script  type="text/javascript" >
+try {Histats.start(1,3033236,4,132,112,33,"00011111");
+Histats.track_hits();} catch(err){};
+</script></a>
+<noscript><a href="http://www.histats.com" target="_blank"><img  src="http://sstatic1.histats.com/0.gif?3033236&101" alt="web statistics" border="0"></a></noscript>
+<!-- Histats.com  END  -->                                                                                                                                                                                                                  </p>
+							</div><br><div align="center"><a href="https://www.thegems.net/bizzlersod.html" title="
+
+&#3629;&#3633;&#3617;&#3614;&#3620;&#3585;&#3625;&#3660;" target="_blank"  rel="dofollow"><strong>&#3629;&#3633;&#3617;&#3614;&#3620;&#3585;&#3625;&#3660;</strong></a>
+ | <a href="http://www.likeshopping.net/" title="ลงประกาศฟรี" target="_blank"  
+
+rel="dofollow"><strong>ลงประกาศฟรี</strong></a> | <a href="http://mlmthaicenter.com" title="เว็บไซต์สำเร็จรูป" target="_blank"  rel="dofollow"><strong>เว็บไซต์สำเร็จรูป</strong></a> | <a href="http://www.land-house.info" title="ลงประกาศขายคอนโด" target="_blank"  
+
+rel="dofollow"><strong>ลงประกาศขายคอนโด</strong></a> | <a href="https://www.fingo.in.th" title="fingo" target="_blank"  rel="dofollow"><strong>fingo</strong></a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div></div>
+<!-- jQuery -->
+<script src="http://www.quickdealfree.com/js/jquery.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="http://www.quickdealfree.com/js/bootstrap.min.js"></script>
+<script src="http://www.quickdealfree.com/js/script.js"></script>
+</body>
+</html>

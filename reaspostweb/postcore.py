@@ -112,7 +112,7 @@ class postcore():
             if datarequest[key] == "\n":
                 datarequest[key] = ""
         if 'project_name' in datarequest and datarequest['project_name'] == "":
-            datarequest['project_name'] = None
+            del datarequest['project_name']
  
         check_int = ['land_size_rai', 'land_size_ngan', 'land_size_wa', 'floor_area']
         for item in check_int:
@@ -211,7 +211,7 @@ class postcore():
                     if anid not in webitem:
                         webitem[anid] = ""
                 if 'web_project_name' in webitem and webitem['web_project_name'] == "": 
-                    webitem['web_project_name'] = None
+                    del webitem['web_project_name']
 
                 websitename = webitem['ds_name']
          
@@ -446,13 +446,6 @@ class postcore():
     #             response["web"][websitename] = module_instance.test_login(
     #                 datareq)
 
-
-        try:
-            os.command("pkill -kill geckodriver")
-            os.command("pkill -kill firefox")
-            os.command("rm geckodriver.log")
-        except Exception as e2:
-            logging.info("Lol error os: " + str(e2))
 
 
         return response
