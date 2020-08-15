@@ -555,7 +555,15 @@ class kaidee():
                 search_in.send_keys(post_title_th)
                 time.sleep(5)
                 page_source = chrome.page_source
+                chrome.close()
                 chrome.quit()
+                try:
+                    alert = chrome.switch_to.alert
+                    alert.accept()
+                    chrome.close()
+                    chrome.quit()
+                except:
+                    pass
 
                 soup = BeautifulSoup(page_source, features=self.parser)
                 result_posts = soup.find_all(class_='owner-ads-preview')

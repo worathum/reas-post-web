@@ -356,6 +356,15 @@ class houseforsaleland():
         driver.find_element_by_id('submit').click()
         driver.close()
         driver.quit()
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+            driver.close()
+            driver.quit()
+        except:
+            pass
+
+
 
 
         success = "true"
