@@ -135,6 +135,6 @@ imgtmp/[0-9]*/
 .vscode/settings.json
 /py37-venv
 
-
+*.html
 captcha.png
 tmp.jpeg

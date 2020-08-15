@@ -98,6 +98,17 @@ class hipflat():
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
         }
 
+        response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
+        soup = BeautifulSoup(response.content, features = "html")
+
+        post_data = {
+        '_method':'delete',
+        'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
+        }
+
+        httprequestObj.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
+
+
         success = "false"
         detail = ""
 
@@ -178,15 +189,24 @@ class hipflat():
             'user[remember_me]': '0',
             'commit': 'ลงชื่อเข้าใช้'
         }
-        
-        success = "false"
-        detail = ""
-        
+
         headers = {
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
         }
-        httprequestObj.http_get_with_headers('https://www.hipflat.co.th/logout')
 
+        response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
+        soup = BeautifulSoup(response.content, features = "html")
+
+        post_data = {
+        '_method':'delete',
+        'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
+        }
+
+        httprequestObj.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
+
+        success = "false"
+        detail = ""
+        
         if data['user[email]'] == "":
             detail = "Invalid username"
         elif data['user[password]'] == "":
