@@ -83,6 +83,14 @@ class hipflat():
 
         browser.close()
         browser.quit()
+        try:
+            alert = browser.switch_to.alert
+            alert.accept()
+            browser.close()
+            browser.quit()
+        except:
+            pass
+
 
 
 
@@ -487,77 +495,61 @@ class hipflat():
             # print("4")
 
             soup = BeautifulSoup(response.content, features = "html.parser")
+            print(soup)
+            try:
+                data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
+            
+                data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
+                data['listing[rank]'] = str(soup.find('input', attrs = {'name': 'listing[rank]'})['value'])
 
-            data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
-            #print(data['utf8'])
+                if postdata['listing_type'] == 'เช่า':
+                    data['listing[rent_availability_status]'] = 'true'
+                    data['listing[rent_price]'] = str(postdata['price_baht'])
+                else:
+                    data['listing[sale_availability_status]'] = 'true'
+                    data['listing[sale_price]'] = str(postdata['price_baht'])
 
-            data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
-            #print(data['authenticity_token'])
+                r = httprequestObj.http_post('https://www.hipflat.co.th/listings/add', data = data, headers = headers)
 
-            data['listing[rank]'] = str(soup.find('input', attrs = {'name': 'listing[rank]'})['value'])
-            #print(data['listing[rank]'])
+                success = "true"
+                detail = "Post created successfully"
 
-            #listing[rent_availability_status', 'true')
-                #datapost[11] = ('listing[rent_price]', postdata['price_baht']
-            if postdata['listing_type'] == 'เช่า':
-                data['listing[rent_availability_status]'] = 'true'
-                data['listing[rent_price]'] = str(postdata['price_baht'])
-            else:
-                data['listing[sale_availability_status]'] = 'true'
-                data['listing[sale_price]'] = str(postdata['price_baht'])
+                data = r.text
 
-            print("5")
+                link = ''
+                aaas = []
+                self.test_login(postdata)
+                r = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/free')
+                print(r.url)
+                print(r.status_code)
+                data=r.text
+                # print('1')
+                # with open('b.html', 'w') as f:
+                #     f.write(data)
+                soup = BeautifulSoup(data, features = "html.parser")
+                #aas = soup.findAll("a")
+                for i in soup.find_all('a'):
+                    # print(i['href'])
+                    try:
+                        if i.get('href').find('/edit') != -1:
+                            # link = i['href']
+                            aaas.append(i['href'])
+                    except:
+                        continue
+                # print(link)
+                link = str(aaas[0])
+                #print(link)
+                link = link.replace('/listings/','')
+                post_id = str(link.replace('/edit',''))
 
-            r = httprequestObj.http_post('https://www.hipflat.co.th/listings/add', data = data, headers = headers)
-            print(r.url)
-            print(r.status_code)
-            print("6")
+                post_url = str('https://www.hipflat.co.th/listing-preview/'+str(post_id))
 
-            success = "true"
-            detail = "Post created successfully"
+                if 'post_images' in postdata and len(postdata['post_images']) > 0:
+                    self.upload_file(postdata,post_id)
 
-            data = r.text
-            #print(r.url)
-            #print(data)
-            #f = open("unique.txt", "a")
-            #f.write(data)
-            #f.close()
-            #with open('./a.html','a') as f:
-            #    f.write(data)
-            #print(data)
-            link = ''
-            aaas = []
-            self.test_login(postdata)
-            r = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/free')
-            print(r.url)
-            print(r.status_code)
-            data=r.text
-            # print('1')
-            # with open('b.html', 'w') as f:
-            #     f.write(data)
-            soup = BeautifulSoup(data, features = "html.parser")
-            #aas = soup.findAll("a")
-            for i in soup.find_all('a'):
-                # print(i['href'])
-                try:
-                    if i.get('href').find('/edit') != -1:
-                        # link = i['href']
-                        aaas.append(i['href'])
-                except:
-                    continue
-            # print(link)
-            link = str(aaas[0])
-            #print(link)
-            link = link.replace('/listings/','')
-            post_id = str(link.replace('/edit',''))
-
-            post_url = str('https://www.hipflat.co.th/listing-preview/'+str(post_id))
-
-            if 'post_images' in postdata and len(postdata['post_images']) > 0:
-                self.upload_file(postdata,post_id)
-
-
-
+            except:
+                success = "false"
+                detail = "Free listings finished. Cannot make more posts."
 
 
 

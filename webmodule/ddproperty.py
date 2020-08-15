@@ -282,7 +282,16 @@ class ddproperty():
         #log.debug("login status %s agent id %s", success, agent_id)
 
         if (postdata['action'] == 'test_login'):
+            # self.firefox.quit()
+            self.firefox.close()
             self.firefox.quit()
+            try:
+                alert = self.firefox.switch_to.alert
+                alert.accept()
+                self.firefox.close()
+                self.firefox.quit()
+            except:
+                pass
 
         #
         # end process
@@ -1091,7 +1100,15 @@ class ddproperty():
                 #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
                 success = 'false'
                 detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits'
+                self.firefox.close()
                 self.firefox.quit()
+                try:
+                    alert = self.firefox.switch_to.alert
+                    alert.accept()
+                    self.firefox.close()
+                    self.firefox.quit()
+                except:
+                    pass
                 return success, detail, post_id, account_type
 
             # image page
@@ -1153,7 +1170,15 @@ class ddproperty():
                 element = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
                 self.firefox.execute_script("arguments[0].click();", element)
                 #quit      
+                self.firefox.close()
                 self.firefox.quit()
+                try:
+                    alert = self.firefox.switch_to.alert
+                    alert.accept()
+                    self.firefox.close()
+                    self.firefox.quit()
+                except:
+                    pass
                 return success, detail, post_id, account_type
 
             WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
@@ -1174,7 +1199,16 @@ class ddproperty():
             self.firefox.execute_script("arguments[0].click();", element)
             #print('here6')
             #quit        
+            self.firefox.close()
             self.firefox.quit()
+            try:
+                alert = self.firefox.switch_to.alert
+                alert.accept()
+                self.firefox.close()
+                self.firefox.quit()
+            except:
+                pass
+            # self.firefox.quit()
 
         return success, detail, post_id, account_type
 

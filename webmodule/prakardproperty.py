@@ -394,6 +394,14 @@ class prakardproperty():
         try:
             driver.close()
             driver.quit()
+            try:
+                alert = driver.switch_to.alert
+                alert.accept()
+                driver.close()
+                driver.quit()
+            except:
+                pass
+
         except:
             pass
 
@@ -778,6 +786,14 @@ class prakardproperty():
         try:
             driver.close()
             driver.quit()
+            try:
+                alert = driver.switch_to.alert
+                alert.accept()
+                driver.close()
+                driver.quit()
+            except:
+                pass
+
         except:
             pass
         #

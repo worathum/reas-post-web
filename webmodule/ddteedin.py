@@ -396,6 +396,13 @@ class ddteedin():
         try:
             browser.close()
             browser.quit()
+            try:
+                alert = browser.switch_to.alert
+                alert.accept()
+                browser.close()
+                browser.quit()
+            except:
+                pass
         except:
             pass
 
@@ -618,6 +625,14 @@ class ddteedin():
         try:
             browser.close()
             browser.quit()
+            try:
+                alert = browser.switch_to.alert
+                alert.accept()
+                browser.close()
+                browser.quit()
+            except:
+                pass
+
         except:
             pass
         return {

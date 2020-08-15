@@ -119,7 +119,16 @@ class ploychao():
         alert = WebDriverWait(driver, 5).until(EC.alert_is_present())
         driver.switch_to.alert.accept()
         waiting = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'box-product')))
+        driver.close()
         driver.quit()
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+            driver.close()
+            driver.quit()
+        except:
+            pass
+
 
 
     def register_user(self, postdata):
