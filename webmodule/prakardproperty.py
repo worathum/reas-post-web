@@ -17,6 +17,8 @@ import time
 options = Options()
 options.headless = True
 options.incognito = True
+options.add_argument('--no-sandbox')
+
 
 
 class prakardproperty():
@@ -349,6 +351,7 @@ class prakardproperty():
                 post_url = 'http://www.prakardproperty.com/property/show/'+post_id
             if(success == "True" ):
                 #"Image time")
+
                 driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
                 
                 try:

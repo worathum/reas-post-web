@@ -301,6 +301,8 @@ class houseforsaleland():
 
         options = Options()
         options.headless = True
+        options.add_argument('--no-sandbox')
+        
         driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
         post_url = urlpost+'/page-postfree-detail.php?pID='+postdata['post_id']

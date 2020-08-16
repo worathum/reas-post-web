@@ -542,7 +542,7 @@ class kaidee():
             privateToken = test_login["privateToken"] 
             post_found = "false"
             detail = "No post found with given title"
-            chrome = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+            chrome = webdriver.Chrome("./static/chromedriver", chrome_options=self.options)
 
             delay = 10
 
