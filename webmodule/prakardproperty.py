@@ -11,7 +11,7 @@ import sys
 from urllib.parse import unquote
 import requests
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import time
 options = Options()
@@ -349,7 +349,8 @@ class prakardproperty():
                 post_url = 'http://www.prakardproperty.com/property/show/'+post_id
             if(success == "True" ):
                 #"Image time")
-                driver = webdriver.Firefox(options=options)
+                driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+                
                 try:
                     driver.get('http://www.prakardproperty.com/')
                     email = webdata["user"]
@@ -740,7 +741,7 @@ class prakardproperty():
                         detail = "Edit Successful"
                     if(success == "True" ):
                         try:
-                            driver = webdriver.Firefox(options=options)
+                            driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
                             #"Driver On")
                             driver.get('http://www.prakardproperty.com/')

@@ -10,7 +10,7 @@ import random
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
@@ -48,7 +48,7 @@ class hipflat():
 
         options = Options()
         options.set_headless(True)
-        browser = webdriver.Firefox(options=options)
+        browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
         browser.implicitly_wait(10)
 
         browser.get('https://www.hipflat.co.th/login')

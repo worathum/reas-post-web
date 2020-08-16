@@ -13,8 +13,8 @@ import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.options import Options
-# from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import WebDriverException
 import time
@@ -216,7 +216,7 @@ class ddproperty():
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
-        self.firefox = webdriver.Firefox(options=options)
+        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
         # open login page
         self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')

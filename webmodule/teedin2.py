@@ -495,7 +495,7 @@ class teedin2():
         if 'project_name' not in postdata:
             postdata['project_name'] = postdata['post_title_th']
         if len(postdata['post_images']) == 0:
-            postdata['post_images'] = ['img/tmp/default/white.jpg']
+            postdata['post_images'] = ['imgtmp/default/white.jpg']
 
         datapost = {
             'thisIDField': '',
