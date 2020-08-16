@@ -15,7 +15,7 @@ from datetime import datetime
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -282,7 +282,8 @@ class pantipmarket():
 
         options = Options()
         options.headless = True
-        driver = webdriver.Firefox(options=options)
+        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+
         driver.implicitly_wait(4)
 
 
@@ -754,7 +755,8 @@ class pantipmarket():
         end_time = datetime.utcnow()
         options = Options()
         options.headless = True
-        driver = webdriver.Firefox(options=options)
+        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+        
         driver.implicitly_wait(4)
         driver.get("https://www.pantipmarket.com/member/login.php?step=&sCode=")
         driver.find_element_by_xpath('//*[@id="login_box2"]/div[1]/a').click()

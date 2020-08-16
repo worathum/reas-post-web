@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import requests
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import Select
 import os
@@ -26,7 +26,8 @@ from urllib.parse import unquote
 
 options = Options()
 options.set_headless(True)
-browser = webdriver.Firefox(options=options)
+
+browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 # browser = webdriver.Chrome(
     # executable_path='/usr/bin/chromedriver',options=options)
 wait = WebDriverWait(browser,10)
