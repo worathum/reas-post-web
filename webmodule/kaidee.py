@@ -10,7 +10,7 @@ import datetime
 import sys
 import requests
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -542,8 +542,8 @@ class kaidee():
             privateToken = test_login["privateToken"] 
             post_found = "false"
             detail = "No post found with given title"
+            chrome = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
-            chrome = webdriver.Firefox(options=self.options)
             delay = 10
 
             if self.selenium_login(chrome, postdata['user'], postdata['pass']):

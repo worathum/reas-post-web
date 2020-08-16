@@ -7,7 +7,7 @@ from .lib_httprequest import *
 from .lib_captcha import *
 import os
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 # import lib_httprequest
 from bs4 import BeautifulSoup
 import os.path
@@ -301,7 +301,7 @@ class houseforsaleland():
 
         options = Options()
         options.headless = True
-        driver = webdriver.Firefox(options=options)
+        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
         post_url = urlpost+'/page-postfree-detail.php?pID='+postdata['post_id']
         driver.get(post_url)
