@@ -26,6 +26,7 @@ from urllib.parse import unquote
 
 options = Options()
 options.set_headless(True)
+options.add_argument('--no-sandbox')
 
 browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 # browser = webdriver.Chrome(

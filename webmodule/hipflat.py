@@ -48,6 +48,8 @@ class hipflat():
 
         options = Options()
         options.set_headless(True)
+        options.add_argument('--no-sandbox')
+        
         browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
         browser.implicitly_wait(10)
 

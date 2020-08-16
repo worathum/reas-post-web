@@ -70,6 +70,8 @@ class ploychao():
         # download file
         options = Options()
         options.headless = True
+        options.add_argument('--no-sandbox')
+        
         driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
         driver.implicitly_wait(4)
 
