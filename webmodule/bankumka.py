@@ -190,7 +190,7 @@ class bankumka():
         #         amphur_id = key
         #         break
         province_id = '0'
-        detail = ""
+        detail = "cannot login"
         amphur_id = '26'
         tumbon_id = '01'
         prod_address = ""
@@ -200,7 +200,7 @@ class bankumka():
         prod_address = prod_address[:-1]
         print(success,"lol")
         if success == "true":
-
+            detail = ""
             r = httprequestObj.http_get(
                 'https://bankumka.com/property/announce', verify=False)
             data = r.text
