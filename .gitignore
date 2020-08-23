@@ -138,3 +138,4 @@ imgtmp/[0-9]*/
 *.html
 captcha.png
 tmp.jpeg
+static/chromedriver

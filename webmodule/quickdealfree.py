@@ -100,7 +100,7 @@ class quickdealfree():
         r = httprequestObj.http_post(
             'http://www.quickdealfree.com/login.php', data=datapost)
         data = r.text
-        # print(data)
+        print(data)
         if data.find("Email") != -1:
             detail = "cannot login"
             success = "false"

@@ -469,9 +469,9 @@ class pantipmarket():
 
                 next_url = 'https://www.pantipmarket.com/member/my/?view=ads&adsmode=ads&p='
                 page = 1
-                found = 1
+                found = [1]
                 idn = []
-                while found > 0:
+                while len(found) > 0:
                     request = httprequestObj.http_get(next_url + str(page))
 
                     regex = 'id=\"tr[0-9]+\"'
