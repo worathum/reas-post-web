@@ -264,9 +264,9 @@ class teesuay():
             if 'land_size_wa' not in postdata or postdata['land_size_wa']==None or postdata['land_size_wa'] == "":
                 postdata['land_size_wa']=0
 
-            if 'web_project_name' in postdata:
+            if 'web_project_name' in postdata and postdata['web_project_name'] != '' and postdata['web_project_name'] is not None:
                 postdata['project_name']=postdata['web_project_name']
-            elif 'project_name' not in postdata:
+            elif 'project_name' not in postdata or postdata['project_name'] == '' and postdata['project_name'] is None:
                 postdata['project_name']=postdata['post_title_th']
 
 
@@ -282,7 +282,7 @@ class teesuay():
                 floorarea=str(postdata['floor_area'])+" ตรม"
             else:
                 floorarea=str(400*int(postdata['land_size_rai']) + 100 * int(postdata['land_size_ngan']) + int(postdata['land_size_wa'])) +" ตรว"
-            postdata['post_project_name']=postdata['post_description_th']
+            postdata['post_project_name'] = postdata['project_name']
             postdata['post_description_th']=postdata['post_description_th'].replace('\r\n','<br>')
             postdata['post_description_th']=postdata['post_description_th'].replace('\n','<br>')
             datapost = {
@@ -491,7 +491,6 @@ class teesuay():
             }
         if success == "true":
             postdata['post_title_th']=postdata['post_title_th'].replace('%','')
-            postdata['post_project_name']=postdata['post_description_th']
             postdata['post_description_th']=postdata['post_description_th'].replace('\r\n','<br>')
             postdata['post_description_th']=postdata['post_description_th'].replace('\n','<br>')
             floor_total, bedroom, bathroom = [''] * 3
@@ -523,10 +522,12 @@ class teesuay():
             if 'land_size_wa' not in postdata or postdata['land_size_wa']==None or postdata['land_size_wa'] == "":
                 postdata['land_size_wa']=0
 
-            if 'web_project_name' in postdata:
+            if 'web_project_name' in postdata and postdata['web_project_name'] != '' and postdata['web_project_name'] is not None:
                 postdata['project_name']=postdata['web_project_name']
-            elif 'project_name' not in postdata:
+            elif 'project_name' not in postdata or postdata['project_name'] == '' and postdata['project_name'] is None:
                 postdata['project_name']=postdata['post_title_th']
+            postdata['post_project_name'] = postdata['project_name']
+            
 
             if len(postdata['post_images'])==0:
                 postdata['post_images']=['imgtmp/default/white.jpg']

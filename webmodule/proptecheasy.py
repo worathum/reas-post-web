@@ -253,22 +253,22 @@ def upload_image(img_add,security_code):
 
 httprequestObj = lib_httprequest()
 
-with open("./static/ips.txt",'r') as f:
-    allips = f.read()
-ips = allips.split('\n')
+# with open("./static/ips.txt",'r') as f:
+#     allips = f.read()
+# ips = allips.split('\n')
 
-username = ips[random.randint(0,len(ips)-2)].split(":")[2]
-password = 'v1y3mbh26qk9'
-port = 22225
-super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
-        (username, password, port))
+# username = ips[random.randint(0,len(ips)-2)].split(":")[2]
+# password = 'v1y3mbh26qk9'
+# port = 22225
+# super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
+#         (username, password, port))
 
-proxy_handler = {
-    'http': super_proxy_url,
-    'https': super_proxy_url,
-}
+# proxy_handler = {
+#     'http': super_proxy_url,
+#     'https': super_proxy_url,
+# }
 
-httprequestObj.session.proxies.update(proxy_handler)
+# httprequestObj.session.proxies.update(proxy_handler)
 
 
 
@@ -568,12 +568,11 @@ class proptecheasy():
             if 'floor_level' not in postdata or postdata['floor_level'] is None:
                 postdata['floor_level'] = ''
 
+            province = '117'
             for pm in property_mapping.keys():
                 if postdata['addr_province'] in pm:
                     province = property_mapping[pm]
-            else:
-                province = '117'
-
+                    break
 
             dt = 'pfupload_listingtypes='+str(type_prop)+'&pfupload_listingpid=&pfupload_type=1&pfupload_c=&pfupload_f=&pfupload_p=&radio=211&pfupload_sublistingtypes='+ \
                 str(type_prop)+'&item_title='+str(postdata['post_title_th'])+'&item_desc=' + str(postdata['post_description_th']) + '&pfupload_itemtypes='+ \
@@ -773,11 +772,11 @@ class proptecheasy():
             else:
                 area = str(postdata['floor_area'])
                 prop = 34
+            province = '117'
             for pm in property_mapping.keys():
                 if postdata['addr_province'] in pm:
                     province = property_mapping[pm]
-            else:
-                province = '117'
+                    break
 
             if 'floor_level' not in postdata or postdata['floor_level'] is None:
                 postdata['floor_level'] = ''

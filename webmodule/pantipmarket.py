@@ -182,6 +182,7 @@ class pantipmarket():
     def create_post(self, postdata):
         
         # print(json.dumps(postdata, indent=4, sort_keys=True,default=str)) 
+        start_time = datetime.utcnow()
 
         listing_type = postdata['listing_type']
         property_type = postdata['property_type']
@@ -205,6 +206,21 @@ class pantipmarket():
         ds_id = postdata["ds_id"]
         user = postdata["user"]
         password = postdata["pass"]
+
+        if user == "" or password == "":
+
+            return {
+                "websitename":"pantipmarket",
+                "success": "false",
+                "post_url": "",
+                "start_time": start_time,
+                "end_time" : datetime.utcnow(),
+                "time_usage": datetime.utcnow() - start_time,
+                "ds_id": postdata['ds_id'],
+                "post_id": "",
+                "account_type": "null",
+                "detail": "User/Pass Missing"
+            }
         # project_name = postdata["project_name"]
 
         select_group = ""
@@ -298,7 +314,6 @@ class pantipmarket():
         driver.find_element_by_name("btn_login_submit").click()
 
         success = True
-        start_time = datetime.utcnow()
         end_time = datetime.utcnow()
         # if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
         #     if 'project_name' in postdata and postdata['project_name']!=None:
@@ -452,11 +467,23 @@ class pantipmarket():
             success2 = test_login["success"]
             if success2 == True:
 
-                next_url = 'https://www.pantipmarket.com/member/my'
-                request = httprequestObj.http_get(next_url)
+                next_url = 'https://www.pantipmarket.com/member/my/?view=ads&adsmode=ads&p='
+                page = 1
+                found = 1
+                idn = []
+                while found > 0:
+                    request = httprequestObj.http_get(next_url + str(page))
 
-                regex = 'id=\"tr[0-9]+\"'
-                idn = re.findall(regex,str(request.text))
+                    regex = 'id=\"tr[0-9]+\"'
+                    found = re.findall(regex,str(request.text))
+
+                    page += 1
+
+                    if len(found) > 0:
+                        idn = found.copy()
+                    else:
+                        break
+
                 try:
                     idnn = idn[len(idn)-1]
                     post_id = idnn[6:len(idnn)-1]
@@ -472,16 +499,7 @@ class pantipmarket():
             end_time = datetime.utcnow()
 
         try:
-            driver.close()
             driver.quit()
-            try:
-                alert = driver.switch_to.alert
-                alert.accept()
-                driver.close()
-                driver.quit()
-            except:
-                pass
-
         except:
             pass
 
@@ -901,16 +919,7 @@ class pantipmarket():
             end_time = datetime.utcnow()
 
         try:
-            driver.close()
             driver.quit()
-            try:
-                alert = driver.switch_to.alert
-                alert.accept()
-                driver.close()
-                driver.quit()
-            except:
-                pass
-
         except:
             pass
 

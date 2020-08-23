@@ -165,7 +165,7 @@ class teedindd():
         classfind = soup.findAll('div', attrs={'class': 'pt20 pb20'})
         print(classfind)
         for i in classfind:
-            if "ไม่พบอีเมล์ในระบบกรุณา" in  i.text:  
+            if "ไม่พบอีเมล์ในระบบกรุณา" in  i.text or 'กรุณายืนยันอีเมล์ก่อนเข้าใช้งาน' in i.text:  
                 data = ''
                 break
             if "รหัสผ่านไม่ถูกต้อง" in i.text:
@@ -712,11 +712,14 @@ class teedindd():
                 store=""
                 final=""
                 for i in var:
+                    print(i.text)
                     if i.text[:len(i.text)-1]==postdata['post_title_th']:
+                        print("select")
                         store=i
                         soup = store
                         final=soup.find('a')
                         break
+                print(final, 'final')
                 final=final['href']
                 post_url=final
                 i=len("../post.php?pd=")

@@ -294,20 +294,24 @@ class terrabkk():
             datapost['freepost_detail-landarea_sqw'] = land_area_sq
             try :
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                a = int(datapost['freepost-areasize_sqm'])
+                if datapost['freepost-areasize-sqm'] == None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '44'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']='0'  
@@ -325,18 +329,22 @@ class terrabkk():
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
                 if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '44'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']='0'  
@@ -354,19 +362,23 @@ class terrabkk():
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
                 if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
                 
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '44'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']=''  
@@ -385,18 +397,22 @@ class terrabkk():
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
                 if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'    
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '44' 
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']=''  
@@ -415,19 +431,23 @@ class terrabkk():
                 datapost['freepost-areasize_sqm'] = str(postdata['floor_area'])
                 if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
                 
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '44'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']=''  
@@ -447,6 +467,7 @@ class terrabkk():
             datapost['freepost_detail-landarea_sqw'] = land_size_wah
             try:
                 datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
+                a = int(datapost['freepost-landarea_total_sqw'])
             except:
                 datapost['freepost-landarea_total_sqw'] = '0'
                 
@@ -462,23 +483,28 @@ class terrabkk():
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
                 if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             
             try:
                 datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
+                a = int(datapost['freepost-landarea_total_sqw'])
             except:
                 datapost['freepost-landarea_total_sqw'] = '0'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '0'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '0'
             datapost['freepost_detail-livingrooms']=''  
@@ -499,22 +525,27 @@ class terrabkk():
                 datapost['freepost-are  asize_sqm'] = postdata['floor_area']
                 if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try:
                 datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
+                a = int(datapost['freepost-landarea_total_sqw'])
             except:
                 datapost['freepost-landarea_total_sqw'] = '0'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '0'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '0'
             datapost['freepost_detail-livingrooms']=''  
@@ -534,15 +565,18 @@ class terrabkk():
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
                 if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
                 
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '0'
             datapost['freepost_detail-parking'] = '0'
@@ -563,18 +597,22 @@ class terrabkk():
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
                 if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '0'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '0'
             datapost['freepost_detail-parking'] = '0'
@@ -588,10 +626,12 @@ class terrabkk():
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
                 if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
                     datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
             datapost['freepost_detail-parking'] = '0'
@@ -937,23 +977,28 @@ class terrabkk():
             datapost['freepost_detail-landarea_sqw'] = land_area_sq
             try :
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
+                a = int(datapost['freepost-areasize_sqm'])
+                if datapost['freepost-areasize-sqm'] == None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
+                datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
-                datapost['freepost_detail-room_type'] = '0'
+                datapost['freepost_detail-room_type'] = '44'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
-                datapost['freepost_detail-bathrooms'] = '0'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-parking'] = '0'
+                datapost['freepost_detail-bathrooms'] = '1'
+            datapost['freepost_detail-livingrooms']='0'  
+            datapost['freepost_detail-parking'] = '1'
             datapost['freepost_detail-extrarooms']= '0'
             datapost['freepost_detail-property_finished_year']= '0'
             datapost['freepost_detail-property_buy_year']= '0'
@@ -965,23 +1010,29 @@ class terrabkk():
             datapost['freepost_detail-landarea_sqw'] = land_area_sq
             try :
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
+                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
+                datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
-                datapost['freepost_detail-room_type'] = '0'
+                datapost['freepost_detail-room_type'] = '44'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
-                datapost['freepost_detail-bathrooms'] = '0'
+                datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']='0'  
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-parking'] = '0'
+            datapost['freepost_detail-parking'] = '1'
+            #datapost['freepost_detail-parking'] = '0'
             datapost['freepost_detail-extrarooms']= '0'
             datapost['freepost_detail-property_finished_year']= '0'
             datapost['freepost_detail-property_buy_year']= '0'
@@ -992,24 +1043,30 @@ class terrabkk():
             datapost['freepost-landarea_total_sqw'] = land_area_sq
             try :
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
+                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
                 
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
+                datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
-                datapost['freepost_detail-room_type'] = '0'
+                datapost['freepost_detail-room_type'] = '44'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
-                datapost['freepost_detail-bathrooms'] = '0'
+                datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-parking'] = '0'
+            datapost['freepost_detail-parking'] = '1'
+            #datapost['freepost_detail-parking'] = '0'
             datapost['freepost_detail-extrarooms']= '0'
             datapost['freepost_detail-property_finished_year']= '0'
             datapost['freepost_detail-property_buy_year']= '0'
@@ -1021,55 +1078,70 @@ class terrabkk():
             datapost['freepost-landarea_total_sqw'] = land_area_sq
             try :
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
+                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'    
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
+                datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
-                datapost['freepost_detail-room_type'] = '0'
+                datapost['freepost_detail-room_type'] = '44' 
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
-                datapost['freepost_detail-bathrooms'] = '0'
+                datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-parking'] = '0'
+            datapost['freepost_detail-parking'] = '1'
+            #datapost['freepost_detail-parking'] = '0'
             datapost['freepost_detail-extrarooms']= '0'
             datapost['freepost_detail-property_finished_year']= '0'
             datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-
+            datapost['freepost_detail-facing']='0',
+            datapost['detail-sell_price_type']=''
         elif(str(property_type) == str(5)):
             datapost['freepost-house_type'] = '10'
             datapost['freepost_detail-landarea_sqw'] = land_area_sq
             datapost['freepost-landarea_total_sqw'] = land_area_sq
             try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
+                datapost['freepost-areasize_sqm'] = str(postdata['floor_area'])
+                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
                 
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
+                datapost['freepost_detail-numberoffloors'] = '1'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
-                datapost['freepost_detail-room_type'] = '0'
+                datapost['freepost_detail-room_type'] = '44'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
-                datapost['freepost_detail-bathrooms'] = '0'
+                datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '0'
+            datapost['freepost_detail-parking'] = '1'
             datapost['freepost_detail-extrarooms']= '0'
             datapost['freepost_detail-property_finished_year']= '0'
             datapost['freepost_detail-property_buy_year']= '0'
             datapost['freepost_detail-facing']='0'
+            datapost['freepost_detail-sell_discount_price']=''
+            datapost['freepost-sell_price_type'] = ''
+            del datapost['freepost_detail-build_type']
         
         elif(str(property_type) == str(6)):
             datapost['freepost-house_type'] = '8'
@@ -1078,8 +1150,10 @@ class terrabkk():
             datapost['freepost_detail-landarea_sqw'] = land_size_wah
             try:
                 datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
+                a = int(datapost['freepost-landarea_total_sqw'])
             except:
                 datapost['freepost-landarea_total_sqw'] = '0'
+                
             datapost['freepost-sell_price_type'] = '26'
         
         elif(str(property_type) == str(7)):
@@ -1087,20 +1161,33 @@ class terrabkk():
             datapost['freepost_detail-landarea_rai'] = land_size_rai
             datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
             datapost['freepost_detail-landarea_sqw'] = land_size_wah
+            
+            try :
+                datapost['freepost-areasize_sqm'] = postdata['floor_area']
+                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
+            except:
+                datapost['freepost-areasize_sqm'] = '1'
+            
             try:
                 datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
+                a = int(datapost['freepost-landarea_total_sqw'])
             except:
                 datapost['freepost-landarea_total_sqw'] = '0'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '0'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '0'
             datapost['freepost_detail-livingrooms']=''  
@@ -1109,26 +1196,39 @@ class terrabkk():
             datapost['freepost_detail-property_finished_year']= '0'
             datapost['freepost_detail-property_buy_year']= '0'
             datapost['freepost_detail-facing']='0'
+            datapost['freepost-sell_price_type'] = ''
+            datapost['freepost_detail-sell_discount_price']=''
             
         elif(str(property_type) == str(8)):
             datapost['freepost-house_type'] = '210'
             datapost['freepost_detail-landarea_rai'] = land_size_rai
             datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
             datapost['freepost_detail-landarea_sqw'] = land_size_wah
+            try :
+                datapost['freepost-are  asize_sqm'] = postdata['floor_area']
+                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
+            except:
+                datapost['freepost-areasize_sqm'] = '1'
             try:
                 datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
+                a = int(datapost['freepost-landarea_total_sqw'])
             except:
                 datapost['freepost-landarea_total_sqw'] = '0'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
             try :
                 datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
             except : 
                 datapost['freepost_detail-room_type'] = '0'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '0'
             datapost['freepost_detail-livingrooms']=''  
@@ -1139,24 +1239,38 @@ class terrabkk():
             datapost['freepost_detail-facing']='0'
             
         elif(str(property_type) == str(9)):
+            datapost['freepost_detail-landarea_rai'] = land_size_rai
+            datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
             datapost['freepost-house_type'] = '208'
             datapost['freepost_detail-landarea_sqw'] = land_area_sq
             datapost['freepost-landarea_total_sqw'] = land_area_sq
             try :
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
+                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
                 
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
             try : 
                 datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
             except :
                 datapost['freepost_detail-bathrooms'] = '0'
             datapost['freepost_detail-parking'] = '0'
             datapost['freepost-sell_price_type'] = '26'
+            datapost['freepost_detail-livingrooms']='' 
+            datapost['freepost_detail-parking']=''
+            datapost['freepost_detail-extrarooms']='' 
+            datapost['freepost_detail-property_finished_year']= '0'
+            datapost['freepost_detail-property_buy_year']= '0'
+            datapost['freepost_detail-facing']='0'
+            
 
         elif(str(property_type) == str(10)):
             datapost['freepost-house_type'] = '207'
@@ -1164,13 +1278,26 @@ class terrabkk():
             datapost['freepost-landarea_total_sqw'] = land_area_sq
             try :
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                
+                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
+            try :
+                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
+                a = int(datapost['freepost_detail-room_type'])
+            except : 
+                datapost['freepost_detail-room_type'] = '0'
+            try : 
+                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
+                a = int(datapost['freepost_detail-bathrooms'])
+            except :
+                datapost['freepost_detail-bathrooms'] = '0'
             datapost['freepost_detail-parking'] = '0'
             datapost['freepost-sell_price_type'] = '26'
 
@@ -1180,10 +1307,14 @@ class terrabkk():
             datapost['freepost-landarea_total_sqw'] = land_area_sq
             try :
                 datapost['freepost-areasize_sqm'] = postdata['floor_area']
+                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
+                    datapost['freepost-areasize-sqm'] = '1'
+                a = int(datapost['freepost-areasize-sqm'])
             except:
                 datapost['freepost-areasize_sqm'] = '1'
             try :
                 datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
+                a = int(datapost['freepost_detail-numberoffloors'])
             except : 
                 datapost['freepost_detail-numberoffloors'] = '0'
             datapost['freepost_detail-parking'] = '0'
@@ -1193,7 +1324,7 @@ class terrabkk():
         
         else:
             datapost['freepost-house_type'] = '11'
-            
+
             
             
         if(listing_type == 'ขาย'):

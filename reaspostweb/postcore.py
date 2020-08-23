@@ -88,7 +88,7 @@ class postcore():
         # replace string \n to \r\n , \t to ''
         # TODO how to replace all dict by foreach or array walk?
         try:
-            datarequest['post_title_th'] = datarequest['post_title_th'].strip()
+            datarequest['post_title_th'] = datarequest['post_title_th'].strip().replace("/","-")
             datarequest['post_title_th'] = re.sub(r'\n','\r\n',datarequest['post_title_th'])
             datarequest['post_title_en'] = re.sub(r'\n','\r\n',datarequest['post_title_en'])
             datarequest['short_post_title_th'] = re.sub(r'\n','\r\n',datarequest['short_post_title_th'])
@@ -120,6 +120,13 @@ class postcore():
                 a = int(datarequest[item])
             except:
                 datarequest[item] = '0'
+        try:
+            if int(datarequest['property_type'])  == 1:
+                datarequest['land_size_wa'] = '0'
+                datarequest['land_size_rai'] = '0'
+                datarequest['land_size_ngan'] = '0'
+        except:
+            pass
 # ===========================================================================
 # ===========================================================================
 
@@ -286,7 +293,7 @@ class postcore():
                             response["web"][websitename]['start_time'] = all_start_time
                         if 'end_time' not in response["web"][websitename]:
                             response["web"][websitename]['end_time'] = datetime.datetime.utcnow()
-                        if 'http' not in response["web"][websitename]['post_url'] and response["web"][websitename]['post_url'] != '':
+                        if 'post_url' in response["web"][websitename] and 'http' not in response["web"][websitename]['post_url'] and response["web"][websitename]['post_url'] != '':
                             response["web"][websitename]['post_url'] = "http://" + response["web"][websitename]['post_url']
 
                     except Exception as e1:
