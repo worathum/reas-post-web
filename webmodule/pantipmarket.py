@@ -485,13 +485,12 @@ class pantipmarket():
                         break
 
                 try:
-                    idnn = idn[len(idn)-1]
-                    post_id = idnn[6:len(idnn)-1]
-                    print(post_id)
-
-                    post_url = 'https://www.pantipmarket.com/items/' + post_id
+                    idnn = idn[-1]
+                    post_id = idnn[6:]
+                    post_url = 'https://www.pantipmarket.com/items/' + str(post_id[:-1])
                 except:
                     detail = "couldn't create post"
+                    success = False
                     post_id = ""
                     post_url = ""
                 # print(post_url)
