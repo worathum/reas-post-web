@@ -195,9 +195,9 @@ class onlineoops():
 
             postdata['lat_long'] = str(postdata['geo_latitude'])+','+str(postdata['geo_longitude'])
             try:
-                if int(postdata['floor_total'])>=5:
+                if int(postdata['floor_total']) >= 5:
                     postdata['floor_total'] = '>5'
-            except (KeyError, TypeError):
+            except:
                     postdata['floor_total'] = '1'
             
             if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
@@ -208,15 +208,15 @@ class onlineoops():
                 postdata['land_size_wa'] = 0
             try:
                 postdata['land_size_ngan'] = int(postdata['land_size_ngan'])
-            except ValueError:
+            except:
                 postdata['land_size_ngan'] = 0
             try:
                 postdata['land_size_rai'] = int(postdata['land_size_rai'])
-            except ValueError:
+            except:
                 postdata['land_size_rai'] = 0
             try:
                 postdata['land_size_wa'] = int(postdata['land_size_wa'])
-            except ValueError:
+            except:
                 postdata['land_size_wa'] = 0
             postdata['land_size'] = 400*postdata['land_size_rai'] + 100*postdata['land_size_ngan'] + postdata['land_size_wa']
             
@@ -318,7 +318,7 @@ class onlineoops():
                 try:
                     if int(postdata['floor_total'])>=5:
                         postdata['floor_total'] = '>5'
-                except (KeyError, TypeError):
+                except:
                     postdata['floor_total'] = '1'
 
                 if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
@@ -329,15 +329,15 @@ class onlineoops():
                     postdata['land_size_wa'] = 0
                 try:
                     postdata['land_size_ngan'] = int(postdata['land_size_ngan'])
-                except ValueError:
+                except:
                     postdata['land_size_ngan'] = 0
                 try:
                     postdata['land_size_rai'] = int(postdata['land_size_rai'])
-                except ValueError:
+                except:
                     postdata['land_size_rai'] = 0
                 try:
                     postdata['land_size_wa'] = int(postdata['land_size_wa'])
-                except ValueError:
+                except:
                     postdata['land_size_wa'] = 0
                 postdata['land_size'] = 400*postdata['land_size_rai'] + 100*postdata['land_size_ngan'] + postdata['land_size_wa']
                 
@@ -361,7 +361,7 @@ class onlineoops():
                             datapost['Attr['+str(i)+'][tmpvalue]'] = postdata[eachdata]
                         else:
                             datapost['Attr['+str(i)+'][tmpvalue]'] = eachdata
-                    except KeyError:
+                    except:
                         datapost['Attr['+str(i)+'][tmpvalue]'] = '1'
                 
                 files = {}
@@ -486,7 +486,7 @@ class onlineoops():
                                 post_url = self.site_name + '/' + post_id
                                 detail = "Post found successfully"
                                 break
-                        except AttributeError:
+                        except :
                             pass
         else:
             detail = "Unable to login"
@@ -555,7 +555,7 @@ class onlineoops():
                             lat_val = lat[:lat.index(';')].strip()
                             lng_val = lng[:lng.index(';')].strip()
                             datapost['Attr['+str(i)+'][tmpvalue]'] = lat_val+','+lng_val
-                        except ValueError:
+                        except:
                             pass
                 files = {}
                 response = httprequestObj.http_post(self.site_name+'/post/free?id='+str(postdata['post_id']), data=datapost, files = files)

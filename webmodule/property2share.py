@@ -239,7 +239,7 @@ class property2share():
             wa_size = int(postdata['land_size_wa'])
 
         #SQM SIZE
-        sqm_size = ((400 * rai_size) + (100 * ngan_size) + (wa_size))
+        # sqm_size = ((400 * rai_size) + (100 * ngan_size) + (wa_size))
 
         if('floorarea' not in postdata or postdata['floorarea'] == None):
             floorarea = 0
@@ -286,7 +286,7 @@ class property2share():
 
         allimages = postdata["post_images"][:15]
         files = {}
-        for i in range(len(allimages)):
+        for i in range(len(allimages)-1,-1,-1):
 
             r = open(os.getcwd() + "/" + allimages[i], 'rb')
             params = (
@@ -658,7 +658,7 @@ class property2share():
         else:
             wa_size = int(postdata['land_size_wa'])
 
-        sqm_size = (400 * rai_size) + (100 * ngan_size) + (wa_size)
+        # sqm_size = (400 * rai_size) + (100 * ngan_size) + (wa_size)
 
         floorarea_sqm = 0
         if (floorarea_sqm not in postdata or postdata['floor_area'] == None or postdata['floor_area'] == ""):
@@ -687,7 +687,7 @@ class property2share():
             'unit_price': 1,
             'area_rai': rai_size,
             'area_ngan': ngan_size,
-            'area_va2': sqm_size,
+            'area_va2': wa_size,
             'area_use': floorarea_sqm,
             'contact_name': postdata['name'],
             'contact_tel': postdata['mobile'],

@@ -231,7 +231,18 @@ class baan2day():
                     detail = "Post Created Successfully!"
                     r = httprequestObj.http_get(self.site_name+'/member_property_list.php')
                     soup = BeautifulSoup(r.text, features=self.parser)
-                    rows = soup.find('table').find('tbody').find_all('tr')
+                    try:
+                        rows = soup.find('table').find('tbody').find_all('tr')
+                    except:
+                        try:
+                            time.sleep(3)
+                            r = httprequestObj.http_get(self.site_name+'/member_property_list.php')
+                            soup = BeautifulSoup(r.text, features=self.parser)
+                            rows = soup.find('table').find('tbody').find_all('tr')
+                        except:
+                            rows = []
+                            success = "false"
+                            detail = "post created probably but not active yet."
                     for post in rows:
                         try:
                             td = post.find_all('td')

@@ -568,12 +568,11 @@ class proptecheasy():
             if 'floor_level' not in postdata or postdata['floor_level'] is None:
                 postdata['floor_level'] = ''
 
+            province = '117'
             for pm in property_mapping.keys():
                 if postdata['addr_province'] in pm:
                     province = property_mapping[pm]
-            else:
-                province = '117'
-
+                    break
 
             dt = 'pfupload_listingtypes='+str(type_prop)+'&pfupload_listingpid=&pfupload_type=1&pfupload_c=&pfupload_f=&pfupload_p=&radio=211&pfupload_sublistingtypes='+ \
                 str(type_prop)+'&item_title='+str(postdata['post_title_th'])+'&item_desc=' + str(postdata['post_description_th']) + '&pfupload_itemtypes='+ \
@@ -773,11 +772,11 @@ class proptecheasy():
             else:
                 area = str(postdata['floor_area'])
                 prop = 34
+            province = '117'
             for pm in property_mapping.keys():
                 if postdata['addr_province'] in pm:
                     province = property_mapping[pm]
-            else:
-                province = '117'
+                    break
 
             if 'floor_level' not in postdata or postdata['floor_level'] is None:
                 postdata['floor_level'] = ''

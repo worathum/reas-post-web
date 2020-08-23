@@ -37,6 +37,7 @@ class condoable():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         # print("here in register")
+        httprequestObj.http_get('http://condoable.com/logout.jsp')
 
         email = userdata['user']
         passwd = userdata['pass']
@@ -56,6 +57,8 @@ class condoable():
             "officePhone": "",
             "agree": "on"
         }
+
+
 
         r = httprequestObj.http_get('http://condoable.com/checkUserId.do?function=register&userId='+email)
         data = r.text
@@ -88,6 +91,7 @@ class condoable():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
+        httprequestObj.http_get('http://condoable.com/logout.jsp')
         email_user = logindata['user']
         email_pass = logindata['pass']
         

@@ -173,6 +173,7 @@ class kaiteedin():
             'http://kaiteedin.net/member_signin.php', data=datapost)
         data = r.text
         soup = BeautifulSoup(r.content, "html5lib")
+        print(soup)
         script = soup.find("script", attrs={'language': 'JavaScript'})
         if script != None:
             success = "false"
@@ -209,10 +210,10 @@ class kaiteedin():
             r=httprequestObj.http_get(listurl)
             soup=BeautifulSoup(r.content,'html5lib')
             table=soup.find('table',attrs={'class':'table table-hover'})
-            tr=table.findAll('tr')
-            l=len(tr)
-            finalcurrent=tr[l-1]
             try:
+                tr=table.findAll('tr')
+                l=len(tr)
+                finalcurrent=tr[l-1]
                 tdarray=finalcurrent.findAll('td')
                 finalpost=tdarray[0].text
             except:

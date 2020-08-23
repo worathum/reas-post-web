@@ -285,13 +285,6 @@ class ddproperty():
             # self.firefox.quit()
             self.firefox.close()
             self.firefox.quit()
-            try:
-                alert = self.firefox.switch_to.alert
-                alert.accept()
-                self.firefox.close()
-                self.firefox.quit()
-            except:
-                pass
 
         #
         # end process
@@ -657,7 +650,10 @@ class ddproperty():
                 success, detail, post_id, account_type = self.inputpostdetail(datahandled)
 
         #log.debug('create post done')
-
+        try:
+            self.firefox.quit()
+        except:
+            pass
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -2011,6 +2007,10 @@ class ddproperty():
         #log.debug('edit post done')
         #
         # end process
+        try:
+            self.firefox.quit()
+        except:
+            pass
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
