@@ -175,16 +175,17 @@ class homechoice():
             
             teedin_livingarea = '1'
             for i in livingarea_options.keys():
-                if postdata['addr_sub_district'] in i:
+                if postdata['addr_sub_district'] in i or i in postdata['addr_sub_district']:
                     teedin_livingarea = livingarea_options[i]
-                    break
-                elif postdata['addr_district'] in i:
+                    if postdata['addr_district'] in i or i in postdata['addr_district']:
+                        if postdata['addr_province'] in i or i in postdata['addr_province']:
+                            teedin_livingarea = livingarea_options[i]
+                            break
+                elif postdata['addr_district'] in i or i in postdata['addr_district']:
                     teedin_livingarea = livingarea_options[i]
-                    break
-                elif postdata['addr_province'] in i:
+                elif postdata['addr_province'] in i or i in postdata['addr_province']:
                     teedin_livingarea = livingarea_options[i]
-                    break
-            
+
             postimage_url = self.site_name+'/dropzonejs_upimg/uploadp.php?at_target='+teedin_target+'&url=https://xn--22ce1cbmnb1e9exbzak9o1c.com'
             for each_img in postdata['post_images'][:21]:
                 r = httprequestObj.http_post(postimage_url, data={}, files={"file":open(os.getcwd()+"/"+each_img, 'rb')})
