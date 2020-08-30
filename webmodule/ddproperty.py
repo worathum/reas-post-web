@@ -151,8 +151,9 @@ class ddproperty():
         r = httprequestObj.http_post('https://agentnet.ddproperty.com/is_authentic_user', data=datapost)
         #log.debug('email post')
         data = r.text
-        #f = open("debug_response/ddauthentic.html", "wb")
-        #f.write(data.encode('utf-8').strip())
+        # f = open("debug_response/ddauthentic.html", "wb")
+        # f.write(data.encode('utf-8').strip())
+        # f.close()
         try:
             datajson = r.json()
             # if logged in ,session is 0 cause  {"status":0,"name":"\u0e14\u0e39\u0e14\u0e35 \u0e14\u0e2d\u0e17\u0e04\u0e2d\u0e21","email":"kla.arnut@hotmail.com","profile":"https:\/\/th1-cdn.pgimgs.com\/agent\/10760807\/APHO.74655966.C100X100.jpg"}
@@ -207,7 +208,7 @@ class ddproperty():
         options = Options()
         # debug by comment option --headless
         options.add_argument("--headless")
-        options.add_argument('--no-sandbox')
+        # options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
         options.add_argument("--disable-extensions")
@@ -301,10 +302,10 @@ class ddproperty():
         datahandled = self.postdata_handle(postdata)
 
         response = {}
-        if datahandled['action'] == 'create_post' or datahandled['action'] == 'edit_post':
-            response = self.test_login_headless(datahandled)
-        else:
-            response = self.test_login_httpreq(datahandled)
+        # if datahandled['action'] == 'create_post' or datahandled['action'] == 'edit_post':
+        response = self.test_login_headless(datahandled)
+        # else:
+            # response = self.test_login_httpreq(datahandled)
 
         # end process
         #
@@ -927,6 +928,11 @@ class ddproperty():
                 self.firefox.execute_script("arguments[0].click();", element)  
                 #log.debug('input property type OPT')
             #self.firefox.save_screenshot("debug_response/newp5.png")
+
+            try:
+                self.firefox.find_element_by_id("live-tour-radio-false").click()
+            except:
+                pass
 
             # price
             try:
