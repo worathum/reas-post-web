@@ -411,9 +411,14 @@ class estate():
 
             all_post_ids = []
 
-            for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
-                all_post_ids.append(str(abc['value']))
+            total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
 
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.estate.in.th/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html")
+
+                for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
+                    all_post_ids.append(str(abc['value']))
             #print(all_post_ids)
 
             req_post_id = str(postdata['post_id'])
@@ -487,9 +492,14 @@ class estate():
 
             all_post_ids = []
 
-            for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
-                all_post_ids.append(str(abc['value']))
+            total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
 
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.estate.in.th/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html")
+
+                for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
+                    all_post_ids.append(str(abc['value']))
             #print(all_post_ids)
 
             req_post_id = str(postdata['post_id'])
@@ -557,8 +567,14 @@ class estate():
 
             all_post_ids = []
 
-            for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
-                all_post_ids.append(str(abc['value']))
+            total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
+
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.estate.in.th/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html")
+
+                for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
+                    all_post_ids.append(str(abc['value']))
 
             #print(all_post_ids)
 

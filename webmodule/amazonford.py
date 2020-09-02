@@ -412,8 +412,14 @@ class amazonford():
 
             all_post_ids = []
 
-            for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
-                all_post_ids.append(str(abc['value']))
+            total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
+
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.amazonford.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html")
+
+                for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
+                    all_post_ids.append(str(abc['value']))
 
             #print(all_post_ids)
 
@@ -485,9 +491,14 @@ class amazonford():
 
             all_post_ids = []
 
-            for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
-                all_post_ids.append(str(abc['value']))
+            total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
 
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.amazonford.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html")
+
+                for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
+                    all_post_ids.append(str(abc['value']))
             #print(all_post_ids)
 
             req_post_id = str(postdata['post_id'])
@@ -554,9 +565,14 @@ class amazonford():
             soup = BeautifulSoup(all_posts.content, features = "html")
 
             all_post_ids = []
+            total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
 
-            for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
-                all_post_ids.append(str(abc['value']))
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.amazonford.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html")
+
+                for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
+                    all_post_ids.append(str(abc['value']))
 
             #print(all_post_ids)
 
@@ -786,7 +802,7 @@ class amazonford():
             xyz = soup.find('table', attrs={'class':'table table-hover'})
 
             req_post_title = str(postdata['post_title_th'])
-
+            
 
             for abc in xyz.find_all('tr')[1:-1]:
                 
