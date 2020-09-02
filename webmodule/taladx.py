@@ -363,11 +363,15 @@ class taladx():
             all_post_id = []
             
             success = 'true'
+            total_pages = int(soup.find('div', {'class': 'pagination'}).find_all("li")[-1].find("a")['href'].split("=")[-1])            
 
-            for abc in soup.find_all('span',attrs={'class':"code"}):
-                total_text = abc.text.split(' ')
-                one_id = str(total_text[-1])
-                all_post_id.append(one_id)
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html")
+                for abc in soup.find_all('span',attrs={'class':"code"}):
+                    total_text = abc.text.split(' ')
+                    one_id = str(total_text[-1])
+                    all_post_id.append(one_id)
 
             #print(all_post_id)
 
@@ -423,11 +427,15 @@ class taladx():
             all_post_id = []
             
             success = 'true'
+            total_pages = int(soup.find('div', {'class': 'pagination'}).find_all("li")[-1].find("a")['href'].split("=")[-1])            
 
-            for abc in soup.find_all('span',attrs={'class':"code"}):
-                total_text = abc.text.split(' ')
-                one_id = str(total_text[-1])
-                all_post_id.append(one_id)
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html")
+                for abc in soup.find_all('span',attrs={'class':"code"}):
+                    total_text = abc.text.split(' ')
+                    one_id = str(total_text[-1])
+                    all_post_id.append(one_id)
 
             #print(all_post_id)
 
@@ -483,11 +491,16 @@ class taladx():
             all_post_id = []
             
             success = 'true'
+            total_pages = int(soup.find('div', {'class': 'pagination'}).find_all("li")[-1].find("a")['href'].split("=")[-1])            
 
-            for abc in soup.find_all('span',attrs={'class':"code"}):
-                total_text = abc.text.split(' ')
-                one_id = str(total_text[-1])
-                all_post_id.append(one_id)
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html")
+
+                for abc in soup.find_all('span',attrs={'class':"code"}):
+                    total_text = abc.text.split(' ')
+                    one_id = str(total_text[-1])
+                    all_post_id.append(one_id)
 
             req_post_id = str(postdata['post_id'])
             if req_post_id in all_post_id:

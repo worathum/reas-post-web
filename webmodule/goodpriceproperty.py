@@ -661,20 +661,35 @@ class goodpriceproperty():
         url_list = 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php'
         r = httprequestObj.http_get(url_list)
         soup = BeautifulSoup(r.content, 'html5lib')
-        ahref = soup.findAll('a')
-        post_id = ''
-        storeI = ''
-        for i in ahref:
-            var = i['href']
-            j = len('../property/')
-            post_id = ''
 
-            while j < len(var) and var[j] != '/':
-                post_id += var[j]
-                j += 1
-            if post_id == postdata['post_id']:
-                storeI = i
+
+
+        total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
+        found = False
+        for page in range(1, total_pages+1):
+            requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
+            soup = BeautifulSoup(requ, features = "html")
+
+
+            ahref = soup.findAll('a')
+            post_id = ''
+            storeI = ''
+            for i in ahref:
+                var = i['href']
+                j = len('../property/')
+                post_id = ''
+
+                while j < len(var) and var[j] != '/':
+                    post_id += var[j]
+                    j += 1
+                if post_id == postdata['post_id']:
+                    storeI = i
+                    found = True
+                    break
+            if found is True:
                 break
+
+
         if storeI == '':
             return {
                 "websitename": "goodpriceproperty",
@@ -1059,20 +1074,32 @@ class goodpriceproperty():
             url_list = 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php'
             r = httprequestObj.http_get(url_list)
             soup = BeautifulSoup(r.content, 'html5lib')
-            ahref = soup.findAll('a')
-            post_id = ''
-            storeI = ''
-            for i in ahref:
-                var = i['href']
-                j = len('../property/')
-                post_id = ''
 
-                while j < len(var) and var[j] != '/':
-                    post_id += var[j]
-                    j += 1
-                if post_id == postdata['post_id']:
-                    storeI = i
+            total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
+            found = False
+            for page in range(1, total_pages+1):
+                requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
+                soup = BeautifulSoup(requ, features = "html")
+
+
+                ahref = soup.findAll('a')
+                post_id = ''
+                storeI = ''
+                for i in ahref:
+                    var = i['href']
+                    j = len('../property/')
+                    post_id = ''
+
+                    while j < len(var) and var[j] != '/':
+                        post_id += var[j]
+                        j += 1
+                    if post_id == postdata['post_id']:
+                        storeI = i
+                        found = True
+                        break
+                if found is True:
                     break
+
             if storeI == '':
                 return {
 
@@ -1165,10 +1192,36 @@ class goodpriceproperty():
             ('topic_id',post_id),
         )
         r1=httprequestObj.http_get('http://www.อสังหาราคาดี.com/member/list-property.php',headers=headers)
-        if post_id not in r1.text:
+        soup = BeautifulSoup(r1.content, features = "html")
+        total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
+        found = False
+        for page in range(1, total_pages+1):
+            requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
+            soup = BeautifulSoup(requ, features = "html")
+
+
+            ahref = soup.findAll('a')
+            post_id = ''
+            storeI = ''
+            for i in ahref:
+                var = i['href']
+                j = len('../property/')
+                post_id = ''
+
+                while j < len(var) and var[j] != '/':
+                    post_id += var[j]
+                    j += 1
+                if post_id == postdata['post_id']:
+                    storeI = i
+                    found = True
+                    break
+            if found is True:
+                break
+
+
+        if found is False:
             success='false'
             detail = 'Post id doesnt exist'
-
         r = httprequestObj.http_get('http://www.xn--42cf4b4c7ahl7albb1b.com/member/slide-property.php',
                                 headers=headers, params=params, verify=False)
 
