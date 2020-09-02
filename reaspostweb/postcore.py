@@ -26,7 +26,7 @@ except ImportError:
     configs = {}
 if os.path.isdir('log') == False:
     os.mkdir('log')
-logging.basicConfig(level=logging.DEBUG, filename='log/app.log', filemode='a', format='%(process)d-%(asctime)s-%(levelname)s-%(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(level=logging.INFO, filename='log/app.log', filemode='a', format='%(process)d-%(asctime)s-%(levelname)s-%(message)s', datefmt='%d-%b-%y %H:%M:%S')
 # logging.config.dictConfig(getattr(configs, 'logging_config', {}))
 # log = logging.getLogger()
 
@@ -40,7 +40,7 @@ class postcore():
         self.list_module = getattr(configs, 'list_module', [])
         self.list_action = getattr(configs, 'list_action', [])
         self.encoding = 'utf-8'
-        logging.debug('load app config success.')
+        logging.info('load app config success.')
 
 
     def coreworker(self, access_token, postdata):
@@ -158,14 +158,14 @@ class postcore():
             allimages = datarequest["post_img_url_lists"]
         except KeyError as e:
             allimages = {}
-            logging.warning(str(e))
+            # logging.warning(str(e))
 
         for i in range(6):
             dirtmp = 'imgupload_' + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
             if os.path.isdir('imgtmp/' + dirtmp) == False:
                 try:
                     os.mkdir("imgtmp/" + dirtmp)
-                    logging.debug('image directory imgtmp/%s is created', dirtmp)
+                    logging.info('image directory imgtmp/%s is created', dirtmp)
                     time.sleep(0.2)
                 except:
                     pass
@@ -178,9 +178,9 @@ class postcore():
         for imgurl in allimages:
             try:
                 res = httprequestObj.http_get(imgurl, verify=False)
-                logging.debug('get image from url %s', imgurl)
+                # logging.info('get image from url %s', imgurl)
             except:
-                logging.warning('http connection error %s', imgurl)
+                # logging.warning('http connection error %s', imgurl)
                 continue
             if res.status_code == 200:
                 if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png':
@@ -193,10 +193,10 @@ class postcore():
                         imgcount = imgcount + 1
                     except:
                         pass
-                else:
-                    logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
-            else:
-                logging.warning('image url response error %s', res.status_code)
+                # else:
+                    # logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
+            # else:
+                # logging.warning('image url response error %s', res.status_code)
 
 
 
@@ -232,7 +232,20 @@ class postcore():
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["post_url"] = ''
                     response["web"][websitename]["post_id"] = ''
-                    logging.error('not found websitename %s module', websitename)
+                    logging.error('NOT found websitename %s module', websitename)
+                    continue
+
+                if webitem['user'].strip() == "" or webitem['pass'].strip() == "":
+                    response["web"][websitename] = {}
+                    response["web"][websitename]["success"] = "false"
+                    response["web"][websitename]["detail"] = "User/Pass missing"
+                    response["web"][websitename]["ds_id"] = webitem['ds_id']
+                    response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
+                    response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
+                    response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
+                    response["web"][websitename]["post_url"] = ''
+                    response["web"][websitename]["post_id"] = ''
+                    logging.error('NOT found websitename %s module', websitename)
                     continue
                 try:  # removed for debug
                     module = importlib.import_module('webmodule.' + websitename)
@@ -251,7 +264,7 @@ class postcore():
                     response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
-                    logging.error('import error %s',str(e))
+                    logging.error('IMPORT ERROR %s',str(e))
                     continue
             all_start_time = datetime.datetime.utcnow()
 
@@ -309,7 +322,7 @@ class postcore():
 
                 if webitem['ds_name'] not in response:
                     for i, error in enumerate(errors):
-                        if webitem['ds_name'] in error[0]:
+                        if webitem['ds_name'] + ".py" in error[0]:
                             logging.info("")
                             logging.info("")
                             logging.info("==============================================================================")
@@ -325,7 +338,12 @@ class postcore():
                             logging.info("==============================================================================")
                             logging.info("")
                             logging.info("")
-
+                            if 'ConnectionError' in str(error[0]) or 'ReadTimeout' in str(error[0]):
+                                error[0] = "Connection Error!"
+                            if 'ProxyError' in str(error[0]):
+                                error[0] = "Proxy Error!"    
+                            if 'cloudflare' in str(error[0]):                            
+                                error[0] = "Website has security by Cloud Flare! Couldn't complete the action."    
                             response["web"][webitem['ds_name']] = {'success':'false','detail': error[0], 'websitename':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow()}
                             break
 
@@ -355,7 +373,7 @@ class postcore():
         # remove image tmp
         if os.path.isdir('imgtmp/' + dirtmp) == True:
             shutil.rmtree(os.path.abspath('imgtmp/' + dirtmp))
-            logging.debug('removed image temp imgtmp/%s', dirtmp)
+            # logging.info('removed image temp imgtmp/%s', dirtmp)
 
     #    if action == 'register_user':
     #         re    sponse["action"] = action

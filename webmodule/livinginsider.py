@@ -631,7 +631,7 @@ class livinginsider():
 
             t = 'https:\/\/www.livinginsider.com\/livingdetail\/495548\/1\/fsa.html'
             if link == '':
-                detail = 'not posted'
+                detail = 'Not posted. Low Credits maybe.'
                 success = False
                 time_end = datetime.datetime.utcnow()
                 time_usage = time_end - time_start
@@ -1380,7 +1380,7 @@ class livinginsider():
 
                     t = 'https:\/\/www.livinginsider.com\/livingdetail\/495548\/1\/fsa.html'
                     if link == '':
-                        detail = 'not posted'
+                        detail = 'Not posted. Low Credits maybe.'
                         success = False
                         time_end = datetime.datetime.utcnow()
                         time_usage = time_end - time_start

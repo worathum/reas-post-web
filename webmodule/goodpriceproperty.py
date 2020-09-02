@@ -197,12 +197,12 @@ class goodpriceproperty():
         }
 
     def create_post(self, postdata):
-        print(postdata['post_description_th'])
+        # print(postdata['post_description_th'])
         postdata['post_description_th'] = postdata['post_description_th'].replace(
             "\r\n", "\\r\\n")
         postdata['post_description_th'] = postdata['post_description_th'].replace(
             "\n", "\\r\\n")
-        print(postdata['post_description_th'])
+        # print(postdata['post_description_th'])
 
         # postdata['post_description_th']=postdata['post_description_th'].replace("\n","<br>")
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -214,6 +214,18 @@ class goodpriceproperty():
         # login
         test_login = self.test_login(postdata)
         success = test_login["success"]
+        if success == 'false':
+            return{
+                    "websitename": "goodpriceproperty",
+                    'success': 'false',
+                    
+                    "ds_id": postdata['ds_id'],
+                    'ret': "",
+                    'post_url': "",
+                    'post_id': "",
+                    'detail': 'cannot login',
+                }
+
         ashopname = test_login["detail"]
         try:
             floor_area = str(postdata['floor_area'])
@@ -225,10 +237,13 @@ class goodpriceproperty():
         province_id = ""
         amphur_id = ""
 
+        # print(postdata['addr_province'])
         for (key, value) in provincedata.items():
+            # print(value)
             if type(value) is str and (postdata['addr_province'].strip() in value.strip() or value.strip() in postdata['addr_province'].strip()):
                 province_id = key
                 break
+
         if province_id == "" or success!='true':
 
             return{

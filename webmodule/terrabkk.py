@@ -753,9 +753,7 @@ class terrabkk():
                 success = "False"
                 detail = "Image not uploaded"
              
-        else:
-           success = "False"
-           detail = "Unsuccessful Login"
+
         
         time_end = datetime.datetime.utcnow()
         print({
@@ -1355,7 +1353,7 @@ class terrabkk():
         post_url = ""
         filestoup = {}
         print(success)
-        print(success=="True")
+        # print(success=="True")
         if(success == "True"):
             # print("debug2")
             # for i in range(len(postdata['post_images'][:10])):
@@ -1422,11 +1420,7 @@ class terrabkk():
                 success = "False"
                 detail = "Post unsuccessful"
             
-             
-        else:
-           success = "False"
-           detail = "Unsuccessful Login"
-        
+      
         time_end = datetime.datetime.utcnow()
         print({
             "websitename": "terrabkk",
@@ -1470,7 +1464,7 @@ class terrabkk():
         post_create_time = ''
         detail = 'No post with this title'
         title = ''
-        print(login['success']+"##")
+        # print(login['success']+"##")
         if (login['success'] == 'True'):
             try:
                 account = postdata['account_type']
@@ -1520,7 +1514,7 @@ class terrabkk():
                     post_found = 'False'
                                   
         else :
-            detail = 'Can not log in'
+            detail = login['detail']
             post_found = 'False'
 
         end_time = datetime.datetime.utcnow()
