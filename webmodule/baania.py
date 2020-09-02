@@ -246,7 +246,7 @@ class baania():
                 "id": prov[0]['data']['id'],
                 "name": prov[0]['data']['title']['title_th']
             }
-
+        # print(address["province"], address["district"], address["sub_district"])
 
         address["post_code"] = "88888"
         if postdata['land_size_rai'] is None or postdata['land_size_rai'] == '':

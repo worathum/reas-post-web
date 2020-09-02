@@ -607,6 +607,9 @@ class houseforsaleland():
             if 'error' in r.text:
                 # print(postdata['mobile'])
                 success = "False"
+                detail = r.content
+                if "\\xa1\\xc3\\xd8\\xb3\\xd2\\xa1\\xc3\\xcd\\xa1\\xe0\\xba\\xcd\\xc3\\xec\\xe2\\xb7\\xc3\\xc8\\xd1\\xbe\\xb7\\xec" in r.content:
+                    detail = "Invalid Input!"
                 time_end = datetime.datetime.utcnow()
                 time_usage = time_end - time_start
                 return {
@@ -615,7 +618,7 @@ class houseforsaleland():
                     "start_time": str(time_start),
                     "end_time": str(time_end),
                     'post_url': '',
-                    "detail": str(r.content),
+                    "detail": detail,
                     'ds_id': postdata['ds_id']
                 }
             else:

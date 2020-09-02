@@ -200,7 +200,7 @@ class baan2day():
             datapost= {
                 "property_type": '1' if postdata['listing_type']=='ขาย' else '2',
                 "property_format": property_types[str(postdata['property_type'])],
-                "thomedetail_title": postdata['post_title_th'],
+                "thomedetail_title": postdata['post_title_th'].replace("\u2013",""),
                 "thomedetail_name": postdata["web_project_name"],
                 "thomedetail_address": taddress,
                 "tprovince": province,
@@ -223,6 +223,7 @@ class baan2day():
                 files["testimage"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
     
             response = httprequestObj.http_post(self.site_name+'/member_property_aed.php?typ=add', data=datapost, files=files)
+            print(response.content)
             
             success = "false" 
             if response.status_code==200:
@@ -246,7 +247,7 @@ class baan2day():
                     for post in rows:
                         try:
                             td = post.find_all('td')
-                            if td[1].getText().strip()==' '.join(str(postdata['post_title_th']).strip().split()):
+                            if td[1].getText().strip()==' '.join(str(postdata['post_title_th'].replace("\u2013","")).strip().split()):
                                 post_id = td[3].find('a').get('href').split('id=')[1]
                                 post_url = self.site_name+'/homedisplay/'+post_id+'/'+quote(td[1].getText().strip())+'.html'
                                 break
@@ -254,8 +255,8 @@ class baan2day():
                             pass
                 elif "alert('หัวข้อประกาศซ้ำค่ะ ไม่สามารถบันทึกได้ค่ะ');window.history.back()" in response.text:
                     detail = "Unable to create post. A Post with same title already exists"
-            else:
-                    detail = 'Unable to create post. An Error has occurred with response_code '+str(response.status_code) 
+            else:  
+                    detail = 'Unable to create post. Maybe problem with the title. Error response_code '+str(response.status_code) 
         else:
             detail = "cannot login"
         time_end = datetime.datetime.utcnow()
@@ -351,7 +352,7 @@ class baan2day():
             datapost= {
                 "property_type": '1' if postdata['listing_type']=='ขาย' else '2',
                 "property_format": property_types[str(postdata['property_type'])],
-                "thomedetail_title": postdata['post_title_th'],
+                "thomedetail_title": postdata['post_title_th'].replace("\u2013",""),
                 "thomedetail_name": postdata["web_project_name"],
                 "thomedetail_address": taddress,
                 "tprovince": province,
@@ -388,7 +389,7 @@ class baan2day():
                 elif "alert('หัวข้อประกาศซ้ำค่ะ ไม่สามารถบันทึกได้ค่ะ');window.history.back()" in response.text:
                     detail = "Unable to update post. A Post with same title already exists"
             else:
-                    detail = 'Unable to update post. An Error has occurred with response_code '+str(response.status_code) 
+                    detail = 'Unable to update post.  Maybe problem with the title. Error response_code '+str(response.status_code) 
         else:
             detail = "cannot login"
         time_end = datetime.datetime.utcnow()
@@ -462,7 +463,7 @@ class baan2day():
         if success == "true":
             post_found = "false"
             detail = "No post found with given title"
-            post_title = ' '.join(str(postdata['post_title_th']).split())
+            post_title = ' '.join(str(postdata['post_title_th'].replace("\u2013","")).split())
 
             response = httprequestObj.http_get(self.site_name+'/member_property_list.php')
             if response.status_code==200:
@@ -475,7 +476,7 @@ class baan2day():
                             post_found = "true"
                             detail = "Post found successfully"
                             post_id = td[3].find('a').get('href').split('id=')[1]
-                            post_url = self.site_name+'/homedisplay/'+post_id+'/'+postdata['post_title_th']+'.html'
+                            post_url = self.site_name+'/homedisplay/'+post_id+'/'+postdata['post_title_th'].replace("\u2013","")+'.html'
                             post_view = td[2].getText()
                             break
                     except (TypeError, IndexError):
