@@ -326,7 +326,6 @@ class onlineoops():
                 except:
                     postdata['land_size_wa'] = 0
                 postdata['land_size'] = 400*postdata['land_size_rai'] + 100*postdata['land_size_ngan'] + postdata['land_size_wa']
-                if postdata['land_size']==0:
                 if (postdata['floor_area']).isnumeric() and int(postdata['floor_area'])>0:
                     postdata['land_size'] = postdata['floor_area']
                 else:
