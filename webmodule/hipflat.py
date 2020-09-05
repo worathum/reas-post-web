@@ -591,7 +591,7 @@ class hipflat():
         
         if(login['success'] == "true"):
 
-            all_posts_url = 'https://www.hipflat.co.th/account/listings/free'
+            all_posts_url = 'https://www.hipflat.co.th/account/listings/pro'
 
             res = httprequestObj.http_get(all_posts_url, headers = headers).text
 
@@ -937,7 +937,7 @@ class hipflat():
         
         if(login['success'] == "true"):
 
-            all_posts_url = 'https://www.hipflat.co.th/account/listings/free'
+            all_posts_url = 'https://www.hipflat.co.th/account/listings/pro'
 
             res = httprequestObj.http_get(all_posts_url, headers = headers).text
 
@@ -1172,7 +1172,7 @@ class hipflat():
         
         if(login['success'] == "true"):
 
-            all_posts_url = 'https://www.hipflat.co.th/account/listings/free'
+            all_posts_url = 'https://www.hipflat.co.th/account/listings/pro'
 
             res = httprequestObj.http_get(all_posts_url, headers = headers).text
 
@@ -1281,7 +1281,7 @@ class hipflat():
             post_modify_time = ''
             detail = 'No post with this title'
 
-            all_posts_url = 'https://www.hipflat.co.th/account/listings/free'
+            all_posts_url = 'https://www.hipflat.co.th/account/listings/pro'
 
             all_posts = httprequestObj.http_get(all_posts_url, headers = headers).text
 
