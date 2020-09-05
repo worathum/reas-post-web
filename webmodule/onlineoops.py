@@ -24,24 +24,8 @@ property_types = {
     '10': ('others',),
     '25': ('others',)
 }
+
 httprequestObj = lib_httprequest()
-
-# with open("./static/ips.txt",'r') as f:
-#     allips = f.read()
-# ips = allips.split('\n')
-
-# username = ips[random.randint(0,len(ips)-2)].split(":")[2]
-# password = 'v1y3mbh26qk9'
-# port = 22225
-# super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
-#         (username, password, port))
-
-# proxy_handler = {
-#     'http': super_proxy_url,
-#     'https': super_proxy_url,
-# }
-
-# httprequestObj.session.proxies.update(proxy_handler)
 
 
 class onlineoops():
@@ -186,7 +170,6 @@ class onlineoops():
             r = httprequestObj.http_get(self.site_name+'/post/free')
             soup = BeautifulSoup(r.text, features=self.parser)
             csrf = soup.find(attrs={'name':'_csrf'}).get('value')
-
             province = province_list[0]
             for pr in province_list:
                 if postdata['addr_province'] in pr:
@@ -194,14 +177,13 @@ class onlineoops():
                     break
 
             postdata['lat_long'] = str(postdata['geo_latitude'])+','+str(postdata['geo_longitude'])
-            try:
-                if int(postdata['floor_total']) >= 5:
-                    postdata['floor_total'] = '>5'
-            except:
-                    postdata['floor_total'] = '1'
+            if not str(postdata['floor_total']).isnumeric():
+                postdata['floor_total'] = '1'
+            if not str(postdata['bed_room']).isnumeric():
+                postdata['bed_room'] = '1'
             
             if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
-                    postdata['land_size_ngan'] = 0
+                postdata['land_size_ngan'] = 0
             if 'land_size_rai' not in postdata or postdata['land_size_rai'] == None:
                 postdata['land_size_rai'] = 0
             if 'land_size_wa' not in postdata or postdata['land_size_wa'] == None:
@@ -219,7 +201,12 @@ class onlineoops():
             except:
                 postdata['land_size_wa'] = 0
             postdata['land_size'] = 400*postdata['land_size_rai'] + 100*postdata['land_size_ngan'] + postdata['land_size_wa']
-            
+            if postdata['land_size']==0:
+                if (postdata['floor_area']).isnumeric() and int(postdata['floor_area'])>0:
+                    postdata['land_size'] = postdata['floor_area']
+                else:
+                    postdata['land_size'] = 1
+
             files = {}
             if len(postdata['post_images'])>0:
                 files["PostmarketthTH[images][]"] = open(os.getcwd()+"/"+postdata['post_images'][0], 'rb')
@@ -240,7 +227,7 @@ class onlineoops():
             
             for i, eachdata in enumerate(property_types[str(postdata['property_type'])][1:]):
                 if eachdata:
-                    datapost['Attr['+str(i)+'][tmpvalue]'] = postdata[eachdata]
+                    datapost['Attr['+str(i)+'][tmpvalue]'] = postdata[eachdata]      
                 else:
                     datapost['Attr['+str(i)+'][tmpvalue]'] = eachdata
             
@@ -315,11 +302,10 @@ class onlineoops():
                         break
 
                 postdata['lat_long'] = str(postdata['geo_latitude'])+','+str(postdata['geo_longitude'])
-                try:
-                    if int(postdata['floor_total'])>=5:
-                        postdata['floor_total'] = '>5'
-                except:
+                if not str(postdata['floor_total']).isnumeric():
                     postdata['floor_total'] = '1'
+                if not str(postdata['bed_room']).isnumeric():
+                    postdata['bed_room'] = '1'
 
                 if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
                         postdata['land_size_ngan'] = 0
@@ -340,7 +326,12 @@ class onlineoops():
                 except:
                     postdata['land_size_wa'] = 0
                 postdata['land_size'] = 400*postdata['land_size_rai'] + 100*postdata['land_size_ngan'] + postdata['land_size_wa']
-                
+                if postdata['land_size']==0:
+                if (postdata['floor_area']).isnumeric() and int(postdata['floor_area'])>0:
+                    postdata['land_size'] = postdata['floor_area']
+                else:
+                    postdata['land_size'] = 1
+                    
                 datapost= {
                     "_csrf": csrf,
                     "PostmarketthTH[name]": postdata['post_title_th'], 
