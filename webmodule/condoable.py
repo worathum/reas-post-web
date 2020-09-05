@@ -95,8 +95,6 @@ class condoable():
         email_user = logindata['user']
         email_pass = logindata['pass']
         
-        
-        
         datapost = {
             "userId": email_user,
             "password": email_pass
@@ -118,23 +116,21 @@ class condoable():
         time_usage = time_end - time_start
         
         return {
-            "websitename": "condoable",
             "success": success,
+            "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
-            "ds_id": logindata['ds_id']
+            "websitename": self.name,
+            "ds_id": logindata['ds_id'],
         }
-        #
-        #
-        #
+        
+
     
     def create_post(self, postdata):
-        # https://www.condoable.com/post/get_json_district?province_id=13   ->     for district
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        # print(postdata)
-        # postdata = postdata
+        
         listing_type = postdata['listing_type']
         property_type = postdata['property_type']
         post_img_url_lists = postdata['post_img_url_lists']
@@ -174,10 +170,8 @@ class condoable():
         floorarea = "10"
         try:
             floorarea = postdata['floor_area']
-            print("The floor area is ", floorarea)
             temp = int(floorarea)
         except:
-            print("here in floorare except")
             floorarea = "10"
         try:
             floorlevel = postdata['floor_level']
@@ -199,16 +193,11 @@ class condoable():
                     raise Exception
             except :
                 project_name = postdata['post_title_th']
-
-
-
-
         resp = requests.get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
         allres = json.loads(resp.content.decode('utf-8').replace('""', '"'), strict = False)
         condoprojectid = None
         if len(allres) != 0:
             condoprojectid = allres[0]['id']
-
 
         price = "0"
         rent = "0"
@@ -219,25 +208,22 @@ class condoable():
             listing_type = "SALE"
             price = price_baht
 
-    
-
         login = self.test_login(postdata)
         success = login["success"]
         detail = login["detail"]
         post_id = ""
         post_url = ""
         
-
-        if(success == "True") :
+        if success == "True":
             if condoprojectid is None:
              
                 data_Test = {
-                            "name": project_name ,
-                            "buildOn": "5/5/20",
-                            "addressLine1": "province : "+addr_province+"; District : "+addr_district ,
-                            "latitude": geo_latitude,
-                            "longitude": geo_longitude,
-                            }
+                    "name": project_name ,
+                    "buildOn": "5/5/20",
+                    "addressLine1": "province : "+addr_province+"; District : "+addr_district ,
+                    "latitude": geo_latitude,
+                    "longitude": geo_longitude,
+                }
                 r = httprequestObj.http_post('http://condoable.com/advertise/addOtherCondoProject.do?zoneId=20', data=data_Test)
                 condoprojectid = ""
                 for i in r.json():
@@ -248,78 +234,72 @@ class condoable():
     
             datapost = {
                 "size": floorarea,
-    "typeOfAd": listing_type,
-    "price": price,
-    "beginAvailable":" 09/05/2020",
-    "rentalPerTerm": rent,
-    "beginPublish": "09/05/2020",
-    "publishDay": "120",
-    "firstName": name,
-    "phone": mobile,
-    "email": email,
-    "zoneId": "", 
-    "condoProjectId": condoprojectid,
-    "condoBuildingId":"", 
-    "roomTypeId": "",
-    "publish": "false",
-    "next": "true"
+                "typeOfAd": listing_type,
+                "price": price,
+                "beginAvailable":" 09/05/2020",
+                "rentalPerTerm": rent,
+                "beginPublish": "09/05/2020",
+                "publishDay": "120",
+                "firstName": name,
+                "phone": mobile,
+                "email": email,
+                "zoneId": "", 
+                "condoProjectId": condoprojectid,
+                "condoBuildingId":"", 
+                "roomTypeId": "",
+                "publish": "false",
+                "next": "true"
             }
             print(datapost)
             r = httprequestObj.http_post('http://condoable.com/addAdvertiseDetail.do', data=datapost)
             print(r.status_code)
             
-            soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
-            authenticityToken = soup.find("input", {"name": "token"})['value']
-            post_id = str(soup.find("input",{"name":"advertiseId"})['value'])
-            print(authenticityToken)
-            print(post_id)
-            datapost = {
+            soup = BeautifulSoup(r.text, self.parser)
+            authenticityToken = soup.find("input", {"name": "token"})
+            post_id = soup.find("input",{"name":"advertiseId"})
+            if authenticityToken and post_id:
+                authenticityToken = authenticityToken.get('value')
+                post_id = post_id.get('value')
+                print(authenticityToken)
+                print(post_id)
+                datapost = {
                     "advertiseId": post_id,
-    "token": authenticityToken,
-    "publish": "true",
-    "title": post_title_th,
-    "description": post_description_th,
-    "size": floorarea,
-    "floor": floorlevel,
-    "roomNumber": ""
-            }
-            # http://condoable.com/uploadFile.do?type=advertiseImage8/288227&advertiseId=288227
-            filestoup = {}
-            for i in postdata['post_images']:
-                filestoup['files[]'] = open(os.getcwd() + "/"+ i,'rb')
-                r = httprequestObj.http_post('http://condoable.com/uploadFile.do?type=advertiseImage8/'+post_id +'&advertiseId='+post_id,data="",files=filestoup)
-            r = httprequestObj.http_post('http://condoable.com/addAdvertiseMoreDetail.do',data=datapost)
-            if(re.search(r'ลงประกาศเรียบร้อยแล้ว',r.text)):
-                success = "true"
-                detail = "Sucessfully posted"
+                    "token": authenticityToken,
+                    "publish": "true",
+                    "title": post_title_th,
+                    "description": post_description_th,
+                    "size": floorarea,
+                    "floor": floorlevel,
+                    "roomNumber": ""
+                }
+                
+                filestoup = {}
+                for i in postdata['post_images']:
+                    filestoup['files[]'] = open(os.getcwd() + "/"+ i,'rb')
+                    r = httprequestObj.http_post('http://condoable.com/uploadFile.do?type=advertiseImage8/'+post_id +'&advertiseId='+post_id,data="",files=filestoup)
+                r = httprequestObj.http_post('http://condoable.com/addAdvertiseMoreDetail.do',data=datapost)
+                if(re.search(r'ลงประกาศเรียบร้อยแล้ว',r.text)):
+                    success = "true"
+                    detail = "Sucessfully posted"
+                else:
+                    success = "false"
+                    detail = "Could not post"
+                post_url = "http://condoable.com/viewAdvertise.do?advertiseId="+str(post_id)
             else:
-                success = "false"
-                detail = "Could not post"
-            post_url = "http://condoable.com/viewAdvertise.do?advertiseId="+str(post_id)
+                success = "False"
+                detail  = "Unable to create post"
         else :
             success = "False"
             detail = "Login Error"
         time_end = datetime.datetime.utcnow()
-        print({
-            "websitename": "condoable",
-            "success": success,
-            "time_usage": time_end - time_start,
-            "start_time": time_start,
-            "end_time": time_end,
-            # "ds_id": "4",
-            "post_url": post_url,
-            "post_id": post_id,
-            "account_type": "",
-            "detail": detail
-        }
-)
+        
         return {
             "websitename": "condoable",
             "success": success,
             "usage_time": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
-            # "ds_id": "4",
+            "ds_id": postdata['ds_id'],
             "post_url": post_url,
             "post_id": post_id,
             "account_type": "",
@@ -517,12 +497,12 @@ class condoable():
         if condoprojectid is None:
          
             data_Test = {
-                        "name": project_name ,
-                        "buildOn": "5/5/20",
-                        "addressLine1": "province : "+addr_province+"; District : "+addr_district ,
-                        "latitude": geo_latitude,
-                        "longitude": geo_longitude,
-                        }
+                "name": project_name ,
+                "buildOn": "5/5/20",
+                "addressLine1": "province : "+addr_province+"; District : "+addr_district ,
+                "latitude": geo_latitude,
+                "longitude": geo_longitude,
+            }
             r = httprequestObj.http_post('http://condoable.com/advertise/addOtherCondoProject.do?zoneId=20', data=data_Test)
             condoprojectid = ""
             for i in r.json():
@@ -534,70 +514,63 @@ class condoable():
         datapost = {
             "advertiseId": post_id,
             "size": floorarea,
-"typeOfAd": listing_type,
-"price": price,
-"beginAvailable":" 09/05/2020",
-"rentalPerTerm": rent,
-"beginPublish": "09/05/2020",
-"publishDay": "120",
-"firstName": name,
-"phone": mobile,
-"email": email,
-"zoneId": "", 
-"condoProjectId": condoprojectid,
-"condoBuildingId":"", 
-"roomTypeId": "",
-"publish": "false",
-"next": "true"
+            "typeOfAd": listing_type,
+            "price": price,
+            "beginAvailable":" 09/05/2020",
+            "rentalPerTerm": rent,
+            "beginPublish": "09/05/2020",
+            "publishDay": "120",
+            "firstName": name,
+            "phone": mobile,
+            "email": email,
+            "zoneId": "", 
+            "condoProjectId": condoprojectid,
+            "condoBuildingId":"", 
+            "roomTypeId": "",
+            "publish": "false",
+            "next": "true"
         }
         r = httprequestObj.http_post('http://condoable.com/addAdvertiseDetail.do', data=datapost)
         soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
-        authenticityToken = soup.find("input", {"name": "token"})['value']
-        print(authenticityToken)
-        datapost = {
+        authenticityToken = soup.find("input", {"name": "token"})
+        if authenticityToken:
+            authenticityToken = authenticityToken.get('value')
+            print(authenticityToken)
+            datapost = {
                 "advertiseId": post_id,
-"token": authenticityToken,
-"publish": "true",
-"title": post_title_th,
-"description": post_description_th,
-"size": floorarea,
-"floor": floorlevel,
-"roomNumber": ""
-        }
-        # http://condoable.com/uploadFile.do?type=advertiseImage8/288227&advertiseId=288227
-        filestoup = {}
-        for i in postdata['post_images']:
-            filestoup['files[]'] = open(os.getcwd() + "/"+ i,'rb')
-            r = httprequestObj.http_post('http://condoable.com/uploadFile.do?type=advertiseImage8/'+post_id +'&advertiseId='+post_id,data="",files=filestoup)
-        r = httprequestObj.http_post('http://condoable.com/addAdvertiseMoreDetail.do',data=datapost)
-        if(re.search(r'ลงประกาศเรียบร้อยแล้ว',r.text)):
-            success = "true"
-            detail = "Sucessfully Edited post with id "+post_id
+                "token": authenticityToken,
+                "publish": "true",
+                "title": post_title_th,
+                "description": post_description_th,
+                "size": floorarea,
+                "floor": floorlevel,
+                "roomNumber": ""
+            }
+            # http://condoable.com/uploadFile.do?type=advertiseImage8/288227&advertiseId=288227
+            filestoup = {}
+            for i in postdata['post_images']:
+                filestoup['files[]'] = open(os.getcwd() + "/"+ i,'rb')
+                r = httprequestObj.http_post('http://condoable.com/uploadFile.do?type=advertiseImage8/'+post_id +'&advertiseId='+post_id,data="",files=filestoup)
+            r = httprequestObj.http_post('http://condoable.com/addAdvertiseMoreDetail.do',data=datapost)
+            if(re.search(r'ลงประกาศเรียบร้อยแล้ว',r.text)):
+                success = "true"
+                detail = "Sucessfully Edited post with id "+post_id
+            else:
+                success = "false"
+                detail = "Could not edit post wiht id "+post_id
+            post_url = "http://condoable.com/viewAdvertise.do?advertiseId="+str(post_id)
         else:
             success = "false"
-            detail = "Could not edit post wiht id "+post_id
-        post_url = "http://condoable.com/viewAdvertise.do?advertiseId="+str(post_id)
+            detail = "Unable to edit post"
         time_end = datetime.datetime.utcnow()
-        print({
-            "websitename": "condoable",
-            "success": success,
-            "time_usage": time_end - time_start,
-            "start_time": time_start,
-            "end_time": time_end,
-            # "ds_id": "4",
-            "post_url": post_url,
-            "post_id": post_id,
-            "account_type": "",
-            "detail": detail
-        }
-)
+            
         return {
             "websitename": "condoable",
             "success": success,
             "usage_time": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
-            # "ds_id": "4",
+            "ds_id": postdata['post_id'],
             "post_url": post_url,
             "post_id": post_id,
             "log_id": postdata['log_id'],

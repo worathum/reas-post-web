@@ -355,7 +355,7 @@ class property2share():
             return login
 
         check_posted = self.check_posted(postdata)
-        if ('log_id' not in postdata or postdata['log_id'] == None or log_id == ""):
+        if ('log_id' not in postdata or postdata['log_id'] == None or postdata['log_id'] == ""):
             log_id = ''
 
 

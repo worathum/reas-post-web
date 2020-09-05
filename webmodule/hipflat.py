@@ -488,7 +488,7 @@ class hipflat():
                 data['listing[project_name]'] = 'วอร์เตอร์มาร์ค เจ้าพระยา'
                 data['listing[condo_id]'] = '5119af8eef23779a61000713'
 
-            response = httprequestObj.http_get('https://www.hipflat.co.th/listings/add', headers = headers)
+            response = httprequestObj.http_get('https://www.hipflat.co.th/listings/add?rank=100', headers = headers)
             print(response.url)
             print(response.status_code)
 
@@ -521,7 +521,7 @@ class hipflat():
                 link = ''
                 aaas = []
                 self.test_login(postdata)
-                r = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/free')
+                r = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/pro')
                 print(r.url)
                 print(r.status_code)
                 data=r.text

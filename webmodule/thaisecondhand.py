@@ -15,24 +15,6 @@ import random
 
 httprequestObj = lib_httprequest()
 
-# with open("./static/ips.txt",'r') as f:
-#     allips = f.read()
-# ips = allips.split('\n')
-
-# username = ips[random.randint(0,len(ips)-2)].split(":")[2]
-# password = 'v1y3mbh26qk9'
-# port = 22225
-# super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
-#         (username, password, port))
-
-# proxy_handler = {
-#     'http': super_proxy_url,
-#     'https': super_proxy_url,
-# }
-
-# httprequestObj.session.proxies.update(proxy_handler)
-
-
 
 class thaisecondhand():
 
@@ -72,7 +54,6 @@ class thaisecondhand():
             'confirmpassword': passwd,
             'confirm_username': "",
             'f_confirm': "Y",
-            
             'registraion-submit': "Become a member"
         }
 
@@ -118,28 +99,31 @@ class thaisecondhand():
         data = r.text
         # print(data)
         soup = BeautifulSoup(data, self.parser)
-        csrf = soup.find("input", {"name": "csrf_token"})['value']
-        
-        
-        datapost = {
-            'username' : email_user,
-            'password' : email_pass,
-            'registration-submit' : 'Login',
-            'csrf_token' : csrf
-        }
-        # print(datapost)
-        r = httprequestObj.http_post('https://www.thaisecondhand.com/member/login_submit', data=datapost)
-        data = r.text
-        # print(data)
-        # print("Data Printed")
-        matchObj = re.search(r'/logout', data)
-        # print(matchObj)
-        if matchObj:
-            success = "True"
-            detail = "Sucessful Login"
+        csrf = soup.find("input", {"name": "csrf_token"})
+        if csrf:
+            csrf = csrf.get('value')
+            datapost = {
+                'username' : email_user,
+                'password' : email_pass,
+                'registration-submit' : 'Login',
+                'csrf_token' : csrf
+            }
+            # print(datapost)
+            r = httprequestObj.http_post('https://www.thaisecondhand.com/member/login_submit', data=datapost)
+            data = r.text
+            # print(data)
+            # print("Data Printed")
+            matchObj = re.search(r'/logout', data)
+            # print(matchObj)
+            if matchObj:
+                success = "True"
+                detail = "Sucessful Login"
+            else:
+                success = "False"
+                detail = "Login Unsucessful"
         else:
             success = "False"
-            detail = "Login Unsucessful"
+            detail = "Login Unsucessful. An error occurred during fetching page"
         end_time = datetime.datetime.utcnow()
         time_usage = end_time - start_time
         
@@ -151,9 +135,8 @@ class thaisecondhand():
             "end_time": str(end_time),
             "detail": detail,
         }
-        #
-        #
-        #
+        
+
     
     def create_post(self, postdata):
         # https://www.thaisecondhand.com/post/get_json_district?province_id=13   ->     for district
@@ -282,7 +265,9 @@ class thaisecondhand():
             r = httprequestObj.http_get('https://www.thaisecondhand.com/post', verify=False)
             data = r.text
             soup = BeautifulSoup(data, self.parser)
-            authenticityToken = soup.find("input", {"name": "csrf_token"})['value']
+            authenticityToken = soup.find("input", {"name": "csrf_token"})
+            if authenticityToken:
+                authenticityToken = authenticityToken.get('value')
             datapost['csrf_token'] = authenticityToken
             r = httprequestObj.http_get('https://www.thaisecondhand.com/post/get_json_district?province_id='+str(datapost["province_id"]), verify=False)
             data = r.json()
@@ -327,19 +312,7 @@ class thaisecondhand():
                 post_url = link[0] 
         
         end_time = datetime.datetime.utcnow()
-        print({
-            "websitename": "thaisecondhand",
-            "success": success,
-            "time_usage": end_time - start_time,
-            "start_time": start_time,
-            "end_time": end_time,
-            # "ds_id": "4",
-            "post_url": post_url,
-            "post_id": post_id,
-            "account_type": "",
-            "detail": detail
-        }
-)
+        
         return {
             "websitename": "thaisecondhand",
             "success": success,
@@ -604,8 +577,9 @@ class thaisecondhand():
             r = httprequestObj.http_get('https://www.thaisecondhand.com/post/edit/'+post_id, verify=False)
             data = r.text
             soup = BeautifulSoup(data, self.parser)
-            authenticityToken = soup.find("input", {"name": "csrf_token"})['value']
-            print(authenticityToken)
+            authenticityToken = soup.find("input", {"name": "csrf_token"})
+            if authenticityToken:
+                authenticityToken = authenticityToken.get('value')
             datapost['csrf_token'] = authenticityToken
             r = httprequestObj.http_get('https://www.thaisecondhand.com/post/get_json_district?province_id='+str(datapost["province_id"]), verify=False)
             data = r.json()
