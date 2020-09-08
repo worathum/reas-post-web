@@ -1226,15 +1226,30 @@ class thaihometown():
             if success == "true":
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
 
-                sas_name = soup.find("input", {"name": "sas_name"})['value']
-                code_edit = soup.find("input", {"name": "code_edit"})['value']
-                firstname = soup.find("input", {"name": "firstname"})['value']
-                mobile = soup.find("input", {"name": "mobile"})['value']
-                date_signup = soup.find("input", {"name": "date_signup"})['value']
-                email = soup.find("input", {"name": "email"})['value']
-                contact_code = soup.find("input", {"name": "contact_code"})['value']
-                ad_title = soup.find("textarea", {"name": "ad_title"}).contents
-                ad_title = ad_title[0]
+                sas_name = soup.find("input", {"name": "sas_name"})
+                if sas_name:
+                    sas_name = sas_name.get('value')
+                code_edit = soup.find("input", {"name": "code_edit"})
+                if code_edit: 
+                    code_edit = code_edit.get('value')
+                firstname = soup.find("input", {"name": "firstname"})
+                if firstname:
+                    firstname = firstname.get('value')
+                mobile = soup.find("input", {"name": "mobile"})
+                if mobile:
+                    mobile = mobile.get('value')
+                date_signup = soup.find("input", {"name": "date_signup"})
+                if date_signup:
+                    date_signup = date_signup.get('value')
+                email = soup.find("input", {"name": "email"})
+                if email:
+                    email = email.get('value')
+                contact_code = soup.find("input", {"name": "contact_code"})
+                if contact_code:
+                    contact_code = contact_code.get('value')
+                ad_title = soup.find("textarea", {"name": "ad_title"})
+                if ad_title:
+                    ad_title = ad_title.contents[0]
                 #for province in bangkok
                 property_city_bkk = ''
                 try:

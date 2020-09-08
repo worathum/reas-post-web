@@ -67,7 +67,7 @@ class taladx():
 
         response = httprequestObj.http_get('http://www.taladx.com/register.php').text
 
-        soup = BeautifulSoup(response,features = "html")
+        soup = BeautifulSoup(response,features = self.parser)
 
         req = soup.find('input', attrs={'name' : 'hiddenanswer'})
 
@@ -150,7 +150,7 @@ class taladx():
                 response = httprequestObj.http_post('http://www.taladx.com/member.php', data = data, headers = headers)
                 #print(response.url) 
                 
-                soup = BeautifulSoup(response.content , features = "html")
+                soup = BeautifulSoup(response.content , features = self.parser)
                 if soup.find_all("h3", attrs={'class':"fail"}):
                 #if (response.url == 'http://www.estate.in.th/login.php' or response.url == 'http://www.estate.in.th/signup.php'):
                     success = "false"
@@ -246,7 +246,7 @@ class taladx():
 
             find_province = httprequestObj.http_get('http://www.taladx.com/post-add.php', headers = headers).text
 
-            soup = BeautifulSoup(find_province,features = "html")
+            soup = BeautifulSoup(find_province,features = self.parser)
 
             abc = soup.find('select',attrs = {'name':'city'})
 
@@ -263,7 +263,7 @@ class taladx():
 
             find_district = httprequestObj.http_get(url_district, headers = headers).text
 
-            soup = BeautifulSoup(find_district,features = "html")
+            soup = BeautifulSoup(find_district,features = self.parser)
 
             try:
 
@@ -358,22 +358,24 @@ class taladx():
 
             all_posts = httprequestObj.http_get('http://www.taladx.com/manage-post.php', headers = headers).text
             
-            soup = BeautifulSoup(all_posts,features="html")
+            soup = BeautifulSoup(all_posts,features="html.parser")
             
             all_post_id = []
             
             success = 'true'
-            total_pages = int(soup.find('div', {'class': 'pagination'}).find_all("li")[-1].find("a")['href'].split("=")[-1])            
-
-            for page in range(1, total_pages+1):
+            
+            page = 1
+            while True:
                 requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
-                soup = BeautifulSoup(requ, features = "html")
-                for abc in soup.find_all('span',attrs={'class':"code"}):
+                soup = BeautifulSoup(requ, features = "html.parser")
+                all_post = soup.find_all('span',attrs={'class':"code"})
+                for abc in all_post:
                     total_text = abc.text.split(' ')
                     one_id = str(total_text[-1])
                     all_post_id.append(one_id)
-
-            #print(all_post_id)
+                page += 1
+                if not all_post:
+                    break
 
             req_post_id = str(postdata['post_id'])
             if req_post_id in all_post_id:
@@ -381,19 +383,15 @@ class taladx():
                 res = httprequestObj.http_get(boost_url, headers = headers)
                 success = "true"
                 detail = "Post boosted successfully"
-                #print(res.url)
-
             else:
                 success = "false"
                 detail = "post_id is incorrect"
-
-
+            
         else :
             success = "false"
             detail = "Login failed"
 
         end_time = datetime.datetime.utcnow()
-        
         return {
             "websitename": "taladx",
             "success": success,
@@ -422,20 +420,24 @@ class taladx():
 
             all_posts = httprequestObj.http_get('http://www.taladx.com/manage-post.php', headers = headers).text
             
-            soup = BeautifulSoup(all_posts,features="html")
+            soup = BeautifulSoup(all_posts,features="html.parser")
             
             all_post_id = []
             
             success = 'true'
-            total_pages = int(soup.find('div', {'class': 'pagination'}).find_all("li")[-1].find("a")['href'].split("=")[-1])            
-
-            for page in range(1, total_pages+1):
+           
+            page = 1
+            while True:
                 requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
-                soup = BeautifulSoup(requ, features = "html")
-                for abc in soup.find_all('span',attrs={'class':"code"}):
+                soup = BeautifulSoup(requ, features = "html.parser")
+                all_post = soup.find_all('span',attrs={'class':"code"})
+                for abc in all_post:
                     total_text = abc.text.split(' ')
                     one_id = str(total_text[-1])
                     all_post_id.append(one_id)
+                page += 1
+                if not all_post:
+                    break
 
             #print(all_post_id)
 
@@ -486,21 +488,24 @@ class taladx():
         if (login['success'] == 'true'):
             all_posts = httprequestObj.http_get('http://www.taladx.com/manage-post.php', headers = headers).text
             
-            soup = BeautifulSoup(all_posts,features="html")
+            soup = BeautifulSoup(all_posts,features="html.parser")
             
             all_post_id = []
             
             success = 'true'
-            total_pages = int(soup.find('div', {'class': 'pagination'}).find_all("li")[-1].find("a")['href'].split("=")[-1])            
-
-            for page in range(1, total_pages+1):
+           
+            page = 1
+            while True:
                 requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
-                soup = BeautifulSoup(requ, features = "html")
-
-                for abc in soup.find_all('span',attrs={'class':"code"}):
+                soup = BeautifulSoup(requ, features = "html.parser")
+                all_post = soup.find_all('span',attrs={'class':"code"})
+                for abc in all_post:
                     total_text = abc.text.split(' ')
                     one_id = str(total_text[-1])
                     all_post_id.append(one_id)
+                page += 1
+                if not all_post:
+                    break
 
             req_post_id = str(postdata['post_id'])
             if req_post_id in all_post_id:
@@ -562,7 +567,7 @@ class taladx():
 
                 find_province = httprequestObj.http_get(post_url, headers = headers).text
 
-                soup = BeautifulSoup(find_province,features = "html")
+                soup = BeautifulSoup(find_province,features = self.parser)
 
                 abc = soup.find('select',attrs = {'name':'city'})
 
@@ -579,7 +584,7 @@ class taladx():
 
                 find_district = httprequestObj.http_get(url_district, headers = headers).text
 
-                soup = BeautifulSoup(find_district,features = "html")
+                soup = BeautifulSoup(find_district,features = self.parser)
 
                 try:
 
@@ -687,7 +692,7 @@ class taladx():
             res = httprequestObj.http_get(urls, headers = headers)
             #print(res.url)
             
-            soup = BeautifulSoup(res.content ,features = "html")
+            soup = BeautifulSoup(res.content ,features = self.parser)
 
             for abc in soup.find_all('li',attrs={'class': 'thumb'}):
                 if (str(abc.a.img['alt']) == postdata['post_title_th']):
@@ -697,7 +702,7 @@ class taladx():
                     temp_id = str(post_url.split('/')[3])
                     post_id = str(temp_id[4:])
                     find_info = httprequestObj.http_get(post_url, headers = headers).text
-                    soup1 = BeautifulSoup(find_info,features = "html")
+                    soup1 = BeautifulSoup(find_info,features = self.parser)
 
                     ab = soup1.find('div',attrs = {'class':'data'})
 
