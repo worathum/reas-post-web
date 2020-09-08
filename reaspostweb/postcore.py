@@ -309,10 +309,8 @@ class postcore():
                         if 'post_url' in response["web"][websitename] and 'http' not in response["web"][websitename]['post_url'] and response["web"][websitename]['post_url'] != '':
                             response["web"][websitename]['post_url'] = "http://" + response["web"][websitename]['post_url']
 
-                    except Exception as e1:
-                        print("sed")
-                        print(str(e1))
-
+                    except:
+                        pass
 
                 except Exception as e:
                     errors.append([str(traceback.format_exc()),str(e)])
@@ -344,7 +342,17 @@ class postcore():
                                 error[0] = "Proxy Error!"    
                             if 'cloudflare' in str(error[0]):                            
                                 error[0] = "Website has security by Cloud Flare! Couldn't complete the action."    
-                            response["web"][webitem['ds_name']] = {'success':'false','detail': error[0], 'websitename':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow()}
+                            response["web"][webitem['ds_name']] = {'success':'false','detail': error[1], 'websitename':webitem['ds_name'], 'ds_name':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow(), 'account_type': ''}
+    
+                            if action == "create_post":
+                                response["web"][websitename]['post_url'] = ""
+                            if action == "search_post":
+                                response["web"][websitename]['post_url'] = ""
+                                response["web"][websitename]['post_create_time'] = ""
+                                response["web"][websitename]['post_modify_time'] = ""
+                                response["web"][websitename]['post_view'] = ""
+                                response["web"][websitename]['post_found'] = "true" if response["web"][websitename]['post_url'] != "" else "false"
+    
                             break
 
 
@@ -352,8 +360,7 @@ class postcore():
                 response["web"][webitem['ds_name']]['log_id'] = webitem['log_id']    
                 if 'post_id' not in response["web"][webitem['ds_name']]:  
                     response["web"][webitem['ds_name']]['post_id'] = webitem['post_id']      
-                if 'post_url' not in response["web"][webitem['ds_name']] and action == 'create_post':  
-                    response["web"][webitem['ds_name']]['post_url'] = ''      
+
 
             logging.info("")
             logging.info("")

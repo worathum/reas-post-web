@@ -66,7 +66,7 @@ class propertyadvantage():
 
         response = httprequestObj.http_post('https://propertyadvantage.net/signup_member.php', data=data)
 
-        soup = BeautifulSoup(response.content, 'html5lib')
+        soup = BeautifulSoup(response.content, features='html.parser')
         if soup.find_all('div',attrs={'class':"alert alert-danger"}):
             result['success'] = "false"
             result['detail'] = 'Already Registered!!'
@@ -115,7 +115,7 @@ class propertyadvantage():
 
         response = httprequestObj.http_post('https://propertyadvantage.net/login', data=data)
 
-        soup = BeautifulSoup(response.content,'html5lib')
+        soup = BeautifulSoup(response.content, features='html.parser')
         if soup.find_all('div',attrs={'class':"alert alert-danger"}):
             result['success'] = "false"
             result['detail'] = 'Incorrect Username or Password !!'
@@ -158,7 +158,7 @@ class propertyadvantage():
                 ('id', postdata['post_id']),
             )
             r = httprequestObj.http_get('https://propertyadvantage.net/edit_property', params=params)
-            soup = BeautifulSoup(r.content,'html5lib')
+            soup = BeautifulSoup(r.content,features='html.parser')
             if soup.text == '':
                 end_time = datetime.datetime.utcnow()     
                 result['end_time'] = str(end_time)
@@ -317,7 +317,7 @@ class propertyadvantage():
                 files['photoimg[]'] = r
                 response = httprequestObj.http_post('https://propertyadvantage.net/ajax_img.php',data=None, files=files)
                 #print(response.text)
-                soup = BeautifulSoup(response.content, 'html5lib')
+                soup = BeautifulSoup(response.content, features='html.parser')
                 if soup.find('li') != None:
                     imgtags.append(soup.find('li').attrs.get('id').split('_')[-1])
                 
@@ -508,7 +508,7 @@ class propertyadvantage():
                 files['photoimg[]'] = r
                 response = httprequestObj.http_post('https://propertyadvantage.net/ajax_img.php',data=None, files=files)
                 #print(response.text)
-                soup = BeautifulSoup(response.content, 'html5lib')
+                soup = BeautifulSoup(response.content, features='html.parser')
                 if soup.find('li') != None:
                     imgtags.append(soup.find('li').attrs.get('id').split('_')[-1])
             
@@ -564,7 +564,7 @@ class propertyadvantage():
         }
         if test_login['success'] == "true":
             r = httprequestObj.http_get('https://propertyadvantage.net/maneg_property') 
-            soup = BeautifulSoup(r.content,'html5lib')
+            soup = BeautifulSoup(r.content,features='html.parser')
             postids = []
             if soup.find('ul',attrs={'class':'pagination'}):
                 pages = []
@@ -574,7 +574,7 @@ class propertyadvantage():
                 for page in pages:
                     url = 'https://propertyadvantage.net/maneg_property.php?&page={}'.format(int(page)-1)
                     r = httprequestObj.http_get(url) 
-                    soup = BeautifulSoup(r.content,'html5lib')
+                    soup = BeautifulSoup(r.content,features='html.parser')
                     tablerows = soup.find('table',attrs={'class':'table table-striped'}).find('tbody').find_all('tr')
                     for tr in tablerows:
                         id = tr.find('a',attrs={'href':'#'}).attrs.get('onclick')
@@ -634,19 +634,20 @@ class propertyadvantage():
         }
         if test_login['success'] == "true":
             r = httprequestObj.http_get('https://propertyadvantage.net/maneg_property') 
-            soup = BeautifulSoup(r.content,'html5lib')
+            soup = BeautifulSoup(r.content, features='html.parser')
             postids = []
             posturls = []
             
             if soup.find('ul',attrs={'class':'pagination'}):
-                pages = []
+                max_pages = 0
                 lis = soup.find('ul',attrs={'class':'pagination'}).find_all('li')[:-1]
                 for li in  lis:
-                    pages.append(li.text)
-                for page in pages:
+                    max_pages = max(max_pages, int(li.text.replace('.','').strip()))
+                
+                for page in range(1, max_pages+1):
                     url = 'https://propertyadvantage.net/maneg_property.php?&page={}'.format(int(page)-1)
                     r = httprequestObj.http_get(url) 
-                    soup = BeautifulSoup(r.content,'html5lib')
+                    soup = BeautifulSoup(r.content,features='html.parser')
                     tablerows = soup.find('table',attrs={'class':'table table-striped'}).find('tbody').find_all('tr')
 
                     for tr in tablerows:
@@ -724,7 +725,7 @@ class propertyadvantage():
 
         if test_login['success'] == "true":
             r = httprequestObj.http_get('https://propertyadvantage.net/maneg_property') 
-            soup = BeautifulSoup(r.content,'html5lib')
+            soup = BeautifulSoup(r.content,features='html.parser')
             post_titles,post_urls,post_ids,post_views = [],[],[],[]
 
             if soup.find('ul',attrs={'class':'pagination'}):
@@ -735,7 +736,7 @@ class propertyadvantage():
                 for page in pages:
                     url = 'https://propertyadvantage.net/maneg_property.php?&page={}'.format(int(page)-1)
                     r = httprequestObj.http_get(url) 
-                    soup = BeautifulSoup(r.content,'html5lib')
+                    soup = BeautifulSoup(r.content,features='html.parser')
                     tablerows = soup.find('table',attrs={'class':'table table-striped'}).find('tbody').find_all('tr')
                     for tr in tablerows:
                         post_titles.append(tr.find('a',attrs={'target':'_blank'}).text)

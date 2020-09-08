@@ -547,7 +547,9 @@ class pantipmarket():
                 url = "https://www.pantipmarket.com/member/my/"
                 request = httprequestObj.http_get(url)
                 soup = BeautifulSoup(request.text,'lxml')
-                date = soup.find('input',attrs = {'id': 'date'+post_id, 'name' : 'date'})['value']
+                date = soup.find('input',attrs = {'id': 'date'+post_id, 'name' : 'date'})
+                if date:
+                    date = date.get('value')
                 datapost = {
                 'board_shift[]' : post_id,
                 'board_delete_chk' : '',
