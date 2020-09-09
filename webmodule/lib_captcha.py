@@ -7,7 +7,7 @@ import time
 
 class lib_captcha():
     def __init__(self):
-        self.set_key = "7ca49bf4a9c30d1b7d6eeb6eb690510a"
+        self.set_key = "28b19f8fa1d583a46e2cec418f8b0172"
         
     def reCaptcha(self,sitekey, url):
         solver = recaptchaV2Proxyless()
