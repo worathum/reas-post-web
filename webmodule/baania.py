@@ -128,27 +128,39 @@ class baania():
                 "detail": detail
             }
 
+
+
     def create_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
         datapost = {}
-        # start process
-        #
-
-        # login
-
-        # print(postdata)
-
-        if 'name' not in postdata:
+        success = "True"
+        if not postdata["name"]:
             success = "False"
             detail = "Please fill name"
-        elif 'mobile' not in postdata:
+        elif not postdata["mobile"]:
             success = "False"
             detail = "Please fill mobile number"
-        elif 'email' not in postdata:
+        elif not postdata["email"]:
             success = "False"
             detail = "Please fill email"
+        if success=="False":
+            time_end = datetime.datetime.utcnow()
+            time_usage = time_end-time_start
+            return {
+                "websitename": "baania",
+                "success": success,
+                "usage_time": str(time_usage),
+                "start_time": str(time_start),
+                'ds_id': postdata['ds_id'],
+                "log_id": postdata['log_id'],
+                "end_time": str(time_end),
+                "post_url": "",
+                "post_id": "",
+                "account_type": "null",
+                "detail": detail,
+            }
 
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -294,9 +306,6 @@ class baania():
                 postdata['web_project_name'] = postdata['project_name']
             else:
                 postdata['web_project_name'] = postdata['post_title_th']
-
-
-
 
     # flag = True
 
@@ -500,15 +509,13 @@ class baania():
                 r = requests.patch('https://api.baania.com/api/v1/users/listings/' +
                                    pid+'/4', data=json.dumps(datapost).encode('utf-8'), headers=headers)
                 data = json.loads(r.text)
-                # print(data)
-                if r.status_code != 200:
+                if r.status_code == 200:
+                    detail = "Post created successfully!"
+                    post_id = pid
+                    post_url = 'https://www.baania.com/th/listing/' + postdata["post_title_th"]+'-'+pid
+                else:
                     success = "false"
                     detail = data["message"]
-
-                post_id = pid
-                post_url = 'https://www.baania.com/th/listing/' + \
-                    postdata["post_title_th"]+'-'+pid
-
         else:
             detail = "cannot login"
         # print(detail)resp.contentresp.content
@@ -538,15 +545,32 @@ class baania():
         #
 
         # login
-        if 'name' not in postdata:
+        success = "True"
+        if not postdata["name"]:
             success = "False"
             detail = "Please fill name"
-        elif 'mobile' not in postdata:
+        elif not postdata["mobile"]:
             success = "False"
             detail = "Please fill mobile number"
-        elif 'email' not in postdata:
+        elif not postdata["email"]:
             success = "False"
             detail = "Please fill email"
+        if success=="False":
+            time_end = datetime.datetime.utcnow()
+            time_usage = time_end-time_start
+            return {
+                "websitename": "baania",
+                "success": success,
+                "usage_time": str(time_usage),
+                "start_time": str(time_start),
+                'ds_id': postdata['ds_id'],
+                "log_id": postdata['log_id'],
+                "end_time": str(time_end),
+                "post_url": "",
+                "post_id": "",
+                "account_type": "null",
+                "detail": detail,
+            }
 
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -889,14 +913,13 @@ class baania():
                 data = json.loads(r.text)
                 # print(r)
                 # print(data)
-                if r.status_code != 200:
+                if r.status_code == 200:
+                    detail = "Post edited successfully!"
+                    post_id = pid
+                    post_url = 'https://www.baania.com/th/listing/' + postdata["post_title_th"]+'-'+pid
+                else:
                     success = "false"
                     detail = data["message"]
-
-                post_id = pid
-                post_url = 'https://www.baania.com/th/listing/' + \
-                    postdata["post_title_th"]+'-'+pid
-
         else:
             detail = "cannot login"
 

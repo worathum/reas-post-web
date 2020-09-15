@@ -107,6 +107,8 @@ class home2all():
             "ds_id": postdata['ds_id']
         }
 
+
+
     def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
@@ -132,15 +134,11 @@ class home2all():
         }
         r = httprequestObj.http_post(
             'https://home2all.com/Login?returnurl=%2f', data=datapost)
-        data = r.text
-        # with open('b.html','w') as f:
-        #     print(data,file=f)  
-        # print(data)
-        if data.find("Email") != -1:
+    
+        soup = BeautifulSoup(r.text, features='html.parser')
+        if soup.find(id='dnn_ctr_Login_pnlLoginContainer'):
             detail = "cannot login"
             success = "False"
-        #
-        # end process
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -154,15 +152,14 @@ class home2all():
             "detail": detail,
         }
 
+
     def create_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-
-        # print(postdata)
+        
         # start process
-        #
-
         # login
+        success = "True"
         if 'name' not in postdata:
             success = "False"
             detail  = "Please fill name"
@@ -172,7 +169,21 @@ class home2all():
         elif 'email' not in postdata:
             success = "False"
             detail  = "Please fill email"
-
+        if success=="False":
+            time_end = datetime.datetime.utcnow()
+            time_usage = time_end-time_start
+            return {
+                "websitename": "home2all",
+                "success": success,
+                "ds_id": postdata['ds_id'],
+                "usage_time": str(time_usage),
+                "start_time": str(time_start),
+                "end_time": str(time_end),
+                "post_url": "",
+                "post_id": "",
+                "account_type": "null",
+                "detail": detail
+            }
 
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -376,21 +387,18 @@ class home2all():
             r = httprequestObj.http_post(
                 'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5', data=datapost, files=files)
             data = r.text
-            # print(r.reason)
-            # print(r)
-            # with open('b.html','w') as f:
-            #     print(data,file=f)
-            # print('hi')
+           
             soup=BeautifulSoup(r.text,'lxml')
-            if soup.select("#dnn_ctr440_Thankyou_hplTopicId") != []:
+            if soup.select("#dnn_ctr440_Thankyou_hplTopicId"):
+                detail = "Post created successfully"
                 post_url = soup.select("#dnn_ctr440_Thankyou_hplTopicId")[0]['href']
-                post_id  = soup.select("#dnn_ctr440_Thankyou_hplTopicId")[0].text
+                post_id  = soup.select("#dnn_ctr440_Thankyou_hplTopicId")[0].text.strip()
             else:
-                success = 'False'
+                success = 'false'
                 detail  = "Please check parameters"
-            # print('hi')
         else:
             detail = "cannot login"
+            print(test_login)
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -414,6 +422,7 @@ class home2all():
         # https://home2all.com/post/topicid/78776
 
         # login
+        success = "True"
         if 'name' not in postdata:
             success = "False"
             detail  = "Please fill name"
@@ -423,6 +432,21 @@ class home2all():
         elif 'email' not in postdata:
             success = "False"
             detail  = "Please fill email"
+        if success=="False":
+            time_end = datetime.datetime.utcnow()
+            time_usage = time_end-time_start
+            return {
+                "websitename": "home2all",
+                "success": success,
+                "ds_id": postdata['ds_id'],
+                "usage_time": str(time_usage),
+                "start_time": str(time_start),
+                "end_time": str(time_end),
+                "post_url": "",
+                "post_id": "",
+                "account_type": "null",
+                "detail": detail
+            }
 
 
         test_login = self.test_login(postdata)
@@ -630,7 +654,8 @@ class home2all():
                     'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5/topicid/'+postdata['post_id']+'/trk/-1', data=datapost, files=files)
                 data = r.text
                 soup=BeautifulSoup(r.text,'lxml')
-                if soup.select("#dnn_ctr440_Thankyou_hplTopicId") != []:
+                if soup.select("#dnn_ctr440_Thankyou_hplTopicId"):
+                    detail = "Post edited successfully!"
                     post_url = soup.select("#dnn_ctr440_Thankyou_hplTopicId")[0]['href']
                     post_id  = soup.select("#dnn_ctr440_Thankyou_hplTopicId")[0].text
                 else:
