@@ -480,16 +480,8 @@ class propertypostfree():
 
         login = self.test_login(postdata)
         
-        if(login['success'] == "true"):
-
-            all_posts_url = 'http://www.propertypostfree.com/member/list-property.php'
-
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
-
-            soup = BeautifulSoup(all_posts.content, features = "html")
-
+        if login['success'] == "true":
             all_post_ids = []
-
             page = 1            
             while True:
                 requ = httprequestObj.http_get("http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
@@ -500,10 +492,8 @@ class propertypostfree():
                 page += 1
                 if not all_post:
                     break
-            print(all_post_ids)
 
             req_post_id = str(postdata['post_id'])
-
             if req_post_id in all_post_ids:
                 data = {
                     'chkDel[]' : req_post_id,
@@ -520,8 +510,6 @@ class propertypostfree():
             else:
                 success = "false"
                 detail = "post_id is incorrect"
-
-
         else :
             success = "false"
             detail = "Login failed"

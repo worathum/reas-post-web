@@ -416,50 +416,37 @@ class taladx():
 
         login = self.test_login(postdata)
         
-        if(login['success'] == "true"):
-
-            all_posts = httprequestObj.http_get('http://www.taladx.com/manage-post.php', headers = headers).text
-            
-            soup = BeautifulSoup(all_posts,features="html.parser")
-            
-            all_post_id = []
-            
-            success = 'true'
-           
+        if login['success'] == "true":
             page = 1
+            req_post_id = str(postdata['post_id'])
+            found = False
             while True:
                 requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
                 all_post = soup.find_all('span',attrs={'class':"code"})
                 for abc in all_post:
-                    total_text = abc.text.split(' ')
-                    one_id = str(total_text[-1])
-                    all_post_id.append(one_id)
+                    total_text = abc.text.split()
+                    if str(total_text[-1].strip())==req_post_id:
+                        found = True
+                        break
                 page += 1
-                if not all_post:
+                if (not all_post) or found:
+                    print(found)
                     break
 
-            #print(all_post_id)
-
-            req_post_id = str(postdata['post_id'])
-            if req_post_id in all_post_id:
+            if found:
                 delete_url = str('http://www.taladx.com/manage-post.php?delete='+req_post_id)
                 res = httprequestObj.http_get(delete_url, headers = headers)
                 success = "true"
                 detail = "Post deleted successfully"
-                #print(res.url)
-
             else:
                 success = "false"
                 detail = "post_id is incorrect"
-
-
         else :
             success = "false"
             detail = "Login failed"
 
         end_time = datetime.datetime.utcnow()
-        
         return {
             "websitename": "taladx",
             "success": success,

@@ -332,6 +332,7 @@ class property2share():
 
         all_posts_response = httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
         all_posts_response = all_posts_response.content.decode('utf-8')
+        # print(json.dumps(all_posts_response, indent=4))
 
         post_id = postdata['post_id']
         check_string = '"publish_id":"' + str(post_id) + '"'
@@ -493,21 +494,20 @@ class property2share():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.utcnow()
 
-        if ('log_id' not in postdata or postdata['log_id'] == None or log_id == ""):
+        log_id = ''
+        if 'log_id' not in postdata or postdata['log_id'] == None or log_id == "":
             log_id = ''
-
-
         else:
             log_id = int(postdata['log_id'])
 
         #Login User With Data
         login = self.test_login(postdata)
-        if (login['success'] == False):
+        if login['success'] == False:
             return login
 
         check_posted = self.check_posted(postdata)
 
-        if (check_posted == False):
+        if check_posted == False:
             success = False
             time_end = datetime.utcnow()
             detail = 'This Post is not created by user'

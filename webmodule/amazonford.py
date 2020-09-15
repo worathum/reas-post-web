@@ -344,9 +344,6 @@ class amazonford():
                     file.append((str('file'+str(temp)), (y, open(i, "rb"), "image/jpg")))
                     temp = temp + 1
 
-
-
-
             crt_post = httprequestObj.http_post('http://www.amazonford.com/member/p-post-property.php', data = data, files = file, headers = headers)
             #print(crt_post.text)
 
@@ -361,13 +358,8 @@ class amazonford():
 
             sec_step = httprequestObj.http_get(sec_step_url, headers = headers)
 
-
-
             success = "true"
             detail = "Post created successfully"
-
-
-
 
         else:
             success = "false"
@@ -387,8 +379,6 @@ class amazonford():
             "detail": detail,
             "account_type": "null"
         }
-
-
 
 
 
@@ -439,9 +429,6 @@ class amazonford():
                 else:
                     success = "true"
                     detail = "Announcement postponed successfully"
-
-
-
             else:
                 success = "false"
                 detail = "post_id is incorrect"
@@ -520,7 +507,6 @@ class amazonford():
                 success = "false"
                 detail = "post_id is incorrect"
 
-
         else :
             success = "false"
             detail = "Login failed"
@@ -556,13 +542,10 @@ class amazonford():
 
         login = self.test_login(postdata)
         
-        if (login['success'] == 'true'):
+        if login['success'] == 'true':
 
             all_posts_url = 'http://www.amazonford.com/member/list-property.php'
-
             all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
-
-
             soup = BeautifulSoup(all_posts.content, features = "html.parser")
 
             all_post_ids = []
@@ -742,8 +725,6 @@ class amazonford():
 
                     success = "true"
                     detail = "Post edited successfully"
-
-
             else:
                 success = "false"
                 detail = "post_id is incorrect"
