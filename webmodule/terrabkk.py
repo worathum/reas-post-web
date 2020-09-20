@@ -207,11 +207,6 @@ class terrabkk():
         post_title_th = postdata['post_title_th']
         post_description_th = postdata['post_description_th']
         post_title_en = postdata['post_title_en']
-        # post_description_en = postdata['post_description_en']
-        # floor_no = postdata['floor_level']
-        # bedroom = postdata['bed_room']
-        # bathroom = postdata['bath_room']
-        # ds_id = postdata["ds_id"]
         name = postdata["name"]
         mobile = postdata["mobile"]
         email = postdata["email"]
@@ -636,14 +631,8 @@ class terrabkk():
                 datapost['freepost_detail-numberoffloors'] = '0'
             datapost['freepost_detail-parking'] = '0'
             datapost['freepost-sell_price_type'] = '26'
-            
-            
-        
         else:
-            datapost['freepost-house_type'] = '11'
-            
-            
-            
+            datapost['freepost-house_type'] = '11'  
         if(listing_type == 'ขาย'):
             datapost['freepost-post_type'] = '1'
             datapost['freepost-sell_price']= price_baht
@@ -840,16 +829,12 @@ class terrabkk():
         if(success == "True"):
             # print()
             # print(postdata)
-            r = httprequestObj.http_post('https://www.terrabkk.com/freepost/client_cancel/'+str(post_id),data=datapost)#/property/show
+            r = httprequestObj.http_post('https://www.terrabkk.com/freepost/client_cancel/'+str(post_id),data=datapost)
             data = r.json()
             # print(data)
             # print(r.status_code)
             success = str(data["state"])
             detail = data["msg"]
-
-        #
-        #
-        #
 
         time_end = datetime.datetime.utcnow()
         return {
@@ -1352,7 +1337,7 @@ class terrabkk():
         post_id = postdata["post_id"]
         post_url = ""
         filestoup = {}
-        print(success)
+        # print(success)
         # print(success=="True")
         if(success == "True"):
             # print("debug2")
@@ -1362,8 +1347,8 @@ class terrabkk():
 
             r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_amphur_ajax/'+str(datapost['freepost_detail-province_id']), verify=False)
             data = r.json()
-            print(data)
-            print("sent district : ",addr_district)
+            # print(data)
+            # print("sent district : ",addr_district)
             addr_district = addr_district.replace(' ','')
             for i in data:
                 if(addr_district.find(i["name"]) != -1 or i["name"].find(addr_district) != -1):
@@ -1388,7 +1373,7 @@ class terrabkk():
             datapost['freepost_detail-district_id'] = '1' #i["id"]
 
             datapost['freepost-id'] = str(post_id)
-            print("The data to be posted \n",datapost)
+            # print("The data to be posted \n",datapost)
             newdatapost = []
             for key in datapost:
                 newdatapost.append((key,datapost[key]))
@@ -1397,8 +1382,10 @@ class terrabkk():
                 filestoup['imgs']=  open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
                 filestoup['imgs[]'] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
                 r = httprequestObj.http_post('https://www.terrabkk.com/uploader_front/freepost_img_upload/'+datapost['freepost-id'],data = newdatapost,files=filestoup)
+                print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+                print(r.text)
                 data = r.json()
-                # print(r.text)
+                
                 soup = BeautifulSoup(r.json()['text'], self.parser, from_encoding='utf-8')
                 r = soup.find('input',{"name" : "allpic[]"})["value"]
                 print(r)
@@ -1521,7 +1508,7 @@ class terrabkk():
         
 
         return {
-            "websitename": "Terrabkk",
+            "websitename": "terrabkk",
             "success": login['success'],
             "start_time": str(start_time),
             "end_time": str(end_time),

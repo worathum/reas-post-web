@@ -767,13 +767,17 @@ class home2all():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
         test_login = self.test_login(postdata)
-        my_res = dict()
-        my_res.update({
-                    'websitename':'home2all',
-                    'ds_id':postdata['ds_id'],
-                    'start_time':str(start_time)
-        })
         #https://home2all.com/post/topicid/832359
+        success = test_login['success']
+        detail = test_login['detail']
+
+        post_url = ''
+        post_id = ''
+        post_found = 'false'
+        post_create_time = ''
+        post_modify_time = ''
+        post_view = ''
+
         if test_login['success'] == "true":
             post_title = postdata['post_title_th']
             print(post_title)
@@ -789,7 +793,7 @@ class home2all():
                 tURL.update({str(post.find('span').string) : post.div.div['onclick'].split('\'')[1] for post in result_posts})
                 
             self.print_debug(len(tURL))
-            
+             
             flag=0
             ind=0
             for i in tURL.keys():
@@ -797,41 +801,36 @@ class home2all():
                 
                 if i == post_title:
                     
-                    my_res.update({
-                        'success':'true',
-                        'post_found':'true',
-                        'post_url':tURL[post_title],
-                        'post_id':tURL[post_title].split('/')[-1],
-                        'detail':'Post Successfully Found',
-                        'post_modify_time':result_posts[ind].find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl01_lblUpdateDate'}).text
-                    })
+                    success = 'true'
+                    post_found = 'true'
+                    post_url = tURL[post_title]
+                    post_id = tURL[post_title].split('/')[-1]
+                    detail = 'Post Successfully Found'
+                    post_modify_time = result_posts[ind].find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl01_lblUpdateDate'}).text
                     flag=1
                     break
                 ind+=1
-            if flag==1:
-                pass
-            else:
-                my_res.update({
-                    'success':'false',
-                    'post_found':'false',
-                    'post_url':'',
-                    'post_id':'',
-                    'detail':'Post Not Found',
-                    'post_modify_time':''
-                })
+            if flag != 1:
+                detail = 'Post Not Found'
+                
 
-            log_id = ""
-            if 'log_id' in postdata:
-                log_id = postdata['log_id']            
-            my_res.update({
-                    'log_id':log_id,
-                    'end_time':str(datetime.datetime.utcnow()),
-                    'account_type':'',
-                    'post_create_time':'',
-                    'post_view':''
-            })
-        return my_res
-
+        return {
+            "websitename": "home2all",
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "start_time": str(start_time),
+            "end_time": str(datetime.datetime.utcnow()),
+            "usage_time": str(datetime.datetime.utcnow() - start_time),
+            "account_type":'null',
+            "success": success,
+            "detail": detail,
+            "post_id": post_id,
+            "post_url": post_url,
+            "post_modify_time": post_modify_time,
+            "post_create_time": post_create_time,
+            "post_view": post_view,
+            "post_found": post_found
+        }
     def print_debug(self, msg):
         if(self.debug):
             print(msg)
