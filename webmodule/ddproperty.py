@@ -215,8 +215,8 @@ class ddproperty():
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
-        # self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-        self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
+        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+        # self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
         # open login page
         # self.firefox = webdriver.Chrome("C:/Users/hp/Downloads/chromedriver_win32/chromedriver", chrome_options=options)
 
