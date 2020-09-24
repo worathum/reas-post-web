@@ -107,7 +107,7 @@ class teedindd():
         s = requests.Session()
         r = s.post(url_n, data=datapost)
         data = r.text
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         classfind = soup.findAll('div', attrs={'class': 'pt20'})
         for i in classfind:
             if i.text == "อีเมล์ของคุณมีอยู่ในระบบแล้ว":
@@ -150,8 +150,6 @@ class teedindd():
                 'detail': 'Missing required field email',
             }
 
-
-
         datapost = {
             'RegisterEmail': postdata['user'],
             'RegisterPassword': postdata['pass'],
@@ -161,9 +159,9 @@ class teedindd():
         r = httprequestObj.http_post(
             'https://www.teedindd.com/login-check.php', data=datapost)
         data = r.text
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         classfind = soup.findAll('div', attrs={'class': 'pt20 pb20'})
-        print(classfind)
+        
         for i in classfind:
             if "ไม่พบอีเมล์ในระบบกรุณา" in  i.text or 'กรุณายืนยันอีเมล์ก่อนเข้าใช้งาน' in i.text:  
                 data = ''
@@ -222,6 +220,7 @@ class teedindd():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         ashopname = test_login["detail"]
+        detail = ""
 
         if success == "true":
             if 'name' not in postdata:
@@ -306,12 +305,11 @@ class teedindd():
                     'post_id': ''
                 }
 
-            list_url = 'https://www.teedindd.com/post.php?pd='
-            list_url+=postdata['post_id']
+            list_url = 'https://www.teedindd.com/post.php?pd='+str(postdata['post_id'])
             r = httprequestObj.http_get(list_url)
-            soup = BeautifulSoup(r.content, 'html5lib')
+            soup = BeautifulSoup(r.content, features = self.parser)
             var=soup.find('input',attrs={'id':'ti'})
-            if var['value']=="":
+            if not var or (var and var['value']==""):
                 time_end = datetime.datetime.utcnow()
                 time_usage = time_end - time_start
                 return {
@@ -319,12 +317,12 @@ class teedindd():
                     "success": 'false',
                     "start_time": str(time_start),
                     "end_time": str(time_end),
-                    "detail": 'Wrong Post id',
+                    "detail": 'Wrong Post id'
                 }
 
             url_post = 'https://www.teedindd.com/post.php'
             r = httprequestObj.http_get(url_post)
-            soup = BeautifulSoup(r.content, 'html5lib')
+            soup = BeautifulSoup(r.content, features = self.parser)
             var = soup.findAll('option')
 
             postdata['addr_province']=postdata['addr_province'].replace(' ','')
@@ -464,7 +462,7 @@ class teedindd():
             r = httprequestObj.http_post(
                 'https://www.teedindd.com/admin/properties-process.php', data=datapost)
             data = r.text
-            
+            print('aaaaaaaaaaaa')
             detail="edited"
         else:
             success = "False"
@@ -481,7 +479,7 @@ class teedindd():
             'post_id':postdata['post_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "detail": detail,
+            "detail": detail
         }
 
 
@@ -573,7 +571,7 @@ class teedindd():
         
             url_post = 'https://www.teedindd.com/post.php'
             r = httprequestObj.http_get(url_post)
-            soup = BeautifulSoup(r.content, 'html5lib')
+            soup = BeautifulSoup(r.content, features = self.parser)
             var = soup.findAll('option')
 
             postdata['addr_province']=postdata['addr_province'].replace(' ','')
@@ -707,7 +705,7 @@ class teedindd():
             else:
                 list_url = 'https://www.teedindd.com/admin/'
                 r = httprequestObj.http_get(list_url)
-                soup = BeautifulSoup(r.content, 'html5lib')
+                soup = BeautifulSoup(r.content, features = self.parser)
                 var = soup.findAll('div')
                 store=""
                 final=""
@@ -719,7 +717,7 @@ class teedindd():
                         soup = store
                         final=soup.find('a')
                         break
-                print(final, 'final')
+                
                 final=final['href']
                 post_url=final
                 i=len("../post.php?pd=")
@@ -731,7 +729,7 @@ class teedindd():
                 list_url = 'https://www.teedindd.com/post.php?pd='
                 list_url+=postdata['post_id']
                 r = httprequestObj.http_get(list_url)
-                soup = BeautifulSoup(r.content, 'html5lib')
+                soup = BeautifulSoup(r.content, features = self.parser)
                 data=soup.find('input',attrs={'id':'ti'})
                 if data =="":
                     time_end = datetime.datetime.utcnow()
@@ -768,7 +766,7 @@ class teedindd():
             "start_time": str(time_start),
             "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
-            "post_url": 'https://www.teedindd.com/property-detail.php?pd='+str(post_id),
+            "post_url": 'https://www.teedindd.com/property-detail.php?pd='+str(post_id) if post_id else "",
             "post_id": post_id,
             'detail': detail
         }
@@ -798,7 +796,7 @@ class teedindd():
                 url = "https://www.teedindd.com/admin/index.php?page="+i    
                 r = httprequestObj.http_get(url)
                 exists = False
-                soup = BeautifulSoup(r.content, 'html5lib')
+                soup = BeautifulSoup(r.content, features = self.parser)
 
                 entry = soup.find('table')
                 for title_row in entry.find_all('tr'):
@@ -879,42 +877,38 @@ class teedindd():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
-        list_url = 'https://www.teedindd.com/post.php?pd='
-        list_url+=postdata['post_id']
-        r = httprequestObj.http_get(list_url)
-        soup = BeautifulSoup(r.content, 'html5lib')
-        var=soup.find('input',attrs={'id':'ti'})
-        print(var)
-        if var['value']=="":
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
-            return {
-                "websitename": "teedindd",
-                'ds_id': postdata['ds_id'],
-                "success": 'false',
-                "log_id": postdata['log_id'],
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                "detail": 'Wrong Post id',
-            }
 
         if success == "true":
+            r = httprequestObj.http_get('https://www.teedindd.com/post.php?pd=' + str(postdata['post_id']))
+            soup = BeautifulSoup(r.content, features = self.parser)
+            var = soup.find('input',attrs={'id':'ti'})
+            if var and var['value']=="":
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
+                return {
+                    "websitename": "teedindd",
+                    'ds_id': postdata['ds_id'],
+                    "success": 'false',
+                    "log_id": postdata['log_id'],
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "detail": 'Wrong Post id',
+                }
+
             datapost = {
                 'properties-delete':'1',
                 'userDeleteProp':postdata['post_id']
             }
             r = httprequestObj.http_post('https://www.teedindd.com/admin/properties-process.php', data=datapost)
             data = r.text
-            # print(data,'teedindd')
             if data == '':
                 success = "false"
                 detail = "Failed to Delete"
-
             else:
                 detail = "Deleted"
         else:
             success = "false"
-            detail="Failed Login"
+            detail = "Failed Login"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -926,38 +920,3 @@ class teedindd():
             "end_time": str(time_end),
             "detail": detail,
         }
-
-
-# obj = teedindd()
-# postdata = {
-#     'post_id':'298292',
-#     'user': 'tirth.upadhyaya20012001@gmail.com',
-#     'pass': 'temptemp',
-#     'name': 'temp1234',
-#     'name_th': 'temp1234',
-#     'surname_th': 'temp1234',
-#     'property_type': '2',
-#     'mobile': '12345678',
-#     'geo_latitude': '13',
-#     'geo_longitude': '34',
-#     'price_baht': '2123',
-#     'post_title_th': 'DU',
-#     'post_description_th': 'fasdfasdfasfasdgasd',
-#     'listing_type': 'ffer',
-#     'addr_province': 'ชลบุรี',
-#     'addr_district': 'บางละมุง',
-#     'addr_sub_district': 'นาเกลือ',
-#     "addr_road": "ถนน",
-#     "addr_soi": "ซอย",
-#     "addr_near_by": "สถานที่ใกล้เคียง",
-#     'post_images': ["download.jpeg",]
-# }
-# # print(obj.register_user(postdata))
-# # print(obj.test_login(postdata))
-# # print(obj.create_post(postdata))
-# # print(obj.edit_post(postdata))
-# # print(obj.delete_post(postdata))
-# print(obj.boost_post(postdata))
-'''
-{"action": "edit_post", "timeout": "5", "post_img_url_lists": ["https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg"], "geo_latitude": "13.998983386212497", "geo_longitude": "99.74464029046142", "property_id": "", "post_title_th": "xYx", "short_post_title_th": "xxx", "post_description_th": "xxx", "post_title_en": "abcdaskjdfg", "short_post_title_en": "xxx", "post_description_en": "Editted with newline\r\nnewline\r\nnewline", "price_baht": 3000, "project_name": "projectnameisenetertedhere", "listing_type": "\u0e02\u0e32\u0e22", "property_type": 2, "floor_level": 2, "floor_total": "11", "floor_area": "11", "bath_room": 2, "bed_room": 3,"duration":30, "prominent_point": "\u0e08\u0e38\u0e14\u0e40\u0e14\u0e48\u0e19", "view_type ": "11", "direction_type": "11", "addr_province": "\u0e01\u0e32\u0e0d\u0e08\u0e19\u0e1a\u0e38\u0e23\u0e35", "addr_district": "\u0e17\u0e48\u0e32\u0e21\u0e30\u0e01\u0e32", "addr_sub_district": "\u0e15\u0e30\u0e04\u0e23\u0e49\u0e33\u0e40\u0e2d\u0e19", "addr_road": "", "addr_soi": "", "addr_near_by": "", "floorarea_sqm": 1234, "land_size_rai": 32, "land_size_ngan": 21, "land_size_wa": 12, "name": "xxx", "mobile": "xxx", "email": "xxx", "line": "xxx", "web": [{"ds_name": "teedindd", "ds_id": "4", "user": "wemica1039@farmdeu.com", "pass": "12345678", "post_id": "326914", "log_id": "444444"}]}
-'''

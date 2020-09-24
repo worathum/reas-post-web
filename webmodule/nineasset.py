@@ -229,20 +229,24 @@ class nineasset():
         province = {}
         with open('./static/9asset_province.json') as f:
             province = json.load(f)
-        # print(province)
-        for key in province:
+
+        '''for i,j in province.items():
+            print(f"{i}:{j}")
+        exit(1)'''
+        for key in province.keys():
             if 'province' not in key:
-            # print("bleh")
-                if (addr_province.find(str(province[key]).strip()) != -1) or str(province[key]).find(addr_province) != -1:
-                    # print("equuaallll")
+                if (addr_province.find(str(province[key]).strip()) != -1) or (str(province[key]).find(addr_province) != -1):
                     addr_province = key
                     break
 
         for key in province[addr_province+"_province"]:
-            if(addr_district.find(province[addr_province+"_province"][key].strip()) != -1)  or str(province[addr_province+"_province"][key]).find(addr_district) != -1:
+            if(addr_district.find(province[addr_province+"_province"][key].strip()) != -1) or (str(province[addr_province+"_province"][key]).find(addr_district) != -1):
                 addr_district = key
                 break
-        
+
+        #print("<<<>>>", addr_province, "<<<>>>")
+        #print("<<<>>>", addr_district, "<<<>>>")
+
         datapost = [
             ("status_upload","true"),
             ("TypePosted[]","2" if (listing_type == "ขาย" ) else "1"),
@@ -354,7 +358,7 @@ class nineasset():
         # print(datapost["first"])
         # print("debug")
         # print(filestoup)
-        if(success == "True"):
+        if success == "True":
             for i in range(len(postdata['post_images'][:10])):
                 # print(i)
                 filestoup["images[0]"] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
@@ -397,9 +401,13 @@ class nineasset():
                                     temp += 1
                             detail = 'Successful Post'
                             break
-
                     except :
                         continue
+                if post_url=="":
+                    success = "False"
+                    detail = "Cannot find post on dashboard"
+                    post_id = ""
+
         time_end = datetime.datetime.utcnow()
         return {
             "websitename": "nineasset",
@@ -444,48 +452,26 @@ class nineasset():
     def delete_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        # http://9asset.com/posted/53187/delete
-        datapost = {}
+
         login = self.test_login(postdata)
         success = login["success"]
         detail = login["detail"]
         post_id = postdata['post_id']
-        if(success == "True"):
-            # print()
-            r = httprequestObj.http_get("http://9asset.com/myposted")
-            data = r.text
-            if (re.search(str(post_id), data)):
-                
-                # print(postdata)
-                r = httprequestObj.http_get("http://9asset.com/posted/"+str(post_id)+"/delete")#/property/show
-                data = r.text
-                # print(data)
-                # print(r.status_code)
-                if re.search("ลบข้อมูลประกาศของคุณสำเร็จ",data):
-                    success = "True"
-                    detail = "Post sucessfully deleted"
-                    
-                else:
-                    success = "False"
-                    detail = "Cannot delete post with id"+post_id 
-            else :
-                time_end = datetime.datetime.utcnow()
-                return {
-                    "websitename": "nineasset",
-                    "success": "False",
-                    "time_usage": time_end - time_start,
-                    "start_time": time_start,
-                    'ds_id': postdata['ds_id'],
-                    "log_id": postdata['log_id'],
-                    "end_time": time_end,
-                    "post_id": post_id,
-                    "account_type": "",
-                    "detail": "Post_id Invalid"
-                }
 
-        #
-        #
-
+        if success == "True":
+            # r = httprequestObj.http_get("http://9asset.com/myposted")
+            # data = r.text
+            # if re.search(str(post_id), data):  
+            r = httprequestObj.http_get("http://9asset.com/posted/"+str(post_id)+"/delete")#/property/show
+            data = r.text           
+            if re.search("ลบข้อมูลประกาศของคุณสำเร็จ",data):
+                detail = "Post sucessfully deleted"   
+            elif re.search("Whoops, looks like something went wrong", data):
+                success = "False"
+                detail  = "No post found with given id"
+            else:
+                success = "False"
+                detail = "Cannot delete post with id "+post_id 
         time_end = datetime.datetime.utcnow()
         return {
             "websitename": "nineasset",
@@ -613,12 +599,7 @@ class nineasset():
             if(addr_district.find(province[addr_province+"_province"][key].strip()) != -1)  or str(province[addr_province+"_province"][key]).find(addr_district) != -1:
                 addr_district = key
                 break
-
-
-
-
-
-        #print('here')
+            
         datapost = [
             ("status_upload","true"),
             ("TypePosted[]","2" if (listing_type == "ขาย" ) else "1"),
@@ -635,8 +616,8 @@ class nineasset():
             ("Land_Sqw", land_size_wah),
             ("Land_Size" , ""),#str(400*int(land_size_rai) + 100 * int(land_size_ngan) + 1*int(land_size_wa)),#calc using formula,
             ("property_Floor", floor_no),
-            ("property_Facing",str(int(direction_type[str(direction)]))),
-            ("property_View",str(int(view_type[str(view)]))),
+            ("property_Facing", direction_type[direction]),
+            ("property_View", view_type[view]),
             ("province", addr_province),
             ("city", addr_district),
             ("Road", ""),
@@ -752,28 +733,36 @@ class nineasset():
                     break
             r = httprequestObj.http_get('http://9asset.com/form/'+str(post_id)+'/edit')
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
-            datapost.append(("project_ID", soup.find("input", {"name": "project_ID"})['value']))
-            # print(datapost)
-            r = httprequestObj.http_post('http://9asset.com/posted/save/'+str(post_id), data = datapost)#/property/show
-            data = r.text
-            # print(data)
-            link = re.findall(r'อัพเดทประกาศ',data)
-            # print("printing link",link)
-            if len(link) == 0:
-                success = "False"
-                detail = "Cannot edit to 9asset"
+            project_id = soup.find("input", {"name": "project_ID"})
+            if project_id:
+                project_id = project_id.get('value')
+                datapost.append(("project_ID", project_id))
+                # print(datapost)
+                r = httprequestObj.http_post('http://9asset.com/posted/save/'+str(post_id), data = datapost)#/property/show
+                data = r.text
+                # print(data)
+                link = re.findall(r'อัพเดทประกาศ',data)
+                # print("printing link",link)
+                if len(link) == 0:
+                    success = "False"
+                    detail = "Cannot edit to 9asset"
+                else:
+                    # r = httprequestObj.http_get('http://9asset.com/profile')
+                    # soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
+                    # for a in soup.find_all('a'):
+                    #     try:   
+                    #         # print(a["class"]) 
+                    #         if("btn-info" in a["class"]):
+                    #             post_url = a["href"]
+                    #             if(re.search(str(post_id),post_url)):
+                    #                 break
+                    #     except:
+                    #         continue
+                    success = "true"
+                    detail = "Post edited successfully"
             else:
-                r = httprequestObj.http_get('http://9asset.com/profile')
-                soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
-                for a in soup.find_all('a'):
-                    try:   
-                        # print(a["class"]) 
-                        if("btn-info" in a["class"]):
-                            post_url = a["href"]
-                            if(re.search(str(post_id),post_url)):
-                                break
-                    except :
-                        continue
+                success = "false"
+                detail = "No post found with given id"
         time_end = datetime.datetime.utcnow()
         return {
             "websitename": "nineasset",
@@ -784,7 +773,7 @@ class nineasset():
             # "ds_id": "4",
             'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
-            "post_url": post_url,
+            # "post_url": postdata['post_url'],
             "post_id": post_id,
             "account_type": "",
             "detail": detail

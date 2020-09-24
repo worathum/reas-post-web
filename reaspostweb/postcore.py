@@ -211,7 +211,8 @@ class postcore():
 
         with concurrent.futures.ThreadPoolExecutor() as pool:
             for webitem in weblists:
-
+                webitem['user'] = webitem['user'].rstrip('\u200b')
+                webitem['pass'] = webitem['pass'].rstrip('\u200b')
                 # correcting input
                 check_ids = ['log_id', 'ds_id', 'post_id']
                 for anid in check_ids:

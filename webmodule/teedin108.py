@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import codecs
 
 from .lib_httprequest import *
+
 from bs4 import BeautifulSoup
 import os.path
 import re
@@ -13,6 +15,8 @@ import requests
 httprequestObj = lib_httprequest()
 
 with open("./static/teedin108_provincedata.json") as f:
+    # ./static/teedin108_provincedata.json
+
     provincedata = json.load(f)
 
 # sess = requests.session()
@@ -165,6 +169,8 @@ class teedin108():
             "end_time": str(time_end),
             "detail": detail,
         }
+        
+
 
     def create_post(self, postdata):
 
@@ -177,10 +183,9 @@ class teedin108():
         post_id = ""
         post_url = ""
         
-        if success == False:
+        if not success:
             detail = "Invalid credentials to login"
-        if success == True:
-
+        else:
             # poster details
             p_name = postdata["name"]
             p_tel = postdata["mobile"]
@@ -194,6 +199,7 @@ class teedin108():
             r = httprequestObj.http_post('https://www.teedin108.com/post/bancheck/', data=datapost)
             data = r.text
             datajson = r.json()
+
             #f = open("debug_response/teedinajax.html", "wb")
             # f.write(data.encode('utf-8').strip())
 
@@ -202,7 +208,8 @@ class teedin108():
             if datajson["success"] != True:
                 success = False
                 detail = data
-            if datajson["success"] == True:
+
+            else:
 
                 #parse province
                 prov = postdata["addr_province"].strip()
@@ -282,9 +289,11 @@ class teedin108():
 
                 # subject
                 subject = ""
+                # description
+                desc = str(postdata['post_description_th'])
 
                 if "post_title_th" in postdata:
-                    subject = postdata["post_title_th"]
+                    subject = str(postdata["post_title_th"])
                 # if "project_name" in postdata:
                     # subject = postdata["project_name"]
                 # if "web_project_name" in postdata:
@@ -293,87 +302,80 @@ class teedin108():
                 if subject == "":
                     success = False
                     detail = "Empty subject"
-
-                # description
-                desc = postdata["post_description_th"]
-                if desc == "":
+                elif desc == "":
                     success = False
                     detail = "Empty description"
-
-                #images
-                # img = postdata["post_images"][0]
-                try:
-                    img_path = os.getcwd()+"/"+postdata["post_images"][0]
-                except:
-                    img_path = os.getcwd()+"/"+"imgtmp/default/white.png"
-
-                files = {
-                    "files[]": open(img_path, "rb")  
-                }
-
-                # print("Before file upload")
-
-                r = httprequestObj.http_post("https://www.teedin108.com/post/ajaxupload/", data={}, files = files)
-                r_json = r.json()
-
-                try:
-                    img = r_json["files"][0]["name"]
-                except:
-                    img = ""
-
-                #map use
-                if postdata["geo_latitude"] == "" or postdata["geo_longitude"] == "":
-                    map_use = "0"
                 else:
-                    map_use = "1"
+                    #images
+                    # img = postdata["post_images"][0]
+                    try:
+                        img_path = os.getcwd()+"/"+postdata["post_images"][0]
+                    except:
+                        img_path = os.getcwd()+"/"+"imgtmp/default/white.png"
 
-                data = {
-                       "data[lat_lng]": str(postdata["geo_latitude"])+", "+str(postdata["geo_longitude"]),
-                       "data[post_type_code]": post_type,
-                       "data[property_type_code]": property_type_code,
-                       "data[geo_id]":sect_val,
-                       "data[province_id]":prov_val,
-                       "data[amphur_id]":distr_val,
-                       "data[district_id]":"",
-                       "data[subject]": subject,
-                       "data[price]": postdata["price_baht"],
-                       "data[description]": desc,
-                       "files[]": "(binary)",
-                       "photos[name][]": img,
-                       "photos[angle][]": 0,
-                       "data[map_use]": map_use,
-                       "data[poster_name]": p_name,
-                       "data[poster_telephone]": p_tel,
-                       "data[poster_email]": p_email,
-                       "data[poster_lineid]":"",
-                       "data[password]": postdata["pass"]
-                }
+                    files = {
+                        "files[]": open(img_path, "rb")
+                    }
 
-                if img == "":
-                    del data["photos[name][]"]
-                    del data["photos[angle][]"]
+                    # print("Before file upload")
 
-                url = ""
+                    r = httprequestObj.http_post("https://www.teedin108.com/post/ajaxupload/", data={}, files = files)
+                    r_json = r.json()
 
-                if success:
+                    try:
+                        img = r_json["files"][0]["name"]
+                    except:
+                        img = ""
+                    #map use
+                    if postdata["geo_latitude"] == "" or postdata["geo_longitude"] == "":
+                        map_use = "0"
+                    else:
+                        map_use = "1"
+
+                    data = {
+                        "data[lat_lng]": str(postdata["geo_latitude"])+", "+str(postdata["geo_longitude"]),
+                        "data[post_type_code]": post_type,
+                        "data[property_type_code]": property_type_code,
+                        "data[geo_id]":sect_val,
+                        "data[province_id]":prov_val,
+                        "data[amphur_id]":distr_val,
+                        "data[district_id]":"",
+                        "data[subject]": subject,
+                        "data[price]": postdata["price_baht"],
+                        "data[description]": desc,
+                        "files[]": "(binary)",
+                        "photos[name][]": img,
+                        "photos[angle][]": 0,
+                        "data[map_use]": map_use,
+                        "data[poster_name]": p_name,
+                        "data[poster_telephone]": p_tel,
+                        "data[poster_email]": p_email,
+                        "data[poster_lineid]":"",
+                        "data[password]": postdata["pass"]
+                    }
+
+                    if img == "":
+                        del data["photos[name][]"]
+                        del data["photos[angle][]"]
+
+                    url = ""     
                     resp = httprequestObj.http_post("https://www.teedin108.com/post/add", data=data)
-
                     soup = BeautifulSoup(resp.text, 'html.parser')
 
                     url = soup.find("meta", property="og:url")
+                    # print(f'url ---> {url}')
 
-                if url:
-                    print(url["content"])
-                    post_url = url["content"]
-                    temp = post_url.split("/")
-                    for i in range(len(temp)):
-                        if temp[i] == "view":
-                            post_id = temp[i+1]
-                    detail = "Posted successfully"
-                else:
-                    if not success:
+                    if url:
+                        print(url["content"])
+                        post_url = url["content"]
+                        temp = post_url.split("/")
+                        for i in range(len(temp)):
+                            if temp[i] == "view":
+                                post_id = temp[i+1]
+                        detail = "Posted successfully"
+                    else:
                         success = False
-                        detail = "Unexpected error"
+                        detail = soup.find("div", {'id':'content'}).text
 
         # # end process
 

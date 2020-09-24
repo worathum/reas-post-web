@@ -227,19 +227,21 @@ class quickdealfree():
             print(r.url)
             print(r.status_code)
             # print(data)
-            with open('rough.html', 'w') as f:
-                f.write(r.text)
+            # with open('rough.html', 'w') as f:
+            #     f.write(r.text)
 
             r = httprequestObj.http_get(
                 "http://www.quickdealfree.com/member/list-classifieds.php")
             soup = BeautifulSoup(r.text, 'html.parser')
-            with open('rough.html', 'w') as f:
-                f.write(r.text)
+            # with open('rough.html', 'w') as f:
+            #     f.write(r.text)
             print(soup.select(
                 "#frmMain > div > table > tbody > tr:nth-child(2) > td:nth-child(1) > a"))
             post_url = soup.select(
                 "#frmMain > div > table > tbody > tr:nth-child(2) > td:nth-child(1) > a")[0]['href']
-            post_id = post_url[8:13]
+            url = post_url.split('/')
+            if len(url)>1:
+                post_id = url[1].split('-')[-1]
             post_url = "http://quickdealfree.com"+post_url[2:]
             # print(post_url,post_id)
             detail = "Post Created"
@@ -321,52 +323,63 @@ class quickdealfree():
         # resp = requests.get(image_url, stream=True)
         files = {}
         if success == "true":
-            r = httprequestObj.http_get(
-                "http://www.quickdealfree.com/member/list-classifieds.php")
-            soup = BeautifulSoup(r.text, 'html.parser')
-            post_url = soup.select(
-                "#frmMain > div > table > tbody > tr > td> a")
-            success = "false"
-            for i in post_url:
-                if i['href'][8:13] == postdata['post_id']:
-                    success = "true"
-                if success == "true":
-                    datapost = [
-                        ('id', postdata['post_id']),
-                        ('cate_id', '23'),
-                        ('sub_cate_id', theprodid),
-                        ('post_title', postdata['post_title_th']),
-                        ('detail', postdata['post_description_th'].replace('\r\n','<br>')),
-                        ('post_price_type', '2'),
-                        ('post_price', postdata['price_baht']),
-                        ('add', prod_address),
-                        ('province', province_id),
-                        ('name', postdata['name']),
-                        ('email', postdata['email']),
-                        ('tel', postdata['mobile']),
-                        ('rands', 'ZF71'),
-                        ('capcha', 'ZF71'),
-                        ('submit', 'Confirm announcement'),
-                        ('tag1',postdata['listing_type']),
-                        ('tag2',postdata['property_type']),
-                        ('tag3',postdata['web_project_name']),
-                        ('tag4',postdata['addr_near_by']),
-                        ('tag5',postdata['addr_district']),
-                        ('tag6',postdata['addr_province'])
-                    ]
-                    allimages = postdata["post_images"][:5]
-                    for i in range(len(allimages)):
-                        r = open(os.getcwd()+"/"+allimages[i], 'rb')
-                        if i == 0:
-                            files['fileshow'] = r
-                        else:
-                            files["file"+str(i)] = r
+            page = 1
+            found = False
+            req_post_id = str(postdata['post_id'])
+            while True:
+                r = httprequestObj.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
+                soup = BeautifulSoup(r.text, features=self.parser)
+                post_div = soup.find(id="frmMain")
+                all_posts = []
+                if post_div:
+                    all_posts = post_div.find_all('a')
+                    for post in all_posts:
+                        url = post.get('href').split('/')
+                        # print(url)
+                        if len(url)>1 and url[1].split('-')[-1]==req_post_id:
+                            found = True
+                            break
+                page +=1
+                if (not post_div) or (not all_posts) or found:
+                    break
+            
+            if found:
+                datapost = [
+                    ('id', postdata['post_id']),
+                    ('cate_id', '23'),
+                    ('sub_cate_id', theprodid),
+                    ('post_title', postdata['post_title_th']),
+                    ('detail', postdata['post_description_th'].replace('\r\n','<br>')),
+                    ('post_price_type', '2'),
+                    ('post_price', postdata['price_baht']),
+                    ('add', prod_address),
+                    ('province', province_id),
+                    ('name', postdata['name']),
+                    ('email', postdata['email']),
+                    ('tel', postdata['mobile']),
+                    ('rands', 'ZF71'),
+                    ('capcha', 'ZF71'),
+                    ('submit', 'Confirm announcement'),
+                    ('tag1',postdata['listing_type']),
+                    ('tag2',postdata['property_type']),
+                    ('tag3',postdata['web_project_name']),
+                    ('tag4',postdata['addr_near_by']),
+                    ('tag5',postdata['addr_district']),
+                    ('tag6',postdata['addr_province'])
+                ]
+                allimages = postdata["post_images"][:5]
+                for i in range(len(allimages)):
+                    r = open(os.getcwd()+"/"+allimages[i], 'rb')
+                    if i == 0:
+                        files['fileshow'] = r
+                    else:
+                        files["file"+str(i)] = r
 
-                    r = httprequestObj.http_post(
-                        'http://www.quickdealfree.com/member/p-edit-classifieds-post.php', data=datapost, files=files)
-                    detail= "Post edited successfully"
-                else:
-                    detail = "No post found with given id."
+                r = httprequestObj.http_post(
+                    'http://www.quickdealfree.com/member/p-edit-classifieds-post.php', data=datapost, files=files)
+                detail= "Post edited successfully"
+            else:
+                detail = "No post found with given id."
         else:
             detail = "cannot login"
 
@@ -379,7 +392,7 @@ class quickdealfree():
             'ds_id': postdata['ds_id'],
             "end_time": str(time_end),
             "log_id": postdata['log_id'],
-            # "post_url": "http://www.quickdealfree.com/post-"+postdata['post_id']+'/'+postdata['post_title_th']+".html",
+            "post_url": "http://www.quickdealfree.com/post-"+postdata['post_id']+'/'+postdata['post_title_th']+".html",
             "post_id": postdata['post_id'],
             "account_type": "null",
             "detail": detail,
@@ -391,15 +404,15 @@ class quickdealfree():
         time_start = datetime.datetime.utcnow()
 
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
-        r = httprequestObj.http_get(
-            "http://www.quickdealfree.com/member/list-classifieds.php")
-        soup = BeautifulSoup(r.text, 'html.parser')
-        post_url = soup.select(
-            "#frmMain > div > table > tbody > tr > td> a")
-        success = "false"
-        for i in post_url:
-                    if i['href'][8:13] == postdata['post_id']:
-                        success = "true"
+        # r = httprequestObj.http_get(
+        #     "http://www.quickdealfree.com/member/list-classifieds.php")
+        # soup = BeautifulSoup(r.text, 'html.parser')
+        # post_url = soup.select(
+        #     "#frmMain > div > table > tbody > tr > td> a")
+        # success = "false"
+        # for i in post_url:
+        #             if i['href'][8:13] == postdata['post_id']:
+        #                 success = "true"
         user = postdata['user']
         passwd = postdata['pass']
 
@@ -410,16 +423,27 @@ class quickdealfree():
         success = test_login["success"]
         detail = test_login["detail"]
         if success == "true":
-            r = httprequestObj.http_get(
-                "http://www.quickdealfree.com/member/list-classifieds.php")
-            soup = BeautifulSoup(r.text, 'html.parser')
-            post_url = soup.select(
-                "#frmMain > div > table > tbody > tr > td> a")
-            success = "false"
-            for i in post_url:
-                if i['href'][8:13] == postdata['post_id']:
-                    success = "true"
-            if success == "true":
+            page = 1
+            found = False
+            req_post_id = str(postdata['post_id'])
+            while True:
+                r = httprequestObj.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
+                soup = BeautifulSoup(r.text, features=self.parser)
+                post_div = soup.find(id="frmMain")
+                all_posts = []
+                if post_div:
+                    all_posts = post_div.find_all('a')
+                    for post in all_posts:
+                        url = post.get('href').split('/')
+                        # print(url)
+                        if len(url)>1 and url[1].split('-')[-1]==req_post_id:
+                            found = True
+                            break
+                page +=1
+                if (not post_div) or (not all_posts) or found:
+                    break
+
+            if found:
                 r = httprequestObj.http_get(
                     'http://www.quickdealfree.com/member/del-classifieds.php?id='+postdata['post_id'])
                 detail = "Post deleted successfully"
@@ -440,20 +464,22 @@ class quickdealfree():
             "log_id": postdata['log_id'],
             "post_id": postdata['post_id']
         }
+
+
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
-        r = httprequestObj.http_get(
-            "http://www.quickdealfree.com/member/list-classifieds.php")
-        soup = BeautifulSoup(r.text, 'html.parser')
-        post_url = soup.select(
-            "#frmMain > div > table > tbody > tr > td> a")
-        success = "false"
-        for i in post_url:
-                    if i['href'][8:13] == postdata['post_id']:
-                        success = "true"
+        # r = httprequestObj.http_get(
+        #     "http://www.quickdealfree.com/member/list-classifieds.php")
+        # soup = BeautifulSoup(r.text, 'html.parser')
+        # post_url = soup.select(
+        #     "#frmMain > div > table > tbody > tr > td> a")
+        # success = "false"
+        # for i in post_url:
+        #             if i['href'][8:13] == postdata['post_id']:
+        #                 success = "true"
         user = postdata['user']
         passwd = postdata['pass']
 
@@ -464,16 +490,27 @@ class quickdealfree():
         success = test_login["success"]
         detail = test_login["detail"]
         if success == "true":
-            r = httprequestObj.http_get(
-                "http://www.quickdealfree.com/member/list-classifieds.php")
-            soup = BeautifulSoup(r.text, 'html.parser')
-            post_url = soup.select(
-                "#frmMain > div > table > tbody > tr > td> a")
-            success = "false"
-            for i in post_url:
-                if i['href'][8:13] == postdata['post_id']:
-                    success = "true"
-            if success == "true":
+            page = 1
+            found = False
+            req_post_id = str(postdata['post_id'])
+            while True:
+                r = httprequestObj.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
+                soup = BeautifulSoup(r.text, features=self.parser)
+                post_div = soup.find(id="frmMain")
+                all_posts = []
+                if post_div:
+                    all_posts = post_div.find_all('a')
+                    for post in all_posts:
+                        url = post.get('href').split('/')
+                        # print(url)
+                        if len(url)>1 and url[1].split('-')[-1]==req_post_id:
+                            found = True
+                            break
+                page +=1
+                if (not post_div) or (not all_posts) or found:
+                    break
+
+            if found:
                 detail = "Post boosted successfully"
                 r = httprequestObj.http_get(
                     'http://www.quickdealfree.com/member/slide-classified-post.php?id='+postdata['post_id'])
@@ -494,6 +531,7 @@ class quickdealfree():
             "post_id": postdata['post_id'],
             "websitename": "quickdealfree",
         }
+        
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()

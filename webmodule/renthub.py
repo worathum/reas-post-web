@@ -18,6 +18,7 @@ import random
 import time
 
 
+
 try:
     import configs
 except ImportError:
@@ -337,13 +338,17 @@ class renthub():
         except KeyError as e:
             datahandled['property_type'] = 1
             #log.warning(str(e))
-        
+
         try:
             datahandled['listing_type'] = postdata["listing_type"]
         except KeyError as e:
             datahandled['listing_type'] = 'ขาย'
+        else:
+            datahandled['listing_type'] = datahandled['listing_type']
             #log.warning(str(e))
-        
+
+        #datahandled['listing_type'] = 'เช่า'
+
         try:
             datahandled['addr_soi'] = postdata["addr_soi"]
         except KeyError as e:
@@ -449,20 +454,6 @@ class renthub():
         tel = datahandled["tel"]
         passwd = datahandled['pass']
 
-        # POST
-        # https://renthub.in.th/signup
-        # authenticity_token=/Ha+oc+M/vFof/rlvlbJdNOtw4/drQPvVs+/VKazQvE=
-        # &commit=%E0%B8%AA%E0%B8%A1%E0%B8%B1%E0%B8%84%E0%B8%A3%E0%B8%AA%E0%B8%A1%E0%B8%B2%E0%B8%8A%E0%B8%B4%E0%B8%81
-        # &user%5Bemail%5D=kla.arnut@hotmail.com
-        # &user%5Bname%5D=arnut
-        # &user%5Bpassword%5D=vkIy9b
-        # &user%5Bpassword_confirmation%5D=vkIy9b
-        # &user%5Bphone%5D=0887779999
-        # &user%5Bprovince_code%5D=
-        # &user%5Broles%5D=apartment_manager
-        # &user%5Bsubscribe_newsletter%5D=0
-        # &utf8=%E2%9C%93
-
         r = httprequestObj.http_get('https://renthub.in.th/signup',verify=False)
         soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
         authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
@@ -482,15 +473,11 @@ class renthub():
 
         r = httprequestObj.http_post('https://renthub.in.th/signup', data=datapost)
         if re.search(r'ระบบกำลังส่ง email', r.text) == None:
-            #log.warning('register error')
             success = "false"
             detail = 'register error'
             if re.search(r'email ที่ระบุเป็นสมาชิกอยู่แล้ว', r.text) != None:
-                #log.warning('email ที่ระบุเป็นสมาชิกอยู่แล้ว')
                 detail = 'email ที่ระบุเป็นสมาชิกอยู่แล้ว'
-        
 
-        #
         # end process
 
         time_end = datetime.datetime.utcnow()
@@ -504,6 +491,8 @@ class renthub():
             "end_time": str(time_end),
             "detail": detail,
         }
+
+        
 
     def test_login(self, postdata):
         #log.debug('')
@@ -570,8 +559,14 @@ class renthub():
         success = "true"
         detail = ""
 
-        if int(datahandled['property_type']) != 1 and int(datahandled['property_type']) != 7:
+        try:
+            temp = int(datahandled['property_type'])
+        except:
             detail = "website not support property type "+ str(datahandled['property_type'])
+        else:
+            if temp != 1 and temp != 7:
+                detail = "website not support property type "+ str(datahandled['property_type'])
+
         if datahandled['listing_type'] != 'เช่า':
             detail = "website not support listing type "+ str(datahandled['listing_type'])
         if datahandled['addr_number'] == None or datahandled['addr_number'] == "":
@@ -794,15 +789,11 @@ class renthub():
             # print(datapost)
             r = httprequestObj.http_post('https://www.renthub.in.th/apartments', data=datapost)
             data = r.text
-            # print(data)
-            #f = open("debug_response/renthubpost.html", "wb")
-            #f.write(data.encode('utf-8').strip())
 
-            success,post_id,posturl,detail = self.getpostdataapartment(datahandled)
-
-        
+            success,post_id,posturl,detail = self.getpostdataapartment(datahandled)        
         return success,detail,post_id,posturl
     
+
     def create_post_condo(self,datahandled):
         #log.debug("")
 
@@ -872,7 +863,7 @@ class renthub():
                 'english[detail]': '<div>' + datahandled['post_description_en'] + '</div>',
                 'english[title]': datahandled['post_title_en'],
                 'rental[advance_fee_bath]': '',
-                'rental[advance_fee_month]': 0,
+                'rental[advance_fee_month]': '',
                 'rental[advance_fee_type]': 0,
                 'rental[daily_price_type]': 2,
                 'rental[deposit_bath]': '',
@@ -881,14 +872,14 @@ class renthub():
                 'rental[min_daily_rental_price]': '',
                 'rental[min_rental_price]': datahandled['price_baht'],
                 'rental[price_type]': 1,
-                'room_information[building]': '',
+                'room_information[building]': '1',
                 'room_information[direction]': datahandled['direction_type'],
                 'room_information[no_of_bath]': datahandled['bath_room'],
                 'room_information[no_of_bed]': datahandled['bed_room'],
                 'room_information[on_floor]': datahandled['floor_level'],
-                'room_information[remark]': '',
+                'room_information[remark]': '-',
                 'room_information[room_area]': datahandled['floor_area'],
-                'room_information[room_home_address]': '',
+                'room_information[room_home_address]': '-',
                 'room_information[room_no]': '',
                 'room_information[room_type]': 0,
                 'sale[existing_rental_contract_end]': '',
@@ -925,25 +916,22 @@ class renthub():
             # print(datapost)
             r = httprequestObj.http_post('https://renthub.in.th/condo_listings', data=datapost)
             data = r.text
-            # print(data)
-            #f = open("debug_response/renthubpost.html", "wb")
-            #f.write(data.encode('utf-8').strip())
+            
 
             success,post_id,posturl,detail = self.getpostdatacondo(datahandled)
-            success = 'true'
-            detail = 'successfully created a post'
-            if self.getprojectid(datahandled['use_project_name']) == datahandled['use_project_name']:
+            # success = 'true'
+            # detail = 'successfully created a post'
+            if success == 'true' and self.getprojectid(datahandled['use_project_name']) == datahandled['use_project_name']:
                 success = 'false'
                 detail = 'Project name not available'
-
-        
         return success,detail,post_id,posturl
     
+
     def getprojectid(self,projectname):
         #log.debug('')
         projectid = projectname
         r = httprequestObj.http_get('https://renthub.in.th/condo_listings/search_project?name='+str(projectname), verify=False)
-        #log.debug(r.text)
+        # print(r.text)
         data = json.loads(r.text)
 
         if len(data) > 0:
@@ -986,11 +974,10 @@ class renthub():
 
 
     def getpostdataapartment(self,datahandled):
-        #log.debug('')
 
         postid = ''
         posturl = ''
-        detail = ''
+        detail = 'Post created successfully!'
         success = 'true'
 
         #get from not publish
@@ -1003,19 +990,14 @@ class renthub():
                 if li.find('a',text=re.compile(datahandled['post_title_th'])) != None:
                     posturl = 'https://renthub.in.th' + li.find('a',text=re.compile(datahandled['post_title_th']))['href']
                     postid = re.search(r'apartment_(\d+)',li['id']).group(1)
-                    #log.debug('posturl %s postid %s detail %s',str(posturl),str(postid),str(detail))
                     break
         except:
             success = 'false'
-            #log.debug('not found apartment post in dashboard')
             detail = 'not found apartment post in dashboard'
         
         if postid == '' or posturl == '':
             success = 'false'
-            #log.debug('not found apartment post in dashboard')
             detail = 'not found apartment post in dashboard'
-
-        
         return success,postid,posturl,detail
 
 
@@ -1064,7 +1046,7 @@ class renthub():
         if postid == '' or posturl == '':
             success = 'false'
             detail = 'cannot find new post attribute'
-        
+       
         return success,postid,posturl,detail
 
 
@@ -1489,7 +1471,8 @@ class renthub():
             f.write(r.text)
 
         pid = datahandled['post_id']
-        match = re.search(rf"{pid}", r.text)
+        # match = re.search(rf"{pid}", r.text) #replaced
+        match = re.search(r"^{}$".format(pid), r.text)
         #log.debug(r.url)
         if not match:
             # 1 ถ้า get project id ไม่ได้ (search ไม่เจอ) ก็จะ post ไม่ได้ response 500
@@ -1616,9 +1599,9 @@ class renthub():
         # f.write(r.text.encode('utf-8').strip())
 
         pid = datahandled['post_id']
-        match = re.search(rf"{pid}", r.text)
+
         #log.debug(r.url)
-        if not match:
+        if str(pid) not in r.text:
             success = 'false'
             detail = 'cannot edit post , post data error'
             #log.warning('cannot edit post , post data error')

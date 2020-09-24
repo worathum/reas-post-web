@@ -223,7 +223,7 @@ class baan2day():
                 files["testimage"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
     
             response = httprequestObj.http_post(self.site_name+'/member_property_aed.php?typ=add', data=datapost, files=files)
-            print(response.content)
+            # print(response.content)
             
             success = "false" 
             if response.status_code==200:
@@ -233,28 +233,36 @@ class baan2day():
                     r = httprequestObj.http_get(self.site_name+'/member_property_list.php')
                     soup = BeautifulSoup(r.text, features=self.parser)
                     try:
-                        rows = soup.find('table').find('tbody').find_all('tr')
+                        rows = soup.find('tbody').find_all('tr')
                     except:
                         try:
                             time.sleep(3)
                             r = httprequestObj.http_get(self.site_name+'/member_property_list.php')
                             soup = BeautifulSoup(r.text, features=self.parser)
-                            rows = soup.find('table').find('tbody').find_all('tr')
+                            rows = soup.find('tbody').find_all('tr')
                         except:
                             rows = []
                             success = "false"
                             detail = "post created probably but not active yet."
-                    for post in rows:
+                    if rows:
+                        post = rows[0]
                         try:
                             td = post.find_all('td')
-                            if td[1].getText().strip()==' '.join(str(postdata['post_title_th'].replace("\u2013","")).strip().split()):
-                                post_id = td[3].find('a').get('href').split('id=')[1]
-                                post_url = self.site_name+'/homedisplay/'+post_id+'/'+quote(td[1].getText().strip())+'.html'
-                                break
+                            post_id = td[3].find('a').get('href').split('id=')[1]
+                            post_url = self.site_name+'/homedisplay/'+post_id+'/'+quote(td[1].getText().strip())+'.html'
                         except (TypeError, IndexError):
                             pass
+                    # for post in rows:
+                    #     try:
+                    #         td = post.find_all('td')
+                    #         if td[1].getText().strip()==' '.join(str(postdata['post_title_th'].replace("\u2013","")).strip().split()):
+                    #             post_id = td[3].find('a').get('href').split('id=')[1]
+                    #             post_url = self.site_name+'/homedisplay/'+post_id+'/'+quote(td[1].getText().strip())+'.html'
+                    #             break
+                    #     except (TypeError, IndexError):
+                    #         pass
                 elif "alert('หัวข้อประกาศซ้ำค่ะ ไม่สามารถบันทึกได้ค่ะ');window.history.back()" in response.text:
-                    detail = "Unable to create post. A Post with same title already exists"
+                    detail = "Post Unsuccessful : same title post not allowed"
             else:  
                     detail = 'Unable to create post. Maybe problem with the title. Error response_code '+str(response.status_code) 
         else:

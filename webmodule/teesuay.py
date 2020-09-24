@@ -93,7 +93,7 @@ class teesuay():
         return {
             "websitename": "teesuay",
             "success": success,
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -342,7 +342,7 @@ class teesuay():
             else:
                 list_url = 'http://www.teesuay.com/member/list-property.php'
                 r = httprequestObj.http_get(list_url)
-                soup = BeautifulSoup(r.content, 'html5lib')
+                soup = BeautifulSoup(r.content, features = self.parser)
                 var = soup.find('a', attrs={'title': postdata['post_title_th']})['href']
                 # for i in '../property/':
                 i = len('../property/')
@@ -390,30 +390,33 @@ class teesuay():
         province_id=-1
         amphur_id=-1
 
-        url_list='http://www.teesuay.com/member/list-property.php'
-        # url_list='https://www.novabizz.com/manage-post.php'
-        r=httprequestObj.http_get(url_list)
-        soup = BeautifulSoup(r.content, 'html5lib')
-        ahref=soup.findAll('a')
-        post_id=''
-        storeI=''
-        for i in ahref:
-            var=i['href']
-            j = len('../property/')
-            post_id = ''
-            
-            while j<len(var) and var[j] != '/':
-                post_id += var[j]
-                j += 1
-            if post_id == postdata['post_id']:
-                storeI=i
+        page = 1
+        found = False
+        temp = len('property-')
+        while True:
+            r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
+            soup = BeautifulSoup(r.content, features = self.parser)
+            count = 0
+            for i in soup.findAll('a'):
+                var = i['href']
+                if 'property-' in var:
+                    count += 1
+                var = var.split('/')
+                if len(var)>1:
+                    if var[1][temp:].strip()==str(postdata['post_id']):
+                        found = True
+                        break
+            page += 1
+            if found or count==0:
                 break
-        if storeI=='':
+        if not found:
             return {
                 'websitename':'teesuay',
                 'success':'false',
+                "detail": "no post found with given id",
                 "log_id": postdata['log_id']
             }
+
         for (key, value) in provincedata.items():
             if type(value) is str and postdata['addr_province'].strip() in value.strip():
                 province_id = key
@@ -586,18 +589,19 @@ class teesuay():
                 datapost['class_type_id']=1    
             arr = ["fileshow", "file1", "file2", "file3", "file4"]
             files={}
-            for i in range(len(postdata['post_images'])):
+            for i in range(min(len(arr), len(postdata['post_images']))):
                 datapost[arr[i]] = postdata['post_images'][i]
                 files[arr[i]] = (postdata['post_images'][i], open(postdata['post_images'][i], "rb"), "image/jpg")
 
             url_n='http://www.teesuay.com/member/p-edit-property.php'
             
             r=httprequestObj.http_post(url_n,datapost)
-           
-            detail=r.text
-            print(detail)
-            success="true"
-            
+            if r.status_code==200:
+                detail = "Post edited successfully"
+                success="true"
+            else:
+                success = "false"
+                detail = "cannot edit post. "+r.text
         else:
             success = "false"
        
@@ -626,59 +630,63 @@ class teesuay():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
-        url_list='http://www.teesuay.com/member/list-property.php'
-        r=httprequestObj.http_get(url_list)
-        soup = BeautifulSoup(r.content, 'html5lib')
-        ahref=soup.findAll('a')
-        post_id=''
-        storeI=''
-        for i in ahref:
-            var=i['href']
-            j = len('../property/')
-            post_id = ''
-
-            while j<len(var) and var[j] != '/':
-                post_id += var[j]
-                j += 1
-            if post_id == postdata['post_id']:
-                storeI=i
+        page = 1
+        found = False
+        temp = len('property-')
+        while True:
+            r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
+            soup = BeautifulSoup(r.content, features = self.parser)
+            count = 0
+            for i in soup.findAll('a'):
+                var = i['href']
+                if 'property-' in var:
+                    count += 1
+                var = var.split('/')
+                if len(var)>1:
+                    if var[1][temp:].strip()==str(postdata['post_id']):
+                        found = True
+                        break
+            page += 1
+            if found or count==0:
                 break
-        if storeI=='':
+
+        if not found:
             return {
-                'websitename':'teesuay',
-                'success':'false',
-                "log_id": postdata['log_id']
+                "websitename":'teesuay',
+                "success":'false',
+                "detail": "post not found",
+                "log_id": postdata['log_id'],
+                "ds_id": postdata['ds_id']
             }
-        r=httprequestObj.http_get('http://www.teesuay.com/member/list-property.php')
-            # r=s.post(edit_url,,headers=register_headers)
-        soup = BeautifulSoup(r.content, 'html5lib')
+
+        r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php')
+        soup = BeautifulSoup(r.content, features = self.parser)
         var = soup.find('input', attrs={'name': 'hdnCount'})['value']
         if len(var) == 0:
             return{
                 'websitename':'teesuay',
                 'success': 'false',
-                'ret': "",
+                'detail': "",
                 'post_url': "",
                 'post_id': "",
-                'ds_id':postdata['ds_id']
+                'ds_id': postdata['ds_id']
             }
         if success == "true":
             datapost = {
                 'action':'manage-property-not-sale.php',
-                'chkDel[]': postdata['post_id'],
+                'chkDel[]': str(postdata['post_id']),
                 'type':'2',
                 'Submit':'Proceed',
                 'hdncount':var,
                 'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id']
-
             }
             r = httprequestObj.http_post('http://www.teesuay.com/member/manage-property-not-sale.php', data=datapost)
             data = r.text
             if data == '':
                 success = "false"
             else:
-                detail = data
+                detail = "Post deleted successfully"
         else:
             success = "false"
         time_end = datetime.datetime.utcnow()
@@ -703,31 +711,33 @@ class teesuay():
         detail = test_login["detail"]
 
         if success=='true':
-            url_list='http://www.teesuay.com/member/list-property.php'
-            r=httprequestObj.http_get(url_list)
-            soup = BeautifulSoup(r.content, 'html5lib')
-            ahref=soup.findAll('a')
-            post_id=''
-            storeI=''
-            print(ahref)
-            for i in ahref:
-                var=i['href']
-                j = len('../property/')
-                post_id = ''
-                # print(i)
-                while j<len(var) and var[j] != '/':
-                    post_id += var[j]
-                    j += 1
-                if post_id == postdata['post_id']:
-                    storeI=i
+            page = 1
+            found = False
+            temp = len('property-')
+            while True:
+                r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
+                soup = BeautifulSoup(r.content, features = self.parser)
+                count = 0
+                for i in soup.findAll('a'):
+                    var = i['href']
+                    if 'property-' in var:
+                        count += 1
+                    var = var.split('/')
+                    if len(var)>1:
+                        if var[1][temp:].strip()==str(postdata['post_id']):
+                            found = True
+                            break
+                page += 1
+                if found or count==0:
                     break
-            if storeI=='':
+
+            if not found:
                 time_end = datetime.datetime.utcnow()
                 return {
                     'websitename':'teesuay',
                     'success':'false',
                     "start_time": str(time_start),
-                'ds_id': postdata['ds_id'],
+                    'ds_id': postdata['ds_id'],
                     "end_time": str(time_end),
                     "detail": "wrong post id",
                     "log_id": postdata['log_id']
@@ -819,7 +829,7 @@ class teesuay():
             }
         url_list='http://www.teesuay.com/member/list-property.php'
         r=httprequestObj.http_get(url_list)
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         post_id = ''
         detail = ''
         post_url = ''

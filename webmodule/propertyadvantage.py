@@ -92,6 +92,7 @@ class propertyadvantage():
     def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
+        # dch32811@bcaoo.com 12345678
 
         data = {
             'log_u': '',
@@ -354,8 +355,6 @@ class propertyadvantage():
 
 
 
-
-
     def create_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
@@ -373,6 +372,7 @@ class propertyadvantage():
             "detail": '',
             "websitename": "propertyadvantage"
         }
+        print(test_login)
 
         if test_login['success'] == "true":
 
@@ -502,12 +502,11 @@ class propertyadvantage():
             files = {}
             imgtags = []
             allimages = postdata["post_images"][:5]
-            #print(allimages)
+            
             for i in range(len(allimages)):
                 r = open(os.getcwd()+"/"+allimages[i], 'rb')
                 files['photoimg[]'] = r
                 response = httprequestObj.http_post('https://propertyadvantage.net/ajax_img.php',data=None, files=files)
-                #print(response.text)
                 soup = BeautifulSoup(response.content, features='html.parser')
                 if soup.find('li') != None:
                     imgtags.append(soup.find('li').attrs.get('id').split('_')[-1])
@@ -616,6 +615,7 @@ class propertyadvantage():
             "ds_id": postdata["ds_id"],
             "log_id": postdata['log_id']
         } 
+
 
     def boost_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')

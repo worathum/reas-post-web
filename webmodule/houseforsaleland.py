@@ -3,6 +3,10 @@ from urllib.parse import unquote
 import sys
 import time
 import requests
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
 from .lib_httprequest import *
 from .lib_captcha import *
 import os
@@ -18,8 +22,8 @@ import datetime
 import shutil
 
 captcha = lib_captcha()
-
 with open("./static/houseforsale,land.json") as f:
+
     provincedata = json.load(f)
 with open("./static/houseforsaleProvincedistrict.json") as f:
     provinceDistrictdata = json.load(f)
@@ -222,8 +226,6 @@ class houseforsaleland():
                     break
             if finalRegion != "":
                 break
-        print(amphur_id)
-        print(postdata['addr_province'])
         if amphur_id == -1 or finalRegion == "":
             return{
                 'websitename': 'houseforsaleland',
@@ -272,7 +274,7 @@ class houseforsaleland():
             'geography': finalRegion,
             'province': province_id,
             'amphur': amphur_id,
-            'subject': postdata['post_title_th'],
+            'subject': str(postdata['post_title_th']),
             'detail': str(postdata['post_description_th']),
             'lat': postdata['geo_latitude'],
             'lng': postdata['geo_longitude'],
@@ -284,10 +286,11 @@ class houseforsaleland():
         }
         arr = ["picture"]
         files = {}
+
         for i in range(len(postdata['post_images'])):
             datapost[arr[i]] = postdata['post_images'][i]
-            files[arr[i]] = (postdata['post_images'][i], open(
-                postdata['post_images'][i], "rb"), "image/jpeg")
+            file =open(postdata['post_images'][i], "rb")
+            files[arr[i]] = (postdata['post_images'][i], file, "image/jpeg")
             if i == 0:
                 break
         url_n = 'https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=editpostfree&id=' + \
@@ -295,6 +298,7 @@ class houseforsaleland():
         with requests.Session() as s:
             r = s.post(url_n, data=datapost, files=files)
             detail = r.text
+        # print(f'detail--->{detail}')
         success = "true"
         url_n = 'https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=editpostfree&id=' + \
             postdata['post_id']
@@ -302,8 +306,8 @@ class houseforsaleland():
         options = Options()
         options.headless = True
         options.add_argument('--no-sandbox')
-        
-        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+        # options.binary_location = "/bin/google-chrome"
+        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options) # for linux
 
         post_url = urlpost+'/page-postfree-detail.php?pID='+postdata['post_id']
         driver.get(post_url)
@@ -311,17 +315,23 @@ class houseforsaleland():
         # driver.find_element_by_id('btnShowEdit').click()
         jsscript='document.getElementById("btnShowEdit").click()'
         driver.execute_script(jsscript)
-        time.sleep(1)
+        # time.sleep(1)
         jsscript='document.getElementById("passwordedit")["value"]="'+postdata['pass']+'";document.getElementById("submit").click();'
         driver.execute_script(jsscript)
-        time.sleep(5)
-        # alert = driver.switch_to_alert()
+        # time.sleep(1)
         try:
-            driver.switch_to_alert().accept()
+            WebDriverWait(driver, 5).until(EC.alert_is_present(),
+                                           'Timed out waiting for PA creation ' +
+                                           'confirmation popup to appear.')
+
+
         except:
-            time.sleep(5)
-            driver.switch_to_alert().accept()
-        time.sleep(10)
+            print('alert not accepted within time')
+            time.sleep(3)
+        alert = driver.switch_to.alert
+        alert.accept()
+
+        # time.sleep(10)
         # jsscript='function getElementByXpath(path) {return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;}'
         # jsscript="document.getElementById('type"+postdata['listing_type']+"')['checked']=true;"
         # jsscript+="document.getElementById('sendmail1')['checked']=true;document.querySelectorAll('#category1')["+str(postdata['cate_id'])+"]['checked']=true;"
@@ -332,36 +342,49 @@ class houseforsaleland():
         # jsscript+="document.getElementById('tel')['value']='"+postdata['mobile']+"';"
         # jsscript+="document.getElementById('email')['value']='"+postdata['email']+"';"
         # jsscript+="document.getElementById('password')['value']='"+postdata['pass']+"';"
-        # # time.sleep(5000)        
+        # # time.sleep(5000)
         # # driver.execute_script(jsscript)
         # driver.find_element_by_id('detail').send_keys(str(postdata['post_description_th']));
         # time.sleep(5000)
 
-        jsscript = "document.getElementById('detail')['value']='';"
-        jsscript += "document.getElementById('subject')['value']='';"
-        jsscript += "document.getElementById('password')['value']='';"
-        jsscript += "document.getElementById('email')['value']='';"
-        jsscript += "document.getElementById('address')['value']='';"
-        jsscript += "document.getElementById('name')['value']='';"
-        print(prod_address)
-        driver.execute_script(jsscript)
+        # jsscript = "document.getElementById('detail')['value']='';"
+        # jsscript += "document.getElementById('subject')['value']='';"
+        # jsscript += "document.getElementById('password')['value']='';"
+        # jsscript += "document.getElementById('email')['value']='';"
+        # jsscript += "document.getElementById('address')['value']='';"
+        # jsscript += "document.getElementById('name')['value']='';"
+        # print(f'prod_address--->{prod_address}')
+        # driver.execute_script(jsscript)
+        # file.close()
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, '//*[@id="detail"]'))
+            )
+        except:
+            print('increase wait time for detail')
+        time.sleep(1)
+        driver.find_element_by_id('detail').clear()
         driver.find_element_by_id('detail').send_keys(
             str(postdata['post_description_th']))
+        driver.find_element_by_id('subject').clear()
         driver.find_element_by_id('subject').send_keys(
             str(postdata['post_title_th']))
+        driver.find_element_by_id('password').clear()
         driver.find_element_by_id('password').send_keys(str(postdata['pass']))
+        driver.find_element_by_id('email').clear()
         driver.find_element_by_id('email').send_keys(str(postdata['email']))
+        driver.find_element_by_id('address').clear()
         driver.find_element_by_id('address').send_keys(str(prod_address))
+        driver.find_element_by_id('name').clear()
         driver.find_element_by_id('name').send_keys(str(postdata['name']))
-        time.sleep(5)
-
+        time.sleep(2)
         driver.find_element_by_id('submit').click()
-        driver.close()
+        # driver.close()
+        time.sleep(5)
         driver.quit()
         try:
             alert = driver.switch_to.alert
             alert.accept()
-            driver.close()
             driver.quit()
         except:
             pass
@@ -383,6 +406,8 @@ class houseforsaleland():
             "post_id": postdata['post_id']
         }
 
+
+
     def create_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
@@ -400,9 +425,6 @@ class houseforsaleland():
             '8': 6,
             '25': 6
         }
-        # postdata['post_description_th']=str(postdata['post_description_th']).replace('\r\n','')
-        # postdata['post_description_th']=str(postdata['post_description_th']).replace('\n','')
-        
         try:
             postdata['cate_id'] = subcategory[str(postdata['property_type'])]
         except:
@@ -423,7 +445,7 @@ class houseforsaleland():
         postparams = {
             'acceptBTN': 'Accept all terms and conditions'
         }
-        s = requests.Session()
+        # s = requests.Session()
         amphur_id = -1
         finalRegion = ""
         for i in range(1, 7):
@@ -469,7 +491,7 @@ class houseforsaleland():
                 prod_address += add + ","
         prod_address = prod_address[:-1]
         postdata['address'] = prod_address
-        s = requests.Session()
+        # s = requests.Session()
         if len(postdata['post_images']) == 0:
             postdata['post_images'] = ['./imgtmp/default/white.jpg']
         if postdata['listing_type'] == 'เช่า':
@@ -482,8 +504,8 @@ class houseforsaleland():
             'geography': finalRegion,
             'province': province_id,
             'amphur': amphur_id,
-            'subject': postdata['post_title_th'],
-            'detail': str(postdata['post_description_th']),
+            'subject': str(postdata['post_title_th']),
+            'detail': str(postdata['post_title_th']),
             'lat': postdata['geo_latitude'],
             'lng': postdata['geo_longitude'],
             'name': postdata['name'],
@@ -495,17 +517,21 @@ class houseforsaleland():
         arr = ["picture"]
         files = {}
         for i in range(len(postdata['post_images'])):
+
             datapost[arr[i]] = postdata['post_images'][i]
-            files[arr[i]] = (postdata['post_images'][i], open(
-                postdata['post_images'][i], "rb"), "image/jpeg")
+            file = open(postdata['post_images'][i], "rb")
+            files[arr[i]] = (postdata['post_images'][i],  file, "image/jpeg")
+
             if i == 0:
                 break
-
+        # print(f"files ---> {files}\n"
+        #       f"datapost ---> {datapost}\n")
+        # captcha!!!
         detail = ""
         s = requests.Session()
         urlpost = "https://www.xn--22c0bihcc9cwhcxj2ui.com"
         r = s.get("https://www.xn--22c0bihcc9cwhcxj2ui.com/post")
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         captchaurl = soup.find('img', attrs={'alt': 'Captcha image'})['src']
         finalurl = urlpost+"/"+captchaurl
         r = s.get(finalurl, stream=True)
@@ -520,43 +546,46 @@ class houseforsaleland():
             time_end = datetime.datetime.utcnow()
         else:
             time_end = datetime.datetime.utcnow()
+            print('Image Couldn\'t be retreived')
             return {
                 'websitename': 'houseforsaleland',
-                "success": success,
+                "success": 'false',
                 'post_url': '',
                 'ds_id': postdata['ds_id'],
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": "Captcha Image Retrieval failed"
             }
-            print('Image Couldn\'t be retreived')
-        r = captcha.imageCaptcha(filename)
-        print(r)
-        if r[0] != -1:
-            datapost['code'] = str(r[1]).upper()
+        rc = captcha.imageCaptcha(filename)
+        print(rc)
+        if rc[0] != -1:
+            datapost['code'] = str(rc[1]).upper()
         else:
             time_end = datetime.datetime.utcnow()
             return {
                 'websitename': 'houseforsaleland',
-                "success": success,
+                "success": 'false',
                 'post_url': '',
                 "start_time": str(time_start),
                 'ds_id': postdata['ds_id'],
                 "end_time": str(time_end),
                 "detail": "Captcha fail"
             }
+
+        # post
         url_n = "https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=addpostfree"
         r = s.post(url_n, data=datapost, files=files)
         content = r.content
         detail = r.text
+
         data = detail
         success = "true"
-        print(r.content)
+        # print(r.content)
         if 'error' in r.text:
             s = requests.Session()
             urlpost = "https://www.xn--22c0bihcc9cwhcxj2ui.com"
             r = s.get("https://www.xn--22c0bihcc9cwhcxj2ui.com/post")
-            soup = BeautifulSoup(r.content, 'html5lib')
+            soup = BeautifulSoup(r.content, features = self.parser)
             captchaurl = soup.find(
                 'img', attrs={'alt': 'Captcha image'})['src']
             finalurl = urlpost+"/"+captchaurl
@@ -572,16 +601,16 @@ class houseforsaleland():
                 time_end = datetime.datetime.utcnow()
             else:
                 time_end = datetime.datetime.utcnow()
+                print('Image Couldn\'t be retreived')
                 return {
                     'websitename': 'houseforsaleland',
-                    "success": success,
+                    "success": "false",
                     'post_url': '',
                     "start_time": str(time_start),
                     "end_time": str(time_end),
                     'ds_id': postdata['ds_id'],
                     "detail": "Captcha Image Retrieval failed"
                 }
-                print('Image Couldn\'t be retreived')
             r = captcha.imageCaptcha(filename)
             print(r)
             if r[0] != -1:
@@ -590,26 +619,23 @@ class houseforsaleland():
                 time_end = datetime.datetime.utcnow()
                 return {
                     'websitename': 'houseforsaleland',
-                    "success": success,
+                    "success": 'false',
                     'post_url': '',
                     'ds_id': postdata['ds_id'],
                     "start_time": str(time_start),
                     "end_time": str(time_end),
                     "detail": "Captcha fail"
                 }
+            # #################################### The part below this is repeated and is same as above ##################################################################################################
             url_n = "https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=addpostfree"
             r = s.post(url_n, data=datapost, files=files)
             content = r.content
             detail = r.text
             data = detail
             success = "true"
-            print(r.content)
-            if 'error' in r.text:
-                # print(postdata['mobile'])
+            if 'error' in detail:
                 success = "False"
-                detail = r.content
-                if "\\xa1\\xc3\\xd8\\xb3\\xd2\\xa1\\xc3\\xcd\\xa1\\xe0\\xba\\xcd\\xc3\\xec\\xe2\\xb7\\xc3\\xc8\\xd1\\xbe\\xb7\\xec" in r.content:
-                    detail = "Invalid Input!"
+                detail = r.text
                 time_end = datetime.datetime.utcnow()
                 time_usage = time_end - time_start
                 return {
@@ -623,7 +649,7 @@ class houseforsaleland():
                 }
             else:
                 if 'msg_complete' in r.text:
-                    soup = BeautifulSoup(r.content, 'html5lib')
+                    soup = BeautifulSoup(r.content, features = self.parser)
                     var = soup.find('script')
                     i = len("<script>window.parent.msg_complete(1,")
                     post_id = ''
@@ -637,51 +663,53 @@ class houseforsaleland():
                     r=self.edit_post(tempotempo)
                     time_end = datetime.datetime.utcnow()
                     time_usage = time_end - time_start
-    
+
                     return {
                         'websitename': 'houseforsaleland',
                         'success': 'true',
                         "start_time": str(time_start),
                         "end_time": str(time_end),
-                        'detail': var,
+                        'detail': "Post created successfully",
                         'post_url': post_url,
-                        'post_id': post_id,
+                        'post_id': str(int(post_id)),
                         'ds_id': postdata['ds_id']
                     }
                 else:
                     success = "False"
-
         else:
             if 'msg_complete' in r.text:
-                soup = BeautifulSoup(r.content, 'html5lib')
+                soup = BeautifulSoup(r.content, features = self.parser)
                 var = soup.find('script')
                 i = len("<script>window.parent.msg_complete(1,")
                 post_id = ''
                 var = str(var)
-                # print(var)
+
                 while var[i] != ')':
                     post_id += var[i]
                     i += 1
                 post_url = urlpost+'/page-postfree-detail.php?pID='+post_id
                 tempotempo['post_id']=post_id
+
                 r=self.edit_post(tempotempo)
+
 
                 time_end = datetime.datetime.utcnow()
                 time_usage = time_end - time_start
                 return {
                     'websitename': 'houseforsaleland',
                     'success': 'true',
-                    'detail': var,
+                    'detail': "Post created successfully",
                     "start_time": str(time_start),
                     "end_time": str(time_end),
                     'post_url': post_url,
-                    'post_id': post_id,
+                    'post_id': str(int(post_id)),
                     'ds_id': postdata['ds_id']
                 }
             else:
                 success = "False"
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
+
         return {
             'websitename': 'houseforsaleland',
             "success": success,
@@ -691,6 +719,8 @@ class houseforsaleland():
             "detail": "Failed to Create Post",
             'ds_id': postdata['ds_id']
         }
+
+
 
     def delete_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')

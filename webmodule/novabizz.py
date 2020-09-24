@@ -15,22 +15,6 @@ import random
 
 
 httprequestObj = lib_httprequest()
-# with open("./static/ips.txt",'r') as f:
-#     allips = f.read()
-# ips = allips.split('\n')
-
-# username = ips[random.randint(0,len(ips)-2)].split(":")[2]
-# password = 'v1y3mbh26qk9'
-# port = 22225
-# super_proxy_url = ('http://%s:%s@zproxy.lum-superproxy.io:%d' %
-#         (username, password, port))
-
-# proxy_handler = {
-#     'http': super_proxy_url,
-#     'https': super_proxy_url,
-# }
-
-# httprequestObj.session.proxies.update(proxy_handler)
 
 with open("./static/novabizz.json") as f:
     provincedata = json.load(f)
@@ -114,7 +98,7 @@ class novabizz():
                 break
 
         r = httprequestObj.http_get('https://www.novabizz.com/register.php')
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('input', attrs={'id': 'save'})['value']
         prod_address = ""
         for add in  [postdata['addr_district'], postdata['addr_province']]:
@@ -185,7 +169,7 @@ class novabizz():
         passwd = postdata['pass']
         httprequestObj.http_get('https://www.novabizz.com/logout.php')
         r = httprequestObj.http_get('https://www.novabizz.com/member.php')
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('input', attrs={'name': 'save'})['value']
         success = "true"
         detail = ""
@@ -199,7 +183,7 @@ class novabizz():
         r = httprequestObj.http_post(
             'https://www.novabizz.com/member.php', data=datapost)
         data = r.text
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('h3', attrs={'class': 'fail'})
         # print(save)
         if save != None:
@@ -229,7 +213,7 @@ class novabizz():
 
         url_list = 'https://www.novabizz.com/manage-post.php'
         r = httprequestObj.http_get(url_list)
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         ahref = soup.findAll('a')
         post_id = ''
         storeI = ''
@@ -284,7 +268,7 @@ class novabizz():
 
         url_list = 'https://www.novabizz.com/manage-post.php'
         r = httprequestObj.http_get(url_list)
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         ahref = soup.findAll('a')
         # print(ahref)
         # print()
@@ -355,7 +339,7 @@ class novabizz():
         success = test_login["success"]
         ashopname = test_login["detail"]
         r = httprequestObj.http_get('https://www.novabizz.com/post-add.php')
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('input', attrs={'name': 'save'})['value']
         subcategory = {
             "2": "1432",
@@ -583,7 +567,7 @@ class novabizz():
             else:
                 list_url = 'https://www.novabizz.com/manage-post.php'
                 r = httprequestObj.http_get(list_url)
-                soup = BeautifulSoup(r.content, 'html5lib')
+                soup = BeautifulSoup(r.content, features = self.parser)
                 spancode=soup.find('span',attrs={'class':'code'}).text
                 i=len('รหัส ')
                 post_id = ''
@@ -612,7 +596,6 @@ class novabizz():
 
         else:
             post_url=""
-            print("15")
             success = "False"
             detail = "cannot login"
 
@@ -625,7 +608,7 @@ class novabizz():
             "start_time": str(time_start),
             "ds_id": postdata['ds_id'],
             "end_time": str(time_end),
-            "post_url": 'https://' + post_url,
+            "post_url": 'https://' + post_url if post_url else "",
             "post_id": post_id,
             "detail" : detail
         }
@@ -794,7 +777,7 @@ class novabizz():
 
         url_list = 'https://www.novabizz.com/manage-post.php'
         r = httprequestObj.http_get(url_list)
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         ahref = soup.findAll('a')
         # print(ahref)
         # print()
@@ -945,7 +928,7 @@ class novabizz():
         url_n = 'https://www.novabizz.com/post-edit.php?id='
         url_n += str(postdata['post_id'])
         r = httprequestObj.http_get(url_n)
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('input', attrs={'name': 'save'})['value']
         if success == "true":
 
