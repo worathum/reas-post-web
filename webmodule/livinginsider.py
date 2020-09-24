@@ -113,6 +113,8 @@ class livinginsider():
             "detail": detail,
         }
 
+
+
     def create_post(self, postdata):
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
@@ -123,142 +125,136 @@ class livinginsider():
         post_id = ""
         post_url = ""
 
-        proid = {
-            'คอนโด': '1',  # condo
-            'บ้านเดี่ยว': '2',  # detached houses /home / house / Single House
-            'บ้านแฝด': '3',  # twin houses
-            'ทาวน์เฮ้าส์': '4',  # townhouses / town home / home office
-            'ตึกแถว-อาคารพาณิชย์': '5',  # commercial buildings
-            'ที่ดิน': '6',  # land
-            'อพาร์ทเมนท์': '7',  # apartments
-            'โรงแรม': '8',  # hotels, Real Estate Residencial
-            'ออฟฟิศสำนักงาน': '9',  # Office
-            'โกดัง-โรงงาน': '10',  # warehouses
-            'โรงงาน': '25'  # factory
-        }
-        getProdId = {'1': 1, '2': 2, '3': 2, '4': 6,
-                     '5': 4, '6': 3, '7': 10, '8': 10, '9': 5, '10': 12, '25': 11}
+        if success:
+            proid = {
+                'คอนโด': '1',  # condo
+                'บ้านเดี่ยว': '2',  # detached houses /home / house / Single House
+                'บ้านแฝด': '3',  # twin houses
+                'ทาวน์เฮ้าส์': '4',  # townhouses / town home / home office
+                'ตึกแถว-อาคารพาณิชย์': '5',  # commercial buildings
+                'ที่ดิน': '6',  # land
+                'อพาร์ทเมนท์': '7',  # apartments
+                'โรงแรม': '8',  # hotels, Real Estate Residencial
+                'ออฟฟิศสำนักงาน': '9',  # Office
+                'โกดัง-โรงงาน': '10',  # warehouses
+                'โรงงาน': '25'  # factory
+            }
+            getProdId = {'1': 1, '2': 2, '3': 2, '4': 6,
+                        '5': 4, '6': 3, '7': 10, '8': 10, '9': 5, '10': 12, '25': 11}
 
-        try:
-            theprodid = getProdId[proid[postdata['property_type']]]
-        except:
-            theprodid = getProdId[postdata['property_type']]
+            try:
+                theprodid = getProdId[proid[str(postdata['property_type'])]]
+            except:
+                theprodid = getProdId[str(postdata['property_type'])]
 
-        if 'web_project_name' not in postdata or postdata['web_project_name'] is not None:
-            if 'project_name' in postdata and postdata['project_name'] is not None:
-                postdata['web_project_name'] = postdata['project_name']
+            if 'web_project_name' not in postdata or postdata['web_project_name'] is not None:
+                if 'project_name' in postdata and postdata['project_name'] is not None:
+                    postdata['web_project_name'] = postdata['project_name']
+                else:
+                    postdata['web_project_name'] = postdata['post_title_th']
+
+            if 'floor_total' not in postdata:
+                postdata['floor_total'] = 1
+            elif postdata['floor_total'] is None or postdata['floor_total'] == '':
+                postdata['floor_total'] = 1
+
+            if 'floor_level' not in postdata:
+                postdata['floor_level'] = 1
+            elif postdata['floor_level'] is None or postdata['floor_level'] == '':
+                postdata['floor_level'] = 1
+
+            if 'bath_room' not in postdata:
+                postdata['bath_room'] = 1
+            elif postdata['bath_room'] is None or postdata['bath_room'] == '':
+                postdata['bath_room'] = 1
+
+            if 'bed_room' not in postdata:
+                postdata['bed_room'] = 1
+            elif postdata['bed_room'] == None or postdata['bed_room'] == '':
+                postdata['bed_room'] = 1
+
+            if int(postdata['bed_room']) > 10:
+                postdata['bed_room'] = 11
+
+            if int(postdata['bath_room']) > 5:
+                postdata['bath_room'] = 6
+
+            if postdata['land_size_rai'] == None:
+                land_size_rai = 0
             else:
-                postdata['web_project_name'] = postdata['post_title_th']
+                land_size_rai = postdata['land_size_rai']
 
-        if 'floor_total' not in postdata:
-            postdata['floor_total'] = 1
-        elif postdata['floor_total'] is None or postdata['floor_total'] == '':
-            postdata['floor_total'] = 1
+            if postdata['land_size_ngan'] == None:
+                land_size_ngan = 0
+            else:
+                land_size_ngan = postdata['land_size_ngan']
 
-        if 'floor_level' not in postdata:
-            postdata['floor_level'] = 1
-        elif postdata['floor_level'] is None or postdata['floor_level'] == '':
-            postdata['floor_level'] = 1
+            if postdata['land_size_wa'] == None:
+                land_size_wa = 0
+            else:
+                land_size_wa = postdata['land_size_wa']
 
-        if 'bath_room' not in postdata:
-            postdata['bath_room'] = 1
-        elif postdata['bath_room'] is None or postdata['bath_room'] == '':
-            postdata['bath_room'] = 1
+            province_id = ''
+            term = postdata['web_project_name'].replace(' ', '+')
 
-        if 'bed_room' not in postdata:
-            postdata['bed_room'] = 1
-        elif postdata['bed_room'] == None or postdata['bed_room'] == '':
-            postdata['bed_room'] = 1
-
-        if int(postdata['bed_room']) > 10:
-            postdata['bed_room'] = 11
-
-        if int(postdata['bath_room']) > 5:
-            postdata['bath_room'] = 6
-
-        if postdata['land_size_rai'] == None:
-            land_size_rai = 0
-        else:
-            land_size_rai = postdata['land_size_rai']
-
-        if postdata['land_size_ngan'] == None:
-            land_size_ngan = 0
-        else:
-            land_size_ngan = postdata['land_size_ngan']
-
-        if postdata['land_size_wa'] == None:
-            land_size_wa = 0
-        else:
-            land_size_wa = postdata['land_size_wa']
-
-        province_id = ''
-        term = postdata['web_project_name'].replace(' ', '+')
-
-        data = requests.get(
-            'https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)
-        data = json.loads(data.text)
-
-        if len(data) == 1:
-            term = postdata['addr_district'] + '+' + postdata['addr_province']
-            data = requests.get(
+            data = httprequestObj.http_get(
                 'https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)
             data = json.loads(data.text)
+        
+            if len(data) == 1:
+                term = postdata['addr_district'] + '+' + postdata['addr_province']
+                data = httprequestObj.http_get(
+                    'https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)
+                data = json.loads(data.text)
 
-            # print(data)
-            try:
+                # print(data)
+                try:
+                    idzone = data[1]['id']
+                except:
+                    idzone = data[0]['id']
+            else:
                 idzone = data[1]['id']
-            except:
-                idzone = data[0]['id']
-        else:
-            idzone = data[1]['id']
-        # print(idzone)
-        data = requests.post('https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
-        # print(data.status_code)
-        data = json.loads(data.text)
-        # print(data)
-        r = data['value']
-        if len(r) == 0:
-            params = {
-                'term': postdata['addr_province'],
-                '_type': 'query',
-                'q': postdata['addr_province']
-            }
-            r = requests.get('https://www.livinginsider.com/a_zone_list.php', params=params)
-            # print(r.url)
-            # print(r.status_code)
-            data = r.json()
-            web_zone = data[0]['id']
-            for row in data:
-                if postdata['addr_district'].replace(' ', '') in row and postdata['addr_sub_district'].replace(' ',
-                                                                                                               '') in row:
-                    web_zone = row['id']
-                    break
-            # print('Web_zone = ' + str(web_zone))
+            # print(idzone)
+            data = httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
+            # print(data.status_code)
+            data = json.loads(data.text)
+            # print(data)
+            r = data['value']
+            if len(r) == 0:
+                params = {
+                    'term': postdata['addr_province'],
+                    '_type': 'query',
+                    'q': postdata['addr_province']
+                }
+                r = httprequestObj.http_get('https://www.livinginsider.com/a_zone_list.php', params=params)
+                # print(r.url)
+                # print(r.status_code)
+                data = r.json()
+                web_zone = data[0]['id']
+                for row in data:
+                    if postdata['addr_district'].replace(' ', '') in row and postdata['addr_sub_district'].replace(' ',
+                                                                                                                '') in row:
+                        web_zone = row['id']
+                        break
+                # print('Web_zone = ' + str(web_zone))
 
-            r = requests.post('https://www.livinginsider.com/a_zone_child.php', data={'web_zone_id': web_zone})
-            # print(r.url)
-            # print(r.status_code)
-            # print(r.json())
+                r = httprequestObj.http_post('https://www.livinginsider.com/a_zone_child.php', data={'web_zone_id': web_zone})
+            else:
+                soap = BeautifulSoup(r, self.parser)
+                option = soap.find('option')
+                web_zone = option.get('value')
+                
+            prod_address = ""
+            for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'],
+                        postdata['addr_district'], postdata['addr_province']]:
+                if add is not None or add == "" or add == " ":
+                    prod_address += add + ","
 
-        else:
-            soap = BeautifulSoup(r, self.parser)
-            option = soap.find('option')
-            web_zone = option.get('value')
-            # print('Web_zone = ' + str(web_zone))
-            # print(option)
-        prod_address = ""
-        for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'],
-                    postdata['addr_district'], postdata['addr_province']]:
-            if add is not None or add == "" or add == " ":
-                prod_address += add + ","
-
-        prod_address = prod_address[:-1]
-        if postdata['listing_type'] != 'ขาย':
-            typep = 4
-        else:
-            typep = 1
-
-        if success:
+            prod_address = prod_address[:-1]
+            if postdata['listing_type'] != 'ขาย':
+                typep = 4
+            else:
+                typep = 1
 
             data = {
                 'currentstep': '1',
@@ -282,9 +278,6 @@ class livinginsider():
 
             r = httprequestObj.http_post('https://www.livinginsider.com/a_add_living.php', data=data)
             data = r.text
-            # print(r.url)
-            # print(r.status_code)
-            # print(data)
             img_link = 'https://www.livinginsider.com/js_upload/php/'
             arr = ["files[]"]
             folders = ''
@@ -306,9 +299,6 @@ class livinginsider():
                     postdata['post_images'][i], "rb"), "image/jpeg")
                 # print(f)
                 r = httprequestObj.http_post(img_link, data={'web_photo_folder': webFolder}, files=f)
-                # print(r.url)
-                # print(r.status_code)
-                # print(r.text)
 
                 if r.status_code == 200:
                     r = json.loads(r.text)
@@ -597,6 +587,7 @@ class livinginsider():
                 'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
             }
             # print('Posting data')
+            # print(data)
             r = httprequestObj.http_post(
                 'https://www.livinginsider.com/a_add_living.php', data=data, headers=headers)
             # print(r.url)
@@ -612,6 +603,7 @@ class livinginsider():
             r = httprequestObj.http_get('https://www.livinginsider.com/living_confirm.php')
             # print(r.url)
             # print(r.status_code)
+            # print(r.text)
 
             # with open('b.html', 'w') as f:
             #     print(r.text, file=f)
@@ -619,17 +611,16 @@ class livinginsider():
             r = httprequestObj.http_post('https://www.livinginsider.com/living_confirm.php', data=data)
             # print(r.url)
             # print(r.status_code)
-
+            # print(r.text)
+            link = ''
             try:
                 r = BeautifulSoup(r.content, self.parser)
                 link = r.find('input', attrs={'id': 'link_copy'})['value']
-                post_id = post_url.split('/')[4]
             except:
                 # print(r.text)
                 r = json.loads(r.text)
                 link = r['link_copy']
-
-            t = 'https:\/\/www.livinginsider.com\/livingdetail\/495548\/1\/fsa.html'
+            
             if link == '':
                 detail = 'Not posted. Low Credits maybe.'
                 success = False
@@ -641,24 +632,14 @@ class livinginsider():
                     "usage_time": str(time_usage),
                     "start_time": str(time_start),
                     "end_time": str(time_end),
-                    "post_url": post_url,
-                    "post_id": post_id,
+                    "post_url": "",
+                    "post_id": "",
                     "account_type": "null",
                     "detail": detail,
                 }
-
-            cntr = 0
-            start = 0
-            post_id = ''
-            for i in link:
-                if cntr == 3:
-                    post_id += i
-                if i == '/':
-                    if cntr == 3:
-                        post_id = ''
-                    if cntr == 4:
-                        break
-                    cntr += 1
+            temp = link.split('/')
+            if len(temp)>4:
+                post_id = temp[4]
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
             return {
@@ -688,6 +669,8 @@ class livinginsider():
             "detail": detail,
         }
 
+
+
     def edit_post(self, postdata):
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
@@ -699,11 +682,8 @@ class livinginsider():
         post_url = ""
 
         if success:
-
             page = 0
-            max_page = 100
             post_found = False
-
             while True:
                 page += 1
                 params = (
@@ -723,36 +703,15 @@ class livinginsider():
                     ('search_zone_id', ''),
                     ('pagelimit', '50'),
                 )
-
-                if page == max_page:
-                    break
-
                 r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
-                # print(r.url)
-                # print(r.status_code)
-
+                if r.history:
+                    break
                 soup = BeautifulSoup(r.content, self.parser)
-                # print(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3])
-                # print(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3])
-                try:
-                    max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
-                except:
-                    max_page = 1
-
-                all_posts = soup.find('div', 'head-item bg-mystock-card').findChildren('div', recursive=False)
-                mem_id = soup.find('input', {'name': 'mem_id'}).get('value')
-                # print(mem_id)
-                device_id = r.text.split("let device_id = '")[1].split("'")[0]
-                # print(device_id)
-
+                all_posts = soup.find_all(class_='mystock-item')
                 for post in all_posts:
-                    post_id = post.get('class')[2].split('item')[-1]
-                    # print(post_id)
-                    if post_id == postdata['post_id']:
-                        # print('Found post')
+                    if str(post.get('topic-id')) == str(postdata['post_id']):
                         post_found = True
                         break
-
                 if post_found:
                     break
 
@@ -1460,11 +1419,8 @@ class livinginsider():
         device_id = ''
 
         if success:
-
             page = 0
             post_found = False
-            max_page = 100
-
             while True:
                 page += 1
                 params = (
@@ -1484,36 +1440,15 @@ class livinginsider():
                     ('search_zone_id', ''),
                     ('pagelimit', '50'),
                 )
-
-                if page == max_page:
-                    break
-
                 r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
-                # print(r.url)
-                # print(r.status_code)
-
+                if r.history:
+                    break
                 soup = BeautifulSoup(r.content, self.parser)
-                # print(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3])
-                try:
-                    max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
-                except:
-                    max_page = 1
-                
-
-                all_posts = soup.find('div', 'head-item bg-mystock-card').findChildren('div', recursive=False)
-                mem_id = soup.find('input', {'name': 'mem_id'}).get('value')
-                # print(mem_id)
-                device_id = r.text.split("let device_id = '")[1].split("'")[0]
-                # print(device_id)
-
+                all_posts = soup.find_all(class_='mystock-item')
                 for post in all_posts:
-                    post_id = post.get('class')[2].split('item')[-1]
-                    # print(post_id)
-                    if post_id == postdata['post_id']:
-                        # print('Found post')
+                    if str(post.get('topic-id')) == str(postdata['post_id']):
                         post_found = True
                         break
-
                 if post_found:
                     break
 
@@ -1568,6 +1503,8 @@ class livinginsider():
             "websitename": "livinginsider",
         }
 
+
+
     def boost_post(self, postdata):
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
@@ -1584,11 +1521,8 @@ class livinginsider():
         device_id = ''
 
         if success:
-
             page = 0
             post_found = False
-            max_page = 100
-
             while True:
                 page += 1
                 params = (
@@ -1608,35 +1542,15 @@ class livinginsider():
                     ('search_zone_id', ''),
                     ('pagelimit', '50'),
                 )
-
-                if page == max_page:
-                    break
-
                 r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
-                # print(r.url)
-                # print(r.status_code)
-
+                if r.history:
+                    break
                 soup = BeautifulSoup(r.content, self.parser)
-                # print(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3])
-                try:
-                    max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
-                except:
-                    max_page = 1
-
-                all_posts = soup.find('div', 'head-item bg-mystock-card').findChildren('div', recursive=False)
-                mem_id = soup.find('input', {'name': 'mem_id'}).get('value')
-                # print(mem_id)
-                device_id = r.text.split("let device_id = '")[1].split("'")[0]
-                # print(device_id)
-
+                all_posts = soup.find_all(class_='mystock-item')
                 for post in all_posts:
-                    post_id = post.get('class')[2].split('item')[-1]
-                    # print(post_id)
-                    if post_id == postdata['post_id']:
-                        # print('Found post')
+                    if str(post.get('topic-id')) == str(postdata['post_id']):
                         post_found = True
                         break
-
                 if post_found:
                     break
 

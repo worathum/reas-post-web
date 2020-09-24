@@ -361,14 +361,8 @@ class estate():
 
             sec_step = httprequestObj.http_get(sec_step_url, headers = headers)
 
-
-
             success = "true"
             detail = "Post created successfully"
-
-
-
-
         else:
             success = "false"
             detail = "Can not log in"
@@ -466,12 +460,6 @@ class estate():
 
 
 
-
-
-
-
-
-
     def delete_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
@@ -483,28 +471,23 @@ class estate():
         login = self.test_login(postdata)
         
         if(login['success'] == "true"):
-
-            all_posts_url = 'http://www.estate.in.th/member/list-property.php'
-
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
-
-            soup = BeautifulSoup(all_posts.content, features = "html")
-
-            all_post_ids = []
-
-            total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
-
-            for page in range(1, total_pages+1):
-                requ = httprequestObj.http_get("http://www.estate.in.th/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
-                soup = BeautifulSoup(requ, features = "html")
-
-                for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
-                    all_post_ids.append(str(abc['value']))
-            #print(all_post_ids)
-
+            all_post_ids = []            
+            page = 1
             req_post_id = str(postdata['post_id'])
-
-            if req_post_id in all_post_ids:
+            found = False
+            while True:
+                requ = httprequestObj.http_get("http://www.estate.in.th/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+                soup = BeautifulSoup(requ, features = "html.parser")
+                all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
+                for abc in all_post:
+                    if str(abc['value'])==req_post_id:
+                        found = True
+                        break
+                page += 1
+                if (not all_post) or found:
+                    break
+           
+            if found:
                 data = {
                     'chkDel[]' : req_post_id,
                     'type' : '2',
@@ -557,24 +540,18 @@ class estate():
 
         login = self.test_login(postdata)
         
-        if (login['success'] == 'true'):
-
-            all_posts_url = 'http://www.estate.in.th/member/list-property.php'
-
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
-
-            soup = BeautifulSoup(all_posts.content, features = "html")
-
-            all_post_ids = []
-
-            total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
-
-            for page in range(1, total_pages+1):
+        if login['success'] == 'true':
+            all_post_ids = []           
+            page = 1
+            while True:
                 requ = httprequestObj.http_get("http://www.estate.in.th/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html")
-
-                for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
+                all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
+                for abc in all_post:
                     all_post_ids.append(str(abc['value']))
+                page += 1
+                if not all_post:
+                    break
 
             #print(all_post_ids)
 
@@ -674,41 +651,33 @@ class estate():
 
                 find_province = httprequestObj.http_get(pro_url, headers = headers).text
 
-                soup = BeautifulSoup(find_province,features = "html")
-
+                soup = BeautifulSoup(find_province,features = self.parser)
                 abc = soup.find('select',attrs = {'name':'province'})
-
-                for pq in abc.find_all('option'):
-                    if(str(pq.text) in str(province) or str(province) in str(pq.text)):
-                        data['province'] = str(pq['value'])
-                        break
-
-
-                district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
-
-                url_district = str('http://www.estate.in.th/data_for_list3.php?province='+data['province'])
-
-                find_district = httprequestObj.http_get(url_district, headers = headers).text
-
-                soup = BeautifulSoup(find_district,features = "html")
-
-                try:
-
-                    for pqr in soup.find_all('option'):
-                        if(str(pqr.text) in str(district) or str(district) in str(pqr.text)):
-                            data['amphur'] = str(pqr['value'])
+                data['province'] = '1'
+                if abc:
+                    for pq in abc.find_all('option'):
+                        if(str(pq.text) in str(province) or str(province) in str(pq.text)):
+                            data['province'] = str(pq['value'])
                             break
 
-                except:
-                    data['amphur'] = str(soup.find('option')['value'])
+                district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
+                url_district = str('http://www.estate.in.th/data_for_list3.php?province='+data['province'])
+                find_district = httprequestObj.http_get(url_district, headers = headers).text
+
+                soup = BeautifulSoup(find_district, features = self.parser)
+                data['amphur'] = str(soup.find('option')['value'])
+                
+                for pqr in soup.find_all('option'):
+                    if(str(pqr.text) in str(district) or str(district) in str(pqr.text)):
+                        data['amphur'] = str(pqr['value'])
+                        break
+                # except:
+                #     data['amphur'] = str(soup.find('option')['value'])
 
                 if 'post_images' in postdata and len(postdata['post_images']) > 0:
-
                     file = []
                     temp = 1
-
-                    first_image = postdata["post_images"][0]
-                    
+                    first_image = postdata["post_images"][0] 
                     y=str(random.randint(0,100000000000000000))+".jpg"
                     file.append(('fileshow', (y, open(first_image, "rb"), "image/jpg")))
 
@@ -718,23 +687,16 @@ class estate():
                             #print(y)
                             file.append((str('file'+str(temp)), (y, open(i, "rb"), "image/jpg")))
                             temp = temp + 1
-
                     else:
                         for i in postdata['post_images'][1:5]:
                             y=str(random.randint(0,100000000000000000))+".jpg"
                             #print(y)
                             file.append((str('file'+str(temp)), (y, open(i, "rb"), "image/jpg")))
                             temp = temp + 1
-
-
                     edit_post_url = str('http://www.estate.in.th/member/p-edit-property.php')
-
                     edit_post = httprequestObj.http_post(edit_post_url, data = data, files = file, headers = headers)
-
                     success = "true"
                     detail = "Post edited successfully"
-
-
                 else:
                     edit_post_url = str('http://www.estate.in.th/member/p-edit-property.php')
 
@@ -742,13 +704,9 @@ class estate():
 
                     success = "true"
                     detail = "Post edited successfully"
-
-
             else:
                 success = "false"
                 detail = "post_id is incorrect"
-
-
         else :
             success = "false"
             detail = "Login failed"

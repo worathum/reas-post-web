@@ -109,7 +109,7 @@ class hipflat():
         }
 
         response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
-        soup = BeautifulSoup(response.content, features = "html")
+        soup = BeautifulSoup(response.content, features = self.parser)
 
         post_data = {
         '_method':'delete',
@@ -205,7 +205,7 @@ class hipflat():
         }
 
         response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
-        soup = BeautifulSoup(response.content, features = "html")
+        soup = BeautifulSoup(response.content, features = self.parser)
 
         post_data = {
         '_method':'delete',
@@ -497,7 +497,7 @@ class hipflat():
             # print("4")
 
             soup = BeautifulSoup(response.content, features = "html.parser")
-            print(soup)
+            # print(soup)
             try:
                 data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
             
@@ -553,8 +553,6 @@ class hipflat():
                 success = "false"
                 detail = "Free listings finished. Cannot make more posts."
 
-
-
         else:
             success = "false"
             detail = "Can not log in"
@@ -589,42 +587,32 @@ class hipflat():
 
         login = self.test_login(postdata)
         
-        if(login['success'] == "true"):
-
-            all_posts_url = 'https://www.hipflat.co.th/account/listings/pro'
-
-            res = httprequestObj.http_get(all_posts_url, headers = headers).text
-
-            aaas = []
-
-            soup = BeautifulSoup(res, features = "html")
-            #aas = soup.findAll("a")
-            for i in soup.find_all('a'):
-                try:
-                    if i['href'].find('/edit') != -1:
-
-                        #print(link)
-                        link = i['href'].replace('/listings/','')
-                        post_ids = str(link.replace('/edit',''))
-                        # link = i['href']
-                        aaas.append(post_ids)
-                except:
-                    continue
-
-            #print(aaas)
-
+        if login['success'] == "true":
             req_post_id = str(postdata['post_id'])
+            found = False
+            page = 1
+            while True:
+                res = httprequestObj.http_get("https://www.hipflat.co.th/account/listings/pro/page/"+str(page), headers = headers).text
+                soup = BeautifulSoup(res, features = self.parser)
+                count = 0
+                for i in soup.find_all('a'):
+                    if i.get('href') and i.get('href').find('/edit') != -1:
+                        link = i.get('href').split('/')
+                        count += 1
+                        # print(link)
+                        if len(link)>2 and link[2]==req_post_id:
+                            found = True
+                            break
+                page += 1
+                if found or count==0:
+                    break
 
-            if req_post_id in aaas:
-                #'https://www.hipflat.co.th/listings/'+post_id+'/edit'
-
-
+            if found:
                 if 'web_project_name' not in postdata or postdata['web_project_name'] == "":
                     if 'project_name' in postdata and postdata['project_name'] != "":
                         postdata['web_project_name'] = postdata['project_name']
                     else:
                         postdata['web_project_name'] = postdata['post_title_th']
-
 
                 getProdId = {
                     '1': 'condo',
@@ -851,10 +839,6 @@ class hipflat():
                     else:
                         data[str(pqr['name'])] = str(pqr['value'])
 
-                    #print(data[str(pqr['name'])])
-
-
-                #print('next')
                 if postdata['listing_type'] == 'เช่า':
                     data['listing[rent_availability_status]'] = 'true'
                     data['listing[rent_price]'] = str(postdata['price_baht'])
@@ -864,44 +848,14 @@ class hipflat():
 
                 r = httprequestObj.http_post(str('https://www.hipflat.co.th/listings/'+req_post_id+'/update'), data = data, headers = headers)
 
-                #print(r.url)
-                #print(r.text)
-
                 success = "true"
                 detail = "Post edited successfully"
 
-                '''data = r.text
-                #with open('./a.html','a') as f:
-                #    f.write(data)
-                #print(data)
-                link = ''
-                aaas1 = []
-                soup = BeautifulSoup(data, features = "html")
-                #aas = soup.findAll("a")
-                for i in soup.find_all('a'):
-                    try:
-                        if i['href'].find('/edit') != -1:
-                            # link = i['href']
-                            aaas1.append(i['href'])
-                    except:
-                        continue
-                # print(link)
-                link = str(aaas1[0])
-                #print(link)
-                link = link.replace('/listings/','')
-                post_id = str(link.replace('/edit',''))
-
-                post_url = str('https://www.hipflat.co.th/listing-preview/'+str(post_id))'''
-
                 if 'post_images' in postdata and len(postdata['post_images']) > 0:
                     self.upload_file(postdata,req_post_id)
-
-
             else:
                 success = "false"
                 detail = "post_id is incorrect"
-
-
         else :
             success = "false"
             detail = "Login failed"
@@ -935,33 +889,27 @@ class hipflat():
 
         login = self.test_login(postdata)
         
-        if(login['success'] == "true"):
-
-            all_posts_url = 'https://www.hipflat.co.th/account/listings/pro'
-
-            res = httprequestObj.http_get(all_posts_url, headers = headers).text
-
-            aaas = []
-
-            soup = BeautifulSoup(res, features = "html.parser")
-            #aas = soup.findAll("a")
-            for i in soup.find_all('a'):
-                try:
-                    if i['href'].find('/edit') != -1:
-
-                        #print(link)
-                        link = i['href'].replace('/listings/','')
-                        post_ids = str(link.replace('/edit',''))
-                        # link = i['href']
-                        aaas.append(post_ids)
-                except:
-                    continue
-
-            #print(aaas)
-
+        if login['success'] == "true":
             req_post_id = str(postdata['post_id'])
+            found = False
+            page = 1
+            while True:
+                res = httprequestObj.http_get("https://www.hipflat.co.th/account/listings/pro/page/"+str(page), headers = headers).text
+                soup = BeautifulSoup(res, features = self.parser)
+                count = 0
+                for i in soup.find_all('a'):
+                    if i.get('href') and i.get('href').find('/edit') != -1:
+                        link = i.get('href').split('/')
+                        count += 1
+                        # print(link)
+                        if len(link)>2 and link[2]==req_post_id:
+                            found = True
+                            break
+                page += 1
+                if found or count==0:
+                    break
 
-            if req_post_id in aaas:
+            if found:
 
                 '''if province_id == '0':
                     province_id = '5599801770726f1f36000019'
@@ -1078,26 +1026,6 @@ class hipflat():
                     'commit': 'record'
                 }
 
-                ''''listing[photos_attributes][0][id]': '5f060bfaa12eda320d00eae5',
-                    'listing[photos_attributes][0][order]': '1',
-                    'listing[photos_attributes][0][_destroy]': '1',
-                    'listing[photos_attributes][1][id]': '5f060bfaa12eda320d00eae7',
-                    'listing[photos_attributes][1][order]': '2',
-                    'listing[photos_attributes][1][_destroy]': '1',
-                    'listing[photos_attributes][2][id]': '5f060bfaa12eda320d00eae8',
-                    'listing[photos_attributes][2][order]': '3',
-                    'listing[photos_attributes][2][_destroy]': '1',
-                    'listing[photos_attributes][3][id]': '5f0db827a12eda389d0061a2',
-                    'listing[photos_attributes][3][order]': '4',
-                    'listing[photos_attributes][3][_destroy]': '1',
-                    'listing[photos_attributes][4][id]': '5f0de90ba12eda37d3007800',
-                    'listing[photos_attributes][4][order]': '5',
-                    'listing[photos_attributes][4][_destroy]': '1',
-                    'listing[photos_attributes][5][id]': '5f0dea28a12eda38fa005364',
-                    'listing[photos_attributes][5][order]': '6',
-                    'listing[photos_attributes][5][_destroy]': '1','''
-
-
                 response = httprequestObj.http_get(str('https://www.hipflat.co.th/listings/'+req_post_id+'/edit'), headers = headers)
 
                 soup = BeautifulSoup(response.content, features = "html.parser")
@@ -1170,34 +1098,27 @@ class hipflat():
 
         login = self.test_login(postdata)
         
-        if(login['success'] == "true"):
-
-            all_posts_url = 'https://www.hipflat.co.th/account/listings/pro'
-
-            res = httprequestObj.http_get(all_posts_url, headers = headers).text
-
-            aaas = []
-
-            soup = BeautifulSoup(res, features = "html")
-            #aas = soup.findAll("a")
-            for i in soup.find_all('a'):
-                try:
-                    if i['href'].find('/edit') != -1:
-
-                        #print(link)
-                        link = i['href'].replace('/listings/','')
-                        post_ids = str(link.replace('/edit',''))
-                        # link = i['href']
-                        aaas.append(post_ids)
-                except:
-                    continue
-
-            #print(aaas)
-
+        if login['success'] == "true":
             req_post_id = str(postdata['post_id'])
+            found = False
+            page = 1
+            while True:
+                res = httprequestObj.http_get("https://www.hipflat.co.th/account/listings/pro/page/"+str(page), headers = headers).text
+                soup = BeautifulSoup(res, features = self.parser)
+                count = 0
+                for i in soup.find_all('a'):
+                    if i.get('href') and i.get('href').find('/edit') != -1:
+                        link = i.get('href').split('/')
+                        count += 1
+                        # print(link)
+                        if len(link)>2 and link[2]==req_post_id:
+                            found = True
+                            break
+                page += 1
+                if found or count==0:
+                    break
 
-            if req_post_id in aaas:
-
+            if found:
                 data = {
                     'utf8': '',
                     '_method': 'put',

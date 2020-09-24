@@ -246,6 +246,8 @@ class onlineoops():
                     for image in postdata['post_images'][1:6]:
                         files["PostmarketthTH[images][]"] = open(os.getcwd()+"/"+image, 'rb')
                         r = httprequestObj.http_post(self.site_name+'/post/free?id='+post_id, data=datapost, files = files)
+            else:
+                detail += "Error code "+ str(response.status_code)+"     detail:"+response.text
         else:
             detail = "Unable to login"
         time_end = datetime.datetime.utcnow()

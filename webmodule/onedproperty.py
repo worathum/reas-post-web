@@ -243,7 +243,7 @@ class onedproperty():
             
             all_amphoe = httprequestObj.http_get(url_pro, headers = headers).text
             
-            soup = BeautifulSoup(all_amphoe,features="html")
+            soup = BeautifulSoup(all_amphoe,features = self.parser)
             
             district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
             #print(district)
@@ -282,7 +282,7 @@ class onedproperty():
             
             post_info = httprequestObj.http_get('http://www.onedproperty.com/member/property', headers = headers).text
             
-            soup = BeautifulSoup(post_info,features="html")
+            soup = BeautifulSoup(post_info,features = self.parser)
             
             post_in = soup.find('div',attrs={'class':"btn-line"}).a
             
@@ -325,10 +325,10 @@ class onedproperty():
 
         login = self.test_login(postdata)
         
-        if (login['success'] == 'true'):
+        if login['success'] == 'true':
             all_posts = httprequestObj.http_get('http://www.onedproperty.com/member/property', headers = headers).text
             
-            soup = BeautifulSoup(all_posts,features="html")
+            soup = BeautifulSoup(all_posts,features = self.parser)
             
             all_post_id = []
             
@@ -343,8 +343,6 @@ class onedproperty():
                 
             req_post_id = str(postdata['post_id'])
             if req_post_id in all_post_id:
-
-
                 post_url = str('http://www.onedproperty.com/property/update/'+str(req_post_id))
                 
                 pqr = httprequestObj.http_get(post_url, headers = headers).text
@@ -356,8 +354,6 @@ class onedproperty():
                     #print(image_id)
                     image_delete_url = str('http://www.onedproperty.com/property/deleteImage/'+str(image_id))
                     pqr1 = httprequestObj.http_get(image_delete_url, headers = headers)
-
-
 
                 data = {
                 'category_id' : '1',
@@ -390,10 +386,7 @@ class onedproperty():
 
             else:
                 success = "false"
-                detail = "post_id is incorrect"
-            
-            
-            
+                detail = "post_id is incorrect"  
         else :
             success = "false"
             detail = "Login failed"
@@ -429,7 +422,7 @@ class onedproperty():
         if(login['success'] == "true"):
             all_posts = httprequestObj.http_get('http://www.onedproperty.com/member/property', headers = headers).text
             
-            soup = BeautifulSoup(all_posts,features="html")
+            soup = BeautifulSoup(all_posts,features = self.parser)
             
             all_post_id = []
             
@@ -493,19 +486,15 @@ class onedproperty():
 
         login = self.test_login(postdata)
         
-        if (login['success'] == 'true'):
+        if login['success'] == 'true':
             all_posts = httprequestObj.http_get('http://www.onedproperty.com/member/property', headers = headers).text
-            
-            soup = BeautifulSoup(all_posts,features="html")
-            
+            soup = BeautifulSoup(all_posts,features = self.parser).find(class_='property-list')
             all_post_id = []
             
-            success = 'true'
-            
-            for post_in in soup.find_all('div',attrs={'class':"btn-line"}):
-                post_in_a = (post_in.a)['href']
-                post_id = str((post_in_a.split('/'))[5])
-                all_post_id.append(post_id)
+            for post_in in soup.find_all('div', attrs={'class':"btn-line"}):
+                post_id = str((post_in.a)['href']).split('/')[-1]
+                if post_id.isdigit():
+                    all_post_id.append(post_id)
                 
             req_post_id = str(postdata['post_id'])
             if req_post_id in all_post_id:
@@ -594,7 +583,7 @@ class onedproperty():
             
                 all_amphoe = httprequestObj.http_get(url_pro, headers = headers).text
             
-                soup = BeautifulSoup(all_amphoe,features="html")
+                soup = BeautifulSoup(all_amphoe,features = self.parser)
             
                 district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
             
@@ -629,12 +618,10 @@ class onedproperty():
                 post_create = httprequestObj.http_post(edit_url, data = data, files = file, headers = headers)
                 success = "true"
                 detail = "Post edited successfully"
-
-                
+    
             else:
                 success = 'false'
                 detail = 'No such post_id exist for this user'
-        
         
         else :
             success = 'false'

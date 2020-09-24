@@ -33,11 +33,6 @@ class propertypostfree():
         self.parser = 'html.parser'
 
 
-
-
-
-
-
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
@@ -277,14 +272,14 @@ class propertypostfree():
 
             find_province = httprequestObj.http_get('http://www.propertypostfree.com/member/post-property.php', headers = headers).text
 
-            soup = BeautifulSoup(find_province,features = "html")
-
+            soup = BeautifulSoup(find_province,features = self.parser)
             abc = soup.find('select',attrs = {'name':'province'})
-
-            for pq in abc.find_all('option'):
-                if(str(pq.text) in str(province) or str(province) in str(pq.text)):
-                    data['province'] = str(pq['value'])
-                    break
+            data['province'] = '1'
+            if abc:
+                for pq in abc.find_all('option'):
+                    if(str(pq.text) in str(province) or str(province) in str(pq.text)):
+                        data['province'] = str(pq['value'])
+                        break
 
             district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
 
@@ -292,15 +287,13 @@ class propertypostfree():
 
             find_district = httprequestObj.http_get(url_district, headers = headers).text
 
-            soup = BeautifulSoup(find_district,features = "html")
+            soup = BeautifulSoup(find_district,features = self.parser)
 
             try:
-
                 for pqr in soup.find_all('option'):
                     if(str(pqr.text) in str(district) or str(district) in str(pqr.text)):
                         data['amphur'] = str(pqr['value'])
                         break
-
             except:
                 data['amphur'] = str(soup.find('option')['value'])
 
@@ -351,7 +344,7 @@ class propertypostfree():
             crt_post = httprequestObj.http_post('http://www.propertypostfree.com/member/p-post-property.php', data = data, files = file, headers = headers)
             #print(crt_post.text)
 
-            soup = BeautifulSoup(crt_post.content, features = "html")
+            soup = BeautifulSoup(crt_post.content, features = self.parser)
 
             abc = soup.find('meta',attrs = {'http-equiv':'refresh'})
             post_id = str((abc['content'])[39:])
@@ -362,13 +355,8 @@ class propertypostfree():
 
             sec_step = httprequestObj.http_get(sec_step_url, headers = headers)
 
-
-
             success = "true"
             detail = "Post created successfully"
-
-
-
 
         else:
             success = "false"
@@ -409,13 +397,13 @@ class propertypostfree():
 
             all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
 
-            soup = BeautifulSoup(all_posts.content, features = "html")
+            soup = BeautifulSoup(all_posts.content, features = self.parser)
 
             all_post_ids = []
             page = 1            
             while True:
                 requ = httprequestObj.http_get("http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
-                soup = BeautifulSoup(requ, features = "html")
+                soup = BeautifulSoup(requ, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
                     all_post_ids.append(str(abc['value']))
@@ -485,7 +473,7 @@ class propertypostfree():
             page = 1            
             while True:
                 requ = httprequestObj.http_get("http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
-                soup = BeautifulSoup(requ, features = "html")
+                soup = BeautifulSoup(requ, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
                     all_post_ids.append(str(abc['value']))
@@ -546,22 +534,12 @@ class propertypostfree():
 
         login = self.test_login(postdata)
         
-        if (login['success'] == 'true'):
-
-            all_posts_url = 'http://www.propertypostfree.com/member/list-property.php'
-
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
-
-
-
-            soup = BeautifulSoup(all_posts.content, features = "html")
-
+        if login['success'] == 'true':
             all_post_ids = []
-
             page = 1            
             while True:
                 requ = httprequestObj.http_get("http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
-                soup = BeautifulSoup(requ, features = "html")
+                soup = BeautifulSoup(requ, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
                     all_post_ids.append(str(abc['value']))
@@ -613,12 +591,10 @@ class propertypostfree():
                     'submit': 'ดำเนินการต่อ &gt;&gt;'
                 }
 
-
                 if postdata['listing_type'] == 'เช่า':
                     data['class_type_id'] = '2'
                 else:
                     data['class_type_id'] = '1'
-
 
                 pd_properties = {
                     '1': '4',
@@ -667,15 +643,14 @@ class propertypostfree():
 
                 find_province = httprequestObj.http_get(pro_url, headers = headers).text
 
-                soup = BeautifulSoup(find_province,features = "html")
-
+                soup = BeautifulSoup(find_province,features = self.parser)
                 abc = soup.find('select',attrs = {'name':'province'})
-
-                for pq in abc.find_all('option'):
-                    if(str(pq.text) in str(province) or str(province) in str(pq.text)):
-                        data['province'] = str(pq['value'])
-                        break
-
+                data['province'] = '1'
+                if abc:
+                    for pq in abc.find_all('option'):
+                        if(str(pq.text) in str(province) or str(province) in str(pq.text)):
+                            data['province'] = str(pq['value'])
+                            break
 
                 district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
 
@@ -683,15 +658,13 @@ class propertypostfree():
 
                 find_district = httprequestObj.http_get(url_district, headers = headers).text
 
-                soup = BeautifulSoup(find_district,features = "html")
+                soup = BeautifulSoup(find_district,features = self.parser)
 
                 try:
-
                     for pqr in soup.find_all('option'):
                         if(str(pqr.text) in str(district) or str(district) in str(pqr.text)):
                             data['amphur'] = str(pqr['value'])
                             break
-
                 except:
                     data['amphur'] = str(soup.find('option')['value'])
 
@@ -726,13 +699,9 @@ class propertypostfree():
 
                     success = "true"
                     detail = "Post edited successfully"
-
-
                 else:
                     edit_post_url = str('http://www.propertypostfree.com/member/p-edit-property.php')
-
                     edit_post = httprequestObj.http_post(edit_post_url, data = data, headers = headers)
-
                     success = "true"
                     detail = "Post edited successfully"
 
@@ -792,7 +761,7 @@ class propertypostfree():
 
             all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
 
-            soup = BeautifulSoup(all_posts.content, features = "html")
+            soup = BeautifulSoup(all_posts.content, features = self.parser)
 
 
             xyz = soup.find('table', attrs={'class':'table table-hover'})
@@ -811,7 +780,7 @@ class propertypostfree():
 
                     find_info = httprequestObj.http_get(post_url, headers = headers)
 
-                    sou = BeautifulSoup(find_info.content, features = "html")
+                    sou = BeautifulSoup(find_info.content, features = self.parser)
 
                     pqr = sou.find('div', attrs = {'class': 'news-time'}).text.split(' ')
 

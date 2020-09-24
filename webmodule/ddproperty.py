@@ -59,11 +59,9 @@ class ddproperty():
         name_title = postdata["name_title"]
         name_th = postdata["name_th"]
         surname_th = postdata["surname_th"]
-        # name_en = postdata["name_en"]
-        # surname_en = postdata["surname_en"]
+       
         tel = postdata["tel"]
         line = postdata["line"]
-        # addr_province = postdata["addr_province"]
         tel = list(tel)
         del tel[0]
         newtel = ''.join(tel)
@@ -217,9 +215,11 @@ class ddproperty():
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
-        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-
+        # self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+        self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
         # open login page
+        # self.firefox = webdriver.Chrome("C:/Users/hp/Downloads/chromedriver_win32/chromedriver", chrome_options=options)
+
         self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
 
         # input email and enter
@@ -316,12 +316,11 @@ class ddproperty():
         response['end_time'] = str(time_end)
         response['websitename'] = self.websitename
         response['ds_id'] = datahandled['ds_id']
-
+        
         return response
 
     def postdata_handle(self, postdata):
         #log.debug('')
-
         if self.handled == True:
             return postdata
 
@@ -444,13 +443,13 @@ class ddproperty():
             #log.warning(str(e))
 
         try:
-            datahandled['post_title_th'] = postdata['post_title_th']
+            datahandled['post_title_th'] = str(postdata['post_title_th'])
         except KeyError as e:
             datahandled['post_title_th'] = ''
             #log.warning(str(e))
 
         try:
-            datahandled['post_description_th'] = postdata['post_description_th']
+            datahandled['post_description_th'] = str(postdata['post_description_th'])
         except KeyError as e:
             datahandled['post_description_th'] = ''
             #log.warning(str(e))
@@ -613,44 +612,30 @@ class ddproperty():
             #log.warning(str(e))
 
         self.handled = True
-
         return datahandled
 
     def create_post(self, postdata):
-        #print('here')
-        #log.debug('')
-
         time_start = datetime.datetime.utcnow()
-
-        # start process
-        #
-
-        #print("here1")
         datahandled = self.postdata_handle(postdata)
-        #print("here2")
+        
         # login
         test_login = self.test_login(datahandled)
         success = test_login["success"]
         detail = test_login["detail"]
         agent_id = test_login["agent_id"]
-        #print("here3")
         post_id = ""
         account_type = "normal"
 
         if success == "true":
-
             self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
             time.sleep(1)
-            #print('here4')
-            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
-            #print('here5')
+            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
             # self.firefox.save_screenshot("debug_response/location.png")
 
             success, detail = self.inputpostgeneral(datahandled)
             if success == 'true':
                 success, detail, post_id, account_type = self.inputpostdetail(datahandled)
-
-        #log.debug('create post done')
+                print(success, detail, post_id, account_type)
         try:
             self.firefox.quit()
         except:
@@ -950,7 +935,6 @@ class ddproperty():
                     else:
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['bed_room']) + ' ห้องนอน')).click()
             except WebDriverException as e:
-                #log.warning('cannot input bed room '+str(e))
                 pass
 
             # bath room
@@ -971,13 +955,14 @@ class ddproperty():
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
+                print(str(datahandled['floor_area']))
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floor_area']))
             except WebDriverException as e:
                 #log.warning('cannot input floor area sqm '+str(e))
                 pass
 
             # total floor
-            if datahandled['floor_total'] != None and int(datahandled['floor_total']) < 0:
+            if datahandled['floor_total'] and str(datahandled['floor_total']).isdigit() and int(datahandled['floor_total']) < 0:
                 try:
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
@@ -986,7 +971,7 @@ class ddproperty():
                     pass
 
             # floor position
-            if datahandled['floor_level'] != None and int(datahandled['floor_level']) < 0:
+            if datahandled['floor_level'] and str(datahandled['floor_level']).isdigit() and int(datahandled['floor_level']) < 0:
                 try:
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
@@ -1042,15 +1027,17 @@ class ddproperty():
             #self.firefox.save_screenshot("debug_response/newp22.png")
 
             # หันหน้าทางทิศ
-            try:
-                element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="form-field-facing-type"]'))
-                self.firefox.execute_script("arguments[0].click();", element)
-                element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['direction_type'])))
-                self.firefox.execute_script("arguments[0].click();", element)
-                #log.debug('input direction type')
-            except WebDriverException as e:
-                #log.warning('cannot input direction type '+str(e))
-                pass
+
+            # try:
+            #     element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="form-field-facing-type"]'))
+            #     self.firefox.execute_script("arguments[0].click();", element)
+            #     element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['direction_type'])))
+            #     self.firefox.execute_script("arguments[0].click();", element)
+            #     #log.debug('input direction type')
+            # except WebDriverException as e:
+            #     #log.warning('cannot input direction type '+str(e))
+            #     pass
+
             #self.firefox.save_screenshot("debug_response/newp33.png")
 
             # area
@@ -1067,15 +1054,12 @@ class ddproperty():
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_ngaan")).send_keys(datahandled['land_size_ngan'])
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-landarea_sqw")).send_keys(datahandled['land_size_wa'])
             except WebDriverException as e:
-                #log.warning('cannot input area '+str(e))
                 pass
-            #self.firefox.save_screenshot("debug_response/newp12.png")
 
             # account type
             matchObj = re.search(r'รายละเอียดตัวแทน', self.firefox.page_source)
             if matchObj:
                 account_type = 'corporate'
-                #log.debug('account_type corporate')
                 try:
                     if datahandled['action'] == 'edit_post':
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
@@ -1086,22 +1070,28 @@ class ddproperty():
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
-                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("div[class='corporate-email-wrap']/textarea")).send_keys(datahandled['email'])
+                    # WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
                 except WebDriverException as e:
                     #log.warning('cannot input corporate data '+str(e))
+                    print(e)
                     pass
-
+            
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(2)
-            #self.firefox.save_screenshot("debug_response/newp12.png")
-
             # next
             try:
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click()  
+                next_button = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name('step-next'))
+                # self.firefox.execute_script("return arguments[0].scrollIntoView(true);", next_button)
+                time.sleep(5)
+                next_button.click()
             except WebDriverException as e:
+                print('except 1')
+                print(e)
                 #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
                 success = 'false'
                 detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits'
+                time.sleep(10)
                 self.firefox.close()
                 self.firefox.quit()
                 try:
@@ -1182,9 +1172,11 @@ class ddproperty():
                 except:
                     pass
                 return success, detail, post_id, account_type
-
-            WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
-            time.sleep(1.8)
+            try:
+                WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
+                time.sleep(1.8)
+            except WebDriverException:
+                pass
             #print('here4')
             #log.debug('click publish')
             # self.firefox.save_screenshot("debug_response/newp11.png")
@@ -1197,8 +1189,11 @@ class ddproperty():
                     detail = 'Active Unit Listing quota exceeded'
             #print('here5')
             #บันทึกแล้วออก
-            element = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
-            self.firefox.execute_script("arguments[0].click();", element)
+            try:
+                element = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
+                self.firefox.execute_script("arguments[0].click();", element)
+            except WebDriverException:
+                pass
             #print('here6')
             #quit        
             self.firefox.close()
@@ -1211,8 +1206,9 @@ class ddproperty():
             except:
                 pass
             # self.firefox.quit()
-
+        print(success, detail, post_id, account_type)
         return success, detail, post_id, account_type
+
 
     def create_post_bak(self, postdata):
         #log.debug('')

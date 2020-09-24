@@ -169,8 +169,8 @@ class property2share():
 
         # login with user info first
         login = self.test_login(postdata)
-
-        if(login['success'] == False):
+    
+        if login['success'] == False:
             return login
 
         # MAKE GET REQUEST FOR GETTING DROPDOWN DETAILS
@@ -250,36 +250,36 @@ class property2share():
         # REQUEST FOR CREATE POST
         url = 'https://www.property2share.com/pageuser/submitNewPublish.php?type=2'
         data = {
-        'find_broker': 'on',
-        'type_publish': post_type,
-        'asset_type': type_mapping[int(property_type)],
-        'location_home': 'on',
-        'publish_title': post_title_th,
-        'txtDescription': post_description_th,
-        'publish_special': '',
-        'location_detail': addr_province,
-        'province_id': province_id,
-        'amphur_id': amphur_id,
-        'latLngPublish': '(' + str(geo_latitude)+', '+str(geo_longitude)+')',
-        'station_type': 0,
-        'station_id': 0,
-        'publish_price': price_baht,
-        'unit_price': 1,
-        'area_rai': rai_size,
-        'area_ngan': ngan_size,
-        'area_va2': wa_size,
-        'area_use': floorarea,
-        'contact_name': postdata['name'],
-        'contact_tel': postdata['mobile'],
-        'contact_mobile': postdata['mobile'],
-        'contact_email': postdata['email'],
-        'contact_website': ''
+            'find_broker': 'on',
+            'type_publish': post_type,
+            'asset_type': type_mapping[int(property_type)],
+            'location_home': 'on',
+            'publish_title': post_title_th,
+            'txtDescription': post_description_th,
+            'publish_special': '',
+            'location_detail': addr_province,
+            'province_id': province_id,
+            'amphur_id': amphur_id,
+            'latLngPublish': '(' + str(geo_latitude)+', '+str(geo_longitude)+')',
+            'station_type': 0,
+            'station_id': 0,
+            'publish_price': price_baht,
+            'unit_price': 1,
+            'area_rai': rai_size,
+            'area_ngan': ngan_size,
+            'area_va2': wa_size,
+            'area_use': floorarea,
+            'contact_name': postdata['name'],
+            'contact_tel': postdata['mobile'],
+            'contact_mobile': postdata['mobile'],
+            'contact_email': postdata['email'],
+            'contact_website': ''
         }
 
         #POST REQUEST WITH DATA
         res = httprequestObj.http_post(url,data=data)
         url = res.url
-
+        print(res.status_code)
         url = url.split('?')
         post_id = str(url[1][11:])
         url = 'https://www.property2share.com/pageuser/upload.php'
@@ -323,6 +323,7 @@ class property2share():
             "websitename": "property2share"
         }
 
+
     def check_posted(self, postdata):
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
 
@@ -332,14 +333,13 @@ class property2share():
 
         all_posts_response = httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
         all_posts_response = all_posts_response.content.decode('utf-8')
-        # print(json.dumps(all_posts_response, indent=4))
+        print(all_posts_response.find(str(postdata['post_id'])))
 
         post_id = postdata['post_id']
         check_string = '"publish_id":"' + str(post_id) + '"'
 
-        if(check_string in all_posts_response):
+        if check_string in all_posts_response:
             return True
-
         else:
             return False
 
@@ -554,12 +554,7 @@ class property2share():
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
 
-        if ('log_id' not in postdata or postdata['log_id'] == None or log_id == ""):
-            log_id = ''
-
-
-        else:
-            log_id = int(postdata['log_id'])
+        log_id = postdata['log_id']
 
         post_id = postdata['post_id']
         listing_type = postdata['listing_type']
@@ -575,8 +570,8 @@ class property2share():
 
         # login with user info first
         login = self.test_login(postdata)
-
-        if (login['success'] == False):
+        
+        if login['success'] == False:
             return login
 
         check_posted = self.check_posted(postdata)

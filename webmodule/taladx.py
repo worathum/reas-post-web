@@ -354,31 +354,30 @@ class taladx():
 
         login = self.test_login(postdata)
         
-        if(login['success'] == "true"):
-
-            all_posts = httprequestObj.http_get('http://www.taladx.com/manage-post.php', headers = headers).text
-            
-            soup = BeautifulSoup(all_posts,features="html.parser")
-            
-            all_post_id = []
-            
-            success = 'true'
-            
+        if login['success'] == "true":
             page = 1
+            req_post_id = str(postdata['post_id'])
+            all_post_ids = set([])
+            found = False
+            flag = False
             while True:
                 requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
                 all_post = soup.find_all('span',attrs={'class':"code"})
                 for abc in all_post:
-                    total_text = abc.text.split(' ')
-                    one_id = str(total_text[-1])
-                    all_post_id.append(one_id)
+                    total_text = abc.text.split()
+                    if str(total_text[-1].strip())==req_post_id:
+                        found = True
+                        break
+                    if str(total_text[-1].strip()) in all_post_ids:
+                        flag = True
+                        break
+                    all_post_ids.add(str(total_text[-1].strip()))
                 page += 1
-                if not all_post:
+                if (not all_post) or found or flag:
                     break
 
-            req_post_id = str(postdata['post_id'])
-            if req_post_id in all_post_id:
+            if found:
                 boost_url = str('http://www.taladx.com/manage-post.php?update='+req_post_id)
                 res = httprequestObj.http_get(boost_url, headers = headers)
                 success = "true"
@@ -419,7 +418,9 @@ class taladx():
         if login['success'] == "true":
             page = 1
             req_post_id = str(postdata['post_id'])
+            all_post_ids = set([])
             found = False
+            flag = False
             while True:
                 requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
@@ -429,9 +430,12 @@ class taladx():
                     if str(total_text[-1].strip())==req_post_id:
                         found = True
                         break
+                    if str(total_text[-1].strip()) in all_post_ids:
+                        flag = True
+                        break
+                    all_post_ids.add(str(total_text[-1].strip()))
                 page += 1
-                if (not all_post) or found:
-                    print(found)
+                if (not all_post) or found or flag:
                     break
 
             if found:
@@ -472,31 +476,30 @@ class taladx():
 
         login = self.test_login(postdata)
         
-        if (login['success'] == 'true'):
-            all_posts = httprequestObj.http_get('http://www.taladx.com/manage-post.php', headers = headers).text
-            
-            soup = BeautifulSoup(all_posts,features="html.parser")
-            
-            all_post_id = []
-            
-            success = 'true'
-           
+        if login['success'] == 'true':
             page = 1
+            req_post_id = str(postdata['post_id'])
+            all_post_ids = set([])
+            found = False
+            flag = False
             while True:
                 requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
                 all_post = soup.find_all('span',attrs={'class':"code"})
                 for abc in all_post:
-                    total_text = abc.text.split(' ')
-                    one_id = str(total_text[-1])
-                    all_post_id.append(one_id)
+                    total_text = abc.text.split()
+                    if str(total_text[-1].strip())==req_post_id:
+                        found = True
+                        break
+                    if str(total_text[-1].strip()) in all_post_ids:
+                        flag = True
+                        break
+                    all_post_ids.add(str(total_text[-1].strip()))
                 page += 1
-                if not all_post:
+                if (not all_post) or found or flag:
                     break
 
-            req_post_id = str(postdata['post_id'])
-            if req_post_id in all_post_id:
-
+            if found:
                 post_url = str('http://www.taladx.com/post-edit.php?id='+req_post_id)
 
                 if 'web_project_name' not in postdata or postdata['web_project_name'] == "":
@@ -624,12 +627,9 @@ class taladx():
                     success = "true"
                     detail = "Post edited successfully"
 
-
-
             else:
                 success = "false"
                 detail = "post_id is incorrect"
-
 
         else :
             success = "false"

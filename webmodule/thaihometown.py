@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 import os.path
 # from urlparse import urlparse
 import re,requests
-import json
+import json, os
 import datetime
 import sys
 from urllib.parse import unquote,urlparse,parse_qs
@@ -700,50 +700,50 @@ class thaihometown():
                     #print('here6')
 
                     # https://www.thaihometown.com/addcontacts
-                    datapost = {
-                                'ActionForm2':'',
-                                'Submit':'Active',
-                                'ad_title':datahandled['post_description_th'].encode('cp874', 'ignore'),
-                                'carpark':'',
-                                'code_edit':code_edit,
-                                'conditioning':'',
-                                'contact_code':'',
-                                'dasd':dasd,
-                                'date_signup':date_signup,
-                                'email':email,
-                                'firstname':firstname,
-                                'headtitle':datahandled['post_title_th'].encode('cp874', 'ignore'),
-                                'id':'',
-                                'info[0]' :'ตกแต่งห้องนอน'.encode('cp874', 'ignore'),
-                                'info[1]' :'ตกแต่งห้องนั่งเล่น'.encode('cp874', 'ignore'),
-                                'info[2]' :'ปูพื้นเซรามิค'.encode('cp874', 'ignore'),
-                                'info[3]' :'เฟอร์นิเจอร์'.encode('cp874', 'ignore'),
-                                'info[4]' :'ไมโครเวฟ'.encode('cp874', 'ignore'),
-                                'info[5]' :'ชุดรับแขก'.encode('cp874', 'ignore'),
-                                'mobile':mobile,
-                                'price_unit':'',
-                                'property_area':size,
-                                'property_bts':'',
-                                'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
-                                'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
-                                'property_country_2':datahandled['property_country_2'].encode('cp874', 'ignore'),
-                                'property_mrt':'',
-                                'property_purple':'',
-                                'property_sqm':typeunit,
-                                'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
-                                'room1':datahandled['bed_room'],
-                                'room2':datahandled['bath_room'],
-                                'sas_name':sas_name,
-                                'rent_price':rent_price,
-                                'selling_price':selling_price,
-                                'type_forrent':'',
-                                'string1':string1,
-                                'string2':string2,
-                                'typepart':datahandled['listing_type'].encode('cp874', 'ignore'),
-                                'typeunit':'ต่อตร.ม'.encode('cp874', 'ignore'),
-                                'notprice': 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
-                    }
 
+                    datapost = {
+                        'ActionForm2':'',
+                        'Submit':'Active',
+                        'ad_title':datahandled['post_description_th'].encode('cp874', 'ignore'),
+                        'carpark':'',
+                        'code_edit':code_edit,
+                        'conditioning':'',
+                        'contact_code':'',
+                        'dasd':dasd,
+                        'date_signup':date_signup,
+                        'email':email,
+                        'firstname':firstname,
+                        'headtitle':datahandled['post_title_th'].encode('cp874', 'ignore'),
+                        'id':'',
+                        'info[0]' :'ตกแต่งห้องนอน'.encode('cp874', 'ignore'),
+                        'info[1]' :'ตกแต่งห้องนั่งเล่น'.encode('cp874', 'ignore'),
+                        'info[2]' :'ปูพื้นเซรามิค'.encode('cp874', 'ignore'),
+                        'info[3]' :'เฟอร์นิเจอร์'.encode('cp874', 'ignore'),
+                        'info[4]' :'ไมโครเวฟ'.encode('cp874', 'ignore'),
+                        'info[5]' :'ชุดรับแขก'.encode('cp874', 'ignore'),
+                        'mobile':mobile,
+                        'price_unit':'',
+                        'property_area':size,
+                        'property_bts':'',
+                        'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
+                        'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
+                        'property_country_2':datahandled['property_country_2'].encode('cp874', 'ignore'),
+                        'property_mrt':'',
+                        'property_purple':'',
+                        'property_sqm':typeunit,
+                        'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
+                        'room1':datahandled['bed_room'],
+                        'room2':datahandled['bath_room'],
+                        'sas_name':sas_name,
+                        'rent_price':rent_price,
+                        'selling_price':selling_price,
+                        'type_forrent':'',
+                        'string1':string1,
+                        'string2':string2,
+                        'typepart':datahandled['listing_type'].encode('cp874', 'ignore'),
+                        'typeunit':'ต่อตร.ม'.encode('cp874', 'ignore'),
+                        'notprice': 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
+                    }
                     #log.debug(datapost)
                     #print('here7')
                     r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
@@ -751,7 +751,7 @@ class thaihometown():
                     # print(data)
                     #f = open("thihomepost.html", "wb")
                     #f.write(data.encode('utf-8').strip())
-
+                    # print(str(datahandled['property_type']))
                     matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
                     if not matchObj:
                         success = "false"
@@ -762,8 +762,8 @@ class thaihometown():
                         post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
                      
                         #get post url
-                        post_url = self.getposturl(post_id)
-                        
+                        post_url = self.getposturl(post_id,datahandled['property_type'])
+                        # print(str(datahandled['property_type']))
                         #upload image
                         self.uploadimage(datahandled,post_id)
 
@@ -783,10 +783,10 @@ class thaihometown():
             "websitename": self.websitename
         }
     
-    def getposturl(self,post_id):
+    def getposturl(self,post_id,type):
         #log.debug('')
+        post_url = 'https://www.thaihometown.com/'+str(type.split('+')[1])+'/'+str(post_id)
 
-        post_url = 'https://www.thaihometown.com/home/'+str(post_id)
         r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(post_id),encoder='cp874', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -1101,8 +1101,8 @@ class thaihometown():
                     imgurl  =  soup.find("img",src=re.compile('securimage_show'))['src']
                     
                     res = httprequestObj.http_get(imgurl, verify=False)
-                    imgname = "imgtmp/captchatmp/" + str(random.randint(1, 999999999)) + '.png'
-                    with open(imgname, 'wb') as f:
+                    imgname = "/imgtmp/captchatmp/" + str(random.randint(1, 999999999)) + '.png'
+                    with open(os.getcwd()+imgname, 'wb') as f:
                         f.write(res.content)
                         f.close()
                     #log.debug('download image '+imgname)
@@ -1211,7 +1211,7 @@ class thaihometown():
 
             # check respone py post id
             pid = datahandled['post_id']
-            matchObj = re.search(rf"{pid}", data)
+            matchObj = re.search(r"{}".format(pid), data)
             if not matchObj:
                 success = "false"
                 detail = "not found this post_id " + datahandled['post_id']
@@ -1365,7 +1365,7 @@ class thaihometown():
 
                 # check respone py post id
                 pid = datahandled['post_id']
-                matchObj = re.search(rf"{pid}", data)
+                matchObj = re.search(r"{}".format(pid), data)
                 if not matchObj:
                     success = "false"
                     detail = "not found this post_id " + datahandled['post_id']
@@ -1374,7 +1374,7 @@ class thaihometown():
                 matchObj = re.search(r'�ѹ���! �س��䢢����Ż�С�ȷ����ҹ���� �ú��˹� 10', data)
                 if matchObj:
                     success = "false"
-                    detail = "today you is edited post 10 times วันนี้! คุณแก้ไขข้อมูลประกาศที่ใช้งานแล้ว ครบกำหนด 10 ครั้ง/วัน กรุณาใช้งานอีกครั้งในวันถัดไป"
+                    detail = "today you have edited post 10 times วันนี้! คุณแก้ไขข้อมูลประกาศที่ใช้งานแล้ว ครบกำหนด 10 ครั้ง/วัน กรุณาใช้งานอีกครั้งในวันถัดไป"
 
 
                 if success == "true":

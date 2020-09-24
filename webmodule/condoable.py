@@ -193,7 +193,7 @@ class condoable():
                     raise Exception
             except :
                 project_name = postdata['post_title_th']
-        resp = requests.get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
+        resp = httprequestObj.http_get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
         allres = json.loads(resp.content.decode('utf-8').replace('""', '"'), strict = False)
         condoprojectid = None
         if len(allres) != 0:
@@ -281,13 +281,15 @@ class condoable():
                 if(re.search(r'ลงประกาศเรียบร้อยแล้ว',r.text)):
                     success = "true"
                     detail = "Sucessfully posted"
+                    post_url = "http://condoable.com/viewAdvertise.do?advertiseId="+str(post_id)
                 else:
                     success = "false"
-                    detail = "Could not post"
-                post_url = "http://condoable.com/viewAdvertise.do?advertiseId="+str(post_id)
+                    detail = "Could not post" 
+                    post_id = ""
             else:
                 success = "False"
                 detail  = "Unable to create post"
+                post_id = ""
         else :
             success = "False"
             detail = "Login Error"
@@ -471,7 +473,7 @@ class condoable():
             except :
                 project_name = postdata['post_title_th']
 
-        resp = requests.get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
+        resp = httprequestObj.http_get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
         allres = json.loads(resp.content.decode('utf-8').replace('""', '"'), strict = False)
         condoprojectid = None
         if len(allres) != 0:
