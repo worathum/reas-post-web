@@ -46,27 +46,31 @@ class terrabkk():
         surname_th = userdata['surname_th']
         tel = userdata['tel']
         line = userdata['line']
+        company_name = ""
+        if 'company_name' in userdata:
+            company_name = userdata['company_name']
         nmaetitledic = { "ms": 'นางสาว', "mrs":'นาง', "mr" : 'นาย'}
         try:
             prefix = nmaetitledic[name_title]
         except:
             prefix = 'นาย'
+
         datapost={
             "hid_mode": "add",
             "txt_prefix": prefix,
             "txt_prefix_more" : "",
             "txt_firstname": name_th,
             "txt_lastname": surname_th,
-            "txt_birthday": '04/05/2020',
+            "txt_birthday": '04/05/1980',
             "telephone": tel,
-            "txt_email": email,
+            # "txt_email": email,
             "line" : line,
             "id_no":"",
-            "txt_address" : " ",
+            "txt_address" : "-",
             "agent_type" : "2",
             "cert_id" : "",
-            "txt_company" : "",
-            "txt_company_name" : "",
+            "txt_company" : "99999",
+            "txt_company_name" : company_name,
             "txt_company_website" : "",
             "txt_insurance" : "",
             "province_id[1]" : '1',
@@ -77,20 +81,30 @@ class terrabkk():
             "txt_pass2" : passwd,
             "agree": "yes"
         }
-        # userfile ofr photo
+
+        f = open(os.getcwd() + '/imgtmp/default/white.jpg', 'rb')
         filetoup = {
-            "userfile" : open(os.getcwd() + "/"+ 'imgtmp/default/white.jpg')
+            "userfile" : f,
+            "company_logo": f,
+            "brokercard": f
         }
-        r = httprequestObj.http_post('https://www.terrabkk.com/member/submit_profile_agent', data = datapost, files=filetoup)
-        data = r.text
-        matchobj = re.search(r'Terrabkk โปรดยืนยันอีเมล', data)
-        # print(matchObj)
-        if matchobj:
-            success = "True"
-            detail = "Successful Registration"
+
+        sitekey = "6LdrH6IUAAAAAOG7H98SJ7wv9diFEBuJuPlrDCL1"
+        g_response = captcha.reCaptcha(sitekey, "https://www.terrabkk.com/member/register-agent")
+        
+        if g_response != 0:
+            datapost["g-recaptcha-response"] = g_response
+            r = httprequestObj.http_post("https://www.terrabkk.com/member/submit_profile_agent", data = datapost, files=filetoup)            
+            soup = BeautifulSoup(r.text, features=self.parser)
+            if not soup.find(id="login"):
+                success = "True"
+                detail = "Successful Registration. Please verify email"
+            else:
+                success = "False"
+                detail = "Registration Unsuccessful"
         else:
             success = "False"
-            detail = "Registration Unsuccessful"
+            detail = "reCaptcha Error"
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -700,88 +714,55 @@ class terrabkk():
                     break
             r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_postcode_ajax/'+str(datapost['freepost_detail-district_id']),verify=False)
             datapost['freepost_detail-postcode'] = r.text.replace("\"",'')
-            r = httprequestObj.http_post('https://www.terrabkk.com/freepost/add_freepost', data=datapost)
-
-            try:
-                soup = BeautifulSoup(r.text, 'lxml')
-                freepost_id = soup.find('input', {'id': 'freepost-id', 'name': 'freepost-id'})['value']
-            except TypeError:
-                success = "False"
-                detail = "Post Unsuccessful : limit -5- reached; options purchase post tokens or get new user"
-                freepost_id = None
-
-
-            with open('selftest.html', 'w') as htm:
-                # print(f"<!--{r.status_code}-->")
-                htm.write(r.text)
-
-
-            if freepost_id == None:
-                pass
-            else:
-                # with open("selftest.html", 'r') as htm:
-                print("----------\n", freepost_id, "\n----------")
-
-                #check = data['state']
-                datapost['freepost-id'] = str(freepost_id)
-                print("The data to be posted \n",datapost)
-                newdatapost = []
-                for key in datapost:
-                    newdatapost.append((key,datapost[key]))
-                temp = []
-                for i in range(len(postdata['post_images'][:10])):
-                    filestoup['imgs']=  open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                    filestoup['imgs[]'] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                    r = httprequestObj.http_post('https://www.terrabkk.com/uploader_front/freepost_img_upload/'+datapost['freepost-id'],data = newdatapost,files=filestoup)
-                    data = r.json()
-                    # print(r.text)
-                    soup = BeautifulSoup(r.json()['text'], self.parser, from_encoding='utf-8')
-                    pic_data = soup.find('input',{"name" : "allpic[]"})["value"]
-                    print(pic_data)
-                    temp.append(('allpic[]',pic_data))
-
-                # print(data)
-                # newdatapost = []
-                # for key in datapost:
-                #     newdatapost.append((key,datapost[key]))
-                # newdatapost.append(('freepost-id',datapost['freepost-id']))
-                # print(str(data["status"]))
-                with open('selftest.html', 'w') as htm:
-                    htm.write(r.text)
-
-                check = False
-                if str(data['status']) == 'TRUE' or str(data['status']) == 'True' or str(data['status']) == 'true' :
-                    check = True
-
-                print("----------\n",check,'\n----------')
-                if(check) :
-                    # soup = BeautifulSoup(data['text'], self.parser, from_encoding='utf-8')
-                    # r = soup.findAll('input',{"name" : "allpic[]"})
-                    # # print(r)
-                    for i in temp:
-                        newdatapost.append(i)
-                    print(newdatapost)
-                    r = httprequestObj.http_post('https://www.terrabkk.com/freepost/'+datapost['freepost-id'],data=newdatapost)
-                    with open('selftest.html','w') as f:
-                        f.write(r.text)
-                    # print("Written")
-                    # soup = BeautifulSoup(r.text, 'lxml')
-                    # freepost_id_returned = soup.find('input', {'id': 'freepost-id', 'name': 'freepost-id'})['value']
-                    '''print("----------\n",r.status_code,"\n----------")
-                    print("----------\n", r.content, "\n----------")'''
-                    if str(freepost_id) in r.text:
-                        success = "True"
-                        detail = "Post Successful"
-                        post_id = datapost['freepost-id']
-                        post_url = 'https://www.terrabkk.com/freepost/show/'+post_id
-                    else:
-                        success = "False"
-                        detail = "Post unsuccessful"
-                else :
+            r = httprequestObj.http_post('https://www.terrabkk.com/freepost/add_freepost_draft', data = datapost)#/property/show
+            print(r)
+            # print(r.text)
+            data = r.json()
+            # print(data)
+            check = data['state']
+            datapost['freepost-id'] = str(data['freepost_id'])
+            print("The data to be posted \n",datapost)
+            newdatapost = []
+            for key in datapost:
+                newdatapost.append((key,datapost[key]))
+            temp = []
+            for i in range(len(postdata['post_images'][:10])):
+                filestoup['imgs']=  open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
+                filestoup['imgs[]'] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
+                r = httprequestObj.http_post('https://www.terrabkk.com/uploader_front/freepost_img_upload/'+datapost['freepost-id'],data = newdatapost,files=filestoup)
+                data = r.json()
+                # print(r.text)
+                soup = BeautifulSoup(r.json()['text'], self.parser, from_encoding='utf-8')
+                r = soup.find('input',{"name" : "allpic[]"})["value"]
+                print(r)
+                temp.append(('allpic[]',r))
+                
+            # print(data)
+            # newdatapost = []
+            # for key in datapost:
+            #     newdatapost.append((key,datapost[key]))
+            # newdatapost.append(('freepost-id',datapost['freepost-id']))
+            # print(str(data["status"]))
+            print(check)
+            if(check) :
+                # soup = BeautifulSoup(data['text'], self.parser, from_encoding='utf-8')
+                # r = soup.findAll('input',{"name" : "allpic[]"})
+                # # print(r)
+                for i in temp:
+                    newdatapost.append(i)
+                print(newdatapost)
+                r = httprequestObj.http_post('https://www.terrabkk.com/free-post/'+datapost['freepost-id'],data=newdatapost)
+                if(re.search(r'โพสสำเร็จ',r.text)):
+                    success = "True"
+                    detail = "posted"
+                    post_id = datapost['freepost-id']
+                    post_url = 'https://www.terrabkk.com/freepost/show/'+post_id
+                else:
                     success = "False"
-                    detail = "Image not uploaded"
-
-
+                    detail = "Post unsuccessful"
+            else :
+                success = "False"
+                detail = "Image not uploaded"
         
         time_end = datetime.datetime.utcnow()
         print({
@@ -887,12 +868,12 @@ class terrabkk():
             "log_id": postdata['log_id'],
         }
 
+
+
     def edit_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        # print(postdata)
-        # postdata = postdata
-        # print(self.max_image)
+        
         listing_type = postdata['listing_type']
         property_type = postdata['property_type']
         post_img_url_lists = postdata['post_img_url_lists']
@@ -918,56 +899,41 @@ class terrabkk():
         post_title_th = postdata['post_title_th']
         post_description_th = postdata['post_description_th']
         post_title_en = postdata['post_title_th']
-        # post_description_en = postdata['post_description_en']
-        # floor_no = postdata['floor_level']
-        # bedroom = postdata['bed_room']
-        # bathroom = postdata['bath_room']
-        # ds_id = postdata["ds_id"]
+        
         name = postdata["name"]
         mobile = postdata["mobile"]
         email = postdata["email"]
         # account_type = postdata["account_type"]
         user = postdata["user"]
         password = postdata["pass"]
-        # project_name = postdata["project_name"]
         land_size_rai = postdata['land_size_rai']
         land_size_ngan = postdata['land_size_ngan']
         land_size_wah = postdata['land_size_wa']
+        print(post_img_url_lists)
         print("printing create")
-        print(land_size_ngan,land_size_rai,land_size_wah)
-        if(post_title_en == ''):
+
+        if post_title_en == '':
             post_title_en = post_title_th
         try :
-            # land_size_ngan = land_size_ngan.srtip()
             temp1 = int(land_size_ngan)
         except:
             land_size_ngan = '0'
         try :
-            # land_size_rai = land_size_rai.srtip()
             temp1 = int(land_size_rai)
         except:
             land_size_rai = '0'   
         try :
-            # land_size_wah = land_size_wah.srtip()
             temp1 = int(land_size_wah)
         except:
             land_size_wah = '0'
-        print(land_size_ngan,land_size_rai,land_size_wah)
-            
-        # post_description_en =  post_description_en.replace("\r\n","<br>")
-        # post_description_th =  post_description_th.replace("\r\n","<br>")
-        # post_description_th =  post_description_th.replace("\n","<br>")
-        
-        print(post_description_th)
+
         province = {}
-        # print(addr_province)
-        # print(province[addr_province])
         datapost = {
-           'act': 'ACT',
-            'freepost-id': '',
+            'act': 'act',
+            'freepost-id': str(postdata['post_id']),
             'case': '1',
-            'freepost-title_th': post_title_th,
-            'freepost-title_en': post_title_en + '.',
+            'freepost-title_th': post_title_th[:100],
+            'freepost-title_en': post_title_en[:100],
             'freepost-property_id':'' ,
             'freepost-other_property_name':'' ,
             'freepost-permission': '1',
@@ -977,10 +943,10 @@ class terrabkk():
             'freepost_detail-build_type': '15',# check for what this build type correcponds to
             'freepost_detail-address_street': addr_number,#check if adress is to be added
             'freepost_detail-address_streetname': addr_road,#check if streetname is to be added
-            'freepost_detail-province_id':'',#Add the province id
-            'freepost_detail-amphur_id': '',#Add District accordingly
-            'freepost_detail-district_id': '',# subdistrict
-            'freepost_detail-postcode': '', # check if postal code is generated by some req and then assign it accordingly
+            'freepost_detail-province_id': '1',#Add the province id
+            'freepost_detail-amphur_id': '1',#Add District accordingly
+            'freepost_detail-district_id': '1',# subdistrict
+            'freepost_detail-postcode': '10200', # check if postal code is generated by some req and then assign it accordingly
             'freepost-lat': geo_latitude,
             'freepost-lng': geo_longitude,
             'freepost-landarea_total_sqw':'', 
@@ -988,11 +954,16 @@ class terrabkk():
             'freepost_detail-landsize_y':'', 
             'freepost_detail-property_condition': '0',
             'freepost_detail-house_style': '0',
-            'freepost_detail-tenant': 'yes', 
+            'freepost_detail-tenant': 'yes',
+            'freepost_detail-landarea_rai': '',
+            'freepost_detail-landarea_ngaan': '',
+            'freepost-rent_price': '0',
             'freepost_detail-detail_th': post_description_th,
-            'path': 'images/freepost/'
+            'freepost_detail-rent_year': '0',
+            'freepost_detail-detail_en': '-'
+            # 'path': 'images/freepost/'
         }
-        print(property_type)
+
         land_area_sq = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
         if(str(property_type) == str(1)):
             datapost['freepost-house_type'] = '7'
@@ -1054,7 +1025,6 @@ class terrabkk():
                 datapost['freepost_detail-bathrooms'] = '1'
             datapost['freepost_detail-livingrooms']='0'  
             datapost['freepost_detail-parking'] = '1'
-            #datapost['freepost_detail-parking'] = '0'
             datapost['freepost_detail-extrarooms']= '0'
             datapost['freepost_detail-property_finished_year']= '0'
             datapost['freepost_detail-property_buy_year']= '0'
@@ -1341,14 +1311,8 @@ class terrabkk():
                 datapost['freepost_detail-numberoffloors'] = '0'
             datapost['freepost_detail-parking'] = '0'
             datapost['freepost-sell_price_type'] = '26'
-            
-            
-        
         else:
-            datapost['freepost-house_type'] = '11'
-
-            
-            
+            datapost['freepost-house_type'] = '11'    
         if(listing_type == 'ขาย'):
             datapost['freepost-post_type'] = '1'
             datapost['freepost-sell_price']= price_baht
@@ -1359,116 +1323,99 @@ class terrabkk():
             datapost['freepost_detail-rent_year'] = '34' #1 year rent
             datapost['freepost-rent_price'] = price_baht
             
-        with open('./static/9asset_province.json',encoding='utf-8') as f:
-            province = json.load(f)
-        # print(province)
-        for key in province:
-            # print("bleh")
-            # print(province[key])
-            if (addr_province.find(str(province[key]).strip()) != -1) :
-                # print("equuaallll")
-                addr_province = key
-                datapost['freepost_detail-province_id'] = '1'
         # login
         login = self.test_login(postdata)
         success = login["success"]
         detail = login["detail"]
-        post_id = postdata["post_id"]
+        post_id = str(postdata["post_id"])
         post_url = ""
         filestoup = {}
-        print(success)
-        # print(success=="True")
-        if(success == "True"):
-            # print("debug2")
-            # for i in range(len(postdata['post_images'][:10])):
-            #     filestoup.append(('imgs', open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')))
-            #     filestoup.append(('imgs[]', open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')))
-
+        if success == "True":
+            with open('./static/9asset_province.json',encoding='utf-8') as f:
+                province = json.load(f)
+            for key in province:
+                if (addr_province.find(str(province[key]).strip()) != -1) :
+                    addr_province = key
+                    datapost['freepost_detail-province_id'] = key
+                    break
             r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_amphur_ajax/'+str(datapost['freepost_detail-province_id']), verify=False)
             data = r.json()
-            print(data)
-            print("sent district : ",addr_district)
+
             addr_district = addr_district.replace(' ','')
             for i in data:
                 if(addr_district.find(i["name"]) != -1 or i["name"].find(addr_district) != -1):
-                    datapost['freepost_detail-amphur_id'] = '1'#i["id"]
+                    datapost['freepost_detail-amphur_id'] = i["id"]
                     break
             r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_district_ajax/'+str(datapost['freepost_detail-amphur_id']), verify=False)    
             data = r.json()
             addr_sub_district = addr_sub_district.replace(' ','')
             for i in data:
                 if(addr_sub_district.find(i["name"]) != -1 or i["name"].find(addr_sub_district) != -1):
-                    datapost['freepost_detail-district_id'] = '1' #i["id"]
+                    datapost['freepost_detail-district_id'] = i["id"]
                     break
             r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_postcode_ajax/'+str(datapost['freepost_detail-district_id']),verify=False)
             datapost['freepost_detail-postcode'] = r.text.replace("\"",'')
-            # r = httprequestObj.http_post('https://www.terrabkk.com/freepost/add_freepost_draft', data = datapost)#/property/show
-            # print(r)
-            # # print(r.text)
-            # data = r.json()
-            # print(data)
-            datapost['freepost_detail-province_id'] = '1'
-            datapost['freepost_detail-district_id'] = '1' #i["id"]
-            datapost['freepost_detail-district_id'] = '1' #i["id"]
 
-            datapost['freepost-id'] = str(post_id)
-            print("The data to be posted \n",datapost)
-            newdatapost = []
-            for key in datapost:
-                newdatapost.append((key,datapost[key]))
-            temp = []
-            for i in range(len(postdata['post_images'][:10])):
-                filestoup['imgs']=  open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                filestoup['imgs[]'] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                r = httprequestObj.http_post('https://www.terrabkk.com/uploader_front/freepost_img_upload/'+datapost['freepost-id'],data = newdatapost,files=filestoup)
-                data = r.json()
-                # print(r.text)
-                soup = BeautifulSoup(r.json()['text'], self.parser, from_encoding='utf-8')
-                r = soup.find('input',{"name" : "allpic[]"})["value"]
-                print(r)
-                temp.append(('allpic[]',r))
+            # print(json.dumps(datapost, indent=4))
+
+            res = httprequestObj.http_post("https://www.terrabkk.com/freepost/add_freepost", data=datapost)
+            soup = BeautifulSoup(res.text, features=self.parser)
+            if len(postdata['post_images'])>0:
+                img_div = soup.find(id='sortFpImg')
+                if img_div:
+                    for img in img_div.find_all('a'):
+                        if img.get('href') and 'unlink_img' in img.get('href'):
+                            img_data = {
+                                'src': img.get('data-post')
+                            }
+                            httprequestObj.http_post("https://www.terrabkk.com/freepost/unlink_img/"+post_id, data=img_data)
+            print()
+            print(postdata['post_images'])
+            for image in postdata['post_images'][:10]:
+                img_data = {
+                    "act": "ACT",
+                    "path": "images/freepost/",
+                    "freepost-id": post_id    
+                }
+                f = open(os.getcwd() + "/"+ image,'rb')
+                files = {
+                    "imgs": f,
+                    "imgs[]": f
+                }
+                r = httprequestObj.http_post("https://www.terrabkk.com/uploader_front/freepost_img_upload/"+post_id, data=img_data, files=files)
+                print(r.status_code)
+                if r.status_code==200:
+                    r = r.json()
+                    print(r)
+                    if r['status']=="TRUE":
+                        soup = BeautifulSoup(r['text'], features=self.parser)
+                    else:
+                        success = "false"
+                        detail = r['text']
+            if success=="true":
+                image_links = [
+                    ("act", "ACT"),
+                    ("freepost-id", post_id),
+                    ("path", "images/freepost/")
+                ]
+                for img in soup.find_all('a'):
+                    # print(img.get('href'))
+                    if img.get('href') and 'unlink_img' in img.get('href'):
+                        image_links.append(("allpic[]", img.get('data-post')))
+                print(image_links)
+                r = httprequestObj.http_post("https://www.terrabkk.com/freepost/freepost_photos/"+post_id, data=image_links)
                 
-            for i in temp:
-                newdatapost.append(i)
-            print(newdatapost)
-            freepost_id = str(datapost['freepost-id'])
-            r = httprequestObj.http_post('https://www.terrabkk.com/freepost/'+datapost['freepost-id'],data=newdatapost)
-            with open('selftest.html','w') as f:
-                f.write(r.text)
-            print("Written")
-
-            try:
-                soup = BeautifulSoup(r.text, 'lxml')
-                post_id_received = str(soup.find('meta', {'property':'og:url'})['content']).split('/')[-1]
-                print(post_id_received)
-            except:
-                success = 'False'
-                detail = 'No such value returned to determine successful edit'
-            else:
-                if freepost_id == post_id_received:
+                print("Written")
+                if 'พสสำเร็จ' in r.text:
                     success = "True"
-                    detail = "edited"
+                    detail = "edited successfully"
                     post_id = datapost['freepost-id']
                     post_url = 'https://www.terrabkk.com/freepost/show/'+post_id
                 else:
                     success = "False"
-                    detail = "Post unsuccessful"
-            
+                    detail = "Post unsuccessful"   
       
         time_end = datetime.datetime.utcnow()
-        print({
-            "websitename": "terrabkk",
-            "success": success,
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
-            "ds_id": postdata['ds_id'],
-            "post_url": post_url,
-            "post_id": post_id,
-            "account_type": "",
-            "detail": detail
-        }
-        )
         return {
             "websitename": "terrabkk",
             "success": success,
@@ -1509,13 +1456,15 @@ class terrabkk():
 
             all_posts = httprequestObj.http_get(all_posts_url)
 
-            page = BeautifulSoup(all_posts.content, features = "html5lib")
+            page = BeautifulSoup(all_posts.content, features = "html.parser")
 
 
             divi = page.find('div', attrs = {'class':'row pt-3'})
-            xyz = divi.findAll('a',attrs={'target':'_blank'})
-            #print(xyz,len(xyz))
-            
+            temp = divi.findAll('a',attrs={'target':'_blank'})
+            xyz = []
+            for i in range(len(temp)):
+                if i%2 == 1:
+                    xyz.append(temp[i])
             if xyz == None:
                 detail = "Post Not Found"
             else:
@@ -1523,16 +1472,15 @@ class terrabkk():
                 for one in xyz:
                     #if one.has_attr('target') and one['target']=='_blank':
                     post_url = one['href']
-                    
-                    titl = one.find('h4')
+                    titl = one.text
                     if titl == None:
                         continue
                     #print(titl.text.strip(),' : ',postdata['post_title_th'].strip())
-                    if titl.text.strip() == postdata['post_title_th'].strip():
+                    if titl.strip() == postdata['post_title_th'].strip():
                         
                         post_found = "true"
                         r = httprequestObj.http_get(post_url)
-                        sou = BeautifulSoup(r.text,'html5lib')
+                        sou = BeautifulSoup(r.text,'html.parser')
                         datv = sou.find('div',attrs={'class':'item-share row'}).findAll('a',attrs={'class':'col-auto'})
                         print(datv[1].text + "date")
                         print(datv[2].text+"view")

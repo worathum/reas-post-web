@@ -172,7 +172,7 @@ class kaiteedin():
         r = httprequestObj.http_post(
             'http://kaiteedin.net/member_signin.php', data=datapost)
         data = r.text
-        soup = BeautifulSoup(r.content, "html5lib")
+        soup = BeautifulSoup(r.content, features='html.parser')
         print(soup)
         script = soup.find("script", attrs={'language': 'JavaScript'})
         if script != None:
@@ -942,7 +942,7 @@ class kaiteedin():
             url = "http://kaiteedin.net/mylisting.php"
             r = httprequestObj.http_get(url)
             exists = False
-            soup = BeautifulSoup(r.content, 'html5lib')
+            soup = BeautifulSoup(r.content, features='html.parser')
             post_url = ""
             post_modify_time = ""
             post_view = ""

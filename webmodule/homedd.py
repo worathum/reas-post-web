@@ -865,31 +865,40 @@ class homedd():
             r = httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php')
             # print(r.url)
             # print(r.status_code)
-
             soup = BeautifulSoup(r.content, 'html.parser')
-            all_posts = soup.find_all('tr')[2:]
-            # print(all_posts[0])
-
+            pages = soup.find('ul',attrs={'class':'pagination'})
+            last = pages.find_all('li')[-1]
+            max_p=int(str(last.find('a')['href']).split('=')[-1])
+            page = 1
             post_found = False
-
-            for post in all_posts:
-                info = post.find_all('td')
-                title = info[1].string
-                # print(title)
-                if title == postdata['post_title_th']:
-                    # print('Post Found')
-                    post_found = True
-                    post_id = info[3].find('a').get('href').split('=')[-1]
-                    # print(post_id)
-                    post_url = 'http://www.homedd.co.th/property_display.php?id='+post_id
-                    r = httprequestObj.http_get(post_url)
-                    # print(r.url)
-                    # print(r.status_code)
-                    soup = BeautifulSoup(r.content, 'html.parser')
-                    post_modified = soup.find('font', {'style': 'color:#888; font-size:14px;'}).string.split(' ')[2:]
-                    post_modified = post_modified[0] + ' ' + post_modified[1]
-                    post_view = soup.find('h2', {'style': 'margin:0px; font-size:20px;'}).string.split(' ')[-14]
+            while page <= max_p:
+                if post_found:
                     break
+                r = httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php?&nowpage=%d' % page)
+                soup = BeautifulSoup(r.content, 'html.parser')
+
+                print(r.url)
+                all_posts = soup.find_all('tr')[2:]
+                # print(all_posts[0])
+                for post in all_posts:
+                    info = post.find_all('td')
+                    title = info[1].string
+                    # print(title)
+                    if title == postdata['post_title_th']:
+                        # print('Post Found')
+                        post_found = True
+                        post_id = info[3].find('a').get('href').split('=')[-1]
+                        # print(post_id)
+                        post_url = 'http://www.homedd.co.th/property_display.php?id='+post_id
+                        r = httprequestObj.http_get(post_url)
+                        # print(r.url)
+                        # print(r.status_code)
+                        soup = BeautifulSoup(r.content, 'html.parser')
+                        post_modified = soup.find('font', {'style': 'color:#888; font-size:14px;'}).string.split(' ')[2:]
+                        post_modified = post_modified[0] + ' ' + post_modified[1]
+                        post_view = soup.find('h2', {'style': 'margin:0px; font-size:20px;'}).string.split(' ')[-14]
+                        break
+                page += 1
 
             if post_found:
                 success = True

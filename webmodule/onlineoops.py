@@ -464,22 +464,41 @@ class onlineoops():
 
             response = httprequestObj.http_get(self.site_name+'/post/my-classified')
             if response.status_code == 200:
-                soup = BeautifulSoup(response.text, features=self.parser)
-                res_div = soup.find(id='allAds')
+                class_ = 'dfghj'
+                url_ =  '/post/my-classified'
+                while class_ != None:
+                    if post_found == "true":
+                        break
+                    r = httprequestObj.http_get('https://market.onlineoops.com/%s' % url_)
+                    soup = BeautifulSoup(r.content, 'html.parser')
+                    pages = soup.find('ul', attrs={'class': 'pagination'})
+                    last = pages.find_all('li')[-1]
 
-                if res_div:
-                    all_posts = res_div.find_all(class_='item-list')
-                    for post in all_posts:
-                        try:
-                            title = post.find(class_ = 'add-title').a.getText().split('#')
-                            if title[1].strip()==postdata['post_title_th']:
-                                post_found = "true"
-                                post_id = title[0]
-                                post_url = self.site_name + '/' + post_id
-                                detail = "Post found successfully"
-                                break
-                        except :
-                            pass
+                    try:
+                        class_ = last['class'][0]
+                        if class_ == 'next':
+                            url_ = last.find('a')['href']
+                        else:
+                            class_ = None
+                    except:
+                        class_ = None
+
+                    soup = BeautifulSoup(r.text, features=self.parser)
+                    res_div = soup.find(id='allAds')
+
+                    if res_div:
+                        all_posts = res_div.find_all(class_='item-list')
+                        for post in all_posts:
+                            try:
+                                title = post.find(class_ = 'add-title').a.getText().split('#')
+                                if title[1].strip()==postdata['post_title_th']:
+                                    post_found = "true"
+                                    post_id = title[0]
+                                    post_url = self.site_name + '/' + post_id
+                                    detail = "Post found successfully"
+                                    break
+                            except :
+                                pass
         else:
             detail = "Unable to login"
             

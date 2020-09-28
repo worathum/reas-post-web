@@ -642,7 +642,8 @@ class thaisecondhand():
         post_modify_time = ''
         post_create_time = ''
         detail = 'No post with this title'
-        title = ''
+        title = postdata['post_title_th']
+
         if (login['success'] == 'True'):
 
             
@@ -650,33 +651,26 @@ class thaisecondhand():
 
             all_posts = httprequestObj.http_get(all_posts_url)
 
-            page = BeautifulSoup(all_posts.content, features = "html5lib")
+            page = BeautifulSoup(all_posts.content, features = "html.parser")
 
-            print(page)
             divi = page.find('div', attrs = {'class':'list-post'})
-            print(divi)
             prodList = divi.findAll('p',attrs={'class':'pd-name'})
-            #print(xyz,len(xyz))
-            
+
             if prodList == None:
                 detail = "Post Not Found"
             else:
                 flag= 0
                 for prd in prodList:
                     one = prd.find('a')
-                    if one.has_attr('target') and one.text==postdata['post_title_th']:
+                    # print(one.text[:-3] + "\n" +postdata['post_title_th'] +"\n\n")
+                    if one.has_attr('target') and one.text[:-3] in postdata['post_title_th']:
                         post_url = "https:"+str(one['href'])
                         pid = post_url.split('/')[-1]
-                        print("yha phuncha",post_url)
-                        
-                        #print(post_url,end = '\n')
                         post_found = "True"
                         postPage = httprequestObj.http_get(post_url)
-                        print("yha phuncha 1")
-                        ppage = BeautifulSoup(postPage.text,'html5lib').find('ul',attrs={'class':'info-post'}).findAll('li')
-                        print("yha phuncha 2")
+                        ppage = BeautifulSoup(postPage.text,'html.parser').find('ul',attrs={'class':'info-post'}).findAll('li')
                         time = ppage[-3].find('span').text
-                        view = ppage[-1].find('span').text
+                        view = ppage[-1].find('span').text.split()[0]
                         post_modify_time = time
                         post_id = pid
 
@@ -685,12 +679,32 @@ class thaisecondhand():
                         detail = "Post Found "
                         flag=1
                         break
-                if flag==0:
+                if detail != "Post Found " or detail != "Post Not Found":
+                    for i in range(1, 275):
+                        if post_found == 'True':
+                            break
+                        print(i)
+                        load_more = "https://www.thaisecondhand.com/member/ajax_load_more?id=4799105&current_page=%d&csrf_token=b4ac10bc8ea4d5cffb95f7992be5ba01" % i
+                        more = httprequestObj.http_get(load_more).json()
+                        for p in more:
+                            title = p['font_title']
+                            if title[:-3] in postdata['post_title_th']:
+                                post_id = p['product_id']
+                                post_url = "https://www.thaisecondhand.com/product/%s" % post_id
+                                detail = "Post Found "
+                                u = httprequestObj.http_get(post_url,)
+                                ul = BeautifulSoup(u.text, features='html.parser').find('ul' , attrs={'class' : 'info-post'})
+                                data = [str(li.text).split(':')[1:] for li in ul.find_all('li')]
+                                post_create_time = ':'.join(data[-3])
+                                post_view = str(data[-1][0]).strip().split()[0]
+                                post_found = "True"
+                                flag = 1
+                                break
+
+
+                if flag == 0:
                     detail = "Post Not Found"
                     post_found = 'False'
-                    #print("yha se gya")
-                      
-                    
         else :
             detail = 'Can not log in'
             post_found = 'False'

@@ -756,43 +756,52 @@ class propertypostfree():
             post_create_time = ''
             post_modify_time = ''
             detail = 'No post with this title'
-
-            all_posts_url = 'http://www.propertypostfree.com/member/list-property.php'
-
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
-
-            soup = BeautifulSoup(all_posts.content, features = self.parser)
-
-
-            xyz = soup.find('table', attrs={'class':'table table-hover'})
-
-            req_post_title = str(postdata['post_title_th'])
-
-
-            for abc in xyz.find_all('tr')[1:-1]:
-                
-                if req_post_title == str(abc.find('a', attrs = {'target':'_blank'})['title']):
-                    post_id = str(abc.input['value'])
-                    post_url = str('http://www.propertypostfree.com/property-'+str(post_id)+'/.html')
-                    post_found = "true"
-                    post_modify_time = abc.span.text[13:]
-                    detail = "Post found"
-
-                    find_info = httprequestObj.http_get(post_url, headers = headers)
-
-                    sou = BeautifulSoup(find_info.content, features = self.parser)
-
-                    pqr = sou.find('div', attrs = {'class': 'news-time'}).text.split(' ')
-
-                    post_create_time = str(str(pqr[1]) +' '+ str(pqr[2]) +' '+ str(pqr[3]))
-
-                    post_view = str(pqr[11])
-                    if(post_view == ""):
-                        post_view = '0'
-
+            r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
+            # print(r.url)
+            # print(r.status_code)
+            soup = BeautifulSoup(r.content, 'html.parser')
+            pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
+            max_p = int(pages.text)
+            page = 1
+            while page <= max_p:
+                if post_found == "true":
                     break
-                
-            
+                all_posts_url = 'http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page=%d' % page
+
+                all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+
+                soup = BeautifulSoup(all_posts.content, features = self.parser)
+
+
+                xyz = soup.find('table', attrs={'class':'table table-hover'})
+
+                req_post_title = str(postdata['post_title_th'])
+
+
+                for abc in xyz.find_all('tr')[1:-1]:
+
+                    if req_post_title == str(abc.find('a', attrs = {'target':'_blank'})['title']):
+                        post_id = str(abc.input['value'])
+                        post_url = str('http://www.propertypostfree.com/property-'+str(post_id)+'/.html')
+                        post_found = "true"
+                        post_modify_time = abc.span.text[13:]
+                        detail = "Post found"
+
+                        find_info = httprequestObj.http_get(post_url, headers = headers)
+
+                        sou = BeautifulSoup(find_info.content, features = self.parser)
+
+                        pqr = sou.find('div', attrs = {'class': 'news-time'}).text.split(' ')
+
+                        post_create_time = str(str(pqr[1]) +' '+ str(pqr[2]) +' '+ str(pqr[3]))
+
+                        post_view = str(pqr[11])
+                        if(post_view == ""):
+                            post_view = '0'
+
+                        break
+                page += 1
+
 
         else :
             detail = 'Can not log in'

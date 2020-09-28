@@ -113,13 +113,15 @@ class home2all():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        user = postdata['user']
+        user = postdata['user'].rstrip("\u200b")
         passwd = postdata['pass']
         # start process
         #
         success = "true"
         detail = "logged in"
-
+        # print(postdata['user'], len(postdata['user']), len(postdata['user'].rstrip("\u200b")))
+        res = httprequestObj.http_get("https://home2all.com/home/ctl/Logoff")
+        print(res.status_code)
         datapost = {
             "StylesheetManager_TSSM": '',
             "ScriptManager_TSM": ";;AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:en:fd384f95-1b49-47cf-9b47-2fa2a921a36a:ea597d4b:b25378d2",
@@ -398,7 +400,7 @@ class home2all():
                 detail  = "Please check parameters"
         else:
             detail = "cannot login"
-            print(test_login)
+            # print(test_login)
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -443,7 +445,7 @@ class home2all():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "post_url": "",
-                "post_id": "",
+                "post_id": postdata['post_id'],
                 "account_type": "null",
                 "detail": detail
             }
@@ -575,102 +577,112 @@ class home2all():
             listing = 1
 
         if success == "true":
-            r = requests.get(
-                'https://home2all.com/post/topicid/'+postdata['post_id'])
+            r = httprequestObj.http_get(
+                'https://home2all.com/post/topicid/'+str(postdata['post_id']))
+
+            print(r.text)
+            
             if r.text.find('ไม่พบประกาศที่ต้องการ') == -1:
-                r = httprequestObj.http_get(
-                    'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5/topicid/'+postdata['post_id']+'/trk/-1')
-                soup = BeautifulSoup(r.text, 'lxml')
-                viewstate = soup.select_one("#__VIEWSTATE")['value']
-                datapost = {
-                    'StylesheetManager_TSSM': ';Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4:en-US:dae8717e-3810-4050-96d3-31018e70c6e4:1c2121e:e24b8e95:aac1aeb7:c73cf106',
-                    'ScriptManager_TSM': ';;AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:en:fd384f95-1b49-47cf-9b47-2fa2a921a36a:ea597d4b:b25378d2;Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4:en:dae8717e-3810-4050-96d3-31018e70c6e4:16e4e7cd:f7645509:24ee1bba:f46195d3:2003d0b8:1e771326:aa288e2d:b7778d6c:e085fe68',
-                    '__EVENTTARGET': 'dnn$ctr438$AddTopic$btnSubmit',
-                    '__EVENTARGUMENT': '',
-                    '__LASTFOCUS': '',
-                    "__VIEWSTATE": viewstate,
-                    "__VIEWSTATEGENERATOR": "CA0B0334",
-                    "sid": "20090729-GP-be8e7bbb9f842760f6cab9b4f40e5787",
-                    "dnn$ctr438$AddTopic$ddlNewProject": "โปรดกรอกชื่อโครงการที่เกี่ยวข้องกับประกาศของท่าน",
-                    "dnn_ctr438_AddTopic_ddlNewProject_ClientState": "",
-                    "dnn$ctr438$AddTopic$ddlType": listing,
-                    "dnn$ctr438$AddTopic$ddlPropertyType": theprodid,
-                    "dnn$ctr438$AddTopic$txtTopic": postdata["post_title_th"],
-                    "dnn$ctr438$AddTopic$txtDescription": postdata["post_description_th"],
-                    "dnn$ctr438$AddTopic$txtLocation": prod_address,
-                    "dnn$ctr438$AddTopic$ddlProvince": province_id,
-                    "dnn$ctr438$AddTopic$ddlAumphur": amphur_id,
-                    "dnn$ctr438$AddTopic$txtNumAllFloor": postdata['floor_total'],
-                    "dnn_ctr438_AddTopic_txtNumAllFloor_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['floor_total']+'","valueAsString":"'+postdata['floor_total']+'","minValue":0,"maxValue":99,"lastSetTextBoxValue":"'+postdata['floor_total']+'"}',
-                    "dnn$ctr438$AddTopic$txtNumFloor": postdata['floor_level'],
-                    "dnn_ctr438_AddTopic_txtNumFloor_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['floor_level']+'","valueAsString":"'+postdata['floor_level']+'","minValue":0,"maxValue":99,"lastSetTextBoxValue":"'+postdata['floor_level']+'"}',
-                    "dnn$ctr438$AddTopic$txtRoom": postdata['bed_room'],
-                    "dnn_ctr438_AddTopic_txtRoom_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['bed_room']+'","valueAsString":"'+postdata['bed_room']+'","minValue":0,"maxValue":99,"lastSetTextBoxValue":"'+postdata['bed_room']+'"}',
-                    "dnn$ctr438$AddTopic$txtBath": postdata['bath_room'],
-                    "dnn_ctr438_AddTopic_txtBath_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['bath_room']+'","valueAsString":"'+postdata['bath_room']+'","minValue":0,"maxValue":99,"lastSetTextBoxValue":"'+postdata['bath_room']+'"}',
-                    "dnn$ctr438$AddTopic$txtArea": area,
-                    "dnn_ctr438_AddTopic_txtArea_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+area+'","valueAsString":"'+area+'","minValue":0,"maxValue":999999999,"lastSetTextBoxValue":"'+area+'"}',
-                    "dnn$ctr438$AddTopic$ddlArea": '3',
-                    "dnn$ctr438$AddTopic$txtPrice": postdata['price_baht'],
-                    "dnn_ctr438_AddTopic_txtPrice_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['price_baht']+'","valueAsString":"'+postdata['price_baht']+'","minValue":0,"maxValue":999999999,"lastSetTextBoxValue":"'+postdata['price_baht']+'"}',
-                    "dnn$ctr438$AddTopic$ddlBTS": 'เลือกสถานีไฟฟ้า',
-                    "dnn$ctr438$AddTopic$txtBTS": '',
-                    "dnn_ctr438_AddTopic_txtBTS_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
-                    "dnn$ctr438$AddTopic$ddlMRT": 'เลือกสถานีใต้ดิน',
-                    "dnn$ctr438$AddTopic$txtMRT": "",
-                    "dnn_ctr438_AddTopic_txtMRT_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
-                    "dnn$ctr438$AddTopic$ddlARL": 'เลือกสถานีแอร์พอร์ตลิงค์',
-                    "dnn$ctr438$AddTopic$txtARL": "",
-                    "dnn_ctr438_AddTopic_txtARL_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
-                    "dnn$ctr438$AddTopic$ddlBRT": 'เลือกสถานีรถเมล์ BRT',
-                    "dnn$ctr438$AddTopic$txtBRT": "",
-                    "dnn_ctr438_AddTopic_txtBRT_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
-                    "dnn$ctr438$AddTopic$ddlExtension": 'เลือกสถานีรถไฟฟ้าส่วนต่อขยาย',
-                    "dnn$ctr438$AddTopic$txtExtension": '',
-                    "dnn_ctr438_AddTopic_txtExtension_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
-                    "dnn$ctr438$AddTopic$ddlKeyword": 'พิมพ์คำสำคัญที่ต้องการให้ Google ค้นเจอ­',
-                    "dnn_ctr438_AddTopic_ddlKeyword_ClientState": '',
-                    "dnn$ctr438$AddTopic$txtName": postdata['name'],
-                    "dnn$ctr438$AddTopic$txtTelephone": postdata['mobile'],
-                    "dnn$ctr438$AddTopic$txtFax": '',
-                    "dnn$ctr438$AddTopic$txtEmail": postdata['email'],
-                    "dnn$ctr438$AddTopic$txtWebsite": '',
-                    "dnn$ctr438$AddTopic$lat_text": postdata['geo_latitude'],
-                    "dnn$ctr438$AddTopic$lng_text": postdata['geo_longitude'],
-                    "zoom_level": '7',
-                    "dnn$ctr438$AddTopic$topicHitNearSubway$ddlBTS": 'เลือกสถานีไฟฟ้า',
-                    "dnn$ctr438$AddTopic$topicHitNearSubway$ddlMRT": 'เลือกสถานีใต้ดิน',
-                    "ScrollTop": '2739',
-                    "__dnnVariable": '`{`__scdoff`:`1`,`sf_siteRoot`:`/`,`sf_tabId`:`91`}'
-                }
+                soup = BeautifulSoup(r.text, features=self.parser) 
+                topic = soup.find(attrs={"name": "dnn$ctr438$AddTopic$txtTopic"})
+                if topic and topic.get('value'):
+                    print(topic.get('value'), len(topic.get('value')))
+                    r = httprequestObj.http_get(
+                        'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5/topicid/'+postdata['post_id']+'/trk/-1')
+                    soup = BeautifulSoup(r.text, fetaures=self.parser)
+                    viewstate = soup.select_one("#__VIEWSTATE")['value']
+                    datapost = {
+                        'StylesheetManager_TSSM': ';Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4:en-US:dae8717e-3810-4050-96d3-31018e70c6e4:1c2121e:e24b8e95:aac1aeb7:c73cf106',
+                        'ScriptManager_TSM': ';;AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:en:fd384f95-1b49-47cf-9b47-2fa2a921a36a:ea597d4b:b25378d2;Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4:en:dae8717e-3810-4050-96d3-31018e70c6e4:16e4e7cd:f7645509:24ee1bba:f46195d3:2003d0b8:1e771326:aa288e2d:b7778d6c:e085fe68',
+                        '__EVENTTARGET': 'dnn$ctr438$AddTopic$btnSubmit',
+                        '__EVENTARGUMENT': '',
+                        '__LASTFOCUS': '',
+                        "__VIEWSTATE": viewstate,
+                        "__VIEWSTATEGENERATOR": "CA0B0334",
+                        "sid": "20090729-GP-be8e7bbb9f842760f6cab9b4f40e5787",
+                        "dnn$ctr438$AddTopic$ddlNewProject": "โปรดกรอกชื่อโครงการที่เกี่ยวข้องกับประกาศของท่าน",
+                        "dnn_ctr438_AddTopic_ddlNewProject_ClientState": "",
+                        "dnn$ctr438$AddTopic$ddlType": listing,
+                        "dnn$ctr438$AddTopic$ddlPropertyType": theprodid,
+                        "dnn$ctr438$AddTopic$txtTopic": postdata["post_title_th"],
+                        "dnn$ctr438$AddTopic$txtDescription": postdata["post_description_th"],
+                        "dnn$ctr438$AddTopic$txtLocation": prod_address,
+                        "dnn$ctr438$AddTopic$ddlProvince": province_id,
+                        "dnn$ctr438$AddTopic$ddlAumphur": amphur_id,
+                        "dnn$ctr438$AddTopic$txtNumAllFloor": postdata['floor_total'],
+                        "dnn_ctr438_AddTopic_txtNumAllFloor_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['floor_total']+'","valueAsString":"'+postdata['floor_total']+'","minValue":0,"maxValue":99,"lastSetTextBoxValue":"'+postdata['floor_total']+'"}',
+                        "dnn$ctr438$AddTopic$txtNumFloor": postdata['floor_level'],
+                        "dnn_ctr438_AddTopic_txtNumFloor_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['floor_level']+'","valueAsString":"'+postdata['floor_level']+'","minValue":0,"maxValue":99,"lastSetTextBoxValue":"'+postdata['floor_level']+'"}',
+                        "dnn$ctr438$AddTopic$txtRoom": postdata['bed_room'],
+                        "dnn_ctr438_AddTopic_txtRoom_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['bed_room']+'","valueAsString":"'+postdata['bed_room']+'","minValue":0,"maxValue":99,"lastSetTextBoxValue":"'+postdata['bed_room']+'"}',
+                        "dnn$ctr438$AddTopic$txtBath": postdata['bath_room'],
+                        "dnn_ctr438_AddTopic_txtBath_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['bath_room']+'","valueAsString":"'+postdata['bath_room']+'","minValue":0,"maxValue":99,"lastSetTextBoxValue":"'+postdata['bath_room']+'"}',
+                        "dnn$ctr438$AddTopic$txtArea": area,
+                        "dnn_ctr438_AddTopic_txtArea_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+area+'","valueAsString":"'+area+'","minValue":0,"maxValue":999999999,"lastSetTextBoxValue":"'+area+'"}',
+                        "dnn$ctr438$AddTopic$ddlArea": '3',
+                        "dnn$ctr438$AddTopic$txtPrice": postdata['price_baht'],
+                        "dnn_ctr438_AddTopic_txtPrice_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"'+postdata['price_baht']+'","valueAsString":"'+postdata['price_baht']+'","minValue":0,"maxValue":999999999,"lastSetTextBoxValue":"'+postdata['price_baht']+'"}',
+                        "dnn$ctr438$AddTopic$ddlBTS": 'เลือกสถานีไฟฟ้า',
+                        "dnn$ctr438$AddTopic$txtBTS": '',
+                        "dnn_ctr438_AddTopic_txtBTS_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
+                        "dnn$ctr438$AddTopic$ddlMRT": 'เลือกสถานีใต้ดิน',
+                        "dnn$ctr438$AddTopic$txtMRT": "",
+                        "dnn_ctr438_AddTopic_txtMRT_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
+                        "dnn$ctr438$AddTopic$ddlARL": 'เลือกสถานีแอร์พอร์ตลิงค์',
+                        "dnn$ctr438$AddTopic$txtARL": "",
+                        "dnn_ctr438_AddTopic_txtARL_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
+                        "dnn$ctr438$AddTopic$ddlBRT": 'เลือกสถานีรถเมล์ BRT',
+                        "dnn$ctr438$AddTopic$txtBRT": "",
+                        "dnn_ctr438_AddTopic_txtBRT_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
+                        "dnn$ctr438$AddTopic$ddlExtension": 'เลือกสถานีรถไฟฟ้าส่วนต่อขยาย',
+                        "dnn$ctr438$AddTopic$txtExtension": '',
+                        "dnn_ctr438_AddTopic_txtExtension_ClientState": '{"enabled":true,"emptyMessage":"","validationText":"","valueAsString":"","minValue":0,"maxValue":9999,"lastSetTextBoxValue":""}',
+                        "dnn$ctr438$AddTopic$ddlKeyword": 'พิมพ์คำสำคัญที่ต้องการให้ Google ค้นเจอ­',
+                        "dnn_ctr438_AddTopic_ddlKeyword_ClientState": '',
+                        "dnn$ctr438$AddTopic$txtName": postdata['name'],
+                        "dnn$ctr438$AddTopic$txtTelephone": postdata['mobile'],
+                        "dnn$ctr438$AddTopic$txtFax": '',
+                        "dnn$ctr438$AddTopic$txtEmail": postdata['email'],
+                        "dnn$ctr438$AddTopic$txtWebsite": '',
+                        "dnn$ctr438$AddTopic$lat_text": postdata['geo_latitude'],
+                        "dnn$ctr438$AddTopic$lng_text": postdata['geo_longitude'],
+                        "zoom_level": '7',
+                        "dnn$ctr438$AddTopic$topicHitNearSubway$ddlBTS": 'เลือกสถานีไฟฟ้า',
+                        "dnn$ctr438$AddTopic$topicHitNearSubway$ddlMRT": 'เลือกสถานีใต้ดิน',
+                        "ScrollTop": '2739',
+                        "__dnnVariable": '`{`__scdoff`:`1`,`sf_siteRoot`:`/`,`sf_tabId`:`91`}'
+                    }
 
-                files = {}
-                allimages = postdata["post_images"][:5]
-                for i in range(1, len(allimages)+1):
-                    r = open(os.getcwd()+"/"+allimages[i-1], 'rb')
-                    files["dnn$ctr438$AddTopic$FileUpload"+str(i)] = r
+                    files = {}
+                    allimages = postdata["post_images"][:5]
+                    for i in range(1, len(allimages)+1):
+                        r = open(os.getcwd()+"/"+allimages[i-1], 'rb')
+                        files["dnn$ctr438$AddTopic$FileUpload"+str(i)] = r
 
-                r = httprequestObj.http_post(
-                    'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5/topicid/'+postdata['post_id']+'/trk/-1', data=datapost, files=files)
-                data = r.text
-                soup=BeautifulSoup(r.text,'lxml')
-                if soup.select("#dnn_ctr440_Thankyou_hplTopicId"):
-                    detail = "Post edited successfully!"
-                    post_url = soup.select("#dnn_ctr440_Thankyou_hplTopicId")[0]['href']
-                    post_id  = soup.select("#dnn_ctr440_Thankyou_hplTopicId")[0].text
+                    r = httprequestObj.http_post(
+                        'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5/topicid/'+postdata['post_id']+'/trk/-1', data=datapost, files=files)
+                    data = r.text
+                    soup = BeautifulSoup(r.text,'lxml')
+                    if soup.select("#dnn_ctr440_Thankyou_hplTopicId"):
+                        detail = "Post edited successfully!"
+                        post_url = soup.select("#dnn_ctr440_Thankyou_hplTopicId")[0]['href']
+                        post_id  = post_url.split('/')[-1]
+                    else:
+                        success = 'False'
+                        detail  = "Please check parameters"
+                    # print(post_id)
+                    # print(postdata['post_id'])
+                    if post_id != postdata['post_id']:
+                        success = 'False'
+                        detail = 'Wrong post id'
+                    # with open('b.html','w') as f:
+                    #     print(data,file=f)
                 else:
-                    success = 'False'
-                    detail  = "Please check parameters"
-                # print(post_id)
-                # print(postdata['post_id'])
-                if post_id != postdata['post_id']:
-                    success = 'False'
-                    detail = 'Wrong post id'
-                # with open('b.html','w') as f:
-                #     print(data,file=f)
+                    success = "False"
+                    detail = "Incorrect Post Id"
             else:
-                success = "False"
-                detail = "Incorrect Post Id"
+                    success = "False"
+                    detail = "Incorrect Post Id"
         else:
             detail = "cannot login"
         time_end = datetime.datetime.utcnow()
@@ -779,26 +791,23 @@ class home2all():
         post_view = ''
 
         if test_login['success'] == "true":
-            post_title = postdata['post_title_th']
-            print(post_title)
-            pages = ["", "/pg/2"]
+            post_title = postdata['post_title_th'].replace('.  ','. ')
             tURL = dict()
             date = []
-            for page in pages:
-                url = "https://home2all.com/my-post" + page
-                r = httprequestObj.http_get(url)
-                soup = BeautifulSoup(r.content, 'html5lib')
-                soup = soup.find('div', attrs={'class':'col-md-8'})
-                result_posts = soup('div', attrs={'class':'row tb-topic_tr_alt'}) + soup('div', attrs={'class':'row tb-topic_tr'})
-                tURL.update({str(post.find('span').string) : post.div.div['onclick'].split('\'')[1] for post in result_posts})
-                
-            self.print_debug(len(tURL))
-             
+            url = "https://home2all.com/my-post"
+            r = httprequestObj.http_get(url)
+            soup = BeautifulSoup(r.content, 'html.parser')
+            posts =soup.find_all('div', attrs={'class':'tb-topic_tr_alt', 'onmouseover':"this.className='row tb-topic_tr_alt'"})
+            titles = soup.find_all('h5')
+            titles = [t.text for t in titles]
+
+
+            print(len(posts), len(titles))
             flag=0
             ind=0
-            for i in tURL.keys():
-                print(i,":",post_title)
-                
+            for i in posts:
+                title = i.text
+                # print(f'title---{title}\npostt---{post_title}')
                 if i == post_title:
                     
                     success = 'true'
@@ -806,7 +815,7 @@ class home2all():
                     post_url = tURL[post_title]
                     post_id = tURL[post_title].split('/')[-1]
                     detail = 'Post Successfully Found'
-                    post_modify_time = result_posts[ind].find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl01_lblUpdateDate'}).text
+                    post_modify_time = posts[ind].find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl01_lblUpdateDate'}).text
                     flag=1
                     break
                 ind+=1

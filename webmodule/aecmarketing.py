@@ -298,26 +298,25 @@ class aecmarketing():
         # file.write(str(ad_data))
 
         response = httprequestObj.http_post('https://www.aecmarketinghome.com/th/post/save_property.html', data=ad_data)
-        print(response.content)
-
-        result = json.loads(response.content.decode('utf-8'))
+        result = response.json()
 
         try:
             ids = result['result']['redirect'][45:]
             ids = ids.split('-')
             ids = ids[0]
+
         except:
             ids = 0
-        if 'status_code' in result and result['status_code'] != 200:
+        if 'status_code' in result['result'] and result['result']['status_code'] != 200:
             status = False
-            detail = result['description'] 
+            detail = result['result']['description']
         else:
-            if 'status_code' in result and result['status_code'] != 200:
+            if 'status_code' in result['result'] and result['result']['status_code'] == 200:
                 status = True
-                detail = result['description'] 
+                detail = result['result']['description']
             else:
                 try:
-                    if(result['result']['status_code'] == 200):
+                    if result['result']['status_code'] == 200:
                         status = True
                     else:
                         status = False
@@ -325,16 +324,11 @@ class aecmarketing():
                 except:
                     status = False
                     detail = result
-
-
         end_time = datetime.datetime.utcnow()
         try:
             post_url = result['result']['redirect']
-
         except:
             post_url = ''
-
-
         return {
             "success": status,
             "start_time": str(start_time),
@@ -826,12 +820,12 @@ class aecmarketing():
                 status = False
                 detail = result['description'] 
             else:
-                if 'status_code' in result and result['status_code'] != 200:
+                if 'status_code' in result and result['status_code'] == 200:
                     status = True
                     detail = result['description'] 
                 else:
                     try:
-                        if(result['result']['status_code'] == 200):
+                        if result['result']['status_code'] == 200:
                             status = True
                         else:
                             status = False
@@ -839,13 +833,8 @@ class aecmarketing():
                     except:
                         status = False
                         detail = result
-
-
-
-
-        if (result == True):
+        if result:
             detail = "Post Edited"
-
         else:
             detail = "Unable to Edit The Post"
         end_time = datetime.datetime.utcnow()
@@ -855,7 +844,7 @@ class aecmarketing():
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "detail": detail,
             "post_id": post_id,
@@ -882,11 +871,11 @@ class aecmarketing():
 
         exists = False
         post_id = 0
-        post_titles = postdata['post_title_th']
+        post_titles = str(postdata['post_title_th']).replace('  '," ")
 
         while(exists == False):
 
-            response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/profile/index/'+ str(itr) +'.html')
+            response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/profile/index/%d.html' % itr)
             soup = BeautifulSoup(response.content, 'html.parser')
             post_div = soup.find_all("div", {"class" : "dashboard-wrapper list-mypost"})
             titles = post_div[0].find_all("div", {"class" : "row"})
@@ -896,6 +885,7 @@ class aecmarketing():
 
             for title in titles:
                     title_text = title.find("div", {"class" : "col-sm-12 col-md-5"}).select("b")
+                    print(title_text[0].text + '\n' + post_titles + '\n\n')
                     if(post_titles == title_text[0].text):
                         exists = True
                         post_url = title.select("a")[0].attrs['href']

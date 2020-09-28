@@ -1202,54 +1202,62 @@ class hipflat():
             post_modify_time = ''
             detail = 'No post with this title'
 
-            all_posts_url = 'https://www.hipflat.co.th/account/listings/pro'
+            url = 'https://www.hipflat.co.th/account/listings/pro'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers).text
+            posts = httprequestObj.http_get(url, headers = headers).text
 
-            soup = BeautifulSoup(all_posts, features = "html.parser")
+            soup = BeautifulSoup(posts, features = "html.parser")
+            pages = [p['href'] for p in soup.find_all('a', attrs={'data-remote': 'true'})]
+            max_pages = int(pages[-1].split('/')[-1])
 
-            req_post_title = str(postdata['post_title_th'])
-            
+            #  single page start
+            for i in range(1,max_pages+1):
 
-            aaas = []
-
-            for i in soup.find_all('a'):
-                try:
-                    if i['href'].find('/edit') != -1:
-
-                        #print(link)
-                        link = i['href'].replace('/listings/','')
-                        post_ids = str(link.replace('/edit',''))
-                        # link = i['href']
-                        aaas.append(post_ids)
-                except:
-                    continue
-
-
-
-            temp = 0
-
-            for qwe in soup.find_all('div', attrs = {'class': 'user-listing__title'}):
-                #print(qwe.text.replace('\n',' '))
-                #print()
-                if req_post_title in str(qwe.text.replace('\n',' ')):
-                    #print(temp)
-
-                    post_id = str(aaas[temp])
-
-                    post_url = str('https://www.hipflat.co.th/listing-preview/'+str(post_id))
-
-                    post_found = "true"
-                    post_view = 'Post views not on site'
-                    post_create_time = 'Post create time not on site'
-                    post_modify_time = 'Post modify time not on site'
-                    detail = 'Post found'
-
+                if detail == 'Post found':
                     break
+                # print(f'page--{i}')
+                all_posts_url = 'https://www.hipflat.co.th/account/listings/pro/page/' + str(i)
+                all_posts = httprequestObj.http_get(all_posts_url, headers = headers).text
+                soup = BeautifulSoup(all_posts, features = "html.parser")
+                req_post_title = str(postdata['post_title_th'])
+                aaas = []
+                for i in soup.find_all('a'):
+                    try:
+                        if i['href'].find('/edit') != -1:
 
-                temp = temp + 1
+                            #print(link)
+                            link = i['href'].replace('/listings/','')
+                            post_ids = str(link.replace('/edit',''))
+                            aaas.append(post_ids)
+                    except:
+                        continue
+                print(aaas)
 
 
+
+                temp = 0
+
+                for qwe in soup.find_all('div', attrs = {'class': 'user-listing__title'}):
+                    t = str(qwe.text.replace('\n',' ')).strip()
+                    # print(f"w_title---{t}\np_title---{req_post_title}\n\n\n")
+                    if t == req_post_title :
+                        #print(temp)
+                        print("true")
+                        post_id = str(aaas[temp])
+
+                        post_url = str('https://www.hipflat.co.th/listing-preview/'+str(post_id))
+
+                        post_found = "true"
+                        post_view = 'Post views not on site'
+                        post_create_time = 'Post create time not on site'
+                        post_modify_time = 'Post modify time not on site'
+                        detail = 'Post found'
+
+                        break
+
+                    temp = temp + 1
+
+            #  single page ends
 
 
 
