@@ -654,13 +654,15 @@ class goodpriceproperty():
         detail = ""
         province_id = ""
         amphur_id = ""
+        if success != 'true':
+            return test_login
 
         for (key, value) in provincedata.items():
             if type(value) is str and (postdata['addr_province'].strip() in value.strip() or value.strip() in postdata['addr_province'].strip()):
                 province_id = key
                 break
 
-        if province_id == "" or success != 'true':
+        if province_id == "":
             return{
                 "websitename": "goodpriceproperty",
                 "log_id": postdata['log_id'],
@@ -673,6 +675,7 @@ class goodpriceproperty():
                 'detail': 'cannot find province id or amphur',
                 # 'data': postdata
             }
+        
         url_list = 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php'
         r = httprequestObj.http_get(url_list)
         soup = BeautifulSoup(r.content, features = self.parser)
@@ -683,12 +686,15 @@ class goodpriceproperty():
         found = False
         page = 1
         while True:
-            requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
+            requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).text
+            # print(requ)
+            
             soup = BeautifulSoup(requ, features = self.parser)
             ahref = soup.findAll('a')
             count = 0
             for i in ahref:
                 var = i['href'].split('/')
+                    
                 if len(var)>2 and var[2]==str(postdata['post_id']):
                     found = True
                     break

@@ -674,16 +674,28 @@ class taladx():
             post_modify_time = ''
             detail = 'No post with this title'
 
-            urls = str('http://www.taladx.com/post-search.php?keyword='+str(postdata['post_title_th'])+'&category=&subcategory=&province=&price=')
+            urls = str('http://www.taladx.com/post-search.php?keyword='+str(postdata['post_title_th']).replace(' ', "+")+'&category=&subcategory=&province=&price=')
 
             res = httprequestObj.http_get(urls, headers = headers)
             #print(res.url)
-            
-            soup = BeautifulSoup(res.content ,features = self.parser)
 
-            for abc in soup.find_all('li',attrs={'class': 'thumb'}):
-                if (str(abc.a.img['alt']) == postdata['post_title_th']):
-                    post_url = str(abc.a['href'])
+            soup = BeautifulSoup(res.content ,features = self.parser)
+            # print(soup.prettify())
+
+            soup = soup.find('div', attrs={'class': 'postlist'})
+            # print(soup.prettify())
+            temp = str(postdata['post_title_th']).replace('.  ', '')
+            temp = temp.replace('. ', ' ')
+            for abc in soup.find_all('ul',attrs={'class': 'lileft'}):
+
+                l = abc.find('li', attrs={'class' : 'title'})
+                # print(f'title---{l.a.text}')
+                # print(f'temp---{temp}')
+                # print(f"posttitle---{postdata['post_title_th']}")
+
+
+                if (str(l.a.text) == temp):
+                    post_url = str(l.a['href'])
                     post_found = 'true'
                     detail = 'Post found'
                     temp_id = str(post_url.split('/')[3])

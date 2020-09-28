@@ -551,9 +551,17 @@ class quickdealfree():
         if success == "true":
             post_title = postdata['post_title_th']
             # exists, authenticityToken, post_title = self.check_post(post_id)
-            x=['1','2','3','4','5','6','7','8','9','10']
-            for i in x:
-                url = "http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+i    
+            r = httprequestObj.http_get('http://www.quickdealfree.com/member/list-classifieds.php')
+            # print(r.url)
+            # print(r.status_code)
+            soup = BeautifulSoup(r.content, 'html.parser')
+            pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
+            max_p = int(pages.text)
+            page = 1
+            for i in range(1,max_p):
+                if post_found == 'true':
+                    break
+                url = "http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page=%d" % i
                 r = httprequestObj.http_get(url)
                 exists = False
                 soup = BeautifulSoup(r.content, 'html.parser')
@@ -563,7 +571,6 @@ class quickdealfree():
                     if title_row is None:
                         continue
                     title = title_row.find('a')
-                    print(title)
                     if title is None:
                         continue                    
                     if post_title == title.text.strip():

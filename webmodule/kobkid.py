@@ -659,16 +659,15 @@ class kobkid():
             url = "https://www.kobkid.com/member/post"
             r = httprequestObj.http_get(url)
             exists = False
-            soup = BeautifulSoup(r.content, 'lxml')
-            print(soup.find_all('div', attrs={'class':'market-item-wrapper'}))
+            soup = BeautifulSoup(r.content, features='html.parser')
             for title_row in soup.find_all('div', attrs={'class':'market-item-wrapper'}):
                 if title_row is None:
                     continue
                 title = title_row.find_all('div',{'class':'col-md-4'})[1].find("div").text
-
                 # .text.split("Views:")[1].split("times")[0]
                 # .text.strip()[-11:]
                 # title = title_row.find('div', attrs={'style':'text-align:left;border-right:1px solid #CCF0FF;border-left:1px solid #CCF0FF;cursor:pointer;min-height:150px;'}).find('div', attrs={'style':'font-weight:bold;font-size:20px;'}).text
+                # print(f'postt--{post_title}\ntitle--{title}\n\n')
                 if post_title == title:
                     exists = True
                     post_id = title_row.find('div', attrs={'class':'market-item-edit'})['data-postid']

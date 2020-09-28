@@ -1625,49 +1625,34 @@ class livinginsider():
         post_view = ""
 
         if success:
-            page = 0
+            page = 1
+
             post_found = False
             max_page = 100
+            r = httprequestObj.http_get(
+                'https://www.livinginsider.com/mystock.php?action=1&pages=%d&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=' % page)
+            soup = BeautifulSoup(r.content, self.parser)
+            try:
+                max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
+            except:
+                max_page = 1
+            while page <= max_page:
 
-            while True:
-                page += 1
-                params = (
-                    ('pages', str(page)),
-                    ('action', '1'),
-                    ('actiontype', ''),
-                    ('posttype', ''),
-                    ('searchword', ''),
-                    ('search_area', '0'),
-                    ('search_bedroom', '0'),
-                    ('search_price', '0'),
-                    ('from_fq_flag', ''),
-                    ('from_pet_flag', ''),
-                    ('from_expiring_flag', ''),
-                    ('from_autoboost_flag', ''),
-                    ('topic_sort', '1'),
-                    ('search_zone_id', ''),
-                    ('pagelimit', '50'),
-                )
+                # if page == max_page:
+                #     print('\n\nsearched till max\n\n')
 
-                if page == max_page:
-                    break
-
-                r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
+                r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php?action=1&pages=%d&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=' % page)
                 # print(r.url)
                 # print(r.status_code)
-
                 soup = BeautifulSoup(r.content, self.parser)
                 # print(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3])
-                try:
-                    max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
-                except:
-                    max_page = 1
 
-                all_posts = soup.find('div', 'head-item bg-mystock-card').findChildren('div', recursive=False)
-                mem_id = soup.find('input', {'name': 'mem_id'}).get('value')
-                # print(mem_id)
-                device_id = r.text.split("let device_id = '")[1].split("'")[0]
-                # print(device_id)
+
+                all_posts = soup.find_all('div', attrs={'class':'mystock-item'})
+                # mem_id = soup.find('input', {'name': 'mem_id'}).get('value')
+                # # print(mem_id)
+                # device_id = r.text.split("let device_id = '")[1].split("'")[0]
+                # # print(device_id)
 
                 # for post in all_posts:
                 #     post_id = post.get('class')[2].split('item')[-1]
@@ -1681,22 +1666,21 @@ class livinginsider():
             
 
                 for post in all_posts:
-                    info = post.findChildren('div', recursive=False)
-                    post_url = info[2].find('div').find('a').get('href')
-                    title = info[2].find('div').find('a').find('div').find('div').string  # .split(':').strip()
-                    # print(title)
 
-                    if postdata['post_title_th'] in title:
+                    # info = post.fin
+                    post_url = str(post.find('a', attrs = {'target':'_blank'})['href'])
+                    title = post.find('div', attrs={'class': "limit-title-ms"}).text  # .split(':').strip()
+                    # print(title + '\n' + postdata['post_title_th'] + "\n\n")
+                    if title in postdata['post_title_th'] :
                         # print('Found post')
-                        post_found = True
+                        post_found = "True"
                         detail = "Post Found"
-                        post_id = post_url.split('/')[-2]
-                        post_modified = ''
-                        # print(post_modified)
-                        post_view = ''
-                        # print(post_view)
-                        break
+                        post_id = post_url.split('/')[4]
 
+                        post_view = ''
+
+                        break
+                page += 1
                 if post_found:
                     break
 
@@ -1721,8 +1705,8 @@ class livinginsider():
             "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_id": post_id,
-            "post_created": "",
-            "post_modified": post_modified,
+            "post_created": '',
+            "post_modified": "",
             "post_view": post_view,
             "post_url": post_url
         }

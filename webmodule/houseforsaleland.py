@@ -328,10 +328,15 @@ class houseforsaleland():
         except:
             print('alert not accepted within time')
             time.sleep(3)
-        alert = driver.switch_to.alert
-        alert.accept()
 
-        # time.sleep(10)
+        try:
+            driver.switch_to.alert.accept()
+        except:
+            time.sleep(2)
+            driver.switch_to.alert.accept()
+        time.sleep(5)
+
+
         # jsscript='function getElementByXpath(path) {return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;}'
         # jsscript="document.getElementById('type"+postdata['listing_type']+"')['checked']=true;"
         # jsscript+="document.getElementById('sendmail1')['checked']=true;document.querySelectorAll('#category1')["+str(postdata['cate_id'])+"]['checked']=true;"
@@ -379,12 +384,15 @@ class houseforsaleland():
         driver.find_element_by_id('name').send_keys(str(postdata['name']))
         time.sleep(2)
         driver.find_element_by_id('submit').click()
-        # driver.close()
         time.sleep(5)
+        # driver.close()
+        # driver.quit()
+        driver.close()
         driver.quit()
         try:
             alert = driver.switch_to.alert
             alert.accept()
+            driver.close()
             driver.quit()
         except:
             pass
@@ -505,7 +513,7 @@ class houseforsaleland():
             'province': province_id,
             'amphur': amphur_id,
             'subject': str(postdata['post_title_th']),
-            'detail': str(postdata['post_title_th']),
+            'detail': str(postdata['post_description_th']),
             'lat': postdata['geo_latitude'],
             'lng': postdata['geo_longitude'],
             'name': postdata['name'],

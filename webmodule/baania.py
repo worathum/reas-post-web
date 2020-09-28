@@ -182,12 +182,12 @@ class baania():
             'โรงงาน': '25'
         }
         getProdId = {'1': 2, '2': 1, '3': 10753, '4': 3,
-                     '5': 4, '6': 7, '7': 5, '8': 2362, '9': 6, '10': 8, '25': 10753}
+                     '5': 4, '6': 7, '7': 5, '8': 2362, '9': 6, '10': 8, '25': 8}
 
         try:
-            theprodid = getProdId[proid[postdata['property_type']]]
+            theprodid = getProdId[proid[str(postdata['property_type'])]]
         except:
-            theprodid = getProdId[postdata['property_type']]
+            theprodid = getProdId[str(postdata['property_type'])]
 
         address = {
             "websitename": "baania",
@@ -344,7 +344,7 @@ class baania():
             address['province'] = {"name":allres[0]["_source"]["address"]["province"]["title"]["th"],"id":allres[0]["_source"]["address"]["province"]["code"]}
             address['district'] = {"name":allres[0]["_source"]["address"]["district"]["title"]["th"],"id":allres[0]["_source"]["address"]["district"]["code"]}
             address['sub_district'] = {"name":allres[0]["_source"]["address"]["subdistrict"]["title"]["th"],"id":allres[0]["_source"]["address"]["subdistrict"]["code"]}
-            address['post_code'] = allres[0]["_source"]["address"]["postcode"]
+            address['post_code'] = str(allres[0]["_source"]["address"]["postcode"])
 
 
         listing = 0
@@ -755,7 +755,7 @@ class baania():
             address['province'] = {"name":allres[0]["_source"]["address"]["province"]["title"]["th"],"id":allres[0]["_source"]["address"]["province"]["code"]}
             address['district'] = {"name":allres[0]["_source"]["address"]["district"]["title"]["th"],"id":allres[0]["_source"]["address"]["district"]["code"]}
             address['sub_district'] = {"name":allres[0]["_source"]["address"]["subdistrict"]["title"]["th"],"id":allres[0]["_source"]["address"]["subdistrict"]["code"]}
-            address['post_code'] = allres[0]["_source"]["address"]["postcode"]
+            address['post_code'] = str(allres[0]["_source"]["address"]["postcode"])
 
 
         if success == "true":

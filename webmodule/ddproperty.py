@@ -648,7 +648,7 @@ class ddproperty():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "ds_id": datahandled['ds_id'],
-            "post_url": "https://www.ddproperty.com/preview-listing/" + post_id if post_id != "" else "",
+            "post_url": "https://www.ddproperty.com/preview-listing/" + post_id if post_id else "",
             "post_id": post_id,
             "account_type": account_type,
             "detail": detail,
@@ -2060,14 +2060,15 @@ class ddproperty():
                 headers = {
                     'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
                 }
-                req = httprequestObj.http_post(url,data=data,headers=headers)
+                req = httprequestObj.http_get(url,data=data,headers=headers)
 
                 soup = BeautifulSoup(req.text,'html.parser')
-                check = soup.find('div',{'class':'row listing-item'})
-                #print('here1')
+                print(soup.prettify())
+                check = soup.find('div',{'id':'list-container'})
+                print(check)
                 if check is not None:
                     #print('here2')
-                    posts = soup.findAll('div',{'class':'row listing-item'})
+                    posts = soup.find_all('div',{'class':'listing-item'})
 
                     for post in posts:
                         valid_ids.append(post['data-listing-id'])
@@ -2091,7 +2092,7 @@ class ddproperty():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-
+        # print(f"{valid_ids}\n\n{valid_urls}\n\n{valid_titles}")
         res = {
             'success':success,
             'post_id':postdata['post_id'],

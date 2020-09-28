@@ -306,7 +306,7 @@ class bankumka():
 
             datapost = [
                 ('timeout', '5'),
-                ('prop_name', postdata['post_title_th']),
+                ('prop_name', postdata['post_title_th'][:119]),
                 ('prop_type', '32'),
                 ('prop_cate', theprodid),
                 ('prop_detail', postdata['post_description_th']),
@@ -382,7 +382,7 @@ class bankumka():
                 datapost[2] = ('prop_type', 32)
                 datapost[11] = ('prop_pricerent', '')
                 datapost[9] = ('prop_price', postdata['price_baht'])
-            print(datapost)
+            # print(datapost)
             r = httprequestObj.http_post(
                 'https://bankumka.com/ajax/checkProperty', data=datapost)
             data = json.loads(r.text)
@@ -390,7 +390,7 @@ class bankumka():
             if data['status'] == 'OK':
                 datapost = [
                     ('timeout', '5'),
-                    ('prop_name', postdata['post_title_th']),
+                    ('prop_name', postdata['post_title_th'][:119]),
                     ('prop_type', '32'),
                     ('prop_cate', theprodid),
                     ('prop_detail', postdata['post_description_th']),
@@ -501,11 +501,12 @@ class bankumka():
                         if (i.get_text()).find(post_id) != -1:
                             theurl += i['href']
             else:
+                # print(data[message])
                 success = "false"
-                if data['message'][0].find("10") != -1:
-                    detail = "Posts Limit Reached"
-                else:
-                    detail = str(data['message'])     
+                # if data['message'][0].find("10") != -1:
+                #     detail = "Posts Limit Reached"
+                # else:
+                detail = str(data['message'])     
                 theurl = ""
         else:
 
@@ -682,7 +683,7 @@ class bankumka():
                 floor_area_sqm = 0
                 datapost = [
                     ('timeout', '5'),
-                    ('prop_name', postdata['post_title_th']),
+                    ('prop_name', postdata['post_title_th'][:119]),
                     ('prop_type', '32'),
                     ('prop_cate', theprodid),
                     ('prop_detail', postdata['post_description_th']),
@@ -772,7 +773,7 @@ class bankumka():
                 if data['status'] == 'OK':
                     datapost = [
                         ('timeout', '5'),
-                        ('prop_name', postdata['post_title_th']),
+                        ('prop_name', postdata['post_title_th'][:119]),
                         ('prop_type', '32'),
                         ('prop_cate', theprodid),
                         ('prop_detail', postdata['post_description_th']),
@@ -1254,9 +1255,11 @@ class bankumka():
         success = test_login["success"]
         ashopname = test_login["detail"]
         found = "false"
+        detail = ''
         post_id = ""
         posturl = ""
         if success == "true":
+            print('login')
             r = httprequestObj.http_get('https://bankumka.com/member/properties', verify = False)
             data = r.text
             soup = BeautifulSoup(data,self.parser, from_encoding='utf-8')
@@ -1264,7 +1267,7 @@ class bankumka():
             for i in alldiv:
                 # print
                 a = i.find("a",{"class":"my-property-name"})
-                if a['title'] == postdata['post_title_th']:
+                if a['title'] == postdata['post_title_th'][:119]:
                     posturl = a['href']
                     id1 = a.find("strong").get_text()
                     flag = False
@@ -1280,16 +1283,17 @@ class bankumka():
                     break
             post_id = post_id.replace("#","")
         else:
-            success = "false"
+            detail  = 'cannot login'
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+
         log_id = ""
         if 'log_id' in postdata:
             log_id = postdata['log_id']
         
         return {
             "websitename": "bankumka",
-            "success": "true",
+            "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_found": found,
@@ -1299,7 +1303,7 @@ class bankumka():
             "log_id": postdata['log_id'],
             "post_id": post_id,
             "account_type": "null",
-            "detail":"null",
+            "detail":detail,
             "post_create_time":"",
             "post_modify_time":"",
             "post_view":"",

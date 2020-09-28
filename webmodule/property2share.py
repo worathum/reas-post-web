@@ -733,13 +733,13 @@ class property2share():
         time_start = datetime.utcnow()
 
         login = self.test_login(postdata)
-
-        if ('log_id' not in postdata or postdata['log_id'] == None or log_id == ""):
+        log_id = ''
+        if ('log_id' not in postdata or postdata['log_id'] == None):
             log_id = ''
 
 
         else:
-            log_id = int(postdata['log_id'])
+            log_id = postdata['log_id']
 
         if(login['success'] == False):
             return login
@@ -762,7 +762,6 @@ class property2share():
         for post in all_posts:
 
             actual_title = post['title'].split()
-
             if(post_title == actual_title):
                 detail = 'Successfully Found the Post'
                 success = True

@@ -631,29 +631,40 @@ class novabizz():
 
         if success == "true":
             post_title = postdata['post_title_th']
+            post_title = post_title.replace('.  ', '').replace('. ',' ')
             # exists, authenticityToken, post_title = self.check_post(post_id)
-            x=['1','2','3','4','5','6','7','8','9','10']
-            for i in x:
-                url = "https://www.novabizz.com/manage-post.php?page="+i    
+            url = "https://www.novabizz.com/manage-post.php?page=1"
+            r = httprequestObj.http_get(url)
+            soup = BeautifulSoup(r.content, features='html.parser')
+            li = soup.find('div',attrs={'class':'pagination'}).find_all('li')
+            x = int(str(li[-1].find('a')['href']).split('=')[1])
+            for i in range(1,x+1):
+                url = "https://www.novabizz.com/manage-post.php?page=%d" % i
                 r = httprequestObj.http_get(url)
                 exists = False
-                soup = BeautifulSoup(r.content, 'lxml')
+                soup = BeautifulSoup(r.content, features='html.parser')
 
                 entry = soup.find('div', attrs={'class':'postlist'})
                 for title_row in entry.find_all('ul',{'class':'lileft'}):
                     if title_row is None:
                         continue
-                    title = title_row.find('a')
-                    # print(title)
+                    data = title_row.find('li', attrs={'class':'title'}).find('a')
+
+
+                    title = data['title']
                     # print(title['href'][27:47])
                     # title_1=title['href'][27:47]
                     if title is None:
                         continue                    
-                    if post_title == title['href'][27:47]:
+                    if title in post_title:
                         exists = True
-                        post_id = title['href'][20:26]
-                        post_url = "https://"+title['href'][2:]
-                        post_modify_time = title_row.find('li', attrs={'class':'date'}).text[7:-14]
+                        date_ = title_row.find('li', attrs={'class': 'date'}).find_all('span')
+                        date = [d.text for d in date_]
+                        date = date[1:-1]
+                        date = ' '.join(date)
+                        post_url = data['href']
+                        post_id = str(post_url.split('/')[3]).replace('p','')
+                        post_modify_time = date
                         post_view = title_row.find('span', attrs={'class':'pageview'}).text[7:]
                         post_found = "true"
                         detail = "post found successfully"

@@ -14,6 +14,7 @@ import time
 from datetime import datetime
 
 from selenium import webdriver
+
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
@@ -24,6 +25,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import ElementNotInteractableException
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 # httprequestObj = lib_httprequest()
 # httprequestObj = lib_httprequest()
@@ -237,6 +239,7 @@ class pantipmarket():
         post_id = ""
 
 
+
         send_property = '//*[@id="lv"]/li['
 
         if postdata['property_type'] == "1": #condo
@@ -270,7 +273,7 @@ class pantipmarket():
         elif postdata['property_type'] == "6": #land
             select_group = "อสังหาริมทรัพย์ » ที่ดิน"
             send_property += '7]'
-
+            send_property = ''
             group = "6_168"
 
         elif postdata['property_type'] == "7":  #apartment
@@ -304,12 +307,10 @@ class pantipmarket():
             group = "6_1096"
 
         options = Options()
-        options.headless = True
+        # options.headless = True
         options.add_argument('--no-sandbox')
 
         driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-        # driver = webdriver.Chrome("C:/Users/hp/Downloads/chromedriver_win32/chromedriver", chrome_options=options)
-
 
         driver.implicitly_wait(4)
 
@@ -324,6 +325,9 @@ class pantipmarket():
 
         success = True
         end_time = datetime.utcnow()
+        new_title = post_title_th.replace(" ", "%20")
+
+
         # if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
         #     if 'project_name' in postdata and postdata['project_name']!=None:
         #         postdata['web_project_name'] = postdata['project_name']
@@ -334,20 +338,29 @@ class pantipmarket():
 
         detail = ""
         
-        # post_title_th += " -ทรัพย์สินไทย"
+        post_title_th += " -ทรัพย์สินไทyย17r3"
         driver.find_element_by_name("topic_th").send_keys(post_title_th)
-        time.sleep(2)
+        time.sleep(5)
+        driver.find_element_by_xpath('//*[@id="group_recommend-31"]').click()
+        WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
+        )
+        driver.find_element_by_name('jqi_state0_buttonOk').click()
+
+
         try:
             if driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ') == None:
-                driver.find_element_by_xpath('//*[@id="select_group"]').click()
+                driver.find_element_by_name(
+                    'select_group').click()
+
                 driver.find_element_by_xpath('//*[@id="lv"]/li[6]').click()
                 driver.find_element_by_xpath(send_property).click()
 
         except ElementNotInteractableException:
             detail = "A post with the same title already exists"
             success = False
-        
-        if success == True:    
+
+        if success == True:
             try:
                 element = WebDriverWait(driver,5).until(
                     EC.presence_of_element_located((By.NAME,"jqi_state0_buttonOk"))
@@ -357,16 +370,10 @@ class pantipmarket():
             except:
                 print('Loading took too much time!')
 
-            new_title = post_title_th.replace(" ","%20")
 
-            url = "https://www.pantipmarket.com/post/?lang=th&group=" + str(group) + "&topic=" + new_title
 
-            driver.get(url)
-            time.sleep(3)
-            
             driver.find_element_by_name("message_th").send_keys(post_description_th)
 
-            # time.sleep(10)
             driver.find_element_by_xpath('//*[@id="action_type"]/option[2]').click()
 
             if postdata['listing_type'] == 'ขาย':
@@ -448,13 +455,14 @@ class pantipmarket():
             slider = driver.find_element_by_xpath('//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
             move = ActionChains(driver)
             move.click_and_hold(slider).move_by_offset(379.005, 0).release().perform()
+            time.sleep(2)
             try:
                 element = WebDriverWait(driver,10).until(
                     EC.presence_of_element_located((By.NAME,"jqi_state0_buttonOk"))
                 )
-                driver.find_element_by_name('jqi_state0_buttonOk').click()
             except:
                 print('loading took too much time!')
+            driver.find_element_by_name('jqi_state0_buttonOk').click()
 
             success = True
             detail = 'Created the post successfully'
@@ -763,7 +771,6 @@ class pantipmarket():
         
         driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
         # driver = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)  # for linux
-
         driver.implicitly_wait(4)
         driver.get("https://www.pantipmarket.com/member/login.php?step=&sCode=")
         driver.find_element_by_xpath('//*[@id="login_box2"]/div[1]/a').click()
@@ -790,7 +797,6 @@ class pantipmarket():
 
             if post_title_th != None:
                 driver.find_element_by_name('topic_th').clear()
-            print(post_title_th)
             driver.find_element_by_name("topic_th").send_keys(post_title_th)
 
             if post_description_th != None:
@@ -807,13 +813,33 @@ class pantipmarket():
                     driver.find_element_by_xpath('//*[@id="action_list_S2"]').click()
 
             if postdata['post_images'] != None:
-                driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]').clear()
+                time.sleep(5)
+                l = len(driver.find_elements_by_class_name('PMK-uploadfile-list'))
+                for i in range(l, 0, -1):
+                    try:
+
+                        driver.find_element_by_xpath(
+                            '/html/body/div[8]/form/div[1]/fieldset[5]/div/div/div[2]/div[1]/div/div[%d]/u' % (i+1)
+                        ).click()
+                        print(i,i+1)
+                        time.sleep(1.5)
+                        driver.find_element_by_name(
+                            'jqi_state0_buttonOk'
+                        ).click()
+                    except Exception as e:
+                        print(e)
+
                 for i in range(len(postdata['post_images'])):
                     if i < 15:
                         filepath = os.getcwd() + "/"+ postdata['post_images'][i]
                         driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]').send_keys(filepath)
                     else:
                         break
+            time.sleep(1.5)
+            try:
+                driver.find_element_by_xpath('/html/body/div[13]/div[2]/form/div[2]/div/div[2]/button').click()
+            except:
+                pass
 
             if price_baht != None:
                 driver.find_element_by_name('price_text_th').clear()
@@ -837,10 +863,15 @@ class pantipmarket():
 
                 element = driver.find_element_by_id('located_in_select_2')
                 dropdown = Select(element)
-                dropdown.select_by_value(addr_province)
+                driver.implicitly_wait(5)
+                time.sleep(1)
 
+                try:
+                    dropdown.select_by_value(addr_province)
+                except NoSuchElementException:
+                    pass
 
-            time.sleep(10)
+            time.sleep(2)
             if addr_district != None:
                 districts = {}
                 district_located = ""
@@ -863,9 +894,14 @@ class pantipmarket():
 
                 element = driver.find_element_by_id(district_located)
                 dropdown = Select(element)
-                dropdown.select_by_value(addr_district)
+                time.sleep(1)
+                driver.implicitly_wait(5)
+                try:
+                    dropdown.select_by_value(addr_district)
+                except NoSuchElementException:
+                    pass
 
-            
+            time.sleep(1)
             if name != None:
                 driver.find_element_by_name('name_th').clear()
                 driver.find_element_by_name("name_th").send_keys(name)
@@ -890,7 +926,7 @@ class pantipmarket():
             move = ActionChains(driver)
             move.click_and_hold(slider).move_by_offset(379.005, 0).release().perform()
             try:
-                element = WebDriverWait(driver,20).until(
+                element = WebDriverWait(driver,5).until(
                     EC.presence_of_element_located((By.NAME,"jqi_state0_buttonOk"))
                 )
                 driver.find_element_by_name('jqi_state0_buttonOk').click()
@@ -928,37 +964,45 @@ class pantipmarket():
 
         time_start = datetime.utcnow()
         search_title = postdata['post_title_th']
+        search_title = search_title.replace('.  ', '. ')
         resp = self.test_login(postdata)
         detail = resp['detail']
 
         success = False
         post_url = ''
         post_id = ''
+        post_create_time = ''
 
         if resp['success'] is True:
 
             resp = httprequestObj.http_get("https://www.pantipmarket.com/member/my/?view=ads")
-            with open ("temp-5", "w") as f:
-                f.write(resp.text)
+
 
             soup = BeautifulSoup(resp.text, 'html.parser')
-            posts = soup.findAll("div", {"class": "topic_box"})
+            posts = soup.find_all("div", {"class": "topic_box"})
+            c = soup.find_all("div", {"class": "contact_box"})
+            # print(create)
             titles = []
-
-            for i in posts:
+            dates = []
+            for i in range(len(c)):
+                if i%2 == 0:
+                    dates.append(str(c[i].text).split('/')[1][:-1])
+            print(dates)
+            for i in range(len(posts)):
                 try:
-                    titles += [[i.find(text=True).strip(), i.find('a')["href"].strip()]]
+                    titles += [[posts[i].find(text=True).strip(), posts[i].find('a')["href"].strip(),
+                                dates[i]]]
                 except:
                     pass
-            print(titles)
             detail = 'Not found'
-
-            for title in titles:
-                if title[0] == search_title:
+            for i in range(len(titles)):
+                # print(f"title----{titles[i][0]}\npostt----{search_title}\ncreate---{titles[i][2]}")
+                if titles[i][0] == search_title:
                     success = True
                     detail = "Post found"
-                    post_url = title[1]
-                    post_id = ''.join(filter(str.isdigit,title[1]))
+                    post_url = titles[i][1]
+                    post_create_time = str(titles[i][2])
+                    post_id = ''.join(filter(str.isdigit,titles[i][1]))
 
         time_end = datetime.utcnow()
         time_usage = time_end - time_start
@@ -971,7 +1015,7 @@ class pantipmarket():
                 "post_found": success,
                 "post_url": post_url,
                 "post_id": post_id, 
-                "post_create_time": '',
+                "post_create_time": post_create_time,
                 "post_modify_time": '',
                 "post_view": '',
                 "account_type": "null",
