@@ -692,7 +692,7 @@ class thaisecondhand():
                                 post_id = p['product_id']
                                 post_url = "https://www.thaisecondhand.com/product/%s" % post_id
                                 detail = "Post Found "
-                                u = httprequestObj.http_get(post_url,)
+                                u = httprequestObj.http_get(post_url)
                                 ul = BeautifulSoup(u.text, features='html.parser').find('ul' , attrs={'class' : 'info-post'})
                                 data = [str(li.text).split(':')[1:] for li in ul.find_all('li')]
                                 post_create_time = ':'.join(data[-3])

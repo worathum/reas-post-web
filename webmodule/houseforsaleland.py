@@ -306,8 +306,8 @@ class houseforsaleland():
         options = Options()
         options.headless = True
         options.add_argument('--no-sandbox')
-        # options.binary_location = "/bin/google-chrome"
-        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options) # for linux
+     
+        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
         post_url = urlpost+'/page-postfree-detail.php?pID='+postdata['post_id']
         driver.get(post_url)
@@ -387,18 +387,23 @@ class houseforsaleland():
         time.sleep(5)
         # driver.close()
         # driver.quit()
-        driver.close()
-        driver.quit()
+        # driver.close()
+
+        # driver.quit()
         try:
+            time.sleep(2)
             alert = driver.switch_to.alert
             alert.accept()
             driver.close()
             driver.quit()
         except:
-            pass
-
-
-
+            try:
+                alert = driver.switch_to.alert
+                alert.accept()
+                driver.close()
+                driver.quit()
+            except:
+                pass
 
         success = "true"
         time_end = datetime.datetime.utcnow()
@@ -512,7 +517,7 @@ class houseforsaleland():
             'geography': finalRegion,
             'province': province_id,
             'amphur': amphur_id,
-            'subject': str(postdata['post_title_th']),
+            'subject': str(postdata['post_title_th'])+'ขาย',
             'detail': str(postdata['post_description_th']),
             'lat': postdata['geo_latitude'],
             'lng': postdata['geo_longitude'],

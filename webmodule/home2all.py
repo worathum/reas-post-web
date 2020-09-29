@@ -797,25 +797,33 @@ class home2all():
             url = "https://home2all.com/my-post"
             r = httprequestObj.http_get(url)
             soup = BeautifulSoup(r.content, 'html.parser')
-            posts =soup.find_all('div', attrs={'class':'tb-topic_tr_alt', 'onmouseover':"this.className='row tb-topic_tr_alt'"})
-            titles = soup.find_all('h5')
-            titles = [t.text for t in titles]
-
-
-            print(len(posts), len(titles))
+            # print(soup.prettify())
+            div1 = soup.find_all('div', attrs={'class': 'tb-topic_tr_alt'})
+            div2 = soup.find_all('div', attrs={'class': 'tb-topic_tr'})
+            posts = div1 + div2
             flag=0
             ind=0
             for i in posts:
-                title = i.text
-                # print(f'title---{title}\npostt---{post_title}')
-                if i == post_title:
+                try:
+                    title = i.find('h5').text
+                    title = str(title).replace('\n','')
+                except:
+                    continue
+
+                if title == post_title:
                     
                     success = 'true'
                     post_found = 'true'
-                    post_url = tURL[post_title]
-                    post_id = tURL[post_title].split('/')[-1]
+                    post_url = str(i.find('div', {'class':'row'})['onclick']).replace('window.open(\'','').replace("', '_blank');  return false;",'')
+                    post_id = post_url.split('/')[-1]
                     detail = 'Post Successfully Found'
-                    post_modify_time = posts[ind].find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl01_lblUpdateDate'}).text
+                    for j in range(1,12):
+                        num = str(j)
+                        if len(num) == 1:
+                            num = '0'+num
+                        if i.find('span',attrs={'id':f'dnn_ctr451_ShowTopic_tbTopic_ctl{num}_lblUpdateDate'}):
+                            post_modify_time = i.find('span',attrs={'id':f'dnn_ctr451_ShowTopic_tbTopic_ctl{num}_lblUpdateDate'}).text
+
                     flag=1
                     break
                 ind+=1

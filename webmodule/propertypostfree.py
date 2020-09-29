@@ -400,9 +400,16 @@ class propertypostfree():
             soup = BeautifulSoup(all_posts.content, features = self.parser)
 
             all_post_ids = []
-            page = 1            
-            while True:
-                requ = httprequestObj.http_get("http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+            page = 1
+            r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
+            soup = BeautifulSoup(r.content, 'html.parser')
+            pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
+            max_p = int(pages.text)
+            page = 1
+            while page <= max_p:
+
+                all_posts_url = 'http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page='+str(page)
+                requ = httprequestObj.http_get(all_posts_url, headers=headers).content
                 soup = BeautifulSoup(requ, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
@@ -470,9 +477,17 @@ class propertypostfree():
         
         if login['success'] == "true":
             all_post_ids = []
-            page = 1            
-            while True:
-                requ = httprequestObj.http_get("http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+            page = 1
+
+            r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
+            soup = BeautifulSoup(r.content, 'html.parser')
+            pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
+            max_p = int(pages.text)
+            page = 1
+            while page <= max_p:
+
+                all_posts_url = 'http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page='+str(page)
+                requ = httprequestObj.http_get(all_posts_url + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
@@ -536,9 +551,17 @@ class propertypostfree():
         
         if login['success'] == 'true':
             all_post_ids = []
-            page = 1            
-            while True:
-                requ = httprequestObj.http_get("http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
+            page = 1
+            r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
+            soup = BeautifulSoup(r.content, 'html.parser')
+            pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
+            max_p = int(pages.text)
+            page = 1
+            while page <= max_p:
+
+                all_posts_url = 'http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page='+str(page)
+
+                requ = httprequestObj.http_get(all_posts_url, headers=headers).content
                 soup = BeautifulSoup(requ, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
@@ -757,8 +780,6 @@ class propertypostfree():
             post_modify_time = ''
             detail = 'No post with this title'
             r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
-            # print(r.url)
-            # print(r.status_code)
             soup = BeautifulSoup(r.content, 'html.parser')
             pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
             max_p = int(pages.text)

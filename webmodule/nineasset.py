@@ -801,10 +801,10 @@ class nineasset():
             max_p = int(str(last.find('a').text))
             post_found = 'false'
             for page in range(1, max_p+1):
-                if post_found == 'True':
-                    break
                 tURL = dict()
                 url = "https://www.9asset.com/profile?page=%d" % page
+                if post_found == 'True':
+                    break
                 r = httprequestObj.http_get(url)
                 soup = BeautifulSoup(r.content, 'html.parser')
                 soup = soup.find('table', attrs={'class':'table', 'id':'customers'})

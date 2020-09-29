@@ -307,7 +307,7 @@ class pantipmarket():
             group = "6_1096"
 
         options = Options()
-        # options.headless = True
+        options.headless = True
         options.add_argument('--no-sandbox')
 
         driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
@@ -338,18 +338,11 @@ class pantipmarket():
 
         detail = ""
         
-        post_title_th += " -ทรัพย์สินไทyย17r3"
+        # post_title_th += " -ทรัพย์สินไทyย172r3"
         driver.find_element_by_name("topic_th").send_keys(post_title_th)
         time.sleep(5)
-        driver.find_element_by_xpath('//*[@id="group_recommend-31"]').click()
-        WebDriverWait(driver, 5).until(
-            EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
-        )
-        driver.find_element_by_name('jqi_state0_buttonOk').click()
-
-
         try:
-            if driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ') == None:
+            if str(driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ')) == "11225":
                 driver.find_element_by_name(
                     'select_group').click()
 
@@ -373,9 +366,8 @@ class pantipmarket():
 
 
             driver.find_element_by_name("message_th").send_keys(post_description_th)
-
+            time.sleep(1)
             driver.find_element_by_xpath('//*[@id="action_type"]/option[2]').click()
-
             if postdata['listing_type'] == 'ขาย':
                 driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()
 
