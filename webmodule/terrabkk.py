@@ -63,7 +63,7 @@ class terrabkk():
             "txt_lastname": surname_th,
             "txt_birthday": '04/05/1980',
             "telephone": tel,
-            # "txt_email": email,
+            "txt_email": email,
             "line" : line,
             "id_no":"",
             "txt_address" : "-",
@@ -927,6 +927,7 @@ class terrabkk():
         except:
             land_size_wah = '0'
 
+
         province = {}
         datapost = {
             'act': 'act',
@@ -1356,7 +1357,6 @@ class terrabkk():
             r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_postcode_ajax/'+str(datapost['freepost_detail-district_id']),verify=False)
             datapost['freepost_detail-postcode'] = r.text.replace("\"",'')
 
-            # print(json.dumps(datapost, indent=4))
 
             res = httprequestObj.http_post("https://www.terrabkk.com/freepost/add_freepost", data=datapost)
             soup = BeautifulSoup(res.text, features=self.parser)
@@ -1451,49 +1451,59 @@ class terrabkk():
                 account = postdata['account_type']
             except:
                 account = 'null'
-            
-            all_posts_url = 'https://www.terrabkk.com/member/my-freepost?status=1'
 
-            all_posts = httprequestObj.http_get(all_posts_url)
+            r = httprequestObj.http_get('https://www.terrabkk.com/member/my-freepost?status=1')
+            soup = BeautifulSoup(r.content, 'html.parser')
+            pages = soup.find('ul', attrs={'class': 'pagination'})
+            last = pages.find_all('li')[-1]
+            max_p = int(last.find('a')['data-ci-pagination-page'])
+            print(max_p)
 
-            page = BeautifulSoup(all_posts.content, features = "html.parser")
+            for page in range(1,max_p+1):
+                if post_found == "true" :
+                    break
+                print(page)
+                all_posts_url = 'https://www.terrabkk.com/member/my-freepost/%d?status=1' % page
+
+                all_posts = httprequestObj.http_get(all_posts_url)
+
+                page = BeautifulSoup(all_posts.content, features = "html.parser")
 
 
-            divi = page.find('div', attrs = {'class':'row pt-3'})
-            temp = divi.findAll('a',attrs={'target':'_blank'})
-            xyz = []
-            for i in range(len(temp)):
-                if i%2 == 1:
-                    xyz.append(temp[i])
-            if xyz == None:
-                detail = "Post Not Found"
-            else:
-                flag= 0
-                for one in xyz:
-                    #if one.has_attr('target') and one['target']=='_blank':
-                    post_url = one['href']
-                    titl = one.text
-                    if titl == None:
-                        continue
-                    #print(titl.text.strip(),' : ',postdata['post_title_th'].strip())
-                    if titl.strip() == postdata['post_title_th'].strip():
-                        
-                        post_found = "true"
-                        r = httprequestObj.http_get(post_url)
-                        sou = BeautifulSoup(r.text,'html.parser')
-                        datv = sou.find('div',attrs={'class':'item-share row'}).findAll('a',attrs={'class':'col-auto'})
-                        print(datv[1].text + "date")
-                        print(datv[2].text+"view")
-                        post_create_time = datv[1].text.split(' ')[-1]
-                        post_id = post_url.split('/')[-2]
-                        post_view = datv[2].text.split(' ')[0]        
-                        detail = "Post Found "
-                        flag=1
-                        break
-                if flag==0:
+                divi = page.find('div', attrs = {'class':'row pt-3'})
+                temp = divi.findAll('a',attrs={'target':'_blank'})
+                xyz = []
+                for i in range(len(temp)):
+                    if i%2 == 1:
+                        xyz.append(temp[i])
+                if xyz == None:
                     detail = "Post Not Found"
-                    post_url=''
-                    post_found = 'False'
+                else:
+                    flag= 0
+                    for one in xyz:
+                        #if one.has_attr('target') and one['target']=='_blank':
+                        post_url = one['href']
+                        titl = one.text
+                        if titl == None:
+                            continue
+                        if titl.strip() == postdata['post_title_th'].strip():
+
+                            post_found = "true"
+                            r = httprequestObj.http_get(post_url)
+                            sou = BeautifulSoup(r.text,'html.parser')
+                            datv = sou.find('div',attrs={'class':'item-share row'}).findAll('a',attrs={'class':'col-auto'})
+                            print(datv[1].text + "date")
+                            print(datv[2].text+"view")
+                            post_create_time = datv[1].text.split(' ')[-1]
+                            post_id = post_url.split('/')[-2]
+                            post_view = datv[2].text.split(' ')[0]
+                            detail = "Post Found "
+                            flag=1
+                            break
+                    if flag==0:
+                        detail = "Post Not Found"
+                        post_url=''
+                        post_found = 'False'
                                   
         else :
             detail = login['detail']

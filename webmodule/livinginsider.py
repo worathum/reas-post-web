@@ -682,9 +682,21 @@ class livinginsider():
         post_url = ""
 
         if success:
-            page = 0
+
             post_found = False
-            while True:
+
+            page = 1
+
+            post_found = False
+            max_page = 100
+            r = httprequestObj.http_get(
+                'https://www.livinginsider.com/mystock.php?action=1&pages=1&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=')
+            soup = BeautifulSoup(r.content, self.parser)
+            try:
+                max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
+            except:
+                max_page = 1
+            while page <= max_page:
                 page += 1
                 params = (
                     ('pages', str(page)),
@@ -1420,8 +1432,17 @@ class livinginsider():
 
         if success:
             page = 0
+
             post_found = False
-            while True:
+            max_page = 100
+            r = httprequestObj.http_get(
+                'https://www.livinginsider.com/mystock.php?action=1&pages=1&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=')
+            soup = BeautifulSoup(r.content, self.parser)
+            try:
+                max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
+            except:
+                max_page = 1
+            while page <= max_page:
                 page += 1
                 params = (
                     ('pages', str(page)),
@@ -1522,8 +1543,17 @@ class livinginsider():
 
         if success:
             page = 0
+
             post_found = False
-            while True:
+            max_page = 100
+            r = httprequestObj.http_get(
+                'https://www.livinginsider.com/mystock.php?action=1&pages=1&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=')
+            soup = BeautifulSoup(r.content, self.parser)
+            try:
+                max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
+            except:
+                max_page = 1
+            while page <= max_page:
                 page += 1
                 params = (
                     ('pages', str(page)),
@@ -1642,28 +1672,9 @@ class livinginsider():
                 #     print('\n\nsearched till max\n\n')
 
                 r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php?action=1&pages=%d&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=' % page)
-                # print(r.url)
-                # print(r.status_code)
                 soup = BeautifulSoup(r.content, self.parser)
-                # print(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3])
-
 
                 all_posts = soup.find_all('div', attrs={'class':'mystock-item'})
-                # mem_id = soup.find('input', {'name': 'mem_id'}).get('value')
-                # # print(mem_id)
-                # device_id = r.text.split("let device_id = '")[1].split("'")[0]
-                # # print(device_id)
-
-                # for post in all_posts:
-                #     post_id = post.get('class')[2].split('item')[-1]
-                #     # print(post_id)
-                #     if post_id == postdata['post_id']:
-                #         # print('Found post')
-                #         post_found = True
-                #         break
-
-
-            
 
                 for post in all_posts:
 
