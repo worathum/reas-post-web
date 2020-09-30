@@ -69,29 +69,41 @@ class thaihometown():
             datahandled['property_type'] = postdata['property_type']
         except KeyError as e:
             datahandled['property_type'] = "คอนโดมิเนียม+Condominiem"
+            datahandled['property_type3'] = "condo"
             #log.warning(str(e))
         if datahandled['property_type'] == '2' or datahandled['property_type'] == 2: #2 บ้านเดี่ยว
             datahandled['property_type'] = "บ้านเดี่ยว+Singlehouse"
+            datahandled['property_type3'] = "singlehouse"
         elif datahandled['property_type'] == '3' or datahandled['property_type'] == 3: #3 บ้านแฝด
             datahandled['property_type'] = "บ้าน+Home"
+            datahandled['property_type3'] = "home"
         elif datahandled['property_type'] == '4' or datahandled['property_type'] == 4: #4 ทาวน์เฮ้าส์
             datahandled['property_type'] = "ทาวน์เฮ้าส์+Townhouse"
+            datahandled['property_type3'] = "townhouse"
         elif datahandled['property_type'] == '5' or datahandled['property_type'] == 5: #5 ตึกแถว-อาคารพาณิชย์
             datahandled['property_type'] = "อาคารพาณิชย์+Buildings"
+            datahandled['property_type3'] = "buildings"
         elif datahandled['property_type'] == '6' or datahandled['property_type'] == 6: #6 ที่ดิน
             datahandled['property_type'] = "ที่ดิน+Land"
+            datahandled['property_type3'] = "land"
         elif datahandled['property_type'] == '7' or datahandled['property_type'] == 7: #7 อพาร์ทเมนท์
             datahandled['property_type'] = "อพาร์ทเมนท์+Apartment"
+            datahandled['property_type3'] = "apartment"
         elif datahandled['property_type'] == '8' or datahandled['property_type'] == 8: #8 โรงแรม
             datahandled['property_type'] = "ธุรกิจ+Business"
+            datahandled['property_type3'] = "business"
         elif datahandled['property_type'] == '9' or datahandled['property_type'] == 9: #9 ออฟฟิศสำนักงาน
             datahandled['property_type'] = "สำนักงาน+Office"
+            datahandled['property_type3'] = "office"
         elif datahandled['property_type'] == '10' or datahandled['property_type'] == 10: #10 โกดัง
             datahandled['property_type'] = "โกดัง+Storehouse"
+            datahandled['property_type3'] = "storehouse"
         elif datahandled['property_type'] == '25' or datahandled['property_type'] == 25: #25 โรงงาน
             datahandled['property_type'] = "โรงงาน+Factory"
+            datahandled['property_type3'] = "factory"
         else:
             datahandled['property_type'] = "คอนโดมิเนียม+Condominiem" #1 คอนโด
+            datahandled['property_type3'] = "condo"
 
         try:
             datahandled['post_img_url_lists'] = postdata['post_img_url_lists']
@@ -762,7 +774,7 @@ class thaihometown():
                         post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
                      
                         #get post url
-                        post_url = self.getposturl(post_id,datahandled['property_type'])
+                        post_url = self.getposturl(post_id,datahandled['property_type3'])
                         # print(str(datahandled['property_type']))
                         #upload image
                         self.uploadimage(datahandled,post_id)
@@ -783,9 +795,9 @@ class thaihometown():
             "websitename": self.websitename
         }
     
-    def getposturl(self,post_id,type):
+    def getposturl(self,post_id,prop_type):
         #log.debug('')
-        post_url = 'https://www.thaihometown.com/'+str(type.split('+')[1])+'/'+str(post_id)
+        post_url = 'https://www.thaihometown.com/'+str(prop_type)+'/'+str(post_id)
 
         r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(post_id),encoder='cp874', verify=False)
         data = r.text
