@@ -10,7 +10,7 @@ import re
 import sys
 import json
 # import datetime
-import time 
+import time
 from datetime import datetime
 
 from selenium import webdriver
@@ -27,16 +27,15 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
+
 # httprequestObj = lib_httprequest()
 # httprequestObj = lib_httprequest()
 httprequestObj = lib_httprequest()
 
 
-
 # sess = requests.session()
 
 class pantipmarket():
-
     name = 'pantipmarket'
 
     def __init__(self):
@@ -52,27 +51,25 @@ class pantipmarket():
         self.debug = 0
         self.debugresdata = 0
 
-
     def register_user(self, userdata):
         # print('hello')
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
 
         httprequestObj.http_get('https://www.pantipmarket.com/member/logout.php')
 
-        for x in ['user','pass','name_th','surname_th','tel','company_name']:
+        for x in ['user', 'pass', 'name_th', 'surname_th', 'tel', 'company_name']:
             # print(x)
             if x not in userdata:
                 time_end = datetime.utcnow()
                 return {
-                    "websitename":"pantipmarket",
+                    "websitename": "pantipmarket",
                     "success": "false",
                     "time_usage": time_end - time_start,
                     "start_time": time_start,
                     "end_time": time_end,
-                    "detail": "Field {} not provided." .format(x) 
+                    "detail": "Field {} not provided.".format(x)
                 }
-
 
         datapost = {
             'username': userdata['user'],
@@ -83,7 +80,7 @@ class pantipmarket():
             'email': userdata['user'],
             'phone': userdata['tel'],
             'display_name': userdata['company_name'],
-            'except_privacy_policy' : '1',
+            'except_privacy_policy': '1',
             'btn_register_submit': 'Submit',
             'act': 'register',
             'new': '1',
@@ -116,15 +113,15 @@ class pantipmarket():
         #     'cookie': '_ga=GA1.2.151159769.1589130796; _gid=GA1.2.1042363384.1589130796; pmk_ipage_id[528170]=0; pmk_ipage_id[528171]=0; pmk_ipage_id[528169]=0; pmk_ipage_id[528213]=0; SS_PANTIPMARKET_COM=g0b28h60ah1hkfj9fs04nf7np3; pmk_user_screen=1920|1080',
         # }
         success = True
-        r = httprequestObj.http_post('https://www.pantipmarket.com/member/register_2012.php',data=datapost)
-        print(r.text)        
+        r = httprequestObj.http_post('https://www.pantipmarket.com/member/register_2012.php', data=datapost)
+        print(r.text)
         registered = "คุณเป็นสมาชิก" in r.content.decode('utf-8')
         if registered == False:
             success = False
         time_end = datetime.utcnow()
 
         return {
-            "websitename":"pantipmarket",
+            "websitename": "pantipmarket",
             "success": success,
             "time_usage": time_end - time_start,
             'ds_id': userdata['ds_id'],
@@ -134,7 +131,7 @@ class pantipmarket():
         }
 
     def test_login(self, logindata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
         httprequestObj.http_get('https://www.pantipmarket.com/member/logout.php')
         success = True
@@ -164,7 +161,8 @@ class pantipmarket():
             'url': 'https://www.pantipmarket.com/member/my/',
             'pop': ''
         }
-        r = httprequestObj.http_post('https://www.pantipmarket.com/member/login.php?step=&sCode=', headers=headers, data=datapost)
+        r = httprequestObj.http_post('https://www.pantipmarket.com/member/login.php?step=&sCode=', headers=headers,
+                                     data=datapost)
 
         time_end = datetime.utcnow()
         logged_in = '4264545' in r.text
@@ -172,7 +170,7 @@ class pantipmarket():
             success = False
 
         return {
-            "websitename":"pantipmarket",
+            "websitename": "pantipmarket",
             "success": success,
             "ds_id": logindata['ds_id'],
             "time_usage": time_end - time_start,
@@ -181,11 +179,9 @@ class pantipmarket():
             "detail": "Log in Successfully " if logged_in else "Log in Failed"
         }
 
-
-
     def create_post(self, postdata):
-        
-        # print(json.dumps(postdata, indent=4, sort_keys=True,default=str)) 
+
+        # print(json.dumps(postdata, indent=4, sort_keys=True,default=str))
         start_time = datetime.utcnow()
 
         if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
@@ -219,11 +215,11 @@ class pantipmarket():
 
         if user == "" or password == "":
             return {
-                "websitename":"pantipmarket",
+                "websitename": "pantipmarket",
                 "success": "false",
                 "post_url": "",
                 "start_time": start_time,
-                "end_time" : datetime.utcnow(),
+                "end_time": datetime.utcnow(),
                 "time_usage": datetime.utcnow() - start_time,
                 "ds_id": postdata['ds_id'],
                 "post_id": "",
@@ -238,69 +234,66 @@ class pantipmarket():
         post_url = ""
         post_id = ""
 
-
-
         send_property = '//*[@id="lv"]/li['
 
-        if postdata['property_type'] == "1": #condo
+        if postdata['property_type'] == "1":  # condo
             select_group = "อสังหาริมทรัพย์ » คอนโด ห้องพัก"
             send_property += '6]'
             group = "6_122"
 
-        elif postdata['property_type'] == "2": #single house
+        elif postdata['property_type'] == "2":  # single house
             select_group = "อสังหาริมทรัพย์ » บ้านเดี่ยว"
             send_property += '1]'
             group = "6_37"
-        
-        elif postdata['property_type'] == "3": #twin house
+
+        elif postdata['property_type'] == "3":  # twin house
             select_group = "อสังหาริมทรัพย์ » บ้านแฝด"
             send_property += '2]'
 
             group = "6_865"
-        
-        elif postdata['property_type'] == "4": #townhouse
+
+        elif postdata['property_type'] == "4":  # townhouse
             select_group = "อสังหาริมทรัพย์ » ทาวน์เฮ้าส์"
-            send_property +='4]'
+            send_property += '4]'
 
             group = "6_64"
-        
-        elif postdata['property_type'] == "5": #comm building
+
+        elif postdata['property_type'] == "5":  # comm building
             select_group = "อสังหาริมทรัพย์ » อาคารพาณิชย์"
             send_property += '5]'
 
             group = "6_93"
-        
-        elif postdata['property_type'] == "6": #land
+
+        elif postdata['property_type'] == "6":  # land
             select_group = "อสังหาริมทรัพย์ » ที่ดิน"
             send_property += '7]'
-            send_property = ''
             group = "6_168"
 
-        elif postdata['property_type'] == "7":  #apartment
+        elif postdata['property_type'] == "7":  # apartment
             select_group = "อสังหาริมทรัพย์ » อพาร์ทเม้นท์/ หอพัก ทั้งหลัง"
             send_property += '9]'
 
             group = "6_148"
-        
-        elif postdata['property_type'] == "8":  #hotels
+
+        elif postdata['property_type'] == "8":  # hotels
             select_group = "อสังหาริมทรัพย์ » รีสอร์ท โรงแรม ทั้งกิจการ"
             send_property += '10]'
 
             group = "6_212"
 
-        elif postdata['property_type'] == "9":  #office
+        elif postdata['property_type'] == "9":  # office
             select_group = "อสังหาริมทรัพย์ » พื้นที่สำนักงาน"
             send_property += '8]'
 
             group = "6_199"
 
-        elif postdata['property_type'] == "10": #warehouse/factory
+        elif postdata['property_type'] == "10":  # warehouse/factory
             select_group = "อสังหาริมทรัพย์ » โกดัง/ โรงงาน"
             send_property += '12]'
 
             group = "6_1096"
 
-        elif postdata['property_type'] == "25": #warehouse/factory
+        elif postdata['property_type'] == "25":  # warehouse/factory
             select_group = "อสังหาริมทรัพย์ » โกดัง/ โรงงาน"
             send_property += '12]'
 
@@ -311,9 +304,9 @@ class pantipmarket():
         options.add_argument('--no-sandbox')
 
         driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+        # driver = webdriver.Chrome('/usr/bin/chromedriver', chrome_options=options)
 
         driver.implicitly_wait(4)
-
 
         # driver = webdriver.Chrome()
         driver.get("https://www.pantipmarket.com/member/login.php?step=&sCode=")
@@ -327,7 +320,6 @@ class pantipmarket():
         end_time = datetime.utcnow()
         new_title = post_title_th.replace(" ", "%20")
 
-
         # if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
         #     if 'project_name' in postdata and postdata['project_name']!=None:
         #         postdata['web_project_name'] = postdata['project_name']
@@ -337,33 +329,38 @@ class pantipmarket():
         driver.get("https://www.pantipmarket.com/post/")
 
         detail = ""
-        
-        # post_title_th += " -ทรัพย์สินไทyย172r3"
+
+        # post_title_th +=
         driver.find_element_by_name("topic_th").send_keys(post_title_th)
-        time.sleep(5)
+        time.sleep(10)
         try:
-            if str(driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ')) == "11225":
+            if str(driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ')) != None:
+                time.sleep(2)
                 driver.find_element_by_name(
                     'select_group').click()
+                time.sleep(1)
 
                 driver.find_element_by_xpath('//*[@id="lv"]/li[6]').click()
+                time.sleep(1)
                 driver.find_element_by_xpath(send_property).click()
+            else:
+                detail = "A post with the same title already exists"
+                success = False
 
-        except ElementNotInteractableException:
+        except Exception as e:
             detail = "A post with the same title already exists"
+            # detail = str(e)
             success = False
 
         if success == True:
             try:
-                element = WebDriverWait(driver,5).until(
-                    EC.presence_of_element_located((By.NAME,"jqi_state0_buttonOk"))
+                element = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
                 )
                 driver.find_element_by_name('jqi_state0_buttonOk').click()
                 print("Page is ready")
             except:
                 print('Loading took too much time!')
-
-
 
             driver.find_element_by_name("message_th").send_keys(post_description_th)
             time.sleep(1)
@@ -373,14 +370,13 @@ class pantipmarket():
 
             else:
                 driver.find_element_by_xpath('//*[@id="action_list_S2"]').click()
-            
+
             for i in range(len(postdata['post_images'])):
                 if i < 15:
-                    filepath = os.getcwd() + "/"+ postdata['post_images'][i]
+                    filepath = os.getcwd() + "/" + postdata['post_images'][i]
                     driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]').send_keys(filepath)
                 else:
                     break
-
 
             driver.find_element_by_name("price_text_th").send_keys(price_baht)
 
@@ -391,17 +387,14 @@ class pantipmarket():
             for i in options[1:]:
                 provinces[i.get_attribute("value")] = i.text
 
-
-            for key,value in provinces.items():
+            for key, value in provinces.items():
                 if addr_province.find(value) != -1 or value.find(addr_province) != -1:
                     addr_province = key
                     break
 
-
             element = driver.find_element_by_id('located_in_select_2')
             dropdown = Select(element)
             dropdown.select_by_value(addr_province)
-
 
             time.sleep(10)
             districts = {}
@@ -416,8 +409,8 @@ class pantipmarket():
             options = [x for x in select_box.find_elements_by_tag_name("option")]
             for i in options[1:]:
                 districts[i.get_attribute("value")] = i.text
-            
-            for key,value in districts.items():
+
+            for key, value in districts.items():
                 # print(key)
                 if addr_district.find(value) != -1 or value.find(addr_district) != -1:
                     addr_district = key
@@ -427,9 +420,8 @@ class pantipmarket():
             dropdown = Select(element)
             dropdown.select_by_value(addr_district)
 
-
             driver.find_element_by_name('name_th').clear()
-            if name!= None:
+            if name != None:
                 driver.find_element_by_name("name_th").send_keys(name)
             driver.find_element_by_name('contact[telephone]').clear()
             if mobile != None:
@@ -438,21 +430,23 @@ class pantipmarket():
             if email != None:
                 driver.find_element_by_name("contact[email]").send_keys(email)
             driver.find_element_by_name('contact[line]').clear()
-            if line != None and len(line) >=4:
+            if line != None and len(line) >= 4:
                 driver.find_element_by_name("contact[line]").send_keys(line)
 
             html = driver.find_element_by_tag_name('html')
             html.send_keys(Keys.END)
             time.sleep(2)
-            slider = driver.find_element_by_xpath('//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
+            slider = driver.find_element_by_xpath(
+                '//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
             move = ActionChains(driver)
             move.click_and_hold(slider).move_by_offset(379.005, 0).release().perform()
-            time.sleep(2)
+            time.sleep(5)
             try:
-                element = WebDriverWait(driver,10).until(
-                    EC.presence_of_element_located((By.NAME,"jqi_state0_buttonOk"))
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
                 )
             except:
+                time.sleep(5)
                 print('loading took too much time!')
             driver.find_element_by_name('jqi_state0_buttonOk').click()
 
@@ -460,42 +454,17 @@ class pantipmarket():
             detail = 'Created the post successfully'
             end_time = datetime.utcnow()
 
-            time.sleep(4)
-            test_login = self.test_login(postdata)
+            time.sleep(5)
+            try:
+                post_url = driver.find_element_by_xpath(
+                    '/html/body/div[4]/div[1]/fieldset[1]/div/div[1]/div/a').get_attribute('href')
+                post_id = post_url.split('/')[-1]
+                print(post_url,post_id)
+            except:
 
-            success2 = test_login["success"]
-            if success2:
-                next_url = 'https://www.pantipmarket.com/member/my/?view=ads&adsmode=ads&p='
-                page = 1
-                found = [1]
-                idn = []
-                while len(found) > 0:
-                    request = httprequestObj.http_get(next_url + str(page))
+                detail = 'Post with similar title already exists'
 
-                    regex = 'id=\"tr[0-9]+\"'
-                    found = re.findall(regex,str(request.text))
 
-                    page += 1
-
-                    if len(found) > 0:
-                        idn = found.copy()
-                    else:
-                        break
-
-                try:
-                    idnn = idn[-1]
-                    post_id = idnn[6:-1]
-                    post_url = 'https://www.pantipmarket.com/items/' + str(post_id)
-                except:
-                    detail = "couldn't create post"
-                    success = False
-                    post_id = ""
-                    post_url = ""
-                # print(post_url)
-            else:
-                success = False
-                detail = "couldn't create post"
-                end_time = datetime.utcnow()
         else:
             end_time = datetime.utcnow()
 
@@ -505,22 +474,20 @@ class pantipmarket():
             pass
 
         return {
-            "websitename":"pantipmarket",
+            "websitename": "pantipmarket",
             "success": success,
             "post_url": post_url,
-            "start_time":start_time,
-            "end_time" : end_time,
+            "start_time": start_time,
+            "end_time": end_time,
             "time_usage": end_time - start_time,
             "ds_id": postdata['ds_id'],
-            "post_id": str(int(post_id)),
+            "post_id": post_id,
             "account_type": "null",
             "detail": detail
         }
 
-
-
     def boost_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         post_id = postdata["post_id"]
 
         test_login = self.test_login(postdata)
@@ -533,12 +500,12 @@ class pantipmarket():
         if success == True:
             post_url = "https://www.pantipmarket.com/items/" + post_id
 
-
-            request = httprequestObj.http_get("https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
+            request = httprequestObj.http_get(
+                "https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
             response_result = str(request.text)
             regex = '<div class="blue_box">ไม่พบข้อมูลของประกาศ</div>'
-            result = re.findall(regex,response_result)
-            if(len(result)>=1):
+            result = re.findall(regex, response_result)
+            if (len(result) >= 1):
                 success = False
                 detail = "The post doesn't exist"
                 post_url = ""
@@ -548,27 +515,27 @@ class pantipmarket():
             if success == True:
                 url = "https://www.pantipmarket.com/member/my/"
                 request = httprequestObj.http_get(url)
-                soup = BeautifulSoup(request.text,'lxml')
-                date = soup.find('input',attrs = {'id': 'date'+post_id, 'name' : 'date'})
+                soup = BeautifulSoup(request.text, 'lxml')
+                date = soup.find('input', attrs={'id': 'date' + post_id, 'name': 'date'})
                 if date:
                     date = date.get('value')
                 datapost = {
-                'board_shift[]' : post_id,
-                'board_delete_chk' : '',
-                'board_shift_check' : '',
-                'package_shift_chk' : '',
-                'act' : 'board_shift',
-                'allow_delete' : '1',
-                'allow_shift' : '1',
-                'allow_package' : '1',
-                'url' : 'https://www.pantipmarket.com/member/my/?view=ads',
-                'ipid' : '1',
-                'date' : date
+                    'board_shift[]': post_id,
+                    'board_delete_chk': '',
+                    'board_shift_check': '',
+                    'package_shift_chk': '',
+                    'act': 'board_shift',
+                    'allow_delete': '1',
+                    'allow_shift': '1',
+                    'allow_package': '1',
+                    'url': 'https://www.pantipmarket.com/member/my/?view=ads',
+                    'ipid': '1',
+                    'date': date
                 }
                 # f = open("pantip.txt","w+")
                 # f.write(str(request.text))
                 # f.close()
-                
+
                 newurl = 'https://www.pantipmarket.com/member/my/action.php'
 
                 request = httprequestObj.http_post(newurl, data=datapost)
@@ -579,9 +546,8 @@ class pantipmarket():
             end_time = datetime.utcnow()
             detail = "Unsuccessful login"
 
-
         return {
-            "websitename":"pantipmarket",
+            "websitename": "pantipmarket",
             "success": success,
             "time_usage": end_time - start_time,
             "start_time": start_time,
@@ -590,12 +556,11 @@ class pantipmarket():
             "log_id": postdata['log_id'],
             "detail": detail,
             "post_id": post_id,
-            "post_url" : post_url
+            "post_url": post_url
         }
 
-
     def delete_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
 
         post_id = postdata["post_id"]
         test_login = self.test_login(postdata)
@@ -608,17 +573,18 @@ class pantipmarket():
             post_url = "https://www.pantipmarket.com/items/" + post_id
             url = 'https://www.pantipmarket.com/member/my/action.php'
             datapost = {
-                'board_delete[]' : post_id,
-                'act' : 'board_delete',
-                'url' : 'https://www.pantipmarket.com/member/my/?view=ads&adsmode=delads'
+                'board_delete[]': post_id,
+                'act': 'board_delete',
+                'url': 'https://www.pantipmarket.com/member/my/?view=ads&adsmode=delads'
             }
 
-            request = httprequestObj.http_get("https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
+            request = httprequestObj.http_get(
+                "https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
             response_result = str(request.text)
 
             regex = 'ไม่พบข้อมูลของประกาศ'
             result = re.findall(regex, response_result)
-            if len(result)>=1:
+            if len(result) >= 1:
                 success = False
                 detail = "The post doesn't exist"
                 post_url = ""
@@ -626,13 +592,13 @@ class pantipmarket():
             if success == True:
                 request = httprequestObj.http_post(url, data=datapost)
                 end_time = datetime.utcnow()
-                detail = "Successfully deleted the post"        
+                detail = "Successfully deleted the post"
         else:
             success = False
             end_time = datetime.utcnow()
             detail = "Unsuccessful login"
         return {
-            "websitename":"pantipmarket",
+            "websitename": "pantipmarket",
             "success": success,
             "time_usage": end_time - start_time,
             'ds_id': postdata['ds_id'],
@@ -640,7 +606,7 @@ class pantipmarket():
             "start_time": start_time,
             "end_time": end_time,
             "detail": detail,
-            "post_url" : post_url
+            "post_url": post_url
         }
 
     def edit_post(self, postdata):
@@ -675,7 +641,6 @@ class pantipmarket():
         project_name = postdata["web_project_name"]
         post_id = postdata['post_id']
 
-
         post_url = ""
 
         # if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
@@ -690,77 +655,77 @@ class pantipmarket():
 
         send_property = '//*[@id="lv"]/li['
 
-        if postdata['property_type'] == "1": #condo
+        if postdata['property_type'] == "1":  # condo
             select_group = "อสังหาริมทรัพย์ » คอนโด ห้องพัก"
             send_property += '6]'
             group = "6_122"
 
-        elif postdata['property_type'] == "2": #single house
+        elif postdata['property_type'] == "2":  # single house
             select_group = "อสังหาริมทรัพย์ » บ้านเดี่ยว"
             send_property += '1]'
             group = "6_37"
-        
-        elif postdata['property_type'] == "3": #twin house
+
+        elif postdata['property_type'] == "3":  # twin house
             select_group = "อสังหาริมทรัพย์ » บ้านแฝด"
             send_property += '2]'
 
             group = "6_865"
-        
-        elif postdata['property_type'] == "4": #townhouse
+
+        elif postdata['property_type'] == "4":  # townhouse
             select_group = "อสังหาริมทรัพย์ » ทาวน์เฮ้าส์"
-            send_property +='4]'
+            send_property += '4]'
 
             group = "6_64"
-        
-        elif postdata['property_type'] == "5": #comm building
+
+        elif postdata['property_type'] == "5":  # comm building
             select_group = "อสังหาริมทรัพย์ » อาคารพาณิชย์"
             send_property += '5]'
 
             group = "6_93"
-        
-        elif postdata['property_type'] == "6": #land
+
+        elif postdata['property_type'] == "6":  # land
             select_group = "อสังหาริมทรัพย์ » ที่ดิน"
             send_property += '7]'
 
             group = "6_168"
 
-        elif postdata['property_type'] == "7":  #apartment
+        elif postdata['property_type'] == "7":  # apartment
             select_group = "อสังหาริมทรัพย์ » อพาร์ทเม้นท์/ หอพัก ทั้งหลัง"
             send_property += '9]'
 
             group = "6_148"
-        
-        elif postdata['property_type'] == "8":  #hotels
+
+        elif postdata['property_type'] == "8":  # hotels
             select_group = "อสังหาริมทรัพย์ » รีสอร์ท โรงแรม ทั้งกิจการ"
             send_property += '10]'
 
             group = "6_212"
 
-        elif postdata['property_type'] == "9":  #office
+        elif postdata['property_type'] == "9":  # office
             select_group = "อสังหาริมทรัพย์ » พื้นที่สำนักงาน"
             send_property += '8]'
 
             group = "6_199"
 
-        elif postdata['property_type'] == "10": #warehouse/factory
+        elif postdata['property_type'] == "10":  # warehouse/factory
             select_group = "อสังหาริมทรัพย์ » โกดัง/ โรงงาน"
             send_property += '12]'
 
             group = "6_1096"
 
-        elif postdata['property_type'] == "25": #warehouse/factory
+        elif postdata['property_type'] == "25":  # warehouse/factory
             select_group = "อสังหาริมทรัพย์ » โกดัง/ โรงงาน"
             send_property += '12]'
 
             group = "6_1096"
-    
+
         success = True
         start_time = datetime.utcnow()
         end_time = datetime.utcnow()
         options = Options()
         options.headless = True
         options.add_argument('--no-sandbox')
-        
+
         driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
         # driver = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)  # for linux
         driver.implicitly_wait(4)
@@ -769,14 +734,14 @@ class pantipmarket():
         driver.find_element_by_name("username").send_keys(postdata['user'])
         driver.find_element_by_name("password").send_keys(postdata['pass'])
         driver.find_element_by_name("btn_login_submit").click()
-        request = httprequestObj.http_get("https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
+        request = httprequestObj.http_get(
+            "https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
         response_result = str(request.text)
-        
+
         regex = '<div class="blue_box">ไม่พบข้อมูลของประกาศ</div>'
-        result = re.findall(regex,response_result)
+        result = re.findall(regex, response_result)
 
-
-        if(len(result)>=1):
+        if (len(result) >= 1):
             success = False
             detail = "The post doesn't exist"
             end_time = datetime.utcnow()
@@ -792,7 +757,7 @@ class pantipmarket():
             driver.find_element_by_name("topic_th").send_keys(post_title_th)
 
             if post_description_th != None:
-                driver.find_element_by_name('message_th').clear()        
+                driver.find_element_by_name('message_th').clear()
             driver.find_element_by_name("message_th").send_keys(post_description_th)
 
             driver.find_element_by_xpath('//*[@id="action_type"]/option[2]').click()
@@ -811,9 +776,9 @@ class pantipmarket():
                     try:
 
                         driver.find_element_by_xpath(
-                            '/html/body/div[8]/form/div[1]/fieldset[5]/div/div/div[2]/div[1]/div/div[%d]/u' % (i+1)
+                            '/html/body/div[8]/form/div[1]/fieldset[5]/div/div/div[2]/div[1]/div/div[%d]/u' % (i + 1)
                         ).click()
-                        print(i,i+1)
+                        print(i, i + 1)
                         time.sleep(1.5)
                         driver.find_element_by_name(
                             'jqi_state0_buttonOk'
@@ -823,7 +788,7 @@ class pantipmarket():
 
                 for i in range(len(postdata['post_images'])):
                     if i < 15:
-                        filepath = os.getcwd() + "/"+ postdata['post_images'][i]
+                        filepath = os.getcwd() + "/" + postdata['post_images'][i]
                         driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]').send_keys(filepath)
                     else:
                         break
@@ -837,7 +802,6 @@ class pantipmarket():
                 driver.find_element_by_name('price_text_th').clear()
                 driver.find_element_by_name("price_text_th").send_keys(price_baht)
 
-
             if addr_province != None:
                 provinces = {}
 
@@ -846,12 +810,10 @@ class pantipmarket():
                 for i in options[1:]:
                     provinces[i.get_attribute("value")] = i.text
 
-
-                for key,value in provinces.items():
+                for key, value in provinces.items():
                     if addr_province.find(value) != -1:
                         addr_province = key
                         break
-
 
                 element = driver.find_element_by_id('located_in_select_2')
                 dropdown = Select(element)
@@ -877,8 +839,8 @@ class pantipmarket():
                 options = [x for x in select_box.find_elements_by_tag_name("option")]
                 for i in options[1:]:
                     districts[i.get_attribute("value")] = i.text
-                
-                for key,value in districts.items():
+
+                for key, value in districts.items():
                     # print(key)
                     if addr_district.find(value) != -1:
                         addr_district = key
@@ -903,28 +865,25 @@ class pantipmarket():
             if email != None:
                 driver.find_element_by_name('contact[email]').clear()
                 driver.find_element_by_name("contact[email]").send_keys(email)
-            if line !=None and len(line)>=4:
+            if line != None and len(line) >= 4:
                 driver.find_element_by_name('contact[line]').clear()
                 driver.find_element_by_name("contact[line]").send_keys(line)
-
-
-
 
             html = driver.find_element_by_tag_name('html')
             html.send_keys(Keys.END)
             time.sleep(2)
 
-            slider = driver.find_element_by_xpath('//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
+            slider = driver.find_element_by_xpath(
+                '//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
             move = ActionChains(driver)
             move.click_and_hold(slider).move_by_offset(379.005, 0).release().perform()
             try:
-                element = WebDriverWait(driver,5).until(
-                    EC.presence_of_element_located((By.NAME,"jqi_state0_buttonOk"))
+                element = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
                 )
                 driver.find_element_by_name('jqi_state0_buttonOk').click()
             except:
                 print('loading took too much time!')
-
 
             post_url = "https://www.pantipmarket.com/items/" + post_id
             detail = "Successfully edited the post"
@@ -938,7 +897,7 @@ class pantipmarket():
             pass
 
         return {
-            "websitename":"pantipmarket",
+            "websitename": "pantipmarket",
             "success": success,
             'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
@@ -950,7 +909,6 @@ class pantipmarket():
             "account_type": "null",
             "detail": detail,
         }
-        
 
     def search_post(self, postdata):
 
@@ -969,7 +927,6 @@ class pantipmarket():
 
             resp = httprequestObj.http_get("https://www.pantipmarket.com/member/my/?view=ads")
 
-
             soup = BeautifulSoup(resp.text, 'html.parser')
             posts = soup.find_all("div", {"class": "topic_box"})
             c = soup.find_all("div", {"class": "contact_box"})
@@ -977,7 +934,7 @@ class pantipmarket():
             titles = []
             dates = []
             for i in range(len(c)):
-                if i%2 == 0:
+                if i % 2 == 0:
                     dates.append(str(c[i].text).split('/')[1][:-1])
             print(dates)
             for i in range(len(posts)):
@@ -994,37 +951,37 @@ class pantipmarket():
                     detail = "Post found"
                     post_url = titles[i][1]
                     post_create_time = str(titles[i][2])
-                    post_id = ''.join(filter(str.isdigit,titles[i][1]))
+                    post_id = ''.join(filter(str.isdigit, titles[i][1]))
 
         time_end = datetime.utcnow()
         time_usage = time_end - time_start
 
         ret = {
-                "websitename": "pantipmarket",
-                "success": "true",
-                "ds_id": postdata['ds_id'],
-                "log_id": postdata['log_id'],
-                "post_found": success,
-                "post_url": post_url,
-                "post_id": post_id, 
-                "post_create_time": post_create_time,
-                "post_modify_time": '',
-                "post_view": '',
-                "account_type": "null",
-                "detail": detail,
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                "time_usage": str(time_usage),
-                }
+            "websitename": "pantipmarket",
+            "success": "true",
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_found": success,
+            "post_url": post_url,
+            "post_id": post_id,
+            "post_create_time": post_create_time,
+            "post_modify_time": '',
+            "post_view": '',
+            "account_type": "null",
+            "detail": detail,
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "time_usage": str(time_usage),
+        }
 
         return ret
 
     def print_debug(self, msg):
-        if(self.debug == 1):
+        if (self.debug == 1):
             print(msg)
         return True
 
     def print_debug_data(self, data):
-        if(self.debugdata == 1):
+        if (self.debugdata == 1):
             print(data)
         return True
