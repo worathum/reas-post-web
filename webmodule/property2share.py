@@ -748,7 +748,10 @@ class property2share():
         all_posts_response = httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
         all_posts_response = json.loads(all_posts_response.content.decode('utf-8')[2:])
 
-        all_posts = all_posts_response['data']
+        if 'data' in all_posts_response:
+            all_posts = all_posts_response['data']
+        else:
+            all_posts = []
         detail = 'Unable To Find the Post'
         success = False
         post_found = False

@@ -276,23 +276,30 @@ class postcore():
                     websitename = webresult["websitename"]
                     response["web"][websitename] = webresult
                     try:
-                        if response["web"][websitename]['success'] == "True" or response["web"][websitename]['success'] is True:
-                            response["web"][websitename]['success'] = "true"
-                        if response["web"][websitename]['success'] == "False" or response["web"][websitename]['success'] is False:
+
+                        if 'success' not in response["web"][websitename] or response["web"][websitename]['success'] == "False" or response["web"][websitename]['success'] is False:
                             response["web"][websitename]['success'] = "false"
+                        elif response["web"][websitename]['success'] == "True" or response["web"][websitename]['success'] is True:
+                            response["web"][websitename]['success'] = "true"
+
                         
                         if 'detail' not in response["web"][websitename]:
                             response["web"][websitename]['detail'] = ""
+
                         if 'ret' in response["web"][websitename]:
                             response["web"][websitename]['detail'] += str(response["web"][websitename]['ret'])
+                        
                         if 'time_start' in response["web"][websitename]:
                             response["web"][websitename]['start_time'] = response["web"][websitename]['time_start']
                         if 'time_end' in response["web"][websitename]:
                             response["web"][websitename]['end_time'] = response["web"][websitename]['time_end']
+                        
                         if 'account_type' not in response["web"][websitename]:
                             response["web"][websitename]['account_type'] = ""
+                        
                         if 'post_url' not in response["web"][websitename] and (action == "create_post" or action == "search_post"):
                             response["web"][websitename]['post_url'] = ""
+
                         if 'post_create_time' not in response["web"][websitename] and action == "search_post":
                             response["web"][websitename]['post_create_time'] = ""
                         if 'post_modify_time' not in response["web"][websitename] and action == "search_post":
@@ -301,12 +308,15 @@ class postcore():
                             response["web"][websitename]['post_view'] = ""
                         if 'post_found' not in response["web"][websitename] and action == "search_post":
                             response["web"][websitename]['post_found'] = "true" if response["web"][websitename]['post_url'] != "" else "false"
+
                         if 'ds_name' not in response["web"][websitename]:
                             response["web"][websitename]['ds_name'] = str(websitename)
+
                         if 'start_time' not in response["web"][websitename]:
                             response["web"][websitename]['start_time'] = all_start_time
                         if 'end_time' not in response["web"][websitename]:
                             response["web"][websitename]['end_time'] = datetime.datetime.utcnow()
+                        
                         if 'post_url' in response["web"][websitename] and 'http' not in response["web"][websitename]['post_url'] and response["web"][websitename]['post_url'] != '':
                             response["web"][websitename]['post_url'] = "http://" + response["web"][websitename]['post_url']
 
@@ -321,7 +331,9 @@ class postcore():
 
                 if webitem['ds_name'] not in response:
                     for i, error in enumerate(errors):
+                        print(webitem['ds_name'])
                         if webitem['ds_name'] + ".py" in error[0]:
+
                             logging.info("")
                             logging.info("")
                             logging.info("==============================================================================")
@@ -337,22 +349,24 @@ class postcore():
                             logging.info("==============================================================================")
                             logging.info("")
                             logging.info("")
+
                             if 'ConnectionError' in str(error[0]) or 'ReadTimeout' in str(error[0]):
                                 error[0] = "Connection Error!"
                             if 'ProxyError' in str(error[0]):
                                 error[0] = "Proxy Error!"    
                             if 'cloudflare' in str(error[0]):                            
                                 error[0] = "Website has security by Cloud Flare! Couldn't complete the action."    
+
                             response["web"][webitem['ds_name']] = {'success':'false','detail': error[1], 'websitename':webitem['ds_name'], 'ds_name':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow(), 'account_type': ''}
-    
+                            
                             if action == "create_post":
-                                response["web"][websitename]['post_url'] = ""
+                                response["web"][webitem['ds_name']]['post_url'] = ""
                             if action == "search_post":
-                                response["web"][websitename]['post_url'] = ""
-                                response["web"][websitename]['post_create_time'] = ""
-                                response["web"][websitename]['post_modify_time'] = ""
-                                response["web"][websitename]['post_view'] = ""
-                                response["web"][websitename]['post_found'] = "true" if response["web"][websitename]['post_url'] != "" else "false"
+                                response["web"][webitem['ds_name']]['post_url'] = ""
+                                response["web"][webitem['ds_name']]['post_create_time'] = ""
+                                response["web"][webitem['ds_name']]['post_modify_time'] = ""
+                                response["web"][webitem['ds_name']]['post_view'] = ""
+                                response["web"][webitem['ds_name']]['post_found'] = "false"
     
                             break
 
@@ -361,6 +375,8 @@ class postcore():
                 response["web"][webitem['ds_name']]['log_id'] = webitem['log_id']    
                 if 'post_id' not in response["web"][webitem['ds_name']]:  
                     response["web"][webitem['ds_name']]['post_id'] = webitem['post_id']      
+
+
 
 
             logging.info("")
