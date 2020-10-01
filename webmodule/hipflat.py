@@ -1208,7 +1208,10 @@ class hipflat():
 
             soup = BeautifulSoup(posts, features = "html.parser")
             pages = [p['href'] for p in soup.find_all('a', attrs={'data-remote': 'true'})]
-            max_pages = int(pages[-1].split('/')[-1])
+            try:
+                max_pages = int(pages[-1].split('/')[-1])
+            except:
+                max_pages = 0
 
             #  single page start
             for i in range(1,max_pages+1):
@@ -1231,7 +1234,6 @@ class hipflat():
                             aaas.append(post_ids)
                     except:
                         continue
-                print(aaas)
 
 
 
