@@ -322,10 +322,14 @@ class baania():
             allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
         except:
             
+            detail = str(resp.content.decode('utf-8'))
+            if 'cloudflare' in detail.lower():                            
+                detail = "Website has security by Cloud Flare! Couldn't complete the action."
+
             return {
             "websitename": "baania",
             "success": "false",
-            "detail": str(resp.content.decode('utf-8')),
+            "detail": detail,
             "start_time": str(time_start),
             "end_time": str(datetime.datetime.utcnow()),
             "ds_id": postdata['ds_id'],
