@@ -551,7 +551,7 @@ class hipflat():
 
             except:
                 success = "false"
-                detail = "Free listings finished. Cannot make more posts."
+                detail = "Could not create post. Maybe you're not using premium account."
 
         else:
             success = "false"

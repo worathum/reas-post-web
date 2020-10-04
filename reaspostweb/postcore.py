@@ -354,7 +354,7 @@ class postcore():
                                 error[0] = "Connection Error!"
                             if 'ProxyError' in str(error[0]):
                                 error[0] = "Proxy Error!"    
-                            if 'cloudflare' in str(error[0]):                            
+                            if 'cloudflare' in str(error[0]).lower():                            
                                 error[0] = "Website has security by Cloud Flare! Couldn't complete the action."    
 
                             response["web"][webitem['ds_name']] = {'success':'false','detail': error[1], 'websitename':webitem['ds_name'], 'ds_name':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow(), 'account_type': ''}
