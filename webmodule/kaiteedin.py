@@ -14,7 +14,20 @@ import datetime
 import time
 import sys
 from urllib.parse import unquote
+from selenium import webdriver
 
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import ElementNotInteractableException
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
 
 httprequestObj = lib_httprequest()
 
@@ -69,6 +82,12 @@ class kaiteedin():
         success = "true"
         detail = ""
 
+        driver =webdriver.Chrome('/usr/bin/chromedriver')
+        driver.get('http://kaiteedin.net/index.php')
+        time.sleep(10)
+        if str(driver.find_element_by_xpath('//*[@id="cbp-tm-menu"]/li[8]/a').get_attribute('href')) == str('http://kaiteedin.net/member.php'):
+            driver.get('http://kaiteedin.net/member_signout.php')
+        driver.quit()
         if 'surname_th' not in postdata:
             return{
                 'websitename': 'kaiteedin',
@@ -121,7 +140,7 @@ class kaiteedin():
         s = requests.Session()
         r = s.post(url_n, data=datapost)
         data = r.text
-        soup = BeautifulSoup(r.content, "html5lib")
+        soup = BeautifulSoup(r.content, features='html.parser')
         script = soup.find("script", attrs={'language': 'JavaScript'})
         html = "บันทึกข้อมูลของคุณเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของท่านเพื่อยืนยันตนก่อนเข้าสู่ระบบ"
         if html not in script.text:
@@ -208,7 +227,7 @@ class kaiteedin():
         if success == "true":
             listurl="http://kaiteedin.net/mylisting.php"
             r=httprequestObj.http_get(listurl)
-            soup=BeautifulSoup(r.content,'html5lib')
+            soup=BeautifulSoup(r.content,features='html.parser')
             table=soup.find('table',attrs={'class':'table table-hover'})
             try:
                 tr=table.findAll('tr')
@@ -348,7 +367,7 @@ class kaiteedin():
             }
             url_post = 'http://www.kaiteedin.net/listing.php'
             r = httprequestObj.http_post(url_post, data=datapost)
-            soup2 = BeautifulSoup(r.content, 'html5lib')
+            soup2 = BeautifulSoup(r.content, features='html.parser')
             postdata['post_project_name']=postdata['post_description_th']
             postdata['post_description_th']=postdata['post_description_th'].replace('\r\n','<br>')
             postdata['post_description_th']=postdata['post_description_th'].replace('\n','<br>')
@@ -518,7 +537,7 @@ class kaiteedin():
             else:
                 listurl="http://kaiteedin.net/mylisting.php"
                 r=httprequestObj.http_get(listurl)
-                soup=BeautifulSoup(r.content,'html5lib')
+                soup=BeautifulSoup(r.content,features='html.parser')
                 table=soup.find('table',attrs={'class':'table table-hover'})
                 tr=table.findAll('tr')
                 l=len(tr)
