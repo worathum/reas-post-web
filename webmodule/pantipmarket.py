@@ -469,10 +469,11 @@ class pantipmarket():
             end_time = datetime.utcnow()
 
         try:
+            driver.close()
             driver.quit()
         except:
             pass
-
+ 
         return {
             "websitename": "pantipmarket",
             "success": success,
@@ -891,7 +892,7 @@ class pantipmarket():
             end_time = datetime.utcnow()
 
         try:
-            # time.sleep(10)
+            driver.close()
             driver.quit()
         except:
             pass
