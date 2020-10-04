@@ -126,11 +126,13 @@ class ploychao():
         try:
             alert = driver.switch_to.alert
             alert.accept()
+        except:
+            pass
+        try:
             driver.close()
             driver.quit()
         except:
             pass
-
 
 
     def register_user(self, postdata):

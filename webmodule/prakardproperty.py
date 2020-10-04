@@ -409,6 +409,11 @@ class prakardproperty():
         except:
             pass
 
+        try:
+            driver.close()
+            driver.quit()
+        except:
+            pass
         time_end = datetime.datetime.utcnow()
         # #{
         #     "websitename": "prakardproperty",
@@ -793,14 +798,17 @@ class prakardproperty():
             try:
                 alert = driver.switch_to.alert
                 alert.accept()
-                driver.close()
-                driver.quit()
             except:
                 pass
 
         except:
             pass
         #
+        try:
+            driver.close()
+            driver.quit()
+        except:
+            pass
 
         time_end = datetime.datetime.utcnow()
         # #{

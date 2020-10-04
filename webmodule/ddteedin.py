@@ -24,15 +24,7 @@ from urllib.parse import unquote
 # options = Options()
 # options.headless = True
 
-options = Options()
-options.set_headless(True)
-options.add_argument('--no-sandbox')
 
-browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-# browser = webdriver.Chrome(
-    # executable_path='/usr/bin/chromedriver',options=options)
-wait = WebDriverWait(browser,10)
-browser.implicitly_wait(100)
 httprequestObj = lib_httprequest()
 
 
@@ -330,6 +322,14 @@ class ddteedin():
                     success = "false"
                     print("sed")
                     detail = "duplicate title"
+                options = Options()
+                options.set_headless(True)
+                options.add_argument('--no-sandbox')
+
+                browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+                wait = WebDriverWait(browser,10)
+                browser.implicitly_wait(100)
+
                 if post_id != '' and theurl != '':
                     browser.get('https://www.ddteedin.com/login/')
                     time.sleep(2)
@@ -367,7 +367,20 @@ class ddteedin():
                     time.sleep(2)
                     browser.get('https://www.ddteedin.com/logout/')
 
-                    # browser.close()
+
+                try:
+                    browser.close()
+                    browser.quit()
+                    try:
+                        alert = browser.switch_to.alert
+                        alert.accept()
+                        browser.close()
+                        browser.quit()
+                    except:
+                        pass
+                except:
+                    pass
+
                 # query_element = {
                 #     'q': postdata['post_title_th'],
                 #     'pv': '',
@@ -395,18 +408,6 @@ class ddteedin():
         else:
             success = "false"
 
-        try:
-            browser.close()
-            browser.quit()
-            try:
-                alert = browser.switch_to.alert
-                alert.accept()
-                browser.close()
-                browser.quit()
-            except:
-                pass
-        except:
-            pass
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -587,7 +588,17 @@ class ddteedin():
                     datapost.append(('floor', postdata['floor_total']))
                     datapost.append(('usagesize', postdata['floor_area']))
                 query_string = 'https://www.ddteedin.com/post-land-for-sale/edit/'+id
-                
+                options = Options()
+                options.set_headless(True)
+                options.add_argument('--no-sandbox')
+
+                browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+                # browser = webdriver.Chrome(
+                    # executable_path='/usr/bin/chromedriver',options=options)
+                wait = WebDriverWait(browser,10)
+                browser.implicitly_wait(100)
+
+
                 r = httprequestObj.http_post(
                     query_string, data=datapost)
                 browser.get('https://www.ddteedin.com/login')
@@ -618,25 +629,26 @@ class ddteedin():
                 browser.find_element_by_name('btn_submit').click()
                 browser.get('https://www.ddteedin.com/logout/')
                 query_string = 'https://www.ddteedin.com/'+postdata['post_id']
+                try:
+                    browser.close()
+                    browser.quit()
+                    try:
+                        alert = browser.switch_to.alert
+                        alert.accept()
+                        browser.close()
+                        browser.quit()
+                    except:
+                        pass
+                except:
+                    pass
+
             # print(r.text)
         else:
             success = "false"
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        try:
-            browser.close()
-            browser.quit()
-            try:
-                alert = browser.switch_to.alert
-                alert.accept()
-                browser.close()
-                browser.quit()
-            except:
-                pass
 
-        except:
-            pass
         return {
             "websitename": "ddteedin",
             "success": success,
