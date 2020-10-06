@@ -779,8 +779,17 @@ class amazonford():
             # print(r.url)
             # print(r.status_code)
             soup = BeautifulSoup(r.content, 'html.parser')
-            pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
-            max_p = int(pages.text)
+            pages = soup.find_all('a', attrs={'class': 'paginate'})
+            if len(pages) > 0:
+                if len(pages) > 10:
+                    last = pages[-2]
+                else:
+                    last = pages[-1]
+
+                max_p = int(last.text)
+            else:
+                max_p = 1
+            # print(f'max_p--{max_p}')
             page = 1
             while page <= max_p:
                 if post_found == "true":
@@ -789,7 +798,7 @@ class amazonford():
 
                 all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
 
-                soup = BeautifulSoup(all_posts.content, features = "html")
+                soup = BeautifulSoup(all_posts.content, features = "html.parser")
 
 
                 xyz = soup.find('table', attrs={'class':'table table-hover'})
@@ -808,7 +817,7 @@ class amazonford():
 
                         find_info = httprequestObj.http_get(post_url, headers = headers)
 
-                        sou = BeautifulSoup(find_info.content, features = "html")
+                        sou = BeautifulSoup(find_info.content, features = "html.parser")
 
                         pqr = sou.find('div', attrs = {'class': 'news-time'}).text.split(' ')
 

@@ -1697,7 +1697,6 @@ class livinginsider():
 
             if not post_found:
                 post_url = ''
-                success = False
                 detail = "No post with given post_title"
         else:
             success = False

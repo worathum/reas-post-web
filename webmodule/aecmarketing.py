@@ -233,18 +233,33 @@ class aecmarketing():
                     zone_id = i + 1
                     break
 
+        try:
+            addr_subdis = postdata['addr_sub_district']
+            response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/'+str(zone_id))
+            result = json.loads(response.content.decode('utf-8'))
 
-        addr_subdis = postdata['addr_sub_district']
-        response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/'+str(zone_id))
-        result = json.loads(response.content.decode('utf-8'))
+            subdistrict_id = ''
+            for i in range(len(result)):
+                if (addr_subdis in result[i]['subdistrict_name']) or (result[i]['subdistrict_name'] in addr_subdis):
+                    subdistrict_id = result[i]['subdistrict_id']
+                    break
+            if subdistrict_id == '':
+                subdistrict_id = result[0]['subdistrict_id']
+        except:
+            end_time = datetime.datetime.utcnow()
 
-        subdistrict_id = ''
-        for i in range(len(result)):
-            if (addr_subdis in result[i]['subdistrict_name']) or (result[i]['subdistrict_name'] in addr_subdis):
-                subdistrict_id = result[i]['subdistrict_id']
-                break
-        if subdistrict_id == '':
-            subdistrict_id = result[0]['subdistrict_id']
+            return {
+                "success": "false",
+                "start_time": str(start_time),
+                "ds_id": postdata['ds_id'],
+                "end_time": str(end_time),
+                "usage_time": str(end_time - start_time),
+                "detail": "Cannot post since Subdistrict not Found.",
+                "post_url" : "",
+                "post_id" : "",
+                "websitename": "aecmarketing"
+            }
+
 
         try:
             line_data = postdata['line']

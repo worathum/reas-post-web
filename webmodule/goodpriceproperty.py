@@ -636,7 +636,7 @@ class goodpriceproperty():
                 "websitename": "goodpriceproperty",
                 "start_time": str(time_start),
                 "end_time": str(time_end),
-                'post_url': post_url,
+                'post_url': '',
                 'post_id': post_id
             }
 
@@ -682,7 +682,7 @@ class goodpriceproperty():
 
 
 
-        total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])            
+        # total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])
         found = False
         page = 1
         while True:

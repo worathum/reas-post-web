@@ -537,8 +537,7 @@ class bankumka():
         # login
         test_login = self.test_login(postdata)
         success = test_login["success"]
-        ashopname = test_login["detail"]
-
+        detail = test_login["detail"]
         getProdId = {'1': 2, '2': 1, '3': 1, '4': 3, '5': 4,
                      '6': 5, '7': 37, '8': 37, '9': 37, '10': 37, '25': 37}
         try:
@@ -569,14 +568,13 @@ class bankumka():
             project_n = postdata['project_name']
         else:
             project_n = postdata['post_title_th']
-
         mydata = {
             'query': project_n
         }
         resp = httprequestObj.http_post('https://bankumka.com/ajax/listproject/', data=mydata)
         allres = json.loads(resp.content.decode('utf-8'))["suggestions"]
         project_id = '0'
-
+        # print( json.loads(resp.content.decode('utf-8')))
         if len(allres) != 0:
             project_id = allres[0]['data']
             project_n = allres[0]["value"]
@@ -590,29 +588,29 @@ class bankumka():
             province_id = res1["project_province"]
             amphur_id = res1["project_district"]
             tumbon_id = res1["project_subdistrict"]
-
+            # print(f'tumbon_id--{tumbon_id}')
 
         if success == "true":
             r = httprequestObj.http_get(
                 'https://bankumka.com/member/properties', verify=False)
-            data = r.text
+            data = r.content
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-            all = soup.findAll("a", {"class": "my-property-name"})
+            all = soup.find_all("a", {"class": "my-property-name"})
             posturl = ""
             for i in all:
                 if (i.get_text()).find(postdata['post_id']) != -1:
                     posturl += i['href']
             posturl += '/edit'
-            # print(posturl)
+            # print(f"posturl--{posturl}")
             if(posturl == '/edit'):
                 success = False
             else:
                 r = httprequestObj.http_get(
                     posturl, verify=False)
-                data = r.text
+                data = r.content
                 # print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                alls = soup.findAll("option")
+                alls = soup.find_all("option")
                 province_found = False
                 for i in alls:
                     if postdata['addr_province'].replace(" ","").strip() == i.get_text().replace(" ","").strip():
@@ -628,12 +626,10 @@ class bankumka():
                     # print(i)
                     # print(i.get_text())
                     # print("data: "+i.text+" value: "+i.value)
-                # print(province_id)
                 query_string = 'https://bankumka.com/ajax/listcities/'+province_id
                 r = httprequestObj.http_get(
                     query_string, verify=False)
                 data = json.loads(r.text)
-                # print(data)
                 amphur_found = False
                 for i in data:
                     # print(i['name'])
@@ -651,7 +647,6 @@ class bankumka():
                 r = httprequestObj.http_get(
                     query_string, verify=False)
                 data = json.loads(r.text)
-                # print(data)
                 tumbon_found = False
                 for i in data:
                     if postdata['addr_sub_district'] == i['name']:
@@ -769,7 +764,6 @@ class bankumka():
                 r = httprequestObj.http_post(
                     'https://bankumka.com/ajax/checkProperty', data=datapost)
                 data = json.loads(r.text)
-                print(data)
                 if data['status'] == 'OK':
                     datapost = [
                         ('timeout', '5'),
@@ -889,6 +883,8 @@ class bankumka():
                         'https://bankumka.com/property/save', data=datapost, files=files)
                     # print(r.text)
                 else:
+                    detail = '\n'.join(data['message'])
+                    posturl= ''
                     success = "false"
                 # files = {}
                 # for i in range(len(postdata["post_img_url_lists"])):

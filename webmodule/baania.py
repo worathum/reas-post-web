@@ -198,7 +198,7 @@ class baania():
             "road": postdata["addr_road"],
             "post_code": ""
         }
-        r = requests.get("https://api.baania.com/api/v1/provinces")
+        r = httprequestObj.http_get("https://api.baania.com/api/v1/provinces")
         prov = json.loads(r.text)
         for i in prov:
             if i['data']['title']['title_th'].strip() == postdata["addr_province"].strip():
@@ -216,7 +216,7 @@ class baania():
                         "name": postdata["addr_province"]
                     }
 
-        r = requests.get(
+        r = httprequestObj.http_get(
             "https://api.baania.com/api/v1/provinces/"+province_id+"/districts")
         prov = json.loads(r.text)
         
@@ -236,7 +236,7 @@ class baania():
                         "name": postdata["addr_district"]
                     }
 
-        r = requests.get(
+        r = httprequestObj.http_get(
             "https://api.baania.com/api/v1/districts/"+amphur_id+"/subdistricts")
         prov = json.loads(r.text)
         
@@ -311,13 +311,22 @@ class baania():
 
     # while flag:
         mydata = {
-            "q":postdata['web_project_name'],
-            "size":1,
+            "q": postdata['web_project_name'],
+            "size": 1,
             "filter":{
-                "propertyType":"2"
-                }
+                    "propertyType": "2"
             }
-        resp = requests.post('https://search.baania.com/api/v1/project', data=mydata)
+        }
+        headers = {
+            "origin": "https://www.baania.com",
+            "referer": "https://www.baania.com/",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-site",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+        }
+        resp = httprequestObj.http_post('https://search.baania.com/api/v1/project', data = json.dumps(mydata).encode('utf-8'), headers=headers)
+        
         try:
             allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
         except:
@@ -613,7 +622,7 @@ class baania():
         }
 
 
-        r = requests.get("https://api.baania.com/api/v1/provinces")
+        r = httprequestObj.http_get("https://api.baania.com/api/v1/provinces")
         prov = json.loads(r.text)
         for i in prov:
             if i['data']['title']['title_th'].strip() == postdata["addr_province"].strip():
@@ -631,7 +640,7 @@ class baania():
                         "name": postdata["addr_province"]
                     }
 
-        r = requests.get(
+        r = httprequestObj.http_get(
             "https://api.baania.com/api/v1/provinces/"+province_id+"/districts")
         prov = json.loads(r.text)
         
@@ -651,7 +660,7 @@ class baania():
                         "name": postdata["addr_district"]
                     }
 
-        r = requests.get(
+        r = httprequestObj.http_get(
             "https://api.baania.com/api/v1/districts/"+amphur_id+"/subdistricts")
         prov = json.loads(r.text)
         
@@ -731,7 +740,7 @@ class baania():
                 "propertyType":"2"
                 }
             }
-        resp = requests.post('https://search.baania.com/api/v1/project', data=mydata)
+        resp = httprequestObj.http_post('https://search.baania.com/api/v1/project', data=mydata)
         try:
             allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
         except:
@@ -1017,7 +1026,7 @@ class baania():
             }
 
             url = "https://api.baania.com/api/v1/users/listings?filter[filter_query]={%22$or%22:%20[{%22code%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22title_th%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22keyId%22:%20{%22$regex%22:%22"+post_title+"%22}}]}&sort=-updated_at"
-            r = requests.get(url,headers=headers)
+            r = httprequestObj.http_get(url,headers=headers)
             myans = json.loads(r.content.decode('utf-8'))
             if len(myans['data']) > 0 and post_title==myans['data'][0]['title_th']:
                 post_id=myans['data'][0]['keyId']
