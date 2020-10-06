@@ -117,7 +117,7 @@ class postcore():
         check_int = ['land_size_rai', 'land_size_ngan', 'land_size_wa', 'floor_area']
         for item in check_int:
             try:
-                a = int(datarequest[item])
+                a = float(datarequest[item])
             except:
                 datarequest[item] = '0'
         try:

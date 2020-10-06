@@ -576,6 +576,11 @@ class home2all():
         else:
             listing = 1
 
+
+
+
+
+
         if success == "true":
             r = httprequestObj.http_get(
                 'https://home2all.com/post/topicid/'+str(postdata['post_id']))
@@ -584,12 +589,14 @@ class home2all():
             
             if r.text.find('ไม่พบประกาศที่ต้องการ') == -1:
                 soup = BeautifulSoup(r.text, features=self.parser) 
-                topic = soup.find(attrs={"name": "dnn$ctr438$AddTopic$txtTopic"})
-                if topic and topic.get('value'):
-                    print(topic.get('value'), len(topic.get('value')))
+                topic = soup.find(attrs={"id": "dnn_ctr441_ViewTopic_topicDetailInLine_hplTopicId"})
+                # topic = soup.find(attrs={"name": "dnn$ctr438$AddTopic$txtTopic"})
+                if topic.text.strip() == str(postdata['post_id']):
+                # if topic and topic.get('value'):
+                    # print(topic.get('value'), len(topic.get('value')))
                     r = httprequestObj.http_get(
                         'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5/topicid/'+postdata['post_id']+'/trk/-1')
-                    soup = BeautifulSoup(r.text, fetaures=self.parser)
+                    soup = BeautifulSoup(r.text, features=self.parser)
                     viewstate = soup.select_one("#__VIEWSTATE")['value']
                     datapost = {
                         'StylesheetManager_TSSM': ';Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4:en-US:dae8717e-3810-4050-96d3-31018e70c6e4:1c2121e:e24b8e95:aac1aeb7:c73cf106',
@@ -821,8 +828,8 @@ class home2all():
                         num = str(j)
                         if len(num) == 1:
                             num = '0'+num
-                        if i.find('span',attrs={'id':f'dnn_ctr451_ShowTopic_tbTopic_ctl{num}_lblUpdateDate'}):
-                            post_modify_time = i.find('span',attrs={'id':f'dnn_ctr451_ShowTopic_tbTopic_ctl{num}_lblUpdateDate'}).text
+                        if i.find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl%s_lblUpdateDate' % num}):
+                            post_modify_time = i.find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl{num}_lblUpdateDate'}).text
 
                     flag=1
                     break

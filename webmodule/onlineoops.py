@@ -472,15 +472,17 @@ class onlineoops():
                     r = httprequestObj.http_get('https://market.onlineoops.com/%s' % url_)
                     soup = BeautifulSoup(r.content, 'html.parser')
                     pages = soup.find('ul', attrs={'class': 'pagination'})
-                    last = pages.find_all('li')[-1]
-
-                    try:
-                        class_ = last['class'][0]
-                        if class_ == 'next':
-                            url_ = last.find('a')['href']
-                        else:
+                    if pages:
+                        last = pages.find_all('li')[-1]
+                        try:
+                            class_ = last['class'][0]
+                            if class_ == 'next':
+                                url_ = last.find('a')['href']
+                            else:
+                                class_ = None
+                        except:
                             class_ = None
-                    except:
+                    else:
                         class_ = None
 
                     soup = BeautifulSoup(r.text, features=self.parser)

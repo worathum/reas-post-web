@@ -555,15 +555,19 @@ class quickdealfree():
             # print(r.url)
             # print(r.status_code)
             soup = BeautifulSoup(r.content, 'html.parser')
-            pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
-            max_p = int(pages.text)
+            if len(soup.find_all('a', attrs={'class': 'paginate'})) > 0:
+                pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
+                max_p = int(pages.text)
+            else:
+                max_p = 1
             page = 1
-            for i in range(1,max_p):
+            exists = False
+
+            for i in range(1,max_p+1):
                 if post_found == 'true':
                     break
                 url = "http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page=%d" % i
                 r = httprequestObj.http_get(url)
-                exists = False
                 soup = BeautifulSoup(r.content, 'html.parser')
 
                 entry = soup.find('div', attrs={'class':'table-responsive'})

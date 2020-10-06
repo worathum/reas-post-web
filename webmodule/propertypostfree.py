@@ -781,8 +781,17 @@ class propertypostfree():
             detail = 'No post with this title'
             r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
             soup = BeautifulSoup(r.content, 'html.parser')
-            pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
-            max_p = int(pages.text)
+            pages = soup.find_all('a', attrs={'class': 'paginate'})
+            if len(pages)>0:
+                if len(pages) > 10:
+                    last = pages[-2]
+                else:
+                    last = pages[-1]
+
+                max_p = int(last.text)
+            else:
+                max_p = 1
+
             page = 1
             while page <= max_p:
                 if post_found == "true":

@@ -632,10 +632,8 @@ class condoable():
                     break
 
             if post_found:
-                success = True
                 detail = "Post Found"
             else:
-                success = False
                 detail = "No post with given title"
         else:
             success = False

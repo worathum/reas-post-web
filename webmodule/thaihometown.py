@@ -1481,7 +1481,7 @@ class thaihometown():
                     if matchObj:
                         success = "true"
                         #get post url
-                        post_url = self.getposturl(datahandled['post_id'])
+                        post_url = self.getposturl(datahandled['post_id'],datahandled['property_type3'])
                         #upload image
                         self.uploadimage(datahandled,datahandled['post_id'])
                     else:

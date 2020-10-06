@@ -461,7 +461,7 @@ class pantipmarket():
                 post_id = post_url.split('/')[-1]
                 print(post_url,post_id)
             except:
-
+                success = False
                 detail = 'Post with similar title already exists'
 
 

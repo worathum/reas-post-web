@@ -792,13 +792,12 @@ class nineasset():
                 'start_time':str(start_time)
         })
         if test_login['success'] == "True":
-            print('login')
             post_title = str(postdata['post_title_th'])
             r = httprequestObj.http_get('https://www.9asset.com/profile')
             soup = BeautifulSoup(r.content, 'html.parser')
             pages = soup.find('ul', attrs={'class': 'pagination'})
-            last = pages.find_all('li')[-3]
-            max_p = int(str(last.find('a').text))
+            last = pages.find_all('li')[-1]
+            max_p = int(str(last.find('a')['href']).split('=')[-1])
             post_found = 'false'
             for page in range(1, max_p+1):
                 tURL = dict()
