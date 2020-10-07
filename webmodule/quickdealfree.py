@@ -555,9 +555,15 @@ class quickdealfree():
             # print(r.url)
             # print(r.status_code)
             soup = BeautifulSoup(r.content, 'html.parser')
-            if len(soup.find_all('a', attrs={'class': 'paginate'})) > 0:
-                pages = soup.find_all('a', attrs={'class': 'paginate'})[-2]
-                max_p = int(pages.text)
+            pages = soup.find_all('a', attrs={'class': 'paginate'})
+
+            if len(pages) > 0:
+                if len(pages) > 10:
+                    last = pages[-2]
+                else:
+                    last = pages[-1]
+
+                max_p = int(last.text)
             else:
                 max_p = 1
             page = 1
