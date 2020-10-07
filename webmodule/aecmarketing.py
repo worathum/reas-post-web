@@ -72,8 +72,9 @@ class aecmarketing():
           'user_password': password
         }
 
-        result = httprequestObj.http_post(self.url_reg, data=register_data, headers=self.headers)
+        result = httprequestObj.http_post(self.url_reg, data=register_data)
         decoded_result = result.content.decode('utf-8')
+
         final_output = json.loads(decoded_result)
 
         # If User registeration is successful

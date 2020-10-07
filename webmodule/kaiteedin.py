@@ -82,7 +82,7 @@ class kaiteedin():
         success = "true"
         detail = ""
 
-        driver =webdriver.Chrome('/usr/bin/chromedriver')
+        driver =webdriver.Chrome('./static/chromedriver')
         driver.get('http://kaiteedin.net/index.php')
         time.sleep(10)
         if str(driver.find_element_by_xpath('//*[@id="cbp-tm-menu"]/li[8]/a').get_attribute('href')) == str('http://kaiteedin.net/member.php'):
