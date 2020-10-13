@@ -409,6 +409,9 @@ class thaihometown():
             firstname=datahandled['name_th'],
             mobile=tel,
         )
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+        }
         r = httprequestObj.http_post('https://www.thaihometown.com/member/register', data=datapost)
         data = r.text
         # print (data)
@@ -473,7 +476,7 @@ class thaihometown():
             while txt[ind]!="'":
                 self.logid+=txt[ind]
                 ind+=1
-    
+
         #log.debug('login status %s', success)
 
         #
@@ -1072,8 +1075,8 @@ class thaihometown():
         if (success == "true"):
             #get code , it same upload code
             r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(datahandled['post_id']), verify=False)
-            data = r.text
-            soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
+            data = r.content
+            soup = BeautifulSoup(data, self.parser)
             uploadcode = ''
             try:
                 uploadlink = soup.find('a',href=re.compile('memberupload'))['href']
@@ -1081,11 +1084,10 @@ class thaihometown():
                 uploadcode = parse_qs(urlparse(uploadlink).query)['Mag'][0]
                 #log.debug('uploadcode ' +uploadcode)
             except:
-                pass
                 #log.error("cannot get post code , not found post id "+datahandled['post_id'])
                 success = "false"
                 detail = "cannot get post code , not found post id "+datahandled['post_id']
-        
+
         if success == "true":
             #try 5 times
             for i in range(5):
@@ -1095,8 +1097,8 @@ class thaihometown():
 
                 #go to delete page
                 r = httprequestObj.http_get('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode,verify=False)
-                data = r.text
-                soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
+                data = r.content
+                soup = BeautifulSoup(data, self.parser)
                 #log.debug(data)
                 #detect if post can delete
                 checkform = soup.find("form", {"name": "checkForm"})
@@ -1137,6 +1139,7 @@ class thaihometown():
                         'scode' : scode,
                         'contacts_id' : contacts_id
                     }
+
                     r = httprequestObj.http_post('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode, data=datapost)
                     data = r.text
                     # f = open("editpostthaihometown.html", "wb")
@@ -1166,7 +1169,7 @@ class thaihometown():
             "detail": detail,
             "log_id": datahandled['log_id'],
             "ds_id": datahandled['ds_id'],
-            "post_id": post_id,
+            "post_id": datahandled['post_id'],
             "websitename": self.websitename
         }
     
@@ -1506,7 +1509,7 @@ class thaihometown():
         start_time = datetime.datetime.utcnow()
 
         test_login = self.test_login(data)
-        print('in')
+        # print('in')
         success = test_login["success"]
         detail = test_login["detail"]
         post_id = ''
@@ -1516,36 +1519,34 @@ class thaihometown():
         if success == 'true':
 
             url = 'https://www.thaihometown.com/member/'+str(self.logid)
-
             req = httprequestObj.http_get(url)
-            soup = BeautifulSoup(req.text,'html.parser')
+            soup = BeautifulSoup(req.content,'html.parser')
             posts = soup.find('div',{'id':'show_listings'}).findAll('div')[2:]
             valid_ids = []
             valid_urls = []
             valid_titles = []
-            print(len(posts))
             for post in posts:
                 #print('id' in post)
                 if post.has_attr('id') and post['id'] is not None and str(post['id'])[:9] == 'indivList':
                     id = str(post['id'])[13:]
                     valid_ids.append(str(post['id'])[13:])
-                    print('here1')
+                    # print('here1')
                     urls = post.findAll('a')
                     if str(urls[0]).find('member')!=-1:
                         valid_titles.append(str(urls[1].text).strip())
                     else:
                         valid_titles.append(str(urls[0].text).strip())
-                    print('here2')
+                    # print('here2')
                     for url in urls:
-                        print(url)
+                        # print(url)
                         if str(url['href']).find(id)+len(id) == len(url['href']):
                             valid_urls.append(str(url['href']))
-                            print('here3')
+                            # print('here3')
                             break
-            print('out')
+            # print('out')
             print(valid_titles)
-            print(valid_urls)
-            print(valid_ids)
+            # print(valid_urls)
+            # print(valid_ids)
             if post_title.strip() in valid_titles:
                 post_found = 'true'
                 detail = 'Post found'

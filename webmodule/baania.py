@@ -1039,7 +1039,6 @@ class baania():
             else:
                 exists = False
             if not exists:
-                success = "false"
                 detail = "No post found with given title."
 
         time_end = datetime.datetime.utcnow()

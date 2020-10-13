@@ -655,17 +655,19 @@ class onedproperty():
         }
 
         login = self.test_login(postdata)
+        post_found = "false"
+        post_id = ''
+        post_url = ''
+        post_view = ''
+        detail = 'No post with this title'
+        post_create_time = ''
+        
         
         if(login['success'] == 'true'):
             data = {
                 "filter_name" : postdata['post_title_th'],
                 "btn_search" : "1"
             }
-            post_found = "false"
-            post_id = ''
-            post_url = ''
-            post_view = ''
-            detail = 'No post with this title'
             
             res = httprequestObj.http_post('http://www.onedproperty.com/property/search', data = data, headers = headers)
             

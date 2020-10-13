@@ -310,6 +310,7 @@ class thaisecondhand():
             else:
                 post_id = re.findall(r'\d+',link[0])[0]
                 post_url = link[0] 
+                detail = "Post created succesfully."
         
         end_time = datetime.datetime.utcnow()
         
@@ -714,7 +715,7 @@ class thaisecondhand():
 
         return {
             "websitename": "thaisecondhand",
-            "success": post_found,
+            "success": login['success'],
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),

@@ -691,7 +691,6 @@ class novabizz():
                 if exists:
                     break                    
             if not exists:
-                success = "false"
                 detail = "No post found with given title."
 
         time_end = datetime.datetime.utcnow()

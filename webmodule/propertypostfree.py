@@ -501,10 +501,9 @@ class propertypostfree():
                 max_p = 1
             page = 1
             while page <= max_p:
-
                 all_posts_url = 'http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page='+str(page)
-                requ = httprequestObj.http_get(all_posts_url + str(page), headers=headers).content
-                soup = BeautifulSoup(requ, features = self.parser)
+                requ = httprequestObj.http_get(all_posts_url, headers=headers)
+                soup = BeautifulSoup(requ.content, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
                     all_post_ids.append(str(abc['value']))
@@ -528,7 +527,7 @@ class propertypostfree():
 
             else:
                 success = "false"
-                detail = "post_id is incorrect"
+                detail = "cannot delete post"
         else :
             success = "false"
             detail = "Login failed"

@@ -300,14 +300,22 @@ class postcore():
                         if 'post_url' not in response["web"][websitename] and (action == "create_post" or action == "search_post"):
                             response["web"][websitename]['post_url'] = ""
 
-                        if 'post_create_time' not in response["web"][websitename] and action == "search_post":
-                            response["web"][websitename]['post_create_time'] = ""
-                        if 'post_modify_time' not in response["web"][websitename] and action == "search_post":
-                            response["web"][websitename]['post_modify_time'] = ""
-                        if 'post_view' not in response["web"][websitename] and action == "search_post":
-                            response["web"][websitename]['post_view'] = ""
-                        if 'post_found' not in response["web"][websitename] and action == "search_post":
-                            response["web"][websitename]['post_found'] = "true" if response["web"][websitename]['post_url'] != "" else "false"
+                        if action == "search_post":
+
+                            if 'post_create_time' not in response["web"][websitename]:
+                                response["web"][websitename]['post_create_time'] = ""
+                            if 'post_modify_time' not in response["web"][websitename]:
+                                response["web"][websitename]['post_modify_time'] = ""
+                            if 'post_view' not in response["web"][websitename]:
+                                response["web"][websitename]['post_view'] = ""
+                            if 'post_found' not in response["web"][websitename]:
+                                response["web"][websitename]['post_found'] = "true" if response["web"][websitename]['post_url'] != "" else "false"
+
+                            if response["web"][websitename]['post_found'] == "False" or response["web"][websitename]['post_found'] is False:
+                                response["web"][websitename]['post_found'] = "false"
+                            elif response["web"][websitename]['post_found'] == "True" or response["web"][websitename]['post_found'] is True:
+                                response["web"][websitename]['post_found'] = "true"
+
 
                         if 'ds_name' not in response["web"][websitename]:
                             response["web"][websitename]['ds_name'] = str(websitename)

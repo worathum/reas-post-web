@@ -753,7 +753,7 @@ class property2share():
         else:
             all_posts = []
         detail = 'Unable To Find the Post'
-        success = False
+        success = True
         post_found = False
         post_url = ''
         post_id = ''
@@ -767,7 +767,6 @@ class property2share():
             actual_title = post['title'].split()
             if(post_title == actual_title):
                 detail = 'Successfully Found the Post'
-                success = True
                 post_found = True
                 post_url = 'https://www.property2share.com/property-'+str(post['publish_id'])
                 post_id = (post['publish_id'])

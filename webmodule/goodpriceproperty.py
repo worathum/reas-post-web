@@ -1251,7 +1251,7 @@ class goodpriceproperty():
         post_created = ""
         post_modified = ""
         post_view = ""
-
+        post_found = False
         if success:
             i = 0
             while True:
@@ -1274,8 +1274,6 @@ class goodpriceproperty():
                         success = False
                         detail = "No post with given title"
                         break
-
-                    post_found = False
 
                     for post in all_posts:
                         info = post.find('tr').find('td').find('strong').find('font').contents
@@ -1307,13 +1305,11 @@ class goodpriceproperty():
                             break
 
                     if post_found:
-                        success = True
                         detail = "Post Found"
                         break
 
                 except Exception as e:
                     # print(e)
-                    success = False
                     detail = "No post with given title"
                     break
         else:
@@ -1337,6 +1333,7 @@ class goodpriceproperty():
             "post_modified": post_modified,
             "post_view": post_view,
             "post_url": post_url,
+            "post_found": post_found
         }
 
     def print_debug(self, msg):
