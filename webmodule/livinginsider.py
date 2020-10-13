@@ -88,10 +88,13 @@ class livinginsider():
             'username': user,
 
         }
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+        }
+
         r = httprequestObj.http_post(
             'https://www.livinginsider.com/login.php', data=datapost)
-        # print(r.url)
-        # print(r.status_code)
+        print(r.status_code)
         data = json.loads(r.text)
         # print(data)
         if data['status']:
@@ -200,7 +203,7 @@ class livinginsider():
             data = httprequestObj.http_get(
                 'https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)
             data = json.loads(data.text)
-        
+
             if len(data) == 1:
                 term = postdata['addr_district'] + '+' + postdata['addr_province']
                 data = httprequestObj.http_get(
@@ -209,11 +212,44 @@ class livinginsider():
 
                 # print(data)
                 try:
-                    idzone = data[1]['id']
+                    if postdata['web_project_name'].strip().lower() in data[1]['text'].strip().lower() or data[1]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
+                        idzone = data[1]['id']
+                    else:
+                        time_end = datetime.datetime.utcnow()
+                        time_usage = time_end - time_start
+                        return {
+                            "success": False,
+                            "websitename": "livinginsider",
+                            "usage_time": str(time_usage),
+                            "start_time": str(time_start),
+                            "end_time": str(time_end),
+                            "post_url": "",
+                            "post_id": "",
+                            "account_type": "null",
+                            "detail": 'Project not Found. Post not created!',
+                        }
+
                 except:
                     idzone = data[0]['id']
             else:
-                idzone = data[1]['id']
+                if postdata['web_project_name'].strip().lower() in data[1]['text'].strip().lower() or data[1]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
+                    idzone = data[1]['id']
+                else:
+                    time_end = datetime.datetime.utcnow()
+                    time_usage = time_end - time_start
+                    return {
+                        "success": False,
+                        "websitename": "livinginsider",
+                        "usage_time": str(time_usage),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "post_url": "",
+                        "post_id": "",
+                        "account_type": "null",
+                        "detail": 'Project not Found. Post not created!',
+                    }
+
+
             # print(idzone)
             data = httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
             # print(data.status_code)
@@ -817,11 +853,41 @@ class livinginsider():
 
                     # print(data)
                     try:
-                        idzone = data[1]['id']
+                        if postdata['web_project_name'].strip().lower() in data[1]['text'].strip().lower() or data[1]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
+                            idzone = data[1]['id']
+                        else:
+                            time_end = datetime.datetime.utcnow()
+                            time_usage = time_end - time_start
+                            return {
+                                "success": False,
+                                "websitename": "livinginsider",
+                                "usage_time": str(time_usage),
+                                "start_time": str(time_start),
+                                "end_time": str(time_end),
+                                "post_url": "",
+                                "post_id": "",
+                                "account_type": "null",
+                                "detail": 'Project not Found. Post not edited!',
+                            }
                     except:
                         idzone = data[0]['id']
                 else:
-                    idzone = data[1]['id']
+                    if postdata['web_project_name'].strip().lower() in data[1]['text'].strip().lower() or data[1]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
+                        idzone = data[1]['id']
+                    else:
+                        time_end = datetime.datetime.utcnow()
+                        time_usage = time_end - time_start
+                        return {
+                            "success": False,
+                            "websitename": "livinginsider",
+                            "usage_time": str(time_usage),
+                            "start_time": str(time_start),
+                            "end_time": str(time_end),
+                            "post_url": "",
+                            "post_id": "",
+                            "account_type": "null",
+                            "detail": 'Project not Found. Post not edited!',
+                        }
                 # print(idzone)
                 data = httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php',
                                                 data={'web_project_id': idzone})
@@ -1421,7 +1487,7 @@ class livinginsider():
 
         post_id = postdata['post_id']
         log_id = postdata['log_id']
-
+        data={}
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = ""
@@ -1481,13 +1547,18 @@ class livinginsider():
                     'lang': 'TH',
                     'sub_mem_id': '0',
                     'sub_device_id': '0'
-                }
 
-                r = httprequestObj.http_post('https://api.livinginsider.com/living_delete_reason.php', data=datapost)
+                }
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+                }
+                r = httprequestObj.http_post('https://api.livinginsider.com/living_delete_reason.php', data=datapost, headers=headers)
                 # print(r.url)
                 # print(r.status_code)
-                data = r.json()
-                # print(data)
+                if r.text:
+                    data = r.json()
+                else:
+                    detail = 'no content returned'
 
                 datapost['web_id'] = post_id
                 datapost['web_delete_reason_text'] = ''
@@ -1495,14 +1566,15 @@ class livinginsider():
                 r = httprequestObj.http_post('https://api.livinginsider.com/my_living_topic_delete.php', data=datapost)
                 # print(r.url)
                 # print(r.status_code)
-                data = r.json()
-                # print(data)
-
-                if data['module'] == 'my_living_topic_delete':
-                    success = True
-                    detail = "Post deleted successfully"
+                if r.text:
+                    data = r.json()
+                    if data['module'] == 'my_living_topic_delete':
+                        success = True
+                        detail = "Post deleted successfully"
+                    else:
+                        success = False
+                        detail = 'Couldnot delete post'
                 else:
-                    success = False
                     detail = 'Couldnot delete post'
             else:
                 success = False
@@ -1585,21 +1657,9 @@ class livinginsider():
                     break
 
             if post_found:
-                datapost = {
-                    'mem_id': mem_id,
-                    'device_id': device_id,
-                    'device_type': '1',
-                    'lang': 'TH',
-                    'sub_mem_id': '0',
-                    'sub_device_id': '0'
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
                 }
-
-                r = httprequestObj.http_post('https://api.livinginsider.com/current_coin.php', data=datapost)
-                # print(r.url)
-                # print(r.status_code)
-                data = r.json()
-                # print(data)
-
                 datapost = {
                     'web_member_username': postdata['user'],
                     'web_id': post_id,
@@ -1614,11 +1674,15 @@ class livinginsider():
                 r = httprequestObj.http_post('https://api.livinginsider.com/living_topic_up.php', data=datapost)
                 # print(r.url)
                 # print(r.status_code)
-                data = r.json()
+                if r.text:
+                    data = r.json()
 
-                if data['result_msg'] == 'ดันประกาศเรียบร้อย':
-                    success = True
-                    detail = "Post boosted successfully"
+                    if data['result_msg'] == 'ดันประกาศเรียบร้อย':
+                        success = True
+                        detail = "Post boosted successfully"
+                    else:
+                        success = False
+                        detail = 'Couldnot boost post'
                 else:
                     success = False
                     detail = 'Couldnot boost post'

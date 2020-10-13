@@ -536,7 +536,7 @@ class kaidee():
         post_modify_time = ""
         post_create_time = ""
         post_view = ""
-
+        post_found = False
         if success == "true":
             member_id = test_login["member_id"]
             privateToken = test_login["privateToken"] 
@@ -576,7 +576,7 @@ class kaidee():
                         post_url = 'https://baan.kaidee.com/product-'+ post_id
                         break
             else:
-                success = "false"
+                
                 detail = "An error occurred while logging in through selenium"
         else:
             detail = "cannot login"

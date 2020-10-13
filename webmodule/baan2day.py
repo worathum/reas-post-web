@@ -490,7 +490,6 @@ class baan2day():
                     except (TypeError, IndexError):
                         pass
             else:
-                success = "false"
                 detail = "Unable to search. An Error has occurred with response_code "+str(response.status_code)     
         else:
             detail = "cannot login"

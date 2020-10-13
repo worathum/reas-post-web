@@ -860,6 +860,7 @@ class homedd():
         post_id = ""
         post_modified = ""
         post_view = ""
+        post_found = False
 
         if success:
             r = httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php')
@@ -870,20 +871,20 @@ class homedd():
             last = pages.find_all('li')[-1]
             max_p=int(str(last.find('a')['href']).split('=')[-1])
             page = 1
-            post_found = False
             while page <= max_p:
+
                 if post_found:
                     break
                 r = httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php?&nowpage=%d' % page)
                 soup = BeautifulSoup(r.content, 'html.parser')
 
-                print(r.url)
                 all_posts = soup.find_all('tr')[2:]
                 # print(all_posts[0])
                 for post in all_posts:
                     info = post.find_all('td')
                     title = info[1].string
-                    # print(title)
+                    if title == None:
+                        continue
                     if title == postdata['post_title_th']:
                         # print('Post Found')
                         post_found = True
@@ -901,10 +902,8 @@ class homedd():
                 page += 1
 
             if post_found:
-                success = True
                 detail = "Post Found"
             else:
-                success = False
                 detail = "No post with given title"
         else:
             success = False

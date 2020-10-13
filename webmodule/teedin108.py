@@ -628,7 +628,6 @@ class teedin108():
     def search_post(self, postdata):
 
         time_start = datetime.datetime.utcnow()
-
         data = {
             "search[post_type_code]": "A",
             "search[property_type_code]": "A",
@@ -659,10 +658,12 @@ class teedin108():
         # except:
         #     pass
         
-        success = False
+        success = True
         post_found = False
         post_url = ""
         post_id = ""
+        post_modify_time = ''
+        post_view = ''
 
         for site in sites:
             r = httprequestObj.http_get(site)

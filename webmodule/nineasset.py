@@ -844,7 +844,7 @@ class nineasset():
                 pass
             else:
                 my_res.update({
-                    'success':'false',
+                    'success':'true',
                     'post_found':'false',
                     'detail': 'Post not found',
                     'post_url':'',

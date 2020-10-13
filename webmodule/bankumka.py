@@ -598,12 +598,12 @@ class bankumka():
             all = soup.find_all("a", {"class": "my-property-name"})
             posturl = ""
             for i in all:
-                if (i.get_text()).find(postdata['post_id']) != -1:
+                if postdata['post_id'] in i.get_text():
                     posturl += i['href']
             posturl += '/edit'
-            # print(f"posturl--{posturl}")
             if(posturl == '/edit'):
                 success = False
+                posturl = ''
             else:
                 r = httprequestObj.http_get(
                     posturl, verify=False)
@@ -1251,11 +1251,11 @@ class bankumka():
         success = test_login["success"]
         ashopname = test_login["detail"]
         found = "false"
-        detail = ''
+        detail = 'Post not found'
         post_id = ""
         posturl = ""
         if success == "true":
-            print('login')
+
             r = httprequestObj.http_get('https://bankumka.com/member/properties', verify = False)
             data = r.text
             soup = BeautifulSoup(data,self.parser, from_encoding='utf-8')

@@ -239,7 +239,7 @@ class teedin2():
                 prod_address += add + ","
         prod_address = prod_address[:-1]
         postdata['address'] = prod_address
-        print(var)
+        # print(var)
         s = requests.Session()
         datapost = {
             'thisIDField': postdata['post_id'],
@@ -263,10 +263,14 @@ class teedin2():
             'thisCEmailField': postdata['user'],
             'thisCPasswordField': postdata['pass'],
         }
-        if float(postdata['geo_longitude']) < float(postdata['geo_latitude']):
+        try:
+            if postdata['geo_longitude'] and postdata['geo_latitude']:
+                if float(postdata['geo_longitude']) < float(postdata['geo_latitude']):
+                    pass
+                else:
+                    datapost['thisHasMapField'] = 1
+        except:
             pass
-        else:
-            datapost['thisHasMapField'] = 1
         arr = ["pictureField1", "pictureField2",
                "pictureField3", "pictureField4", "pictureField5"]
         files = {}
@@ -700,6 +704,7 @@ class teedin2():
         return {
             "websitename": "teedin2",
             "success": "false",
+            "post_found": "false",
             "time_usage": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
