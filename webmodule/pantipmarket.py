@@ -430,6 +430,10 @@ class pantipmarket():
             if email != None:
                 driver.find_element_by_name("contact[email]").send_keys(email)
             driver.find_element_by_name('contact[line]').clear()
+            try:
+                line = line.strip(u'\u200b')
+            except:
+                pass
             if line != None and len(line) >= 4:
                 driver.find_element_by_name("contact[line]").send_keys(line)
 
@@ -520,7 +524,7 @@ class pantipmarket():
                 date = soup.find('input', attrs={'id': 'date' + post_id, 'name': 'date'})
                 if date:
                     date = date.get('value')
-                datapost = {
+                """ datapost = {
                     'board_shift[]': post_id,
                     'board_delete_chk': '',
                     'board_shift_check': '',
@@ -538,8 +542,17 @@ class pantipmarket():
                 # f.close()
 
                 newurl = 'https://www.pantipmarket.com/member/my/action.php'
+                request = httprequestObj.http_post(newurl, data=datapost) """
 
+                datapost = {
+                    'act' : 'board_expire',
+                    'day' : '90',
+                    'board_id' : post_id
+                }
+
+                newurl = 'https://www.pantipmarket.com/member/my/board_expire_ajax.php'
                 request = httprequestObj.http_post(newurl, data=datapost)
+
                 end_time = datetime.utcnow()
                 detail = "Successful boost"
         else:

@@ -566,9 +566,9 @@ class thaihometown():
                 except:
                     pass
 
-        if datahandled['property_country_2'] == '':
+        if datahandled['property_country_2'] == '' and datahandled['property_city_bkk'] == '':
             datahandled['property_country_2'] = '2'
-        if datahandled['property_city_2'] == '':
+        if datahandled['property_city_2'] == '' and datahandled['property_city_bkk'] == '':
             datahandled['property_city_2'] = '53'
 
         if datahandled['property_city_bkk'] == '' and (datahandled['property_city_2'] == '' or datahandled['property_country_2'] == ''):
