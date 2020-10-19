@@ -118,6 +118,7 @@ class postcore():
         for item in check_int:
             try:
                 a = float(datarequest[item])
+                datarequest[item] = str(int(a))
             except:
                 datarequest[item] = '0'
         try:

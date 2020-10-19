@@ -1271,7 +1271,6 @@ class goodpriceproperty():
                                                'cellspacing': '0'})[:-1]
                     # print(all_posts[0])
                     if (len(all_posts)) == 0:
-                        success = False
                         detail = "No post with given title"
                         break
 

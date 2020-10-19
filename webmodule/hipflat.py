@@ -223,11 +223,22 @@ class hipflat():
             detail = "Invalid Password"
         else:
             try:
+
                 response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
-
                 soup = BeautifulSoup(response.content, features = "html.parser")
+                try:
+                    data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
+                except:
+                    post_data = {
+                    '_method':'delete',
+                    'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
+                    }
 
-                data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
+                    httprequestObj.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
+                    response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
+                    soup = BeautifulSoup(response.content, features = "html.parser")
+                    data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
+
 
                 data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
 
@@ -248,7 +259,7 @@ class hipflat():
                     #res = httprequestObj.http_get('http://www.estate.in.th/member/index.php')
                     #print(res.text)
             
-            except requests.exceptions.RequestException:
+            except:
                 detail = "Network Problem occured"
 
         end_time = datetime.datetime.utcnow()
