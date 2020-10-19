@@ -534,7 +534,7 @@ class thaihometown():
         #กรุงเทพ
         if datahandled['addr_province'] == 'กรุงเทพมหานคร' or datahandled['addr_province'] == 'กรุงเทพ':
             r = httprequestObj.http_get('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
-            data = r.text
+            data = r.content
             soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
             try:
                 datahandled['property_city_bkk'] = soup.find('select',{'id':'property_city_bkk'}).find('option',text=re.compile(datahandled['addr_district']))['value']
@@ -545,10 +545,11 @@ class thaihometown():
         #ต่างจังหวัด
         else:
             r = httprequestObj.http_get('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
-            data = r.text
-            f = open('file.html','w')
+            data = r.content
+            #print(data)
+            """ f = open('file.html','w')
             f.write(data)
-            f.close()
+            f.close() """
             soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
             try:
                 datahandled['property_country_2'] = soup.find('select',{'id':'property_country_2'}).find('option',text=re.compile(datahandled['addr_province']))['value']
@@ -559,16 +560,16 @@ class thaihometown():
             if datahandled['property_country_2'] != "":                
                 r = httprequestObj.http_get('https://www.thaihometown.com/search/state2012_addnew.php?PID='+str(datahandled['property_country_2']),verify=False)
                 data = r.text
-                soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
+                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 try:
                     datahandled['property_city_2'] = soup.find('option',text=re.compile(datahandled['addr_district']))['value']
                     #log.debug('district is '+datahandled['property_city_2'])
                 except:
                     pass
 
-        if datahandled['property_country_2'] == '':
+        if datahandled['property_country_2'] == '' and datahandled['property_city_bkk'] == '':
             datahandled['property_country_2'] = '2'
-        if datahandled['property_city_2'] == '':
+        if datahandled['property_city_2'] == '' and datahandled['property_city_bkk'] == '':
             datahandled['property_city_2'] = '53'
 
         if datahandled['property_city_bkk'] == '' and (datahandled['property_city_2'] == '' or datahandled['property_country_2'] == ''):
