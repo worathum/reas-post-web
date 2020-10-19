@@ -816,6 +816,9 @@ class propertypostfree():
                 max_p = 1
 
             page = 1
+            req_post_title = str(postdata['post_title_th']).strip()
+
+            print(req_post_title, "hi")
             while page <= max_p:
                 if post_found == "true":
                     break
@@ -828,12 +831,12 @@ class propertypostfree():
 
                 xyz = soup.find('table', attrs={'class':'table table-hover'})
 
-                req_post_title = str(postdata['post_title_th'])
-
-
-                for abc in xyz.find_all('tr')[1:-1]:
-
-                    if req_post_title == str(abc.find('a', attrs = {'target':'_blank'})['title']):
+                all_post = xyz.find_all('tr')[1:-1]
+                for abc in all_post:
+                    this_title = str(abc.find('a', attrs = {'target':'_blank'})['title']).strip()
+                    # print(req_post_title)
+                    # print(this_title)
+                    if req_post_title == this_title:
                         post_id = str(abc.input['value'])
                         post_url = str('http://www.propertypostfree.com/property-'+str(post_id)+'/.html')
                         post_found = "true"
