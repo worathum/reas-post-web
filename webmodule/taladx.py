@@ -255,8 +255,6 @@ class taladx():
                     data['city'] = str(pq['value'])
                     break
 
-
-
             district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
 
             url_district = str('http://www.taladx.com/lib/district.php?province='+data['city'])
@@ -265,6 +263,8 @@ class taladx():
 
             soup = BeautifulSoup(find_district,features = self.parser)
 
+            if 'เมือง' in  district:
+                district = district.replace('เมือง', '')
             try:
 
                 for pqr in soup.find_all('option'):
@@ -274,7 +274,6 @@ class taladx():
 
             except:
                 data['district'] = str(soup.find('option')['value'])
-
 
             if 'post_images' in postdata and len(postdata['post_images']) > 0:
                 pass

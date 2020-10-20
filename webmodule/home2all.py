@@ -825,11 +825,13 @@ class home2all():
                     post_id = post_url.split('/')[-1]
                     detail = 'Post Successfully Found'
                     for j in range(1,12):
-                        num = str(j)
+                        """ num = str(j)
                         if len(num) == 1:
                             num = '0'+num
-                        if i.find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl%s_lblUpdateDate' % num}):
-                            post_modify_time = i.find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl{num}_lblUpdateDate'}).text
+                        print(num) """
+                        if i.find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl%02d_lblUpdateDate' % j}):
+                           # post_modify_time = i.find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl{num}_lblUpdateDate'}).text
+                           post_modify_time = i.find('span',attrs={'id':'dnn_ctr451_ShowTopic_tbTopic_ctl%02d_lblUpdateDate' % j}).text
 
                     flag=1
                     break

@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+#Chromerdriver
+static/chromedriver.exe
+
 # Distribution / packaging
 .Python
 build/

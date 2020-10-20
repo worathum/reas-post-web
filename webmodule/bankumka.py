@@ -608,7 +608,6 @@ class bankumka():
                 r = httprequestObj.http_get(
                     posturl, verify=False)
                 data = r.content
-                # print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 alls = soup.find_all("option")
                 province_found = False
@@ -622,7 +621,6 @@ class bankumka():
                         if postdata['addr_province'].replace(" ","").find(i.get_text()) != -1 or i.get_text().replace(" ","").find(postdata['addr_province']) != -1:
                             province_id = i['value']
                             break
-
                     # print(i)
                     # print(i.get_text())
                     # print("data: "+i.text+" value: "+i.value)
@@ -632,8 +630,10 @@ class bankumka():
                 data = json.loads(r.text)
                 amphur_found = False
                 for i in data:
-                    # print(i['name'])
-                    if postdata['addr_district'].replace(" ","") == i['name']:
+                    #If 'เขต' contain in data, need to be remove for more accuracy compare
+                    if 'เขต' in i['name']:
+                        i['name'] = i['name'].replace('เขต', '')
+                    if postdata['addr_district'].replace(" ","") == i['name']:      
                         amphur_found = True
                         amphur_id = i['id']
                         break
@@ -642,23 +642,25 @@ class bankumka():
                         if postdata['addr_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_district'].replace(" ","")) != -1:
                             amphur_id = i['id']
                             break
-                # print(amphur_id)
                 query_string = 'https://bankumka.com/ajax/listcities/'+amphur_id
                 r = httprequestObj.http_get(
                     query_string, verify=False)
                 data = json.loads(r.text)
                 tumbon_found = False
                 for i in data:
+                    print(i['name'])
                     if postdata['addr_sub_district'] == i['name']:
                         tumbon_id = i['id']
+                        print('1' + i['name'])
                         tumbon_found = True
                         break
                 if tumbon_found is False:
                     for i in data:
                         if postdata['addr_sub_district'].replace(" ","").find(i['name']) != -1 or i['name'].find(postdata['addr_sub_district'].replace(" ","")) != -1:
                             tumbon_id = i['id']
+                            print('2' + i['name'])
                             break
-                # print(tumbon_id)
+                print(tumbon_id)
                 # browser.get(posturl)
                 # try:
                 #     csrf_token = browser.find_element_by_name("csrf_token").get_attribute("value")
