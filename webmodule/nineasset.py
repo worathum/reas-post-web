@@ -637,7 +637,7 @@ class nineasset():
         if (listing_type == "ขาย" ):
             datapost.append(("Sell", "1"))
             datapost.append(("property_Sell", price_baht))
-            datapost.append(("property_PriceSq-hidden" , str(int(price_baht)/int(floorarea))))
+            datapost.append(("property_PriceSq-hidden" , ""))
         else:
             datapost.append(("Rent", "1"))
             datapost.append(("Price_Rent", price_baht))

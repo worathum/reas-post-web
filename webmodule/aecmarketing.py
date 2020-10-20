@@ -317,29 +317,34 @@ class aecmarketing():
         result = response.json()
 
         try:
-            ids = result['result']['redirect'][45:]
+            try:
+                ids = result['result']['redirect'][45:]
+            except:
+                ids = result['redirect'][45:]               
             ids = ids.split('-')
             ids = ids[0]
 
         except:
             ids = 0
+
         if 'status_code' in result['result'] and result['result']['status_code'] != 200:
             status = False
-            detail = result['result']['description']
+        elif 'status_code' in result['result'] and result['result']['status_code'] == 200:
+            status = True
+        elif 'status_code' in result and result['status_code'] == 200:
+            status = True
+        elif 'status_code' in result and result['status_code'] != 200:
+            status = False
         else:
-            if 'status_code' in result['result'] and result['result']['status_code'] == 200:
-                status = True
-                detail = result['result']['description']
-            else:
-                try:
-                    if result['result']['status_code'] == 200:
-                        status = True
-                    else:
-                        status = False
-                    detail = result['result']['description'] 
-                except:
-                    status = False
-                    detail = result
+            status = False
+
+        if 'description' in result['result']:
+            detail = result['result']['description']
+        elif 'description' in result:
+            detail = result['description']
+        else:     
+            detail = result
+    
         end_time = datetime.datetime.utcnow()
         try:
             post_url = result['result']['redirect']
@@ -745,9 +750,26 @@ class aecmarketing():
 
         addr_subdis = postdata['addr_sub_district']
         response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/' + str(zone_id))
-        result = json.loads(response.content.decode('utf-8'))
 
+        if response.text == 'null':
+            end_time = datetime.datetime.utcnow()
+            return {
+                "success": "false",
+                "start_time": str(start_time),
+                "end_time": str(end_time),
+                "usage_time": str(end_time - start_time),
+                'ds_id': postdata['ds_id'],
+                "log_id": postdata['log_id'],
+                "detail": "Subdistrict not found.",
+                "post_id": post_id,
+                "websitename": "aecmarketing",
+            }
+
+
+        result = json.loads(response.content)
         subdistrict_id = ''
+
+
         for i in range(len(result)):
             if (addr_subdis in result[i]['subdistrict_name']):
                 subdistrict_id = result[i]['subdistrict_id']
@@ -822,41 +844,33 @@ class aecmarketing():
 
         response = httprequestObj.http_post(
             'https://www.aecmarketinghome.com/th/post/save_property/' + post_id + '.html', data=edit_data)
-        result = (response.content.decode('utf-8'))
+        result = (response.json())
 
 
-
-        if ('"status_code":200' in result):
+        if 'status_code' in result['result'] and result['result']['status_code'] != 200:
+            status = False
+        elif 'status_code' in result['result'] and result['result']['status_code'] == 200:
             status = True
+        elif 'status_code' in result and result['status_code'] == 200:
+            status = True
+        elif 'status_code' in result and result['status_code'] != 200:
+            status = False
         else:
             status = False
 
-        if status is False:
-            if 'status_code' in result and result['status_code'] != 200:
-                status = False
-                detail = result['description'] 
-            else:
-                if 'status_code' in result and result['status_code'] == 200:
-                    status = True
-                    detail = result['description'] 
-                else:
-                    try:
-                        if result['result']['status_code'] == 200:
-                            status = True
-                        else:
-                            status = False
-                        detail = result['result']['description'] 
-                    except:
-                        status = False
-                        detail = result
-        if result:
-            detail = "Post Edited"
-        else:
-            detail = "Unable to Edit The Post"
+        if 'description' in result['result']:
+            detail = result['result']['description']
+        elif 'description' in result:
+            detail = result['description']
+        else:     
+            detail = result
+
+
+
         end_time = datetime.datetime.utcnow()
 
         return {
-            "success": result,
+            "success": status,
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),

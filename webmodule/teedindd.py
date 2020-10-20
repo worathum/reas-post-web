@@ -320,11 +320,10 @@ class teedindd():
                     "detail": 'Wrong Post id'
                 }
 
-            url_post = 'https://www.teedindd.com/post.php'
+            url_post = 'https://www.teedindd.com/post.php?pd='+str(postdata['post_id'])
             r = httprequestObj.http_get(url_post)
             soup = BeautifulSoup(r.content, features = self.parser)
             var = soup.findAll('option')
-
             postdata['addr_province']=postdata['addr_province'].replace(' ','')
             postdata['addr_district']=postdata['addr_district'].replace(' ','')
             postdata['addr_sub_district']=postdata['addr_sub_district'].replace(' ','')
@@ -346,8 +345,8 @@ class teedindd():
 
             uid = soup.find('input', attrs={'name': 'uid'})
             pd = soup.find('input', attrs={'name': 'pd'})
-            PropAction = soup.find('input', attrs={'name': 'PropAction'})
-
+            PropAction = soup.find('input', attrs={'id': 'PropAction'})
+            # print(PropAction)
             url_district = 'https://www.teedindd.com/admin/step-process.php'
             r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
             
@@ -462,7 +461,6 @@ class teedindd():
             r = httprequestObj.http_post(
                 'https://www.teedindd.com/admin/properties-process.php', data=datapost)
             data = r.text
-            print('aaaaaaaaaaaa')
             detail="edited"
         else:
             success = "False"
@@ -593,7 +591,7 @@ class teedindd():
             uid = soup.find('input', attrs={'name': 'uid'})
             pd = soup.find('input', attrs={'name': 'pd'})
             PropAction = soup.find('input', attrs={'name': 'PropAction'})
-
+            # print(PropAction)
             url_district = 'https://www.teedindd.com/admin/step-process.php'
             r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
             
@@ -699,7 +697,29 @@ class teedindd():
             r = httprequestObj.http_post(
                 'https://www.teedindd.com/admin/properties-process.php', data=datapost)
             data = r.text
-            
+            # filename = "files[]"
+            # data = {}
+            #
+            # if len(postdata['post_images']) == 0:
+            #     postdata['post_images'] = ['imgtmp/default/white.jpg']
+            #     data[filename] = (postdata['post_images'][0], open(
+            #         postdata['post_images'][0], "rb"), "image/jpg")
+            # else:
+            #     i = postdata['no']
+            #     data[filename] = (postdata['post_images'][i], open(
+            #         postdata['post_images'][i], "rb"), "image/jpg")
+            # response = httprequestObj.http_post(
+            #     'https://www.teedindd.com/upload-tmp/', data=datapost, files=data)
+            # res = json.loads(response.text)
+            # if len(postdata['post_images']) != 0:
+            #     datapost['photo_name[]'] = res['files'][0]['name']
+            # else:
+            #     datapost['photo_name[]'] = None
+            # datapost['photo_name_old'] = ''
+            # r = httprequestObj.http_post(
+            #     'https://www.teedindd.com/admin/properties-process.php', data=datapost)
+            # data = r.text
+
             if data == '':
                 success = "false"
             else:
@@ -710,16 +730,16 @@ class teedindd():
                 store=""
                 final=""
                 for i in var:
-                    print(i.text)
+                    # print(i.text)
                     if i.text[:len(i.text)-1]==postdata['post_title_th']:
-                        print("select")
+                        # print("select")
                         store=i
                         soup = store
                         final=soup.find('a')
                         break
                 
                 final=final['href']
-                post_url=final
+                # post_url=final
                 i=len("../post.php?pd=")
                 post_id = ''
                 while i<len(final):
@@ -745,11 +765,12 @@ class teedindd():
                         "post_id": '',
                     }
                 j=1
-                while j < len(postdata['post_images']):
-                    # postdata['post_id']=post_id
+                while j < len(postdata['post_images'])-1:
+                    postdata['post_id']=post_id
                     postdata['no']=j
                     self.editpost(postdata)
                     j+=1
+                detail = 'Post created successfully'
         else:
             post_url=""
             post_id=""
