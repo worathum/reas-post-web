@@ -194,6 +194,16 @@ class postcore():
                         imgcount = imgcount + 1
                     except:
                         pass
+                elif res.headers['Content-Type'] == 'application/octet-stream':
+                    try:
+                        extension = 'jpeg'
+                        with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
+                            f.write(res.content)
+                            f.close()
+                        datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension)
+                        imgcount = imgcount + 1
+                    except:
+                        pass
                 # else:
                     # logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
             # else:

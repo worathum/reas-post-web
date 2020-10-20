@@ -226,6 +226,8 @@ class bankumka():
             # print(data)
             amphur_found = False
             for i in data:
+                if 'เขต' in i['name']:
+                        i['name'] = i['name'].replace('เขต', '')
                 # print(i['name'])
                 if postdata['addr_district'].replace(" ","") == i['name']:
                     amphur_found = True
@@ -883,6 +885,8 @@ class bankumka():
                         datapost.append(('prop_gallery'+str(i+1), val))
                     r = httprequestObj.http_post(
                         'https://bankumka.com/property/save', data=datapost, files=files)
+                    success = 'true'
+                    detail = 'Edit post successful'
                     # print(r.text)
                 else:
                     detail = '\n'.join(data['message'])
