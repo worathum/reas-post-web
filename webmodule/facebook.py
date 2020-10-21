@@ -318,7 +318,7 @@ class facebook():
                             pass
                         
                         try:
-                            user_name = WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/div/div[1]/span/h2/span/div/a'))).text
+                            user_name = WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/div/div[1]/span/h2/span/div/a'))).text
                             if user_name:
                                 url = self.driver.current_url
                                 posted_id = url.split('/')[-1]
@@ -765,6 +765,8 @@ class facebook():
 
     def boost_post(self, postdata):
 
+        time_start = datetime.utcnow()
+
         """ test_login = self.test_login(postdata)
         success = test_login['success']
         detail = test_login['detail']
@@ -886,8 +888,8 @@ class facebook():
             "end_time": str(time_end),
             "detail": detail,
             "ds_id": postdata['ds_id'],
-            "log_id": datahandled['log_id'],
-            "post_id": datahandled['post_id'],
+            "log_id": postdata['log_id'],
+            "post_id": postdata['post_id'],
             "websitename": self.websitename,
         }
 

@@ -673,7 +673,7 @@ class taladx():
             post_modify_time = ''
             detail = 'No post with this title'
 
-            urls = str('http://www.taladx.com/post-search.php?keyword='+str(postdata['post_title_th']).replace(' ', "+")+'&category=&subcategory=&province=&price=')
+            urls = str('http://www.taladx.com/post-search.php?keyword='+str(postdata['post_title_th']).replace('.','').replace(' ', "+")+'&category=&subcategory=&province=&price=')
 
             res = httprequestObj.http_get(urls, headers = headers)
             #print(res.url)
@@ -684,9 +684,8 @@ class taladx():
             soup = soup.find('div', attrs={'class': 'postlist'})
             # print(soup.prettify())
             temp = str(postdata['post_title_th']).replace('.  ', '')
-            temp = temp.replace('. ', ' ')
+            temp = temp.replace('. ', ' ').replace('.', '')
             for abc in soup.find_all('ul',attrs={'class': 'lileft'}):
-
                 l = abc.find('li', attrs={'class' : 'title'})
                 # print(f'title---{l.a.text}')
                 # print(f'temp---{temp}')

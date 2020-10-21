@@ -342,16 +342,23 @@ class thaisecondhand():
         datapost = {
             "product_id" : post_id
         }
+        datarenew = {
+            "product_id" : post_id,
+            "date_renew" : 30
+        }
         login = self.test_login(postdata)
         success = login["success"]
         detail = login["detail"]
         if(success == "True"):
-            r = httprequestObj.http_get('https://www.thaisecondhand.com/member', verify=False)
-            data = r.text
-            #print(data)
-            csrf = re.findall(r'csrf_token:"\w+',data)
-            datapost["csrf_token"] = csrf[0].replace("csrf_token:\"", "")
-            if(re.search(r''+post_id,data)):
+            post = httprequestObj.http_get('https://www.thaisecondhand.com/product/' + post_id)
+            check = re.search(r'topicError', post.text)
+            if check == None:
+                r = httprequestObj.http_get('https://www.thaisecondhand.com/member', verify=False)
+                data = r.text
+                csrf = re.findall(r'csrf_token:"\w+',data)
+                datapost["csrf_token"] = csrf[0].replace("csrf_token:\"", "")
+                datarenew["csrf_token"] = csrf[0].replace("csrf_token:\"", "")
+                res =  httprequestObj.http_post('https://www.thaisecondhand.com/member/product_renew_submit', data=datarenew)
                 r = httprequestObj.http_post('https://www.thaisecondhand.com/member/product_postpone', data=datapost)
                 if r.status_code != 200:
                     success = "False"

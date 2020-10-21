@@ -740,6 +740,9 @@ class home2all():
                 if r.text.find("You are using an unverified account") != -1:
                     success = "False"
                     detail = "Account Unverified"  
+                else:
+                    success = 'true'
+                    detail = 'Delete post successful'
             else:
                 success = "False"
                 detail = "Incorrect Post Id"
@@ -798,10 +801,10 @@ class home2all():
         post_view = ''
 
         if test_login['success'] == "true":
-            post_title = postdata['post_title_th'].replace('.  ','. ')
+            post_title = postdata['post_title_th'].replace('.  ','. ').replace('.', '')
             tURL = dict()
             date = []
-            url = "https://home2all.com/my-post"
+            url = "https://home2all.com/my-post/txt/" + post_title.replace(' ', '%20')
             r = httprequestObj.http_get(url)
             soup = BeautifulSoup(r.content, 'html.parser')
             # print(soup.prettify())
