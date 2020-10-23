@@ -315,6 +315,8 @@ class facebook():
                         except:
                             success = 'false'
                             detail = f'Can not post in {key} marketplace maybe you did not join the group yet. '
+                            post_url[key] = ''
+                            post_id = ''
                             pass
                         
                         if success == 'true':
@@ -324,7 +326,7 @@ class facebook():
                                     url = self.driver.current_url
                                     #posted_id = url.split('/')[-1]
                                     #post_url[key] = 'https://www.facebook.com/groups/' + group + '/permalink/' + posted_id
-                                    post_url = url
+                                    post_url[key] = url
                                     post_id = url.split('/')[-1]
                                     success = 'true'
                                     detail = 'Post successfully.'
