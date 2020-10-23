@@ -199,55 +199,40 @@ class livinginsider():
 
             province_id = ''
             term = postdata['web_project_name'].replace(' ', '+')
-
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36'
+            }
             data = httprequestObj.http_get(
-                'https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)
-            data = json.loads(data.text)
+                'https://www.livinginsider.com/a_zone_list.php?term=' + term + '&_type=query&q=' + term, headers=headers)
 
+            data = json.loads(data.text)
             if len(data) == 1:
                 term = postdata['addr_district'] + '+' + postdata['addr_province']
                 data = httprequestObj.http_get(
                     'https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)
                 data = json.loads(data.text)
 
-                # print(data)
-                try:
-                    if postdata['web_project_name'].strip().lower() in data[1]['text'].strip().lower() or data[1]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
-                        idzone = data[1]['id']
-                    else:
-                        time_end = datetime.datetime.utcnow()
-                        time_usage = time_end - time_start
-                        return {
-                            "success": False,
-                            "websitename": "livinginsider",
-                            "usage_time": str(time_usage),
-                            "start_time": str(time_start),
-                            "end_time": str(time_end),
-                            "post_url": "",
-                            "post_id": "",
-                            "account_type": "null",
-                            "detail": 'Project not Found. Post not created!',
-                        }
-
-                except:
-                    idzone = data[0]['id']
-            else:
-                if postdata['web_project_name'].strip().lower() in data[1]['text'].strip().lower() or data[1]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
-                    idzone = data[1]['id']
-                else:
-                    time_end = datetime.datetime.utcnow()
-                    time_usage = time_end - time_start
-                    return {
-                        "success": False,
-                        "websitename": "livinginsider",
-                        "usage_time": str(time_usage),
-                        "start_time": str(time_start),
-                        "end_time": str(time_end),
-                        "post_url": "",
-                        "post_id": "",
-                        "account_type": "null",
-                        "detail": 'Project not Found. Post not created!',
-                    }
+            idzone = None
+            print(data)
+            for i in range(len(data)):
+                if postdata['web_project_name'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
+                    idzone = data[i]['id']
+                    break
+            
+            if idzone is None:
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
+                return {
+                    "success": False,
+                    "websitename": "livinginsider",
+                    "usage_time": str(time_usage),
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "post_url": "",
+                    "post_id": "",
+                    "account_type": "null",
+                    "detail": 'Project not Found. Post not created!',
+                }
 
 
             # print(idzone)

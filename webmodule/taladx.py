@@ -264,7 +264,7 @@ class taladx():
             soup = BeautifulSoup(find_district,features = self.parser)
 
             if 'เมือง' in  district:
-                district = 'เมือง'
+                district = district.replace('เมือง', '')
             try:
 
                 for pqr in soup.find_all('option'):
