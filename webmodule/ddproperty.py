@@ -1063,11 +1063,14 @@ class ddproperty():
                 try:
                     if datahandled['action'] == 'edit_post':
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
+                        #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
+                        #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.CONTROL + "a")
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
+                        #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("div[class='corporate-email-wrap']/textarea")).send_keys(datahandled['email'])
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("div[class='corporate-email-wrap']/textarea")).send_keys(datahandled['email'])
@@ -1108,7 +1111,7 @@ class ddproperty():
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
 
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
-            if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) < 0):
+            if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) > 0):
                 #log.debug('edit image')
                 imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
@@ -1122,12 +1125,24 @@ class ddproperty():
                         alert.accept()
                         time.sleep(1.5)
 
-            for img in datahandled['post_images']:
+            all_images = ""
+            for count, pic in enumerate(datahandled['post_images']):
+                if count < len(datahandled['post_images'])-1:
+                    all_images += os.path.abspath(pic) + '\n'
+                else:
+                    all_images += os.path.abspath(pic)
+        
+            upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
+            upload.send_keys(all_images)
+
+            wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div[1]/div/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
+
+            """ for img in datahandled['post_images']:
                 time.sleep(1)
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
                 #log.debug('post image %s', img)
                 time.sleep(1)
-                self.firefox.refresh()
+                self.firefox.refresh() """
             #log.debug('image success')
             #print('here1')
             post_id = self.firefox.current_url.split("/")[-1]
@@ -1143,13 +1158,16 @@ class ddproperty():
             #TODO debug
             #js location inject
             if datahandled['action'] == 'edit_post':
-                js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
-                js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
-                self.firefox.execute_script(js)
-                time.sleep(0.5)
-                js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
-                js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
-                self.firefox.execute_script(js)
+                try:
+                    js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
+                    js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
+                    self.firefox.execute_script(js)
+                    time.sleep(0.5)
+                    js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
+                    js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
+                    self.firefox.execute_script(js)
+                except:
+                    pass
                 #print('here3')
                 time.sleep(0.5)
             # debug jsalert = 'alert(guruApp.createListing.listingData.listingDetail.result.location.latitude + " " + guruApp.createListing.listingData.listingDetail.result.location.longitude)'
@@ -1159,11 +1177,14 @@ class ddproperty():
             
             if datahandled['action'] == 'edit_post':
                 #บันทึกแล้วออก
-                element = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
-                self.firefox.execute_script("arguments[0].click();", element)
-                #quit      
-                self.firefox.close()
-                self.firefox.quit()
+                try:
+                    element = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
+                    self.firefox.execute_script("arguments[0].click();", element)
+                    #quit      
+                    self.firefox.close()
+                    self.firefox.quit()
+                except:
+                    pass
                 try:
                     alert = self.firefox.switch_to.alert
                     alert.accept()
@@ -1993,10 +2014,10 @@ class ddproperty():
             self.firefox.get('https://agentnet.ddproperty.com/create-listing/detail/' + str(datahandled['post_id']))
             #log.debug('search post id %s', str(datahandled['post_id']))
             # self.firefox.save_screenshot("debug_response/edit1.png")
-            matchObj = re.search(r'500 Internal Server Error', self.firefox.page_source)
+            matchObj = re.search(r'404 ไม่พบหน้านี้', self.firefox.page_source)
             if matchObj:
                 success = 'false'
-                detail = 'not found ddproperty post id ' + datahandled['post_id']
+                detail = 'Not found ddproperty post id ' + datahandled['post_id']
             if success == 'true':
                 self.firefox.get('https://agentnet.ddproperty.com/create-listing/location/' + str(datahandled['post_id']))
                 #log.debug('go to edit post %s', str(datahandled['post_id']))
@@ -2005,6 +2026,10 @@ class ddproperty():
                 success, detail = self.inputpostgeneral(datahandled)
                 if success == 'true':
                     success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+                    detail = 'Edit post success.'
+                else:
+                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+                    detail = 'Fail to edit post.'
 
         #log.debug('edit post done')
         #

@@ -14,7 +14,7 @@ import requests
 
 httprequestObj = lib_httprequest()
 
-with open("./static/teedin108_provincedata.json") as f:
+with open("./static/teedin108_provincedata.json", encoding='utf-8') as f:
     # ./static/teedin108_provincedata.json
 
     provincedata = json.load(f)

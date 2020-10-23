@@ -298,7 +298,7 @@ class facebook():
                                 pass
                             mp_check = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[4]/div[1]/div[4]/div'))).click()
                             #check_list = WebDriverWait(self.driver, 15).until(EC.presence_of_all_elements_located((By.XPATH, '//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[4]/div[1]/div[8]')))
-                            for i in range(1, 46): #46
+                            """ for i in range(1, 46): #46
                                 try:
                                     check_other = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[4]/div[1]/div[6]/div[3]/div[{i}]/div/div[1]/div[2]/div[1]/div/div/div[1]/span/span/span'))).text
                                 except:
@@ -306,7 +306,7 @@ class facebook():
                                     pass
                                 if check_other in list_group.keys():
                                     ch_group = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[4]/div[1]/div[6]/div[3]/div[{i}]/div'))).click()
-                                    posted_g.append(check_other)
+                                    posted_g.append(check_other) """
                             post = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, element['sale_post']))).click()
                             #For testing
                             #cancel = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[2]/div'))).click()
@@ -317,46 +317,52 @@ class facebook():
                             detail = f'Can not post in {key} marketplace maybe you did not join the group yet. '
                             pass
                         
-                        try:
-                            user_name = WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/div/div[1]/span/h2/span/div/a'))).text
-                            if user_name:
-                                url = self.driver.current_url
-                                posted_id = url.split('/')[-1]
-                                for item in posted_g:
-                                    post_url[item] = 'https://www.facebook.com/groups/' + list_group[item] + '/permalink/' + posted_id
-                                #post_url = 'https://www.facebook.com/groups/' + group + '/permalink/' + posted_id
-                                post_id = str(posted_id)
-                                success = 'true'
-                                detail = 'Post successfully'
+                        if success == 'true':
+                            try:
+                                user_name = WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/div/div[1]/span/h2/span/div/a'))).text
+                                if user_name:
+                                    url = self.driver.current_url
+                                    #posted_id = url.split('/')[-1]
+                                    #post_url[key] = 'https://www.facebook.com/groups/' + group + '/permalink/' + posted_id
+                                    post_url = url
+                                    post_id = url.split('/')[-1]
+                                    success = 'true'
+                                    detail = 'Post successfully.'
+                                    break
+                            except:
+                                post_url = ''
+                                post_id = ''
+                                success = 'false'
+                                detail = 'Post success. But can not get the post id.'
                                 break
-                        except:
-                            post_url = ''
-                            post_id = ''
-                            success = 'false'
-                            detail = 'Post success. But can not get the post id.'
-                            break
 
-                        """ try:
-                            sleep(3)
-                            self.driver.get('https://www.facebook.com/groups/' + group + '/yourposts')
-                            share_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="mount_0_0"]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div/div[2]/div/div/div/div[1]/span/span/div/div[2]/div[2]/div/div[1]/div/span/span'))).click()
-                            for i in range(1, 46):
-                                try:
-                                    check_other = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div[3]/div[1]/div[2]/div[2]/div[{i}]/div/div[1]/div[2]/div[1]/div/div/div[1]/span/span/span'))).text
-                                except:
-                                    check_other = ''
-                                    pass
-                                if check_other in list_group.keys():
-                                    ch_group = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div[3]/div[1]/div[2]/div[2]/div[{i}]/div/div[1]/div[2]/div[2]/div/div'))).click()
-                                    posted_g.append(check_other)
-                                if len(posted_g) > 1:
-                                    for item in posted_g:
-                                        post_url[item] = 'https://www.facebook.com/groups/' + list_group[item] + '/permalink/' + posted_id
-                            submit_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div[3]/div[2]/div/div/div[2]/div[2]'))).click()
-                            sleep(3)
-                            break
-                        except:
-                            pass """
+                        """ if success == 'true':
+                            try:
+                                sleep(3)
+                                self.driver.get('https://www.facebook.com/groups/' + group + '/yourposts')
+                                share_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div/div/div/div/div/div/div/div[2]/div[1]/div[2]/div/div/div[2]/div/div/div/div[1]/span/span/div/div[2]/div[2]/div'))).click()
+                                for i in range(1, 46):
+                                    try:
+                                        check_other = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div[3]/div[1]/div[2]/div[2]/div[{i}]/div/div[1]/div[2]/div[1]/div/div/div[1]/span/span/span'))).text
+                                    except:
+                                        check_other = ''
+                                        pass
+                                    if check_other in list_group.keys():
+                                        #ch_group = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div[3]/div[1]/div[2]/div[2]/div[{i}]/div/div[1]/div[2]/div[2]/div/div'))).click()
+                                        ch_group = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div[3]/div[1]/div[2]/div[3]/div[{i}]/div'))).click()
+                                        posted_g.append(check_other)
+                                    if len(posted_g) > 1:
+                                        for item in posted_g:
+                                            post_url[item] = 'https://www.facebook.com/groups/' + list_group[item] + '/permalink/' + post_id
+                                submit_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="mount_0_0"]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div[3]/div[2]/div/div/div[2]/div[2]'))).click()                                                                                        
+                                sleep(3)
+                                success = 'true'
+                                detail = 'Post and share successfully.'
+                                break
+                            except:
+                                success = 'true'
+                                detail = 'Post success but can not share.'
+                                break """
 
                     else:
                         try:

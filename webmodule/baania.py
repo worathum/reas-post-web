@@ -318,12 +318,13 @@ class baania():
             }
         }
         headers = {
+            "content-type": "application/json;charset=UTF-8",
             "origin": "https://www.baania.com",
             "referer": "https://www.baania.com/",
             "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",
             "sec-fetch-site": "same-site",
-            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"
         }
         resp = httprequestObj.http_post('https://search.baania.com/api/v1/project', data = json.dumps(mydata).encode('utf-8'), headers=headers)
         
@@ -1018,15 +1019,19 @@ class baania():
         if success == "true":
             post_title = postdata['post_title_th']
             # exists, authenticityToken, post_title = self.check_post(post_id)
-            # print(test_login['login_token'])
             headers = {
                 'authorization':  'Bearer ' + test_login['login_token'],
-                'content-type': 'application/json',
+                "content-type": "application/json;charset=UTF-8",
+                'origin': 'https://www.baania.com',
+                'referer': 'https://www.baania.com/',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-site',
                 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
             }
-
-            url = "https://api.baania.com/api/v1/users/listings?filter[filter_query]={%22$or%22:%20[{%22code%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22title_th%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22keyId%22:%20{%22$regex%22:%22"+post_title+"%22}}]}&sort=-updated_at"
-            r = httprequestObj.http_get(url,headers=headers)
+            #url_res = f"https://api.baania.com/api/v1/users/listings?filter[filter_query]={{%22$or%22:%20[{{%22code%22:%20{{%22$regex%22:%22{post_title}%22}}}},%20{{%22title_th%22:%20{{%22$regex%22:%22{post_title}%22}}}},%20{{%22keyId%22:%20{{%22$regex%22:%22{post_title}%22}}}}]}}&sort=-updated_at"
+            url = "https://api.baania.com/api/v1/users/listings?filter[filter_query]={%22$or%22:%20[{"+"%22"+"code%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22title_th%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22keyId%22:%20{%22$regex%22:%22"+post_title+"%22}}]}&sort=-updated_at"
+            r = httprequestObj.http_get(url_res,headers=headers)
             myans = json.loads(r.content.decode('utf-8'))
             if len(myans['data']) > 0 and post_title==myans['data'][0]['title_th']:
                 post_id=myans['data'][0]['keyId']
