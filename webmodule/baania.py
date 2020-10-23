@@ -267,7 +267,7 @@ class baania():
         if postdata['land_size_ngan'] is None or postdata['land_size_ngan'] == '': 
             postdata['land_size_ngan'] = 0
 
-        if postdata['land_size_wa'] is None or postdata['land_size_wa'] == '' :
+        if postdata['land_size_wa'] is None or postdata['land_size_wa'] == '':
             postdata['land_size_wa'] = 0
 
         area = 1600*int(postdata['land_size_rai']) + 400 *int(postdata['land_size_ngan']) + 4*int(postdata['land_size_wa'])
@@ -961,7 +961,7 @@ class baania():
         # login
         test_login = self.test_login(postdata)
         success = test_login["success"]
-        detail = test_login["detail"]
+        detail = "post deleted successfully."
 
         if success == "true":
 
@@ -1026,8 +1026,9 @@ class baania():
             }
 
             url = "https://api.baania.com/api/v1/users/listings?filter[filter_query]={%22$or%22:%20[{%22code%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22title_th%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22keyId%22:%20{%22$regex%22:%22"+post_title+"%22}}]}&sort=-updated_at"
-            r = httprequestObj.http_get(url,headers=headers)
+            r = requests.get(url,headers=headers)
             myans = json.loads(r.content.decode('utf-8'))
+            # print(myans)
             if len(myans['data']) > 0 and post_title==myans['data'][0]['title_th']:
                 post_id=myans['data'][0]['keyId']
                 post_found='true'
