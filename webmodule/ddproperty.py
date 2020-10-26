@@ -626,20 +626,27 @@ class ddproperty():
         post_id = ""
         account_type = "normal"
 
-        if success == "true":
-            self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
-            time.sleep(1)
-            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
-            # self.firefox.save_screenshot("debug_response/location.png")
-
-            success, detail = self.inputpostgeneral(datahandled)
-            if success == 'true':
-                success, detail, post_id, account_type = self.inputpostdetail(datahandled)
-                print(success, detail, post_id, account_type)
         try:
+            if success == "true":
+                self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
+                time.sleep(1)
+                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
+                # self.firefox.save_screenshot("debug_response/location.png")
+
+                success, detail = self.inputpostgeneral(datahandled)
+                if success == 'true':
+                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+                    print(success, detail, post_id, account_type)
+            try:
+                self.firefox.close()
+                self.firefox.quit()
+            except:
+                pass
+
+        finally:
+            self.firefox.close()
             self.firefox.quit()
-        except:
-            pass
+            
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -2010,34 +2017,39 @@ class ddproperty():
         success = test_login["success"]
         detail = test_login["detail"]
 
-        if (success == "true"):
-            self.firefox.get('https://agentnet.ddproperty.com/create-listing/detail/' + str(datahandled['post_id']))
-            #log.debug('search post id %s', str(datahandled['post_id']))
-            # self.firefox.save_screenshot("debug_response/edit1.png")
-            matchObj = re.search(r'404 ไม่พบหน้านี้', self.firefox.page_source)
-            if matchObj:
-                success = 'false'
-                detail = 'Not found ddproperty post id ' + datahandled['post_id']
-            if success == 'true':
-                self.firefox.get('https://agentnet.ddproperty.com/create-listing/location/' + str(datahandled['post_id']))
-                #log.debug('go to edit post %s', str(datahandled['post_id']))
-                time.sleep(0.5)
-                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
-                success, detail = self.inputpostgeneral(datahandled)
-                if success == 'true':
-                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
-                    detail = 'Edit post success.'
-                else:
-                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
-                    detail = 'Fail to edit post.'
-
-        #log.debug('edit post done')
-        #
-        # end process
         try:
+            if (success == "true"):
+                self.firefox.get('https://agentnet.ddproperty.com/create-listing/detail/' + str(datahandled['post_id']))
+                #log.debug('search post id %s', str(datahandled['post_id']))
+                # self.firefox.save_screenshot("debug_response/edit1.png")
+                matchObj = re.search(r'404 ไม่พบหน้านี้', self.firefox.page_source)
+                if matchObj:
+                    success = 'false'
+                    detail = 'Not found ddproperty post id ' + datahandled['post_id']
+                if success == 'true':
+                    self.firefox.get('https://agentnet.ddproperty.com/create-listing/location/' + str(datahandled['post_id']))
+                    #log.debug('go to edit post %s', str(datahandled['post_id']))
+                    time.sleep(0.5)
+                    WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
+                    success, detail = self.inputpostgeneral(datahandled)
+                    if success == 'true':
+                        success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+                        detail = 'Edit post success.'
+                    else:
+                        success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+                        detail = 'Fail to edit post.'
+
+            #log.debug('edit post done')
+            #
+            # end process
+            try:
+                self.firefox.quit()
+            except:
+                pass
+
+        finally:
+            self.firefox.close()
             self.firefox.quit()
-        except:
-            pass
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -2056,64 +2068,68 @@ class ddproperty():
         post_found = 'false'
         post_url = ''
         post_id = ''
-        if (success == "true"):
+
+        try:
+            if (success == "true"):
 
 
-            valid_ids = []
-            valid_titles = []
-            valid_urls = []
-            flag = True
-            page = 1
-            while flag == True:
+                valid_ids = []
+                valid_titles = []
+                valid_urls = []
+                flag = True
+                page = 1
+                while flag == True:
 
-                url = 'https://agentnet.ddproperty.com/listing_management_data'
-                data = {
-                    'statusCode': 'ACT',
-                    'params[listingSubTypeCode]': 'ALL',
-                    'params[tierType]': 'ALL',
-                    'params[propertyId]': '0',
-                    'params[propertyType]': 'ALL',
-                    'params[listType]': 'ALL',
-                    'params[page]': str(page),
-                    'params[featStatusCode]': 'CUR',
-                    'params[limit]': '20',
-                    'params[listingId]':'',
-                    'sort[column]': 'end_date',
-                    'sort[direction]': 'DESC'
-                }
-                page += 1
-                headers = {
-                    'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-                }
-                req = httprequestObj.http_get(url,data=data,headers=headers)
+                    url = 'https://agentnet.ddproperty.com/listing_management_data'
+                    data = {
+                        'statusCode': 'ACT',
+                        'params[listingSubTypeCode]': 'ALL',
+                        'params[tierType]': 'ALL',
+                        'params[propertyId]': '0',
+                        'params[propertyType]': 'ALL',
+                        'params[listType]': 'ALL',
+                        'params[page]': str(page),
+                        'params[featStatusCode]': 'CUR',
+                        'params[limit]': '20',
+                        'params[listingId]':'',
+                        'sort[column]': 'end_date',
+                        'sort[direction]': 'DESC'
+                    }
+                    page += 1
+                    headers = {
+                        'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+                    }
+                    req = httprequestObj.http_get(url,data=data,headers=headers)
 
-                soup = BeautifulSoup(req.text,'html.parser')
-                print(soup.prettify())
-                check = soup.find('div',{'id':'list-container'})
-                print(check)
-                if check is not None:
-                    #print('here2')
-                    posts = soup.find_all('div',{'class':'listing-item'})
+                    soup = BeautifulSoup(req.text,'html.parser')
+                    print(soup.prettify())
+                    check = soup.find('div',{'id':'list-container'})
+                    print(check)
+                    if check is not None:
+                        #print('here2')
+                        posts = soup.find_all('div',{'class':'listing-item'})
 
-                    for post in posts:
-                        valid_ids.append(post['data-listing-id'])
-                        valid_titles.append(post['data-listing-title'])
-                        url = post.find('a')
-                        valid_urls.append(url['href'])
-                    #print(valid_ids)
-                else:
-                    flag = False
-
-
-
-            if datahandled['post_title_th'] in valid_titles:
-                post_found = 'true'
-                for i in range(len(valid_titles)):
-                    if valid_titles[i] == datahandled['post_title_th']:
-                        post_url = valid_urls[i]
-                        post_id = valid_ids[i]
+                        for post in posts:
+                            valid_ids.append(post['data-listing-id'])
+                            valid_titles.append(post['data-listing-title'])
+                            url = post.find('a')
+                            valid_urls.append(url['href'])
+                        #print(valid_ids)
+                    else:
+                        flag = False
 
 
+
+                if datahandled['post_title_th'] in valid_titles:
+                    post_found = 'true'
+                    for i in range(len(valid_titles)):
+                        if valid_titles[i] == datahandled['post_title_th']:
+                            post_url = valid_urls[i]
+                            post_id = valid_ids[i]
+
+        finally:
+            self.firefox.close()
+            self.firefox.quit()
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start

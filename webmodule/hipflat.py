@@ -18,7 +18,7 @@ from selenium.webdriver.common.by import By
 
 httprequestObj = lib_httprequest()
 
-with open("./static/hipflat_province.json") as f:
+with open("./static/hipflat_province.json", encoding='utf-8') as f:
     provincedata = json.load(f)
 
 class hipflat():
