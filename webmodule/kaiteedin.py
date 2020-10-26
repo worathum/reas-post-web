@@ -81,13 +81,16 @@ class kaiteedin():
         time_start = datetime.datetime.utcnow()
         success = "true"
         detail = ""
+        try:
+            driver = webdriver.Chrome('./static/chromedriver')
+            driver.get('http://kaiteedin.net/index.php')
+            time.sleep(10)
+            if str(driver.find_element_by_xpath('//*[@id="cbp-tm-menu"]/li[8]/a').get_attribute('href')) == str('http://kaiteedin.net/member.php'):
+                driver.get('http://kaiteedin.net/member_signout.php')
+        finally:
+            driver.close()
+            driver.quit()
 
-        driver =webdriver.Chrome('./static/chromedriver')
-        driver.get('http://kaiteedin.net/index.php')
-        time.sleep(10)
-        if str(driver.find_element_by_xpath('//*[@id="cbp-tm-menu"]/li[8]/a').get_attribute('href')) == str('http://kaiteedin.net/member.php'):
-            driver.get('http://kaiteedin.net/member_signout.php')
-        driver.quit()
         if 'surname_th' not in postdata:
             return{
                 'websitename': 'kaiteedin',
