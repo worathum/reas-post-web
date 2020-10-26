@@ -624,6 +624,7 @@ class baania():
 
         r = httprequestObj.http_get("https://api.baania.com/api/v1/provinces")
         prov = json.loads(r.text)
+        print(prov)
         for i in prov:
             if i['data']['title']['title_th'].strip() == postdata["addr_province"].strip():
                 province_id = i['data']['id']
@@ -1021,15 +1022,15 @@ class baania():
             # print(test_login['login_token'])
             headers = {
                 'authorization':  'Bearer ' + test_login['login_token'],
-                'content-type': 'application/json',
-                'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
+                'content-type': 'application/json */*',
+                'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36'
             }
 
             url = "https://api.baania.com/api/v1/users/listings?filter[filter_query]={%22$or%22:%20[{%22code%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22title_th%22:%20{%22$regex%22:%22"+post_title+"%22}},%20{%22keyId%22:%20{%22$regex%22:%22"+post_title+"%22}}]}&sort=-updated_at"
             r = requests.get(url,headers=headers)
             myans = json.loads(r.content.decode('utf-8'))
-            # print(myans)
-            if len(myans['data']) > 0 and post_title==myans['data'][0]['title_th']:
+            # print(f'myans---{myans}')
+            if 'data' in myans and len(myans['data']) > 0 and post_title==myans['data'][0]['title_th']:
                 post_id=myans['data'][0]['keyId']
                 post_found='true'
                 detail = "post found successfully"
