@@ -71,68 +71,67 @@ class ploychao():
         options = Options()
         options.headless = True
         options.add_argument('--no-sandbox')
-        
-        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-        driver.implicitly_wait(4)
-
-
-        loginUrl = "https://www.ploychao.com/auth/"
-        driver.get(loginUrl)
-        driver.find_element_by_name("email").send_keys(postdata['user'])
-        driver.find_element_by_name("password").send_keys(postdata['pass'])
-        driver.find_element_by_id("btlogin").click()
-        waiting = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'box-product')))
-
-        posturl = "https://www.ploychao.com/"+ashopname+"/#editproduct/"+theid
-        driver.get(posturl)
-        while len(driver.find_elements_by_class_name("delete_img_upload")):
-            try:
-                waiting1 = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, 'delete_img_upload')))
-                driver.find_elements_by_class_name("delete_img_upload")[0].click()
-                alert = WebDriverWait(driver, 5).until(EC.alert_is_present())
-                driver.switch_to.alert.accept()
-            except:
-                continue
-        
-
-
-        allimages = postdata['post_images'][:10]
-
-        dropzone = driver.find_element_by_id("dropzone")
-
-        files = [os.getcwd() + "/" + img for img in allimages]
-
-        isLocal = not driver._is_remote or '127.0.0.1' in driver.command_executor._url
-
-        JS_DROP_FILES = "var c=arguments,b=c[0],k=c[1];c=c[2];for(var d=b.ownerDocument||document,l=0;;){var e=b.getBoundingClientRect(),g=e.left+(k||e.width/2),h=e.top+(c||e.height/2),f=d.elementFromPoint(g,h);if(f&&b.contains(f))break;if(1<++l)throw b=Error('Element not interactable'),b.code=15,b;b.scrollIntoView({behavior:'instant',block:'center',inline:'center'})}var a=d.createElement('INPUT');a.setAttribute('type','file');a.setAttribute('multiple','');a.setAttribute('style','position:fixed;z-index:2147483647;left:0;top:0;');a.onchange=function(b){a.parentElement.removeChild(a);b.stopPropagation();var c={constructor:DataTransfer,effectAllowed:'all',dropEffect:'none',types:['Files'],files:a.files,setData:function(){},getData:function(){},clearData:function(){},setDragImage:function(){}};window.DataTransferItemList&&(c.items=Object.setPrototypeOf(Array.prototype.map.call(a.files,function(a){return{constructor:DataTransferItem,kind:'file',type:a.type,getAsFile:function(){return a},getAsString:function(b){var c=new FileReader;c.onload=function(a){b(a.target.result)};c.readAsText(a)}}}),{constructor:DataTransferItemList,add:function(){},clear:function(){},remove:function(){}}));['dragenter','dragover','drop'].forEach(function(a){var b=d.createEvent('DragEvent');b.initMouseEvent(a,!0,!0,d.defaultView,0,0,0,g,h,!1,!1,!1,!1,0,null);Object.setPrototypeOf(b,null);b.dataTransfer=c;Object.setPrototypeOf(b,DragEvent.prototype);f.dispatchEvent(b)})};d.documentElement.appendChild(a);a.getBoundingClientRect();return a;"
-
-        elm_input = driver.execute_script(JS_DROP_FILES, dropzone, 0, 0)
-        value = '\n'.join(files)
-        elm_input._execute('sendKeysToElement', {'value': [value], 'text': value})
-        
-        for ind,file in enumerate(files):
-            myelement = WebDriverWait(driver, 5).until(element_has_css_class((By.XPATH, "//*[@id='viewupload']/div["+str(ind+1)+"]"), "dz-success"))
-
-        driver.find_element_by_xpath("//*[@id='viewupload']/div/div[2]/div[3]/span/input").click()
-
-        time.sleep(1)    
-
-        driver.find_element_by_id('btn-save-sale').click()
-        alert = WebDriverWait(driver, 5).until(EC.alert_is_present())
-        driver.switch_to.alert.accept()
-        waiting = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'box-product')))
-        driver.close()
-        driver.quit()
         try:
-            alert = driver.switch_to.alert
-            alert.accept()
-        except:
-            pass
-        try:
+            driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+            driver.implicitly_wait(4)
+
+
+            loginUrl = "https://www.ploychao.com/auth/"
+            driver.get(loginUrl)
+            driver.find_element_by_name("email").send_keys(postdata['user'])
+            driver.find_element_by_name("password").send_keys(postdata['pass'])
+            driver.find_element_by_id("btlogin").click()
+            waiting = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'box-product')))
+
+            posturl = "https://www.ploychao.com/"+ashopname+"/#editproduct/"+theid
+            driver.get(posturl)
+            while len(driver.find_elements_by_class_name("delete_img_upload")):
+                try:
+                    waiting1 = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, 'delete_img_upload')))
+                    driver.find_elements_by_class_name("delete_img_upload")[0].click()
+                    alert = WebDriverWait(driver, 5).until(EC.alert_is_present())
+                    driver.switch_to.alert.accept()
+                except:
+                    continue
+            
+
+
+            allimages = postdata['post_images'][:10]
+
+            dropzone = driver.find_element_by_id("dropzone")
+
+            files = [os.getcwd() + "/" + img for img in allimages]
+
+            isLocal = not driver._is_remote or '127.0.0.1' in driver.command_executor._url
+
+            JS_DROP_FILES = "var c=arguments,b=c[0],k=c[1];c=c[2];for(var d=b.ownerDocument||document,l=0;;){var e=b.getBoundingClientRect(),g=e.left+(k||e.width/2),h=e.top+(c||e.height/2),f=d.elementFromPoint(g,h);if(f&&b.contains(f))break;if(1<++l)throw b=Error('Element not interactable'),b.code=15,b;b.scrollIntoView({behavior:'instant',block:'center',inline:'center'})}var a=d.createElement('INPUT');a.setAttribute('type','file');a.setAttribute('multiple','');a.setAttribute('style','position:fixed;z-index:2147483647;left:0;top:0;');a.onchange=function(b){a.parentElement.removeChild(a);b.stopPropagation();var c={constructor:DataTransfer,effectAllowed:'all',dropEffect:'none',types:['Files'],files:a.files,setData:function(){},getData:function(){},clearData:function(){},setDragImage:function(){}};window.DataTransferItemList&&(c.items=Object.setPrototypeOf(Array.prototype.map.call(a.files,function(a){return{constructor:DataTransferItem,kind:'file',type:a.type,getAsFile:function(){return a},getAsString:function(b){var c=new FileReader;c.onload=function(a){b(a.target.result)};c.readAsText(a)}}}),{constructor:DataTransferItemList,add:function(){},clear:function(){},remove:function(){}}));['dragenter','dragover','drop'].forEach(function(a){var b=d.createEvent('DragEvent');b.initMouseEvent(a,!0,!0,d.defaultView,0,0,0,g,h,!1,!1,!1,!1,0,null);Object.setPrototypeOf(b,null);b.dataTransfer=c;Object.setPrototypeOf(b,DragEvent.prototype);f.dispatchEvent(b)})};d.documentElement.appendChild(a);a.getBoundingClientRect();return a;"
+
+            elm_input = driver.execute_script(JS_DROP_FILES, dropzone, 0, 0)
+            value = '\n'.join(files)
+            elm_input._execute('sendKeysToElement', {'value': [value], 'text': value})
+            
+            for ind,file in enumerate(files):
+                myelement = WebDriverWait(driver, 5).until(element_has_css_class((By.XPATH, "//*[@id='viewupload']/div["+str(ind+1)+"]"), "dz-success"))
+
+            driver.find_element_by_xpath("//*[@id='viewupload']/div/div[2]/div[3]/span/input").click()
+
+            time.sleep(1)    
+
+            driver.find_element_by_id('btn-save-sale').click()
+            alert = WebDriverWait(driver, 5).until(EC.alert_is_present())
+            driver.switch_to.alert.accept()
+            waiting = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'box-product')))
+        finally:
             driver.close()
             driver.quit()
-        except:
-            pass
+            try:
+                alert = driver.switch_to.alert
+                alert.accept()
+                driver.close()
+                driver.quit()
+            except:
+                pass
+
 
 
     def register_user(self, postdata):

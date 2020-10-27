@@ -302,181 +302,178 @@ class pantipmarket():
         options = Options()
         options.headless = True
         options.add_argument('--no-sandbox')
-
-        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-        # driver = webdriver.Chrome('/usr/bin/chromedriver', chrome_options=options)
-
-        driver.implicitly_wait(4)
-
-        # driver = webdriver.Chrome()
-        driver.get("https://www.pantipmarket.com/member/login.php?step=&sCode=")
-        time.sleep(2)
-        driver.find_element_by_xpath('//*[@id="login_box2"]/div[1]/a').click()
-        driver.find_element_by_name("username").send_keys(postdata['user'])
-        driver.find_element_by_name("password").send_keys(postdata['pass'])
-        driver.find_element_by_name("btn_login_submit").click()
-
-        success = True
-        end_time = datetime.utcnow()
-        new_title = post_title_th.replace(" ", "%20")
-
-        # if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
-        #     if 'project_name' in postdata and postdata['project_name']!=None:
-        #         postdata['web_project_name'] = postdata['project_name']
-        #     else:
-        #         postdata['web_project_name'] = postdata['post_title_th']
-
-        driver.get("https://www.pantipmarket.com/post/")
-
-        detail = ""
-
-        # post_title_th +=
-        driver.find_element_by_name("topic_th").send_keys(post_title_th)
-        time.sleep(10)
         try:
-            if str(driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ')) != None:
-                time.sleep(2)
-                driver.find_element_by_name(
-                    'select_group').click()
-                time.sleep(1)
+            driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+            # driver = webdriver.Chrome('/usr/bin/chromedriver', chrome_options=options)
 
-                driver.find_element_by_xpath('//*[@id="lv"]/li[6]').click()
-                time.sleep(1)
-                driver.find_element_by_xpath(send_property).click()
-            else:
-                detail = "A post with the same title already exists"
-                success = False
+            driver.implicitly_wait(4)
 
-        except Exception as e:
-            detail = "A post with the same title already exists"
-            # detail = str(e)
-            success = False
-
-        if success == True:
-            try:
-                element = WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
-                )
-                driver.find_element_by_name('jqi_state0_buttonOk').click()
-                print("Page is ready")
-            except:
-                print('Loading took too much time!')
-
-            driver.find_element_by_name("message_th").send_keys(post_description_th)
-            time.sleep(1)
-            driver.find_element_by_xpath('//*[@id="action_type"]/option[2]').click()
-            if postdata['listing_type'] == 'ขาย':
-                driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()
-
-            else:
-                driver.find_element_by_xpath('//*[@id="action_list_S2"]').click()
-
-            for i in range(len(postdata['post_images'])):
-                if i < 15:
-                    filepath = os.getcwd() + "/" + postdata['post_images'][i]
-                    driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]').send_keys(filepath)
-                else:
-                    break
-
-            driver.find_element_by_name("price_text_th").send_keys(price_baht)
-
-            provinces = {}
-
-            select_box = driver.find_element_by_id('located_in_select_2')
-            options = [x for x in select_box.find_elements_by_tag_name("option")]
-            for i in options[1:]:
-                provinces[i.get_attribute("value")] = i.text
-
-            for key, value in provinces.items():
-                if addr_province.find(value) != -1 or value.find(addr_province) != -1:
-                    addr_province = key
-                    break
-
-            element = driver.find_element_by_id('located_in_select_2')
-            dropdown = Select(element)
-            dropdown.select_by_value(addr_province)
-
-            time.sleep(10)
-            districts = {}
-            district_located = ""
-            try:
-                select_box = driver.find_element_by_id('located_in_select_3')
-                district_located = 'located_in_select_3'
-            except:
-                select_box = driver.find_element_by_id('located_in_select_4')
-                district_located = 'located_in_select_4'
-
-            options = [x for x in select_box.find_elements_by_tag_name("option")]
-            for i in options[1:]:
-                districts[i.get_attribute("value")] = i.text
-
-            for key, value in districts.items():
-                # print(key)
-                if addr_district.find(value) != -1 or value.find(addr_district) != -1:
-                    addr_district = key
-                    break
-
-            element = driver.find_element_by_id(district_located)
-            dropdown = Select(element)
-            dropdown.select_by_value(addr_district)
-
-            driver.find_element_by_name('name_th').clear()
-            if name != None:
-                driver.find_element_by_name("name_th").send_keys(name)
-            driver.find_element_by_name('contact[telephone]').clear()
-            if mobile != None:
-                driver.find_element_by_name("contact[telephone]").send_keys(mobile)
-            driver.find_element_by_name('contact[email]').clear()
-            if email != None:
-                driver.find_element_by_name("contact[email]").send_keys(email)
-            driver.find_element_by_name('contact[line]').clear()
-            try:
-                line = line.strip(u'\u200b')
-            except:
-                pass
-            if line != None and len(line) >= 4:
-                driver.find_element_by_name("contact[line]").send_keys(line)
-
-            html = driver.find_element_by_tag_name('html')
-            html.send_keys(Keys.END)
+            # driver = webdriver.Chrome()
+            driver.get("https://www.pantipmarket.com/member/login.php?step=&sCode=")
             time.sleep(2)
-            slider = driver.find_element_by_xpath(
-                '//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
-            move = ActionChains(driver)
-            move.click_and_hold(slider).move_by_offset(379.005, 0).release().perform()
-            time.sleep(5)
-            try:
-                WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
-                )
-            except:
-                time.sleep(5)
-                print('loading took too much time!')
-            driver.find_element_by_name('jqi_state0_buttonOk').click()
+            driver.find_element_by_xpath('//*[@id="login_box2"]/div[1]/a').click()
+            driver.find_element_by_name("username").send_keys(postdata['user'])
+            driver.find_element_by_name("password").send_keys(postdata['pass'])
+            driver.find_element_by_name("btn_login_submit").click()
 
             success = True
-            detail = 'Created the post successfully'
             end_time = datetime.utcnow()
+            new_title = post_title_th.replace(" ", "%20")
 
-            time.sleep(5)
+            # if 'web_project_name' not in postdata or postdata['web_project_name']!=None:
+            #     if 'project_name' in postdata and postdata['project_name']!=None:
+            #         postdata['web_project_name'] = postdata['project_name']
+            #     else:
+            #         postdata['web_project_name'] = postdata['post_title_th']
+
+            driver.get("https://www.pantipmarket.com/post/")
+
+            detail = ""
+
+            # post_title_th +=
+            driver.find_element_by_name("topic_th").send_keys(post_title_th)
+            time.sleep(10)
             try:
-                post_url = driver.find_element_by_xpath(
-                    '/html/body/div[4]/div[1]/fieldset[1]/div/div[1]/div/a').get_attribute('href')
-                post_id = post_url.split('/')[-1]
-                print(post_url,post_id)
-            except:
+                if str(driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ')) != None:
+                    time.sleep(2)
+                    driver.find_element_by_name(
+                        'select_group').click()
+                    time.sleep(1)
+
+                    driver.find_element_by_xpath('//*[@id="lv"]/li[6]').click()
+                    time.sleep(1)
+                    driver.find_element_by_xpath(send_property).click()
+                else:
+                    detail = "A post with the same title already exists"
+                    success = False
+
+            except Exception as e:
+                detail = "A post with the same title already exists"
+                # detail = str(e)
                 success = False
-                detail = 'Post with similar title already exists'
+
+            if success == True:
+                try:
+                    element = WebDriverWait(driver, 5).until(
+                        EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
+                    )
+                    driver.find_element_by_name('jqi_state0_buttonOk').click()
+                    print("Page is ready")
+                except:
+                    print('Loading took too much time!')
+
+                driver.find_element_by_name("message_th").send_keys(post_description_th)
+                time.sleep(1)
+                driver.find_element_by_xpath('//*[@id="action_type"]/option[2]').click()
+                if postdata['listing_type'] == 'ขาย':
+                    driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()
+
+                else:
+                    driver.find_element_by_xpath('//*[@id="action_list_S2"]').click()
+
+                for i in range(len(postdata['post_images'])):
+                    if i < 15:
+                        filepath = os.getcwd() + "/" + postdata['post_images'][i]
+                        driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]').send_keys(filepath)
+                    else:
+                        break
+
+                driver.find_element_by_name("price_text_th").send_keys(price_baht)
+
+                provinces = {}
+
+                select_box = driver.find_element_by_id('located_in_select_2')
+                options = [x for x in select_box.find_elements_by_tag_name("option")]
+                for i in options[1:]:
+                    provinces[i.get_attribute("value")] = i.text
+
+                for key, value in provinces.items():
+                    if addr_province.find(value) != -1 or value.find(addr_province) != -1:
+                        addr_province = key
+                        break
+
+                element = driver.find_element_by_id('located_in_select_2')
+                dropdown = Select(element)
+                dropdown.select_by_value(addr_province)
+
+                time.sleep(10)
+                districts = {}
+                district_located = ""
+                try:
+                    select_box = driver.find_element_by_id('located_in_select_3')
+                    district_located = 'located_in_select_3'
+                except:
+                    select_box = driver.find_element_by_id('located_in_select_4')
+                    district_located = 'located_in_select_4'
+
+                options = [x for x in select_box.find_elements_by_tag_name("option")]
+                for i in options[1:]:
+                    districts[i.get_attribute("value")] = i.text
+
+                for key, value in districts.items():
+                    # print(key)
+                    if addr_district.find(value) != -1 or value.find(addr_district) != -1:
+                        addr_district = key
+                        break
+
+                element = driver.find_element_by_id(district_located)
+                dropdown = Select(element)
+                dropdown.select_by_value(addr_district)
+
+                driver.find_element_by_name('name_th').clear()
+                if name != None:
+                    driver.find_element_by_name("name_th").send_keys(name)
+                driver.find_element_by_name('contact[telephone]').clear()
+                if mobile != None:
+                    driver.find_element_by_name("contact[telephone]").send_keys(mobile)
+                driver.find_element_by_name('contact[email]').clear()
+                if email != None:
+                    driver.find_element_by_name("contact[email]").send_keys(email)
+                driver.find_element_by_name('contact[line]').clear()
+                try:
+                    line = line.strip(u'\u200b')
+                except:
+                    pass
+                if line != None and len(line) >= 4:
+                    driver.find_element_by_name("contact[line]").send_keys(line)
+
+                html = driver.find_element_by_tag_name('html')
+                html.send_keys(Keys.END)
+                time.sleep(2)
+                slider = driver.find_element_by_xpath(
+                    '//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
+                move = ActionChains(driver)
+                move.click_and_hold(slider).move_by_offset(379.005, 0).release().perform()
+                time.sleep(5)
+                try:
+                    WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
+                    )
+                except:
+                    time.sleep(5)
+                    print('loading took too much time!')
+                driver.find_element_by_name('jqi_state0_buttonOk').click()
+
+                success = True
+                detail = 'Created the post successfully'
+                end_time = datetime.utcnow()
+
+                time.sleep(5)
+                try:
+                    post_url = driver.find_element_by_xpath(
+                        '/html/body/div[4]/div[1]/fieldset[1]/div/div[1]/div/a').get_attribute('href')
+                    post_id = post_url.split('/')[-1]
+                    print(post_url,post_id)
+                except:
+                    success = False
+                    detail = 'Post with similar title already exists'
 
 
-        else:
-            end_time = datetime.utcnow()
-
-        try:
-            driver.close()
-            driver.quit()
-        except:
-            pass
+            else:
+                end_time = datetime.utcnow()
+        finally:
+                driver.close()
+                driver.quit()
  
         return {
             "websitename": "pantipmarket",
@@ -739,176 +736,173 @@ class pantipmarket():
         options = Options()
         options.headless = True
         options.add_argument('--no-sandbox')
-
-        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-        # driver = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)  # for linux
-        driver.implicitly_wait(4)
-        driver.get("https://www.pantipmarket.com/member/login.php?step=&sCode=")
-        driver.find_element_by_xpath('//*[@id="login_box2"]/div[1]/a').click()
-        driver.find_element_by_name("username").send_keys(postdata['user'])
-        driver.find_element_by_name("password").send_keys(postdata['pass'])
-        driver.find_element_by_name("btn_login_submit").click()
-        request = httprequestObj.http_get(
-            "https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
-        response_result = str(request.text)
-
-        regex = '<div class="blue_box">ไม่พบข้อมูลของประกาศ</div>'
-        result = re.findall(regex, response_result)
-
-        if (len(result) >= 1):
-            success = False
-            detail = "The post doesn't exist"
-            end_time = datetime.utcnow()
-        else:
-            success = True
-
-        if success == True:
-
-            driver.get("https://www.pantipmarket.com/post/edit.php?board_id=" + post_id)
-
-            if post_title_th != None:
-                driver.find_element_by_name('topic_th').clear()
-            driver.find_element_by_name("topic_th").send_keys(post_title_th)
-
-            if post_description_th != None:
-                driver.find_element_by_name('message_th').clear()
-            driver.find_element_by_name("message_th").send_keys(post_description_th)
-
-            driver.find_element_by_xpath('//*[@id="action_type"]/option[2]').click()
-
-            if postdata['listing_type'] != None:
-                if postdata['listing_type'] == 'ขาย':
-                    driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()
-
-                else:
-                    driver.find_element_by_xpath('//*[@id="action_list_S2"]').click()
-
-            if postdata['post_images'] != None:
-                time.sleep(5)
-                l = len(driver.find_elements_by_class_name('PMK-uploadfile-list'))
-                for i in range(l, 0, -1):
-                    try:
-
-                        driver.find_element_by_xpath(
-                            '/html/body/div[8]/form/div[1]/fieldset[5]/div/div/div[2]/div[1]/div/div[%d]/u' % (i + 1)
-                        ).click()
-                        print(i, i + 1)
-                        time.sleep(1.5)
-                        driver.find_element_by_name(
-                            'jqi_state0_buttonOk'
-                        ).click()
-                    except Exception as e:
-                        print(e)
-
-                for i in range(len(postdata['post_images'])):
-                    if i < 15:
-                        filepath = os.getcwd() + "/" + postdata['post_images'][i]
-                        driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]').send_keys(filepath)
-                    else:
-                        break
-            time.sleep(1.5)
-            try:
-                driver.find_element_by_xpath('/html/body/div[13]/div[2]/form/div[2]/div/div[2]/button').click()
-            except:
-                pass
-
-            if price_baht != None:
-                driver.find_element_by_name('price_text_th').clear()
-                driver.find_element_by_name("price_text_th").send_keys(price_baht)
-
-            if addr_province != None:
-                provinces = {}
-
-                select_box = driver.find_element_by_id('located_in_select_2')
-                options = [x for x in select_box.find_elements_by_tag_name("option")]
-                for i in options[1:]:
-                    provinces[i.get_attribute("value")] = i.text
-
-                for key, value in provinces.items():
-                    if addr_province.find(value) != -1:
-                        addr_province = key
-                        break
-
-                element = driver.find_element_by_id('located_in_select_2')
-                dropdown = Select(element)
-                driver.implicitly_wait(5)
-                time.sleep(1)
-
-                try:
-                    dropdown.select_by_value(addr_province)
-                except NoSuchElementException:
-                    pass
-
-            time.sleep(2)
-            if addr_district != None:
-                districts = {}
-                district_located = ""
-                try:
-                    select_box = driver.find_element_by_id('located_in_select_3')
-                    district_located = 'located_in_select_3'
-                except:
-                    select_box = driver.find_element_by_id('located_in_select_4')
-                    district_located = 'located_in_select_4'
-
-                options = [x for x in select_box.find_elements_by_tag_name("option")]
-                for i in options[1:]:
-                    districts[i.get_attribute("value")] = i.text
-
-                for key, value in districts.items():
-                    # print(key)
-                    if addr_district.find(value) != -1:
-                        addr_district = key
-                        break
-
-                element = driver.find_element_by_id(district_located)
-                dropdown = Select(element)
-                time.sleep(1)
-                driver.implicitly_wait(5)
-                try:
-                    dropdown.select_by_value(addr_district)
-                except NoSuchElementException:
-                    pass
-
-            time.sleep(1)
-            if name != None:
-                driver.find_element_by_name('name_th').clear()
-                driver.find_element_by_name("name_th").send_keys(name)
-            if mobile != None:
-                driver.find_element_by_name('contact[telephone]').clear()
-                driver.find_element_by_name("contact[telephone]").send_keys(mobile)
-            if email != None:
-                driver.find_element_by_name('contact[email]').clear()
-                driver.find_element_by_name("contact[email]").send_keys(email)
-            if line != None and len(line) >= 4:
-                driver.find_element_by_name('contact[line]').clear()
-                driver.find_element_by_name("contact[line]").send_keys(line)
-
-            html = driver.find_element_by_tag_name('html')
-            html.send_keys(Keys.END)
-            time.sleep(2)
-
-            slider = driver.find_element_by_xpath(
-                '//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
-            move = ActionChains(driver)
-            move.click_and_hold(slider).move_by_offset(379.005, 0).release().perform()
-            try:
-                element = WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
-                )
-                driver.find_element_by_name('jqi_state0_buttonOk').click()
-            except:
-                print('loading took too much time!')
-
-            post_url = "https://www.pantipmarket.com/items/" + post_id
-            detail = "Successfully edited the post"
-            success = True
-            end_time = datetime.utcnow()
-
         try:
+            driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+            # driver = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)  # for linux
+            driver.implicitly_wait(4)
+            driver.get("https://www.pantipmarket.com/member/login.php?step=&sCode=")
+            driver.find_element_by_xpath('//*[@id="login_box2"]/div[1]/a').click()
+            driver.find_element_by_name("username").send_keys(postdata['user'])
+            driver.find_element_by_name("password").send_keys(postdata['pass'])
+            driver.find_element_by_name("btn_login_submit").click()
+            request = httprequestObj.http_get(
+                "https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
+            response_result = str(request.text)
+
+            regex = '<div class="blue_box">ไม่พบข้อมูลของประกาศ</div>'
+            result = re.findall(regex, response_result)
+
+            if (len(result) >= 1):
+                success = False
+                detail = "The post doesn't exist"
+                end_time = datetime.utcnow()
+            else:
+                success = True
+
+            if success == True:
+
+                driver.get("https://www.pantipmarket.com/post/edit.php?board_id=" + post_id)
+
+                if post_title_th != None:
+                    driver.find_element_by_name('topic_th').clear()
+                driver.find_element_by_name("topic_th").send_keys(post_title_th)
+
+                if post_description_th != None:
+                    driver.find_element_by_name('message_th').clear()
+                driver.find_element_by_name("message_th").send_keys(post_description_th)
+
+                driver.find_element_by_xpath('//*[@id="action_type"]/option[2]').click()
+
+                if postdata['listing_type'] != None:
+                    if postdata['listing_type'] == 'ขาย':
+                        driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()
+
+                    else:
+                        driver.find_element_by_xpath('//*[@id="action_list_S2"]').click()
+
+                if postdata['post_images'] != None:
+                    time.sleep(5)
+                    l = len(driver.find_elements_by_class_name('PMK-uploadfile-list'))
+                    for i in range(l, 0, -1):
+                        try:
+
+                            driver.find_element_by_xpath(
+                                '/html/body/div[8]/form/div[1]/fieldset[5]/div/div/div[2]/div[1]/div/div[%d]/u' % (i + 1)
+                            ).click()
+                            print(i, i + 1)
+                            time.sleep(1.5)
+                            driver.find_element_by_name(
+                                'jqi_state0_buttonOk'
+                            ).click()
+                        except Exception as e:
+                            print(e)
+
+                    for i in range(len(postdata['post_images'])):
+                        if i < 15:
+                            filepath = os.getcwd() + "/" + postdata['post_images'][i]
+                            driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]').send_keys(filepath)
+                        else:
+                            break
+                time.sleep(1.5)
+                try:
+                    driver.find_element_by_xpath('/html/body/div[13]/div[2]/form/div[2]/div/div[2]/button').click()
+                except:
+                    pass
+
+                if price_baht != None:
+                    driver.find_element_by_name('price_text_th').clear()
+                    driver.find_element_by_name("price_text_th").send_keys(price_baht)
+
+                if addr_province != None:
+                    provinces = {}
+
+                    select_box = driver.find_element_by_id('located_in_select_2')
+                    options = [x for x in select_box.find_elements_by_tag_name("option")]
+                    for i in options[1:]:
+                        provinces[i.get_attribute("value")] = i.text
+
+                    for key, value in provinces.items():
+                        if addr_province.find(value) != -1:
+                            addr_province = key
+                            break
+
+                    element = driver.find_element_by_id('located_in_select_2')
+                    dropdown = Select(element)
+                    driver.implicitly_wait(5)
+                    time.sleep(1)
+
+                    try:
+                        dropdown.select_by_value(addr_province)
+                    except NoSuchElementException:
+                        pass
+
+                time.sleep(2)
+                if addr_district != None:
+                    districts = {}
+                    district_located = ""
+                    try:
+                        select_box = driver.find_element_by_id('located_in_select_3')
+                        district_located = 'located_in_select_3'
+                    except:
+                        select_box = driver.find_element_by_id('located_in_select_4')
+                        district_located = 'located_in_select_4'
+
+                    options = [x for x in select_box.find_elements_by_tag_name("option")]
+                    for i in options[1:]:
+                        districts[i.get_attribute("value")] = i.text
+
+                    for key, value in districts.items():
+                        # print(key)
+                        if addr_district.find(value) != -1:
+                            addr_district = key
+                            break
+
+                    element = driver.find_element_by_id(district_located)
+                    dropdown = Select(element)
+                    time.sleep(1)
+                    driver.implicitly_wait(5)
+                    try:
+                        dropdown.select_by_value(addr_district)
+                    except NoSuchElementException:
+                        pass
+
+                time.sleep(1)
+                if name != None:
+                    driver.find_element_by_name('name_th').clear()
+                    driver.find_element_by_name("name_th").send_keys(name)
+                if mobile != None:
+                    driver.find_element_by_name('contact[telephone]').clear()
+                    driver.find_element_by_name("contact[telephone]").send_keys(mobile)
+                if email != None:
+                    driver.find_element_by_name('contact[email]').clear()
+                    driver.find_element_by_name("contact[email]").send_keys(email)
+                if line != None and len(line) >= 4:
+                    driver.find_element_by_name('contact[line]').clear()
+                    driver.find_element_by_name("contact[line]").send_keys(line)
+
+                html = driver.find_element_by_tag_name('html')
+                html.send_keys(Keys.END)
+                time.sleep(2)
+
+                slider = driver.find_element_by_xpath(
+                    '//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
+                move = ActionChains(driver)
+                move.click_and_hold(slider).move_by_offset(379.005, 0).release().perform()
+                try:
+                    element = WebDriverWait(driver, 5).until(
+                        EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
+                    )
+                    driver.find_element_by_name('jqi_state0_buttonOk').click()
+                except:
+                    print('loading took too much time!')
+
+                post_url = "https://www.pantipmarket.com/items/" + post_id
+                detail = "Successfully edited the post"
+                success = True
+                end_time = datetime.utcnow()
+        finally:
             driver.close()
             driver.quit()
-        except:
-            pass
 
         return {
             "websitename": "pantipmarket",

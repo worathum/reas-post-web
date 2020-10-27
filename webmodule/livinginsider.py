@@ -128,29 +128,15 @@ class livinginsider():
         post_id = ""
         post_url = ""
 
+
+
         if success:
-            proid = {
-                'คอนโด': '1',  # condo
-                'บ้านเดี่ยว': '2',  # detached houses /home / house / Single House
-                'บ้านแฝด': '3',  # twin houses
-                'ทาวน์เฮ้าส์': '4',  # townhouses / town home / home office
-                'ตึกแถว-อาคารพาณิชย์': '5',  # commercial buildings
-                'ที่ดิน': '6',  # land
-                'อพาร์ทเมนท์': '7',  # apartments
-                'โรงแรม': '8',  # hotels, Real Estate Residencial
-                'ออฟฟิศสำนักงาน': '9',  # Office
-                'โกดัง-โรงงาน': '10',  # warehouses
-                'โรงงาน': '25'  # factory
-            }
             getProdId = {'1': 1, '2': 2, '3': 2, '4': 6,
                         '5': 4, '6': 3, '7': 10, '8': 10, '9': 5, '10': 12, '25': 11}
 
-            try:
-                theprodid = getProdId[proid[str(postdata['property_type'])]]
-            except:
-                theprodid = getProdId[str(postdata['property_type'])]
+            theprodid = getProdId[str(postdata['property_type'])]
 
-            if 'web_project_name' not in postdata or postdata['web_project_name'] is not None:
+            if 'web_project_name' not in postdata or postdata['web_project_name'] is None or postdata['web_project_name'] == '':
                 if 'project_name' in postdata and postdata['project_name'] is not None:
                     postdata['web_project_name'] = postdata['project_name']
                 else:
@@ -198,73 +184,88 @@ class livinginsider():
                 land_size_wa = postdata['land_size_wa']
 
             province_id = ''
-            term = postdata['web_project_name'].replace(' ', '+')
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36'
             }
-            data = httprequestObj.http_get(
-                'https://www.livinginsider.com/a_zone_list.php?term=' + term + '&_type=query&q=' + term, headers=headers)
 
-            data = json.loads(data.text)
-            if len(data) == 1:
-                term = postdata['addr_district'] + '+' + postdata['addr_province']
-                data = httprequestObj.http_get(
-                    'https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)
+
+            web_zone = ''
+            idzone = '0'
+
+            if str(postdata['property_type']) == '1':
+                term = postdata['web_project_name'].replace(' ', '+')
+
+                data = requests.get('https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)    
+
                 data = json.loads(data.text)
+                idzone = None
 
-            idzone = None
-            print(data)
-            for i in range(len(data)):
-                if postdata['web_project_name'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
-                    idzone = data[i]['id']
-                    break
-            
-            if idzone is None:
-                time_end = datetime.datetime.utcnow()
-                time_usage = time_end - time_start
-                return {
-                    "success": False,
-                    "websitename": "livinginsider",
-                    "usage_time": str(time_usage),
-                    "start_time": str(time_start),
-                    "end_time": str(time_end),
-                    "post_url": "",
-                    "post_id": "",
-                    "account_type": "null",
-                    "detail": 'Project not Found. Post not created!',
-                }
-
-
-            # print(idzone)
-            data = httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
-            # print(data.status_code)
-            data = json.loads(data.text)
-            # print(data)
-            r = data['value']
-            if len(r) == 0:
-                params = {
-                    'term': postdata['addr_province'],
-                    '_type': 'query',
-                    'q': postdata['addr_province']
-                }
-                r = httprequestObj.http_get('https://www.livinginsider.com/a_zone_list.php', params=params)
-                # print(r.url)
-                # print(r.status_code)
-                data = r.json()
-                web_zone = data[0]['id']
-                for row in data:
-                    if postdata['addr_district'].replace(' ', '') in row and postdata['addr_sub_district'].replace(' ',
-                                                                                                                '') in row:
-                        web_zone = row['id']
+                for i in range(len(data)):
+                    if postdata['web_project_name'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
+                        idzone = data[i]['id']
                         break
-                # print('Web_zone = ' + str(web_zone))
+    
+                if idzone is None:
+                    time_end = datetime.datetime.utcnow()
+                    time_usage = time_end - time_start
+                    return {
+                        "success": False,
+                        "websitename": "livinginsider",
+                        "usage_time": str(time_usage),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "post_url": "",
+                        "post_id": "",
+                        "account_type": "null",
+                        "detail": 'Project not Found. Post not created!',
+                    }
 
-                r = httprequestObj.http_post('https://www.livinginsider.com/a_zone_child.php', data={'web_zone_id': web_zone})
-            else:
+                data = httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
+                data = json.loads(data.text)
+                print(data)
+
+                r = data['value']
                 soap = BeautifulSoup(r, self.parser)
                 option = soap.find('option')
                 web_zone = option.get('value')
+
+            else:
+                # term = postdata['web_location'].replace(' ', '+')
+                # r = httprequestObj.http_get(
+                #     'https://www.livinginsider.com/a_zone_list.php?term=' + term + '&_type=query&q=' + term)
+                            
+                # data = r.json()
+
+                # web_zone = None
+
+                # for i in range(len(data)):
+                #     if postdata['web_location'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_location'].strip().lower():
+                #         print(data[i])
+                #         web_zone = data[i]['id']
+                #         break
                 
+                try:
+                    web_zone = int(str(postdata['location_area']).strip())
+                except:
+                    time_end = datetime.datetime.utcnow()
+                    time_usage = time_end - time_start
+                    return {
+                        "success": False,
+                        "websitename": "livinginsider",
+                        "usage_time": str(time_usage),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "post_url": "",
+                        "post_id": "",
+                        "account_type": "null",
+                        "detail": 'Location not Found. Post not created!',
+                    }
+
+
+            
+
+            r = httprequestObj.http_post('https://www.livinginsider.com/a_zone_child.php', data={'web_zone_id': web_zone})
+
             prod_address = ""
             for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'],
                         postdata['addr_district'], postdata['addr_province']]:
@@ -312,7 +313,6 @@ class livinginsider():
             soup = BeautifulSoup(k.text, self.parser)
             webFolder = soup.select_one('#web_photo_folder')['value']
 
-            # print(webFolder)
 
             for i in range(len(postdata['post_images'])):
                 # print(i)
@@ -345,7 +345,7 @@ class livinginsider():
                     filelist += file + "||"
                     files.append(file)
             postdata['floor'] = postdata['floor_total']
-            if postdata['property_type'] == 3:
+            if theprodid == 3:
                 data = {
                     'currentstep': '2',
                     'web_area_size': 400 * int(land_size_rai) + 100 * int(land_size_ngan) + int(land_size_wa),
@@ -357,14 +357,15 @@ class livinginsider():
                     'web_keeping_pet': '0',
                     'web_price': postdata['price_baht'],
                     'web_income_year': '0',
+                    'web_post_commission': '3',
                     'web_post_commission_include': '0',
-                    'web_post_accept': '1',
                     'web_fq': '0',
                     'web_youtube': '',
                     'web_useful_space': '0',
                     'web_photo_list': filelist,
                     'web_photo_folder': webFolder,
                 }
+
                 for i in range(len(postdata['post_images'])):
                     data['web_photo_caption[' +
                          str(i) + '][web_folder]'] = onlyfolder
@@ -611,9 +612,9 @@ class livinginsider():
             # print(data)
             r = httprequestObj.http_post(
                 'https://www.livinginsider.com/a_add_living.php', data=data, headers=headers)
-            # print(r.url)
-            # print(r.status_code)
-            # print(r.text)
+            print(r.url)
+            print(r.status_code)
+            print(r.text)
 
             data = {
                 'action': 'save',
@@ -630,9 +631,9 @@ class livinginsider():
             #     print(r.text, file=f)
 
             r = httprequestObj.http_post('https://www.livinginsider.com/living_confirm.php', data=data)
-            # print(r.url)
-            # print(r.status_code)
-            # print(r.text)
+            print(r.url)
+            print(r.status_code)
+            print(r.text)
             link = ''
             try:
                 r = BeautifulSoup(r.content, self.parser)
@@ -643,7 +644,7 @@ class livinginsider():
                 link = r['link_copy']
             
             if link == '':
-                detail = 'Not posted. Low Credits maybe.'
+                detail = 'Not posted. Some required information is missing OR Similar post already exists.'
                 success = False
                 time_end = datetime.datetime.utcnow()
                 time_usage = time_end - time_start
@@ -718,7 +719,6 @@ class livinginsider():
             except:
                 max_page = 1
             while page <= max_page:
-                page += 1
                 params = (
                     ('pages', str(page)),
                     ('action', '1'),
@@ -742,41 +742,41 @@ class livinginsider():
                 soup = BeautifulSoup(r.content, self.parser)
                 all_posts = soup.find_all(class_='mystock-item')
                 for post in all_posts:
+                    # print(post.get('topic-id'))
                     if str(post.get('topic-id')) == str(postdata['post_id']):
                         post_found = True
                         break
+                page += 1
                 if post_found:
                     break
 
             if post_found:
 
+                headers = {
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecurets': '1',
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Mobile Safari/537.36',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-User': '?1',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                    'Sec-Fetch-Site': 'same-origin',
+                    'Referer': 'https://www.livinginsider.com/mystock.php',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                }
+
+
                 r = httprequestObj.http_get('https://www.livinginsider.com/living_edit.php',
-                                            params={'topic_id': post_id})
-                # print(r.url)
+                                            params={'topic_id': post_id}, headers=headers)
+                # print(r.url, "hi1")
                 # print(r.status_code)
 
-                proid = {
-                    'คอนโด': '1',  # condo
-                    'บ้านเดี่ยว': '2',  # detached houses /home / house / Single House
-                    'บ้านแฝด': '3',  # twin houses
-                    'ทาวน์เฮ้าส์': '4',  # townhouses / town home / home office
-                    'ตึกแถว-อาคารพาณิชย์': '5',  # commercial buildings
-                    'ที่ดิน': '6',  # land
-                    'อพาร์ทเมนท์': '7',  # apartments
-                    'โรงแรม': '8',  # hotels, Real Estate Residencial
-                    'ออฟฟิศสำนักงาน': '9',  # Office
-                    'โกดัง-โรงงาน': '10',  # warehouses
-                    'โรงงาน': '25'  # factory
-                }
                 getProdId = {'1': 1, '2': 2, '3': 2, '4': 6,
                              '5': 4, '6': 3, '7': 10, '8': 10, '9': 5, '10': 12, '25': 11}
 
-                try:
-                    theprodid = getProdId[proid[postdata['property_type']]]
-                except:
-                    theprodid = getProdId[postdata['property_type']]
+                theprodid = getProdId[postdata['property_type']]
 
-                if 'web_project_name' not in postdata or postdata['web_project_name'] != None:
+                if 'web_project_name' not in postdata or postdata['web_project_name'] is None or postdata['web_project_name'] == '':
                     if 'project_name' in postdata and postdata['project_name'] != None:
                         postdata['web_project_name'] = postdata['project_name']
                     else:
@@ -824,42 +824,23 @@ class livinginsider():
                     land_size_wa = postdata['land_size_wa']
 
                 province_id = ''
-                term = postdata['web_project_name'].replace(' ', '+')
+                idzone = '0'
+                web_zone = ''
 
-                data = httprequestObj.http_get(
-                    'https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)
-                data = json.loads(data.text)
+                if str(postdata['property_type']) == '1':
+                    term = postdata['web_project_name'].replace(' ', '+')
 
-                if len(data) == 1:
-                    term = postdata['addr_district'] + '+' + postdata['addr_province']
-                    data = httprequestObj.http_get(
-                        'https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)
+                    data = requests.get('https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)    
+
                     data = json.loads(data.text)
+                    idzone = None
 
-                    # print(data)
-                    try:
-                        if postdata['web_project_name'].strip().lower() in data[1]['text'].strip().lower() or data[1]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
-                            idzone = data[1]['id']
-                        else:
-                            time_end = datetime.datetime.utcnow()
-                            time_usage = time_end - time_start
-                            return {
-                                "success": False,
-                                "websitename": "livinginsider",
-                                "usage_time": str(time_usage),
-                                "start_time": str(time_start),
-                                "end_time": str(time_end),
-                                "post_url": "",
-                                "post_id": "",
-                                "account_type": "null",
-                                "detail": 'Project not Found. Post not edited!',
-                            }
-                    except:
-                        idzone = data[0]['id']
-                else:
-                    if postdata['web_project_name'].strip().lower() in data[1]['text'].strip().lower() or data[1]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
-                        idzone = data[1]['id']
-                    else:
+                    for i in range(len(data)):
+                        if postdata['web_project_name'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
+                            idzone = data[i]['id']
+                            break
+        
+                    if idzone is None:
                         time_end = datetime.datetime.utcnow()
                         time_usage = time_end - time_start
                         return {
@@ -873,44 +854,47 @@ class livinginsider():
                             "account_type": "null",
                             "detail": 'Project not Found. Post not edited!',
                         }
-                # print(idzone)
-                data = httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php',
-                                                data={'web_project_id': idzone})
-                # print(data.status_code)
-                data = json.loads(data.text)
-                # print(data)
-                r = data['value']
-                if len(r) == 0:
-                    params = {
-                        'term': postdata['addr_province'],
-                        '_type': 'query',
-                        'q': postdata['addr_province']
-                    }
-                    r = httprequestObj.http_get('https://www.livinginsider.com/a_zone_list.php', params=params)
-                    # print(r.url)
-                    # print(r.status_code)
-                    data = r.json()
-                    web_zone = data[0]['id']
-                    for row in data:
-                        if postdata['addr_district'].replace(' ', '') in row and postdata['addr_sub_district'].replace(
-                                ' ',
-                                '') in row:
-                            web_zone = row['id']
-                            break
-                    # print('Web_zone = ' + str(web_zone))
 
-                    r = httprequestObj.http_post('https://www.livinginsider.com/a_zone_child.php',
-                                                 data={'web_zone_id': web_zone})
-                    # print(r.url)
-                    # print(r.status_code)
-                    # print(r.json())
+                    data = httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
+                    data = json.loads(data.text)
 
-                else:
+                    r = data['value']
                     soap = BeautifulSoup(r, self.parser)
                     option = soap.find('option')
                     web_zone = option.get('value')
-                    # print('Web_zone = ' + str(web_zone))
-                    # print(option)
+
+                else:
+                    # term = postdata['web_location'].replace(' ', '+')
+                    # r = httprequestObj.http_get(
+                    #     'https://www.livinginsider.com/a_zone_list.php?term=' + term + '&_type=query&q=' + term)
+                                
+                    # data = r.json()
+
+                    # web_zone = None
+
+                    # for i in range(len(data)):
+                    #     if postdata['web_location'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_location'].strip().lower():
+                    #         print(data[i], "web zone")
+                    #         web_zone = data[i]['id']
+                    #         break
+                    try:
+                        web_zone = int(str(postdata['location_area']).strip())
+                    except:
+                        time_end = datetime.datetime.utcnow()
+                        time_usage = time_end - time_start
+                        return {
+                            "success": False,
+                            "websitename": "livinginsider",
+                            "usage_time": str(time_usage),
+                            "start_time": str(time_start),
+                            "end_time": str(time_end),
+                            "post_url": "",
+                            "post_id": "",
+                            "account_type": "null",
+                            "detail": 'Location not Found. Post not created!',
+                        }
+
+
                 prod_address = ""
                 for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'],
                             postdata['addr_district'], postdata['addr_province']]:
@@ -924,6 +908,9 @@ class livinginsider():
                     typep = 1
 
                 if success:
+
+
+
                     data = {
                         'currentstep': '1',
                         'web_id': post_id,
@@ -945,34 +932,37 @@ class livinginsider():
                         'web_longitude': postdata['geo_longitude'],
                         'state_renew': ''
                     }
-
-                    r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=data)
-                    data = r.text
-                    # print(r.url)
-                    # print(r.status_code)
-                    # print(data)
-                    # print('Getting 2nd page')
-
                     headers = {
                         'Connection': 'keep-alive',
-                        'Upgrade-Insecure-Requests': '1',
-                        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
-                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                        'Sec-Fetch-Site': 'same-origin',
+                        'Upgrade-Insecurets': '1',
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Mobile Safari/537.36',
                         'Sec-Fetch-Mode': 'navigate',
                         'Sec-Fetch-User': '?1',
-                        'Sec-Fetch-Dest': 'document',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                        'Sec-Fetch-Site': 'same-origin',
                         'Referer': 'https://www.livinginsider.com/living_edit.php?topic_id=' + post_id,
-                        'Accept-Language': 'en-IN,en-US;q=0.9,en;q=0.8',
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Length': '6373',
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     }
 
-                    r = httprequestObj.http_get('https://www.livinginsider.com/living_edit2.php',
-                                                params={'topic_id': post_id}, headers=headers)
-                    # print(r.url)
+                    r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=data, headers=headers)
+                    data = r.text
+                    print(r.url)
+                    print(r.status_code)
+                    print(data)
+                    print('Getting 2nd page')
+
+
+                    r = httprequestObj.http_get('https://www.livinginsider.com/living_edit2.php?topic_id='+str(post_id), headers=headers)
+
                     # print(r.status_code)
 
-                    soup = BeautifulSoup(r.content, self.parser)
-                    webFolder = soup.find('input', {'id': 'web_photo_folder'}).get('value')
+                    soup = BeautifulSoup(r.text, self.parser)
+                    # print(r.text)
+                    webFolder = soup.select_one('#web_photo_folder')['value']
                     delete_params = soup.find_all('a', 'delete_img')
 
                     # print('DELETING PHOTOS')

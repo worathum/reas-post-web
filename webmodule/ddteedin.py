@@ -326,60 +326,60 @@ class ddteedin():
                 options.set_headless(True)
                 options.add_argument('--no-sandbox')
 
-                browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-                wait = WebDriverWait(browser,10)
-                browser.implicitly_wait(100)
-
-                if post_id != '' and theurl != '':
-                    browser.get('https://www.ddteedin.com/login/')
-                    time.sleep(2)
-                    # global wait
-                    # email = wait.until(presence_of_element_located(By.NAME,'log_u'))
-
-                    email = browser.find_element_by_name('log_u')
-                    # email.clear()
-                    email.send_keys(postdata['user'])
-                    password = browser.find_element_by_name('log_p')
-                    # password.clear()
-                    password.send_keys(postdata['pass'])
-                    browser.find_element_by_name('login').click()
-                    browser.get('https://www.ddteedin.com/post/edit/'+post_id+'/')
-                    time.sleep(2)
-                    j = 0
-                    for i in postdata['post_images']:
-                        print(i)
-                        j += 1
-                        if j > 10:
-                            break
-                        # browser.set_window_size(1200, 900)
-                        # for p in range(10):
-                        #     browser.set_window_size(1200-p, 900)
-                        time.sleep(1)
-                        # wait = WebDriverWait(browser,10)
-                        # image = wait.until(presence_of_element_located(By.ID,'fileupload'))
-                        image = browser.find_element_by_id('fileupload')
-                        print(image.get_attribute('type'))
-                        print(str(os.getcwd())+"/"+str(i))
-                        image.send_keys(str(os.getcwd())+"/"+str(i))
-                    time.sleep(2)
-                    browser.find_element_by_name('btn_submit').click()
-    
-                    time.sleep(2)
-                    browser.get('https://www.ddteedin.com/logout/')
-
-
                 try:
-                    browser.close()
-                    browser.quit()
+                    browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+                    wait = WebDriverWait(browser,10)
+                    browser.implicitly_wait(100)
+
+                    if post_id != '' and theurl != '':
+                        browser.get('https://www.ddteedin.com/login/')
+                        time.sleep(2)
+                        # global wait
+                        # email = wait.until(presence_of_element_located(By.NAME,'log_u'))
+
+                        email = browser.find_element_by_name('log_u')
+                        # email.clear()
+                        email.send_keys(postdata['user'])
+                        password = browser.find_element_by_name('log_p')
+                        # password.clear()
+                        password.send_keys(postdata['pass'])
+                        browser.find_element_by_name('login').click()
+                        browser.get('https://www.ddteedin.com/post/edit/'+post_id+'/')
+                        time.sleep(2)
+                        j = 0
+                        for i in postdata['post_images']:
+                            print(i)
+                            j += 1
+                            if j > 10:
+                                break
+                            # browser.set_window_size(1200, 900)
+                            # for p in range(10):
+                            #     browser.set_window_size(1200-p, 900)
+                            time.sleep(1)
+                            # wait = WebDriverWait(browser,10)
+                            # image = wait.until(presence_of_element_located(By.ID,'fileupload'))
+                            image = browser.find_element_by_id('fileupload')
+                            print(image.get_attribute('type'))
+                            print(str(os.getcwd())+"/"+str(i))
+                            image.send_keys(str(os.getcwd())+"/"+str(i))
+                        time.sleep(2)
+                        browser.find_element_by_name('btn_submit').click()
+        
+                        time.sleep(2)
+                        browser.get('https://www.ddteedin.com/logout/')
+                finally:
                     try:
-                        alert = browser.switch_to.alert
-                        alert.accept()
                         browser.close()
                         browser.quit()
+                        try:
+                            alert = browser.switch_to.alert
+                            alert.accept()
+                            browser.close()
+                            browser.quit()
+                        except:
+                            pass
                     except:
                         pass
-                except:
-                    pass
 
                 # query_element = {
                 #     'q': postdata['post_title_th'],
@@ -591,56 +591,57 @@ class ddteedin():
                 options = Options()
                 options.set_headless(True)
                 options.add_argument('--no-sandbox')
-
-                browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-                # browser = webdriver.Chrome(
-                    # executable_path='/usr/bin/chromedriver',options=options)
-                wait = WebDriverWait(browser,10)
-                browser.implicitly_wait(100)
-
-
-                r = httprequestObj.http_post(
-                    query_string, data=datapost)
-                browser.get('https://www.ddteedin.com/login')
-                time.sleep(2)
-                email = browser.find_element_by_name('log_u')
-                # email.clear()
-                email.send_keys(postdata['user'])
-                password = browser.find_element_by_name('log_p')
-                password.clear()
-                password.send_keys(postdata['pass'])
-                browser.find_element_by_name('login').click()
-                browser.get('https://www.ddteedin.com/post/edit/'+postdata['post_id']+'/')
-                j = 0
-                for i in postdata['post_images']:
-                    print(i)
-                    j += 1
-                    if j > 10:
-                        break
-                    # browser.set_window_size(1200, 900)
-                    # for p in range(10):
-                    #     browser.set_window_size(1200-p, 900)
-                    time.sleep(1)
-                    image = browser.find_element_by_id('fileupload')
-                    print(image.get_attribute('type'))
-                    print(str(os.getcwd())+"/"+str(i))
-                    image.send_keys(str(os.getcwd())+"/"+str(i))
-                time.sleep(2)
-                browser.find_element_by_name('btn_submit').click()
-                browser.get('https://www.ddteedin.com/logout/')
-                query_string = 'https://www.ddteedin.com/'+postdata['post_id']
                 try:
-                    browser.close()
-                    browser.quit()
+                    browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+                    # browser = webdriver.Chrome(
+                        # executable_path='/usr/bin/chromedriver',options=options)
+                    wait = WebDriverWait(browser,10)
+                    browser.implicitly_wait(100)
+
+
+                    r = httprequestObj.http_post(
+                        query_string, data=datapost)
+                    browser.get('https://www.ddteedin.com/login')
+                    time.sleep(2)
+                    email = browser.find_element_by_name('log_u')
+                    # email.clear()
+                    email.send_keys(postdata['user'])
+                    password = browser.find_element_by_name('log_p')
+                    password.clear()
+                    password.send_keys(postdata['pass'])
+                    browser.find_element_by_name('login').click()
+                    browser.get('https://www.ddteedin.com/post/edit/'+postdata['post_id']+'/')
+                    j = 0
+                    for i in postdata['post_images']:
+                        print(i)
+                        j += 1
+                        if j > 10:
+                            break
+                        # browser.set_window_size(1200, 900)
+                        # for p in range(10):
+                        #     browser.set_window_size(1200-p, 900)
+                        time.sleep(1)
+                        image = browser.find_element_by_id('fileupload')
+                        print(image.get_attribute('type'))
+                        print(str(os.getcwd())+"/"+str(i))
+                        image.send_keys(str(os.getcwd())+"/"+str(i))
+                    time.sleep(2)
+                    browser.find_element_by_name('btn_submit').click()
+                    browser.get('https://www.ddteedin.com/logout/')
+                    query_string = 'https://www.ddteedin.com/'+postdata['post_id']
+                finally:
                     try:
-                        alert = browser.switch_to.alert
-                        alert.accept()
                         browser.close()
                         browser.quit()
+                        try:
+                            alert = browser.switch_to.alert
+                            alert.accept()
+                            browser.close()
+                            browser.quit()
+                        except:
+                            pass
                     except:
                         pass
-                except:
-                    pass
 
             # print(r.text)
         else:
