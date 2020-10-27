@@ -637,16 +637,10 @@ class ddproperty():
                 if success == 'true':
                     success, detail, post_id, account_type = self.inputpostdetail(datahandled)
                     print(success, detail, post_id, account_type)
-            try:
-                self.firefox.close()
-                self.firefox.quit()
-            except:
-                pass
-
         finally:
             self.firefox.close()
             self.firefox.quit()
-            
+
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -1142,7 +1136,8 @@ class ddproperty():
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
-            wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div[1]/div/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
+            wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f'//*[@class="c-upload-file-grid"]/li[{len(datahandled['post_images'])}]/div/div[2]/a')))
+            #wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div[1]/div/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
 
             """ for img in datahandled['post_images']:
                 time.sleep(1)
