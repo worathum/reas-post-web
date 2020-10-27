@@ -190,7 +190,7 @@ class livinginsider():
 
 
             web_zone = ''
-            idzone = ''
+            idzone = '0'
 
             if str(postdata['property_type']) == '1':
                 term = postdata['web_project_name'].replace(' ', '+')
@@ -230,21 +230,23 @@ class livinginsider():
                 web_zone = option.get('value')
 
             else:
-                term = postdata['web_location'].replace(' ', '+')
-                r = httprequestObj.http_get(
-                    'https://www.livinginsider.com/a_zone_list.php?term=' + term + '&_type=query&q=' + term)
+                # term = postdata['web_location'].replace(' ', '+')
+                # r = httprequestObj.http_get(
+                #     'https://www.livinginsider.com/a_zone_list.php?term=' + term + '&_type=query&q=' + term)
                             
-                data = r.json()
+                # data = r.json()
 
-                web_zone = None
+                # web_zone = None
 
-                for i in range(len(data)):
-                    if postdata['web_location'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_location'].strip().lower():
-                        print(data[i])
-                        web_zone = data[i]['id']
-                        break
-
-                if web_zone is None:
+                # for i in range(len(data)):
+                #     if postdata['web_location'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_location'].strip().lower():
+                #         print(data[i])
+                #         web_zone = data[i]['id']
+                #         break
+                
+                try:
+                    web_zone = int(str(postdata['location_area']).strip())
+                except:
                     time_end = datetime.datetime.utcnow()
                     time_usage = time_end - time_start
                     return {
@@ -862,21 +864,22 @@ class livinginsider():
                     web_zone = option.get('value')
 
                 else:
-                    term = postdata['web_location'].replace(' ', '+')
-                    r = httprequestObj.http_get(
-                        'https://www.livinginsider.com/a_zone_list.php?term=' + term + '&_type=query&q=' + term)
+                    # term = postdata['web_location'].replace(' ', '+')
+                    # r = httprequestObj.http_get(
+                    #     'https://www.livinginsider.com/a_zone_list.php?term=' + term + '&_type=query&q=' + term)
                                 
-                    data = r.json()
+                    # data = r.json()
 
-                    web_zone = None
+                    # web_zone = None
 
-                    for i in range(len(data)):
-                        if postdata['web_location'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_location'].strip().lower():
-                            print(data[i], "web zone")
-                            web_zone = data[i]['id']
-                            break
-
-                    if web_zone is None:
+                    # for i in range(len(data)):
+                    #     if postdata['web_location'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_location'].strip().lower():
+                    #         print(data[i], "web zone")
+                    #         web_zone = data[i]['id']
+                    #         break
+                    try:
+                        web_zone = int(str(postdata['location_area']).strip())
+                    except:
                         time_end = datetime.datetime.utcnow()
                         time_usage = time_end - time_start
                         return {
@@ -888,8 +891,9 @@ class livinginsider():
                             "post_url": "",
                             "post_id": "",
                             "account_type": "null",
-                            "detail": 'Location not Found. Post not edited!',
+                            "detail": 'Location not Found. Post not created!',
                         }
+
 
                 prod_address = ""
                 for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'],
