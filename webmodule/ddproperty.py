@@ -205,7 +205,7 @@ class ddproperty():
 
         options = Options()
         # debug by comment option --headless
-        #options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -1136,7 +1136,10 @@ class ddproperty():
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
-            wait_upload = WebDriverWait(self.firefox, 90).until(EC.presence_of_element_located((By.XPATH, f"//*[@id='step_media_photo']/div[1]/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
+            try:                  
+                wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"//*[@id='step_media_photo']/div[1]/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
+            except:
+                pass
             #wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div[1]/div/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
 
             """ for img in datahandled['post_images']:
@@ -2064,74 +2067,110 @@ class ddproperty():
         post_url = ''
         post_id = ''
 
-        try:
-            if (success == "true"):
+        """ if (success == "true"):
 
 
-                valid_ids = []
-                valid_titles = []
-                valid_urls = []
-                flag = True
-                page = 1
-                while flag == True:
+            valid_ids = []
+            valid_titles = []
+            valid_urls = []
+            flag = True
+            page = 1
+            while flag == True:
 
-                    url = 'https://agentnet.ddproperty.com/listing_management_data'
-                    data = {
-                        'statusCode': 'ACT',
-                        'params[listingSubTypeCode]': 'ALL',
-                        'params[tierType]': 'ALL',
-                        'params[propertyId]': '0',
-                        'params[propertyType]': 'ALL',
-                        'params[listType]': 'ALL',
-                        'params[page]': str(page),
-                        'params[featStatusCode]': 'CUR',
-                        'params[limit]': '20',
-                        'params[listingId]':'',
-                        'sort[column]': 'end_date',
-                        'sort[direction]': 'DESC'
-                    }
-                    page += 1
-                    headers = {
-                        'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-                    }
-                    req = httprequestObj.http_get(url,data=data,headers=headers)
+                url = 'https://agentnet.ddproperty.com/listing_management_data'
+                data = {
+                    'statusCode': 'ACT',
+                    'params[listingSubTypeCode]': 'ALL',
+                    'params[tierType]': 'ALL',
+                    'params[propertyId]': '0',
+                    'params[propertyType]': 'ALL',
+                    'params[listType]': 'ALL',
+                    'params[page]': str(page),
+                    'params[featStatusCode]': 'CUR',
+                    'params[limit]': '20',
+                    'params[listingId]':'',
+                    'sort[column]': 'end_date',
+                    'sort[direction]': 'DESC'
+                }
+                page += 1
+                headers = {
+                    'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+                }
+                req = httprequestObj.http_get(url,data=data,headers=headers)
 
-                    soup = BeautifulSoup(req.text,'html.parser')
-                    print(soup.prettify())
-                    check = soup.find('div',{'id':'list-container'})
-                    print(check)
-                    if check is not None:
-                        #print('here2')
-                        posts = soup.find_all('div',{'class':'listing-item'})
+                soup = BeautifulSoup(req.text,'html.parser')
+                print(soup.prettify())
+                check = soup.find('div',{'id':'list-container'})
+                print(check)
+                if check is not None:
+                    #print('here2')
+                    posts = soup.find_all('div',{'class':'listing-item'})
 
-                        for post in posts:
-                            valid_ids.append(post['data-listing-id'])
-                            valid_titles.append(post['data-listing-title'])
-                            url = post.find('a')
-                            valid_urls.append(url['href'])
-                        #print(valid_ids)
-                    else:
-                        flag = False
+                    for post in posts:
+                        valid_ids.append(post['data-listing-id'])
+                        valid_titles.append(post['data-listing-title'])
+                        url = post.find('a')
+                        valid_urls.append(url['href'])
+                    #print(valid_ids)
+                else:
+                    flag = False
 
 
 
-                if datahandled['post_title_th'] in valid_titles:
-                    post_found = 'true'
-                    for i in range(len(valid_titles)):
-                        if valid_titles[i] == datahandled['post_title_th']:
-                            post_url = valid_urls[i]
-                            post_id = valid_ids[i]
-
-        finally:
-            self.firefox.close()
-            self.firefox.quit()
+            if datahandled['post_title_th'] in valid_titles:
+                post_found = 'true'
+                for i in range(len(valid_titles)):
+                    if valid_titles[i] == datahandled['post_title_th']:
+                        post_url = valid_urls[i]
+                        post_id = valid_ids[i] """
+        if success == 'true':
+            try:
+                self.firefox.get('https://agentnet.ddproperty.com/listing_management#ACT')
+                search_bar = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, 'listingId')))
+                search_bar.send_keys(datahandled['post_title_th'])
+                search_bar.send_keys(Keys.ENTER)
+                time.sleep(8)
+                all_title = WebDriverWait(self.firefox, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'listing-title-name')))
+                if len(all_title) >= 1:
+                    for title in all_title:
+                        title_name = title.find_element_by_class_name('wrap-title')
+                        if datahandled['post_title_th'].replace(' ', '').lower() == title_name.text.replace(' ', '').lower():
+                            link_post = title.find_element_by_tag_name('a')
+                            post_url = link_post.get_attribute('href')
+                            post_id = link_post.get_attribute('href').split('/')[-1]
+                            success = 'true'
+                            detail = 'Your post has already been created.'
+                            post_found = 'true'
+                            break
+                        else:
+                            post_url = 'null'
+                            post_id = 'null'
+                            success = 'true'
+                            detail = "Your post hasn't been create yet."
+                            post_found = 'false'
+                            continue
+                else:
+                    post_url = 'null'
+                    post_id = 'null'
+                    success = 'true'
+                    detail = "Your post hasn't been create yet."
+                    post_found = 'false'
+            except:
+                success = 'false'
+                detail = 'Can not search'
+                post_url = 'null'
+                post_id = 'null'
+                post_found = 'false'
+            finally:
+                self.firefox.close()
+                self.firefox.quit()
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         # print(f"{valid_ids}\n\n{valid_urls}\n\n{valid_titles}")
         res = {
             'success':success,
-            'post_id':postdata['post_id'],
+            'post_id':post_id,
             'log_id':postdata['log_id'],
             'ds_id':postdata['ds_id'],
             'websitename': 'ddproperty',
