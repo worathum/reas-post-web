@@ -205,7 +205,7 @@ class ddproperty():
 
         options = Options()
         # debug by comment option --headless
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -637,7 +637,7 @@ class ddproperty():
                 if success == 'true':
                     success, detail, post_id, account_type = self.inputpostdetail(datahandled)
                     print(success, detail, post_id, account_type)
-        finally:
+        except:
             self.firefox.close()
             self.firefox.quit()
 
@@ -922,7 +922,7 @@ class ddproperty():
 
             # price
             try:
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
+                WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, "input-listing-price"))).send_keys(datahandled['price_baht'])
             except WebDriverException as e:
                 #log.warning('cannot input price '+str(e))
                 pass
@@ -1136,7 +1136,7 @@ class ddproperty():
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
-            wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f'//*[@class="c-upload-file-grid"]/li[{len(datahandled['post_images'])}]/div/div[2]/a')))
+            wait_upload = WebDriverWait(self.firefox, 90).until(EC.presence_of_element_located((By.XPATH, f"//*[@id='step_media_photo']/div[1]/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
             #wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div[1]/div/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
 
             """ for img in datahandled['post_images']:
