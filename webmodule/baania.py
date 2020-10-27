@@ -318,6 +318,7 @@ class baania():
             }
         }
         headers = {
+            "content-type": "application/json;charset=UTF-8",
             "origin": "https://www.baania.com",
             "referer": "https://www.baania.com/",
             "sec-fetch-dest": "empty",
