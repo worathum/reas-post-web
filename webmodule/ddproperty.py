@@ -281,14 +281,9 @@ class ddproperty():
                 agent_id = re.search(r'{"user":{"id":(\d+),', self.firefox.page_source).group(1)
 
         #log.debug("login status %s agent id %s", success, agent_id)
-
         if (postdata['action'] == 'test_login'):
-            # self.firefox.quit()
             self.firefox.close()
             self.firefox.quit()
-
-        #
-        # end process
 
         return {"success": success, "detail": detail, "agent_id": agent_id}
 
@@ -1083,6 +1078,14 @@ class ddproperty():
             
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(2)
+
+            check_price = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, 'input-listing-price')))
+            if check_price.get_attribute('value').replace(',', '') == datahandled['price_baht']:
+                check_price.send_keys(Keys.CONTROL + 'a')
+                check_price.send_keys(datahandled['price_baht'])
+            else:
+                pass
+            
             # next
             try:
                 next_button = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name('step-next'))
@@ -1508,23 +1511,25 @@ class ddproperty():
         detail = test_login["detail"]
         agent_id = test_login["agent_id"]
         if success == "true":
-            datapost = {
-                "listing_id[]": datahandled['post_id'],
-                "statusCode": "ACT",
-                "expectedCredits[]": 0,
-            }
-            r = httprequestObj.http_post('https://agentnet.ddproperty.com/repost_listing', datapost)
-            data = r.text
-            datajson = r.json()
-            #f = open("debug_response/ddboostpostresponse.html", "wb")
-            #f.write(data.encode('utf-8').strip())
-            if datajson['status'] != 0:
-                success = 'false'
-                detail = datajson['message']
-
+            try:
+                datapost = {
+                    "listing_id[]": datahandled['post_id'],
+                    "statusCode": "ACT",
+                    "expectedCredits[]": 0,
+                }
+                r = httprequestObj.http_post('https://agentnet.ddproperty.com/repost_listing', datapost)
+                data = r.text
+                datajson = r.json()
+                #f = open("debug_response/ddboostpostresponse.html", "wb")
+                #f.write(data.encode('utf-8').strip())
+                if datajson['status'] != 0:
+                    success = 'false'
+                    detail = datajson['message']
+            finally:
+                self.firefox.close()
+                self.firefox.quit()
             #
             # end process
-
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "post_id": datahandled['post_id'], "websitename": self.websitename}
@@ -1550,36 +1555,39 @@ class ddproperty():
         detail = test_login["detail"]
 
         if success == "true":
-            # จะต้องไปหน้า listing_management เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป delete ได้
-            r = httprequestObj.http_get('https://agentnet.ddproperty.com/listing_management#DRAFT', verify=False)
-            data = r.text
-            # f = open("debug_response/ddpostlistdraft.html", "wb")
-            # f.write(data.encode('utf-8').strip())
+            try:
+                # จะต้องไปหน้า listing_management เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป delete ได้
+                r = httprequestObj.http_get('https://agentnet.ddproperty.com/listing_management#DRAFT', verify=False)
+                data = r.text
+                # f = open("debug_response/ddpostlistdraft.html", "wb")
+                # f.write(data.encode('utf-8').strip())
 
-            # listing_id%5B%5D=7788093&remove=Delete%20selected&selecteds=7788093
-            datapost = {
-                "listing_id[]": post_id,
-                "remove": "Delete selected",
-                "selecteds": post_id,
-            }
-            r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing', data=datapost)
-            data = r.text
-            # f = open("debug_response/dddelete.html", "wb")
-            # f.write(data.encode('utf-8').strip())
-            detail = 'Post deleted successfully'
-            matchObj = re.search(r'message":"deleted', data)
-            if matchObj:
-                # ใกล้ความจริง แต่จะ delete สำเร็จหรือไม่มันก็ return deleted หมด ดังนั้นต้องเช็คจาก post id อีกทีว่า response 404 ป่าว
-                r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail/' + post_id, verify=False)
+                # listing_id%5B%5D=7788093&remove=Delete%20selected&selecteds=7788093
+                datapost = {
+                    "listing_id[]": post_id,
+                    "remove": "Delete selected",
+                    "selecteds": post_id,
+                }
+                r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing', data=datapost)
                 data = r.text
                 # f = open("debug_response/dddelete.html", "wb")
                 # f.write(data.encode('utf-8').strip())
-                if (r.status_code == 200):
-                    success = "false"
-                    detail = r.text
-
-        #
-        # end process
+                detail = 'Post deleted successfully'
+                matchObj = re.search(r'message":"deleted', data)
+                if matchObj:
+                    # ใกล้ความจริง แต่จะ delete สำเร็จหรือไม่มันก็ return deleted หมด ดังนั้นต้องเช็คจาก post id อีกทีว่า response 404 ป่าว
+                    r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail/' + post_id, verify=False)
+                    data = r.text
+                    # f = open("debug_response/dddelete.html", "wb")
+                    # f.write(data.encode('utf-8').strip())
+                    if (r.status_code == 200):
+                        success = "false"
+                        detail = r.text
+            finally:
+                self.firefox.close()
+                self.firefox.quit()
+            #
+            # end process
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
