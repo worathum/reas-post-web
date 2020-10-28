@@ -351,69 +351,60 @@ class prakardproperty():
                 post_url = 'http://www.prakardproperty.com/property/show/'+post_id
             if(success == "True" ):
                 #"Image time")
-
                 driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-                
                 try:
-                    driver.get('http://www.prakardproperty.com/')
-                    email = webdata["user"]
-                    password = webdata["pass"]
-                    newbut = driver.find_element_by_class_name('prakard-link')
-                    newbut.click()
+                    
                     try:
-                        user = driver.find_element_by_id('login_email')
-                        passs = driver.find_element_by_id('login_password')
-                        user.send_keys(email)
-                        passs.send_keys(password)
-                        login = driver.find_element_by_class_name('login-button')
-                        login.click()
+                        driver.get('http://www.prakardproperty.com/')
+                        email = webdata["user"]
+                        password = webdata["pass"]
+                        newbut = driver.find_element_by_class_name('prakard-link')
+                        newbut.click()
+                        try:
+                            user = driver.find_element_by_id('login_email')
+                            passs = driver.find_element_by_id('login_password')
+                            user.send_keys(email)
+                            passs.send_keys(password)
+                            login = driver.find_element_by_class_name('login-button')
+                            login.click()
+                        except:
+                            print("Login Error?: "+str(e))
+
+                            pass
+                        driver.get('http://www.prakardproperty.com/properties/edit/'+post_id)
+                        for i in range(len(webdata['post_images'])) :
+                            fileupload = driver.find_element_by_id('file_upload')
+                            filepath = os.getcwd() + "/"+ webdata['post_images'][i]
+                            #filepath)
+                            fileupload.send_keys(filepath)
+                            while(True):
+                                try:
+                                    elements = driver.find_elements_by_class_name('item')
+                                    if(len(elements) == i+1):
+                                        break
+                                except NoSuchElementException:
+                                    continue
+                            time.sleep(1)
+                        #"uploaded images")
+                        submit = driver.find_element_by_class_name('prakard-button')
+                        submit.click()
+                        detail += " \n Images uploaded successfully"
+                    except Exception as e:
+                        print(e)
+                        detail += " \n Images not uploaded successfully"
+                finally:
+                    try:
+                        driver.close()
+                        driver.quit()
                     except:
-                        print("Login Error?: "+str(e))
+                        try:
+                            alert = driver.switch_to.alert
+                            alert.accept()
+                            driver.close()
+                            driver.quit()
+                        except:
+                            pass
 
-                        pass
-                    driver.get('http://www.prakardproperty.com/properties/edit/'+post_id)
-                    for i in range(len(webdata['post_images'])) :
-                        fileupload = driver.find_element_by_id('file_upload')
-                        filepath = os.getcwd() + "/"+ webdata['post_images'][i]
-                        #filepath)
-                        fileupload.send_keys(filepath)
-                        while(True):
-                            try:
-                                elements = driver.find_elements_by_class_name('item')
-                                if(len(elements) == i+1):
-                                    break
-                            except NoSuchElementException:
-                                continue
-                        time.sleep(1)
-                    #"uploaded images")
-                    submit = driver.find_element_by_class_name('prakard-button')
-                    submit.click()
-                    detail += " \n Images uploaded successfully"
-                except Exception as e:
-                    print(e)
-                    detail += " \n Images not uploaded successfully"
-            #
-        #
-        #
-        try:
-            driver.close()
-            driver.quit()
-            try:
-                alert = driver.switch_to.alert
-                alert.accept()
-                driver.close()
-                driver.quit()
-            except:
-                pass
-
-        except:
-            pass
-
-        try:
-            driver.close()
-            driver.quit()
-        except:
-            pass
         time_end = datetime.datetime.utcnow()
         # #{
         #     "websitename": "prakardproperty",
@@ -875,7 +866,6 @@ class prakardproperty():
                     detail = "post found successfully"
 
             if not exists:
-                success = "false"
                 detail = "No post found with given title."
 
         time_end = datetime.datetime.utcnow()

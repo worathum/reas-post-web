@@ -18,7 +18,7 @@ from selenium.webdriver.common.by import By
 
 httprequestObj = lib_httprequest()
 
-with open("./static/hipflat_province.json", encoding='utf-8') as f:
+with open("./static/hipflat_province.json") as f:
     provincedata = json.load(f)
 
 class hipflat():
@@ -50,48 +50,50 @@ class hipflat():
         options.set_headless(True)
         options.add_argument('--no-sandbox')
         
-        browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-        browser.implicitly_wait(10)
 
-        browser.get('https://www.hipflat.co.th/login')
-        time.sleep(1)
-        email = browser.find_element_by_id('user_email')
-        email.send_keys(postdata['user'])
-        password = browser.find_element_by_id('user_password')
-        password.send_keys(postdata['pass'])
-        browser.find_element_by_name('commit').click()
-        browser.get('https://www.hipflat.co.th/listings/'+post_id+'/edit')
-
-
-        allimages = postdata['post_images']
-
-        dropzone = browser.find_element_by_id("dropzone-upload-link")
-
-        files = [os.getcwd() + "/" + img for img in allimages]
-
-        isLocal = not browser._is_remote or '127.0.0.1' in browser.command_executor._url
-
-        JS_DROP_FILES = "var c=arguments,b=c[0],k=c[1];c=c[2];for(var d=b.ownerDocument||document,l=0;;){var e=b.getBoundingClientRect(),g=e.left+(k||e.width/2),h=e.top+(c||e.height/2),f=d.elementFromPoint(g,h);if(f&&b.contains(f))break;if(1<++l)throw b=Error('Element not interactable'),b.code=15,b;b.scrollIntoView({behavior:'instant',block:'center',inline:'center'})}var a=d.createElement('INPUT');a.setAttribute('type','file');a.setAttribute('multiple','');a.setAttribute('style','position:fixed;z-index:2147483647;left:0;top:0;');a.onchange=function(b){a.parentElement.removeChild(a);b.stopPropagation();var c={constructor:DataTransfer,effectAllowed:'all',dropEffect:'none',types:['Files'],files:a.files,setData:function(){},getData:function(){},clearData:function(){},setDragImage:function(){}};window.DataTransferItemList&&(c.items=Object.setPrototypeOf(Array.prototype.map.call(a.files,function(a){return{constructor:DataTransferItem,kind:'file',type:a.type,getAsFile:function(){return a},getAsString:function(b){var c=new FileReader;c.onload=function(a){b(a.target.result)};c.readAsText(a)}}}),{constructor:DataTransferItemList,add:function(){},clear:function(){},remove:function(){}}));['dragenter','dragover','drop'].forEach(function(a){var b=d.createEvent('DragEvent');b.initMouseEvent(a,!0,!0,d.defaultView,0,0,0,g,h,!1,!1,!1,!1,0,null);Object.setPrototypeOf(b,null);b.dataTransfer=c;Object.setPrototypeOf(b,DragEvent.prototype);f.dispatchEvent(b)})};d.documentElement.appendChild(a);a.getBoundingClientRect();return a;"
-
-        elm_input = browser.execute_script(JS_DROP_FILES, dropzone, 0, 0)
-        value = '\n'.join(files)
-        elm_input._execute('sendKeysToElement', {'value': [value], 'text': value})
-        
-
-        time.sleep(10)
-
-        browser.find_element_by_name('commit').click()
-        browser.get('https://www.hipflat.co.th/logout')
-
-        browser.close()
-        browser.quit()
         try:
-            alert = browser.switch_to.alert
-            alert.accept()
+            browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+            browser.implicitly_wait(10)
+
+            browser.get('https://www.hipflat.co.th/login')
+            time.sleep(1)
+            email = browser.find_element_by_id('user_email')
+            email.send_keys(postdata['user'])
+            password = browser.find_element_by_id('user_password')
+            password.send_keys(postdata['pass'])
+            browser.find_element_by_name('commit').click()
+            browser.get('https://www.hipflat.co.th/listings/'+post_id+'/edit')
+
+
+            allimages = postdata['post_images']
+
+            dropzone = browser.find_element_by_id("dropzone-upload-link")
+
+            files = [os.getcwd() + "/" + img for img in allimages]
+
+            isLocal = not browser._is_remote or '127.0.0.1' in browser.command_executor._url
+
+            JS_DROP_FILES = "var c=arguments,b=c[0],k=c[1];c=c[2];for(var d=b.ownerDocument||document,l=0;;){var e=b.getBoundingClientRect(),g=e.left+(k||e.width/2),h=e.top+(c||e.height/2),f=d.elementFromPoint(g,h);if(f&&b.contains(f))break;if(1<++l)throw b=Error('Element not interactable'),b.code=15,b;b.scrollIntoView({behavior:'instant',block:'center',inline:'center'})}var a=d.createElement('INPUT');a.setAttribute('type','file');a.setAttribute('multiple','');a.setAttribute('style','position:fixed;z-index:2147483647;left:0;top:0;');a.onchange=function(b){a.parentElement.removeChild(a);b.stopPropagation();var c={constructor:DataTransfer,effectAllowed:'all',dropEffect:'none',types:['Files'],files:a.files,setData:function(){},getData:function(){},clearData:function(){},setDragImage:function(){}};window.DataTransferItemList&&(c.items=Object.setPrototypeOf(Array.prototype.map.call(a.files,function(a){return{constructor:DataTransferItem,kind:'file',type:a.type,getAsFile:function(){return a},getAsString:function(b){var c=new FileReader;c.onload=function(a){b(a.target.result)};c.readAsText(a)}}}),{constructor:DataTransferItemList,add:function(){},clear:function(){},remove:function(){}}));['dragenter','dragover','drop'].forEach(function(a){var b=d.createEvent('DragEvent');b.initMouseEvent(a,!0,!0,d.defaultView,0,0,0,g,h,!1,!1,!1,!1,0,null);Object.setPrototypeOf(b,null);b.dataTransfer=c;Object.setPrototypeOf(b,DragEvent.prototype);f.dispatchEvent(b)})};d.documentElement.appendChild(a);a.getBoundingClientRect();return a;"
+
+            elm_input = browser.execute_script(JS_DROP_FILES, dropzone, 0, 0)
+            value = '\n'.join(files)
+            elm_input._execute('sendKeysToElement', {'value': [value], 'text': value})
+            
+
+            time.sleep(10)
+
+            browser.find_element_by_name('commit').click()
+            browser.get('https://www.hipflat.co.th/logout')
+        finally:
             browser.close()
             browser.quit()
-        except:
-            pass
+            try:
+                alert = browser.switch_to.alert
+                alert.accept()
+                browser.close()
+                browser.quit()
+            except:
+                pass
 
 
 

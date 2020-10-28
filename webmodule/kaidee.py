@@ -542,21 +542,21 @@ class kaidee():
             privateToken = test_login["privateToken"] 
             post_found = "false"
             detail = "No post found with given title"
-            chrome = webdriver.Chrome("./static/chromedriver", chrome_options=self.options)
+            try:
+                chrome = webdriver.Chrome("./static/chromedriver", chrome_options=self.options)
 
-            delay = 10
+                delay = 10
 
-            if self.selenium_login(chrome, postdata['user'], postdata['pass']):
-                post_title_th = str(postdata['post_title_th'])
+                if self.selenium_login(chrome, postdata['user'], postdata['pass']):
+                    post_title_th = str(postdata['post_title_th'])
 
-                chrome.get(self.site_name+'/member/listing/')
-                main_element = WebDriverWait(chrome, delay).until(EC.presence_of_element_located((By.ID, 'main')))
-                search_in = WebDriverWait(main_element, delay).until(EC.presence_of_element_located((By.NAME, 'q')))
-                search_in.send_keys(post_title_th)
-                time.sleep(5)
-                page_source = chrome.page_source
-                chrome.close()
-                chrome.quit()
+                    chrome.get(self.site_name+'/member/listing/')
+                    main_element = WebDriverWait(chrome, delay).until(EC.presence_of_element_located((By.ID, 'main')))
+                    search_in = WebDriverWait(main_element, delay).until(EC.presence_of_element_located((By.NAME, 'q')))
+                    search_in.send_keys(post_title_th)
+                    time.sleep(5)
+                    page_source = chrome.page_source
+            finally:
                 try:
                     alert = chrome.switch_to.alert
                     alert.accept()
