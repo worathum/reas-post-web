@@ -215,11 +215,10 @@ class ddproperty():
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
+        # self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
         self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-        # self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
         # open login page
         # self.firefox = webdriver.Chrome("C:/Users/hp/Downloads/chromedriver_win32/chromedriver", chrome_options=options)
-
         self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
 
         # input email and enter
@@ -851,7 +850,7 @@ class ddproperty():
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
             #self.firefox.save_screenshot("debug_response/newp33.png")
-            nextbttn = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
+            nextbttn = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
             self.firefox.execute_script("arguments[0].click();", nextbttn)
 
         return success, detail
@@ -2075,103 +2074,36 @@ class ddproperty():
         post_url = ''
         post_id = ''
 
-        """ if (success == "true"):
+        if (success == "true"):
 
+            driver = self.firefox
+            driver.get('https://agentnet.ddproperty.com/listing_management')
+            max_page = int(driver.find_element_by_xpath('//*[@id="lastPageListItem"]/a').get_attribute('data-page'))
 
-            valid_ids = []
-            valid_titles = []
-            valid_urls = []
             flag = True
             page = 1
-            while flag == True:
-
-                url = 'https://agentnet.ddproperty.com/listing_management_data'
-                data = {
-                    'statusCode': 'ACT',
-                    'params[listingSubTypeCode]': 'ALL',
-                    'params[tierType]': 'ALL',
-                    'params[propertyId]': '0',
-                    'params[propertyType]': 'ALL',
-                    'params[listType]': 'ALL',
-                    'params[page]': str(page),
-                    'params[featStatusCode]': 'CUR',
-                    'params[limit]': '20',
-                    'params[listingId]':'',
-                    'sort[column]': 'end_date',
-                    'sort[direction]': 'DESC'
-                }
+            while page <= max_page and flag:
                 page += 1
-                headers = {
-                    'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-                }
-                req = httprequestObj.http_get(url,data=data,headers=headers)
 
-                soup = BeautifulSoup(req.text,'html.parser')
-                print(soup.prettify())
-                check = soup.find('div',{'id':'list-container'})
-                print(check)
-                if check is not None:
-                    #print('here2')
-                    posts = soup.find_all('div',{'class':'listing-item'})
+                posts = driver.find_elements_by_class_name('listing-item')
+                for post in posts:
+                    title = post.get_attribute('data-listing-title')
+                    # print(title, '\n',datahandled['post_title_th'].strip(), '\n\t\t##############\n\n\n')
+                    if title in datahandled['post_title_th']:
+                        post_id = post.get_attribute('data-listing-id')
+                        post_url = 'https://www.ddproperty.com/property/' + str(post_id)
+                        post_found = 'true'
+                        print(post_url)
+                        detail = 'Post found successfully'
+                        flag = False
+                        break
+                if flag:
+                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                    time.sleep(1)
+                    driver.find_element_by_xpath('//*[@id="rightPageListItem"]/a').click()
+                    time.sleep(5)
 
-                    for post in posts:
-                        valid_ids.append(post['data-listing-id'])
-                        valid_titles.append(post['data-listing-title'])
-                        url = post.find('a')
-                        valid_urls.append(url['href'])
-                    #print(valid_ids)
-                else:
-                    flag = False
-
-
-
-            if datahandled['post_title_th'] in valid_titles:
-                post_found = 'true'
-                for i in range(len(valid_titles)):
-                    if valid_titles[i] == datahandled['post_title_th']:
-                        post_url = valid_urls[i]
-                        post_id = valid_ids[i] """
-        if success == 'true':
-            try:
-                self.firefox.get('https://agentnet.ddproperty.com/listing_management#ACT')
-                search_bar = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, 'listingId')))
-                search_bar.send_keys(datahandled['post_title_th'])
-                search_bar.send_keys(Keys.ENTER)
-                time.sleep(8)
-                all_title = WebDriverWait(self.firefox, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'listing-title-name')))
-                if len(all_title) >= 1:
-                    for title in all_title:
-                        title_name = title.find_element_by_class_name('wrap-title')
-                        if datahandled['post_title_th'].replace(' ', '').lower() == title_name.text.replace(' ', '').lower():
-                            link_post = title.find_element_by_tag_name('a')
-                            post_url = link_post.get_attribute('href')
-                            post_id = link_post.get_attribute('href').split('/')[-1]
-                            success = 'true'
-                            detail = 'Your post has already been created.'
-                            post_found = 'true'
-                            break
-                        else:
-                            post_url = 'null'
-                            post_id = 'null'
-                            success = 'true'
-                            detail = "Your post hasn't been create yet."
-                            post_found = 'false'
-                            continue
-                else:
-                    post_url = 'null'
-                    post_id = 'null'
-                    success = 'true'
-                    detail = "Your post hasn't been create yet."
-                    post_found = 'false'
-            except:
-                success = 'false'
-                detail = 'Can not search'
-                post_url = 'null'
-                post_id = 'null'
-                post_found = 'false'
-            finally:
-                self.firefox.close()
-                self.firefox.quit()
+            driver.quit()
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
