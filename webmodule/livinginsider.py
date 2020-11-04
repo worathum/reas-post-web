@@ -829,7 +829,7 @@ class livinginsider():
                     if opt.has_attr('selected'):
                         detail_list.append(opt.get('value'))
 
-                theprodid = detail_list[0]
+                theprodid = int(detail_list[0])
                 idzone = detail_list[1]
                 web_zone = detail_list[2]
 

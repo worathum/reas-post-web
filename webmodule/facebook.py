@@ -9,6 +9,7 @@ from datetime import datetime
 from time import sleep
 import os
 import json
+from bs4 import BeautifulSoup
 
 class facebook():
 
@@ -22,7 +23,7 @@ class facebook():
         options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('--start-maximized')
-        options.add_argument('disable-infobars')
+        options.add_argument('--disable-infobars')
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-gpu")
         options.add_argument("--window-size=1024,768")
@@ -231,7 +232,7 @@ class facebook():
                 pic_post.send_keys(all_images)
 
                 owner_name = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, element['owner_name'])))                                                                                
-                ActionChains(self.driver).move_to_element(owner_name).click().send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).perform()
+                ActionChains(self.driver).move_to_element(owner_name).click().send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).perform()
 
                 title = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['title'])))
                 title.send_keys(datahandled['post_title_th'])
@@ -240,14 +241,18 @@ class facebook():
                 price.send_keys(datahandled['price_baht'])
 
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['type_btn']))).click()
+                sleep(1)
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['sel_type']))).click()
+
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[1]/div/div[3]/div[1]/div[2]/div/div/div[6]/div/div/div/label'))).click()
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[2]/div/div/div[1]/div[1]/div/div/div/div/div[1]/div/div[1]'))).click()
 
                 detail = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['detail']))).send_keys(datahandled['post_description_th'])
 
                 location = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['location'])))
                 location.send_keys(Keys.CONTROL + 'a')
                 if datahandled['addr_province'] == 'ทั่วไทย':
-                    location.send_keys(postdata['addr_province'])
+                    location.send_keys('กรุงเทพมหานคร')
                 else:
                     location.send_keys('กรุงเทพมหานคร')
                 sleep(1)
@@ -255,25 +260,34 @@ class facebook():
 
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['next']))).click()
 
-                for i in range(1, 20):
-                    try:
-                        check_other = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[1]/div/div[3]/div[1]/div[2]/div/div/div[4]/div[3]/div[{i}]/div/div[1]/div[2]/div[1]/div/div/div[1]/span/span/span'))).text
-                    except:
-                        check_other = ''
-                        pass
-                    if check_other in list_group.keys():
-                        ch_group = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[1]/div/div[3]/div[1]/div[2]/div/div/div[4]/div[3]/div[{i}]/div'))).click()
+                try:
+                    for i in range(1, 46):
+                        try:
+                            check_other = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[1]/div/div[3]/div[1]/div[2]/div/div/div[4]/div[3]/div[{i}]/div/div[1]/div[2]/div[1]/div/div/div[1]/span/span/span'))).text
+                        except:
+                            check_other = ''
+                            pass
+                        if check_other in list_group.keys():
+                            ch_group = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, f'/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[1]/div/div[3]/div[1]/div[2]/div/div/div[4]/div[3]/div[{i}]/div'))).click()
+                except:
+                    pass
+
+                self.driver.save_screenshot('debug_response/save_screen.png')
 
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[1]/div/div[5]/div/div'))).click()
                 
                 sleep(3)
 
-                post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div/div[3]/div[2]/div[2]/div/div[2]/div/div[1]/div/div[2]/div/div[1]/span/span'))).click()
+                post = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div/div[3]/div[2]/div[2]/div/div[2]/div/div[1]/div/div[2]/div/div[1]/span/span'))).click()
                 
                 sleep(3)
+
+                soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+                anchor = soup.find_all('a')
+                for item in anchor:
+                    if item.get('aria-label') == 'แก้ไขรายการสินค้า':
+                        item_url = item['href']
                 
-                marketplace_url = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div[1]/div[1]/div[4]/div/div/div[1]/div/div[2]/div/div/div/div[3]/div/div[1]/div[1]/div[5]/div[1]/a')))
-                item_url = marketplace_url.get_attribute('href')
                 url = item_url.split('=')[-1]
 
                 post_url = 'https://www.facebook.com/marketplace/item/' + url
@@ -281,9 +295,9 @@ class facebook():
                 succcess = 'true'
                 detail = 'Success create item in marketplace'
 
-        except:
+        except Exception as e:
             success = 'false'
-            detail = 'Can not create post in market place.'
+            detail = 'Can not create post in market place.' + str(e)
             post_url = ''
             post_id = ''    
 
@@ -356,66 +370,62 @@ class facebook():
         if '\t' in datahandled['post_description_th']:
             datahandled['post_description_th'] = datahandled['post_description_th'].replace('\t', '\n')
 
-        #try:
-        if success == 'true':
-            self.driver.get('https://www.facebook.com/marketplace/edit/?listing_id=' + postdata['post_id'])
-            count_img = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['count_img']))).text
-            images = count_img.split('/')[0]
-            print(repr(images.strip()[-1]))
-            for img in range(0, int(images.strip()[-1])):
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['del_img']))).click()
-                sleep(0.5)
+        try:
+            if success == 'true':
+                self.driver.get('https://www.facebook.com/marketplace/edit/?listing_id=' + postdata['post_id'])
+                count_img = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['count_img']))).text
+                images = count_img.split('/')[0]
+                print(repr(images.strip()[-1]))
+                for img in range(0, int(images.strip()[-1])):
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['del_img']))).click()
+                    sleep(0.5)
 
-            pic_post = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, element['pic_post_input'])))
+                pic_post = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, element['pic_post_input'])))
 
-            all_images = ""
-            for count, pic in enumerate(postdata['post_images'][:10]):
-                if count < len(postdata['post_images'])-1:
-                    all_images += os.path.abspath(pic) + '\n'
+                all_images = ""
+                for count, pic in enumerate(postdata['post_images'][:10]):
+                    if count < len(postdata['post_images'])-1:
+                        all_images += os.path.abspath(pic) + '\n'
+                    else:
+                        all_images += os.path.abspath(pic)
+                pic_post.send_keys(all_images)
+
+                owner_name = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, element['owner_name'])))                                                                                
+                ActionChains(self.driver).move_to_element(owner_name).click().send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).perform()
+
+                title = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['title'])))
+                title.send_keys(Keys.CONTROL + 'a')
+                title.send_keys(datahandled['post_title_th'])
+
+                price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['price'])))
+                price.send_keys(Keys.CONTROL + 'a')
+                price.send_keys(datahandled['price_baht'])
+
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['type_btn']))).click()
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['sel_type']))).click()
+
+                detail = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['detail'])))
+                detail.send_keys(Keys.CONTROL + 'a')
+                detail.send_keys(datahandled['post_description_th'])
+
+                location = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['location'])))
+                location.send_keys(Keys.CONTROL + 'a')
+                if datahandled['addr_province'] == 'ทั่วไทย':
+                    location.send_keys(postdata['addr_province'])
                 else:
-                    all_images += os.path.abspath(pic)
-            pic_post.send_keys(all_images)
+                    location.send_keys('กรุงเทพมหานคร')
+                sleep(1)
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['sel_location']))).click()
 
-            owner_name = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, element['owner_name'])))                                                                                
-            ActionChains(self.driver).move_to_element(owner_name).click().send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).send_keys(Keys.DOWN).perform()
-
-            title = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['title'])))
-            title.send_keys(Keys.CONTROL + 'a')
-            title.send_keys(datahandled['post_title_th'])
-
-            price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['price'])))
-            price.send_keys(Keys.CONTROL + 'a')
-            price.send_keys(datahandled['price_baht'])
-
-            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['type_btn']))).click()
-            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['sel_type']))).click()
-
-            detail = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['detail'])))
-            detail.send_keys(Keys.CONTROL + 'a')
-            detail.send_keys(datahandled['post_description_th'])
-
-            location = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['location'])))
-            location.send_keys(Keys.CONTROL + 'a')
-            if datahandled['addr_province'] == 'ทั่วไทย':
-                location.send_keys(postdata['addr_province'])
-            else:
-                location.send_keys('กรุงเทพมหานคร')
-            sleep(1)
-            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['sel_location']))).click()
-
-            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['next']))).click()
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, element['next']))).click()
         
-        """ except:
+        except:
             success = 'false'
             detail = 'Can not edit post. You can edit post after your post are approved.'
 
         finally:
             self.driver.close()
-            self.driver.quit() """
-
-        sleep(60)
-        self.driver.close()
-        self.driver.quit()
+            self.driver.quit()
 
         time_end = datetime.utcnow()
         time_usage = time_end - time_start
