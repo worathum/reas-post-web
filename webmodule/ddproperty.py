@@ -1502,19 +1502,19 @@ class ddproperty():
                 search.send_keys(Keys.ENTER)
                 time.sleep(3)
 
-                all_rows = self.firefox.find_element_by_id('list-container')
-                myrow = all_rows.find_element_by_class_name('listing-item')
-                success = "false"                    
-                if myrow is not None:
-                    renew = myrow.find_element_by_class_name('repost')
-                    if renew is not None:
+                try:
+                    all_rows = self.firefox.find_element_by_id('list-container')
+                    myrow = all_rows.find_element_by_class_name('listing-item')
+                    success = "false"                    
+                    try:
+                        renew = myrow.find_element_by_class_name('repost')
                         renew.click()
                         success = "true"
                         detail = "Post Renewed Successfully."                    
                         time.sleep(3)
-                    else:
+                    except:
                         detail = "Post cannot be Renewed as of now."
-                else:
+                except:
                     detail = "Invalid Post Id."
         finally:
             # pass
@@ -1568,21 +1568,23 @@ class ddproperty():
                 search.send_keys(Keys.ENTER)
                 time.sleep(3)
 
-                all_rows = self.firefox.find_element_by_id('list-container')
-                myrow = all_rows.find_element_by_class_name('listing-item')
-                success = "false"                    
-                if myrow is not None:
-                    myrow.find_element_by_class_name('listingIdCheckbox').click()
-                    time.sleep(0.5)
-                    unlist = self.firefox.find_element_by_id('bulkUnlist')
+                try:
+                    all_rows = self.firefox.find_element_by_id('list-container')
+                    myrow = all_rows.find_element_by_class_name('listing-item')
+                    success = "false"                    
                     try:
+                        myrow.find_element_by_class_name('listingIdCheckbox').click()
+                        time.sleep(0.5)
+                        unlist = self.firefox.find_element_by_id('bulkUnlist')
+
                         unlist.click()
                         success = "true"
                         detail = "Post Cancelled Successfully."                    
                         time.sleep(2)
+
                     except:
                         detail = "Post cannot be Cancelled as of now."
-                else:
+                except:
                     detail = "Invalid Post Id."
         finally:
             # pass
