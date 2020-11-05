@@ -926,6 +926,9 @@ class ddproperty():
                 #log.warning('cannot input price '+str(e))
                 pass
 
+            check_price = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, 'input-listing-price')))
+
+
             # bed room
             try:
                 if datahandled['bed_room'] != None and datahandled['bed_room'].strip() != '' and int(datahandled['bed_room']) > 0:
@@ -1077,8 +1080,15 @@ class ddproperty():
                     print(e)
                     pass
             
+            if check_price.get_attribute('value').replace(',', '') != datahandled['price_baht']:
+                check_price.send_keys(Keys.CONTROL + 'a')
+                check_price.send_keys(datahandled['price_baht'])
+
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(2)
+
+
+
             # next
             try:
                 next_button = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name('step-next'))
@@ -1122,12 +1132,32 @@ class ddproperty():
                         alert.accept()
                         time.sleep(1.5)
 
-            for img in datahandled['post_images']:
-                time.sleep(1)
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
-                #log.debug('post image %s', img)
-                time.sleep(1)
-                self.firefox.refresh()
+            # for img in datahandled['post_images']:
+            #     time.sleep(1)
+            #     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
+            #     #log.debug('post image %s', img)
+            #     time.sleep(1)
+            #     self.firefox.refresh()
+
+
+            all_images = ""
+            for count, pic in enumerate(datahandled['post_images']):
+                if count < len(datahandled['post_images'])-1:
+                    all_images += os.path.abspath(pic) + '\n'
+                else:
+                    all_images += os.path.abspath(pic)
+        
+            upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
+            upload.send_keys(all_images)
+
+            try:                  
+                wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"//*[@id='step_media_photo']/div[1]/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
+            except:
+                pass
+
+
+
+
             #log.debug('image success')
             #print('here1')
             post_id = self.firefox.current_url.split("/")[-1]
