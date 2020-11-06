@@ -202,9 +202,13 @@ class livinginsider():
 
                 for i in range(len(data)):
                     if postdata['web_project_name'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
+<<<<<<< HEAD
                         if data[i]['id'] == postdata['web_project_name']:
                             idzone = None
                         else:
+=======
+                        if data[i]['id'] != postdata['web_project_name']:
+>>>>>>> develop
                             idzone = data[i]['id']
                         break
 
@@ -703,9 +707,8 @@ class livinginsider():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
-        post_id = ""
+        post_id = postdata['post_id']
         post_url = ""
-
         if success:
 
             post_found = False
@@ -756,6 +759,38 @@ class livinginsider():
 
             if post_found:
 
+<<<<<<< HEAD
+=======
+                headers = {
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Mobile Safari/537.36',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-User': '?1',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                    'Sec-Fetch-Site': 'same-origin',
+                    'Referer': 'https://www.livinginsider.com/mystock.php',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                }
+
+
+                r = httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': str(post_id)}, headers=headers)
+                print(r.status_code)
+
+
+                getProdId = {'1': 1, '2': 2, '3': 2, '4': 6,
+                             '5': 4, '6': 3, '7': 10, '8': 10, '9': 5, '10': 12, '25': 11}
+
+                theprodid = getProdId[postdata['property_type']]
+
+                if 'web_project_name' not in postdata or postdata['web_project_name'] is None or postdata['web_project_name'] == '':
+                    if 'project_name' in postdata and postdata['project_name'] != None:
+                        postdata['web_project_name'] = postdata['project_name']
+                    else:
+                        postdata['web_project_name'] = postdata['post_title_th']
+
+>>>>>>> develop
                 if 'floor_total' not in postdata:
                     postdata['floor_total'] = 1
                 elif postdata['floor_total'] is None or postdata['floor_total'] == '':
@@ -797,6 +832,7 @@ class livinginsider():
                 else:
                     land_size_wa = postdata['land_size_wa']
 
+<<<<<<< HEAD
                 headers = {
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
                     'Accept-Encoding': 'gzip, deflate, br',
@@ -811,6 +847,16 @@ class livinginsider():
                     'Upgrade-Insecure-Requests': '1',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36'    
                 }
+=======
+                province_id = ''
+                idzone = '0'
+                web_zone = ''
+
+                if str(postdata['property_type']) == '1':
+                    term = postdata['web_project_name'].replace(' ', '+')
+
+                    data = requests.get('https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)   
+>>>>>>> develop
 
                 r = httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': postdata['post_id'], 'currentID': postdata['post_id']}, headers=headers, redirect=False)
                 # print(r.url, "hi1")
@@ -998,6 +1044,7 @@ class livinginsider():
                         data['web_photo_caption[' + str(i) + '][caption]'] = ''
                 elif theprodid == 1:
                     data = {
+<<<<<<< HEAD
                         'currentstep': '2',
                         'web_room': postdata['bed_room'],
                         'web_bathroom': postdata['bath_room'],
@@ -1284,6 +1331,472 @@ class livinginsider():
                 r = httprequestObj.http_get('https://www.livinginsider.com/living_edit_confirm.php', params={'topic_id': post_id})
                 soup = BeautifulSoup(r.text, self.parser)
                 #print(soup.find_all('h4'))
+=======
+                        '$currentstep': '1',
+                        'web_id': post_id,
+                        'web_member_type': '1',
+                        'web_member_username': postdata['user'],
+                        'web_email': '',
+                        'web_tel': '',
+                        'web_lineid': '',
+                        'web_post_type': str(typep),
+                        'web_post_from': '2',
+                        'web_building_type': str(theprodid),
+                        'web_project_id': idzone,
+                        'web_zone_id': str(web_zone),
+                        'web_title': postdata['post_title_th'],
+                        'web_description': postdata['post_description_th'],
+                        'web_title_en': '',
+                        'web_description_en': '',
+                        'web_latitude': postdata['geo_latitude'],
+                        'web_longitude': postdata['geo_longitude'],
+                        'state_renew': ''
+                    }
+
+                    headers = {
+                        'Connection': 'keep-alive',
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Mobile Safari/537.36',
+                        'Sec-Fetch-Mode': 'navigate',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                        'Sec-Fetch-Site': 'same-origin',
+                        'Referer': 'https://www.livinginsider.com/living_edit.php?topic_id=' + post_id,
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Length': '6373',
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    }
+                    r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=data, headers=headers)
+                    data = r.text
+                    print(r.url)
+                    print(data)
+                    print(r.status_code)
+                    print('Getting 2nd page')
+
+                    headers = {
+                        'Connection': 'keep-alive',
+                        'Upgrade-Insecure-Requests': '1',
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Mobile Safari/537.36',
+                        'Sec-Fetch-Mode': 'navigate',
+                        'Sec-Fetch-User': '?1',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                        'Sec-Fetch-Site': 'same-origin',
+                        'Referer': 'https://www.livinginsider.com/living_edit.php?topic_id=' + post_id,
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                    }
+
+                    params = (
+                        ('topic_id', str(post_id)),
+                    )
+
+
+                    # k = httprequestObj.http_get('https://www.livinginsider.com/living_buysell2.php')
+                    # soup = BeautifulSoup(k.text, self.parser)
+
+                    r = httprequestObj.http_get('https://www.livinginsider.com/living_edit2.php', headers=headers, params=params)
+                    print(r.url)
+                    print(r.status_code)
+
+                    soup = BeautifulSoup(r.text, self.parser)
+                    # print(r.text)
+                    webFolder = soup.select_one('#web_photo_folder')['value']
+
+                    delete_params = soup.find_all('a', 'delete_img')
+
+                    # print('DELETING PHOTOS')
+                    for img in delete_params:
+                        info = img.get('onclick').split('"')
+                        images_name = info[1]
+                        web_photo_folder = info[3]
+                        # print(images_name)
+                        # print(web_photo_folder)
+                        params = {
+                            'images_name': images_name,
+                            'web_photo_folder': web_photo_folder
+                        }
+                        r = httprequestObj.http_get('https://www.livinginsider.com/a_delete_photo.php', params=params)
+
+
+                        # print(r.url)
+                        # print(r.status_code)
+                    img_link = 'https://www.livinginsider.com/js_upload/php/'
+                    arr = ["files[]"]
+                    folders = ''
+                    filelist = ''
+                    onlyfolder = ''
+                    files = []
+                    start = 1
+                    f = {}
+                    data = {}
+                    k = httprequestObj.http_get('https://www.livinginsider.com/living_buysell2.php')
+                    soup = BeautifulSoup(k.text, self.parser)
+                    # webFolder = soup.select_one('#web_photo_folder')['value']
+
+                    # webFolder = soup.find('input', {'id': 'web_photo_folder'}).get('value')
+                    # print('WebFolder')
+                    # webFolder = 'https://www.livinginsider.com/upload/topic415'
+                    # print(webFolder)
+                    print('UPLOADING PHOTOS')
+                    for i in range(len(postdata['post_images'])):
+                        filename = str(i) + '.jpeg'
+
+                        datapost = [
+                            ('files[]', (filename, open(postdata['post_images'][i], "rb"), "image/jpeg")),
+                        ]
+                        # print(f)
+                        r = httprequestObj.http_post(img_link, data={'web_photo_folder': webFolder}, files=datapost)
+                        print(r.url)
+                        print(r.status_code)
+                        # print(r.text)
+
+                        if r.status_code == 200:
+                            r = json.loads(r.text)
+                            print(r)
+
+                            folderandfile = r['files'][0]['url']
+                            cntr = 0
+                            folder = ''
+                            for i in range(len(folderandfile)):
+                                if start == '':
+                                    onlyfolder += folderandfile[i]
+                                if folderandfile[i] == '/':
+                                    cntr += 1
+                                    if cntr == 4:
+                                        start = ''
+                                    if cntr == 5:
+                                        break
+                                folder += folderandfile[i]
+                            file = r['files'][0]['name']
+                            filelist += file + "||"
+                            files.append(file)
+                    print(filelist, "filelist")
+                    postdata['floor'] = postdata['floor_total']
+                    # folder = 'https://www.livinginsider.com/upload/topic415'
+                    print(theprodid)
+                    print(webFolder)
+                    onlyfolder =  webFolder.split("/")[-1] + ' '
+                    if theprodid == 3:
+                        data = {
+                            'currentstep': '2',
+                            'web_id': post_id,
+                            'web_area_size': 400 * int(land_size_rai) + 100 * int(land_size_ngan) + int(land_size_wa),
+                            'web_area_size1': land_size_rai,
+                            'web_area_size2': land_size_wa,
+                            'web_area_size3': land_size_ngan,
+                            'web_near_transits': '0',
+                            'web_near_academy': '0',
+                            'web_keeping_pet': '0',
+                            'web_price': postdata['price_baht'],
+                            'web_price6': '',
+                            'web_price3': '',
+                            'web_price1': '',
+                            'web_photo_delete': '',
+                            'web_contract_startdate': '',
+                            'web_income_year': '0',
+                            'web_post_commission_include': '0',
+                            'web_post_accept': '1',
+                            'web_fq': '0',
+                            'web_youtube': '',
+                            'web_useful_space': '0',
+                            'web_photo_list': filelist,
+                            'web_photo_folder': webFolder,
+
+                        }
+                        for i in range(len(postdata['post_images'])):
+                            data['web_photo_caption[' +
+                                 str(i) + '][web_folder]'] = onlyfolder[:-1]
+                            data['web_photo_caption[' + str(i) + '][web_id]'] = post_id
+                            data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
+                            data['web_photo_caption[' + str(i) + '][web_caption_id]'] = '0'
+                            data['web_photo_caption[' + str(i) + '][caption]'] = ''
+                    elif theprodid == 1:
+                        data = {
+                            'currentstep': '2',
+                            'web_room': postdata['bed_room'],
+                            'web_bathroom': postdata['bath_room'],
+                            'web_floor': postdata['floor_total'],
+                            'web_area_size': postdata['floor_area'],
+                            'web_near_transits': '0',
+                            'web_near_academy': '0',
+                            'web_keeping_pet': '0',
+                            'web_price': postdata['price_baht'],
+                            'web_id': post_id,
+                            'web_price6': '',
+                            'web_price3': '',
+                            'web_price1': '',
+                            'web_contract_startdate': '',
+                            'web_post_commission_include': '0',
+                            'web_post_accept': '1',
+                            'web_photo_list': filelist,
+                            'web_photo_folder': webFolder,
+                            'web_fq': '0',
+                            'web_youtube': '',
+                        }
+                        # for i in range(len(postdata['post_images'])):
+                        # print(files)
+                        # onlyfolder = 'topic415 '
+                        for i in range(len(files)):
+                            data['web_photo_caption[' +
+                                 str(i) + '][web_folder]'] = onlyfolder[:-1]
+                            data['web_photo_caption[' + str(i) + '][web_id]'] = post_id
+                            data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
+                            data['web_photo_caption[' + str(i) + '][web_caption_id]'] = '0'
+                            data['web_photo_caption[' + str(i) + '][caption]'] = ''
+                    elif theprodid == 2:
+                        data = {
+                            'currentstep': '2',
+                            'web_room': postdata['bed_room'],
+                            'web_bathroom': postdata['bath_room'],
+                            'web_floor': postdata['floor_total'],
+                            'web_area_size': land_size_wa,
+                            'web_near_transits': '0',
+                            'web_near_academy': '0',
+                            'web_keeping_pet': '1',
+                            'web_price': postdata['price_baht'],
+                            'web_id': post_id,
+                            'web_price6': '',
+                            'web_price3': '',
+                            'web_price1': '',
+                            'web_contract_startdate': '',
+                            'web_income_year': '0',
+                            'web_post_commission_include': '0',
+                            'web_post_accept': '1',
+                            'web_photo_list': filelist,
+                            'web_photo_folder': webFolder,
+                            'web_fq': '0',
+                            'web_youtube': '',
+                            'web_useful_space': '0',
+                        }
+                        for i in range(len(postdata['post_images'])):
+                            data['web_photo_caption[' +
+                                 str(i) + '][web_folder]'] = onlyfolder[:-1]
+                            data['web_photo_caption[' + str(i) + '][web_id]'] = post_id
+                            data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
+                            data['web_photo_caption[' + str(i) + '][web_caption_id]'] = '0'
+                            data['web_photo_caption[' + str(i) + '][caption]'] = ''
+                    elif theprodid == 4:
+                        data = {
+                            'currentstep': '2',
+                            'web_room': postdata['bed_room'],
+                            'web_bathroom': postdata['bath_room'],
+                            'web_floor': postdata['floor_level'],
+                            'web_area_size': land_size_wa,
+                            'web_near_transits': '0',
+                            'web_near_academy': '0',
+                            'web_keeping_pet': '0',
+                            'web_price': postdata['price_baht'],
+                            'web_id': post_id,
+                            'web_price6': '',
+                            'web_price3': '',
+                            'web_price1': '',
+                            'web_contract_startdate': '',
+                            'web_income_year': '0',
+                            'web_post_commission_include': '0',
+                            'web_post_accept': '1',
+                            'web_photo_list': filelist,
+                            'web_photo_folder': webFolder,
+                            'web_fq': '0',
+                            'web_youtube': '',
+                            'web_useful_space': postdata['floor_area'],
+                        }
+                        for i in range(len(postdata['post_images'])):
+                            data['web_photo_caption[' +
+                                 str(i) + '][web_folder]'] = onlyfolder[:-1]
+                            data['web_photo_caption[' + str(i) + '][web_id]'] = post_id
+                            data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
+                            data['web_photo_caption[' + str(i) + '][web_caption_id]'] = '0'
+                            data['web_photo_caption[' + str(i) + '][caption]'] = ''
+
+                    elif theprodid == 5:
+                        data = {
+                            'currentstep': '2',
+                            'web_room': postdata['bed_room'],
+                            'web_bathroom': postdata['bath_room'],
+                            'web_floor': '0',
+                            'web_area_size': '0',
+                            'web_near_transits': '0',
+                            'web_near_academy': '0',
+                            'web_keeping_pet': '0',
+                            'web_price': postdata['price_baht'],
+                            'web_id': post_id,
+                            'web_price6': '',
+                            'web_price3': '',
+                            'web_price1': '',
+                            'web_contract_startdate': '',
+                            'web_income_year': '0',
+                            'web_post_commission_include': '0',
+                            'web_post_accept': '1',
+                            'web_photo_list': filelist,
+                            'web_photo_folder': webFolder,
+                            'web_fq': '0',
+                            'web_youtube': '',
+                            'web_useful_space': postdata['floor_area'],
+                        }
+                        for i in range(len(postdata['post_images'])):
+                            data['web_photo_caption[' +
+                                 str(i) + '][web_folder]'] = onlyfolder[:-1]
+                            data['web_photo_caption[' + str(i) + '][web_id]'] = post_id
+                            data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
+                            data['web_photo_caption[' + str(i) + '][web_caption_id]'] = '0'
+                            data['web_photo_caption[' + str(i) + '][caption]'] = ''
+
+                    elif theprodid == 6:
+                        # if land_size_wa == 0:
+                        # land_size_wa=1
+                        data = {
+                            'currentstep': '2',
+                            'web_room': postdata['bed_room'],
+                            'web_bathroom': postdata['bath_room'],
+                            'web_floor': postdata['floor_total'],
+                            'web_area_size': land_size_wa,
+                            'web_near_transits': '0',
+                            'web_near_academy': '0',
+                            'web_keeping_pet': '0',
+                            'web_price': postdata['price_baht'],
+                            'web_id': post_id,
+                            'web_price6': '',
+                            'web_price3': '',
+                            'web_price1': '',
+                            'web_contract_startdate': '',
+                            'web_income_year': '0',
+                            'web_post_commission_include': '0',
+                            'web_post_accept': '1',
+                            'web_photo_list': filelist,
+                            'web_photo_folder': webFolder,
+                            'web_fq': '0',
+                            'web_youtube': '',
+                            'web_useful_space': '0',
+                        }
+                        for i in range(len(postdata['post_images'])):
+                            data['web_photo_caption[' +
+                                 str(i) + '][web_folder]'] = onlyfolder[:-1]
+                            data['web_photo_caption[' + str(i) + '][web_id]'] = post_id
+                            data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
+                            data['web_photo_caption[' + str(i) + '][web_caption_id]'] = '0'
+                            data['web_photo_caption[' + str(i) + '][caption]'] = ''
+
+                    elif theprodid == 10:
+                        data = {
+                            'currentstep': '2',
+                            'web_room': postdata['bed_room'],
+                            'web_floor': postdata['floor_total'],
+                            'web_area_size': 400 * int(land_size_rai) + 100 * int(land_size_ngan) + int(land_size_wa),
+                            'web_area_size1': land_size_rai,
+                            'web_area_size2': land_size_wa,
+                            'web_area_size3': land_size_ngan,
+                            'web_near_transits': '0',
+                            'web_near_academy': '0',
+                            'web_keeping_pet': '0',
+                            'web_price': postdata['price_baht'],
+                            'web_id': post_id,
+                            'web_price6': '',
+                            'web_price3': '',
+                            'web_price1': '',
+                            'web_contract_startdate': '',
+                            'web_income_year': '0',
+                            'web_post_commission_include': '0',
+                            'web_post_accept': '1',
+                            'web_photo_list': filelist,
+                            'web_photo_folder': webFolder,
+                            'web_fq': '0',
+                            'web_youtube': '',
+                            'web_useful_space': '0',
+                        }
+                        for i in range(len(postdata['post_images'])):
+                            data['web_photo_caption[' +
+                                 str(i) + '][web_folder]'] = onlyfolder[:-1]
+                            data['web_photo_caption[' + str(i) + '][web_id]'] = post_id
+                            data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
+                            data['web_photo_caption[' + str(i) + '][web_caption_id]'] = '0'
+                            data['web_photo_caption[' + str(i) + '][caption]'] = ''
+                    elif theprodid == 12:
+                        data = {
+                            'currentstep': '2',
+                            'web_room': postdata['bed_room'],
+                            'web_floor': '0',
+                            'web_area_size': 400 * int(land_size_rai) + 100 * int(land_size_ngan) + int(land_size_wa),
+                            'web_area_size1': land_size_rai,
+                            'web_area_size2': land_size_wa,
+                            'web_area_size3': land_size_ngan,
+                            'web_near_transits': '0',
+                            'web_near_academy': '0',
+                            'web_keeping_pet': '0',
+                            'web_price': postdata['price_baht'],
+                            'web_id': post_id,
+                            'web_price6': '',
+                            'web_price3': '',
+                            'web_price1': '',
+                            'web_contract_startdate': '',
+                            'web_income_year': '0',
+                            'web_post_commission_include': '0',
+                            'web_post_accept': '1',
+                            'web_photo_list': filelist,
+                            'web_photo_folder': webFolder,
+                            'web_fq': '0',
+                            'web_youtube': '',
+                            'web_useful_space': postdata['floor_area'],
+                        }
+                        for i in range(len(postdata['post_images'])):
+                            data['web_photo_caption[' +
+                                 str(i) + '][web_folder]'] = onlyfolder[:-1]
+                            data['web_photo_caption[' + str(i) + '][web_id]'] = post_id
+                            data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
+                            data['web_photo_caption[' + str(i) + '][web_caption_id]'] = '0'
+                            data['web_photo_caption[' + str(i) + '][caption]'] = ''
+                    elif theprodid == 11:
+                        data = {
+                            'currentstep': '2',
+                            'web_room': '0',
+                            'web_floor': '0',
+                            'web_area_size': 400 * int(land_size_rai) + 100 * int(land_size_ngan) + int(land_size_wa),
+                            'web_area_size1': land_size_rai,
+                            'web_area_size2': land_size_wa,
+                            'web_area_size3': land_size_ngan,
+                            'web_near_transits': '0',
+                            'web_near_academy': '0',
+                            'web_keeping_pet': '0',
+                            'web_price': postdata['price_baht'],
+                            'web_id': post_id,
+                            'web_price6': '',
+                            'web_price3': '',
+                            'web_price1': '',
+                            'web_contract_startdate': '',
+                            'web_income_year': '0',
+                            'web_post_commission_include': '0',
+                            'web_post_accept': '1',
+                            'web_photo_list': filelist,
+                            'web_photo_folder': webFolder,
+                            'web_fq': '0',
+                            'web_youtube': '',
+                            'web_useful_space': postdata['floor_area'],
+                        }
+                        for i in range(len(postdata['post_images'])):
+                            data['web_photo_caption[' +
+                                 str(i) + '][web_folder]'] = onlyfolder[:-1]
+                            data['web_photo_caption[' + str(i) + '][web_id]'] = post_id
+                            data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
+                            data['web_photo_caption[' + str(i) + '][web_caption_id]'] = '0'
+                            data['web_photo_caption[' + str(i) + '][caption]'] = ''
+                    headers = {
+                        'Connection': 'keep-alive',
+                        'Accept': 'application/json, text/javascript, */*; q=0.01',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                        'Origin': 'https://www.livinginsider.com',
+                        'Sec-Fetch-Site': 'same-origin',
+                        'Sec-Fetch-Mode': 'cors',
+                        'Sec-Fetch-Dest': 'empty',
+                        'Referer': 'https://www.livinginsider.com/living_edit2.php?topic_id=' + post_id,
+                        'Accept-Language': 'en-IN,en-US;q=0.9,en;q=0.8',
+                    }
+                    # print('Posting data')
+                    r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=data, headers=headers)
+                    # print(r.url)
+                    # print(r.status_code)
+                    # print(r.text)
+>>>>>>> develop
 
                 data = {
                         'hidden_status': '',
@@ -1296,6 +1809,7 @@ class livinginsider():
                 r = httprequestObj.http_post('https://www.livinginsider.com/living_edit_confirm.php', params={'topic_id': post_id}, data=data)
                 #print(r)
 
+<<<<<<< HEAD
                 try:
                     r = BeautifulSoup(r.content, self.parser)
                     link = r.find('input', attrs={'id': 'link_copy'})['value']
@@ -1304,6 +1818,36 @@ class livinginsider():
                     # print(r.text)
                     r = json.loads(r.text)
                     link = r['link_copy']
+=======
+                    try:
+                        r = BeautifulSoup(r.content, self.parser)
+                        link = r.find('input', attrs={'id': 'link_copy'})['value']
+                        post_id = post_url.split('/')[4]
+                    except:
+                        print(r.text)
+                        print(r.url)
+                        print(r.status_code)
+                        r = json.loads(r.text)
+                        link = r['link_copy']
+
+                    t = 'https:\/\/www.livinginsider.com\/livingdetail\/495548\/1\/fsa.html'
+                    if link == '':
+                        detail = 'Not posted. Low Credits maybe.'
+                        success = False
+                        time_end = datetime.datetime.utcnow()
+                        time_usage = time_end - time_start
+                        return {
+                            "success": success,
+                            "websitename": self.webname,
+                            "usage_time": str(time_usage),
+                            "start_time": str(time_start),
+                            "end_time": str(time_end),
+                            "post_url": post_url,
+                            "post_id": post_id,
+                            "account_type": "null",
+                            "detail": detail,
+                        }
+>>>>>>> develop
 
                 t = 'https:\/\/www.livinginsider.com\/livingdetail\/495548\/1\/fsa.html'
                 if link == '':
@@ -1320,7 +1864,11 @@ class livinginsider():
                         "post_url": post_url,
                         "post_id": post_id,
                         "account_type": "null",
+<<<<<<< HEAD
                         "detail": detail,
+=======
+                        "detail": 'Post edited successfully',
+>>>>>>> develop
                     }
 
                 cntr = 0
@@ -1379,7 +1927,6 @@ class livinginsider():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = ""
-        post_id = ""
         post_url = ""
         mem_id = ''
         device_id = ''
@@ -1391,6 +1938,11 @@ class livinginsider():
             max_page = 100
             r = httprequestObj.http_get(
                 'https://www.livinginsider.com/mystock.php?action=1&pages=1&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=')
+
+            device_id = r.text.split("let device_id")[1].split("'")[1].split("'")[0]            
+            mem_id = r.text.split("let mem_id")[1].split("'")[1].split("'")[0]            
+            print(device_id)
+            print(mem_id)
             soup = BeautifulSoup(r.content, self.parser)
             try:
                 max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
@@ -1438,22 +1990,24 @@ class livinginsider():
 
                 }
                 headers = {
-                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36',
                 }
                 r = httprequestObj.http_post('https://api.livinginsider.com/living_delete_reason.php', data=datapost, headers=headers)
                 # print(r.url)
                 # print(r.status_code)
                 if r.text:
                     data = r.json()
+                    # print(data)
                 else:
                     detail = 'no content returned'
 
                 datapost['web_id'] = post_id
                 datapost['web_delete_reason_text'] = ''
-
-                r = httprequestObj.http_post('https://api.livinginsider.com/my_living_topic_delete.php', data=datapost)
+                print(datapost)
+                r = httprequestObj.http_post('https://api.livinginsider.com/my_living_topic_delete.php', data=datapost, headers=headers)
+                print(r.status_code)
+                print(r.text)
                 # print(r.url)
-                # print(r.status_code)
                 if r.text:
                     data = r.json()
                     if data['module'] == 'my_living_topic_delete':
@@ -1496,7 +2050,6 @@ class livinginsider():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = ""
-        post_id = ""
         post_url = ""
         mem_id = ''
         device_id = ''
@@ -1508,6 +2061,9 @@ class livinginsider():
             max_page = 100
             r = httprequestObj.http_get(
                 'https://www.livinginsider.com/mystock.php?action=1&pages=1&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=')
+            device_id = r.text.split("let device_id")[1].split("'")[1].split("'")[0]            
+            mem_id = r.text.split("let mem_id")[1].split("'")[1].split("'")[0]            
+
             soup = BeautifulSoup(r.content, self.parser)
             try:
                 max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)

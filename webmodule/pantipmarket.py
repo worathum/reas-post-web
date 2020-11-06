@@ -771,10 +771,29 @@ class pantipmarket():
                     driver.find_element_by_name('message_th').clear()
                 driver.find_element_by_name("message_th").send_keys(post_description_th)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
                 soup = BeautifulSoup(driver.page_source, 'html.parser')
                 for item in soup.find_all('input', {'name': 'action_list[]'})[:2]:
                     if item.has_attr('checked'):
                         selected = item.get('value')
+<<<<<<< HEAD
+=======
+
+
+                if listing_type == 'ขาย' and selected == 'S2':
+                    driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()
+                    driver.find_element_by_xpath('//*[@id="action_list_S2"]').click()
+                elif listing_type == 'ให้เช่า' and selected == 'S1':
+                    driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()
+                    driver.find_element_by_xpath('//*[@id="action_list_S2"]').click()
+                else:
+                    pass
+                
+
+>>>>>>> develop
 
                 if listing_type == 'ขาย' and selected == 'S2':
                     driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()

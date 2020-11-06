@@ -1404,8 +1404,11 @@ class thaihometown():
                     email = soup.find("input", {"name": "email"})['value']
                     contact_code = soup.find("input", {"name": "contact_code"})['value']
                     old_price = soup.find("input", {"name": "selling_price"})['value']
+<<<<<<< HEAD
 
                     print(old_price)
+=======
+>>>>>>> develop
 
                     datapost = {
                         'code_edit':code_edit,
@@ -1469,7 +1472,11 @@ class thaihometown():
                         'room2':datahandled['bath_room'],
                         'room22':datahandled['bath_room'],
                         'selling_price':selling_price,
+<<<<<<< HEAD
                         'selling_price_number2': old_price,
+=======
+                        'selling_price_number2':old_price,
+>>>>>>> develop
                         'type_forrent':'',
                         'type_forrent2':0,
                         'typepart':datahandled['listing_type'].encode('cp874', 'ignore'),

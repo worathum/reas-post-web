@@ -215,10 +215,11 @@ class ddproperty():
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
-        # self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
         self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+        # self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
         # open login page
         # self.firefox = webdriver.Chrome("C:/Users/hp/Downloads/chromedriver_win32/chromedriver", chrome_options=options)
+
         self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
 
         # input email and enter
@@ -280,9 +281,14 @@ class ddproperty():
                 agent_id = re.search(r'{"user":{"id":(\d+),', self.firefox.page_source).group(1)
 
         #log.debug("login status %s agent id %s", success, agent_id)
+
         if (postdata['action'] == 'test_login'):
+            # self.firefox.quit()
             self.firefox.close()
             self.firefox.quit()
+
+        #
+        # end process
 
         return {"success": success, "detail": detail, "agent_id": agent_id}
 
@@ -620,21 +626,20 @@ class ddproperty():
         post_id = ""
         account_type = "normal"
 
+        if success == "true":
+            self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
+            time.sleep(1)
+            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
+            # self.firefox.save_screenshot("debug_response/location.png")
+
+            success, detail = self.inputpostgeneral(datahandled)
+            if success == 'true':
+                success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+                print(success, detail, post_id, account_type)
         try:
-            if success == "true":
-                self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
-                time.sleep(1)
-                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
-                # self.firefox.save_screenshot("debug_response/location.png")
-
-                success, detail = self.inputpostgeneral(datahandled)
-                if success == 'true':
-                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
-                    print(success, detail, post_id, account_type)
-        except:
-            self.firefox.close()
             self.firefox.quit()
-
+        except:
+            pass
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -850,7 +855,7 @@ class ddproperty():
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
             #self.firefox.save_screenshot("debug_response/newp33.png")
-            nextbttn = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
+            nextbttn = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
             self.firefox.execute_script("arguments[0].click();", nextbttn)
 
         return success, detail
@@ -916,7 +921,7 @@ class ddproperty():
 
             # price
             try:
-                WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, "input-listing-price"))).send_keys(datahandled['price_baht'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-listing-price")).send_keys(datahandled['price_baht'])
             except WebDriverException as e:
                 #log.warning('cannot input price '+str(e))
                 pass
@@ -1058,14 +1063,11 @@ class ddproperty():
                 try:
                     if datahandled['action'] == 'edit_post':
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                        #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL + "a")  # clear for edit action
-                        #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.CONTROL + "a")
-                        #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("div[class='corporate-email-wrap']/textarea")).send_keys(datahandled['email'])
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("div[class='corporate-email-wrap']/textarea")).send_keys(datahandled['email'])
@@ -1077,14 +1079,6 @@ class ddproperty():
             
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(2)
-
-            check_price = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, 'input-listing-price')))
-            if check_price.get_attribute('value').replace(',', '') == datahandled['price_baht']:
-                check_price.send_keys(Keys.CONTROL + 'a')
-                check_price.send_keys(datahandled['price_baht'])
-            else:
-                pass
-            
             # next
             try:
                 next_button = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name('step-next'))
@@ -1114,7 +1108,7 @@ class ddproperty():
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
 
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
-            if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) > 0):
+            if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) < 0):
                 #log.debug('edit image')
                 imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
@@ -1128,28 +1122,12 @@ class ddproperty():
                         alert.accept()
                         time.sleep(1.5)
 
-            all_images = ""
-            for count, pic in enumerate(datahandled['post_images']):
-                if count < len(datahandled['post_images'])-1:
-                    all_images += os.path.abspath(pic) + '\n'
-                else:
-                    all_images += os.path.abspath(pic)
-        
-            upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
-            upload.send_keys(all_images)
-
-            try:                  
-                wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"//*[@id='step_media_photo']/div[1]/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
-            except:
-                pass
-            #wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div[1]/div/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
-
-            """ for img in datahandled['post_images']:
+            for img in datahandled['post_images']:
                 time.sleep(1)
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
                 #log.debug('post image %s', img)
                 time.sleep(1)
-                self.firefox.refresh() """
+                self.firefox.refresh()
             #log.debug('image success')
             #print('here1')
             post_id = self.firefox.current_url.split("/")[-1]
@@ -1165,16 +1143,13 @@ class ddproperty():
             #TODO debug
             #js location inject
             if datahandled['action'] == 'edit_post':
-                try:
-                    js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
-                    js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
-                    self.firefox.execute_script(js)
-                    time.sleep(0.5)
-                    js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
-                    js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
-                    self.firefox.execute_script(js)
-                except:
-                    pass
+                js = 'guruApp.createListing.listingData.listingDetail.result.location.latitude = ' + datahandled['geo_latitude'] + '; '
+                js = js + 'guruApp.createListing.listingData.listingDetail.result.location.longitude = ' + datahandled['geo_longitude'] + '; '
+                self.firefox.execute_script(js)
+                time.sleep(0.5)
+                js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; '
+                js = js + 'guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
+                self.firefox.execute_script(js)
                 #print('here3')
                 time.sleep(0.5)
             # debug jsalert = 'alert(guruApp.createListing.listingData.listingDetail.result.location.latitude + " " + guruApp.createListing.listingData.listingDetail.result.location.longitude)'
@@ -1184,14 +1159,11 @@ class ddproperty():
             
             if datahandled['action'] == 'edit_post':
                 #บันทึกแล้วออก
-                try:
-                    element = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
-                    self.firefox.execute_script("arguments[0].click();", element)
-                    #quit      
-                    self.firefox.close()
-                    self.firefox.quit()
-                except:
-                    pass
+                element = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
+                self.firefox.execute_script("arguments[0].click();", element)
+                #quit      
+                self.firefox.close()
+                self.firefox.quit()
                 try:
                     alert = self.firefox.switch_to.alert
                     alert.accept()
@@ -1510,25 +1482,23 @@ class ddproperty():
         detail = test_login["detail"]
         agent_id = test_login["agent_id"]
         if success == "true":
-            try:
-                datapost = {
-                    "listing_id[]": datahandled['post_id'],
-                    "statusCode": "ACT",
-                    "expectedCredits[]": 0,
-                }
-                r = httprequestObj.http_post('https://agentnet.ddproperty.com/repost_listing', datapost)
-                data = r.text
-                datajson = r.json()
-                #f = open("debug_response/ddboostpostresponse.html", "wb")
-                #f.write(data.encode('utf-8').strip())
-                if datajson['status'] != 0:
-                    success = 'false'
-                    detail = datajson['message']
-            finally:
-                self.firefox.close()
-                self.firefox.quit()
+            datapost = {
+                "listing_id[]": datahandled['post_id'],
+                "statusCode": "ACT",
+                "expectedCredits[]": 0,
+            }
+            r = httprequestObj.http_post('https://agentnet.ddproperty.com/repost_listing', datapost)
+            data = r.text
+            datajson = r.json()
+            #f = open("debug_response/ddboostpostresponse.html", "wb")
+            #f.write(data.encode('utf-8').strip())
+            if datajson['status'] != 0:
+                success = 'false'
+                detail = datajson['message']
+
             #
             # end process
+
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "post_id": datahandled['post_id'], "websitename": self.websitename}
@@ -1554,39 +1524,36 @@ class ddproperty():
         detail = test_login["detail"]
 
         if success == "true":
-            try:
-                # จะต้องไปหน้า listing_management เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป delete ได้
-                r = httprequestObj.http_get('https://agentnet.ddproperty.com/listing_management#DRAFT', verify=False)
-                data = r.text
-                # f = open("debug_response/ddpostlistdraft.html", "wb")
-                # f.write(data.encode('utf-8').strip())
+            # จะต้องไปหน้า listing_management เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป delete ได้
+            r = httprequestObj.http_get('https://agentnet.ddproperty.com/listing_management#DRAFT', verify=False)
+            data = r.text
+            # f = open("debug_response/ddpostlistdraft.html", "wb")
+            # f.write(data.encode('utf-8').strip())
 
-                # listing_id%5B%5D=7788093&remove=Delete%20selected&selecteds=7788093
-                datapost = {
-                    "listing_id[]": post_id,
-                    "remove": "Delete selected",
-                    "selecteds": post_id,
-                }
-                r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing', data=datapost)
+            # listing_id%5B%5D=7788093&remove=Delete%20selected&selecteds=7788093
+            datapost = {
+                "listing_id[]": post_id,
+                "remove": "Delete selected",
+                "selecteds": post_id,
+            }
+            r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing', data=datapost)
+            data = r.text
+            # f = open("debug_response/dddelete.html", "wb")
+            # f.write(data.encode('utf-8').strip())
+            detail = 'Post deleted successfully'
+            matchObj = re.search(r'message":"deleted', data)
+            if matchObj:
+                # ใกล้ความจริง แต่จะ delete สำเร็จหรือไม่มันก็ return deleted หมด ดังนั้นต้องเช็คจาก post id อีกทีว่า response 404 ป่าว
+                r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail/' + post_id, verify=False)
                 data = r.text
                 # f = open("debug_response/dddelete.html", "wb")
                 # f.write(data.encode('utf-8').strip())
-                detail = 'Post deleted successfully'
-                matchObj = re.search(r'message":"deleted', data)
-                if matchObj:
-                    # ใกล้ความจริง แต่จะ delete สำเร็จหรือไม่มันก็ return deleted หมด ดังนั้นต้องเช็คจาก post id อีกทีว่า response 404 ป่าว
-                    r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail/' + post_id, verify=False)
-                    data = r.text
-                    # f = open("debug_response/dddelete.html", "wb")
-                    # f.write(data.encode('utf-8').strip())
-                    if (r.status_code == 200):
-                        success = "false"
-                        detail = r.text
-            finally:
-                self.firefox.close()
-                self.firefox.quit()
-            #
-            # end process
+                if (r.status_code == 200):
+                    success = "false"
+                    detail = r.text
+
+        #
+        # end process
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -2022,39 +1989,30 @@ class ddproperty():
         success = test_login["success"]
         detail = test_login["detail"]
 
-        try:
-            if (success == "true"):
-                self.firefox.get('https://agentnet.ddproperty.com/create-listing/detail/' + str(datahandled['post_id']))
-                #log.debug('search post id %s', str(datahandled['post_id']))
-                # self.firefox.save_screenshot("debug_response/edit1.png")
-                matchObj = re.search(r'404 ไม่พบหน้านี้', self.firefox.page_source)
-                if matchObj:
-                    success = 'false'
-                    detail = 'Not found ddproperty post id ' + datahandled['post_id']
+        if (success == "true"):
+            self.firefox.get('https://agentnet.ddproperty.com/create-listing/detail/' + str(datahandled['post_id']))
+            #log.debug('search post id %s', str(datahandled['post_id']))
+            # self.firefox.save_screenshot("debug_response/edit1.png")
+            matchObj = re.search(r'500 Internal Server Error', self.firefox.page_source)
+            if matchObj:
+                success = 'false'
+                detail = 'not found ddproperty post id ' + datahandled['post_id']
+            if success == 'true':
+                self.firefox.get('https://agentnet.ddproperty.com/create-listing/location/' + str(datahandled['post_id']))
+                #log.debug('go to edit post %s', str(datahandled['post_id']))
+                time.sleep(0.5)
+                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
+                success, detail = self.inputpostgeneral(datahandled)
                 if success == 'true':
-                    self.firefox.get('https://agentnet.ddproperty.com/create-listing/location/' + str(datahandled['post_id']))
-                    #log.debug('go to edit post %s', str(datahandled['post_id']))
-                    time.sleep(0.5)
-                    WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
-                    success, detail = self.inputpostgeneral(datahandled)
-                    if success == 'true':
-                        success, detail, post_id, account_type = self.inputpostdetail(datahandled)
-                        detail = 'Edit post success.'
-                    else:
-                        success, detail, post_id, account_type = self.inputpostdetail(datahandled)
-                        detail = 'Fail to edit post.'
+                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
 
-            #log.debug('edit post done')
-            #
-            # end process
-            try:
-                self.firefox.quit()
-            except:
-                pass
-
-        finally:
-            self.firefox.close()
+        #log.debug('edit post done')
+        #
+        # end process
+        try:
             self.firefox.quit()
+        except:
+            pass
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -2073,44 +2031,71 @@ class ddproperty():
         post_found = 'false'
         post_url = ''
         post_id = ''
-
         if (success == "true"):
 
-            driver = self.firefox
-            driver.get('https://agentnet.ddproperty.com/listing_management')
-            max_page = int(driver.find_element_by_xpath('//*[@id="lastPageListItem"]/a').get_attribute('data-page'))
 
+            valid_ids = []
+            valid_titles = []
+            valid_urls = []
             flag = True
             page = 1
-            while page <= max_page and flag:
+            while flag == True:
+
+                url = 'https://agentnet.ddproperty.com/listing_management_data'
+                data = {
+                    'statusCode': 'ACT',
+                    'params[listingSubTypeCode]': 'ALL',
+                    'params[tierType]': 'ALL',
+                    'params[propertyId]': '0',
+                    'params[propertyType]': 'ALL',
+                    'params[listType]': 'ALL',
+                    'params[page]': str(page),
+                    'params[featStatusCode]': 'CUR',
+                    'params[limit]': '20',
+                    'params[listingId]':'',
+                    'sort[column]': 'end_date',
+                    'sort[direction]': 'DESC'
+                }
                 page += 1
+                headers = {
+                    'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+                }
+                req = httprequestObj.http_get(url,data=data,headers=headers)
 
-                posts = driver.find_elements_by_class_name('listing-item')
-                for post in posts:
-                    title = post.get_attribute('data-listing-title')
-                    # print(title, '\n',datahandled['post_title_th'].strip(), '\n\t\t##############\n\n\n')
-                    if title in datahandled['post_title_th']:
-                        post_id = post.get_attribute('data-listing-id')
-                        post_url = 'https://www.ddproperty.com/property/' + str(post_id)
-                        post_found = 'true'
-                        print(post_url)
-                        detail = 'Post found successfully'
-                        flag = False
-                        break
-                if flag:
-                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                    time.sleep(1)
-                    driver.find_element_by_xpath('//*[@id="rightPageListItem"]/a').click()
-                    time.sleep(5)
+                soup = BeautifulSoup(req.text,'html.parser')
+                print(soup.prettify())
+                check = soup.find('div',{'id':'list-container'})
+                print(check)
+                if check is not None:
+                    #print('here2')
+                    posts = soup.find_all('div',{'class':'listing-item'})
 
-            driver.quit()
+                    for post in posts:
+                        valid_ids.append(post['data-listing-id'])
+                        valid_titles.append(post['data-listing-title'])
+                        url = post.find('a')
+                        valid_urls.append(url['href'])
+                    #print(valid_ids)
+                else:
+                    flag = False
+
+
+
+            if datahandled['post_title_th'] in valid_titles:
+                post_found = 'true'
+                for i in range(len(valid_titles)):
+                    if valid_titles[i] == datahandled['post_title_th']:
+                        post_url = valid_urls[i]
+                        post_id = valid_ids[i]
+
+
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         # print(f"{valid_ids}\n\n{valid_urls}\n\n{valid_titles}")
         res = {
             'success':success,
-            'post_id':post_id,
+            'post_id':postdata['post_id'],
             'log_id':postdata['log_id'],
             'ds_id':postdata['ds_id'],
             'websitename': 'ddproperty',
