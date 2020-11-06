@@ -184,7 +184,7 @@ class postcore():
                 # logging.warning('http connection error %s', imgurl)
                 continue
             if res.status_code == 200:
-                if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png':
+                if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png':       #int(res.headers['Content-Length']) > 0 Please make the condition if there is no image, please send success false directly
                     try:
                         extension = res.headers['Content-Type'].split("/")[-1]
                         with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
@@ -194,7 +194,7 @@ class postcore():
                         imgcount = imgcount + 1
                     except:
                         pass
-                elif res.headers['Content-Type'] == 'application/octet-stream':
+                elif res.headers['Content-Type'] == 'application/octet-stream':     #int(res.headers['Content-Length']) > 0 Please make the condition if there is no image, please send success false directly
                     try:
                         extension = 'jpeg'
                         with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:

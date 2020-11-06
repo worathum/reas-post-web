@@ -779,8 +779,6 @@ class pantipmarket():
                 for item in soup.find_all('input', {'name': 'action_list[]'})[:2]:
                     if item.has_attr('checked'):
                         selected = item.get('value')
-<<<<<<< HEAD
-=======
 
 
                 if listing_type == 'ขาย' and selected == 'S2':
@@ -793,7 +791,6 @@ class pantipmarket():
                     pass
                 
 
->>>>>>> develop
 
                 if listing_type == 'ขาย' and selected == 'S2':
                     driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()

@@ -351,7 +351,7 @@ class teedin108():
                         "data[poster_telephone]": p_tel,
                         "data[poster_email]": p_email,
                         "data[poster_lineid]":"",
-                        "data[password]": postdata["pass"]
+                        "data[password]": postdata["pass"][:10]
                     }
 
                     if img == "":
