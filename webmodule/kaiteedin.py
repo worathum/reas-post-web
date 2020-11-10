@@ -195,7 +195,7 @@ class kaiteedin():
             'http://kaiteedin.net/member_signin.php', data=datapost)
         data = r.text
         soup = BeautifulSoup(r.content, features='html.parser')
-        print(soup)
+        #print(soup)
         script = soup.find("script", attrs={'language': 'JavaScript'})
         if script != None:
             success = "false"
@@ -526,7 +526,7 @@ class kaiteedin():
             file = []
             for i in postdata['post_images'][:9]:
                 y=str(random.randint(0,100000000000000000))+".jpg"
-                print(y)
+                #print(y)
                 datapost.append(
                     ('fileUpload[]', (y, open(i, "rb"), "image/jpg")))
                 file.append(('fileUpload[]', (y, open(i, "rb"), "image/jpg")))
@@ -552,7 +552,7 @@ class kaiteedin():
                     time_usage = time_end - time_start
                     return {
                         "websitename": "kaiteedin",
-                        "success": success,
+                        "success": 'false',
                         "start_time": str(time_start),
                         "end_time": str(time_end),
                         "ds_id": postdata['ds_id'],
@@ -581,7 +581,7 @@ class kaiteedin():
                     time_usage = time_end - time_start
                     return {
                         "websitename": "kaiteedin",
-                        "success": success,
+                        "success": 'false',
                         "start_time": str(time_start),
                         "end_time": str(time_end),
                         'detail': 'post created, but not approved yet',
@@ -620,7 +620,7 @@ class kaiteedin():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         ashopname = test_login["detail"]
-        print(success)
+        #print(success)
         if success == "true":
             if 'name' not in postdata:
                 return{
@@ -978,9 +978,9 @@ class kaiteedin():
                 if title_row is None:
                     continue
                 title = title_row.find_all('td')[0]
-                print(title)
+                #print(title)
                 title_1 = title_row.find_all('td')[2]
-                print(title_1)
+                #print(title_1)
                 if title is None:
                     continue
                 # title_2=title_1.text.strip()

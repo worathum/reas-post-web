@@ -10,14 +10,14 @@ import datetime
 import sys
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
-# from PIL import Image
+from PIL import Image
 
 httprequestObj = lib_httprequest()
 
@@ -172,81 +172,76 @@ class dotproperty():
 
 # 3 redirect to edit view
 # GET https://www.dotproperty.co.th/my-dashboard/properties/4817126/edit
-
     def create_post(self, data):
-        start_time = datetime.datetime.utcnow()
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-        }
-        success = ''
-        detail = ''
-        post_id = ''
-        post_url = ''
-        print('-4')
-        if 'post_images' in data and len(data['post_images']) > 0:
-            pass
+        time_start = datetime.datetime.utcnow()
+
+        path = './static/chromedriver'
+        options = Options()
+        options.add_argument('--headless')
+        options.add_argument('--disable-notifications')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-infobars')
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1024,768")
+        options.add_argument('--disable-notifications')
+        options.add_argument('--disable-dev-shm-usage')
+        driver = webdriver.Chrome(executable_path=path, options=options)
+
+        #driver.maximize_window()
+        driver.get('https://www.dotproperty.co.th/login')
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'email'))).send_keys(data['user'])
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.NAME, 'password'))).send_keys(data['pass'])
+        login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
+        actions = ActionChains(driver)
+        actions.move_to_element(login_btn).click().perform()
+        txt = str(driver.page_source)
+        if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
+            success = 'false'
+            detail = 'Invalid credentials'
         else:
-            data['post_images'] = ['./imgtmp/default/white.jpg']
-        try:
-            options = Options()
-            prefs = {"profile.default_content_setting_values.notifications": 2}
-            # options.add_experimental_option("prefs", prefs)
-            options.headless = True
-            #chrome_options.add_argument('headless')
-            driver = webdriver.Firefox(options=options)
-            print('-3')
-            driver.maximize_window()
-            print('-2')
-            url = 'https://www.dotproperty.co.th/login'
-            driver.get(url)
-            print('-1')
+            success = 'true'
+            detail = 'Log in success'
 
-            #print('blocked')
-            element = driver.find_element_by_name("email")
-            element.send_keys(data['user'])
-            #print('done')
-            element = driver.find_element_by_name("password")
-            element.send_keys(data['pass'])
-            #print('done')
-            time.sleep(2)
-
-            submit = driver.find_element_by_id("loginPopupBtn")
-            submit.click()
-            time.sleep(2)
-            txt = str(driver.page_source)
-            success = ''
-            detail = ''
-            print('0')
-            if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
-                success = 'false'
-                detail = 'Invalid credentials'
-            else:
-                url = 'https://www.dotproperty.co.th/my-dashboard/properties'
-                driver.get(url)
-                #block create-btn
-                time.sleep(2)
-                submit = driver.find_elements_by_tag_name("button")[0]
-                submit.click()
-                # submit.click()
-                # submit.click()
-                time.sleep(7)
-                #driver.switch_to_window(driver.window_handles[0])
-                print('1')
-
-                #driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
-
-                '''element = driver.find_elements_by_css_selector("button[class='ui basic button edit-btn']")
-                #print(element)
-                #submit = div.find_element_by_tag_name('button')
-                submit = element[3]
-                action = ActionChains(driver)
-                action.move_to_element(submit)
-                action.click().perform()
-                action.click().perform()
-                action.click().perform()'''
-                elem = driver.find_element_by_xpath('//div[@id="infomation"]').click()
+        if success == 'true':
+            try:
+                time.sleep(3)
+                #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'ประกาศทั้งหมด')))
+                driver.get('https://www.dotproperty.co.th/my-dashboard/properties')
                 time.sleep(5)
-
+                button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
+                button[2].click()
+                try:
+                    WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
+                except:
+                    route_link = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'router-link-active')))
+                    route_link[0].click()
+                    time.sleep(2)
+                    route_link[1].click()
+                    time.sleep(2)
+                    button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
+                    button[2].click()
+                    WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
+                #Image process
+                pic_post = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'photos')))
+                if len(data['post_images'])<15:
+                    total = len(data['post_images'])
+                image = ''
+                count=1
+                for img in data['post_images'][:total]:
+                    image = Image.open(img)
+                    new_image = image.resize((600, 400))
+                    new_image.save(img)
+                all_images = ""
+                for count, pic in enumerate(data['post_images']):
+                    if count < len(data['post_images'])-1:
+                        all_images += os.path.abspath(pic) + '\n'
+                    else:
+                        all_images += os.path.abspath(pic)
+                pic_post.send_keys(all_images)
+                #Information process
+                WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'infomation'))).click()
+                #Select type
                 if data['listing_type'] != 'ขาย':
                     elem = driver.find_element_by_xpath('//div[@class="ui item menu three"]')
                     spans = elem.find_elements_by_tag_name('span')
@@ -258,10 +253,8 @@ class dotproperty():
                     elem = driver.find_element_by_name("salePrice")
                     elem.clear()
                     elem.send_keys(data['price_baht'], Keys.ARROW_DOWN)
-                #print('listing type and price done')
-                driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
-                #propertyType
-                p_type = ''
+
+                WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'propertyType'))).click()
                 property_tp = {
                     "1": "คอนโด",
                     "2": "บ้านเดี่ยว",
@@ -277,19 +270,12 @@ class dotproperty():
                 }
                 p_type = property_tp[str(data['property_type'])]
                 options = driver.find_element_by_id('my_propertyType')
-                #print(options)
-                time.sleep(2)
-                options.click()
-                time.sleep(5)
-                options = options.find_elements_by_class_name('item')
-                for opt in options:
-                    #print(opt.text)
-                    if str(opt.text) == p_type:
-                        opt.click()
+                items = options.find_elements_by_class_name('item')
+                for item in items:
+                    if item.text == p_type:
+                        item.click()
                         break
 
-                print('2')
-                #print('property type done')
                 if data['land_size_rai'] is None:
                     data['land_size_rai'] = ''
                 if data['land_size_ngan'] is None:
@@ -399,43 +385,19 @@ class dotproperty():
                             data['web_project_name'] = data['project_name']
                         else:
                             data['web_project_name'] = ''
-                    data['web_project_name'] = ''.join(map(str, str(data['web_project_name']).split(' ')))
-                    pro = data['web_project_name']
-                    '''url = 'https://www.dotproperty.co.th/dashboard-api/dropdown-filter-project?term='+str(data['web_project_name'])[:2]
-                    pro = ''
-                    req = httprequestObj.http_get(url)
-                    if str(req.text) != '[]':
-                        projects = []
-                        txt = str(req.text)
-                        ind = txt.find('text')
-                        while ind!=-1:
-                            ind+=7
-                            proj = ''
-                            while txt[ind]!='"':
-                                proj+=txt[ind]
-                                ind+=1
-                            projects.append(proj.replace(' ',''))
-                            txt = txt[ind:]
-                            ind = txt.find('text')
-                        for proj in projects:
-                            if proj.find(data['web_project_name'])!=-1:
-                                pro = proj
-                                break'''
-                    print('3')
-                    if pro!='':
+                    
+                    if data['web_project_name'] != '':
                         #print('click')
-                        options = driver.find_element_by_id('my_project')
-                        time.sleep(2)
-                        options.click()
-                        time.sleep(5)
+                        options = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'my_project')))
+                        actions = ActionChains(driver)
+                        actions.move_to_element(options).click().perform()
                         #print('clicked')
                         inp = options.find_elements_by_xpath('//input[@class="search"]')[2]
                         if data['listing_type'] == 'ขาย':
                             #print('sell')
                             inp = options.find_elements_by_xpath('//input[@class="search"]')[1]
-
                         time.sleep(2)
-                        inp.send_keys(str(data['web_project_name'])[:6])
+                        inp.send_keys(str(data['web_project_name']))
                         time.sleep(2)
                         #inp.send_keys(Keys.TAB)
                         inp.send_keys(Keys.ENTER)
@@ -492,7 +454,7 @@ class dotproperty():
                             opt.click()
                             break
                     #print('district done')
-                    print('4')
+                    #print('4')
                     options = driver.find_element_by_id('my_area')
                     time.sleep(2)
                     options.click()
@@ -520,12 +482,12 @@ class dotproperty():
                     time.sleep(2)
                     options.click()
                     time.sleep(5)
-                    print('5')
+                    #print('5')
                     #print('clicked')
 
                     options = driver.find_element_by_id('my_geoType').find_element_by_class_name('on-off')
                     options.click()
-                    print('6')
+                    #print('6')
                     #print('clicked')
 
                     elem = driver.find_element_by_name("latitude")
@@ -535,7 +497,7 @@ class dotproperty():
                     elem.clear()
                     elem.send_keys(str(data['geo_longitude']), Keys.ARROW_DOWN)
                     #print('done map')
-                    print('6')
+                    #print('6')
 
 
                 elem = driver.find_element_by_name("title_th")
@@ -566,14 +528,12 @@ class dotproperty():
                     elem.clear()
                     data['post_description_en'] = str(data['post_description_en']).replace('\r', '')
                     for i in range(10, 0, -1):
-
                         if i == 1:
                             data['post_description_en'] = str(data['post_description_en']).replace('\n' * i, '<br>')
                         else:
                             data['post_description_en'] = str(data['post_description_en']).replace('\n' * i,
-                                                                                                   '<br>' + '<p><br></p>' * (
-                                                                                                               i - 1))
-
+                                                                                                    '<br>' + '<p><br></p>' * (
+                                                                                                                i - 1))
                     elem.send_keys(data['post_description_en'], Keys.ARROW_DOWN)
 
                 #print('going to save')
@@ -620,7 +580,7 @@ class dotproperty():
                 url = 'https://www.dotproperty.co.th/my-dashboard/properties'
                 driver.get(url)
                 time.sleep(10)
-                print('7')
+                #print('7')
 
                 posts = driver.find_element_by_xpath('//table[@class="ui celled table unstackable"]').find_element_by_tag_name('tbody').find_elements_by_tag_name('tr')
                 #print('here1')
@@ -633,83 +593,80 @@ class dotproperty():
                         #print('here4')
                         if len((tds[8].find_elements_by_tag_name('a')))>2:
                             post_url = str((tds[8].find_elements_by_tag_name('a'))[1].get_attribute('href'))
+                            post_id = post_url.split('_')[-1]
                             break
-
                 detail = 'Post created'
 
+            except:
+                success = 'false'
+                detail = 'Can not create post'
+                post_url = ''
+                post_id = ''
+    
+            finally:
+                driver.close()
+                driver.quit()
 
+        else:
+            post_url = ''
+            post_id = ''
 
-            end_time = datetime.datetime.utcnow()
-            result = {'success': success,
-                      'usage_time': str(end_time - start_time),
-                      'start_time': str(start_time),
-                      'end_time': str(end_time),
-                      'post_url': post_url,
-                      'post_id': post_id,
-                      'account_type': 'null',
-                      'ds_id': data['ds_id'],
-                      'detail': detail,
-                      'websitename': 'dotproperty'}
-            return result
-        except Exception as e:
-            end_time = datetime.datetime.utcnow()
-            result = {'success': "false",
-                      'usage_time': str(end_time - start_time),
-                      'start_time': str(start_time),
-                      'end_time': str(end_time),
-                      'post_url': "",
-                      'post_id': "",
-                      'account_type': 'null',
-                      'ds_id': data['ds_id'],
-                      'detail': str(e),
-                      'websitename': 'dotproperty'}
-            return result
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "ds_id": data['ds_id'],
+            "post_url": post_url,
+            "post_id": post_id,
+            "account_type": None,
+            "detail": detail,
+            "websitename": "dotproperty"
+        }
 
     def boost_post(self, data):
         start_time = datetime.datetime.utcnow()
         log_id = str(data['log_id'])
         post_id = str(data['post_id'])
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-        }
-        success = ''
-        detail = ''
 
-
+        path = './static/chromedriver'
         options = Options()
-        prefs = {"profile.default_content_setting_values.notifications": 2}
-        options.add_experimental_option("prefs", prefs)
-        options.add_argument('headless')
-        driver = webdriver.Firefox(options=options)
-        #driver.maximize_window()
-        url = 'https://www.dotproperty.co.th/login'
-        driver.get(url)
+        options.add_argument('--headless')
+        options.add_argument('--disable-notifications')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-infobars')
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1024,768")
+        options.add_argument('--disable-notifications')
+        options.add_argument('--disable-dev-shm-usage')
+        driver = webdriver.Chrome(executable_path=path, options=options)
 
-        #print('blocked')
-        element = driver.find_element_by_name("email")
-        element.send_keys(data['user'])
-        #print('done')
-        element = driver.find_element_by_name("password")
-        element.send_keys(data['pass'])
-        #print('done')
-        time.sleep(2)
-
-        submit = driver.find_element_by_id("loginPopupBtn")
-        submit.click()
-        time.sleep(2)
+        driver.get('https://www.dotproperty.co.th/login')
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'email'))).send_keys(data['user'])
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.NAME, 'password'))).send_keys(data['pass'])
+        login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
+        actions = ActionChains(driver)
+        actions.move_to_element(login_btn).click().perform()
         txt = str(driver.page_source)
-        success = ''
-        detail = ''
-        if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง') != -1:
+        if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
             success = 'false'
             detail = 'Invalid credentials'
         else:
-            url = 'https://www.dotproperty.co.th/my-dashboard/properties'
-            driver.get(url)
-            # block create-btn
-            time.sleep(2)
-            valid_ids = []
+            success = 'true'
+            detail = 'Log in success'
+
+
+        if success == 'true':
             try:
+                time.sleep(3)
+                url = 'https://www.dotproperty.co.th/my-dashboard/properties'
+                driver.get(url)
+                # block create-btn
+                time.sleep(2)
+                valid_ids = []
                 while True:
                     driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_UP)
                     driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_UP)
@@ -762,40 +719,35 @@ class dotproperty():
         start_time = datetime.datetime.utcnow()
         log_id = str(data['log_id'])
         post_id = str(data['post_id'])
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-        }
-        success = ''
-        detail = ''
-
+        
+        path = './static/chromedriver'
         options = Options()
-        prefs = {"profile.default_content_setting_values.notifications": 2}
-        options.add_experimental_option("prefs", prefs)
-        options.add_argument('headless')
-        driver = webdriver.Firefox(options=options)
-        # driver.maximize_window()
-        url = 'https://www.dotproperty.co.th/login'
-        driver.get(url)
+        options.add_argument('--headless')
+        options.add_argument('--disable-notifications')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-infobars')
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1024,768")
+        options.add_argument('--disable-notifications')
+        options.add_argument('--disable-dev-shm-usage')
+        driver = webdriver.Chrome(executable_path=path, options=options)
 
-        #print('blocked')
-        element = driver.find_element_by_name("email")
-        element.send_keys(data['user'])
-        #print('done')
-        element = driver.find_element_by_name("password")
-        element.send_keys(data['pass'])
-        #print('done')
-        time.sleep(2)
-
-        submit = driver.find_element_by_id("loginPopupBtn")
-        submit.click()
-        time.sleep(2)
+        driver.get('https://www.dotproperty.co.th/login')
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'email'))).send_keys(data['user'])
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.NAME, 'password'))).send_keys(data['pass'])
+        login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
+        actions = ActionChains(driver)
+        actions.move_to_element(login_btn).click().perform()
         txt = str(driver.page_source)
-        success = ''
-        detail = ''
-        if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง') != -1:
+        if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
             success = 'false'
             detail = 'Invalid credentials'
         else:
+            success = 'true'
+            detail = 'Log in success'
+
+        if success == 'true':
             url = 'https://www.dotproperty.co.th/my-dashboard/properties'
             driver.get(url)
             # block create-btn
