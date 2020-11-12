@@ -184,26 +184,34 @@ class postcore():
                 # logging.warning('http connection error %s', imgurl)
                 continue
             if res.status_code == 200:
-                if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png':
-                    try:
-                        extension = res.headers['Content-Type'].split("/")[-1]
-                        with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
-                            f.write(res.content)
-                            f.close()
-                        datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension)
-                        imgcount = imgcount + 1
-                    except:
-                        pass
-                elif res.headers['Content-Type'] == 'application/octet-stream':
-                    try:
-                        extension = 'jpeg'
-                        with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
-                            f.write(res.content)
-                            f.close()
-                        datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension)
-                        imgcount = imgcount + 1
-                    except:
-                        pass
+                if int(res.headers['Content-Length']) > 0:
+                    if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png': # Please make the condition if there is no image, please send success false directly
+                        try:
+                            extension = res.headers['Content-Type'].split("/")[-1]
+                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
+                                f.write(res.content)
+                                f.close()
+                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension)
+                            imgcount = imgcount + 1
+                        except:
+                            pass
+                    elif res.headers['Content-Type'] == 'application/octet-stream':
+                        try:
+                            extension = 'jpeg'
+                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
+                                f.write(res.content)
+                                f.close()
+                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension)
+                            imgcount = imgcount + 1
+                        except:
+                            pass
+                else:
+                    logging.error('Issue with image urls')
+                    return {
+                        "success": "false",
+                        "detail": "Issue with image urls.",
+                    }
+
                 # else:
                     # logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
             # else:

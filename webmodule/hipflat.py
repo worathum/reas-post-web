@@ -376,6 +376,33 @@ class hipflat():
 
             print('1')
 
+
+            dataque = {
+                "params": "query="+ str(postdata['web_project_name']) +"&hitsPerPage=1"
+            }
+            
+
+            if postdata['property_type'] == "1":
+                res = httprequestObj.http_post(f'https://tom76npq59-dsn.algolia.net/1/indexes/PROD_Projects/query?x-algolia-api-key=318055435c6b9c9bdb6fefe330216299&x-algolia-application-id=TOM76NPQ59&x-algolia-agent=Algolia%20for%20jQuery%203.10.2', data=json.dumps(dataque))
+                project = res.json()
+                if len(project['hits']) > 0:
+                    condo_id = str(project['hits'][0]['objectID'])
+                    pro_name = ''
+                    lat = str(project['hits'][0]['lat'])
+                    lng = str(project['hits'][0]['lng'])
+                else:
+                    condo_id = ''
+                    pro_name = str(postdata['web_project_name'])
+                    lat = str(postdata['geo_latitude'])
+                    lng = str(postdata['geo_longitude'])
+            else:
+                condo_id = ''
+                pro_name = str(postdata['web_project_name'])
+                lat = str(postdata['geo_latitude'])
+                lng = str(postdata['geo_longitude'])
+
+
+
             data = {
                 'utf8': '',
                 'authenticity_token': '',
@@ -391,12 +418,12 @@ class hipflat():
                 'listing[major_region_id]': province_id,
                 'listing[region_id]': amphur_id,
                 'listing[place_id]': tumbon_id,
-                'listing[project_name]': str(postdata['web_project_name']),
-                'listing[condo_id]': '',
+                'listing[project_name]': pro_name,
+                'listing[condo_id]': condo_id,
                 'listing[street_number]': '-',
                 'listing[street_name]': str(postdata['addr_road']),
                 'listing[street_postcode]': '-',
-                'listing[location_string]': str(postdata['geo_latitude']) +','+str(postdata['geo_longitude']),
+                'listing[location_string]': lat + ',' + lng,
                 'listing[rooms_number]': str(postdata['bed_room']),
                 'listing[internal_area_sqm]': str(postdata['floor_area']),
                 'listing[plot_area][units]': 'thai',
@@ -686,6 +713,30 @@ class hipflat():
                     tumbon_id = '5599801f70726f1f36000b5e'
 
 
+                dataque = {
+                    "params": "query="+ str(postdata['web_project_name']) +"&hitsPerPage=1"
+                }
+                
+                #print(postdata['property_type'])
+
+                if postdata['property_type'] == "1":
+                    res = httprequestObj.http_post(f'https://tom76npq59-dsn.algolia.net/1/indexes/PROD_Projects/query?x-algolia-api-key=318055435c6b9c9bdb6fefe330216299&x-algolia-application-id=TOM76NPQ59&x-algolia-agent=Algolia%20for%20jQuery%203.10.2', data=json.dumps(dataque))
+                    project = res.json()
+                    if len(project['hits']) > 0:
+                        condo_id = str(project['hits'][0]['objectID'])
+                        pro_name = ''
+                        lat = str(project['hits'][0]['lat'])
+                        lng = str(project['hits'][0]['lng'])
+                    else:
+                        condo_id = ''
+                        pro_name = str(postdata['web_project_name'])
+                        lat = str(postdata['geo_latitude'])
+                        lng = str(postdata['geo_longitude'])
+                else:
+                    condo_id = ''
+                    pro_name = str(postdata['web_project_name'])
+                    lat = str(postdata['geo_latitude'])
+                    lng = str(postdata['geo_longitude']) 
 
                 #print('abcde')
                 data = {
@@ -704,12 +755,12 @@ class hipflat():
                     'listing[major_region_id]': province_id,
                     'listing[region_id]': amphur_id,
                     'listing[place_id]': tumbon_id,
-                    'listing[project_name]': str(postdata['web_project_name']),
-                    'listing[condo_id]': '',
+                    'listing[project_name]': pro_name,
+                    'listing[condo_id]': condo_id,
                     'listing[street_number]': '-',
                     'listing[street_name]': str(postdata['addr_road']),
                     'listing[street_postcode]': '-',
-                    'listing[location_string]': str(postdata['geo_latitude']) +','+str(postdata['geo_longitude']),
+                    'listing[location_string]': lat +','+lng,
                     'listing[rooms_number]': '',
                     'listing[internal_area_sqm]': str(postdata['floor_area']),
                     'listing[plot_area][units]': 'thai',

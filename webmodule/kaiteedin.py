@@ -552,7 +552,7 @@ class kaiteedin():
                     time_usage = time_end - time_start
                     return {
                         "websitename": "kaiteedin",
-                        "success": success,
+                        "success": 'false',
                         "start_time": str(time_start),
                         "end_time": str(time_end),
                         "ds_id": postdata['ds_id'],
@@ -581,7 +581,7 @@ class kaiteedin():
                     time_usage = time_end - time_start
                     return {
                         "websitename": "kaiteedin",
-                        "success": success,
+                        "success": 'false',
                         "start_time": str(time_start),
                         "end_time": str(time_end),
                         'detail': 'post created, but not approved yet',
