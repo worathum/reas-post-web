@@ -1481,27 +1481,79 @@ class ddproperty():
         success = test_login["success"]
         detail = test_login["detail"]
         agent_id = test_login["agent_id"]
-        if success == "true":
-            datapost = {
-                "listing_id[]": datahandled['post_id'],
-                "statusCode": "ACT",
-                "expectedCredits[]": 0,
-            }
-            r = httprequestObj.http_post('https://agentnet.ddproperty.com/repost_listing', datapost)
-            data = r.text
-            datajson = r.json()
+      #log.debug('')
+
+        time_start = datetime.datetime.utcnow()
+
+        # start process
+        #
+        datahandled = self.postdata_handle(postdata)
+
+        # login
+        test_login = self.test_login(datahandled)
+        
+        # self.firefox.quit()
+
+        success = test_login["success"]
+        detail = test_login["detail"]
+        agent_id = test_login["agent_id"]
+        
+        try:
+            if success == "true":
+                # datapost = {
+                #     "listing_id[]": datahandled['post_id'],
+                #     "statusCode": "ACT",
+                #     "expectedCredits[]": 0,
+                # }
+
+                self.firefox.get("https://agentnet.ddproperty.com/listing_management#ACT")
+                search = self.firefox.find_element_by_id("listingId")
+                search.send_keys(datahandled['post_id'])
+                search.send_keys(Keys.ENTER)
+                time.sleep(3)
+
+                try:
+                    all_rows = self.firefox.find_element_by_id('list-container')
+                    myrow = all_rows.find_element_by_class_name('listing-item')
+                    success = "false"
+                    try:
+                        iden = "listing-item-"+ datahandled['post_id'] +"-performance"
+                        item_perform = self.firefox.find_element_by_id(iden)
+                        perform_detail = item_perform.find_elements_by_class_name('component-listing-performance-detail-stats')
+                        post_view = perform_detail[1].text.split(' ')[0]
+                    except:
+                        post_view = ""                      
+                    try:
+                        renew = myrow.find_element_by_class_name('repost')
+                        renew.click()
+                        success = "true"
+                        detail = "Post Renewed Successfully."                    
+                        time.sleep(3)
+                    except:
+                        detail = "Post cannot be Renewed as of now."
+                except:
+                    detail = "Invalid Post Id."
+        finally:
+            # pass
+            self.firefox.quit()
+
+            # r = httprequestObj.http_post_with_headers('https://agentnet.ddproperty.com/repost_listing', datapost)
+            # print(r.content)
+            # print(r.status_code)
+            # print(r.url)
+            # datajson = r.json()
             #f = open("debug_response/ddboostpostresponse.html", "wb")
             #f.write(data.encode('utf-8').strip())
-            if datajson['status'] != 0:
-                success = 'false'
-                detail = datajson['message']
+            # if datajson['status'] != 0:
+            #     success = 'false'
+            #     detail = datajson['message']
 
             #
             # end process
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "post_id": datahandled['post_id'], "websitename": self.websitename}
+        return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "post_id": datahandled['post_id'], "websitename": self.websitename, "post_view": post_view}
 
     def delete_post(self, postdata):
         #log.debug('')
