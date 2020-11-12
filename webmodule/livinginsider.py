@@ -1494,34 +1494,34 @@ class livinginsider():
                 r = httprequestObj.http_post('https://www.livinginsider.com/living_edit_confirm.php', params={'topic_id': post_id}, data=data)
                 #print(r)
 
-                    try:
-                        r = BeautifulSoup(r.content, self.parser)
-                        link = r.find('input', attrs={'id': 'link_copy'})['value']
-                        post_id = post_url.split('/')[4]
-                    except:
-                        print(r.text)
-                        print(r.url)
-                        print(r.status_code)
-                        r = json.loads(r.text)
-                        link = r['link_copy']
+            try:
+                r = BeautifulSoup(r.content, self.parser)
+                link = r.find('input', attrs={'id': 'link_copy'})['value']
+                post_id = post_url.split('/')[4]
+            except:
+                print(r.text)
+                print(r.url)
+                print(r.status_code)
+                r = json.loads(r.text)
+                link = r['link_copy']
 
-                    t = 'https:\/\/www.livinginsider.com\/livingdetail\/495548\/1\/fsa.html'
-                    if link == '':
-                        detail = 'Not posted. Low Credits maybe.'
-                        success = False
-                        time_end = datetime.datetime.utcnow()
-                        time_usage = time_end - time_start
-                        return {
-                            "success": success,
-                            "websitename": self.webname,
-                            "usage_time": str(time_usage),
-                            "start_time": str(time_start),
-                            "end_time": str(time_end),
-                            "post_url": post_url,
-                            "post_id": post_id,
-                            "account_type": "null",
-                            "detail": detail,
-                        }
+            t = 'https:\/\/www.livinginsider.com\/livingdetail\/495548\/1\/fsa.html'
+            if link == '':
+                detail = 'Not posted. Low Credits maybe.'
+                success = False
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
+                return {
+                    "success": success,
+                    "websitename": self.webname,
+                    "usage_time": str(time_usage),
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "post_url": post_url,
+                    "post_id": post_id,
+                    "account_type": "null",
+                    "detail": detail,
+                }
 
                 t = 'https:\/\/www.livinginsider.com\/livingdetail\/495548\/1\/fsa.html'
                 if link == '':
@@ -1725,6 +1725,18 @@ class livinginsider():
         device_id = ''
 
         if success:
+
+            try:
+                form_data = {
+                    "web_id": postdata['post_id'], 
+                    "selcet_day": 7
+                }
+                res = httprequestObj.http_post('https://www.livinginsider.com/a_view_graph_iStock.php', data=form_data)
+                return_data = res.json()
+                post_view = return_data['stat']['stat_all_clicks']
+            except:
+                post_view = ''
+
             page = 0
 
             post_found = False
@@ -1818,6 +1830,7 @@ class livinginsider():
             "ds_id": postdata['ds_id'],
             "post_id": post_id,
             "websitename": "livinginsider",
+            "post_view": post_view
         }
 
     def search_post(self, postdata):

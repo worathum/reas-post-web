@@ -1220,6 +1220,17 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
+
+            try:
+                res = httprequestObj.http_get('https://www.thaihometown.com/member/?Keyword=&Msid=' + datahandled['post_id'] + '&SearchMember.x=43&SearchMember.y=8')
+                soup = BeautifulSoup(res.text, self.parser)
+                code_div = soup.find('div', {'class': 'Show_isView'})
+                code = code_div.get('onclick').split(',')[-1].replace(')', '').replace("'", '')
+                response = httprequestObj.http_get('https://www.thaihometown.com/member/ajaxView.php?code=' + code + '&ided=' + datahandled['post_id'])
+                post_view = response.text.split(' ')[1]
+            except:
+                post_view = ''
+
             r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
@@ -1330,7 +1341,8 @@ class thaihometown():
             "detail": detail, 
             "log_id": datahandled['log_id'], 
             "post_id": datahandled['post_id'],
-            "websitename": self.websitename
+            "websitename": self.websitename,
+            "post_view": post_view
         }
 
 
