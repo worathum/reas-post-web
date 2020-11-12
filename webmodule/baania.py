@@ -625,7 +625,7 @@ class baania():
 
         r = httprequestObj.http_get("https://api.baania.com/api/v1/provinces")
         prov = json.loads(r.text)
-        print(prov)
+        # print(prov)
         for i in prov:
             if i['data']['title']['title_th'].strip() == postdata["addr_province"].strip():
                 province_id = i['data']['id']
@@ -759,7 +759,7 @@ class baania():
             "post_id": ""
             }
 
-
+        print(allres)
         project_id = None
         if len(allres) != 0:
             project_id = allres[0]["_id"]
@@ -836,8 +836,8 @@ class baania():
                 # print(data['images'])
                 if data['cover'] != None:
                     files = {
-                        "cover": data['cover'],
-                        "images": data['images']
+                        "cover": '',
+                        "images": []
                     }
                     for i in range(len(allimages)):
                         im = open(os.getcwd()+"/"+allimages[i], 'rb')
@@ -863,7 +863,10 @@ class baania():
                             "main": res[0]["main"],
                             "thumbnail": res[0]["thumbnail"]
                         }
-                        files["images"].append(temp)
+                        if i == 0:
+                            files["cover"] = temp
+                        else:
+                            files["images"].append(temp)
                         if len(files["images"]) == 20:
                             break
                 else:
@@ -931,7 +934,8 @@ class baania():
                 if r.status_code == 200:
                     detail = "Post edited successfully!"
                     post_id = pid
-                    post_url = 'https://www.baania.com/th/listing/' + postdata["post_title_th"]+'-'+pid
+
+                    post_url = 'https://www.baania.com/th/listing/' + postdata["post_title_th"].strip().replace(' ', '-')+'-'+pid
                 else:
                     success = "false"
                     detail = data["message"]

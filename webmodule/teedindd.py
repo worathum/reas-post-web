@@ -19,7 +19,7 @@ httprequestObj = lib_httprequest()
 with open("./static/ploychao_province.json",encoding = 'utf-8') as f:
     provincedata = json.load(f)
 
-
+prev_img = []
 class teedindd():
 
     name = 'teedindd'
@@ -212,6 +212,7 @@ class teedindd():
     def editpost(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        global prev_img
 
         theurl = ""
         post_id = ""
@@ -223,6 +224,17 @@ class teedindd():
         detail = ""
 
         if success == "true":
+            if postdata['no'] == 0:
+                list_url = 'https://www.teedindd.com/post.php?pd=' + str(postdata['post_id'])
+                r = httprequestObj.http_get(list_url)
+                soup = BeautifulSoup(r.content, features=self.parser)
+                all_img = soup.findAll('a', {'class':'delete'})
+                del_ = []
+                for img in all_img:
+                    data = img['onclick'].split()[1].replace(');','')
+                    del_.append(int(data))
+                prev_img = del_
+
             if 'name' not in postdata:
                 return{
                 'websitename': 'teedindd',
@@ -874,6 +886,13 @@ class teedindd():
 
     def edit_post(self,postdata):
         k=0
+        try:
+            temp = postdata['post_images']
+            temp.reverse()
+            temp[0],temp[1],temp[2],temp[3] = temp[1],temp[0],temp[3],temp[2]
+            postdata['post_images'] = temp
+        except:
+            pass
         while k<len(postdata['post_images']):
             postdata['no']=k
             j=self.editpost(postdata)
@@ -883,6 +902,10 @@ class teedindd():
         if len(postdata['post_images'])==0:
             postdata['no']=0
             j=self.editpost(postdata)
+        if j['success'] == "true":
+            for i,id in enumerate(prev_img):
+                r = httprequestObj.http_get('https://www.teedindd.com/admin/properties-process.php?imgDelete=' + str(id))
+                print(i,r.text)
 
         j['log_id'] = postdata['log_id']
         j['ds_id'] = postdata['ds_id']

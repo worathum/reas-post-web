@@ -592,10 +592,18 @@ class teesuay():
             for i in range(min(len(arr), len(postdata['post_images']))):
                 datapost[arr[i]] = postdata['post_images'][i]
                 files[arr[i]] = (postdata['post_images'][i], open(postdata['post_images'][i], "rb"), "image/jpg")
+            url_n = 'http://www.teesuay.com/member/p-edit-property.php'
+            r = httprequestObj.http_post(
+                url_n, data=datapost, files=files)
 
-            url_n='http://www.teesuay.com/member/p-edit-property.php'
-            
-            r=httprequestObj.http_post(url_n,datapost)
+
+
+            print('data-------', datapost)
+            # d_ = {
+            #     'post_id': postdata["post_id"],
+            #     'Submit': 'Save data >>'
+            # }
+            # r_ = httprequestObj.http_post('http://www.teesuay.com/member/go-to-real-estate.php',d_)
             if r.status_code==200:
                 detail = "Post edited successfully"
                 success="true"
