@@ -65,7 +65,7 @@ class homedd():
                     'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
                   }
 
-        filename = "response.txt"
+        # filename = "response.txt"
 
 
         success = False
@@ -98,19 +98,13 @@ class homedd():
                 end_time = datetime.utcnow()
 
                 # Writes the response data to a file
-                f = open(filename,"w+")
-                f.write(str(request.text))
-                f.close()
+                
+                if 'อีเมลนี้ได้ถูกใช้แล้ว ไม่สามารถบันทึกได้ค่ะ' in str(request.text):
+                    detail = "The user is already registered!"
+                else:
+                    detail = "Successfully Registered !"
+                    success = True
 
-                with open(filename,'r') as file:
-                    if 'อีเมลนี้ได้ถูกใช้แล้ว ไม่สามารถบันทึกได้ค่ะ' in file.read():
-                        detail = "The user is already registered!"
-                    else:
-                        detail = "Successfully Registered !"
-                        success = True
-                    file.close()
-
-                os.remove(filename)
 
             except requests.exceptions.RequestException as e: 
                 end_time = datetime.utcnow()
@@ -140,7 +134,7 @@ class homedd():
                     'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
                 }
 
-        filename = "response.txt"
+        # filename = "response.txt"
         success = False
         start_time = datetime.utcnow()
         end_time = datetime.utcnow()
@@ -168,18 +162,18 @@ class homedd():
                 end_time = datetime.utcnow()
 
                 # Writes the response data to a file
-                f = open(filename,"w+")
-                f.write(str(request.text))
-                f.close()
+                # f = open(filename,"w+")
+                # f.write(str(request.text))
+                # f.close()
 
-                with open(filename,'r') as file:
-                    if 'ยินดีต้อนรับ' in file.read():
-                        success = True
-                        detail = "Successfully logged in!"
-                    else:
-                        detail = "Unsucessful Login !"
-                    file.close()                  
-                os.remove(filename)
+                # with open(filename,'r') as file:
+                if 'ยินดีต้อนรับ' in str(request.text):
+                    success = True
+                    detail = "Successfully logged in!"
+                else:
+                    detail = "Unsucessful Login !"
+                #     file.close()                  
+                # os.remove(filename)
                 
             except requests.exceptions.RequestException as e:
                 end_time = datetime.utcnow()
@@ -213,7 +207,7 @@ class homedd():
                     'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
                   }
 
-        filename = "response.txt"
+        # filename = "response.txt"
 
         # print(json.dumps(postdata, indent=4, sort_keys=True,default=str)) 
 
@@ -408,22 +402,22 @@ class homedd():
                 end_time = datetime.utcnow()
 
 
-                f = open(filename,"w+")
-                f.write(str(request.text))
-                f.close()
+                # f = open(filename,"w+")
+                # f.write(str(request.text))
+                # f.close()
                 # print(request.text)
-                with open(filename,'r') as file:
-                    if 'บันทึกเรียร้อยแล้วค่ะ' in file.read():
-                        detail = "Successfully created the post"
-                        success = True
-                    else:
-                        # print(request.text)
-                        detail = " Unsuccessful post creation !"
-                        success = False
+                # with open(filename,'r') as file:
+                if 'บันทึกเรียร้อยแล้วค่ะ' in str(request.text):
+                    detail = "Successfully created the post"
+                    success = True
+                else:
+                    # print(request.text)
+                    detail = " Unsuccessful post creation !"
+                    success = False
 
-                    file.close()
+                #     file.close()
 
-                os.remove(filename)
+                # os.remove(filename)
 
                 if success == True:
                     url = "http://homedd.co.th/member_property_list.php"
@@ -474,7 +468,7 @@ class homedd():
                     'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
                   }
 
-        filename = "response.txt"
+        # filename = "response.txt"
     
 
 
@@ -675,19 +669,19 @@ class homedd():
                 request = httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
                 end_time = datetime.utcnow()
 
-                f = open(filename,"w+")
-                f.write(str(request.text))
+                # f = open(filename,"w+")
+                # f.write(str(request.text))
                 # print(request.text)
-                f.close()
-                with open(filename,'r') as file:
-                    if 'ไม่สามารถทำการบันทึกได้ค่ะ' in file.read():
-                        detail = "Cannot Edit due to wrong post id"
-                        success = False
-                    else:
-                        detail = "Successfully Modified the Post !"
-                        success = True
-                    file.close()
-                os.remove(filename)
+                # f.close()
+                # with open(filename,'r') as file:
+                if 'ไม่สามารถทำการบันทึกได้ค่ะ' in str(request.text):
+                    detail = "Cannot Edit due to wrong post id"
+                    success = False
+                else:
+                    detail = "Successfully Modified the Post !"
+                    success = True
+                    # file.close()
+                # os.remove(filename)
 
                 if success == True:
                     url = "http://homedd.co.th/member_property_list.php"
@@ -740,7 +734,7 @@ class homedd():
         post_id = postdata["post_id"]
         detail = ""
 
-        filename = "response.txt"
+        # filename = "response.txt"
         headers = {
                 'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
                 }
@@ -751,22 +745,22 @@ class homedd():
             
 
             request = httprequestObj.http_get(url)
-            f = open(filename,"w+")
-            f.write(str(request.text))
-            f.close()
+            # f = open(filename,"w+")
+            # f.write(str(request.text))
+            # f.close()
 
             # print(request.text)
 
-            with open(filename,'r') as file:
-                if 'ลบข้อมูลเรียบร้อยแล้วค่ะ' in file.read():
-                    detail = "Successfully deleted"
-                    success = True
-                else:
-                    detail = "Cannot Delete the Post due to wrong id!"
-                    success = False
-                file.close()
+            # with open(filename,'r') as file:
+            if 'ลบข้อมูลเรียบร้อยแล้วค่ะ' in str(request.text):
+                detail = "Successfully deleted"
+                success = True
+            else:
+                detail = "Cannot Delete the Post due to wrong id!"
+                success = False
+                # file.close()
 
-            os.remove(filename)
+            # os.remove(filename)
 
 
         return {
@@ -796,7 +790,7 @@ class homedd():
                     'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
                   }
 
-        filename = "response.txt"
+        # filename = "response.txt"
 
         if success == True:
 
