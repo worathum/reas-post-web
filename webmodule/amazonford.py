@@ -252,7 +252,7 @@ class amazonford():
                 data['area'] = str(str(postdata['floor_area']) + 'ตรม.')
                 data['bedroom'] = str(postdata['bed_room'])
                 data['bathroom'] = str(postdata['bath_room'])
-                data['floors'] = str(postdata['floor_level'])
+                data['floors'] = str(postdata['floor_total'])
 
             else:
                 if(postdata['land_size_rai'] == "" or postdata['land_size_rai'] == "null" or 'land_size_rai' not in postdata or postdata['land_size_rai'] == None):
@@ -630,7 +630,7 @@ class amazonford():
                     data['area'] = str(str(postdata['floor_area']) + 'ตรม.')
                     data['bedroom'] = str(postdata['bed_room'])
                     data['bathroom'] = str(postdata['bath_room'])
-                    data['floors'] = str(postdata['floor_level'])
+                    data['floors'] = str(postdata['floor_total'])
 
                 else:
                     if(postdata['land_size_rai'] == "" or postdata['land_size_rai'] == "null" or 'land_size_rai' not in postdata or postdata['land_size_rai'] == None):
