@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import threading
 
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
@@ -407,6 +408,14 @@ class condoable():
             "ds_id": postdata['ds_id']
         }
 
+    def del_img(self, all_img):
+        for i, img in enumerate(all_img):
+            link = img['onclick'].split(',')[1].replace('\r\n\t\t\t        url: "', '').replace('"', '')
+            try:
+                del_ = httprequestObj.http_post('http://condoable.com/' + str(link), '')
+                print(i, del_.text)
+            except:
+                pass
     def edit_post(self, postdata):
         # https://www.condoable.com/post/get_json_district?province_id=13   ->     for district
         #http://condoable.com/advertise-condo.jsp?advertiseId=288236
@@ -550,6 +559,19 @@ class condoable():
             }
             # http://condoable.com/uploadFile.do?type=advertiseImage8/288227&advertiseId=288227
             filestoup = {}
+            r_ = httprequestObj.http_post('http://condoable.com/listImage.do?id='+ str(post_id) + '&type=advertiseImage&atc=' + str(authenticityToken) + '&sid=78','')
+            soup = BeautifulSoup(r_.content, self.parser)
+            # f'listImage.do?id={post_id}&type=advertiseImage&atc={authenticityToken}&sid=78'
+            # print(r_.text)
+            all_img = soup.findAll('div', {'class': 'delete'})
+            print(len(all_img))
+            self.del_img(all_img)
+            # del_ =[]
+
+
+
+            # print(len(all_img),del_)
+
             for i in postdata['post_images']:
                 filestoup['files[]'] = open(os.getcwd() + "/"+ i,'rb')
                 r = httprequestObj.http_post('http://condoable.com/uploadFile.do?type=advertiseImage8/'+post_id +'&advertiseId='+post_id,data="",files=filestoup)
@@ -559,7 +581,7 @@ class condoable():
                 detail = "Sucessfully Edited post with id "+post_id
             else:
                 success = "false"
-                detail = "Could not edit post wiht id "+post_id
+                detail = "Could not edit post with id "+post_id
             post_url = "http://condoable.com/viewAdvertise.do?advertiseId="+str(post_id)
         else:
             success = "false"

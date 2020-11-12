@@ -290,13 +290,46 @@ class onlineoops():
             r = httprequestObj.http_get(self.site_name+'/post/free?id='+str(postdata['post_id']))
             soup = BeautifulSoup(r.text, features=self.parser)
             site_error = soup.find(class_ = 'site-error')
-            
+            soup_ = soup
+
             if site_error:
                 success = "false"
                 detail  = "No post found with given id"
             else:
                 csrf = soup.find(attrs={'name':'_csrf'}).get('value')
+                header = {
+                    'x-csrf-token': csrf
+                }
+                script = soup_.find('script', {'type': 'text/javascript'})
+                script = str(script).split('var')
+                data = []
+                for i in script:
+                    if 'fileinput_' in i:
+                        data.append((i))
+                data[0] = data[0].split('=')[3].split('initialPreview":[')[1].split(']')[0]
+                data[0] = data[0].replace('"', '')
+                data[0] = data[0].replace('\\', '')
+                data[1] = data[1].split('=')[2].split('initialPreview":[')[1].split(']')[0].split(',')
+                temp = []
+                for i in data[1]:
+                    m = i.replace('"', '')
+                    m = m.replace('\\', '')
+                    temp.append(m)
+                data[1] = temp
+                # print('\n\n\n----------->>',data)
+                d_ = {
+                    'key': str(data[0]) + ':' + str(postdata["post_id"])
+                }
+                r_ = httprequestObj.http_post('https://market.onlineoops.com/post/file-delete-thumb', data=d_, headers=header)
+                # print(r_.url,d_,r_.text)
 
+                for i in data[1]:
+                    d_ = {
+                        'key': str(i) + ':' + str(postdata["post_id"])
+                    }
+                    r_ = httprequestObj.http_post('https://market.onlineoops.com/post/file-delete', data=d_, headers=header)
+                    # text is false but pic will be deleted
+                    # print(r_.url, d_, r_.text)
                 province = province_list[0]
                 for pr in province_list:
                     if postdata['addr_province'] in pr:

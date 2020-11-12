@@ -691,9 +691,23 @@ class property2share():
             'contact_website': ''
         }
 
+
         res = httprequestObj.http_post(url, data=data)
         url = res.url
 
+        r_ = httprequestObj.http_get('https://www.property2share.com/pageuser/addPicPublish.php?publish_id=' + str(post_id))
+        soup = BeautifulSoup(r_.text, 'html.parser')
+        all_img = soup.findAll('div', {'class':'divImg'})
+        for del_id in all_img:
+            del_id = del_id['id'].replace('divImg_','')
+            # print(del_id)
+            u_ = 'https://www.property2share.com/pageuser/delete_pic.php'
+            data_ = {
+                'id': int(del_id),
+                'type': 1
+            }
+            res_ = httprequestObj.http_post(u_, data=data_)
+            # print(res_.text)
         allimages = postdata["post_images"][:15]
         files = {}
         for i in range(len(allimages)):
@@ -703,7 +717,8 @@ class property2share():
                 ('publish_id', post_id),
             )
             files['myfile'] = r
-            res1 = httprequestObj.http_post(url, data=None, params=params, files=files)
+            res1 = httprequestObj.http_post('https://www.property2share.com/pageuser/upload.php', data=None, params=params, files=files)
+            print(res1.text)
 
 
         time_end = datetime.utcnow()
