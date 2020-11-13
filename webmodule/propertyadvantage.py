@@ -696,6 +696,7 @@ class propertyadvantage():
             "post_id": postdata["post_id"],
             "ds_id": postdata["ds_id"],
             "log_id": postdata['log_id'],
+            "post_view": ""
         }
 
 

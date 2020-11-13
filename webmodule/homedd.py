@@ -838,6 +838,7 @@ class homedd():
             "account_type": "null",
             "detail": detail,
             "websitename": "homedd",
+            "post_view": ""
         }
 
     def search_post(self, postdata):

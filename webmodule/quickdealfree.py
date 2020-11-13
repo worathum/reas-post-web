@@ -530,6 +530,7 @@ class quickdealfree():
             "log_id": postdata['log_id'],
             "post_id": postdata['post_id'],
             "websitename": "quickdealfree",
+            "post_view": ""
         }
         
     def search_post(self, postdata):

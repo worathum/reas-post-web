@@ -385,6 +385,7 @@ class aecmarketing():
             "detail": detail,
             "post_id": postdata['post_id'],
             "websitename": "aecmarketing",
+            "post_view": ""
         }
 
     def delete_post(self, postdata):

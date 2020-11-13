@@ -843,6 +843,7 @@ class residences():
             "detail": detail,
             "log_id": postdata['log_id'],
             "websitename": self.websitename,
+            "post_view": ""
         }
         
     def boost_post_apartment(self, postdata,content):

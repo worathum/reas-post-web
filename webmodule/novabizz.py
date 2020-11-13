@@ -249,6 +249,7 @@ class novabizz():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": "wrong post id",
+                "post_view": ""
             }
         posturl="https://www.novabizz.com/manage-post.php?update="+postdata['post_id']
         r=httprequestObj.http_get(posturl)
@@ -264,6 +265,7 @@ class novabizz():
             "time_end": time_end,
             "detail": "",
             "post_id": post_id,
+            "post_view": ""
         }        
 
 

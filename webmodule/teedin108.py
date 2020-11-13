@@ -740,7 +740,8 @@ class teedin108():
             "detail": detail,
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
-            "post_id": post_id
+            "post_id": post_id,
+            "post_view": ""
         }
 
 

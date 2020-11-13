@@ -474,7 +474,8 @@ class ploychao():
             "detail": "",
             "log_id": log_id,
             "post_id": post_id,
-            "websitename": "ploychao"
+            "websitename": "ploychao",
+            "post_view": ""
         }    
 
 

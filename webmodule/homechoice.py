@@ -592,7 +592,8 @@ class homechoice():
             "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
             "websitename": self.name,
-            "ds_id": postdata['ds_id']
+            "ds_id": postdata['ds_id'],
+            "post_view": ""
         }
 
 

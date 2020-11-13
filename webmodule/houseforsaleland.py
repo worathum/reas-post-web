@@ -128,6 +128,7 @@ class houseforsaleland():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": detail,
+                "post_view": ""
             }
         url_n = 'https://www.xn--22c0bihcc9cwhcxj2ui.com/process-postfree.php?act=editpostfree&id=' + \
             postdata['post_id']
@@ -145,7 +146,8 @@ class houseforsaleland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": "boosted",
-            "post_id": postdata['post_id']
+            "post_id": postdata['post_id'],
+            "post_view": ""
         }
 
 

@@ -467,7 +467,8 @@ class propertypostfree():
             "detail": detail,
             "ds_id" : str(postdata['ds_id']),
             "post_id": str(postdata['post_id']),
-            "log_id": postdata['log_id']
+            "log_id": postdata['log_id'],
+            "post_view": ""
         }
 
 

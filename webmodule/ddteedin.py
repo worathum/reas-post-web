@@ -883,7 +883,8 @@ class ddteedin():
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
-            "ds_id": postdata['ds_id']
+            "ds_id": postdata['ds_id'],
+            "post_view": ""
         }
 
     def print_debug(self, msg):

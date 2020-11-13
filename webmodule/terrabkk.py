@@ -829,6 +829,7 @@ class terrabkk():
             "detail": detail,
             "log_id": log_id,
             "post_id": post_id,
+            "post_view": ""
         }
 
     def delete_post(self, postdata):

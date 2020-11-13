@@ -204,9 +204,10 @@ class teedindd():
             "start_time": time_start,
             "end_time": time_end,
             "detail": "",
-                'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id":postdata['log_id'],
             "post_id": postdata['post_id'],
+            "post_view": ""
         }        
 
     def editpost(self, postdata):

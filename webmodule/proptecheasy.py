@@ -955,7 +955,8 @@ class proptecheasy():
             "end_time": time_end,
             "detail": detail,
             "post_id": post_id,
-            "ds_id": postdata['ds_id']
+            "ds_id": postdata['ds_id'],
+            "post_view": ""
         }
 
     def search_post(self, postdata):

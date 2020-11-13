@@ -567,7 +567,8 @@ class pantipmarket():
             "log_id": postdata['log_id'],
             "detail": detail,
             "post_id": post_id,
-            "post_url": post_url
+            "post_url": post_url,
+            "post_view": ""
         }
 
     def delete_post(self, postdata):

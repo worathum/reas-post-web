@@ -669,6 +669,7 @@ class teedin2():
                 "start_time": str(start_time),
                 "end_time": str(end_time),
                 "detail": detail,
+                "post_view": ""
             }
         posturl = "https://www.teedin2.com/topic4Moveup.php"
         datapost = {
@@ -688,6 +689,7 @@ class teedin2():
             "end_time": end_time,
             "detail": "",
             "post_id": post_id,
+            "post_view": ""
         }
 
     def search_post(self, postdata):

@@ -358,6 +358,7 @@ class condoable():
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
+            "post_view": ""
         }
 
     def delete_post(self, postdata):

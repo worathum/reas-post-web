@@ -1241,7 +1241,8 @@ class bankumka():
             "post_id": postdata['post_id'],
             "account_type": "null",
             "websitename": "bankumka",
-            "ds_id": postdata['ds_id']
+            "ds_id": postdata['ds_id'],
+            "post_view": ""
         }
 
 

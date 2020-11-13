@@ -1050,6 +1050,7 @@ class kaiteedin():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": 'Wrong Post id',
+                "post_view": ""
             }
         if success == "true":
             datapost=[
@@ -1079,7 +1080,8 @@ class kaiteedin():
             "end_time": str(time_end),
             "detail": detail,
             "ds_id": postdata['ds_id'],
-            "post_id": postdata['post_id']
+            "post_id": postdata['post_id'],
+            "post_view": ""
         }
 
 

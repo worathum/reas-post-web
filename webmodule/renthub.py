@@ -1144,6 +1144,7 @@ class renthub():
             "log_id": datahandled['log_id'],
             "post_id": datahandled['post_id'],
             "websitename": self.websitename,
+            "post_view": ""
         }
 
     def delete_post(self, postdata):

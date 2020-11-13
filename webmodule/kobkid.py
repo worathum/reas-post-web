@@ -447,7 +447,8 @@ class kobkid():
             "detail": detail,
             "post_url": "https://www.kobkid.com/market/" + str(post_id),
             "post_id": post_id,
-            "websitename": "kobkid"
+            "websitename": "kobkid",
+            "post_view": ""
         }
 
     def delete_post(self, postdata):

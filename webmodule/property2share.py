@@ -375,7 +375,8 @@ class property2share():
                 "start_time": str(time_start),
                 "end_time": str(time_end),
                 "detail": detail,
-                "websitename": "property2share"
+                "websitename": "property2share",
+                "post_view": ""
             }
 
         response = httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+post_id)
@@ -487,7 +488,8 @@ class property2share():
             'ds_id': postdata['ds_id'],
             "post_id": post_id,
             "log_id" : log_id,
-            "websitename": "property2share"
+            "websitename": "property2share",
+            "post_view": ""
         }
 
     def delete_post(self, postdata):

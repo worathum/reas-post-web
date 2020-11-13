@@ -468,7 +468,8 @@ class onedproperty():
             "detail": detail,
             "post_id": str(postdata['post_id']),
             "ds_id": str(postdata['ds_id']),
-            "log_id": postdata['log_id']
+            "log_id": postdata['log_id'],
+            "post_view": ""
         }
 
 

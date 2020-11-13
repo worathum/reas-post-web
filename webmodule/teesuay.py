@@ -748,7 +748,8 @@ class teesuay():
                     'ds_id': postdata['ds_id'],
                     "end_time": str(time_end),
                     "detail": "wrong post id",
-                    "log_id": postdata['log_id']
+                    "log_id": postdata['log_id'],
+                    "post_view": ""
 
                 }
             posturl="http://www.teesuay.com/member/slide-property.php?post_id="+postdata['post_id']
@@ -763,7 +764,8 @@ class teesuay():
                 'ds_id': postdata['ds_id'],
                 "detail": "Boosted Successfully",
                 "post_id": post_id,
-                "log_id": postdata['log_id']
+                "log_id": postdata['log_id'],
+                "post_view": ""
                 
             }
         else:
@@ -778,6 +780,7 @@ class teesuay():
                 "end_time": str(time_end),
                 "detail": detail,
                 "log_id":postdata['log_id'],
+                "post_view": ""
             }
 
 

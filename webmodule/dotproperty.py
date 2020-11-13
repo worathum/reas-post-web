@@ -684,7 +684,8 @@ class dotproperty():
             'ds_id': data['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
-            'websitename': 'dotproperty'
+            'websitename': 'dotproperty',
+            "post_view": ""
         }
         # https://ilovecondo.net/new-post/topicid/910653/trk/78
         return result
