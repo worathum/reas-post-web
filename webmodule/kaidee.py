@@ -37,7 +37,7 @@ httprequestObj = lib_httprequest()
 class kaidee():
     name = 'kaidee'
     site_name = "https://www.kaidee.com"
-    api_name = "https://api.kaidee.com/0.10"
+    api_name = "https://api.kaidee.com/0.12"
 
     def __init__(self):
         try:
@@ -575,9 +575,8 @@ class kaidee():
                         post_id = str(post.find('a').get('href').split('-')[-1])
                         post_url = 'https://baan.kaidee.com/product-'+ post_id
                         break
-            else:
-                
-                detail = "An error occurred while logging in through selenium"
+            """ except:
+                detail = "An error occurred while logging in through selenium" """
         else:
             detail = "cannot login"
         
