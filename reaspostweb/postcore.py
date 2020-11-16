@@ -207,9 +207,27 @@ class postcore():
                             pass
                 else:
                     logging.error('Issue with image urls')
+                    weblists = datarequest['web']
+                    web = {}
+                    for webitem in weblists:
+                        web[webitem['ds_name']] = {
+                            "websitename": webitem['ds_name'],
+                            "success": "false",
+                            "detail": "There is no image in your data. Please kindly recheck.",
+                            "start_time": datetime.datetime.utcnow(),
+                            "end_time": datetime.datetime.utcnow(),
+                            "usage_time": datetime.datetime.utcnow(),
+                            "ds_name": webitem['ds_name'],
+                            "ds_id": webitem['ds_id'],
+                            "account_type": "",
+                            "log_id": webitem['log_id'],
+                            "post_url": "",
+                            "post_id": "",
+                        }
                     return {
                         "success": "false",
-                        "detail": "Issue with image urls.",
+                        "action": action,
+                        "web": web
                     }
 
                 # else:
