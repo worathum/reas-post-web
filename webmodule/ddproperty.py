@@ -215,8 +215,18 @@ class ddproperty():
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
+
+        desired_capability = webdriver.DesiredCapabilities.CHROME
+        desired_capability['proxy'] = {
+            'proxyType': 'MANUAL',
+            'httpProxy': '127.0.0.1:24000',
+            'ftpProxy': '127.0.0.1:24000',
+            'sslProxy': '127.0.0.1:24000'
+        }
+
+        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options, desired_capabilities=desired_capability)
+
         try:
-            self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
             # self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
             # open login page
             # self.firefox = webdriver.Chrome("C:/Users/hp/Downloads/chromedriver_win32/chromedriver", chrome_options=options)
