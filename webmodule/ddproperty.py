@@ -215,64 +215,60 @@ class ddproperty():
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
-        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-        # self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
-        # open login page
-        # self.firefox = webdriver.Chrome("C:/Users/hp/Downloads/chromedriver_win32/chromedriver", chrome_options=options)
 
-        self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
+        desired_capability = webdriver.DesiredCapabilities.CHROME
+        desired_capability['proxy'] = {
+            'proxyType': 'MANUAL',
+            'httpProxy': '127.0.0.1:24000',
+            'ftpProxy': '127.0.0.1:24000',
+            'sslProxy': '127.0.0.1:24000'
+        }
 
-        # input email and enter
-        emailtxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("emailInput"))
-        emailtxt.send_keys(postdata['user'])
-        #log.debug('input email')
-        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.ID, "next"))).click()
-        #log.debug('click next')
-        time.sleep(1.8)
+        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options, desired_capabilities=desired_capability)
 
-        # input password and enter
-        passtxt = WebDriverWait(self.firefox, 30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
-        passtxt.send_keys(postdata['pass'])
-        #log.debug('input password')
-        passtxt.send_keys(Keys.ENTER)
-        #log.debug('click enter')
-        time.sleep(3)
-        
-        matchObj = re.search(r'บัญชีผู้ใช้งานของท่านหมดอายุ', self.firefox.page_source)
-        matchObj2 = re.search(r'User account is not active', self.firefox.page_source)
-        if matchObj or matchObj2:
-            success = "false"
-            detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
-            #log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
-        matchObj = re.search(r'รหัสผ่านของคุณไม่ถูกต้อง', self.firefox.page_source)
-        if matchObj:
-            success = "false"
-            detail = 'รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่'
-            #log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
-        matchObj = re.search(r'มีข้อผิดพลาดเกิดขึ้น', self.firefox.page_source)
-        if matchObj:
-            success = "false"
-            detail = 'มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง'
-            #log.warning('มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง')
-        matchObj = re.search(r'Incorrect Captcha', self.firefox.page_source)
-        matchObj2 = re.search(r'ฉันไม่ใช่โปรแกรมอัตโนมัติ', self.firefox.page_source)
-        matchObj3 = re.search(r'Captcha ไม่ถูกต้อง', self.firefox.page_source)
-        if matchObj or matchObj2 or matchObj3:
-            success = "false"
-            detail = 'login fail by Google reCaptcha'
-            #log.warning('login fail by Google reCaptcha')
-        
-        if success == "true":
-            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "pgicon-agent")))
-            #self.firefox.save_screenshot("debug_response/login.png")
-            # f = open("debug_response/loginpassdd2.html", "wb")
-            # f.write(self.firefox.page_source.encode('utf-8').strip())
-            # find text
-            soup = BeautifulSoup(self.firefox.page_source, self.parser, from_encoding='utf-8')
-            titletxt = soup.find('title').text
-            #log.debug('title %s',titletxt)
-            matchObj = re.search(r'Dashboard', titletxt)
-            if not matchObj:
+        try:
+            # self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
+            # open login page
+            # self.firefox = webdriver.Chrome("C:/Users/hp/Downloads/chromedriver_win32/chromedriver", chrome_options=options)
+
+            self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
+
+            # input email and enter
+            emailtxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("emailInput"))
+            emailtxt.send_keys(postdata['user'])
+            #log.debug('input email')
+            WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.ID, "next"))).click()
+            #log.debug('click next')
+            time.sleep(1.8)
+
+            # input password and enter
+            passtxt = WebDriverWait(self.firefox, 30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
+            passtxt.send_keys(postdata['pass'])
+            #log.debug('input password')
+            passtxt.send_keys(Keys.ENTER)
+            #log.debug('click enter')
+            time.sleep(3)
+            
+            matchObj = re.search(r'บัญชีผู้ใช้งานของท่านหมดอายุ', self.firefox.page_source)
+            matchObj2 = re.search(r'User account is not active', self.firefox.page_source)
+            if matchObj or matchObj2:
+                success = "false"
+                detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
+                #log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
+            matchObj = re.search(r'รหัสผ่านของคุณไม่ถูกต้อง', self.firefox.page_source)
+            if matchObj:
+                success = "false"
+                detail = 'รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่'
+                #log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
+            matchObj = re.search(r'มีข้อผิดพลาดเกิดขึ้น', self.firefox.page_source)
+            if matchObj:
+                success = "false"
+                detail = 'มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง'
+                #log.warning('มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง')
+            matchObj = re.search(r'Incorrect Captcha', self.firefox.page_source)
+            matchObj2 = re.search(r'ฉันไม่ใช่โปรแกรมอัตโนมัติ', self.firefox.page_source)
+            matchObj3 = re.search(r'Captcha ไม่ถูกต้อง', self.firefox.page_source)
+            if matchObj or matchObj2 or matchObj3:
                 success = "false"
                 detail = 'cannot login'
                 #log.warning('cannot login')

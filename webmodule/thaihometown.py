@@ -1220,6 +1220,7 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
+<<<<<<< HEAD
 
             try:
                 res = httprequestObj.http_get('https://www.thaihometown.com/member/?Keyword=&Msid=' + datahandled['post_id'] + '&SearchMember.x=43&SearchMember.y=8')
@@ -1232,6 +1233,9 @@ class thaihometown():
                 post_view = ''
 
             r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
+=======
+            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
+>>>>>>> develop
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1251,8 +1255,7 @@ class thaihometown():
 
 
             if success == "true":
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-
+                soup = BeautifulSoup(r.content, self.parser)
                 sas_name = soup.find("input", {"name": "sas_name"})
                 if sas_name:
                     sas_name = sas_name.get('value')
@@ -1295,7 +1298,6 @@ class thaihometown():
                 ad_title = ad_title + "\n" + str(datetime.datetime.utcnow())
                 ad_title = ad_title.encode('cp874', 'ignore')
                 
-
                 datapost = dict(
                     code_edit=code_edit,
                     email=email,
