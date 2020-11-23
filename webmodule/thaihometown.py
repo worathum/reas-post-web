@@ -1220,7 +1220,6 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
-<<<<<<< HEAD
 
             try:
                 res = httprequestObj.http_get('https://www.thaihometown.com/member/?Keyword=&Msid=' + datahandled['post_id'] + '&SearchMember.x=43&SearchMember.y=8')
@@ -1233,9 +1232,6 @@ class thaihometown():
                 post_view = ''
 
             r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
-=======
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
->>>>>>> develop
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())

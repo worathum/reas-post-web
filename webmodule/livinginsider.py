@@ -1726,95 +1726,74 @@ class livinginsider():
 
         if success:
 
-            try:
-                form_data = {
-                    "web_id": postdata['post_id'], 
-                    "selcet_day": 7
+            headers = {
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Mobile Safari/537.36',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-User': '?1',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                    'Sec-Fetch-Site': 'same-origin',
+                    'Referer': 'https://www.livinginsider.com/mystock.php',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
                 }
-                res = httprequestObj.http_post('https://www.livinginsider.com/a_view_graph_iStock.php', data=form_data)
-                return_data = res.json()
-                post_view = return_data['stat']['stat_all_clicks']
-            except:
-                post_view = ''
+            res = httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': str(post_id)}, headers=headers)
+            referer = 'https://www.livinginsider.com/living_edit.php?topic_id=' + str(postdata['post_id']) + '&currentID=' + str(postdata['post_id'])
 
-            page = 0
+            headers = {
+                'Accept': 'application/json, text/javascript, */*; q=0.01',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'th-TH,th;q=0.9,en;q=0.8',
+                'Connection': 'keep-alive',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Host': 'www.livinginsider.com',
+                'Origin': 'https://www.livinginsider.com',
+                'Referer': referer,
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'same-origin',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36', 
+                'X-CSRF-TOKEN': csrf_token,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
 
-            post_found = False
-            max_page = 100
-            r = httprequestObj.http_get(
-                'https://www.livinginsider.com/mystock.php?action=1&pages=1&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=')
-            device_id = r.text.split("let device_id")[1].split("'")[1].split("'")[0]            
-            mem_id = r.text.split("let mem_id")[1].split("'")[1].split("'")[0]            
+            r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=None, headers=headers)
+            res = httprequestObj.http_get('https://www.livinginsider.com/living_edit2.php?topic_id='+ postdata['post_id'], headers=headers)
+            
+            headers = {
+                'Connection': 'keep-alive',
+                'Accept': 'application/json, text/javascript, */*; q=0.01',
+                'X-Requested-With': 'XMLHttpRequest',
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Origin': 'https://www.livinginsider.com',
+                'Sec-Fetch-Site': 'same-origin',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Dest': 'empty',
+                'Referer': 'https://www.livinginsider.com/living_edit2.php?topic_id=' + post_id,
+                'Accept-Language': 'en-IN,en-US;q=0.9,en;q=0.8',
+            }
 
-            soup = BeautifulSoup(r.content, self.parser)
-            try:
-                max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
-            except:
-                max_page = 1
-            while page <= max_page:
-                page += 1
-                params = (
-                    ('pages', str(page)),
-                    ('action', '1'),
-                    ('actiontype', ''),
-                    ('posttype', ''),
-                    ('searchword', ''),
-                    ('search_area', '0'),
-                    ('search_bedroom', '0'),
-                    ('search_price', '0'),
-                    ('from_fq_flag', ''),
-                    ('from_pet_flag', ''),
-                    ('from_expiring_flag', ''),
-                    ('from_autoboost_flag', ''),
-                    ('topic_sort', '1'),
-                    ('search_zone_id', ''),
-                    ('pagelimit', '50'),
-                )
-                r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
-                if r.history:
-                    break
-                soup = BeautifulSoup(r.content, self.parser)
-                all_posts = soup.find_all(class_='mystock-item')
-                for post in all_posts:
-                    if str(post.get('topic-id')) == str(postdata['post_id']):
-                        post_found = True
-                        break
-                if post_found:
-                    break
+            r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', headers=headers, data=None)
 
-            if post_found:
-                headers = {
-                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-                }
-                datapost = {
-                    'web_member_username': postdata['user'],
-                    'web_id': post_id,
-                    'mem_id': mem_id,
-                    'device_id': device_id,
-                    'device_type': '1',
-                    'lang': 'TH',
-                    'sub_mem_id': '0',
-                    'sub_device_id': '0'
-                }
+            data = {
+                'hidden_status': '',
+                'action': 'save',
+                'web_status': '1',
+                'publish_flag': '0',
+                'state_renew': ''
+            }
 
-                r = httprequestObj.http_post('https://api.livinginsider.com/living_topic_up.php', data=datapost)
-                # print(r.url)
-                # print(r.status_code)
-                if r.text:
-                    data = r.json()
+            r = httprequestObj.http_post('https://www.livinginsider.com/living_edit_confirm.php', params={'topic_id': post_id}, data=data)
 
-                    if data['result_msg'] == 'ดันประกาศเรียบร้อย':
-                        success = True
-                        detail = "Post boosted successfully"
-                    else:
-                        success = False
-                        detail = 'Couldnot boost post'
-                else:
-                    success = False
-                    detail = 'Couldnot boost post'
+            if r.status_code == 200:
+                success = 'true'
+                detail = 'Post was boosted was successfully.'
             else:
-                success = False
-                detail = 'No post with given post_id'
+                success = 'false'
+                detail = 'Can not boost the post.'
+            
         else:
             success = False
             detail = 'Couldnot login'
@@ -1830,7 +1809,7 @@ class livinginsider():
             "ds_id": postdata['ds_id'],
             "post_id": post_id,
             "websitename": "livinginsider",
-            "post_view": post_view
+            "post_view": ''
         }
 
     def search_post(self, postdata):
