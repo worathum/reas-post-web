@@ -1,0 +1,244 @@
+
+REGISTER USER
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: ewogICAgImFjdGlvbiI6ICJyZWdpc3Rlcl91c2VyIiwKICAgICJ0aW1lb3V0IjogIjciLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImNvbmRvZm9ycmVudCIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwKICAgICAgICAgICAgInVzZXIiOiAiaGFyZGlrMzMwMkBnbWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ICJhYmNkZWZnaCIsCiAgICAgICAgICAgICJjb21wYW55X25hbWUiOiAiYW1hcmluIGluYyIsCiAgICAgICAgICAgICJuYW1lX3RpdGxlIjogIm1yIiwKICAgICAgICAgICAgIm5hbWVfdGgiOiAi4Lit4Lix4Lih4Lij4Li04LiZ4LiX4Lij4LmMIiwKICAgICAgICAgICAgInN1cm5hbWVfdGgiOiAi4Lia4Li44LiN4LmA4LiB4Li04LiUIiwKICAgICAgICAgICAgInRlbCI6ICIwODkxOTk5NDUwIiwKICAgICAgICAgICAgImxpbmUiOiAiYW1hcmluLnRhIgogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+
+{
+ "success": "true",
+ "action": "register_user",
+ "web": {
+  "condoforrent": {
+   "websitename": "condoforrent",
+   "success": "true",
+   "start_time": "2020-07-11 05:07:40.154937",
+   "end_time": "2020-07-11 05:07:45.494910",
+   "usage_time": "0:00:05.339973",
+   "detail": "Successfully Registered",
+   "ds_id": "4"
+  }
+ },
+ "usage_time": "0:00:05.385411",
+ "start_time": "2020-07-11 05:07:40.124157",
+ "end_time": "2020-07-11 05:07:45.509568"
+}
+
+
+LOGIN USER
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: ewogICAgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKICAgICJ0aW1lb3V0IjogIjUiLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImNvbmRvZm9ycmVudCIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwKICAgICAgICAgICAgInVzZXIiOiAiaGFyZGlrMzMwMUBnbWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ICJhYmNkZWZnaCIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "condoforrent": {
+   "websitename": "condoforrent",
+   "success": "true",
+   "start_time": "2020-07-11 05:08:30.229890",
+   "end_time": "2020-07-11 05:08:31.307207",
+   "usage_time": "0:00:01.077317",
+   "ds_id": "4",
+   "detail": "Successfully login"
+  }
+ },
+ "usage_time": "0:00:01.123830",
+ "start_time": "2020-07-11 05:08:30.199227",
+ "end_time": "2020-07-11 05:08:31.323057"
+}
+
+
+LOGIN USER WITH WRONG CREDNTIALS
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: ewogICAgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKICAgICJ0aW1lb3V0IjogIjUiLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImNvbmRvZm9ycmVudCIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwKICAgICAgICAgICAgInVzZXIiOiAiaGFyZGlrMzMwMEBnbWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ICJhYmNkZWZnaCIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "condoforrent": {
+   "websitename": "condoforrent",
+   "success": "false",
+   "start_time": "2020-07-11 05:09:16.838792",
+   "end_time": "2020-07-11 05:09:18.601110",
+   "usage_time": "0:00:01.762318",
+   "ds_id": "4",
+   "detail": "User not registered yet"
+  }
+ },
+ "usage_time": "0:00:01.802412",
+ "start_time": "2020-07-11 05:09:16.807107",
+ "end_time": "2020-07-11 05:09:18.609519"
+}
+
+
+
+CREATE POST
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: ewogICAgImFjdGlvbiI6ICJjcmVhdGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICJwb3N0X2ltZ191cmxfbGlzdHMiOiBbCiAgICAgICAgImh0dHA6Ly9pbWFnZXN0b3JlLmNvbS9waWMxLmpwZyIsCiAgICAgICAgImh0dHA6Ly9pbWFnZXN0b3JlLmNvbS9waWMyLmpwZyIgICAgICAgCiAgICBdLAogICAgImdlb19sYXRpdHVkZSI6ICIxMy43ODY4NjIiLAogICAgImdlb19sb25naXR1ZGUiOiAiMTAwLjc1NzgxNSIsICAgIAogICAgInBvc3RfdGl0bGVfdGgiOiAieHh4IiwKICAgICJzaG9ydF9wb3N0X3RpdGxlX3RoIjogInh4eCIsCiAgICAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJ4eHgiLAogICAgInByaWNlX2JhaHQiOiAiMzAwMCIsCiAgICAibGlzdGluZ190eXBlIjogIuC4guC4suC4oiIsICAgIAogICAgInByb3BlcnR5X3R5cGUiOiAiMSIsICAgIAogICAgImZsb29yX2xldmVsIiA6ICIxMSIsCiAgICAiZmxvb3JfdG90YWwiIDogIjExIiwKICAgICJmbG9vcl9hcmVhIiA6ICIxMSIsCiAgICAiYmF0aF9yb29tIiA6ICIxMSIsCiAgICAiYmVkX3Jvb20iIDogIjExIiwKICAgICJwcm9taW5lbnRfcG9pbnQiIDogIuC4iOC4uOC4lOC5gOC4lOC5iOC4mSIsICAgIAogICAgInZpZXdfdHlwZSIgOiAiMTEiLAogICAgImRpcmVjdGlvbl90eXBlIiA6ICIxMSIsCiAgICAiYWRkcl9wcm92aW5jZSI6ICLguIjguLHguIfguKvguKfguLHguJQiLAogICAgImFkZHJfZGlzdHJpY3QiOiAi4LmA4LiC4LiVIiwKICAgICJhZGRyX3N1Yl9kaXN0cmljdCI6ICLguJXguLPguJrguKUg4LmB4LiC4Lin4LiHIiwKICAgICJhZGRyX3JvYWQiOiAi4LiW4LiZ4LiZIiwKICAgICJhZGRyX3NvaSI6ICLguIvguK3guKIiLAogICAgImFkZHJfbmVhcl9ieSI6ICLguKrguJbguLLguJnguJfguLXguYjguYPguIHguKXguYnguYDguITguLXguKLguIciLAogICAgImxhbmRfc2l6ZV9yYWkiOiAiMTEiLAogICAgImxhbmRfc2l6ZV9uZ2FuIjogIjExIiwKICAgICJsYW5kX3NpemVfd2EiOiAiMTEiLAogICAgCiAgICAibmFtZSI6ICJ4eHgiLAogICAgIm1vYmlsZSI6ICJ4eHgiLAogICAgImVtYWlsIjogInh4eCIsCiAgICAibGluZSI6ICJ4eHgiLAogICAgInByb2plY3RfbmFtZSI6ICLguKXguLjguKHguJ7guLXguJnguLXguKfguLTguKXguKUg4Lij4Liy4Lih4Lit4Li04LiZ4LiX4Lij4Liy4Lir4Lil4Lix4LiB4Liq4Li14LmIIiwKICAgICJ3ZWIiOiBbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ICJjb25kb2ZvcnJlbnQiLAogICAgICAgICAgICAiZHNfaWQiOiAiNCIsICAgICAgICAgICAgICAKICAgICAgICAgICAgInVzZXIiOiAiaGFyZGlrMzMwMUBnbWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ICJhYmNkZWZnaCIsCiAgICAgICAgICAgICJ3ZWJfcHJvamVjdF9uYW1lIjogIuC4peC4uOC4oeC4nuC4teC4meC4tSDguKPguLLguKHguK3guLTguJnguJfguKPguLLguKvguKXguLHguIHguKrguLXguYgiICAgCiAgICAgICAgfQogICAgXQp9
+
+<output>
+
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "condoforrent": {
+   "success": "true",
+   "usage_time": "0:00:06.117516",
+   "start_time": "2020-07-11 09:28:53.088028",
+   "end_time": "2020-07-11 09:28:59.205544",
+   "post_url": "http://xn--42cm3at5gj3b0hpal2dj.com/property-84704-xxx",
+   "post_id": "84704",
+   "account_type": "null",
+   "ds_id": "4",
+   "detail": "Successful post",
+   "websitename": "condoforrent"
+  }
+ },
+ "usage_time": "0:00:10.257456",
+ "start_time": "2020-07-11 09:28:48.963257",
+ "end_time": "2020-07-11 09:28:59.220713"
+}
+
+
+
+EDIT POST
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: ewogICAgImFjdGlvbiI6ICJlZGl0X3Bvc3QiLAogICAgInRpbWVvdXQiOiAiNSIsCiAgICAicG9zdF9pbWdfdXJsX2xpc3RzIjogWwogICAgICAgICJodHRwOi8vaW1hZ2VzdG9yZS5jb20vcGljMS5qcGciLAogICAgICAgICJodHRwOi8vaW1hZ2VzdG9yZS5jb20vcGljMi5qcGciICAgICAgIAogICAgXSwKICAgICJnZW9fbGF0aXR1ZGUiOiAiMTMuNzg2ODYyIiwKICAgICJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLCAgICAKICAgICJwb3N0X3RpdGxlX3RoIjogImRkZCIsCiAgICAic2hvcnRfcG9zdF90aXRsZV90aCI6ICJkZGQiLAogICAgInBvc3RfZGVzY3JpcHRpb25fdGgiOiAiZGRkIiwKICAgICJwcmljZV9iYWh0IjogIjMwMDAiLAogICAgImxpc3RpbmdfdHlwZSI6ICLguILguLLguKIiLCAgICAKICAgICJwcm9wZXJ0eV90eXBlIjogIjEiLCAgICAKICAgICJmbG9vcl9sZXZlbCIgOiAiMTEiLAogICAgImZsb29yX3RvdGFsIiA6ICIxMSIsCiAgICAiZmxvb3JfYXJlYSIgOiAiMTEiLAogICAgImJhdGhfcm9vbSIgOiAiMTEiLAogICAgImJlZF9yb29tIiA6ICIxMSIsCiAgICAicHJvbWluZW50X3BvaW50IiA6ICLguIjguLjguJTguYDguJTguYjguJkiLCAgICAKICAgICJ2aWV3X3R5cGUiIDogIjExIiwKICAgICJkaXJlY3Rpb25fdHlwZSIgOiAiMTEiLAogICAgImFkZHJfcHJvdmluY2UiOiAi4LiI4Lix4LiH4Lir4Lin4Lix4LiUIiwKICAgICJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4guC4lSIsCiAgICAiYWRkcl9zdWJfZGlzdHJpY3QiOiAi4LiV4Liz4Lia4LilIOC5geC4guC4p+C4hyIsCiAgICAiYWRkcl9yb2FkIjogIuC4luC4meC4mSIsCiAgICAiYWRkcl9zb2kiOiAi4LiL4Lit4LiiIiwKICAgICJhZGRyX25lYXJfYnkiOiAi4Liq4LiW4Liy4LiZ4LiX4Li14LmI4LmD4LiB4Lil4LmJ4LmA4LiE4Li14Lii4LiHIiwKICAgICJsYW5kX3NpemVfcmFpIjogIjExIiwKICAgICJsYW5kX3NpemVfbmdhbiI6ICIxMSIsCiAgICAibGFuZF9zaXplX3dhIjogIjExIiwKICAgIAogICAgIm5hbWUiOiAieHh4IiwKICAgICJtb2JpbGUiOiAieHh4IiwKICAgICJlbWFpbCI6ICJ4eHgiLAogICAgImxpbmUiOiAieHh4IiwKICAgICJwcm9qZWN0X25hbWUiOiAi4Lil4Li44Lih4Lie4Li14LiZ4Li14Lin4Li04Lil4LilIOC4o+C4suC4oeC4reC4tOC4meC4l+C4o+C4suC4q+C4peC4seC4geC4quC4teC5iCIsCiAgICAid2ViIjogWwogICAgICAgIHsKICAgICAgICAgICAgImRzX25hbWUiOiAiY29uZG9mb3JyZW50IiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLCAgICAgICAgICAgICAgCgkJInBvc3RfaWQiOiAiODQ3MDQiLAoJCSJsb2dfaWQiOiAiMzMzMzMiLAogICAgICAgICAgICAidXNlciI6ICJoYXJkaWszMzAxQGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogImFiY2RlZmdoIiwKICAgICAgICAgICAgIndlYl9wcm9qZWN0X25hbWUiOiAi4Lil4Li44Lih4Lie4Li14LiZ4Li1IOC4o+C4suC4oeC4reC4tOC4meC4l+C4o+C4suC4q+C4peC4seC4geC4quC4teC5iCIgICAKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+
+{
+ "success": "true",
+ "action": "edit_post",
+ "web": {
+  "condoforrent": {
+   "success": "true",
+   "usage_time": "0:00:18.188261",
+   "start_time": "2020-07-11 09:31:17.885091",
+   "end_time": "2020-07-11 09:31:36.073352",
+   "post_url": "http://xn--42cm3at5gj3b0hpal2dj.com/property-84704-ddd",
+   "post_id": "84704",
+   "account_type": "null",
+   "ds_id": "4",
+   "log_id": "33333",
+   "detail": "Successfully edited",
+   "websitename": "condoforrent"
+  }
+ },
+ "usage_time": "0:00:21.231433",
+ "start_time": "2020-07-11 09:31:14.857612",
+ "end_time": "2020-07-11 09:31:36.089045"
+}
+
+
+BOOST POST
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: ewogICAgImFjdGlvbiI6ICJib29zdF9wb3N0IiwKICAgICJ0aW1lb3V0IjogIjciLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogImNvbmRvZm9ycmVudCIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwKICAgICAgICAgICAgInBvc3RfaWQiOiAiODQzNjciLAogICAgICAgICAgICAibG9nX2lkIjogIjMzMzMzIiwgICAgICAgICAgICAKICAgICAgICAgICAgInVzZXIiOiAiaGFyZGlrMzMwMUBnbWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ICJhYmNkZWZnaCIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+
+{
+ "success": "true",
+ "action": "boost_post",
+ "web": {
+  "condoforrent": {
+   "success": "true",
+   "usage_time": "0:00:11.640426",
+   "start_time": "2020-07-11 05:10:44.064493",
+   "end_time": "2020-07-11 05:10:55.704919",
+   "detail": "Edited and saved",
+   "ds_id": "4",
+   "log_id": "33333",
+   "post_id": "84367",
+   "websitename": "condoforrent"
+  }
+ },
+ "usage_time": "0:00:11.678904",
+ "start_time": "2020-07-11 05:10:44.033500",
+ "end_time": "2020-07-11 05:10:55.712404"
+}
+
+
+SEARCH POST
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6IuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lCIsCiAgICAid2ViIjpbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ImNvbmRvZm9ycmVudCIsCiAgICAgICAgICAgICJkc19pZCI6IjQiLAogICAgICAgICAgICAicG9zdF9pZCI6IjkxMTM3OSIsCiAgICAgICAgICAgICJsb2dfaWQiOiIzMzMzMyIsCiAgICAgICAgICAgICJ1c2VyIjoiaGFyZGlrMzMwMUBnbWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ImFiY2RlZmdoIgogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "condoforrent": {
+   "success": "true",
+   "usage_time": "0:00:06.323488",
+   "start_time": "2020-07-11 05:18:20.673104",
+   "end_time": "2020-07-11 05:18:26.996592",
+   "detail": "Post found",
+   "websitename": "condoforrent",
+   "account_type": null,
+   "ds_id": "4",
+   "log_id": "33333",
+   "post_id": "84482",
+   "post_url": "http://xn--42cm3at5gj3b0hpal2dj.com/property-84482-ให้เช่า-ที่ดินด่วน-บางกรวยไทรน้อย-6-ไร่-เหมาะทำตลาด",
+   "post_create_time": "",
+   "post_modify_time": "",
+   "post_view": "3",
+   "post_found": "true"
+  }
+ },
+ "usage_time": "0:00:06.397915",
+ "start_time": "2020-07-11 05:18:20.605582",
+ "end_time": "2020-07-11 05:18:27.003497"
+}
+
+
+DELETE POST
+
+<input>
+access_token: YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data: ewogICAgImFjdGlvbiI6ICJkZWxldGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICJ3ZWIiOiBbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ICJjb25kb2ZvcnJlbnQiLAogICAgICAgICAgICAiZHNfaWQiOiAiNCIsCiAgICAgICAgICAgICJwb3N0X2lkIjogIjg0MzY1IiwKICAgICAgICAgICAgImxvZ19pZCI6ICIzMzMzMyIsIAogICAgICAgICAgICAidXNlciI6ICJoYXJkaWszMzAxQGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogImFiY2RlZmdoIgogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+
+{
+ "success": "true",
+ "action": "delete_post",
+ "web": {
+  "condoforrent": {
+   "success": "true",
+   "usage_time": "0:00:03.683102",
+   "start_time": "2020-07-11 05:19:48.844388",
+   "end_time": "2020-07-11 05:19:52.527490",
+   "log_id": "33333",
+   "ds_id": "4",
+   "detail": "Successfully deleted",
+   "post_id": "84365",
+   "websitename": "condoforrent"
+  }
+ },
+ "usage_time": "0:00:05.492052",
+ "start_time": "2020-07-11 05:19:47.053217",
+ "end_time": "2020-07-11 05:19:52.545269"
+}
