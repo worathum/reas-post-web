@@ -200,7 +200,7 @@ class baan2day():
             datapost= {
                 "property_type": '1' if postdata['listing_type']=='ขาย' else '2',
                 "property_format": property_types[str(postdata['property_type'])],
-                "thomedetail_title": postdata['post_title_th'].replace("\u2013",""),
+                "thomedetail_title": postdata['post_title_th'].replace(str("\u2013"),"").replace("\u00a0", " "),
                 "thomedetail_name": postdata["web_project_name"],
                 "thomedetail_address": taddress,
                 "tprovince": province,
@@ -217,13 +217,12 @@ class baan2day():
                 "latitude": postdata['geo_latitude'],
                 "longitude": postdata['geo_longitude']
             }
-
+            
             files = {}
             for i,image in enumerate(postdata["post_images"][:10]):
                 files["testimage"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
     
             response = httprequestObj.http_post(self.site_name+'/member_property_aed.php?typ=add', data=datapost, files=files)
-            # print(response.content)
             
             success = "false" 
             if response.status_code==200:
@@ -360,7 +359,7 @@ class baan2day():
             datapost= {
                 "property_type": '1' if postdata['listing_type']=='ขาย' else '2',
                 "property_format": property_types[str(postdata['property_type'])],
-                "thomedetail_title": postdata['post_title_th'].replace("\u2013",""),
+                "thomedetail_title": postdata['post_title_th'].replace("\u2013","").replace("\u00a0", " "),
                 "thomedetail_name": postdata["web_project_name"],
                 "thomedetail_address": taddress,
                 "tprovince": province,
@@ -471,12 +470,30 @@ class baan2day():
         if success == "true":
             post_found = "false"
             detail = "No post found with given title"
-            post_title = ' '.join(str(postdata['post_title_th'].replace("\u2013","")).split())
-
-            response = httprequestObj.http_get(self.site_name+'/member_property_list.php')
+            post_title = ' '.join(str(postdata['post_title_th'].replace("\u2013","").replace("\u00a0", " ")).split())
+            
+            # headers = {
+            #     'authority': 'www.baan2day.com',
+            #     'cache-control': 'max-age=0',
+            #     'sec-ch-ua': '"\\\\Not;A\\"Brand";v="99", "Google Chrome";v="85", "Chromium";v="85"',
+            #     'sec-ch-ua-mobile': '?0',
+            #     'upgrade-insecure-requests': '1',
+            #     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36',
+            #     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            #     'sec-fetch-site': 'none',
+            #     'sec-fetch-mode': 'navigate',
+            #     'sec-fetch-user': '?1',
+            #     'sec-fetch-dest': 'document',
+            #     'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8,mr;q=0.7'
+            #     'cookie': 'PHPSESSID=msnf65h17ttaulrumulnod0a83; _ga=GA1.2.4920401.1592423018; __cfduid=da9234d6905dc8640adc4361fe23997e21605463034; _gid=GA1.2.647891004.1606323097',
+            # }
+            # response = httprequestObj.http_get(self.site_name+'/member_property_list.php?&nowpage='+str(page))
+            response = httprequestObj.http_get(self.site_name+'/member_property_list.php)
             if response.status_code==200:
                 soup = BeautifulSoup(response.text, features=self.parser)
-                rows = soup.find('table').find('tbody').find_all('tr')
+                rows = soup.find('table')
+                if rows:
+                    rows = rows.find('tbody').find_all('tr')
                 for post in rows:
                     try:
                         td = post.find_all('td')

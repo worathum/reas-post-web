@@ -177,9 +177,9 @@ class onlineoops():
                     break
 
             postdata['lat_long'] = str(postdata['geo_latitude'])+','+str(postdata['geo_longitude'])
-            if not str(postdata['floor_total']).isnumeric():
+            if ('floor_total' not in postdata) or ('floor_total' in postdata and not str(postdata['floor_total']).isnumeric()):
                 postdata['floor_total'] = '1'
-            if not str(postdata['bed_room']).isnumeric():
+            if ('bed_room' not in postdata) or ('bed_room' in postdata and not str(postdata['bed_room']).isnumeric()):
                 postdata['bed_room'] = '1'
             
             if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
@@ -337,9 +337,9 @@ class onlineoops():
                         break
 
                 postdata['lat_long'] = str(postdata['geo_latitude'])+','+str(postdata['geo_longitude'])
-                if not str(postdata['floor_total']).isnumeric():
+                if ('floor_total' not in postdata) or ('floor_total' in postdata and not str(postdata['floor_total']).isnumeric()):
                     postdata['floor_total'] = '1'
-                if not str(postdata['bed_room']).isnumeric():
+                if ('bed_room' not in postdata) or ('bed_room' in postdata and not str(postdata['bed_room']).isnumeric()):
                     postdata['bed_room'] = '1'
 
                 if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
