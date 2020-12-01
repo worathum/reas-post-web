@@ -216,15 +216,7 @@ class ddproperty():
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
 
-        desired_capability = webdriver.DesiredCapabilities.CHROME
-        desired_capability['proxy'] = {
-            'proxyType': 'MANUAL',
-            'httpProxy': '127.0.0.1:24000',
-            'ftpProxy': '127.0.0.1:24000',
-            'sslProxy': '127.0.0.1:24000'
-        }
-
-        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options, desired_capabilities=desired_capability)
+        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
         try:
             # self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
@@ -1217,7 +1209,7 @@ class ddproperty():
                     pass
                 return success, detail, post_id, account_type
             try:
-                WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
+                WebDriverWait(self.firefox, 15).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
                 time.sleep(1.8)
             except WebDriverException:
                 pass

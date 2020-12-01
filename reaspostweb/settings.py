@@ -27,7 +27,7 @@ DEBUG = True
 
 #ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['192.168.2.40', '192.168.1.56', '192.168.2.22', '127.0.0.1',
-    '192.168.42.62', '178.128.212.153', 'homepostapi.webup.site', 'homepostapi-dev.webup.site','localhost','209.97.168.205']
+    '192.168.42.62', '178.128.212.153', 'homepostapi.webup.site', 'homepostapi-dev.webup.site','localhost','209.97.168.205', '178.128.22.168']
 
 
 # Application definition
