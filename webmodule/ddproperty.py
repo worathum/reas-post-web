@@ -1153,7 +1153,7 @@ class ddproperty():
             upload.send_keys(all_images)
 
             try:                  
-                wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, f"//*[@id='step_media_photo']/div[1]/div[2]/ul/li[{len(datahandled['post_images'])}]/div/div[2]/a")))
+                wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, "//*[@id='step_media_photo']/div[1]/div[2]/ul/li["+str(len(datahandled['post_images']))+"]/div/div[2]/a")))
             except:
                 pass
 
