@@ -216,15 +216,7 @@ class ddproperty():
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
 
-        desired_capability = webdriver.DesiredCapabilities.CHROME
-        desired_capability['proxy'] = {
-            'proxyType': 'MANUAL',
-            'httpProxy': '127.0.0.1:24000',
-            'ftpProxy': '127.0.0.1:24000',
-            'sslProxy': '127.0.0.1:24000'
-        }
-
-        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options, desired_capabilities=desired_capability)
+        self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
         try:
             # self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
@@ -1118,12 +1110,32 @@ class ddproperty():
                         alert.accept()
                         time.sleep(1.5)
 
-            for img in datahandled['post_images']:
-                time.sleep(1)
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
-                #log.debug('post image %s', img)
-                time.sleep(1)
-                self.firefox.refresh()
+            # for img in datahandled['post_images']:
+            #     time.sleep(1)
+            #     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
+            #     #log.debug('post image %s', img)
+            #     time.sleep(1)
+            #     self.firefox.refresh()
+
+
+            all_images = ""
+            for count, pic in enumerate(datahandled['post_images']):
+                if count < len(datahandled['post_images'])-1:
+                    all_images += os.path.abspath(pic) + '\n'
+                else:
+                    all_images += os.path.abspath(pic)
+        
+            upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
+            upload.send_keys(all_images)
+
+            try:                  
+                wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, "//*[@id='step_media_photo']/div[1]/div[2]/ul/li["+str(len(datahandled['post_images']))+"]/div/div[2]/a")))
+            except:
+                pass
+
+
+
+
             #log.debug('image success')
             #print('here1')
             post_id = self.firefox.current_url.split("/")[-1]
@@ -1169,7 +1181,7 @@ class ddproperty():
                     pass
                 return success, detail, post_id, account_type
             try:
-                WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
+                WebDriverWait(self.firefox, 15).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
                 time.sleep(1.8)
             except WebDriverException:
                 pass
