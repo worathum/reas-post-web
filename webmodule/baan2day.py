@@ -488,26 +488,32 @@ class baan2day():
             #     'cookie': 'PHPSESSID=msnf65h17ttaulrumulnod0a83; _ga=GA1.2.4920401.1592423018; __cfduid=da9234d6905dc8640adc4361fe23997e21605463034; _gid=GA1.2.647891004.1606323097',
             # }
             # response = httprequestObj.http_get(self.site_name+'/member_property_list.php?&nowpage='+str(page))
-            response = httprequestObj.http_get(self.site_name+'/member_property_list.php)
-            if response.status_code==200:
+            response = httprequestObj.http_get(self.site_name+'/member_property_list.php')
+            soup = BeautifulSoup(response.text, features=self.parser)
+            pages = soup.find('ul', {'class': 'pagination'}).find_all('li')[-1].find('a')
+            for page in range(0, int(pages.get('href').split('=')[-1])):
+                response = httprequestObj.http_get(self.site_name+'/member_property_list.php'+'?&nowpage=' + str(page+1))
                 soup = BeautifulSoup(response.text, features=self.parser)
-                rows = soup.find('table')
-                if rows:
-                    rows = rows.find('tbody').find_all('tr')
-                for post in rows:
-                    try:
-                        td = post.find_all('td')
-                        if td[1].getText()==post_title:
-                            post_found = "true"
-                            detail = "Post found successfully"
-                            post_id = td[3].find('a').get('href').split('id=')[1]
-                            post_url = self.site_name+'/homedisplay/'+post_id+'/'+postdata['post_title_th'].replace("\u2013","")+'.html'
-                            post_view = td[2].getText()
-                            break
-                    except (TypeError, IndexError):
-                        pass
-            else:
-                detail = "Unable to search. An Error has occurred with response_code "+str(response.status_code)     
+                if response.status_code==200:
+                    soup = BeautifulSoup(response.text, features=self.parser)
+                    rows = soup.find('table')
+                    if rows:
+                        rows = rows.find('tbody').find_all('tr')
+                    for post in rows:
+                        try:
+                            td = post.find_all('td')
+                            #print(td[1].getText())
+                            if td[1].getText()==post_title:
+                                post_found = "true"
+                                detail = "Post found successfully"
+                                post_id = td[3].find('a').get('href').split('id=')[1]
+                                post_url = self.site_name+'/homedisplay/'+post_id+'/'+postdata['post_title_th'].replace("\u2013","")+'.html'
+                                post_view = td[2].getText()
+                                break
+                        except (TypeError, IndexError):
+                            pass
+                else:
+                    detail = "Unable to search. An Error has occurred with response_code "+str(response.status_code)     
         else:
             detail = "cannot login"
 

@@ -27,9 +27,15 @@ python3 -W "ignore" manage.py runserver 0.0.0.0:8080 --insecure >> /dev/null 2>&
 # SERVER SET UP
 
 1.Git clone
+
 2.Install pip apt install python3-pip
+
 3.Install node.js
+
 4.Install pm2
+
 5.Go to directory, pip install -r requirements.txt
+
 6.In setting.py check ALLOW_HOST
+
 7.Run pm2 pm_config.json

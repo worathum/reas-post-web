@@ -367,6 +367,8 @@ class ddteedin():
         
                         time.sleep(2)
                         browser.get('https://www.ddteedin.com/logout/')
+                        success = 'true'
+                        detail = 'Created post successful'
                 finally:
                     try:
                         browser.close()
@@ -407,6 +409,7 @@ class ddteedin():
             # print(r.status_code)
         else:
             success = "false"
+            detail = "Login error. Please check your username and password"
 
 
         time_end = datetime.datetime.utcnow()
@@ -415,6 +418,7 @@ class ddteedin():
         return {
             "websitename": "ddteedin",
             "success": success,
+            "detail": detail,
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": theurl,

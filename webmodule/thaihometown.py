@@ -1538,29 +1538,35 @@ class thaihometown():
             req = httprequestObj.http_get(url)
             soup = BeautifulSoup(req.content,'html.parser')
             posts = soup.find('div',{'id':'show_listings'}).findAll('div')[2:]
+            pages = soup.find('div', {'id': 'PList'}).findAll('a')[-1].text
             valid_ids = []
             valid_urls = []
             valid_titles = []
-            for post in posts:
-                #print('id' in post)
-                if post.has_attr('id') and post['id'] is not None and str(post['id'])[:9] == 'indivList':
-                    id = str(post['id'])[13:]
-                    valid_ids.append(str(post['id'])[13:])
-                    # print('here1')
-                    urls = post.findAll('a')
-                    if str(urls[0]).find('member')!=-1:
-                        valid_titles.append(str(urls[1].text).strip())
-                    else:
-                        valid_titles.append(str(urls[0].text).strip())
-                    # print('here2')
-                    for url in urls:
-                        # print(url)
-                        if str(url['href']).find(id)+len(id) == len(url['href']):
-                            valid_urls.append(str(url['href']))
-                            # print('here3')
-                            break
+            for page in range(0, int(pages)):
+                url = 'https://www.thaihometown.com/member/'+str(self.logid)+'?page='+ str(page+1)
+                req = httprequestObj.http_get(url)
+                soup = BeautifulSoup(req.content,'html.parser')
+                posts = soup.find('div',{'id':'show_listings'}).findAll('div')[2:]
+                for post in posts:
+                    #print('id' in post)
+                    if post.has_attr('id') and post['id'] is not None and str(post['id'])[:9] == 'indivList':
+                        id = str(post['id'])[13:]
+                        valid_ids.append(str(post['id'])[13:])
+                        # print('here1')
+                        urls = post.findAll('a')
+                        if str(urls[0]).find('member')!=-1:
+                            valid_titles.append(str(urls[1].text).strip())
+                        else:
+                            valid_titles.append(str(urls[0].text).strip())
+                        # print('here2')
+                        for url in urls:
+                            # print(url)
+                            if str(url['href']).find(id)+len(id) == len(url['href']):
+                                valid_urls.append(str(url['href']))
+                                # print('here3')
+                                break
             # print('out')
-            print(valid_titles)
+            #print(valid_titles)
             # print(valid_urls)
             # print(valid_ids)
             if post_title.strip() in valid_titles:
