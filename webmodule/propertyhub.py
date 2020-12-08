@@ -176,25 +176,29 @@ class propertyhub():
                 project.send_keys(Keys.BACKSPACE)
                 sleep(0.6)
 
-                all_sel_pro = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'i8hizn-0')))
-                match = 0
-                for project_sel in all_sel_pro:
-                    print(project_sel.text)
-                    """ print(project_sel.text.split('\n')[0])
-                    print(len(project_sel.text.split('\n')[0]))
-                    print(len(project_sel.text.split('\n')[0].split(' '))) """
-                    for word in slt_project:
-                        #print(word)
-                        if word in project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '):
-                            match += 1
-                    #print(match)
-                    if match >= len(project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '))-1:
-                        project_sel.click()
-                        success = 'true'
-                        break
-                    else:
-                        success = 'false'
-                        detail = 'Your project name does not match.'
+                try:
+                    all_sel_pro = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'i8hizn-0')))
+                    match = 0
+                    for project_sel in all_sel_pro:
+                        #print(project_sel.text)
+                        """ print(project_sel.text.split('\n')[0])
+                        print(len(project_sel.text.split('\n')[0]))
+                        print(len(project_sel.text.split('\n')[0].split(' '))) """
+                        for word in slt_project:
+                            #print(word.replace('(', '').replace(')', ''))
+                            if word.replace('(', '').replace(')', '') in project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '):
+                                match += 1
+                        #print(match)
+                        if match >= len(project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '))-1:
+                            project_sel.click()
+                            success = 'true'
+                            break
+                        else:
+                            success = 'false'
+                            detail = 'Your project name does not match.'
+                except:
+                    success = 'false'
+                    detail = 'Your project is wrong. Please check.'
                     
                 """ try:
                     project_sel = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[1]/div/form/div/div/div[1]/div[4]/div[2]/div/div/div[2]/div/div/div'))).click()
@@ -219,7 +223,7 @@ class propertyhub():
                     sel_posttype = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'postType')))[1].click()
                     sel_type2 = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'item')))
                     if postdata['listing_type'] == 'ขาย':
-                        print(sel_type2[24].text)
+                        #print(sel_type2[24].text)
                         sel_type2[24].click()
                         sale_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forSale.price'))).send_keys(datahandled['price_baht'])
                     elif postdata['listing_type'] == 'เช่า':

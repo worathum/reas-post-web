@@ -26,7 +26,7 @@ except ImportError:
     configs = {}
 if os.path.isdir('log') == False:
     os.mkdir('log')
-logging.basicConfig(level=logging.INFO, filename='log/app.log', filemode='a', format='%(process)d-%(asctime)s-%(levelname)s-%(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(level=logging.INFO, filename='log/app-' + str(datetime.date.today()) + '.log', filemode='a', format='%(process)d-%(asctime)s-%(levelname)s-%(message)s', datefmt='%d-%b-%y %H:%M:%S')
 # logging.config.dictConfig(getattr(configs, 'logging_config', {}))
 # log = logging.getLogger()
 

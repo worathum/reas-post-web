@@ -1739,6 +1739,9 @@ class livinginsider():
                     'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
                 }
             res = httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': str(post_id)}, headers=headers)
+            soup = BeautifulSoup(res.text, 'html.parser')
+            #print(soup.find('meta', {'name': 'csrf-token'}).get('content'))
+            csrf_token = soup.find('meta', {'name': 'csrf-token'}).get('content')
             referer = 'https://www.livinginsider.com/living_edit.php?topic_id=' + str(postdata['post_id']) + '&currentID=' + str(postdata['post_id'])
 
             headers = {
