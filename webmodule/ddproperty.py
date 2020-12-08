@@ -268,13 +268,14 @@ class ddproperty():
                 # agent_id = re.search(r'optimize_agent_id = (\d+);', self.firefox.page_source).group(1)
                 agent_id = re.search(r'{"user":{"id":(\d+),', self.firefox.page_source).group(1)
 
-        #log.debug("login status %s agent id %s", success, agent_id)
+            #log.debug("login status %s agent id %s", success, agent_id)
 
-        if postdata['action'] == 'test_login':
-            # self.firefox.quit()
-            self.firefox.close()
-            self.firefox.quit()
-
+            if postdata['action'] == 'test_login':
+                # self.firefox.quit()
+                self.firefox.close()
+                self.firefox.quit()
+        except:
+            pass
         #
         # end process
 
