@@ -8,6 +8,7 @@ Jinja2==2.10
 lxml==4.5.2
 Pillow==8.0.1
 python3-anticaptcha==1.6.2
-requests==2.25.0
+requests==2.23.0
 requests-toolbelt==0.9.1
 selenium==3.141.0
+

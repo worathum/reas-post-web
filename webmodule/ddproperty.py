@@ -276,6 +276,12 @@ class ddproperty():
                 self.firefox.close()
                 self.firefox.quit()
 
+            if postdata['action'] == 'test_login':
+                # self.firefox.quit()
+                self.firefox.close()
+                self.firefox.quit()
+        except:
+            pass
         #
         # end process
 

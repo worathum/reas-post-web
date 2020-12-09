@@ -772,10 +772,6 @@ class pantipmarket():
                     driver.find_element_by_name('message_th').clear()
                 driver.find_element_by_name("message_th").send_keys(post_description_th)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
                 soup = BeautifulSoup(driver.page_source, 'html.parser')
                 for item in soup.find_all('input', {'name': 'action_list[]'})[:2]:
                     if item.has_attr('checked'):
