@@ -19,7 +19,7 @@ class propertyhub():
     def test_login(self, postdata):
         
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -178,15 +178,17 @@ class propertyhub():
 
                 try:
                     all_sel_pro = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'i8hizn-0')))
-                    match = 0
+                    all_sel_pro[0].click()
+                    """ match = 0
                     for project_sel in all_sel_pro:
                         #print(project_sel.text)
-                        """ print(project_sel.text.split('\n')[0])
-                        print(len(project_sel.text.split('\n')[0]))
-                        print(len(project_sel.text.split('\n')[0].split(' '))) """
+                        print(slt_project)
                         for word in slt_project:
                             #print(word.replace('(', '').replace(')', ''))
                             if word.replace('(', '').replace(')', '') in project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '):
+                                print(project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '))
+                                print(word.replace('(', '').replace(')', ''))
+                                print('Match')
                                 match += 1
                         #print(match)
                         if match >= len(project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '))-1:
@@ -195,7 +197,7 @@ class propertyhub():
                             break
                         else:
                             success = 'false'
-                            detail = 'Your project name does not match.'
+                            detail = 'Your project name does not match.' """
                 except:
                     success = 'false'
                     detail = 'Your project is wrong. Please check.'
