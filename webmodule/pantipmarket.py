@@ -300,7 +300,7 @@ class pantipmarket():
             group = "6_1096"
 
         options = Options()
-        #options.headless = True
+        options.headless = True
         options.add_argument('--no-sandbox')
         try:
             driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
@@ -735,7 +735,7 @@ class pantipmarket():
         start_time = datetime.utcnow()
         end_time = datetime.utcnow()
         options = Options()
-        #options.headless = True
+        options.headless = True
         options.add_argument('--no-sandbox')
         try:
             driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
