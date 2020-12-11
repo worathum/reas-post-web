@@ -238,8 +238,8 @@ class propertyhub():
                         success = 'false'
                         detail = 'Your post type does not match'
 
-                    if 'เฟอร์นิเจอร์' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasFurniture'))).click()
+                    #if 'เฟอร์นิเจอร์' in datahandled['post_description_th']:
+                    sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasFurniture'))).click()
                     if 'เครื่องปรับอากาศ' in datahandled['post_description_th'] or 'แอร์' in datahandled['post_description_th']:
                         sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasAir'))).click()
                     if 'digital lock' in datahandled['post_description_th'].lower() or 'key card' in datahandled['post_description_th'].lower():
@@ -290,14 +290,25 @@ class propertyhub():
                         post_id = ''
                     
                     if success == 'true':
-                        cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
-                        sleep(5)           
-                        get_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, datahandled['post_title_th'])))
-                        post_url = get_link.get_attribute('href')
-                        post_id = post_url.split('---')[-1]
-                        success = 'true'
-                        detail = 'Post was created.'
-
+                        try:
+                            cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
+                            sleep(5)
+                            try:
+                                check_eng = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'diLcnC'))).click()
+                                cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
+                                sleep(5)
+                            except:
+                                pass
+                            get_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, datahandled['post_title_th'])))
+                            post_url = get_link.get_attribute('href')
+                            post_id = post_url.split('---')[-1]
+                            success = 'true'
+                            detail = 'Post was created.'
+                        except:
+                            success = 'false'
+                            detail = 'Your post can not create. Please make sure your data is completed or make sure that you already verify you phone number via OTP.'
+                            post_url = ''
+                            post_id = ''
                 else:
                     post_url = ''
                     post_id = ''

@@ -25,7 +25,7 @@ class condoforrent:
         success = 'true'
         detail = ''
         postdata = {}
-        postdata['username'] = data['user']
+        postdata['username'] = data['user'].split('@')[0]
         postdata['pass'] = postdata['conpass'] = data['pass']
         postdata['line'] = data['line']
         postdata['email'] = data['user']

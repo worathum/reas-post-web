@@ -55,7 +55,7 @@ class landmarket():
         detail = 'An Error has Occurred'
         
         datapost = {
-            "username": postdata['user'],
+            "username": postdata['user'].split('@')[0],
             "pass": postdata['pass'],
             "conpass": postdata['pass'],
             "email": postdata['user'],
