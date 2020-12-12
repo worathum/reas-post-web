@@ -1230,7 +1230,7 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'],verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1250,7 +1250,7 @@ class thaihometown():
 
 
             if success == "true":
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                soup = BeautifulSoup(r.content, self.parser)
 
                 sas_name = soup.find("input", {"name": "sas_name"})
                 if sas_name:
