@@ -384,7 +384,12 @@ class thaihometown():
 
         return datahandled
 
+    def logout_user(self):
+        url = 'https://www.thaihometown.com/member/logout/aHR0cHMlM0EvL3d3dy50aGFpaG9tZXRvd24uY29tL21lbWJlci8xNzM1MzE='
+        httprequestObj.http_get(url)
+
     def register_user(self, postdata):
+        self.logout_user()
         #log.debug('')
 
         time_start = datetime.datetime.utcnow()
@@ -439,6 +444,7 @@ class thaihometown():
         }
 
     def test_login(self, postdata):
+        self.logout_user()
         #log.debug('')
 
         time_start = datetime.datetime.utcnow()
@@ -678,7 +684,7 @@ class thaihometown():
         post_url = ""
         #print('here2')
         success,detail = self.validatedatapost(datahandled)
-            
+
         # login
         if success == "true":
             test_login = self.test_login(datahandled)
@@ -698,11 +704,13 @@ class thaihometown():
                 #f = open("thihomepost.html", "wb")
                 #f.write(data.encode('utf-8').strip())
                 postlimit = soup.find("div",{"id":"posted_limit2"})
+
                 if postlimit:
                     success = "false"
                     detail = 'คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป'
                     #log.debug('คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป')
                 #print('here5')
+
                 if success == 'true':
                     string2 = soup.find("input", {"name": "string2"})['value']
                     string1 = string2
@@ -774,6 +782,7 @@ class thaihometown():
                         soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
                         txtresponse = soup.find("font").text
                         detail = unquote(txtresponse)
+
                     else:
                         post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
                      
@@ -1106,6 +1115,7 @@ class thaihometown():
                 if not checkform:
                     success = "false"
                     detail = soup.text
+
                     #log.debug(soup.text)
                     break
             
@@ -1220,7 +1230,7 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1240,7 +1250,8 @@ class thaihometown():
 
 
             if success == "true":
-                soup = BeautifulSoup(r.content, self.parser)
+                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+
                 sas_name = soup.find("input", {"name": "sas_name"})
                 if sas_name:
                     sas_name = sas_name.get('value')
@@ -1283,6 +1294,7 @@ class thaihometown():
                 ad_title = ad_title + "\n" + str(datetime.datetime.utcnow())
                 ad_title = ad_title.encode('cp874', 'ignore')
                 
+
                 datapost = dict(
                     code_edit=code_edit,
                     email=email,
