@@ -38,7 +38,13 @@ class goodpriceproperty():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
+    def logout_user(self):
+        url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/logout.php'
+        httprequestObj.http_get(url)
+
+
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         user = postdata['user']
@@ -147,6 +153,7 @@ class goodpriceproperty():
         }
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 

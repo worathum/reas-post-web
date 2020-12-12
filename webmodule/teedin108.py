@@ -38,7 +38,12 @@ class teedin108():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
+    def logout_user(self):
+        url = 'https://www.teedin108.com/member/logout/'
+        httprequestObj.http_get(url)
+
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
 
         time_start = datetime.datetime.utcnow()
@@ -117,6 +122,7 @@ class teedin108():
         }
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 

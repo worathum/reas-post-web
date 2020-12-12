@@ -34,7 +34,13 @@ class condoable():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
+
+    def logout_user(self):
+        url = 'http://condoable.com/logout.jsp'
+        httprequestObj.http_get(url)
+
     def register_user(self, userdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         # print("here in register")
@@ -88,6 +94,7 @@ class condoable():
         }
 
     def test_login(self, logindata):
+        self.logout_user()
         # print("Here in test_login")
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()

@@ -76,7 +76,13 @@ class kaiteedin():
             "detail": ""
         }
 
+    def logout_user(self):
+        url = 'http://kaiteedin.net/member_signout.php'
+        httprequestObj.http_get(url)
+
+
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         success = "true"
@@ -165,6 +171,7 @@ class kaiteedin():
         }
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 

@@ -41,9 +41,14 @@ class baan2day():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
-    
+
+
+    def logout_user(self):
+        url = 'https://www.baan2day.com/logoff.php'
+        httprequestObj.http_get(url)
 
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -85,6 +90,7 @@ class baan2day():
 
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         
@@ -488,7 +494,7 @@ class baan2day():
             #     'cookie': 'PHPSESSID=msnf65h17ttaulrumulnod0a83; _ga=GA1.2.4920401.1592423018; __cfduid=da9234d6905dc8640adc4361fe23997e21605463034; _gid=GA1.2.647891004.1606323097',
             # }
             # response = httprequestObj.http_get(self.site_name+'/member_property_list.php?&nowpage='+str(page))
-            response = httprequestObj.http_get(self.site_name+'/member_property_list.php)
+            response = httprequestObj.http_get(self.site_name+'/member_property_list.php')
             if response.status_code==200:
                 soup = BeautifulSoup(response.text, features=self.parser)
                 rows = soup.find('table')
