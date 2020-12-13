@@ -33,7 +33,12 @@ class livinginsider():
         self.parser = 'html.parser'
         self.webname = 'livinginsider'
 
+    def logout_user(self):
+        url = 'https://www.livinginsider.com/logout.php'
+        httprequestObj.http_get(url)
+
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
 
@@ -75,6 +80,7 @@ class livinginsider():
         }
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
 

@@ -384,7 +384,12 @@ class thaihometown():
 
         return datahandled
 
+    def logout_user(self):
+        url = 'https://www.thaihometown.com/member/logout/aHR0cHMlM0EvL3d3dy50aGFpaG9tZXRvd24uY29tL21lbWJlci8xNzM1MzE='
+        httprequestObj.http_get(url)
+
     def register_user(self, postdata):
+        self.logout_user()
         #log.debug('')
 
         time_start = datetime.datetime.utcnow()
@@ -439,6 +444,7 @@ class thaihometown():
         }
 
     def test_login(self, postdata):
+        self.logout_user()
         #log.debug('')
 
         time_start = datetime.datetime.utcnow()
@@ -678,7 +684,7 @@ class thaihometown():
         post_url = ""
         #print('here2')
         success,detail = self.validatedatapost(datahandled)
-            
+
         # login
         if success == "true":
             test_login = self.test_login(datahandled)
@@ -698,11 +704,13 @@ class thaihometown():
                 #f = open("thihomepost.html", "wb")
                 #f.write(data.encode('utf-8').strip())
                 postlimit = soup.find("div",{"id":"posted_limit2"})
+
                 if postlimit:
                     success = "false"
                     detail = 'คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป'
                     #log.debug('คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป')
                 #print('here5')
+
                 if success == 'true':
                     string2 = soup.find("input", {"name": "string2"})['value']
                     string1 = string2
@@ -774,6 +782,7 @@ class thaihometown():
                         soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
                         txtresponse = soup.find("font").text
                         detail = unquote(txtresponse)
+
                     else:
                         post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
                      
@@ -1106,6 +1115,7 @@ class thaihometown():
                 if not checkform:
                     success = "false"
                     detail = soup.text
+
                     #log.debug(soup.text)
                     break
             
@@ -1220,18 +1230,7 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
-
-            try:
-                res = httprequestObj.http_get('https://www.thaihometown.com/member/?Keyword=&Msid=' + datahandled['post_id'] + '&SearchMember.x=43&SearchMember.y=8')
-                soup = BeautifulSoup(res.text, self.parser)
-                code_div = soup.find('div', {'class': 'Show_isView'})
-                code = code_div.get('onclick').split(',')[-1].replace(')', '').replace("'", '')
-                response = httprequestObj.http_get('https://www.thaihometown.com/member/ajaxView.php?code=' + code + '&ided=' + datahandled['post_id'])
-                post_view = response.text.split(' ')[1]
-            except:
-                post_view = ''
-
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], encoder='cp874',verify=False)
+            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'],verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1252,6 +1251,7 @@ class thaihometown():
 
             if success == "true":
                 soup = BeautifulSoup(r.content, self.parser)
+
                 sas_name = soup.find("input", {"name": "sas_name"})
                 if sas_name:
                     sas_name = sas_name.get('value')
@@ -1294,6 +1294,7 @@ class thaihometown():
                 ad_title = ad_title + "\n" + str(datetime.datetime.utcnow())
                 ad_title = ad_title.encode('cp874', 'ignore')
                 
+
                 datapost = dict(
                     code_edit=code_edit,
                     email=email,
@@ -1339,8 +1340,7 @@ class thaihometown():
             "detail": detail, 
             "log_id": datahandled['log_id'], 
             "post_id": datahandled['post_id'],
-            "websitename": self.websitename,
-            "post_view": post_view
+            "websitename": self.websitename
         }
 
 
@@ -1485,10 +1485,6 @@ class thaihometown():
                         'notprice' : 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
                     }
 
-                    print('----------------------')
-                    print(datapost)
-                    print('----------------------')
-
                     #log.debug(datapost)
 
                     r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
@@ -1538,35 +1534,29 @@ class thaihometown():
             req = httprequestObj.http_get(url)
             soup = BeautifulSoup(req.content,'html.parser')
             posts = soup.find('div',{'id':'show_listings'}).findAll('div')[2:]
-            pages = soup.find('div', {'id': 'PList'}).findAll('a')[-1].text
             valid_ids = []
             valid_urls = []
             valid_titles = []
-            for page in range(0, int(pages)):
-                url = 'https://www.thaihometown.com/member/'+str(self.logid)+'?page='+ str(page+1)
-                req = httprequestObj.http_get(url)
-                soup = BeautifulSoup(req.content,'html.parser')
-                posts = soup.find('div',{'id':'show_listings'}).findAll('div')[2:]
-                for post in posts:
-                    #print('id' in post)
-                    if post.has_attr('id') and post['id'] is not None and str(post['id'])[:9] == 'indivList':
-                        id = str(post['id'])[13:]
-                        valid_ids.append(str(post['id'])[13:])
-                        # print('here1')
-                        urls = post.findAll('a')
-                        if str(urls[0]).find('member')!=-1:
-                            valid_titles.append(str(urls[1].text).strip())
-                        else:
-                            valid_titles.append(str(urls[0].text).strip())
-                        # print('here2')
-                        for url in urls:
-                            # print(url)
-                            if str(url['href']).find(id)+len(id) == len(url['href']):
-                                valid_urls.append(str(url['href']))
-                                # print('here3')
-                                break
+            for post in posts:
+                #print('id' in post)
+                if post.has_attr('id') and post['id'] is not None and str(post['id'])[:9] == 'indivList':
+                    id = str(post['id'])[13:]
+                    valid_ids.append(str(post['id'])[13:])
+                    # print('here1')
+                    urls = post.findAll('a')
+                    if str(urls[0]).find('member')!=-1:
+                        valid_titles.append(str(urls[1].text).strip())
+                    else:
+                        valid_titles.append(str(urls[0].text).strip())
+                    # print('here2')
+                    for url in urls:
+                        # print(url)
+                        if str(url['href']).find(id)+len(id) == len(url['href']):
+                            valid_urls.append(str(url['href']))
+                            # print('here3')
+                            break
             # print('out')
-            #print(valid_titles)
+            print(valid_titles)
             # print(valid_urls)
             # print(valid_ids)
             if post_title.strip() in valid_titles:

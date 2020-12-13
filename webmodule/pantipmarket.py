@@ -51,7 +51,13 @@ class pantipmarket():
         self.debug = 0
         self.debugresdata = 0
 
+    def logout_user(self):
+        url = 'https://www.pantipmarket.com/member/logout.php?url=https%3A%2F%2Fwww.pantipmarket.com%2F'
+        httprequestObj.http_get(url)
+
+
     def register_user(self, userdata):
+        self.logout_user()
         # print('hello')
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
@@ -131,6 +137,7 @@ class pantipmarket():
         }
 
     def test_login(self, logindata):
+        self.logout_user()
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
         httprequestObj.http_get('https://www.pantipmarket.com/member/logout.php')
@@ -952,6 +959,7 @@ class pantipmarket():
         if resp['success'] is True:
 
             resp = httprequestObj.http_get("https://www.pantipmarket.com/member/my/?view=ads")
+            
 
             soup = BeautifulSoup(resp.text, 'html.parser')
             posts = soup.find_all("div", {"class": "topic_box"})

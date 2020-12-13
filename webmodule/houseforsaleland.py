@@ -68,6 +68,8 @@ class houseforsaleland():
             "detail": ""
         }
 
+
+
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
@@ -118,6 +120,7 @@ class houseforsaleland():
             str(postdata['post_id'])
         with requests.Session() as s:
             r = s.post(editurl, data={'passwordedit': postdata['pass']})
+            print(r.text)
         if 'error' in r.text:
             detail = "wrong post id"
             time_end = datetime.datetime.utcnow()
@@ -308,104 +311,105 @@ class houseforsaleland():
         options = Options()
         options.headless = True
         options.add_argument('--no-sandbox')
-     
-        driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-
-        post_url = urlpost+'/page-postfree-detail.php?pID='+postdata['post_id']
-        driver.get(post_url)
-        driver.maximize_window()
-        # driver.find_element_by_id('btnShowEdit').click()
-        jsscript='document.getElementById("btnShowEdit").click()'
-        driver.execute_script(jsscript)
-        # time.sleep(1)
-        jsscript='document.getElementById("passwordedit")["value"]="'+postdata['pass']+'";document.getElementById("submit").click();'
-        driver.execute_script(jsscript)
-        # time.sleep(1)
         try:
-            WebDriverWait(driver, 5).until(EC.alert_is_present(),
-                                           'Timed out waiting for PA creation ' +
-                                           'confirmation popup to appear.')
+            driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
-
-        except:
-            print('alert not accepted within time')
-            time.sleep(3)
-
-        try:
-            driver.switch_to.alert.accept()
-        except:
-            time.sleep(2)
-            driver.switch_to.alert.accept()
-        time.sleep(5)
-
-
-        # jsscript='function getElementByXpath(path) {return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;}'
-        # jsscript="document.getElementById('type"+postdata['listing_type']+"')['checked']=true;"
-        # jsscript+="document.getElementById('sendmail1')['checked']=true;document.querySelectorAll('#category1')["+str(postdata['cate_id'])+"]['checked']=true;"
-        # jsscript+="document.getElementById('subject')['value']='"+postdata['post_title_th']+"';"
-        # jsscript+="document.getElementById('detail')['value']='';"
-        # jsscript+="document.getElementById('name')['value']='"+postdata['name']+"';"
-        # jsscript+="document.getElementById('address')['value']='"+prod_address+"';"
-        # jsscript+="document.getElementById('tel')['value']='"+postdata['mobile']+"';"
-        # jsscript+="document.getElementById('email')['value']='"+postdata['email']+"';"
-        # jsscript+="document.getElementById('password')['value']='"+postdata['pass']+"';"
-        # # time.sleep(5000)
-        # # driver.execute_script(jsscript)
-        # driver.find_element_by_id('detail').send_keys(str(postdata['post_description_th']));
-        # time.sleep(5000)
-
-        # jsscript = "document.getElementById('detail')['value']='';"
-        # jsscript += "document.getElementById('subject')['value']='';"
-        # jsscript += "document.getElementById('password')['value']='';"
-        # jsscript += "document.getElementById('email')['value']='';"
-        # jsscript += "document.getElementById('address')['value']='';"
-        # jsscript += "document.getElementById('name')['value']='';"
-        # print(f'prod_address--->{prod_address}')
-        # driver.execute_script(jsscript)
-        # file.close()
-        try:
-            WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '//*[@id="detail"]'))
-            )
-        except:
-            print('increase wait time for detail')
-        time.sleep(1)
-        driver.find_element_by_id('detail').clear()
-        driver.find_element_by_id('detail').send_keys(
-            str(postdata['post_description_th']))
-        driver.find_element_by_id('subject').clear()
-        driver.find_element_by_id('subject').send_keys(
-            str(postdata['post_title_th']))
-        driver.find_element_by_id('password').clear()
-        driver.find_element_by_id('password').send_keys(str(postdata['pass']))
-        driver.find_element_by_id('email').clear()
-        driver.find_element_by_id('email').send_keys(str(postdata['email']))
-        driver.find_element_by_id('address').clear()
-        driver.find_element_by_id('address').send_keys(str(prod_address))
-        driver.find_element_by_id('name').clear()
-        driver.find_element_by_id('name').send_keys(str(postdata['name']))
-        time.sleep(2)
-        driver.find_element_by_id('submit').click()
-        time.sleep(5)
-        # driver.close()
-        # driver.quit()
-        # driver.close()
-
-        # driver.quit()
-        try:
-            time.sleep(2)
-            alert = driver.switch_to.alert
-            alert.accept()
-            driver.close()
-            driver.quit()
-        except:
+            post_url = urlpost+'/page-postfree-detail.php?pID='+postdata['post_id']
+            driver.get(post_url)
+            driver.maximize_window()
+            # driver.find_element_by_id('btnShowEdit').click()
+            jsscript='document.getElementById("btnShowEdit").click()'
+            driver.execute_script(jsscript)
+            # time.sleep(1)
+            jsscript='document.getElementById("passwordedit")["value"]="'+postdata['pass']+'";document.getElementById("submit").click();'
+            driver.execute_script(jsscript)
+            # time.sleep(1)
             try:
+                WebDriverWait(driver, 5).until(EC.alert_is_present(),
+                                               'Timed out waiting for PA creation ' +
+                                               'confirmation popup to appear.')
+
+
+            except:
+                print('alert not accepted within time')
+                time.sleep(3)
+
+            try:
+                driver.switch_to.alert.accept()
+            except:
+                time.sleep(2)
+                driver.switch_to.alert.accept()
+            time.sleep(5)
+
+
+            # jsscript='function getElementByXpath(path) {return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;}'
+            # jsscript="document.getElementById('type"+postdata['listing_type']+"')['checked']=true;"
+            # jsscript+="document.getElementById('sendmail1')['checked']=true;document.querySelectorAll('#category1')["+str(postdata['cate_id'])+"]['checked']=true;"
+            # jsscript+="document.getElementById('subject')['value']='"+postdata['post_title_th']+"';"
+            # jsscript+="document.getElementById('detail')['value']='';"
+            # jsscript+="document.getElementById('name')['value']='"+postdata['name']+"';"
+            # jsscript+="document.getElementById('address')['value']='"+prod_address+"';"
+            # jsscript+="document.getElementById('tel')['value']='"+postdata['mobile']+"';"
+            # jsscript+="document.getElementById('email')['value']='"+postdata['email']+"';"
+            # jsscript+="document.getElementById('password')['value']='"+postdata['pass']+"';"
+            # # time.sleep(5000)
+            # # driver.execute_script(jsscript)
+            # driver.find_element_by_id('detail').send_keys(str(postdata['post_description_th']));
+            # time.sleep(5000)
+
+            # jsscript = "document.getElementById('detail')['value']='';"
+            # jsscript += "document.getElementById('subject')['value']='';"
+            # jsscript += "document.getElementById('password')['value']='';"
+            # jsscript += "document.getElementById('email')['value']='';"
+            # jsscript += "document.getElementById('address')['value']='';"
+            # jsscript += "document.getElementById('name')['value']='';"
+            # print(f'prod_address--->{prod_address}')
+            # driver.execute_script(jsscript)
+            # file.close()
+            try:
+                WebDriverWait(driver, 10).until(
+                    EC.visibility_of_element_located((By.XPATH, '//*[@id="detail"]'))
+                )
+            except:
+                print('increase wait time for detail')
+            time.sleep(1)
+            driver.find_element_by_id('detail').clear()
+            driver.find_element_by_id('detail').send_keys(
+                str(postdata['post_description_th']))
+            driver.find_element_by_id('subject').clear()
+            driver.find_element_by_id('subject').send_keys(
+                str(postdata['post_title_th']))
+            driver.find_element_by_id('password').clear()
+            driver.find_element_by_id('password').send_keys(str(postdata['pass']))
+            driver.find_element_by_id('email').clear()
+            driver.find_element_by_id('email').send_keys(str(postdata['email']))
+            driver.find_element_by_id('address').clear()
+            driver.find_element_by_id('address').send_keys(str(prod_address))
+            driver.find_element_by_id('name').clear()
+            driver.find_element_by_id('name').send_keys(str(postdata['name']))
+            time.sleep(2)
+            driver.find_element_by_id('submit').click()
+            time.sleep(5)
+            # driver.close()
+            # driver.quit()
+            # driver.close()
+
+            # driver.quit()
+        finally:
+            try:
+                time.sleep(2)
                 alert = driver.switch_to.alert
                 alert.accept()
                 driver.close()
                 driver.quit()
             except:
-                pass
+                try:
+                    alert = driver.switch_to.alert
+                    alert.accept()
+                    driver.close()
+                    driver.quit()
+                except:
+                    pass
 
         success = "true"
         time_end = datetime.datetime.utcnow()
@@ -814,6 +818,7 @@ class houseforsaleland():
         return {
             "websitename": "houseforsaleland",
             "success": "false",
+            "post_found": "false",
             "time_usage": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
