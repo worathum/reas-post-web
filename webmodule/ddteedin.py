@@ -2,6 +2,7 @@
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import Select
 import os
@@ -49,7 +50,13 @@ class ddteedin():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
+    def logout_user(self):
+        url = 'https://www.ddteedin.com/logout/'
+        httprequestObj.http_get(url)
+
+
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -112,6 +119,7 @@ class ddteedin():
         }
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -200,6 +208,7 @@ class ddteedin():
                 r = httprequestObj.http_get(
                     'http://www.ddteedin.com/post-land-for-sale', verify=False)
                 data = r.text
+                print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 try:
                     cverify = soup.find("input", {"name": "cverify"})['value']
@@ -367,8 +376,6 @@ class ddteedin():
         
                         time.sleep(2)
                         browser.get('https://www.ddteedin.com/logout/')
-                        success = 'true'
-                        detail = 'Created post successful'
                 finally:
                     try:
                         browser.close()
@@ -409,7 +416,6 @@ class ddteedin():
             # print(r.status_code)
         else:
             success = "false"
-            detail = "Login error. Please check your username and password"
 
 
         time_end = datetime.datetime.utcnow()
@@ -418,7 +424,7 @@ class ddteedin():
         return {
             "websitename": "ddteedin",
             "success": success,
-            "detail": detail,
+            "detail":detail,
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": theurl,
@@ -829,9 +835,75 @@ class ddteedin():
 
         test_login = self.test_login(postdata)
         success = test_login["success"]
-        ashopname = test_login["detail"]
+
 
         if success == "true":
+            options = Options()
+            options.set_headless(True)
+            options.add_argument('--no-sandbox')
+            try:
+                browser = webdriver.Chrome("./static/chromedriver",chrome_options=options)
+                #browser = webdriver.Chrome("./static/chromedriver")
+                wait = WebDriverWait(browser, 10)
+                browser.implicitly_wait(100)
+
+                browser.get('https://www.ddteedin.com/login/')
+                time.sleep(2)
+                email = browser.find_element_by_name('log_u')
+                email.clear()
+                email.send_keys(postdata['user'])
+                password = browser.find_element_by_name('log_p')
+                password.clear()
+                password.send_keys(postdata['pass'])
+                browser.find_element_by_name('login').click()
+                time.sleep(2)
+
+                search = browser.find_element_by_name('q')
+                search.send_keys(post_id + Keys.ENTER)
+                time.sleep(2)
+
+                soup = BeautifulSoup(browser.page_source, "html5lib")
+                if "ไม่พบประกาศ" not in soup.text:
+                    boost = browser.find_element_by_class_name('reindex')
+                    boost.click()
+                    time.sleep(10)
+                    soup1 = BeautifulSoup(browser.page_source, "html5lib")
+
+                    res=soup1.find("a", attrs={"class": "success"})
+
+                    if res != None:
+                        success=True
+                        detail="Post Boosted Successfully."
+                    elif soup1.find("a", attrs={"class": "disabled"}):
+                        success=False
+                        detail="Post already Boosted wait for another day."
+                    else:
+                        success=False
+                        detail="Post can't be Boosted."
+
+                else:
+                    success = False
+                    detail = "Post not found."
+
+            except:
+                success = False
+                detail = "Post can't be Boosted."
+
+            finally:
+                try:
+                    browser.close()
+                    browser.quit()
+                    try:
+                        alert = browser.switch_to.alert
+                        alert.accept()
+                        browser.close()
+                        browser.quit()
+                    except:
+                        pass
+                except:
+                    pass
+
+            """
             # tumbon_id = '01'
             r = httprequestObj.http_get('https://www.ddteedin.com/myposts/?rf=login', verify=False)
 
@@ -843,13 +915,16 @@ class ddteedin():
             }
             query_string = 'https://www.ddteedin.com/myposts/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
                 ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
+            print(query_string)
             r = httprequestObj.http_get(query_string, verify=False)
             data = r.text
+
             id = postdata['post_id']
             # print(r.text)
-            if data.find(" ไม่พบประกาศ") != -1:
+            if "ไม่พบประกาศ" in data:
                 success = "false"
             else:
+
                 query_string = 'https://www.ddteedin.com/post-land-for-sale/edit/'+str(id)
                 r = httprequestObj.http_get(query_string, verify=False)
                 data = r.text
@@ -864,16 +939,19 @@ class ddteedin():
                         ('code', ''),
                         ('warning', ""),
                         ('opts[]', 62),
-                        ('cverify', cverify)
+                        ('cverify', cverify),
                         ('id', id),
+                        ('btn_submit',"บันทึกแก้ไข")
                     ]
 
                     r = httprequestObj.http_post(query_string, data=datapost)
 
-                except:
+                except Exception as e:
                     success = "false"
+            """
         else:
             success = "false"
+            detail="Can't Login."
 
 
         time_end = datetime.datetime.utcnow()
@@ -883,12 +961,11 @@ class ddteedin():
             "time_usage": time_end - time_start,
             "start_time": time_start,
             "end_time": time_end,
-            "detail": "",
+            "detail": detail,
             'ds_id': postdata['ds_id'],
             "log_id": log_id,
             "post_id": post_id,
-            "ds_id": postdata['ds_id'],
-            "post_view": ""
+            "ds_id": postdata['ds_id']
         }
 
     def print_debug(self, msg):

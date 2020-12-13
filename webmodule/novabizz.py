@@ -60,6 +60,7 @@ class novabizz():
             "detail": ""
         }
 
+
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
@@ -809,7 +810,10 @@ class novabizz():
         r = httprequestObj.http_get(url_)
         soup = BeautifulSoup(r.content, features='html.parser')
         li = soup.find('div', attrs={'class': 'pagination'}).find_all('li')
-        x = int(str(li[-1].find('a')['href']).split('=')[1])
+        if li !=[]:
+            x = int(str(li[-1].find('a')['href']).split('=')[1])
+        else:
+            x=1
         found = False
 
         for i in range(1, x + 1):

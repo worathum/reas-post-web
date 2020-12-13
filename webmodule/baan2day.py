@@ -41,9 +41,14 @@ class baan2day():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
-    
+
+
+    def logout_user(self):
+        url = 'https://www.baan2day.com/logoff.php'
+        httprequestObj.http_get(url)
 
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -85,6 +90,7 @@ class baan2day():
 
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         
@@ -489,31 +495,25 @@ class baan2day():
             # }
             # response = httprequestObj.http_get(self.site_name+'/member_property_list.php?&nowpage='+str(page))
             response = httprequestObj.http_get(self.site_name+'/member_property_list.php')
-            soup = BeautifulSoup(response.text, features=self.parser)
-            pages = soup.find('ul', {'class': 'pagination'}).find_all('li')[-1].find('a')
-            for page in range(0, int(pages.get('href').split('=')[-1])):
-                response = httprequestObj.http_get(self.site_name+'/member_property_list.php'+'?&nowpage=' + str(page+1))
+            if response.status_code==200:
                 soup = BeautifulSoup(response.text, features=self.parser)
-                if response.status_code==200:
-                    soup = BeautifulSoup(response.text, features=self.parser)
-                    rows = soup.find('table')
-                    if rows:
-                        rows = rows.find('tbody').find_all('tr')
-                    for post in rows:
-                        try:
-                            td = post.find_all('td')
-                            #print(td[1].getText())
-                            if td[1].getText()==post_title:
-                                post_found = "true"
-                                detail = "Post found successfully"
-                                post_id = td[3].find('a').get('href').split('id=')[1]
-                                post_url = self.site_name+'/homedisplay/'+post_id+'/'+postdata['post_title_th'].replace("\u2013","")+'.html'
-                                post_view = td[2].getText()
-                                break
-                        except (TypeError, IndexError):
-                            pass
-                else:
-                    detail = "Unable to search. An Error has occurred with response_code "+str(response.status_code)     
+                rows = soup.find('table')
+                if rows:
+                    rows = rows.find('tbody').find_all('tr')
+                for post in rows:
+                    try:
+                        td = post.find_all('td')
+                        if td[1].getText()==post_title:
+                            post_found = "true"
+                            detail = "Post found successfully"
+                            post_id = td[3].find('a').get('href').split('id=')[1]
+                            post_url = self.site_name+'/homedisplay/'+post_id+'/'+postdata['post_title_th'].replace("\u2013","")+'.html'
+                            post_view = td[2].getText()
+                            break
+                    except (TypeError, IndexError):
+                        pass
+            else:
+                detail = "Unable to search. An Error has occurred with response_code "+str(response.status_code)     
         else:
             detail = "cannot login"
 
@@ -573,8 +573,7 @@ class baan2day():
             "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
             "websitename": self.name,
-            "ds_id": postdata['ds_id'],
-            "post_view": ""
+            "ds_id": postdata['ds_id']
         }
 
 

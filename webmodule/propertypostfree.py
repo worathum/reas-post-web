@@ -32,8 +32,13 @@ class propertypostfree():
         self.baseurl = 'http://www.propertypostfree.com'
         self.parser = 'html.parser'
 
+    def logout_user(self):
+        url = 'http://www.propertypostfree.com/member/logout.php'
+        httprequestObj.http_get(url)
+
 
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
@@ -114,6 +119,7 @@ class propertypostfree():
 
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()

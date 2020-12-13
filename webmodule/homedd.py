@@ -47,10 +47,14 @@ class homedd():
         }
 
 
+    def logout_user(self):
+        url = 'http://homedd.co.th/logoff.php'
+        httprequestObj.http_get(url)
 
 
     # To register a user
     def register_user(self,userdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
 
         
@@ -124,6 +128,7 @@ class homedd():
 
     # To login a user
     def test_login(self,postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
 
         datapost = {
@@ -284,7 +289,7 @@ class homedd():
 
             url = "http://homedd.co.th/member_property_add.php"
             request = httprequestObj.http_get(url)
-            soup = BeautifulSoup(request.text, 'lxml')
+            soup = BeautifulSoup(request.text, 'html5lib')
             
             tpCode = soup.find('input',attrs = {'name': 'tpCode'})['value']
             
@@ -794,85 +799,30 @@ class homedd():
 
         if success == True:
 
-            res = httprequestObj.http_get('http://www.homedd.co.th/member_property_add.php?id=' + postdata['post_id'])
-            soup = BeautifulSoup(res.text, 'html.parser')
-
-            tpCode = soup.find('input', {'id': 'tpCode'}).get('value')
-            
-            tproperty_type = ''
-            sel_listing = soup.find('select', {'id': 'tproperty_type'})
-            for select in sel_listing.find_all('option'):
-                if select.has_attr('selected'):
-                    tproperty_type = select.get('value')
-            if tproperty_type == '':
-                tproperty_type = "1"
-            
-            ttitle = soup.find('input', {'id': 'ttitle'}).get('value')
-            tproject_asset = soup.find('input', {'id': 'tproject_asset'}).get('value')
-            taddress = soup.find('textarea', {'id': 'taddress'}).text
-            tstreet_name = soup.find('input', {'id': 'tstreet_name'}).get('value')
-
-            tprovince = ''
-            sel_prov = soup.find('select', {'id': 'tprovince'})
-            for select in sel_prov.find_all('option')[1:]:
-                if select.has_attr('selected'):
-                    tprovince = select.get('value')
-            if tprovince == '':
-                tprovince = '1'
-
-            tamphur = ''
-            sel_amphur = soup.find('select', {'id': 'tamphur'})
-            for select in sel_amphur.find_all('option')[1:]:
-                if select.has_attr('selected'):
-                    tamphur = select.get('value')
-            if tamphur == '':
-                tamphur = '1'
-
-            tdistrict = ''
-            sel_dis = soup.find('select', {'id': 'tdistrict'})
-            for select in sel_dis.find_all('option')[1:]:
-                if select.has_attr('selected'):
-                    tdistrict = select.get('value')
-            if tdistrict == '':
-                tdistrict = '1'
-
-            tdetail = soup.find('textarea', {'id': 'tdetail'}).text
-            tfloor = soup.find('input', {'id': 'tfloor'}).get('value')
-            tbedroom = soup.find('input', {'id': 'tbedroom'}).get('value')
-            tbathroom = soup.find('input', {'id': 'tbathroom'}).get('value')
-            tortherroom = soup.find('input', {'id': 'tortherroom'}).get('value')
-            tspace = soup.find('input', {'id': 'tspace'}).get('value')
-            tarea = soup.find('input', {'id': 'tarea'}).get('value')
-            tprice = soup.find('input', {'name': 'tprice'}).get('value')
-            towner = soup.find('input', {'id': 'towner'}).get('value')
-            tphone = soup.find('input', {'id': 'tphone'}).get('value')
-            lat_value = soup.find('input', {'id': 'lat_value'}).get('value')
-            lon_value = soup.find('input', {'id': 'lon_value'}).get('value')
-
             datapost = {
-                "tpCode" : tpCode,
-                "tproperty_type" : tproperty_type,
-                "tproperty_formart" : "",
-                "ttitle" : ttitle,
-                "tproject_asset" : tproject_asset,
-                "taddress" : taddress,
-                "tstreet_name" : tstreet_name,
-                "tprovince" : tprovince,
-                "tamphur" : tamphur,
-                "tdistrict" : tdistrict,
-                "tdetail" : tdetail,
-                "tfloor" : tfloor,
-                "tbedroom" : tbedroom,
-                "tbathroom" : tbathroom,
-                "tortherroom" : tortherroom,
-                "tspace" : tspace,
-                "tarea" : tarea,
-                "tprice" : tprice,
-                "towner" : towner,
-                "tphone" : tphone,
-                "lat_value" : lat_value,
-                "lon_value" : lon_value,
-            }
+            "tpCode" : "",
+            "tproperty_type" : "",
+            "tproperty_formart" : "",
+            "ttitle" : "",
+            "tproject_asset" : "",
+            "taddress" : "",
+            "tstreet_name" : "",
+            "tprovince" : "",
+            "tamphur" : "",
+            "tdistrict" : "",
+            "tdetail" : "",
+            "tfloor" : "",
+            "tbedroom" : "",
+            "tbathroom" : "",
+            "tortherroom" : "",
+            "tspace" : "",
+            "tarea" : "",
+            "tprice" : "",
+            "towner" : "",
+            "tphone" : "",
+            "lat_value" : "",
+            "lon_value" : "",
+        }
 
             files = {}
             newurl = "http://homedd.co.th/member_property_aed.php?typ=edit&id=" + postdata["post_id"]
