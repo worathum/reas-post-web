@@ -1227,6 +1227,32 @@ class dotproperty():
 
 # https://www.dotproperty.co.th/my-dashboard/properties/4817078/edit
 
+    def search_post(self, postdata):
+
+        time_start = datetime.datetime.utcnow()
+
+        detail = 'Can not search post with title'
+        post_found = 'false'
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": "true",
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            'ds_id': postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_found": post_found,
+            "post_id": '',
+            'post_url': '',
+            "post_create_time": '',
+            "post_modify_time": '',
+            "post_view": '',
+            'websitename': 'dotproperty'
+        }
+
 
 
     def print_debug(self, msg):
