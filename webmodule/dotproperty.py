@@ -183,7 +183,7 @@ class dotproperty():
         options.add_argument('--disable-infobars')
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-gpu")
-        options.add_argument("--window-size=1024,768")
+        options.add_argument("--window-size=1920,1080")
         options.add_argument('--disable-notifications')
         options.add_argument('--disable-dev-shm-usage')
         driver = webdriver.Chrome(executable_path=path, options=options)
@@ -398,16 +398,16 @@ class dotproperty():
                             #print('sell')
                             inp = options.find_elements_by_xpath('//input[@class="search"]')[1]
                         time.sleep(2)
-                        inp.send_keys(str(data['web_project_name']))
+                        inp.send_keys(str(data['web_project_name'].split('(')[0].strip()))
                         time.sleep(2)
                         #inp.send_keys(Keys.TAB)
-                        inp.send_keys(Keys.ENTER)
-                        inp.send_keys(Keys.ARROW_DOWN)
+                        #inp.send_keys(Keys.ENTER)
+                        #inp.send_keys(Keys.ARROW_DOWN)
                         #print('typed')
                         options = options.find_elements_by_class_name('item')
                         for opt in options:
                             #print(opt.text)
-                            if str(opt.text).replace(' ','').find(pro)!=-1:
+                            if str(opt.text).replace(' ','').find(data['web_project_name'].replace(' ', ''))!=-1:
                                 opt.click()
                                 #print(str(opt.text))
                                 #print(pro)
@@ -503,8 +503,12 @@ class dotproperty():
                 #Descriptions phrase
                 elem = driver.find_element_by_name("title_th")
                 elem.clear()
-                elem.send_keys(str(data['post_title_th'])[:120], Keys.ARROW_DOWN)
-                elem = driver.find_element_by_xpath('//div[@id="my_description_th"]')
+                if data['post_title_en'] is not None and data['post_title_en']!='' and data['post_description_en'] is not None and data['post_description_en'] != '':
+                    print('There is english description')
+                    elem.send_keys(str(data['post_title_th'])[:120], Keys.TAB, str(data['post_description_th']).replace('\r',''), Keys.TAB, str(data['post_title_en'])[:120], Keys.TAB, str(data['post_description_en']).replace('\r', ''))
+                else:    
+                    elem.send_keys(str(data['post_title_th'])[:120], Keys.TAB, str(data['post_description_th']).replace('\r',''))
+                """ elem = driver.find_element_by_xpath('//div[@id="my_description_th"]')
                 time.sleep(2)
                 elem.click()
                 time.sleep(5)
@@ -536,16 +540,18 @@ class dotproperty():
                             data['post_description_en'] = str(data['post_description_en']).replace('\n' * i,
                                                                                                     '<br>' + '<p><br></p>' * (
                                                                                                                 i - 1))
-                    elem.send_keys(data['post_description_en'], Keys.ARROW_DOWN)
+                    elem.send_keys(data['post_description_en'], Keys.ARROW_DOWN) """
 
                 #print('going to save')
                 driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
 
-                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'tgl'))).click()
                 time.sleep(2)
                 btn = driver.find_element_by_xpath('//button[@class="ui green button"]')
-                time.sleep(2)
+                time.sleep(1)
                 btn.click()
+                time.sleep(3)
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'tgl'))).click()
+                time.sleep(3)
                 txt = str(driver.current_url)
                 post_id = ''
                 ind = txt.find('properties')+11

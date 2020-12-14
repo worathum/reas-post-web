@@ -43,7 +43,7 @@ class ban2day():
         time_start = datetime.datetime.utcnow()
 
         datapost = {
-            "username": userdata['user'],
+            "username": userdata['user'].split('@')[0],
             "pass": userdata['pass'],
             "conpass": userdata['pass'],
             "email": userdata['user'],
