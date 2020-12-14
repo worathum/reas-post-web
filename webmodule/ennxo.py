@@ -440,8 +440,8 @@ class ennxo():
                 if str(subfields[field]) in postdata:
                     subfields[field] = postdata[str(subfields[field])]
             subfields["lat_lng"] = {
-                "lat": float(postdata["geo_latitude"]), 
-                "lng": float(postdata["geo_longitude"])
+                "lat": postdata["geo_latitude"], 
+                "lng": postdata["geo_longitude"]
             }
 
             datapost = {
@@ -488,6 +488,7 @@ class ennxo():
                         break
                 datapost['photos'] = images
             # print(json.dumps(datapost, indent=4))
+            print(datapost)
             if flag:
                 response = httprequestObj.http_post(self.site_name+'/api/add_product', headers=headers, data={}, json=datapost)
                 json_response = response.json()
@@ -611,8 +612,8 @@ class ennxo():
                 if str(subfields[field]) in postdata:
                     subfields[field] = postdata[str(subfields[field])]
             subfields["lat_lng"] = {
-                "lat": float(postdata["geo_latitude"]), 
-                "lng": float(postdata["geo_longitude"])
+                "lat": postdata["geo_latitude"], 
+                "lng": postdata["geo_longitude"]
             }
 
             datapost = {
