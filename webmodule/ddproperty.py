@@ -235,7 +235,7 @@ class ddproperty():
             time.sleep(3)
             self.firefox.save_screenshot('./log/ipaddress.png')
 
-            self.firefox.get('https://agentnet.ddproperty.com/ex_login?')
+            self.firefox.get('https://www.ddproperty.com/')
             time.sleep(3)
             self.firefox.save_screenshot('./log/ddproperty.png')
 
