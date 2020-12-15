@@ -236,6 +236,8 @@ class ddproperty():
             self.firefox.save_screenshot('./log/ipaddress.png')
 
             self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
+            time.sleep(3)
+            self.firefox.save_screenshot('./log/ipaddress.png')
 
             # input email and enter
             emailtxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("emailInput"))
