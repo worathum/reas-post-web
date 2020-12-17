@@ -1,3 +1,4 @@
+# SEND username for login, not email
 import requests, re, random
 from bs4 import BeautifulSoup
 import json, datetime
@@ -70,7 +71,7 @@ class house4post:
         start_time = datetime.datetime.utcnow()
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
         postdata = {}
-        postdata['log_u'] = data['user'].split('@')[0]
+        postdata['log_u'] = data['user']
         postdata['log_p'] = data['pass']
         postdata['submit'] = 'Login'
         success = ''
