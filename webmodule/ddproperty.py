@@ -22,6 +22,8 @@ from urllib.parse import urlsplit
 import string
 import random
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
+import numpy as np
 
 
 try:
@@ -218,12 +220,35 @@ class ddproperty():
 
         self.firefox = webdriver.Chrome("./static/chromedriver", chrome_options=options)
 
+        start_x = random.randint(0, 50)
+        end_x = random.randint(0, 50)
+        start_y = random.randint(0, 20)
+        end_y = random.randint(0, 20)
+        rand_time = random.uniform(0.00001, 0.001)
+
+        pos_rand_x = np.linspace(start_x, end_x, 5)
+        pos_rand_y = np.linspace(start_y, end_y, 5)
+
+        pos_list = []
+        for i in range(0, 5):
+            pos_tmp = []
+            pos_tmp.append(pos_rand_x[i])
+            pos_tmp.append(pos_rand_y[i])
+            pos_list.append(pos_tmp)
+
         try:
             # self.firefox = webdriver.Chrome("/usr/bin/chromedriver", chrome_options=options)
             # open login page
             # self.firefox = webdriver.Chrome("C:/Users/hp/Downloads/chromedriver_win32/chromedriver", chrome_options=options)
 
             self.firefox.get('https://agentnet.ddproperty.com/ex_login?w=1&redirect=/ex_home')
+
+            action = ActionChains(self.firefox)
+            for pos_item in pos_list:
+                print(str(int(pos_item[0])) + ' ' + str(int(pos_item[1])))
+                action.move_by_offset(int(pos_item[0]), int(pos_item[1]))
+                action.perform()
+                time.sleep(rand_time)
 
             # input email and enter
             emailtxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("emailInput"))
