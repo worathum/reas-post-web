@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# SEND USERNAME in login, NOT email
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 from .lib_captcha import *
@@ -118,7 +118,7 @@ class klungbaan():
         detail = 'An Error has Occurred'
 
         datapost = {
-            "username": postdata['user'].replace("@","").replace(".",""),
+            "username": postdata['user'],
             "password": postdata['pass'],
             "_wp_http_referer": "/",
             "action": "houzez_login"
