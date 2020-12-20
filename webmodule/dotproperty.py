@@ -122,6 +122,9 @@ class dotproperty():
         data1 = r.text
         soup = BeautifulSoup(data1, self.PARSER)
 
+        with open('./log/dotproperty_source.txt', 'w', encoding='utf-8') as f:
+            f.write(r.text)
+
         frm_token = soup.find("input", {"name": "_token"})['value']
         postdata = {
             '_token': frm_token,
