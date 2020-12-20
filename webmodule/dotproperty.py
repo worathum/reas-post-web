@@ -119,6 +119,7 @@ class dotproperty():
         success = ''
         detail = ''
         r = httprequestObj.http_get_with_headers('https://www.dotproperty.co.th/login', verify=False)
+        time.sleep(7)
         data1 = r.text
         soup = BeautifulSoup(data1, self.PARSER)
 
