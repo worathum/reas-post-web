@@ -123,7 +123,10 @@ class dotproperty():
         soup = BeautifulSoup(data1, self.PARSER)
 
         with open('./log/dotproperty_history.txt', 'w', encoding='utf-8') as f:
-            f.write(r.history)
+            if r.history:
+                for res in r.history:
+                    f.write('History')
+                    f.write(res.status_code, res.url)
 
         frm_token = soup.find("input", {"name": "_token"})['value']
         postdata = {
