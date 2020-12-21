@@ -119,13 +119,11 @@ class dotproperty():
         success = ''
         detail = ''
         r = httprequestObj.http_get_with_headers('https://www.dotproperty.co.th/login', verify=False)
-        time.sleep(10)
-        r = httprequestObj.http_get_with_headers('https://www.dotproperty.co.th/en/login')
         data1 = r.text
         soup = BeautifulSoup(data1, self.PARSER)
 
-        with open('./log/dotproperty_source.txt', 'w', encoding='utf-8') as f:
-            f.write(r.text)
+        with open('./log/dotproperty_history.txt', 'w', encoding='utf-8') as f:
+            f.write(r.history)
 
         frm_token = soup.find("input", {"name": "_token"})['value']
         postdata = {
