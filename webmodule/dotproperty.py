@@ -118,41 +118,34 @@ class dotproperty():
 
         success = ''
         detail = ''
-        r = httprequestObj.http_get_with_headers('https://www.dotproperty.co.th/login', verify=False)
-        data1 = r.text
-        soup = BeautifulSoup(data1, self.PARSER)
+        
+        path = './static/chromedriver'
+        options = Options()
+        options.add_argument('--headless')
+        options.add_argument('--disable-notifications')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-infobars')
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument('--disable-notifications')
+        options.add_argument('--disable-dev-shm-usage')
+        driver = webdriver.Chrome(executable_path=path, options=options)
 
-        with open('./log/dotproperty_history.txt', 'w', encoding='utf-8') as f:
-            if r.history:
-                for res in r.history:
-                    f.write('History')
-                    f.write(res.status_code, res.url)
-
-        frm_token = soup.find("input", {"name": "_token"})['value']
-        postdata = {
-            '_token': frm_token,
-            'email': data['user'],
-            'password': data['pass'],
-            'refer_type': 'login',
-            'remember': 'on'
-        }
-
-        url = 'https://www.dotproperty.co.th/ajaxLogin?pv_id='+str(soup.find('body')['data-pvid'])
-        #print(url)
-
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-        }
-        req = httprequestObj.http_post(url, data=postdata, headers=headers)
-        txt = str(req.text)
-
-        if txt.find('true') == -1:
+        #driver.maximize_window()
+        driver.get('https://www.dotproperty.co.th/login')
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'email'))).send_keys(data['user'])
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.NAME, 'password'))).send_keys(data['pass'])
+        login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
+        actions = ActionChains(driver)
+        actions.move_to_element(login_btn).click().perform()
+        txt = str(driver.page_source)
+        if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
             success = 'false'
             detail = 'Invalid credentials'
-
         else:
             success = 'true'
-            detail = 'Login successful'
+            detail = 'Log in success'
 
         end_time = datetime.datetime.utcnow()
         result = {'websitename': 'dotproperty',
