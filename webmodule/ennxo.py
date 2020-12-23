@@ -881,7 +881,8 @@ class ennxo():
                 "referer": "https://www.ennxo.com/product/"+str(postdata['post_id'])
             }
 
-            r = httprequestObj.http_get(self.site_name+'/_next/data/ZwNAeMHi8XRLoA8lH_V0f/edit/'+str(postdata['post_id'])+".json?id="+str(postdata['post_id']))
+            #r = httprequestObj.http_get(self.site_name+'/_next/data/ZwNAeMHi8XRLoA8lH_V0f/edit/'+str(postdata['post_id'])+".json?id="+str(postdata['post_id']))
+            r = httprequestObj.http_get(self.site_name + '/_next/data/yXGZ-mPhhy5ZVcSvEYock/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
             json_r = r.json()["pageProps"]["product"]
             if r.status_code==200:
                 datapost = {
