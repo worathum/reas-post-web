@@ -989,7 +989,7 @@ class livinginsider():
                 postdata['floor'] = postdata['floor_total']
 
                 post_id = postdata['post_id']
-                if postdata['property_type'] == 3:
+                if theprodid == 3:
                     data = {
                         'currentstep': '2',
                         'web_id': post_id,
