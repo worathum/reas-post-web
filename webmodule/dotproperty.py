@@ -139,6 +139,7 @@ class dotproperty():
         login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
         actions = ActionChains(driver)
         actions.move_to_element(login_btn).click().perform()
+        time.sleep(3.5)
         txt = str(driver.page_source)
         if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
             success = 'false'
@@ -194,6 +195,7 @@ class dotproperty():
         login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
         actions = ActionChains(driver)
         actions.move_to_element(login_btn).click().perform()
+        time.sleep(3.5)
         txt = str(driver.page_source)
         if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
             success = 'false'
@@ -629,6 +631,7 @@ class dotproperty():
         login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
         actions = ActionChains(driver)
         actions.move_to_element(login_btn).click().perform()
+        time.sleep(3.5)
         txt = str(driver.page_source)
         if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
             success = 'false'
@@ -719,6 +722,7 @@ class dotproperty():
         login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
         actions = ActionChains(driver)
         actions.move_to_element(login_btn).click().perform()
+        time.sleep(3.5)
         txt = str(driver.page_source)
         if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
             success = 'false'
@@ -811,6 +815,7 @@ class dotproperty():
         login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
         actions = ActionChains(driver)
         actions.move_to_element(login_btn).click().perform()
+        time.sleep(3.5)
         txt = str(driver.page_source)
         if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
             success = 'false'
