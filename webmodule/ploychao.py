@@ -478,6 +478,28 @@ class ploychao():
             "post_view": ""
         }    
 
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": '"true',
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": "Hard code search_post action",
+            "websitename": "ploychao",
+            "ds_id":postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": postdata['post_id'],
+            "post_modify_time": str(time_end),
+            "post_view": "0",
+            "post_url": "0",
+            "post_found": "false"
+        }
+
 
     def print_debug(self, msg):
         if(self.debug == 1):
