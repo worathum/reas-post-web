@@ -225,11 +225,12 @@ class propertyhub():
                     sel_posttype = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'postType')))[1].click()
                     sel_type2 = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'item')))
                     if postdata['listing_type'] == 'ขาย':
-                        #print(sel_type2[24].text)
-                        sel_type2[24].click()
+                        #print(sel_type2[25].text)
+                        sel_type2[25].click()
                         sale_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forSale.price'))).send_keys(datahandled['price_baht'])
                     elif postdata['listing_type'] == 'เช่า':
-                        sel_type2[25].click()
+                        #print(sel_type2[26].text)
+                        sel_type2[26].click()
                         rent_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forRent.monthly.price'))).send_keys(datahandled['price_baht'])
                         daily_price = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.daily.type')))[2].click()
                         deposit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.deposit.type')))[2].click()
