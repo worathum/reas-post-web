@@ -17,7 +17,7 @@ from urllib.parse import unquote
 httprequestObj = lib_httprequest()
 
 
-with open("./static/ploychao_province.json") as f:
+with open("./static/ploychao_province.json", encoding='utf-8') as f:
     provincedata = json.load(f)
 
 
@@ -1089,22 +1089,32 @@ class goodpriceproperty():
         if success == "true":
             page = 1            
             found = False
-            while True:
+            res = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php").content
+            soup = BeautifulSoup(res, features = self.parser)
+            table = soup.find_all('table')[10]
+            page_list = []
+            for link in table.find_all('a'):
+                if len(link.get('href').split('/')) > 2:
+                    if len(link.get('href').split('/')[2]) > 6:
+                        page_list.append(link.get('href').split('/')[2].split('=')[-1])
+            total_page = page_list[-2]
+            
+            for page in range(1, int(total_page) + 1):
+                #print(page)
                 requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
                 soup = BeautifulSoup(requ, features = self.parser)
-                ahref = soup.findAll('a')
-                count = 0
-                for i in ahref:
-                    var = i['href'].split('/')
-                    if len(var)>2 and var[2]==str(postdata['post_id']):
-                        found = True
-                        break
-                    if 'property' in var:
-                        count += 1
-                page += 1
-                if found or count==0:
+                table = soup.find_all('table')[10]
+                for link in table.find_all('a'):
+                    if len(link.get('href').split('/')) > 2:
+                        if len(link.get('href').split('/')[2]) <= 6:
+                            var = link.get('href').split('/')[2]
+                            #print(link.get('href').split('/')[2])
+                            if var == str(postdata['post_id']):
+                                found = True
+                                break
+                if found:
                     break
-
+            
             if not found:
                 return {
 
