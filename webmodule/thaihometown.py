@@ -1126,13 +1126,11 @@ class thaihometown():
                     imgurl  =  soup.find("img",src=re.compile('securimage_show'))['src']
                     
                     res = httprequestObj.http_get(imgurl, verify=False)
-                    imgname = "/imgtmp/captchatmp/" + str(random.randint(1, 999999999)) + '.png'
+                    imgname = "/imgtmp/" + str(random.randint(1, 999999999)) + '.png'
                     with open(os.getcwd()+imgname, 'wb') as f:
                         f.write(res.content)
-                        f.close()
                     #log.debug('download image '+imgname)
-                    imgnum = self.ImgToTextResolve(imgname)
-                    os.unlink(imgname)
+                    imgnum = self.ImgToTextResolve(os.getcwd()+imgname)              
                     #log.debug(imgnum)
                     #if anti captcha is error
                     if imgnum['errorId'] < 0:
@@ -1162,10 +1160,13 @@ class thaihometown():
                         continue
                     else:
                         success = "true"
+                        detail = "Deleted successfully"
                         #log.debug("post id %s deleted success",datahandled['post_id'])
                         #log.debug('break')
                         break
-                    
+            
+            if os.path.exists(os.getcwd()+imgname):
+                os.remove(os.getcwd()+imgname)      
 
         #
         # end process
