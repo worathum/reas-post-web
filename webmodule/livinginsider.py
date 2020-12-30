@@ -1613,7 +1613,7 @@ class livinginsider():
             post_found = False
             max_page = 100
             r = httprequestObj.http_get(
-                'https://www.livinginsider.com/mystock.php?action=1&pages=1&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=')
+                'https://www.livinginsider.com/mystock.php?action=1')
 
             device_id = r.text.split("let device_id")[1].split("'")[1].split("'")[0]            
             mem_id = r.text.split("let mem_id")[1].split("'")[1].split("'")[0]            
@@ -1621,11 +1621,10 @@ class livinginsider():
             print(mem_id)
             soup = BeautifulSoup(r.content, self.parser)
             try:
-                max_page = int(soup.find('ul', 'pagination').findChildren('li', recursive=False)[-3].find('a').string)
+                max_page = int(soup.find('ul', 'pagination').findChildren('li')[-1].find('a').get('href').split('&')[0].split('=')[-1])
             except:
                 max_page = 1
-            while page <= max_page:
-                page += 1
+            for page in range(1, max_page+1):
                 params = (
                     ('pages', str(page)),
                     ('action', '1'),
@@ -1641,11 +1640,11 @@ class livinginsider():
                     ('from_autoboost_flag', ''),
                     ('topic_sort', '1'),
                     ('search_zone_id', ''),
-                    ('pagelimit', '50'),
+                    ('search_project_id', ''),
+                    ('group_list', ''),
+                    ('pagelimit', '10'),
                 )
                 r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
-                if r.history:
-                    break
                 soup = BeautifulSoup(r.content, self.parser)
                 all_posts = soup.find_all(class_='mystock-item')
                 for post in all_posts:
@@ -1654,7 +1653,6 @@ class livinginsider():
                         break
                 if post_found:
                     break
-
             if post_found:
                 datapost = {
                     'mem_id': mem_id,

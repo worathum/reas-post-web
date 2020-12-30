@@ -484,10 +484,12 @@ class amazonford():
             all_post_ids = []
             page = 1
             while True:
+                print(page)
                 requ = httprequestObj.http_get("http://www.amazonford.com/member/list-property.php?QueryString=value&Page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
+                    print(abc['value'])
                     all_post_ids.append(str(abc['value']))
                 page += 1
                 if not all_post:

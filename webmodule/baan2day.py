@@ -434,7 +434,7 @@ class baan2day():
             response = httprequestObj.http_get(self.site_name+'/member_property_aed.php?typ=delete&id='+postdata['post_id'])
             success = "false"
             if response.status_code==200:
-                if "alert('ลบข้อมูลเรียบร้อยแล้วค่ะ');window.location.href='member_property_list.php'" in response.text:
+                if "alert('ลบข้อมูลเรียบร้อยแล้วค่ะ');window.location.href='member_property_list.php';" in response.text:
                     success = "true"
                     detail = "Post deleted successfully"
                 elif "window.history.back()" in response.text:
