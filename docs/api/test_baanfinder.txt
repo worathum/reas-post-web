@@ -1,0 +1,310 @@
+REGISTER
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewoJImFjdGlvbiI6ICJyZWdpc3Rlcl91c2VyIiwKCSJ0aW1lb3V0IjogIjciLAoJIndlYiI6IFsKICAgIAl7CiAgICAgICAgCSJkc19uYW1lIjogImJhYW5maW5kZXIiLAogICAgICAgIAkiZHNfaWQiOiAiNCIsCiAgICAgICAgCSJ1c2VyIjogInNvbWV0aGluZ3NvbWV0aGluZ0BnbWFpbC5jb20iLAogICAgICAgIAkicGFzcyI6ICJlYXN5cGFzcyIsCiAgICAgICAgCSJjb21wYW55X25hbWUiOiAiYWJjZGVmZyIsCiAgICAgICAgCSJuYW1lX3RpdGxlIjogIm1yIiwKICAgICAgICAJIm5hbWVfdGgiOiAi4Lit4Lix4Lih4Lij4Li04LiZIiwKICAgICAgICAJInN1cm5hbWVfdGgiOiAi4Lia4Li44LiNIiwKICAgICAgICAJInRlbCI6ICIwODkxOTk5MzUwIgogICAgCX0KCV0KfQo=
+
+<output>
+{
+ "success": "true",
+ "action": "register_user",
+ "web": {
+  "baanfinder": {
+   "success": "true",
+   "usage_time": "0:00:07.668673",
+   "start_time": "2020-05-19 14:10:21.457626",
+   "end_time": "2020-05-19 14:10:29.126299",
+   "detail": "Registered",
+   "websitename": "baanfinder"
+  }
+ },
+ "usage_time": "0:00:07.745959",
+ "start_time": "2020-05-19 14:10:21.404546",
+ "end_time": "2020-05-19 14:10:29.150505"
+}
+
+LOGIN
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewoJImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKCSJ0aW1lb3V0IjogIjciLAoJIndlYiI6IFsKICAgIAl7CiAgICAgICAgCSJkc19uYW1lIjogImJhYW5maW5kZXIiLAogICAgICAgIAkiZHNfaWQiOiAiNCIsCiAgICAgICAgCSJ1c2VyIjogInRlc3Q0QGdtYWlsLmNvbSIsCiAgICAgICAgCSJwYXNzIjogImVhc3lwYXNzIgogICAgICAgICAgIAl9CgldCn0K
+
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "baanfinder": {
+   "success": "true",
+   "usage_time": "0:00:03.325065",
+   "start_time": "2020-05-19 14:08:09.544686",
+   "end_time": "2020-05-19 14:08:12.869751",
+   "detail": "logged in",
+   "websitename": "baanfinder"
+  }
+ },
+ "usage_time": "0:00:03.353626",
+ "start_time": "2020-05-19 14:08:09.523906",
+ "end_time": "2020-05-19 14:08:12.877532"
+}
+
+LOGIN Wrong User
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewoJImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKCSJ0aW1lb3V0IjogIjciLAoJIndlYiI6IFsKICAgIAl7CiAgICAgICAgCSJkc19uYW1lIjogImJhYW5maW5kZXIiLAogICAgICAgIAkiZHNfaWQiOiAiNCIsCiAgICAgICAgCSJ1c2VyIjogInNzIiwKICAgICAgICAJInBhc3MiOiAic3MiCiAgICAgICAgICAgCX0KCV0KfQo=
+
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "baanfinder": {
+   "success": "false",
+   "usage_time": "0:00:02.250495",
+   "start_time": "2020-05-19 13:59:38.966516",
+   "end_time": "2020-05-19 13:59:41.217011",
+   "detail": "incorrect email or password",
+   "websitename": "baanfinder"
+  }
+ },
+ "usage_time": "0:00:02.318815",
+ "start_time": "2020-05-19 13:59:38.923993",
+ "end_time": "2020-05-19 13:59:41.242808"
+}
+
+LOGIN Wrong Pass
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewoJImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKCSJ0aW1lb3V0IjogIjciLAoJIndlYiI6IFsKICAgIAl7CiAgICAgICAgCSJkc19uYW1lIjogImJhYW5maW5kZXIiLAogICAgICAgIAkiZHNfaWQiOiAiNCIsCiAgICAgICAgCSJ1c2VyIjogInRlc3Q0QGdtYWlsLmNvbSIsCiAgICAgICAgCSJwYXNzIjogInNzIgogICAgICAgICAgIAl9CgldCn0K
+
+<output>
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "baanfinder": {
+   "success": "false",
+   "usage_time": "0:00:02.631761",
+   "start_time": "2020-05-19 14:03:19.767040",
+   "end_time": "2020-05-19 14:03:22.398801",
+   "detail": "incorrect email or password",
+   "websitename": "baanfinder"
+  }
+ },
+ "usage_time": "0:00:02.681346",
+ "start_time": "2020-05-19 14:03:19.731501",
+ "end_time": "2020-05-19 14:03:22.412847"
+}
+
+CREATE POST NO LINE
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewoJImFjdGlvbiI6ImNyZWF0ZV9wb3N0IiwKCSJ0aW1lb3V0IjoiNyIsCgkicG9zdF9pbWdfdXJsX2xpc3RzIjpbCgkiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NTJfODM2MzZwaWM4LmpwZyIsCgkiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDVfODM2MzZwaWMxLmpwZyIsCgkiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDZfODM2MzZwaWMyLmpwZyIsCgkiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY3LzIxOTk5NjlfODM2MzVwaWMxLmpwZyIKCV0sCgkiZ2VvX2xhdGl0dWRlIjoiMTMuNzg2ODYyIiwKCSJnZW9fbG9uZ2l0dWRlIjoiMTAwLjc1NzgxNSIsCgkicHJvcGVydHlfaWQiOiJjaHUwMDEiLAoJInBvc3RfdGl0bGVfdGgiOiLguYPguKvguYnguYDguIrguYjguLIg4LiX4Li14LmI4LiU4Li04LiZ4LiU4LmI4Lin4LiZIOC4muC4suC4h+C4geC4o+C4p+C4ouC5hOC4l+C4o+C4meC5ieC4reC4oiA2IOC5hOC4o+C5iCDguYDguKvguKHguLLguLDguJfguLPguJXguKXguLLguJQiLAoJInBvc3RfZGVzY3JpcHRpb25fdGgiOiLguYPguKvguYnguYDguIrguYjguLIg4LiX4Li14LmI4LiU4Li04LiZ4LiU4LmI4Lin4LiZIOC4muC4suC4h+C4geC4o+C4p+C4ouC5hOC4l+C4o+C4meC5ieC4reC4oiA2IOC5hOC4o+C5iCDguYDguKvguKHguLLguLDguJfguLPguJXguKXguLLguJTguYPguKvguYnguYDguIrguYjguLIg4LiX4Li14LmI4LiU4Li04LiZ4LiU4LmI4Lin4LiZIOC4muC4suC4h+C4geC4o+C4p+C4ouC5hOC4l+C4o+C4meC5ieC4reC4oiA2IOC5hOC4o+C5iCDguYDguKvguKHguLLguLDguJfguLPguJXguKXguLLguJTguKPguLLguKLguKXguLDguYDguK3guLXguKLguJTguJfguLXguYjguJTguLTguJnguILguJnguLLguJQ24LmE4Lij4LmI4Lir4LiZ4LmJ4Liy4LiB4Lin4LmJ4Liy4LiHIDMwIOC5gOC4oeC4leC4o+C4quC4luC4suC4meC4l+C4teC5iOC5g+C4geC4peC5ieC5gOC4hOC4teC4ouC4hyDguJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYwg4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNSDguYPguKvguYnguYDguIrguYjguLIgMTAwLDAwMCDguJrguLLguJfguKrguJnguYPguIjguJXguLTguJTguJXguYjguK0g4LiK4LmI4Lit4LiX4Li04Lie4Lii4LmMIDA5MTgyOTM4NCIsCgkicHJpY2VfYmFodCI6IjEwMDAwMCIsCgkibGlzdGluZ190eXBlIjoi4LmA4LiK4LmI4LiyIiwKCSJwcm9wZXJ0eV90eXBlIjoiMSIsCgkicHJvbWluZW50X3BvaW50Ijoi4Lir4LiZ4LmJ4Liy4LiB4Lin4LmJ4Liy4LiH4Lih4Liy4LiBIOC5g+C4q+C5ieC5gOC4iuC5iOC4suC4luC4ueC4geC4quC4uOC4lCIsCgkiZGlyZWN0aW9uX3R5cGUiOiIxMSIsCgkiYWRkcl9wcm92aW5jZSI6IuC4meC4meC4l+C4muC4uOC4o+C4tSIsCgkiYWRkcl9kaXN0cmljdCI6IuC5gOC4oeC4t+C4reC4h+C4meC4meC4l+C4muC4uOC4o+C4tSIsCgkiYWRkcl9zdWJfZGlzdHJpY3QiOiLguJrguLLguIfguIHguKPguYjguLLguIciLAoJImFkZHJfcm9hZCI6IuC4muC4suC4h+C4geC4o+C4p+C4oi3guYTguJfguKPguJnguYnguK3guKIiLAoJImFkZHJfc29pIjoi4LiL4Lit4Lii4Lia4Liy4LiH4LiB4Lij4Lin4LiiLeC5hOC4l+C4o+C4meC5ieC4reC4oiAzNCIsCgkiYWRkcl9uZWFyX2J5Ijoi4LiW4LiZ4LiZ4Lie4Lij4Liw4Lij4Liy4LihNeC4luC4meC4meC4meC4hOC4o+C4reC4tOC4meC4l+C4o+C5jCIsCgkiYmVkX3Jvb20iOiIzIiwKCSJiYXRoX3Jvb20iOiIyIiwKCSJmbG9vcl90b3RhbCI6IjEwIiwKCSJmbG9vcl9sZXZlbCI6IjQiLAoJImZsb29yX2FyZWEiOiI5MCIsCgkibGFuZF9zaXplX3JhaSI6IiIsCgkibGFuZF9zaXplX25nYW4iOiI2IiwKCSJsYW5kX3NpemVfd2EiOjAsCgkibmFtZSI6ImNyZWF0ZW5hbWUiLAoJIm1vYmlsZSI6IjA5OTI4OTk5OTEiLAoJImVtYWlsIjoiY3JlYXRlcG9zdEBlbWFpbC5jb20iLAoJImxpbmUiOiIwOTkyODk5OTkxIiwKCSJwcm9qZWN0X25hbWUiOiLguJfguLXguYjguJTguLTguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4LiiLeC4meC5ieC4reC4oiIsCgkid2ViIjogWwoJCXsKCQkJImRzX25hbWUiOiJiYWFuZmluZGVyIiwKCQkJImRzX2lkIjoiMTIwIiwKCQkJInVzZXIiOiJ0ZXN0OUBnbWFpbC5jb20iLAoJCQkicGFzcyI6ImVhc3lwYXNzIgoJCX0KCV0KfQ==
+
+<output>
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "baanfinder": {
+   "success": "true",
+   "usage_time": "0:00:52.583463",
+   "start_time": "2020-05-25 11:06:27.939033",
+   "end_time": "2020-05-25 11:07:20.522496",
+   "post_url": "https://www.baanfinder.com/th/property/5552754",
+   "post_id": "5552754",
+   "account_type": "null",
+   "detail": "Post Created",
+   "websitename": "baanfinder"
+  }
+ },
+ "usage_time": "0:00:58.462297",
+ "start_time": "2020-05-25 11:06:22.076796",
+ "end_time": "2020-05-25 11:07:20.539093"
+}
+
+
+CREATE POST LINE
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewoJImFjdGlvbiI6ImNyZWF0ZV9wb3N0IiwKCSJ0aW1lb3V0IjoiNyIsCgkicG9zdF9pbWdfdXJsX2xpc3RzIjpbCgkiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NTJfODM2MzZwaWM4LmpwZyIsCgkiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDVfODM2MzZwaWMxLmpwZyIsCgkiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY0LzIxOTk5NDZfODM2MzZwaWMyLmpwZyIsCgkiaHR0cHM6Ly93d3cuYmFuZ2tva2Fzc2V0cy5jb20vcHJvcGVydHkvMjUwMDY3LzIxOTk5NjlfODM2MzVwaWMxLmpwZyIKCV0sCgkiZ2VvX2xhdGl0dWRlIjoiMTMuNzg2ODYyIiwKCSJnZW9fbG9uZ2l0dWRlIjoiMTAwLjc1NzgxNSIsCgkicHJvcGVydHlfaWQiOiJjaHUwMDEiLAoJInBvc3RfdGl0bGVfdGgiOiLguYPguKvguYnguYDguIrguYjguLIg4LiX4Li14LmI4LiU4Li04LiZ4LiU4LmI4Lin4LiZIOC4muC4suC4h+C4geC4o+C4p+C4ouC5hOC4l+C4o+C4meC5ieC4reC4oiA2IOC5hOC4o+C5iCDguYDguKvguKHguLLguLDguJfguLPguJXguKXguLLguJQiLAoJInBvc3RfZGVzY3JpcHRpb25fdGgiOiLguYPguKvguYnguYDguIrguYjguLIg4LiX4Li14LmI4LiU4Li04LiZ4LiU4LmI4Lin4LiZIOC4muC4suC4h+C4geC4o+C4p+C4ouC5hOC4l+C4o+C4meC5ieC4reC4oiA2IOC5hOC4o+C5iCDguYDguKvguKHguLLguLDguJfguLPguJXguKXguLLguJTguYPguKvguYnguYDguIrguYjguLIg4LiX4Li14LmI4LiU4Li04LiZ4LiU4LmI4Lin4LiZIOC4muC4suC4h+C4geC4o+C4p+C4ouC5hOC4l+C4o+C4meC5ieC4reC4oiA2IOC5hOC4o+C5iCDguYDguKvguKHguLLguLDguJfguLPguJXguKXguLLguJRcbuC4o+C4suC4ouC4peC4sOC5gOC4reC4teC4ouC4lFxu4LiX4Li14LmI4LiU4Li04LiZ4LiC4LiZ4Liy4LiUNuC5hOC4o+C5iFxu4Lir4LiZ4LmJ4Liy4LiB4Lin4LmJ4Liy4LiHIDMwIOC5gOC4oeC4leC4o1xu4Liq4LiW4Liy4LiZ4LiX4Li14LmI4LmD4LiB4Lil4LmJ4LmA4LiE4Li14Lii4LiHXG7guJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYxcbuC4luC4meC4meC4nuC4o+C4sOC4o+C4suC4oTVcblxu4LmD4Lir4LmJ4LmA4LiK4LmI4LiyIDEwMCwwMDAg4Lia4Liy4LiXXG5cbuC4quC4meC5g+C4iOC4leC4tOC4lOC4leC5iOC4rSDguIrguYjguK3guJfguLTguJ7guKLguYwgMDkxODI5Mzg0IiwKCSJwcmljZV9iYWh0IjoiMTAwMDAwIiwKCSJsaXN0aW5nX3R5cGUiOiLguYDguIrguYjguLIiLAoJInByb3BlcnR5X3R5cGUiOiIxIiwKCSJwcm9taW5lbnRfcG9pbnQiOiLguKvguJnguYnguLLguIHguKfguYnguLLguIfguKHguLLguIEg4LmD4Lir4LmJ4LmA4LiK4LmI4Liy4LiW4Li54LiB4Liq4Li44LiUIiwKCSJkaXJlY3Rpb25fdHlwZSI6IjExIiwKCSJhZGRyX3Byb3ZpbmNlIjoi4LiZ4LiZ4LiX4Lia4Li44Lij4Li1IiwKCSJhZGRyX2Rpc3RyaWN0Ijoi4LmA4Lih4Li34Lit4LiH4LiZ4LiZ4LiX4Lia4Li44Lij4Li1IiwKCSJhZGRyX3N1Yl9kaXN0cmljdCI6IuC4muC4suC4h+C4geC4o+C5iOC4suC4hyIsCgkiYWRkcl9yb2FkIjoi4Lia4Liy4LiH4LiB4Lij4Lin4LiiLeC5hOC4l+C4o+C4meC5ieC4reC4oiIsCgkiYWRkcl9zb2kiOiLguIvguK3guKLguJrguLLguIfguIHguKPguKfguKIt4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDM0IiwKCSJhZGRyX25lYXJfYnkiOiLguJbguJnguJnguJ7guKPguLDguKPguLLguKE1XHJcbuC4luC4meC4meC4meC4hOC4o+C4reC4tOC4meC4l+C4o+C5jCIsCgkiYmVkX3Jvb20iOiIzIiwKCSJiYXRoX3Jvb20iOiIyIiwKCSJmbG9vcl90b3RhbCI6IjEwIiwKCSJmbG9vcl9sZXZlbCI6IjQiLAoJImZsb29yX2FyZWEiOiI5MCIsCgkibGFuZF9zaXplX3JhaSI6IiIsCgkibGFuZF9zaXplX25nYW4iOiI2IiwKCSJsYW5kX3NpemVfd2EiOjAsCgkibmFtZSI6ImNyZWF0ZW5hbWUiLAoJIm1vYmlsZSI6IjA5OTI4OTk5OTEiLAoJImVtYWlsIjoiY3JlYXRlcG9zdEBlbWFpbC5jb20iLAoJImxpbmUiOiIwOTkyODk5OTkxIiwKCSJwcm9qZWN0X25hbWUiOiLguJfguLXguYjguJTguLTguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4LiiLeC4meC5ieC4reC4oiIsCgkid2ViIjogWwoJCXsKCQkJImRzX25hbWUiOiJiYWFuZmluZGVyIiwKCQkJImRzX2lkIjoiMTIwIiwKCQkJInVzZXIiOiJ0ZXN0OEBnbWFpbC5jb20iLAoJCQkicGFzcyI6ImVhc3lwYXNzIgoJCX0KCV0KfQ==
+
+<output>
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "baanfinder": {
+   "success": "true",
+   "usage_time": "0:00:49.877822",
+   "start_time": "2020-05-25 11:01:02.802721",
+   "end_time": "2020-05-25 11:01:52.680543",
+   "post_url": "https://www.baanfinder.com/th/property/0192422",
+   "post_id": "0192422",
+   "account_type": "null",
+   "detail": "Post Created",
+   "websitename": "baanfinder"
+  }
+ },
+ "usage_time": "0:01:05.199231",
+ "start_time": "2020-05-25 11:00:47.489114",
+ "end_time": "2020-05-25 11:01:52.688345"
+}
+
+BOOST POST
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewoJImFjdGlvbiI6ImJvb3N0X3Bvc3QiLAoJInRpbWVvdXQiOiI3IiwKCSJ3ZWIiOiBbCgkJewoJCQkiZHNfbmFtZSI6ImJhYW5maW5kZXIiLAoJCQkiZHNfaWQiOiIxMjAiLAoJCQkicG9zdF9pZCI6IjQxMjAxMjIiLAoJCQkibG9nX2lkIjoiMzMzMzMiLAoJCQkidXNlciI6InRlc3Q1QGdtYWlsLmNvbSIsCgkJCSJwYXNzIjoiZWFzeXBhc3MiCgkJfQoJXQp9
+<output>
+{
+ "success": "true",
+ "action": "boost_post",
+ "web": {
+  "baanfinder": {
+   "success": "true",
+   "usage_time": "0:00:04.794869",
+   "start_time": "2020-05-25 10:42:21.910471",
+   "end_time": "2020-05-25 10:42:26.705340",
+   "detail": "post bumped successfully",
+   "websitename": "baanfinder",
+   "log_id": 1
+  }
+ },
+ "usage_time": "0:00:04.837839",
+ "start_time": "2020-05-25 10:42:21.880613",
+ "end_time": "2020-05-25 10:42:26.718452"
+}
+
+
+DELETE POST
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewoJImFjdGlvbiI6ImRlbGV0ZV9wb3N0IiwKCSJ0aW1lb3V0IjoiNSIsCgkid2ViIjogWwoJCXsKCQkJImRzX25hbWUiOiJiYWFuZmluZGVyIiwKCQkJImRzX2lkIjoiMTIwIiwKCQkJInBvc3RfaWQiOiIxOTEyMTA5IiwKCQkJImxvZ19pZCI6IjMzMzMzIiwKCQkJInVzZXIiOiJ0ZXN0NUBnbWFpbC5jb20iLAoJCQkicGFzcyI6ImVhc3lwYXNzIgoJCX0KCV0KfQ==
+
+<output>
+{
+ "success": "true",
+ "action": "delete_post",
+ "web": {
+  "baanfinder": {
+   "success": "true",
+   "usage_time": "0:00:05.343437",
+   "start_time": "2020-05-25 10:40:07.307877",
+   "end_time": "2020-05-25 10:40:12.651314",
+   "detail": "post deleted successfully",
+   "websitename": "baanfinder",
+   "log_id": 1
+  }
+ },
+ "usage_time": "0:00:05.407150",
+ "start_time": "2020-05-25 10:40:07.274191",
+ "end_time": "2020-05-25 10:40:12.681341"
+}
+
+EDIT POST
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewoJImFjdGlvbiI6ImVkaXRfcG9zdCIsCgkidGltZW91dCI6IjciLAoJInBvc3RfaW1nX3VybF9saXN0cyI6WwoJXSwKCSJnZW9fbGF0aXR1ZGUiOiIxMy43ODY4NjIiLAoJImdlb19sb25naXR1ZGUiOiIxMDAuNzU3ODE1IiwKCSJwcm9wZXJ0eV9pZCI6IjYiLAoJInBvc3RfdGl0bGVfdGgiOiJ0aGlzIGlzIG5ldyB0aXRsZSBTRUxMIFJFTlQgU0VMTCBMT0wiLAoJInBvc3RfZGVzY3JpcHRpb25fdGgiOiJoYWhhXG5uZXcgbGluZSBcbiDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lOC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lFxu4Lij4Liy4Lii4Lil4Liw4LmA4Lit4Li14Lii4LiUXG7guJfguLXguYjguJTguLTguJnguILguJnguLLguJQ24LmE4Lij4LmIXG7guKvguJnguYnguLLguIHguKfguYnguLLguIcgMzAg4LmA4Lih4LiV4LijXG7guKrguJbguLLguJnguJfguLXguYjguYPguIHguKXguYnguYDguITguLXguKLguIfguJbguJnguJnguJnguITguKPguK3guLTguJnguJfguKPguYxcbuC4luC4meC4meC4nuC4o+C4sOC4o+C4suC4oTVcbuC5g+C4q+C5ieC5gOC4iuC5iOC4siAxMDAsMDAwIOC4muC4suC4l1xyXG5cclxu4Liq4LiZ4LmD4LiI4LiV4Li04LiU4LiV4LmI4LitIOC4iuC5iOC4reC4l+C4tOC4nuC4ouC5jCAwOTE4MjkzODQiLAoJInByaWNlX2JhaHQiOiI5MDAwMDAiLAoJImxpc3RpbmdfdHlwZSI6IuC5gOC4iuC5iOC4siIsCgkicHJvcGVydHlfdHlwZSI6IjEiLAoJInByb21pbmVudF9wb2ludCI6IuC4q+C4meC5ieC4suC4geC4p+C5ieC4suC4h+C4oeC4suC4gSDguYPguKvguYnguYDguIrguYjguLLguJbguLnguIHguKrguLjguJQiLAoJImRpcmVjdGlvbl90eXBlIjoiMTEiLAoJImFkZHJfcHJvdmluY2UiOiLguJnguJnguJfguJrguLjguKPguLUiLAoJImFkZHJfZGlzdHJpY3QiOiLguYDguKHguLfguK3guIfguJnguJnguJfguJrguLjguKPguLUiLAoJImFkZHJfc3ViX2Rpc3RyaWN0Ijoi4Lia4Liy4LiH4LiB4Lij4LmI4Liy4LiHIiwKCSJhZGRyX3JvYWQiOiLguJrguLLguIfguIHguKPguKfguKIt4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIiwKCSJhZGRyX3NvaSI6IuC4i+C4reC4ouC4muC4suC4h+C4geC4o+C4p+C4oi3guYTguJfguKPguJnguYnguK3guKIgMzQiLAoJImFkZHJfbmVhcl9ieSI6IuC4luC4meC4meC4nuC4o+C4sOC4o+C4suC4oTVcclxu4LiW4LiZ4LiZ4LiZ4LiE4Lij4Lit4Li04LiZ4LiX4Lij4LmMIiwKCSJiZWRfcm9vbSI6IjEiLAoJImJhdGhfcm9vbSI6IjIiLAoJImZsb29yX2xldmVsIjoiMyIsCgkiZmxvb3JfdG90YWwiOiI5IiwKCSJmbG9vcl9hcmVhIjoiMzAwIiwKCSJsYW5kX3NpemVfcmFpIjoiMTIiLAoJImxhbmRfc2l6ZV9uZ2FuIjoiMCIsCgkibGFuZF9zaXplX3dhIjoiIiwKCSJuYW1lIjoiZWRpdG5hbWUiLAoJIm1vYmlsZSI6IjA5OTI4OTk5OTIiLAoJImVtYWlsIjoiZWRpdHBvc3RAZW1haWwuY29tIiwKCSJsaW5lIjoiMDk5Mjg5OTk5MiIsCgkicHJvamVjdF9uYW1lIjoiaGFoYeC4l+C4teC5iOC4lOC4tOC4mSDguJrguLLguIfguIHguKPguKfguKLguYTguJfguKIt4LiZ4LmJ4Lit4LiiIiwKCSJ3ZWIiOiBbCgkJewoJCQkiZHNfbmFtZSI6ImJhYW5maW5kZXIiLAoJCQkiZHNfaWQiOiIxMjAiLAoJCQkidXNlciI6InRlc3Q0QGdtYWlsLmNvbSIsCgkJCSJwYXNzIjoiZWFzeXBhc3MiLAoJCQkicG9zdF9pZCI6IjI3MjAxMTAiLAoJCQkibG9nX2lkIjoiNDQ0NDQiCgkJfQoJXQp9
+
+<output>
+{
+ "success": "true",
+ "action": "edit_post",
+ "web": {
+  "baanfinder": {
+   "success": "true",
+   "usage_time": "0:00:40.764770",
+   "start_time": "2020-05-25 10:33:09.678882",
+   "end_time": "2020-05-25 10:33:50.443652",
+   "post_url": "",
+   "post_id": "2720110",
+   "account_type": "null",
+   "detail": "Post Edited",
+   "websitename": "baanfinder"
+  }
+ },
+ "usage_time": "0:00:41.291810",
+ "start_time": "2020-05-25 10:33:09.163282",
+ "end_time": "2020-05-25 10:33:50.455092"
+}
+
+SEARCH POST (Title Exists)
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6IuC5g+C4q+C5ieC5gOC4iuC5iOC4siDguJfguLXguYjguJTguLTguJnguJTguYjguKfguJkg4Lia4Liy4LiH4LiB4Lij4Lin4Lii4LmE4LiX4Lij4LiZ4LmJ4Lit4LiiIDYg4LmE4Lij4LmIIOC5gOC4q+C4oeC4suC4sOC4l+C4s+C4leC4peC4suC4lCIsCiAgICAid2ViIjpbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ImJhYW5maW5kZXIiLAogICAgICAgICAgICAiZHNfaWQiOiIxMjAiLAogICAgICAgICAgICAibG9nX2lkIjoiMzMzMzMiLAogICAgICAgICAgICAidXNlciI6InRlc3Q1QGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjoiZWFzeXBhc3MiCiAgICAgICAgfQogICAgXQp9
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "baanfinder": {
+   "success": "true",
+   "usage_time": "0:00:03.118261",
+   "start_time": "2020-05-25 10:49:20.193390",
+   "end_time": "2020-05-25 10:49:23.311651",
+   "detail": "post found successfully",
+   "websitename": "baanfinder",
+   "log_id": 1,
+   "post_id": "9519479",
+   "post_modify_time": " 21 พ.ค. 2020 - 19:27 (3 วันที่แล้ว) ",
+   "post_view": "3",
+   "post_url": "https://www.baanfinder.com/th/property/9519479",
+   "post_found": "true"
+  }
+ },
+ "usage_time": "0:00:03.158670",
+ "start_time": "2020-05-25 10:49:20.159146",
+ "end_time": "2020-05-25 10:49:23.317816"
+}
+
+SEARCH POST (Title Does Not Exist)
+
+<input>
+access_token:YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+post_data:ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6ImJsYWggYmxhaCBibGFoIiwKICAgICJ3ZWIiOlsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjoiYmFhbmZpbmRlciIsCiAgICAgICAgICAgICJkc19pZCI6IjEyMCIsCiAgICAgICAgICAgICJsb2dfaWQiOiIzMzMzMyIsCiAgICAgICAgICAgICJ1c2VyIjoidGVzdDVAZ21haWwuY29tIiwKICAgICAgICAgICAgInBhc3MiOiJlYXN5cGFzcyIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "baanfinder": {
+   "success": "false",
+   "usage_time": "0:00:03.568695",
+   "start_time": "2020-05-25 10:51:49.949343",
+   "end_time": "2020-05-25 10:51:53.518038",
+   "detail": "No post found with given title.",
+   "websitename": "baanfinder",
+   "log_id": 1,
+   "post_id": "",
+   "post_modify_time": "",
+   "post_view": "",
+   "post_url": "",
+   "post_found": "false"
+  }
+ },
+ "usage_time": "0:00:03.672802",
+ "start_time": "2020-05-25 10:51:49.853479",
+ "end_time": "2020-05-25 10:51:53.526281"
+}
+
+#######################################################################################
+NOTE:
+#######################################################################################
+Create Post, Edit Post, and Delete Post(with and without correct ID) have been tested with test_methods.py
+
+> There is an issue with uploading images while creating post, as discussed on the messenger group.
+
+Photos are uploaded later on (after post creation), via selenium. 
+
+Apart from this, create/edit/delete/boost are working fine.
+#######################################################################################

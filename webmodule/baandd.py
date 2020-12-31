@@ -9,7 +9,7 @@ import datetime
 import sys
 import requests
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -61,8 +61,13 @@ class baandd():
         self.options.add_argument("window-size=1024,768")
         # self.chromedriver_binary = "/usr/bin/chromedriver"
 
+    def logout_user(self):
+        url = 'http://www.baan-dd.com/index.php?option=logout'
+        httprequestObj.http_get(url)
+
 
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -114,6 +119,8 @@ class baandd():
 
 
     def test_login(self, postdata):
+        self.logout_user()
+        r = httprequestObj.http_get('http://www.baan-dd.com/index.php?option=logout')
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         
@@ -167,12 +174,14 @@ class baandd():
 
     def edit_title_selenium(self, username, password, post_id, post_title, post_description, name):
         print('Here')
-        # options=Options()
-        # option.headless = True
-        chrome = webdriver.Firefox(options=self.options)
+        options = Options()
+        options.set_headless(True)
+        options.add_argument('--no-sandbox')
+
+        chrome = webdriver.Chrome("./static/chromedriver", chrome_options=options)
         chrome.implicitly_wait(4)
         print('Now here')
-        # chrome = webdriver.Chrome(self.chromedriver_binary, options=self.options)
+        #chrome = webdriver.Chrome(self.chromedriver_binary, options=self.options)
         delay = 3
         timeout = 10
         while timeout>0:
@@ -201,7 +210,9 @@ class baandd():
         timeout = 5
         while timeout>0:
             try:
-                chrome.get(self.site_name+'/index.php?option=com_marketplace&page=write_ad&adid='+post_id+'&Itemid=56')
+                url=self.site_name+'/index.php?option=com_marketplace&page=write_ad&adid='+post_id+'&Itemid=56'
+                print(url)
+                chrome.get(url)
                 ad_form = WebDriverWait(chrome, delay).until(EC.presence_of_element_located((By.NAME, 'write_ad')))
                 post_title_in = ad_form.find_element_by_name('ad_headline')
                 post_title_in.clear()
@@ -284,7 +295,7 @@ class baandd():
                     for i, image in enumerate(postdata["post_images"][:3]):
                         files["ad_picture"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
                     
-                    print(json.dumps(datapost))
+                    #print(json.dumps(datapost))
                     response = httprequestObj.http_post(self.site_name+'/index.php?option=com_marketplace&page=write_ad&Itemid=56', data=datapost, files=files)
                     with open('temp.html', 'w') as f:
                         f.write(str(response.text))
@@ -371,7 +382,7 @@ class baandd():
                     "phone1": postdata['mobile'],
                     "ad_type": "2",
                     "category": category,
-                    "ad_headline": str(postdata['post_title_th']),
+                    "ad_headline": postdata['post_title_th'],
                     "ad_text": postdata['post_description_th'],
                     "ad_price": postdata['price_baht'],
                     "submit": "ส่งประกาศ"
@@ -385,18 +396,22 @@ class baandd():
                         datapost[hidden_input.get('name')] = hidden_input.get('value') 
                     
                     files = {}
-                    for i, image in enumerate(postdata["post_images"][:3]):  
-                        files["ad_picture"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')  
-                
-                    response = httprequestObj.http_post(self.site_name+'/index.php?option=com_marketplace&page=write_ad&Itemid=56', data=datapost, files=files)
+                    for i, image in enumerate(postdata["post_images"][:3]):
+                        files["ad_picture"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
+
+                    response = httprequestObj.http_post(self.site_name+'/index.php?option=com_marketplace&page=write_ad&Itemid=56', data=datapost, files = files)
                     if response.status_code==200:
+                        table = BeautifulSoup(response.text, features=self.parser).find(class_='contentpadding').find('table')
                         try:
-                            table = BeautifulSoup(response.text, features=self.parser).find(class_='contentpadding').find('table')
-                            if table.find_all('table')[-1].find('img').get('src')=='http://www.baan-dd.com/components/com_marketplace/images/system/success.gif':
+                            if str(table.find_all('table')[-1].find('img').get('src'))=='http://www.baan-dd.com/components/com_marketplace/images/system/success.gif':
                                 success = "true"
                                 detail = "Post updated successfully"
-                        except: 
-                            pass
+                                if not self.edit_title_selenium(postdata['user'], postdata['pass'], postdata['post_id'],str(postdata['post_title_th']),str(postdata['post_description_th']),str(postdata['name'])):
+                                    success = "false"
+                                    detail = "Post created. But an error occurred while updating title"
+                        except:
+                                success = 'false'
+                                detail = 'not updated'
                     else:
                         detail = 'Unable to update post. An Error has occurred with response_code '+str(response.status_code) 
                 else:
@@ -519,7 +534,8 @@ class baandd():
                     posts = soup.find_all(class_='jooNormal')
                     for post in posts:
                         links = post.find('table').find_all('a')
-                        if str(links[-1].getText().strip())==post_title:
+                        titl=str(links[-1].getText().strip())
+                        if titl in post_title or post_title in titl :
                             post_found = "true"
                             detail = "Post found successfully"
                             post_url = links[-1].get('href')
@@ -535,7 +551,9 @@ class baandd():
                     detail = "Unable to search. An Error has occurred with response_code "+str(response.status_code)     
         else:
             detail = "cannot login"
-
+        if post_found == 'false':
+            post_title = ''
+            success = 'false'
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -553,7 +571,8 @@ class baandd():
             "post_modify_time": post_modify_time,
             "post_view": post_view,
             "post_url": post_url,
-            "post_found": post_found
+            "post_found": post_found,
+            "post_title_th": post_title
         }
 
 
