@@ -384,7 +384,7 @@ class livinginsider():
                     'currentstep': '2',
                     'web_room': postdata['bed_room'],
                     'web_bathroom': postdata['bath_room'],
-                    'web_floor': postdata['floor_total'],
+                    'web_floor': postdata['floor_level'],
                     'web_area_size': postdata['floor_area'],
                     'web_near_transits': '0',
                     'web_near_academy': '0',

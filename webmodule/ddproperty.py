@@ -975,7 +975,7 @@ class ddproperty():
                 pass
 
             # total floor
-            if datahandled['floor_total'] and str(datahandled['floor_total']).isdigit() and int(datahandled['floor_total']) < 0:
+            if datahandled['floor_total'] and str(datahandled['floor_total']).isdigit() and int(datahandled['floor_total']) > 0:
                 try:
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-total-floor")).click()
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_total']))).click()
@@ -984,7 +984,7 @@ class ddproperty():
                     pass
 
             # floor position
-            if datahandled['floor_level'] and str(datahandled['floor_level']).isdigit() and int(datahandled['floor_level']) < 0:
+            if datahandled['floor_level'] and str(datahandled['floor_level']).isdigit() and int(datahandled['floor_level']) > 0:
                 try:
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-floorposition")).click()
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(str(datahandled['floor_level']))).click()
