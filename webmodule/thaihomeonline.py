@@ -108,8 +108,8 @@ class thaihomeonline():
             success = "False"
             detail = 'not registered'
 
-        """ if os.path.exists(os.getcwd()+imgname):
-            os.remove(os.getcwd()+imgname)  """    
+        if os.path.exists(os.getcwd()+imgname):
+            os.remove(os.getcwd()+imgname)     
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start

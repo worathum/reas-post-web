@@ -77,7 +77,7 @@ class baandd():
 
         if len(postdata['user']) > 25:
             success = 'false'
-            detail = 'Your email is too long and more than 25 characters. Please try the new one.'
+            detail = 'Your email is too long and more than 25. Please try the new one.'
         else:
             datapost = {
                 "name": postdata['name_th'] + ' ' + postdata['surname_th'],
