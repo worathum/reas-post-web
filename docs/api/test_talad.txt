@@ -1,0 +1,250 @@
+REGISTER USER
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+postdata : ewogICAgImFjdGlvbiI6ICJyZWdpc3Rlcl91c2VyIiwKICAgICJ0aW1lb3V0IjogIjciLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogInRhbGFkIiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAidXNlciI6ICJoYXJkaWszMzExQGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogImFiY2RlZmdoIiwKICAgICAgICAgICAgImNvbXBhbnlfbmFtZSI6ICJhbWFyaW4gaW5jIiwKICAgICAgICAgICAgIm5hbWVfdGl0bGUiOiAibXIiLAogICAgICAgICAgICAibmFtZV90aCI6ICLguK3guLHguKHguKPguLTguJnguJfguKPguYwiLAogICAgICAgICAgICAic3VybmFtZV90aCI6ICLguJrguLjguI3guYDguIHguLTguJQiLAogICAgICAgICAgICAidGVsIjogIjA4OTE5OTk0NTAiLAogICAgICAgICAgICAibGluZSI6ICJhbWFyaW4udGEiCiAgICAgICAgfQogICAgXQp9
+
+<output>
+
+{
+ "success": "true",
+ "action": "register_user",
+ "web": {
+  "talad": {
+   "websitename": "talad",
+   "success": "true",
+   "start_time": "2020-07-10 07:15:11.228856",
+   "end_time": "2020-07-10 07:15:29.216749",
+   "usage_time": "0:00:17.987893",
+   "detail": "Successfully registered",
+   "ds_id": "4"
+  }
+ },
+ "usage_time": "0:00:18.033937",
+ "start_time": "2020-07-10 07:15:11.199266",
+ "end_time": "2020-07-10 07:15:29.233203"
+}
+
+
+LOGIN USER
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+postdata : ewogICAgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKICAgICJ0aW1lb3V0IjogIjUiLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogInRhbGFkIiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAidXNlciI6ICJoYXJkaWszMzAxQGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogImFiY2RlZmdoIgogICAgICAgIH0KICAgIF0KfQ==
+
+<output>
+
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "talad": {
+   "websitename": "talad",
+   "success": "true",
+   "start_time": "2020-07-10 07:16:16.442439",
+   "end_time": "2020-07-10 07:16:24.562493",
+   "usage_time": "0:00:08.120054",
+   "ds_id": "4",
+   "detail": "Login Successful"
+  }
+ },
+ "usage_time": "0:00:08.154203",
+ "start_time": "2020-07-10 07:16:16.422413",
+ "end_time": "2020-07-10 07:16:24.576616"
+}
+
+
+
+LOGIN USER WITH INVALID CREDENTIALS
+
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+postdata : ewogICAgImFjdGlvbiI6ICJ0ZXN0X2xvZ2luIiwKICAgICJ0aW1lb3V0IjogIjUiLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogInRhbGFkIiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAidXNlciI6ICJoYXJkaWszMzAxQGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogImFiY2RlZmdoaSIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+
+{
+ "success": "true",
+ "action": "test_login",
+ "web": {
+  "talad": {
+   "websitename": "talad",
+   "success": "false",
+   "start_time": "2020-07-10 07:17:03.048221",
+   "end_time": "2020-07-10 07:17:03.532067",
+   "usage_time": "0:00:00.483846",
+   "ds_id": "4",
+   "detail": "Invalid credentials"
+  }
+ },
+ "usage_time": "0:00:00.526705",
+ "start_time": "2020-07-10 07:17:03.020556",
+ "end_time": "2020-07-10 07:17:03.547261"
+}
+
+
+CREATE POST
+
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+postdata : ewogICAgImFjdGlvbiI6ICJjcmVhdGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICJwb3N0X2ltZ191cmxfbGlzdHMiOiBbCiAgICAgICAgImh0dHA6Ly9pbWFnZXN0b3JlLmNvbS9waWMxLmpwZyIsCiAgICAgICAgImh0dHA6Ly9pbWFnZXN0b3JlLmNvbS9waWMyLmpwZyIgICAgICAgCiAgICBdLAogICAgImdlb19sYXRpdHVkZSI6ICIxMy43ODY4NjIiLAogICAgImdlb19sb25naXR1ZGUiOiAiMTAwLjc1NzgxNSIsICAgIAogICAgInBvc3RfdGl0bGVfdGgiOiAieHh4IiwKICAgICJzaG9ydF9wb3N0X3RpdGxlX3RoIjogInh4eCIsCiAgICAicG9zdF9kZXNjcmlwdGlvbl90aCI6ICJ4eHgiLAogICAgInByaWNlX2JhaHQiOiAiMzAwMCIsCiAgICAibGlzdGluZ190eXBlIjogIuC4guC4suC4oiIsICAgIAogICAgInByb3BlcnR5X3R5cGUiOiAiMSIsICAgIAogICAgImZsb29yX2xldmVsIiA6ICIxMSIsCiAgICAiZmxvb3JfdG90YWwiIDogIjExIiwKICAgICJmbG9vcl9hcmVhIiA6ICIxMSIsCiAgICAiYmF0aF9yb29tIiA6ICIxMSIsCiAgICAiYmVkX3Jvb20iIDogIjExIiwKICAgICJwcm9taW5lbnRfcG9pbnQiIDogIuC4iOC4uOC4lOC5gOC4lOC5iOC4mSIsICAgIAogICAgInZpZXdfdHlwZSIgOiAiMTEiLAogICAgImRpcmVjdGlvbl90eXBlIiA6ICIxMSIsCiAgICAiYWRkcl9wcm92aW5jZSI6ICLguIjguLHguIfguKvguKfguLHguJQiLAogICAgImFkZHJfZGlzdHJpY3QiOiAi4LmA4LiC4LiVIiwKICAgICJhZGRyX3N1Yl9kaXN0cmljdCI6ICLguJXguLPguJrguKUg4LmB4LiC4Lin4LiHIiwKICAgICJhZGRyX3JvYWQiOiAi4LiW4LiZ4LiZIiwKICAgICJhZGRyX3NvaSI6ICLguIvguK3guKIiLAogICAgImFkZHJfbmVhcl9ieSI6ICLguKrguJbguLLguJnguJfguLXguYjguYPguIHguKXguYnguYDguITguLXguKLguIciLAogICAgImxhbmRfc2l6ZV9yYWkiOiAiMTEiLAogICAgImxhbmRfc2l6ZV9uZ2FuIjogIjExIiwKICAgICJsYW5kX3NpemVfd2EiOiAiMTEiLAogICAgCiAgICAibmFtZSI6ICJ4eHgiLAogICAgIm1vYmlsZSI6ICJ4eHgiLAogICAgImVtYWlsIjogInh4eCIsCiAgICAibGluZSI6ICJ4eHgiLAogICAgInByb2plY3RfbmFtZSI6ICLguKXguLjguKHguJ7guLXguJnguLXguKfguLTguKXguKUg4Lij4Liy4Lih4Lit4Li04LiZ4LiX4Lij4Liy4Lir4Lil4Lix4LiB4Liq4Li14LmIIiwKICAgICJ3ZWIiOiBbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ICJ0YWxhZCIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwgICAgICAgICAgICAgIAogICAgICAgICAgICAidXNlciI6ICJoYXJkaWszMzAxQGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogImFiY2RlZmdoIiwKICAgICAgICAgICAgIndlYl9wcm9qZWN0X25hbWUiOiAi4Lil4Li44Lih4Lie4Li14LiZ4Li1IOC4o+C4suC4oeC4reC4tOC4meC4l+C4o+C4suC4q+C4peC4seC4geC4quC4teC5iCIgICAKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+
+{
+ "success": "true",
+ "action": "create_post",
+ "web": {
+  "talad": {
+   "success": "true",
+   "usage_time": "0:00:17.422141",
+   "start_time": "2020-07-10 07:18:01.850050",
+   "end_time": "2020-07-10 07:18:19.272191",
+   "post_url": "http://talad.me/detail/533244",
+   "post_id": "533244",
+   "account_type": "null",
+   "ds_id": "4",
+   "detail": "Post created successfully",
+   "websitename": "talad"
+  }
+ },
+ "usage_time": "0:00:21.451501",
+ "start_time": "2020-07-10 07:17:57.826403",
+ "end_time": "2020-07-10 07:18:19.277904"
+}
+
+
+EDIT POST
+
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+postdata : ewogICAgImFjdGlvbiI6ICJlZGl0X3Bvc3QiLAogICAgInRpbWVvdXQiOiAiNSIsCiAgICAicG9zdF9pbWdfdXJsX2xpc3RzIjogWwogICAgICAgICJodHRwOi8vaW1hZ2VzdG9yZS5jb20vcGljMS5qcGciLAogICAgICAgICJodHRwOi8vaW1hZ2VzdG9yZS5jb20vcGljMi5qcGciICAgICAgIAogICAgXSwKICAgICJnZW9fbGF0aXR1ZGUiOiAiMTMuNzg2ODYyIiwKICAgICJnZW9fbG9uZ2l0dWRlIjogIjEwMC43NTc4MTUiLCAgICAKICAgICJwb3N0X3RpdGxlX3RoIjogImRkZCIsCiAgICAic2hvcnRfcG9zdF90aXRsZV90aCI6ICJkZGQiLAogICAgInBvc3RfZGVzY3JpcHRpb25fdGgiOiAiZGRkIiwKICAgICJwcmljZV9iYWh0IjogIjMwMDAiLAogICAgImxpc3RpbmdfdHlwZSI6ICLguILguLLguKIiLCAgICAKICAgICJwcm9wZXJ0eV90eXBlIjogIjEiLCAgICAKICAgICJmbG9vcl9sZXZlbCIgOiAiMTEiLAogICAgImZsb29yX3RvdGFsIiA6ICIxMSIsCiAgICAiZmxvb3JfYXJlYSIgOiAiMTEiLAogICAgImJhdGhfcm9vbSIgOiAiMTEiLAogICAgImJlZF9yb29tIiA6ICIxMSIsCiAgICAicHJvbWluZW50X3BvaW50IiA6ICLguIjguLjguJTguYDguJTguYjguJkiLCAgICAKICAgICJ2aWV3X3R5cGUiIDogIjExIiwKICAgICJkaXJlY3Rpb25fdHlwZSIgOiAiMTEiLAogICAgImFkZHJfcHJvdmluY2UiOiAi4LiI4Lix4LiH4Lir4Lin4Lix4LiUIiwKICAgICJhZGRyX2Rpc3RyaWN0IjogIuC5gOC4guC4lSIsCiAgICAiYWRkcl9zdWJfZGlzdHJpY3QiOiAi4LiV4Liz4Lia4LilIOC5geC4guC4p+C4hyIsCiAgICAiYWRkcl9yb2FkIjogIuC4luC4meC4mSIsCiAgICAiYWRkcl9zb2kiOiAi4LiL4Lit4LiiIiwKICAgICJhZGRyX25lYXJfYnkiOiAi4Liq4LiW4Liy4LiZ4LiX4Li14LmI4LmD4LiB4Lil4LmJ4LmA4LiE4Li14Lii4LiHIiwKICAgICJsYW5kX3NpemVfcmFpIjogIjExIiwKICAgICJsYW5kX3NpemVfbmdhbiI6ICIxMSIsCiAgICAibGFuZF9zaXplX3dhIjogIjExIiwKICAgIAogICAgIm5hbWUiOiAieHh4IiwKICAgICJtb2JpbGUiOiAieHh4IiwKICAgICJlbWFpbCI6ICJ4eHgiLAogICAgImxpbmUiOiAieHh4IiwKICAgICJwcm9qZWN0X25hbWUiOiAi4Lil4Li44Lih4Lie4Li14LiZ4Li14Lin4Li04Lil4LilIOC4o+C4suC4oeC4reC4tOC4meC4l+C4o+C4suC4q+C4peC4seC4geC4quC4teC5iCIsCiAgICAid2ViIjogWwogICAgICAgIHsKICAgICAgICAgICAgImRzX25hbWUiOiAidGFsYWQiLAogICAgICAgICAgICAiZHNfaWQiOiAiNCIsICAgICAgICAgICAgICAKCQkicG9zdF9pZCI6ICI1MzMyNDQiLAoJCSJsb2dfaWQiOiAiMzMzMzMiLAogICAgICAgICAgICAidXNlciI6ICJoYXJkaWszMzAxQGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogImFiY2RlZmdoIiwKICAgICAgICAgICAgIndlYl9wcm9qZWN0X25hbWUiOiAi4Lil4Li44Lih4Lie4Li14LiZ4Li1IOC4o+C4suC4oeC4reC4tOC4meC4l+C4o+C4suC4q+C4peC4seC4geC4quC4teC5iCIgICAKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+
+{
+ "success": "true",
+ "action": "edit_post",
+ "web": {
+  "talad": {
+   "success": "true",
+   "usage_time": "0:00:50.767023",
+   "start_time": "2020-07-10 07:20:28.515404",
+   "end_time": "2020-07-10 07:21:19.282427",
+   "post_url": "http://talad.me/detail/533244",
+   "post_id": "533244",
+   "account_type": "null",
+   "ds_id": "4",
+   "log_id": "33333",
+   "detail": "Post edited successfully",
+   "websitename": "talad"
+  }
+ },
+ "usage_time": "0:00:53.603058",
+ "start_time": "2020-07-10 07:20:25.684517",
+ "end_time": "2020-07-10 07:21:19.287575"
+}
+
+
+
+SEARCH POST
+
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+postdata : ewogICAgImFjdGlvbiI6InNlYXJjaF9wb3N0IiwKICAgICJ0aW1lb3V0IjoiNSIsCiAgICAicG9zdF90aXRsZV90aCI6ImRkZCIsCiAgICAid2ViIjpbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6InRhbGFkIiwKICAgICAgICAgICAgImRzX2lkIjoiNCIsCiAgICAgICAgICAgICJwb3N0X2lkIjoiOTExMzc5IiwKICAgICAgICAgICAgImxvZ19pZCI6IjMzMzMzIiwKICAgICAgICAgICAgInVzZXIiOiJoYXJkaWszMzAxQGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjoiYWJjZGVmZ2giCiAgICAgICAgfQogICAgXQp9
+
+<output>
+
+{
+ "success": "true",
+ "action": "search_post",
+ "web": {
+  "talad": {
+   "success": "true",
+   "usage_time": "0:00:27.509284",
+   "start_time": "2020-07-10 07:22:07.762971",
+   "end_time": "2020-07-10 07:22:35.272255",
+   "detail": "Post found",
+   "ds_id": "4",
+   "log_id": "33333",
+   "post_found": "true",
+   "post_id": "533244",
+   "post_url": "http://talad.me/detail/533244-ddd",
+   "post_create_time": "",
+   "post_modify_time": "",
+   "post_view": "",
+   "websitename": "talad"
+  }
+ },
+ "usage_time": "0:00:32.526421",
+ "start_time": "2020-07-10 07:22:02.751284",
+ "end_time": "2020-07-10 07:22:35.277705"
+}
+
+
+
+BOOST POST
+
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+postdata : ewogICAgImFjdGlvbiI6ICJib29zdF9wb3N0IiwKICAgICJ0aW1lb3V0IjogIjciLAogICAgIndlYiI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJkc19uYW1lIjogInRhbGFkIiwKICAgICAgICAgICAgImRzX2lkIjogIjQiLAogICAgICAgICAgICAicG9zdF9pZCI6ICI1MzMyNDQiLAogICAgICAgICAgICAibG9nX2lkIjogIjMzMzMzIiwgICAgICAgICAgICAKICAgICAgICAgICAgInVzZXIiOiAiaGFyZGlrMzMwMUBnbWFpbC5jb20iLAogICAgICAgICAgICAicGFzcyI6ICJhYmNkZWZnaCIKICAgICAgICB9CiAgICBdCn0=
+
+<output>
+
+{
+ "success": "true",
+ "action": "boost_post",
+ "web": {
+  "talad": {
+   "success": "true",
+   "usage_time": "0:00:48.859860",
+   "start_time": "2020-07-10 07:24:34.643063",
+   "end_time": "2020-07-10 07:25:23.502923",
+   "detail": "Post edited and saved",
+   "ds_id": "4",
+   "log_id": "33333",
+   "post_id": "533244",
+   "websitename": "talad"
+  }
+ },
+ "usage_time": "0:00:48.890903",
+ "start_time": "2020-07-10 07:24:34.617729",
+ "end_time": "2020-07-10 07:25:23.508632"
+}
+
+
+
+DELETE POST
+
+
+<input>
+access_token : YeiraupoimeR0aelaebohz8ieb0ShieMahTah0fie7iekae7ke6eichaif5oxah9
+postdata : ewogICAgImFjdGlvbiI6ICJkZWxldGVfcG9zdCIsCiAgICAidGltZW91dCI6ICI1IiwKICAgICJ3ZWIiOiBbCiAgICAgICAgewogICAgICAgICAgICAiZHNfbmFtZSI6ICJ0YWxhZCIsCiAgICAgICAgICAgICJkc19pZCI6ICI0IiwKICAgICAgICAgICAgInBvc3RfaWQiOiAiNTMyODE2IiwKICAgICAgICAgICAgImxvZ19pZCI6ICIzMzMzMyIsIAogICAgICAgICAgICAidXNlciI6ICJoYXJkaWszMzAxQGdtYWlsLmNvbSIsCiAgICAgICAgICAgICJwYXNzIjogImFiY2RlZmdoIgogICAgICAgIH0KICAgIF0KfQo=
+
+<output>
+
+{
+ "success": "true",
+ "action": "delete_post",
+ "web": {
+  "talad": {
+   "success": "true",
+   "usage_time": "0:00:41.627482",
+   "start_time": "2020-07-10 07:26:34.428884",
+   "end_time": "2020-07-10 07:27:16.056366",
+   "log_id": "33333",
+   "ds_id": "4",
+   "post_id": "532816",
+   "detail": "Post deleted",
+   "websitename": "talad"
+  }
+ },
+ "usage_time": "0:00:46.654326",
+ "start_time": "2020-07-10 07:26:29.420932",
+ "end_time": "2020-07-10 07:27:16.075258"
+}

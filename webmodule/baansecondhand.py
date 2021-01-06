@@ -59,8 +59,13 @@ class baansecondhand():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
+    def logout_user(self):
+        url = 'https://www.baansecondhand.com/logout.php'
+        httprequestObj.http_get(url)
+
 
     def register_user(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -123,6 +128,7 @@ class baansecondhand():
 
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         
@@ -346,17 +352,18 @@ class baansecondhand():
                 posts_element = soup.find_all(class_='board')
                 flag = False
                 post_id = str(postdata['post_id'])
-                if postdata['listing_type']=='ขาย':
-                    for post in posts_element[0].find_all('tr')[1:]:
-                        post_url = post.find('a').get('href')
-                        if post_url.split('?home_id=')[1]==post_id:
-                            flag = True         
-                else:
+
+                for post in posts_element[0].find_all('tr')[1:]:
+                    post_url = post.find('a').get('href')
+                    if post_url.split('?home_id=')[1]==post_id:
+                        flag = True
+
+                if not flag:
                     for post in posts_element[1].find_all('tr')[1:]:
                         post_url = post.find('a').get('href')
                         if post_url.split('?home_id=')[1]==post_id:
                             flag = True
-                    
+
                 if flag:
                     postcode = '0'
                     if 'addr_postcode' in postdata:
@@ -386,7 +393,12 @@ class baansecondhand():
                         if(addr_sub_district.find(str(key)) != -1)  or (str(key).find(addr_sub_district) != -1):
                             subdistrict = province_data["subdistricts"][district][key]
                             break
-
+                    if 'floor_total' not in postdata:
+                        postdata['floor_total'] = '0'      
+                    if 'bed_room' not in postdata:
+                        postdata['bed_room'] = '0'    
+                    if 'bath_room' not in postdata:
+                        postdata['bath_room'] = '0' 
                     area = str(postdata['floor_area']) if postdata['floor_area'] else '0'
                     floor = str(postdata['floor_total']) if postdata['floor_total'] else '0'
                     if str(postdata['property_type'])!='1':
@@ -490,6 +502,7 @@ class baansecondhand():
 
         if success == "true":
             post_found = "false"
+            success="false"
             detail = "No post found with given title"
             post_title = str(postdata['post_title_th']).strip()
             
@@ -501,16 +514,26 @@ class baansecondhand():
                 for posts in posts_element:
                     for post in posts.find_all('tr')[1:]:
                         title = post.find_all('a')
-                        if title[0].getText().strip()==post_title:
+                        ttl=title[0].getText().strip()
+                        if ttl in post_title or post_title in ttl :
+                            success="true"
                             post_found = "true"
                             detail = "Post found successfully!"
                             post_url = title[0].get('href')
                             post_id = post_url.split('?home_id=')[1]
                             post_modify_time = title[-1].getText()
                             break
+                        else:
+                            success = 'false'
+                    if post_found=="true":
+                        break
             else:
+                success = 'false'
+                post_title = ''
                 detail = 'An Error has occurred with response_code '+str(response.status_code)
         else:
+            success = 'false'
+            post_title = ''
             detail = "cannot login"
         
         time_end = datetime.datetime.utcnow()
@@ -530,7 +553,8 @@ class baansecondhand():
             "post_modify_time": post_modify_time,
             "post_view": post_view,
             "post_url": post_url,
-            "post_found": post_found
+            "post_found": post_found,
+            "post_title_th" : post_title
         }
 
 
