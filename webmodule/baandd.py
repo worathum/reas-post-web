@@ -75,33 +75,37 @@ class baandd():
         success = "false"
         detail = 'An Error has Occurred'
 
-        datapost = {
-            "name": postdata['name_th'] + ' ' + postdata['surname_th'],
-            "username": postdata['user'],
-            "email": postdata['user'],
-            "password": postdata['pass'],
-            "password2": postdata['pass']
-        }
-
-        r = httprequestObj.http_get(self.site_name+'/index.php?option=com_registration&task=register')
-        soup = BeautifulSoup(r.text, features=self.parser)
-        form = soup.find(attrs={'name':'mosForm'})
-        inputs = form.find_all('input', {'type':'hidden'})
-        for inp in inputs:
-            datapost[inp.get('name')] = inp.get('value')
-
-        response = httprequestObj.http_post(self.site_name+'/index.php', data=datapost)
-        if response.status_code==200:
-            soup = BeautifulSoup(response.content, features=self.parser)
-            res_div = soup.find(class_='componentheading')
-            if res_div:
-                if res_div.getText()=='การลงทะเบียนเสร็จสมบูรณ์!':
-                    success = "true"
-                    detail = "Registration Successfull"   
-            elif 'window.history.go(-1)' in response.text:
-                detail  = "This email is already in use"            
+        if len(postdata['user']) > 25:
+            success = 'false'
+            detail = 'Your email is too long and more than 25 characters. Please try the new one.'
         else:
-            detail = 'An Error has occurred with response_code '+str(response.status_code)
+            datapost = {
+                "name": postdata['name_th'] + ' ' + postdata['surname_th'],
+                "username": postdata['user'],
+                "email": postdata['user'],
+                "password": postdata['pass'],
+                "password2": postdata['pass']
+            }
+
+            r = httprequestObj.http_get(self.site_name+'/index.php?option=com_registration&task=register')
+            soup = BeautifulSoup(r.text, features=self.parser)
+            form = soup.find(attrs={'name':'mosForm'})
+            inputs = form.find_all('input', {'type':'hidden'})
+            for inp in inputs:
+                datapost[inp.get('name')] = inp.get('value')
+
+            response = httprequestObj.http_post(self.site_name+'/index.php', data=datapost)
+            if response.status_code==200:
+                soup = BeautifulSoup(response.content, features=self.parser)
+                res_div = soup.find(class_='componentheading')
+                if res_div:
+                    if res_div.getText()=='การลงทะเบียนเสร็จสมบูรณ์!':
+                        success = "true"
+                        detail = "Registration Successfull"   
+                elif 'window.history.go(-1)' in response.text:
+                    detail  = "This email is already in use"            
+            else:
+                detail = 'An Error has occurred with response_code '+str(response.status_code)
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start

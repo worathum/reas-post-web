@@ -15,7 +15,7 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-
+import random
 import selenium.webdriver.support.ui as ui
 import time
 httprequestObj = lib_httprequest()
@@ -64,37 +64,39 @@ class thaihomeonline():
         response = requests.get(val[0],stream=True)
         # os.system('mkdir '+os.getcwd() + '/imgtmp/Img_Captcha')
         if response.status_code == 200:
-            with open(os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg','wb') as f:
+            imgname = "/imgtmp/" + str(random.randint(1, 999999999)) + '.png'
+            with open(os.getcwd()+imgname, 'wb') as f:
                 f.write(response.content)
         else:
             print (response)
 
-        img_text = Captcha.imageCaptcha(os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg')
-
-        print(img_text[1])
+        try:
+            img_text = Captcha.imageCaptcha(os.getcwd()+imgname)
+        except:
+            img_text = ''
         
-        datapost = [
-            ('regisEmail1', (None, email)),
-            ('regisEmail2', (None, email)),
-            ('regisPass1', (None, passwd)),
-            ('regisPass2', (None, passwd)),
-            ('regisFullnameTH', (None, full_name_th)),
-            ('regisFullnameEN', (None, '')),
-            ('regisMobile', (None, mobile)),
-            ('regisCaptcha', (None, img_text[1])),
-            ('agreeChk', (None, 'yes')),
-            ('btnSubmit', (None, 'Register')),
-            ('hidAction', (None, 'submit'))
-        ]
+        datapost = {
+            'regisEmail1': email,
+            'regisEmail2': email,
+            'regisPass1': passwd,
+            'regisPass2': passwd,
+            'regisFullnameTH': full_name_th,
+            'regisFullnameEN': '',
+            'regisMobile': mobile,
+            'regisCaptcha': img_text[1],
+            'agreeChk': 'yes',
+            'btnSubmit': 'ลงทะเบียน',
+            'hidAction': 'submit'
+        }
 
 # การสมัครสมาชิกของท่านเสร็จสมบูรณ์
         headers = {
-            'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
         }
         r = httprequestObj.http_post('https://www.thaihomeonline.com/register/', data=datapost, headers = headers)
         print(r.url)
         print(r.status_code)
-        with open('b.html','w') as f:
+        with open('b.html','w', encoding='utf-8') as f:
             f.write(r.text)
 
         # print(datapost)
@@ -105,6 +107,10 @@ class thaihomeonline():
         else:
             success = "False"
             detail = 'not registered'
+
+        """ if os.path.exists(os.getcwd()+imgname):
+            os.remove(os.getcwd()+imgname)  """    
+
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
