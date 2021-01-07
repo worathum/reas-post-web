@@ -22,10 +22,10 @@ import datetime
 import shutil
 
 captcha = lib_captcha()
-with open("./static/houseforsale,land.json") as f:
+with open("./static/houseforsale,land.json", encoding='utf-8') as f:
 
     provincedata = json.load(f)
-with open("./static/houseforsaleProvincedistrict.json") as f:
+with open("./static/houseforsaleProvincedistrict.json", encoding='utf-8') as f:
     provinceDistrictdata = json.load(f)
 
 
@@ -93,8 +93,12 @@ class houseforsaleland():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
 
-        success = "true"
-        detail = "No Login Option in site"
+        if '@' in postdata['user']:
+            success = "true"
+            detail = "No Login Option in site"
+        else:
+            success = "false"
+            detail = "Your username need to be an email."
 
 
         end_time = datetime.datetime.utcnow()
