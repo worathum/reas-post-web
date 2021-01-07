@@ -19,7 +19,7 @@ class propertyhub():
     def test_login(self, postdata):
         
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -223,14 +223,15 @@ class propertyhub():
                     bath_room = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'roomInformation.numberOfBath'))).send_keys(datahandled['bath_room'])
                     floor_area = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'roomInformation.roomArea'))).send_keys(datahandled['floor_area'])
                     sel_posttype = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'postType')))[1].click()
-                    sel_type2 = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'item')))
+                    sel_type2 = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@class="visible menu transition"]')))
+                    child_sel_type2 = sel_type2.find_elements_by_tag_name('div')
                     if postdata['listing_type'] == 'ขาย':
                         #print(sel_type2[25].text)
-                        sel_type2[25].click()
+                        child_sel_type2[0].click()
                         sale_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forSale.price'))).send_keys(datahandled['price_baht'])
                     elif postdata['listing_type'] == 'เช่า':
                         #print(sel_type2[26].text)
-                        sel_type2[26].click()
+                        child_sel_type2[1].click()
                         rent_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forRent.monthly.price'))).send_keys(datahandled['price_baht'])
                         daily_price = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.daily.type')))[2].click()
                         deposit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.deposit.type')))[2].click()
