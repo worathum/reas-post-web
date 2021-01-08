@@ -217,7 +217,7 @@ class dotproperty():
                 driver.get('https://www.dotproperty.co.th/my-dashboard/properties')
                 time.sleep(5)
                 button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
-                button[1].click()
+                button[2].click()
                 try:
                     WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
                 except:

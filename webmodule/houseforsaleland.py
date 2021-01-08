@@ -22,10 +22,10 @@ import datetime
 import shutil
 
 captcha = lib_captcha()
-with open("./static/houseforsale,land.json", encoding='utf-8') as f:
+with open("./static/houseforsale,land.json") as f:
 
     provincedata = json.load(f)
-with open("./static/houseforsaleProvincedistrict.json", encoding='utf-8') as f:
+with open("./static/houseforsaleProvincedistrict.json") as f:
     provinceDistrictdata = json.load(f)
 
 
