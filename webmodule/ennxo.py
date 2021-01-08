@@ -109,7 +109,6 @@ category_types = {
             },
             "floor": "floor_level",
             "land_area": "total_area",
-            "floor": "floor_total",
             "parking_slot": 1,
             "project_name": "web_project_name",
             "ref_code": "",
@@ -799,7 +798,9 @@ class ennxo():
                 "referer": "https://www.ennxo.com/product/"+str(postdata['post_id'])
             }
 
-            r = httprequestObj.http_get(self.site_name+'/_next/data/ZwNAeMHi8XRLoA8lH_V0f/edit/'+str(postdata['post_id'])+".json?id="+str(postdata['post_id']))
+            r = httprequestObj.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
+            data_id = r.text.split("/_buildManifest")[0].split("/")[-1]
+            r = httprequestObj.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
             json_r = r.json()["pageProps"]["product"]
             # print(json_r)
             if r.status_code==200:
@@ -881,8 +882,11 @@ class ennxo():
                 "referer": "https://www.ennxo.com/product/"+str(postdata['post_id'])
             }
 
-            #r = httprequestObj.http_get(self.site_name+'/_next/data/ZwNAeMHi8XRLoA8lH_V0f/edit/'+str(postdata['post_id'])+".json?id="+str(postdata['post_id']))
-            r = httprequestObj.http_get(self.site_name + '/_next/data/yXGZ-mPhhy5ZVcSvEYock/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
+            r = httprequestObj.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
+            data_id = r.text.split("/_buildManifest")[0].split("/")[-1]
+
+            r = httprequestObj.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
+
             json_r = r.json()["pageProps"]["product"]
             if r.status_code==200:
                 datapost = {
