@@ -766,8 +766,12 @@ class ddproperty():
                     time.sleep(0.1)
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-area")).click()
                     time.sleep(0.1)
-                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
-                    time.sleep(0.1)
+                    try:
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(datahandled['addr_sub_district'])).click()
+                        time.sleep(0.1)
+                    except:
+                        f_select_itm = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//ul[@aria-labelledby="form-field-area"]'))
+                        f_select_itm.find_element_by_tag_name('a').click()
                     # self.firefox.save_screenshot("debug_response/newp33.png")
                 except Exception as e:
                     success = 'false'
