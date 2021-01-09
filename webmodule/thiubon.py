@@ -261,6 +261,8 @@ class thiubon():
                     index_name = 'file' + str(i)
                 datapost.append((index_name, (filename, open(img, 'rb'), 'image/jpeg')))
 
+            # print("here\n", datapost)
+
             r = httprequestObj.http_post('http://classified.thiubon.com/member/p-classifieds-post.php', data={},
                                          files=datapost)
             # print(r.url)
