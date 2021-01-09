@@ -205,7 +205,38 @@ class residences():
             soup = BeautifulSoup(r.content, self.parser)
             auth_token = soup.find('meta', {'name': 'csrf-token'}).get('content')
 
-            provinces = soup.find('select', {'name': 'apartment[province_id]'}).findChildren('option')[1:]
+            try:
+                provinces = soup.find('select', {'name': 'apartment[province_id]'}).findChildren('option')[1:]
+            except:
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
+                if "ยืนยันเบอร์โทรศัพท์มือถือ" in r.text:
+                    return {
+                        "success": "false",
+                        "usage_time": str(time_usage),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "post_url": post_url,
+                        "ds_id": postdata['ds_id'],
+                        "post_id": post_id,
+                        "account_type": "null",
+                        "detail": "Please verify your mobile phone number before posting / promoting ranking.",
+                        "websitename": self.webname,
+                    }
+                else:
+                    return {
+                        "success": "false",
+                        "usage_time": str(time_usage),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "post_url": post_url,
+                        "ds_id": postdata['ds_id'],
+                        "post_id": post_id,
+                        "account_type": "null",
+                        "detail": "Can't create post.",
+                        "websitename": self.webname,
+                    }
+
             province_id = provinces[0].get('value')
 
             for province in provinces:
@@ -263,6 +294,9 @@ class residences():
                                       'https://www.residences.in.th/apartments/new')
             print(g)
 
+            #if len(postdata['post_title_th'])>60:
+            #    postdata['post_title_th']=postdata['post_title_th'][:60]
+
             datapost = [
                 ('utf8', '✓'),
                 ('authenticity_token', auth_token),
@@ -299,7 +333,7 @@ class residences():
             print(r.url)
             print(r.status_code)
 
-            # with open('/home/codelover/Desktop/rough.html', 'w') as f:
+            #with open('/home/aymaan/Desktop/rough1.html', 'w') as f:
             #     f.write(r.text)
 
             print('First part done')
@@ -383,8 +417,8 @@ class residences():
             print(r.url)
             print(r.status_code)
 
-            # with open('/home/codelover/Desktop/rough.html', 'w') as f:
-            #     f.write(r.text)
+            #with open('/home/aymaan/Desktop/rough2.html', 'w') as f:
+            #    f.write(r.text)
 
             print('Second part done')
 
@@ -563,8 +597,8 @@ class residences():
             post_id = fourth_url.split('/')[-2].split('-')[0]
             post_url = ''
 
-            with open('/home/codelover/Desktop/rough.html', 'w') as f:
-                f.write(r.text)
+            #with open('/home/aymaan/Desktop/rough3.html', 'w') as f:
+            #    f.write(r.text)
 
         else:
             success = False
@@ -734,8 +768,8 @@ class residences():
             print(r.url)
             print(r.status_code)
 
-            # with open('/home/codelover/Desktop/rough.html', 'w') as f:
-            #     f.write(r.text)
+            with open('/home/aymaan/Desktop/rough.html', 'w') as f:
+                f.write(r.text)
 
             print('First part done')
 
@@ -995,8 +1029,8 @@ class residences():
             print(r.url)
             print(r.status_code)
 
-            with open('/home/codelover/Desktop/rough.html', 'w') as f:
-                f.write(r.text)
+            #with open('/home/codelover/Desktop/rough.html', 'w') as f:
+            #    f.write(r.text)
 
         else:
             success = False

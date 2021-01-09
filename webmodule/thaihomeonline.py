@@ -46,7 +46,6 @@ class thaihomeonline():
         httprequestObj.http_get(url)
 
     def register_user(self, userdata):
-        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         # print("here in register")
@@ -55,9 +54,17 @@ class thaihomeonline():
         passwd = userdata['pass']
         full_name_th = userdata['name_th'] + " "+ userdata['surname_th']
         mobile = userdata['tel']
-        r = httprequestObj.http_get_with_headers('https://www.thaihomeonline.com/register/',verify=False)
 
-        val = re.findall(r'https://www.thaihomeonline.com/files/captcha/[\w.]+',r.text)
+        options = Options()
+        options.headless = True
+        options.add_argument('--no-sandbox')
+
+        driver = webdriver.Chrome("./static/chromedriver",options=options)
+        driver.implicitly_wait(10)
+
+        driver.get("https://www.thaihomeonline.com/register/")
+
+        val = re.findall(r'https://www.thaihomeonline.com/files/captcha/[\w.]+',driver.page_source)
         # httpobj2 = lib_httprequest()
         print(val[0])
 
@@ -67,42 +74,43 @@ class thaihomeonline():
             with open(os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg','wb') as f:
                 f.write(response.content)
         else:
-            print (response)
+            print(response)
 
         img_text = Captcha.imageCaptcha(os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg')
 
         print(img_text[1])
-        
-        datapost = [
-            ('regisEmail1', (None, email)),
-            ('regisEmail2', (None, email)),
-            ('regisPass1', (None, passwd)),
-            ('regisPass2', (None, passwd)),
-            ('regisFullnameTH', (None, full_name_th)),
-            ('regisFullnameEN', (None, '')),
-            ('regisMobile', (None, mobile)),
-            ('regisCaptcha', (None, img_text[1])),
-            ('agreeChk', (None, 'yes')),
-            ('btnSubmit', (None, 'Register')),
-            ('hidAction', (None, 'submit'))
-        ]
 
-# การสมัครสมาชิกของท่านเสร็จสมบูรณ์
-        headers = {
-            'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
-        }
-        r = httprequestObj.http_post('https://www.thaihomeonline.com/register/', data=datapost, headers = headers)
-        print(r.url)
-        print(r.status_code)
-        with open('b.html','w') as f:
-            f.write(r.text)
+        try:
+            driver.find_element_by_name('regisEmail1').send_keys(email)
+            driver.find_element_by_name('regisEmail2').send_keys(email)
+            driver.find_element_by_name('regisPass1').send_keys(passwd)
+            driver.find_element_by_name('regisPass2').send_keys(passwd)
+            driver.find_element_by_name('regisFullnameTH').send_keys(full_name_th)
+            driver.find_element_by_name('regisMobile').send_keys(mobile)
+            driver.find_element_by_name('regisCaptcha').send_keys(img_text[1])
+            driver.find_element_by_name('agreeChk').click()
+            time.sleep(1)
+            driver.find_element_by_name('btnSubmit').click()
+        except:
+            driver.quit()
+            time_end = datetime.datetime.utcnow()
+            time_usage = time_end - time_start
+            return {
+                "websitename": "thaihomeonline",
+                "success": "false",
+                "start_time": str(time_start),
+                "end_time": str(time_end),
+                'ds_id': userdata['ds_id'],
+                "detail": "Selenium Issue",
+            }
 
-        # print(datapost)
-        # print(r.text)
-        if(re.search('การสมัครสมาชิกของท่านเสร็จสมบูรณ์',r.text)):
+
+        if(re.search('การสมัครสมาชิกของท่านเสร็จสมบูรณ์',driver.page_source)):
+            driver.quit()
             success = "True"
             detail = "Registered"
         else:
+            driver.quit()
             success = "False"
             detail = 'not registered'
         time_end = datetime.datetime.utcnow()

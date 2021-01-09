@@ -74,7 +74,7 @@ class thaiproperty():
         #print(ans)
 
         datapost = '{"email":"' + user + '","firstName":"' + postdata['name_th'] + '","lastName":"' + postdata[
-            'surname_th'] + '","password":"' + passwd + '","passwordConfirmation":"' + passwd + '","memberTypeId":"1","username":"' + \
+            'surname_th'] + '","password":"' + passwd + '","passwordConfirmation":"' + passwd + '","memberTypeId":"0","username":"' + \
                    username + '","agreement":"true"}'
 
         #g = captcha.reCaptcha('6LcLmboUAAAAADH3JCFgRjiBFh6gtuZeV9-mOjja', 'https://www.thaiproperty.in.th/register')
@@ -624,9 +624,16 @@ class thaiproperty():
             if 'post' in data:
                 success = True
                 detail = "Post created successfully"
-                post_id = str(data['post']['PostId'])
+                post_id = str(data['post']['postId'])
                 tail = postdata['post_title_th'].replace(' ', '-') + '-' + post_id
                 post_url = 'https://www.thaiproperty.in.th/p/' + tail
+            elif 'message' in data:
+                if 'คุณมีเหรียญไม่พอในการใช้ลงประกาศใหม่\n<br/>ต้องใช้เหรียญ 2 coin ในการโพสประกาศใหม่\n<br/>คุณสามารถขอรับเหรียญฟรีได้หากคุณเป็นนายหน้าที่มีคุณภาพ หรือมีการลงประกาศครบถ้วนสมบูรณ์\n<br/>หรือจากการเติมเหรียญผ่านระบบ\n<br/><a href="https://www.thaiproperty.in.th/account/topupcoin">คลิ้กที่เพื่ออ่านรายละเอียดการเติมเหรียญ</a>' in data["message"]:
+                    success = False
+                    detail = "You do not have enough coins to post a new listing."
+                else:
+                    success = False
+                    detail = "Couldnot create post"
             else:
                 success = False
                 detail = "Couldnot create post"
@@ -732,8 +739,8 @@ class thaiproperty():
             print(r.status_code)
             all_posts = r.json()
 
-            with open('/home/codelover/Desktop/rough.html', 'w') as f:
-                f.write(r.text)
+            #with open('/home/codelover/Desktop/rough.html', 'w') as f:
+            #    f.write(r.text)
 
             # soup = BeautifulSoup(r.content, self.parser)
             # all_posts = soup.find('div', 'mt-3 list-container row').findChildren('div', 'col-12 col-md-6 col-xl-4')
@@ -987,6 +994,7 @@ class thaiproperty():
                     ('postId', (None, post_id)),
                     ("title", (None, postdata['post_title_th'])),
                     ("price", (None, str(postdata['price_baht']))),
+                    ("refId",(None,postdata["property_type"])),
                     ("area", (None, str(area))),
                     ("areaUnit", (None, area_unit)),
                     ("isSold", (None, 'false')),
@@ -995,6 +1003,13 @@ class thaiproperty():
                     ("isForRent", (None, isForRent)),
                     ("district", (None, district_id)),
                     ("province", (None, province_id)),
+                    ("deposit",(None,"undefined")),
+                    ("placesEducation",(None,"")),
+                    ("placesBts", (None, "")),
+                    ("placesMrt", (None, "")),
+                    ("placesArl", (None, "")),
+                    ("placesDepartment", (None, "")),
+                    ("placesOfficeBuilding:", (None, "")),
                     ("floor", (None, '1')),
                     ("lat", (None, str(postdata['geo_latitude']))),
                     ("lng", (None, str(postdata['geo_longitude']))),
@@ -1017,7 +1032,7 @@ class thaiproperty():
 
 
                 # print(datapost)
-
+                """
                 headers = {
                     'authority': 'api.thaiproperty.in.th',
                     'accept': '*/*',
@@ -1031,7 +1046,20 @@ class thaiproperty():
                     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
                     'accept-language': 'en-IN,en-US;q=0.9,en;q=0.8',
                 }
-
+                """
+                headers = {
+                    'authority': 'api.thaiproperty.in.th',
+                    'accept': '*/*',
+                    'access-control-request-method': 'PUT',
+                    'access-control-request-headers': 'authorization',
+                    'origin': 'https://www.thaiproperty.in.th',
+                    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+                    'sec-fetch-mode': 'cors',
+                    'sec-fetch-site': 'same-site',
+                    'sec-fetch-dest': 'empty',
+                    'referer': 'https://www.thaiproperty.in.th/',
+                    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                }
                 print(datapost)
 
                 post_url = 'https://api.thaiproperty.in.th/api/posts/' + post_id
@@ -1039,7 +1067,7 @@ class thaiproperty():
                 print(r.status_code)
 
                 # token = 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdGRyIiwianRpIjoiYzZmYjI4YzItNjY5My00NzZjLWI3ZmUtYmZkZjIzMThmZWYzIiwiaWF0IjoxNTk0ODkxMTg3LCJyb2wiOiJVc2VyIiwiaWQiOiJhMThhNzE4Yy0zZTA4LTRjZjAtOTM0ZS0wZWU1NGFlNzNmMzgiLCJuYmYiOjE1OTQ4OTExODcsImV4cCI6MTU5NTIzNjc4NywiaXNzIjoiVGhhaVByb3BlcnR5IiwiYXVkIjoiaHR0cHM6Ly9hcGkudGhhaXByb3BlcnR5LmluLnRoLyJ9.VYnM3gdX97XGaQbVAjjdiMlPDn41pLOZRaLLtqNnl4g'
-
+                """
                 headers = {
                     'authority': 'api.thaiproperty.in.th',
                     'accept': 'application/json, text/plain, */*',
@@ -1052,10 +1080,26 @@ class thaiproperty():
                     'referer': 'https://www.thaiproperty.in.th/editpost/' + post_id,
                     'accept-language': 'en-IN,en-US;q=0.9,en;q=0.8',
                 }
-
+                """
                 # print(headers)
 
+                headers = {
+                    'authority': 'api.thaiproperty.in.th',
+                    'accept': 'application/json, text/plain, */*',
+                    'authorization': 'Bearer '+ self.authtoken,
+                    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+                    'content-type': 'multipart/form-data',
+                    'origin': 'https://www.thaiproperty.in.th',
+                    'sec-fetch-site': 'same-site',
+                    'sec-fetch-mode': 'cors',
+                    'sec-fetch-dest': 'empty',
+                    'referer': 'https://www.thaiproperty.in.th/',
+                    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                }
+                print(post_url)
                 r = self.sess.put(post_url, headers=headers, data={}, files=datapost)
+                print(r.status_code)
+                print(r.text)
                 data = r.json()
                 print(r.url)
                 print(r.status_code)
@@ -1292,8 +1336,8 @@ class thaiproperty():
             print(r.status_code)
             all_posts = r.json()
 
-            with open('/home/codelover/Desktop/rough.html', 'w') as f:
-                f.write(r.text)
+            #with open('/home/codelover/Desktop/rough.html', 'w') as f:
+            #    f.write(r.text)
 
             # soup = BeautifulSoup(r.content, self.parser)
             # all_posts = soup.find('div', 'mt-3 list-container row').findChildren('div', 'col-12 col-md-6 col-xl-4')
@@ -1662,8 +1706,8 @@ class thaiproperty():
             print(r.status_code)
             all_posts = r.json()
 
-            with open('/home/codelover/Desktop/rough.html', 'w') as f:
-                f.write(r.text)
+            #with open('/home/codelover/Desktop/rough.html', 'w') as f:
+            #    f.write(r.text)
 
             # soup = BeautifulSoup(r.content, self.parser)
             # all_posts = soup.find('div', 'mt-3 list-container row').findChildren('div', 'col-12 col-md-6 col-xl-4')
@@ -1958,8 +2002,8 @@ class thaiproperty():
             print(r.status_code)
             all_posts = r.json()
 
-            with open('/home/codelover/Desktop/rough.html', 'w') as f:
-                f.write(r.text)
+            #with open('/home/codelover/Desktop/rough.html', 'w') as f:
+            #    f.write(r.text)
 
             # soup = BeautifulSoup(r.content, self.parser)
             # all_posts = soup.find('div', 'mt-3 list-container row').findChildren('div', 'col-12 col-md-6 col-xl-4')
@@ -1968,7 +2012,7 @@ class thaiproperty():
             for post in all_posts:
                 post_title = str(post['title'])
                 print(post_title)
-                if post_title == postdata['post_title_th']:
+                if post_title in postdata['post_title_th'] or postdata['post_title_th'] in post_title:
                     post_found = True
                     post_id = str(post['postId'])
                     post_url = 'https://www.thaiproperty.in.th/p/' + post['title'].replace(' ', '-') + '-' + post_id
