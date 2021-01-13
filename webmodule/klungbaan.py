@@ -590,7 +590,8 @@ class klungbaan():
                     "prop_payment": "not_paid"  
                 }
 
-            r = httprequestObj.http_get(website+'/property-create/?edit_property='+str(postdata['post_id']))
+            r = httprequestObj.http_get("https://www.klungbaan.com/property-create/?edit_property="+str(postdata['post_id']))
+            #print(website+'/property-create/?edit_property='+str(postdata['post_id']))
             if r.status_code==200:
                 try:
                     verify_nonce = ""

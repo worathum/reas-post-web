@@ -210,6 +210,14 @@ class dotproperty():
             success = 'true'
             detail = 'Log in success'
 
+        if data['listing_type'] == 'เช่า' and int(data['price_baht']) > 700000:
+            success = 'false'
+            detail = 'The list is rental type so the price can not be over than 700,000 bath.'
+            driver.close()
+            driver.quit()
+        else:
+            success = 'true'
+
         if success == 'true':
             try:
                 time.sleep(3)
@@ -556,7 +564,7 @@ class dotproperty():
                 btn = driver.find_element_by_xpath('//button[@class="ui green button"]')
                 time.sleep(1)
                 btn.click()
-                time.sleep(3)
+                time.sleep(10)
                 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'tgl'))).click()
                 time.sleep(3)
                 txt = str(driver.current_url)
