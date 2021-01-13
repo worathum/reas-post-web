@@ -338,10 +338,13 @@ class hipflat():
                 for (key, value) in provincedata[province_id+"_province"].items():
                     # print(value.strip())
                     #if postdata['addr_district'].strip().find(value.strip()) != -1 or value.strip().find(postdata['addr_district'].strip()) != -1:
-                    if str(postdata['addr_district']) in str(value) or str(value) in str(postdata['addr_district']):
+                    if str(postdata['addr_district']) == "วัฒนา" and str(value) == "วัฒนา":
                     #if str(postdata['addr_district']) == str(value):
                         # if value.strip().find(postdata['addr_district'].replace(" ","")) == -1:
                             # continue
+                        amphur_id = str(key)
+                        break
+                    elif (str(postdata['addr_district']) in str(value) or str(value) in str(postdata['addr_district'])) and str(postdata['addr_district']) != "วัฒนา":
                         amphur_id = str(key)
                         break
                     '''elif value.strip().find(postdata['addr_district'].replace(" ", "")) != -1 or postdata['addr_district'].replace(" ", "").find(value.strip()) != -1:
@@ -687,9 +690,10 @@ class hipflat():
                     for (key, value) in provincedata[province_id+"_province"].items():
                         # print(value.strip())
                         #if postdata['addr_district'].strip().find(value.strip()) != -1 or value.strip().find(postdata['addr_district'].strip()) != -1:
-                        if str(postdata['addr_district']) in str(value) or str(value) in str(postdata['addr_district']):
-                            # if value.strip().find(postdata['addr_district'].replace(" ","")) == -1:
-                                # continue
+                        if str(postdata['addr_district']) == "วัฒนา" and str(value) == "วัฒนา":
+                            amphur_id = str(key)
+                            break
+                        elif (str(postdata['addr_district']) in str(value) or str(value) in str(postdata['addr_district'])) and str(postdata['addr_district']) != "วัฒนา":
                             amphur_id = str(key)
                             break
                         '''elif value.strip().find(postdata['addr_district'].replace(" ", "")) != -1 or postdata['addr_district'].replace(" ", "").find(value.strip()) != -1:
