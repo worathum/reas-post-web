@@ -210,398 +210,411 @@ class dotproperty():
             success = 'true'
             detail = 'Log in success'
 
-        if data['listing_type'] == 'เช่า' and int(data['price_baht']) > 700000:
-            success = 'false'
-            detail = 'The list is rental type so the price can not be over than 700,000 bath.'
-            driver.close()
-            driver.quit()
-        else:
-            success = 'true'
-
         if success == 'true':
-            try:
-                time.sleep(3)
-                #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'ประกาศทั้งหมด')))
-                driver.get('https://www.dotproperty.co.th/my-dashboard/properties')
-                time.sleep(5)
-                button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
-                button[2].click()
-                try:
-                    WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
-                except:
-                    route_link = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'router-link-active')))
-                    route_link[0].click()
-                    time.sleep(2)
-                    route_link[1].click()
-                    time.sleep(2)
-                    button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
-                    button[2].click()
-                    WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
-                cur_url = driver.current_url
-                #Image process
-                pic_post = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'photos')))
-                if len(data['post_images'])<15:
-                    total = len(data['post_images'])
-                image = ''
-                count=1
-                for img in data['post_images'][:total]:
-                    image = Image.open(img)
-                    new_image = image.resize((600, 400))
-                    new_image.save(img)
-                all_images = ""
-                for count, pic in enumerate(data['post_images']):
-                    if count < len(data['post_images'])-1:
-                        all_images += os.path.abspath(pic) + '\n'
-                    else:
-                        all_images += os.path.abspath(pic)
-                pic_post.send_keys(all_images)
-                #Information process
-                WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'infomation'))).click()
-                #Select type
-                if data['listing_type'] != 'ขาย':
-                    elem = driver.find_element_by_xpath('//div[@class="ui item menu three"]')
-                    spans = elem.find_elements_by_tag_name('span')
-                    spans[1].click()
-                    elem = driver.find_element_by_name("rentPrice")
-                    elem.clear()
-                    elem.send_keys(data['price_baht'], Keys.ARROW_DOWN)
-                else:
-                    elem = driver.find_element_by_name("salePrice")
-                    elem.clear()
-                    elem.send_keys(data['price_baht'], Keys.ARROW_DOWN)
-
-                WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'propertyType'))).click()
-                property_tp = {
-                    "1": "คอนโด",
-                    "2": "บ้านเดี่ยว",
-                    "3": "ทาวน์เฮ้าส์",
-                    "4": "ทาวน์เฮ้าส์",
-                    "5": "เชิงพาณิชย์",
-                    "6": "ที่ดิน",
-                    "7": "อพาร์ทเม้นท์",
-                    "8": "เชิงพาณิชย์",
-                    "9": "เชิงพาณิชย์",
-                    "10": "เชิงพาณิชย์",
-                    "25": "เชิงพาณิชย์"
-                }
-                p_type = property_tp[str(data['property_type'])]
-                options = driver.find_element_by_id('my_propertyType')
-                items = options.find_elements_by_class_name('item')
-                for item in items:
-                    if item.text == p_type:
-                        item.click()
-                        break
-
-                if data['land_size_rai'] is None:
-                    data['land_size_rai'] = ''
-                if data['land_size_ngan'] is None:
-                    data['land_size_ngan'] = ''
-                if data['land_size_wa'] is None:
-                    data['land_size_wa'] = ''
-                if data['bed_room'] is None:
-                    data['bed_room'] = ''
-                if data['bath_room'] is None:
-                    data['bath_room'] = ''
-                if data['floor_total'] is None:
-                    data['floor_total'] = ''
-                if 'floorarea_sqm' not in data or data['floorarea_sqm'] is None or data['floorarea_sqm'] == '':
-                    if 'floor_area' not in data or data['floor_area'] is None:
-                        data['floor_area'] = ''
-                    data['floorarea_sqm'] = data['floor_area']
-                data['land_size_rai'] = str(data['land_size_rai'])
-                data['land_size_ngan'] = str(data['land_size_ngan'])
-                data['land_size_wa'] = str(data['land_size_wa'])
-                data['floorarea_sqm'] = str(data['floorarea_sqm'])
-                if p_type == 'คอนโด':
-                    elem = driver.find_element_by_name("bedroom")
-                    elem.clear()
-                    elem.send_keys(data['bed_room'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("bathroom")
-                    elem.clear()
-                    elem.send_keys(data['bath_room'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("floor")
-                    elem.clear()
-                    elem.send_keys(data['floor_level'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("usableArea")
-                    elem.clear()
-                    elem.send_keys(data['floorarea_sqm'], Keys.ARROW_DOWN)
-                elif p_type == 'บ้านเดี่ยว' or p_type == 'ทาวน์เฮ้าส์':
-                    elem = driver.find_element_by_name("bedroom")
-                    elem.clear()
-                    elem.send_keys(data['bed_room'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("bathroom")
-                    elem.clear()
-                    elem.send_keys(data['bath_room'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("floor")
-                    elem.clear()
-                    elem.send_keys(data['floor_total'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("usableArea")
-                    elem.clear()
-                    elem.send_keys(data['floorarea_sqm'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("rai")
-                    elem.clear()
-                    elem.send_keys(data['land_size_rai'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("ngan")
-                    elem.clear()
-                    elem.send_keys(data['land_size_ngan'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("sqw")
-                    elem.clear()
-                    elem.send_keys(data['land_size_wa'], Keys.ARROW_DOWN)
-                elif p_type == 'อพาร์ทเม้นท์':
-                    elem = driver.find_element_by_name("bedroom")
-                    elem.clear()
-                    elem.send_keys(data['bed_room'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("bathroom")
-                    elem.clear()
-                    elem.send_keys(data['bath_room'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("floor")
-                    elem.clear()
-                    elem.send_keys(data['floor_total'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("usableArea")
-                    elem.clear()
-                    elem.send_keys(data['floorarea_sqm'], Keys.ARROW_DOWN)
-                elif p_type == 'ที่ดิน':
-                    elem = driver.find_element_by_name("rai")
-                    elem.clear()
-                    elem.send_keys(data['land_size_rai'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("ngan")
-                    elem.clear()
-                    elem.send_keys(data['land_size_ngan'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("sqw")
-                    elem.clear()
-                    elem.send_keys(data['land_size_wa'], Keys.ARROW_DOWN)
-                else:
-                    elem = driver.find_element_by_name("bedroom")
-                    elem.clear()
-                    elem.send_keys(data['bed_room'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("bathroom")
-                    elem.clear()
-                    elem.send_keys(data['bath_room'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("floor")
-                    elem.clear()
-                    elem.send_keys(data['floor_total'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("usableArea")
-                    elem.clear()
-                    elem.send_keys(data['floorarea_sqm'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("rai")
-                    elem.clear()
-                    elem.send_keys(data['land_size_rai'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("ngan")
-                    elem.clear()
-                    elem.send_keys(data['land_size_ngan'], Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("sqw")
-                    elem.clear()
-                    elem.send_keys(data['land_size_wa'], Keys.ARROW_DOWN)
-
-                new_proj = True
-                if p_type != 'ที่ดิน':
-                    #print('in project')
-                    if 'web_project_name' not in data or data['web_project_name'] is None or data['web_project_name'] == "":
-                        if 'project_name' in data and data['project_name'] is not None:
-                            data['web_project_name'] = data['project_name']
-                        else:
-                            data['web_project_name'] = ''
-                    
-                    if data['web_project_name'] != '':
-                        #print('click')
-                        options = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'my_project')))
-                        actions = ActionChains(driver)
-                        actions.move_to_element(options).click().perform()
-                        #print('clicked')
-                        inp = options.find_elements_by_xpath('//input[@class="search"]')[2]
-                        if data['listing_type'] == 'ขาย':
-                            #print('sell')
-                            inp = options.find_elements_by_xpath('//input[@class="search"]')[1]
-                        time.sleep(2)
-                        inp.send_keys(str(data['web_project_name'].split('(')[0].strip()))
-                        time.sleep(2)
-                        #inp.send_keys(Keys.TAB)
-                        #inp.send_keys(Keys.ENTER)
-                        #inp.send_keys(Keys.ARROW_DOWN)
-                        #print('typed')
-                        options = options.find_elements_by_class_name('item')
-                        for opt in options:
-                            #print(opt.text)
-                            if str(opt.text).replace(' ','').find(data['web_project_name'].replace(' ', ''))!=-1:
-                                opt.click()
-                                #print(str(opt.text))
-                                #print(pro)
-                                new_proj = False
-                                break
-                #print('project name done')
-                driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
-                if new_proj == True:
-                    options = driver.find_element_by_id('my_province')
-                    time.sleep(2)
-                    options.click()
-                    time.sleep(5)
-                    #print('clicked')
-                    flag = False
-                    options = options.find_elements_by_class_name('item')
-                    for opt in options:
-                        #print(opt.text)
-                        if str(opt.text).replace(' ', '').find(data['addr_province']) != -1 or data['addr_province'].find(str(opt.text).replace(' ', ''))!=-1:
-                            opt.click()
-                            flag = True
-                            break
-                    if flag == False:
-                        for opt in options:
-                            #print(opt.text)
-                            opt.click()
-                            break
-                    #print('province done')
-
-                    options = driver.find_element_by_id('my_city')
-                    time.sleep(2)
-                    options.click()
-                    time.sleep(5)
-                    #print('clicked')
-                    flag = False
-                    options = options.find_elements_by_class_name('item')
-                    for opt in options:
-                        #print(opt.text)
-                        if str(opt.text).replace(' ', '').find(data['addr_district']) != -1 or data['addr_district'].find(str(opt.text).replace(' ', ''))!=-1:
-                            opt.click()
-                            flag = True
-                            break
-                    if flag == False:
-                        for opt in options:
-                            #print(opt.text)
-                            opt.click()
-                            break
-                    #print('district done')
-                    #print('4')
-                    options = driver.find_element_by_id('my_area')
-                    time.sleep(2)
-                    options.click()
-                    time.sleep(5)
-                    #print('clicked')
-                    flag = False
-                    options = options.find_elements_by_class_name('item')
-                    for opt in options:
-                        #print(opt.text)
-                        if str(opt.text).replace(' ', '').find(data['addr_sub_district']) != -1 or data['addr_sub_district'].find(str(opt.text).replace(' ', ''))!=-1:
-                            opt.click()
-                            flag = True
-                            break
-                    if flag == False:
-                        for opt in options:
-                            #print(opt.text)
-                            opt.click()
-                            break
-                    #print('sub district done')
-                    driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
-                    driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
-
-                    #my_showMap
-                    options = driver.find_element_by_id('my_showMap').find_element_by_class_name('on-off')
-                    time.sleep(2)
-                    options.click()
-                    time.sleep(5)
-                    #print('5')
-                    #print('clicked')
-
-                    options = driver.find_element_by_id('my_geoType').find_element_by_class_name('on-off')
-                    options.click()
-                    #print('6')
-                    #print('clicked')
-
-                    elem = driver.find_element_by_name("latitude")
-                    elem.clear()
-                    elem.send_keys(str(data['geo_latitude']), Keys.ARROW_DOWN)
-                    elem = driver.find_element_by_name("longitude")
-                    elem.clear()
-                    elem.send_keys(str(data['geo_longitude']), Keys.ARROW_DOWN)
-                    #print('done map')
-                    #print('6')
-
-                #Descriptions phrase
-                elem = driver.find_element_by_name("title_th")
-                elem.clear()
-                if data['post_title_en'] is not None and data['post_title_en']!='' and data['post_description_en'] is not None and data['post_description_en'] != '':
-                    print('There is english description')
-                    elem.send_keys(str(data['post_title_th'])[:120], Keys.TAB, str(data['post_description_th']).replace('\r',''), Keys.TAB, str(data['post_title_en'])[:120], Keys.TAB, str(data['post_description_en']).replace('\r', ''))
-                else:    
-                    elem.send_keys(str(data['post_title_th'])[:120], Keys.TAB, str(data['post_description_th']).replace('\r',''))
-                """ elem = driver.find_element_by_xpath('//div[@id="my_description_th"]')
-                time.sleep(2)
-                elem.click()
-                time.sleep(5)
-                elem = driver.find_element_by_name("description_th")
-                elem.clear()
-                data['post_description_th'] = str(data['post_description_th']).replace('\r','')
-                for i in range(10,0,-1):
-                    if i == 1:
-                        data['post_description_th'] = str(data['post_description_th']).replace('\n' * i, '<br>')
-                    else:
-                        data['post_description_th'] = str(data['post_description_th']).replace('\n' * i,
-                                                                                                '<br>' + '<p><br></p>' * (
-                                                                                                            i - 1))
-
-                #print(data['post_description_th'])
-                elem.send_keys(data['post_description_th'], Keys.ARROW_DOWN)
-                if 'post_title_en' in data and data['post_title_en'] is not None and data['post_title_en']!='':
-                    elem = driver.find_element_by_name("title_en")
-                    elem.clear()
-                    elem.send_keys(str(data['post_title_en'])[:120], Keys.ARROW_DOWN)
-                if 'post_description_en' in data and data['post_description_en'] is not None and data['post_description_en'] != '':
-                    elem = driver.find_element_by_name("description_en")
-                    elem.clear()
-                    data['post_description_en'] = str(data['post_description_en']).replace('\r', '')
-                    for i in range(10, 0, -1):
-                        if i == 1:
-                            data['post_description_en'] = str(data['post_description_en']).replace('\n' * i, '<br>')
-                        else:
-                            data['post_description_en'] = str(data['post_description_en']).replace('\n' * i,
-                                                                                                    '<br>' + '<p><br></p>' * (
-                                                                                                                i - 1))
-                    elem.send_keys(data['post_description_en'], Keys.ARROW_DOWN) """
-
-                #print('going to save')
-                driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
-
-                time.sleep(2)
-                btn = driver.find_element_by_xpath('//button[@class="ui green button"]')
-                time.sleep(1)
-                btn.click()
-                time.sleep(10)
-                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'tgl'))).click()
-                time.sleep(3)
-                txt = str(driver.current_url)
-                post_id = ''
-                ind = txt.find('properties')+11
-                while txt[ind]!='/':
-                    post_id+=txt[ind]
-                    ind+=1
-                url = 'https://www.dotproperty.co.th/my-dashboard/properties'
-                driver.get(url)
-                time.sleep(10)
-                #print('7')
-
-                posts = driver.find_element_by_xpath('//table[@class="ui celled table unstackable"]').find_element_by_tag_name('tbody').find_elements_by_tag_name('tr')
-                #print('here1')
-                for post in posts:
-                    tds = post.find_elements_by_tag_name('td')
-                    #print('here2')
-
-                    #print('here3')
-                    if str(tds[2].text)==post_id:
-                        #print('here4')
-                        if len((tds[8].find_elements_by_tag_name('a')))>2:
-                            post_url = str((tds[8].find_elements_by_tag_name('a'))[1].get_attribute('href'))
-                            break
-                detail = 'Post created'
-
-            except Exception as e:
+            if data['listing_type'] == 'เช่า' and int(data['price_baht']) > 700000:
                 success = 'false'
-                detail = 'Can not create post ' + str(e)
-                post_url = ''
-                post_id = ''
-    
-            finally:
+                detail = 'The list is rental type so the price can not be over than 700,000 bath.'
                 driver.close()
                 driver.quit()
+            else:
+                success = 'true'
+            
+            if success == 'true':
+                try:
+                    time.sleep(3)
+                    #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'ประกาศทั้งหมด')))
+                    driver.get('https://www.dotproperty.co.th/my-dashboard/properties')
+                    time.sleep(5)
+                    button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
+                    button[2].click()
+                    soup = BeautifulSoup(driver.page_source, 'html.parser')
+                    if soup.find('button', {'data-tooltip': 'คุณได้ออนไลน์ประกาศครบตามจำนวนที่กำหนดแล้ว'}):
+                        success = 'false'
+                        detail = 'Your online post reach the limitation.'
+                        post_url = ''
+                        post_id = ''
+                    else: 
+                        success = 'true'
 
+                    if success == 'true':
+                        try:
+                            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
+                        except:
+                            route_link = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'router-link-active')))
+                            route_link[0].click()
+                            time.sleep(2)
+                            route_link[1].click()
+                            time.sleep(2)
+                            button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
+                            button[2].click()
+                            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
+                        cur_url = driver.current_url
+                        #Image process
+                        pic_post = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'photos')))
+                        if len(data['post_images'])<15:
+                            total = len(data['post_images'])
+                        image = ''
+                        count=1
+                        for img in data['post_images'][:total]:
+                            image = Image.open(img)
+                            new_image = image.resize((600, 400))
+                            new_image.save(img)
+                        all_images = ""
+                        for count, pic in enumerate(data['post_images']):
+                            if count < len(data['post_images'])-1:
+                                all_images += os.path.abspath(pic) + '\n'
+                            else:
+                                all_images += os.path.abspath(pic)
+                        pic_post.send_keys(all_images)
+                        #Information process
+                        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'infomation'))).click()
+                        #Select type
+                        if data['listing_type'] != 'ขาย':
+                            elem = driver.find_element_by_xpath('//div[@class="ui item menu three"]')
+                            spans = elem.find_elements_by_tag_name('span')
+                            spans[1].click()
+                            elem = driver.find_element_by_name("rentPrice")
+                            elem.clear()
+                            elem.send_keys(data['price_baht'], Keys.ARROW_DOWN)
+                        else:
+                            elem = driver.find_element_by_name("salePrice")
+                            elem.clear()
+                            elem.send_keys(data['price_baht'], Keys.ARROW_DOWN)
+
+                        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'propertyType'))).click()
+                        property_tp = {
+                            "1": "คอนโด",
+                            "2": "บ้านเดี่ยว",
+                            "3": "ทาวน์เฮ้าส์",
+                            "4": "ทาวน์เฮ้าส์",
+                            "5": "เชิงพาณิชย์",
+                            "6": "ที่ดิน",
+                            "7": "อพาร์ทเม้นท์",
+                            "8": "เชิงพาณิชย์",
+                            "9": "เชิงพาณิชย์",
+                            "10": "เชิงพาณิชย์",
+                            "25": "เชิงพาณิชย์"
+                        }
+                        p_type = property_tp[str(data['property_type'])]
+                        options = driver.find_element_by_id('my_propertyType')
+                        items = options.find_elements_by_class_name('item')
+                        for item in items:
+                            if item.text == p_type:
+                                item.click()
+                                break
+
+                        if data['land_size_rai'] is None:
+                            data['land_size_rai'] = ''
+                        if data['land_size_ngan'] is None:
+                            data['land_size_ngan'] = ''
+                        if data['land_size_wa'] is None:
+                            data['land_size_wa'] = ''
+                        if data['bed_room'] is None:
+                            data['bed_room'] = ''
+                        if data['bath_room'] is None:
+                            data['bath_room'] = ''
+                        if data['floor_total'] is None:
+                            data['floor_total'] = ''
+                        if 'floorarea_sqm' not in data or data['floorarea_sqm'] is None or data['floorarea_sqm'] == '':
+                            if 'floor_area' not in data or data['floor_area'] is None:
+                                data['floor_area'] = ''
+                            data['floorarea_sqm'] = data['floor_area']
+                        data['land_size_rai'] = str(data['land_size_rai'])
+                        data['land_size_ngan'] = str(data['land_size_ngan'])
+                        data['land_size_wa'] = str(data['land_size_wa'])
+                        data['floorarea_sqm'] = str(data['floorarea_sqm'])
+                        if p_type == 'คอนโด':
+                            elem = driver.find_element_by_name("bedroom")
+                            elem.clear()
+                            elem.send_keys(data['bed_room'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("bathroom")
+                            elem.clear()
+                            elem.send_keys(data['bath_room'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("floor")
+                            elem.clear()
+                            elem.send_keys(data['floor_level'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("usableArea")
+                            elem.clear()
+                            elem.send_keys(data['floorarea_sqm'], Keys.ARROW_DOWN)
+                        elif p_type == 'บ้านเดี่ยว' or p_type == 'ทาวน์เฮ้าส์':
+                            elem = driver.find_element_by_name("bedroom")
+                            elem.clear()
+                            elem.send_keys(data['bed_room'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("bathroom")
+                            elem.clear()
+                            elem.send_keys(data['bath_room'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("floor")
+                            elem.clear()
+                            elem.send_keys(data['floor_total'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("usableArea")
+                            elem.clear()
+                            elem.send_keys(data['floorarea_sqm'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("rai")
+                            elem.clear()
+                            elem.send_keys(data['land_size_rai'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("ngan")
+                            elem.clear()
+                            elem.send_keys(data['land_size_ngan'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("sqw")
+                            elem.clear()
+                            elem.send_keys(data['land_size_wa'], Keys.ARROW_DOWN)
+                        elif p_type == 'อพาร์ทเม้นท์':
+                            elem = driver.find_element_by_name("bedroom")
+                            elem.clear()
+                            elem.send_keys(data['bed_room'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("bathroom")
+                            elem.clear()
+                            elem.send_keys(data['bath_room'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("floor")
+                            elem.clear()
+                            elem.send_keys(data['floor_total'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("usableArea")
+                            elem.clear()
+                            elem.send_keys(data['floorarea_sqm'], Keys.ARROW_DOWN)
+                        elif p_type == 'ที่ดิน':
+                            elem = driver.find_element_by_name("rai")
+                            elem.clear()
+                            elem.send_keys(data['land_size_rai'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("ngan")
+                            elem.clear()
+                            elem.send_keys(data['land_size_ngan'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("sqw")
+                            elem.clear()
+                            elem.send_keys(data['land_size_wa'], Keys.ARROW_DOWN)
+                        else:
+                            elem = driver.find_element_by_name("bedroom")
+                            elem.clear()
+                            elem.send_keys(data['bed_room'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("bathroom")
+                            elem.clear()
+                            elem.send_keys(data['bath_room'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("floor")
+                            elem.clear()
+                            elem.send_keys(data['floor_total'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("usableArea")
+                            elem.clear()
+                            elem.send_keys(data['floorarea_sqm'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("rai")
+                            elem.clear()
+                            elem.send_keys(data['land_size_rai'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("ngan")
+                            elem.clear()
+                            elem.send_keys(data['land_size_ngan'], Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("sqw")
+                            elem.clear()
+                            elem.send_keys(data['land_size_wa'], Keys.ARROW_DOWN)
+
+                        new_proj = True
+                        if p_type != 'ที่ดิน':
+                            #print('in project')
+                            if 'web_project_name' not in data or data['web_project_name'] is None or data['web_project_name'] == "":
+                                if 'project_name' in data and data['project_name'] is not None:
+                                    data['web_project_name'] = data['project_name']
+                                else:
+                                    data['web_project_name'] = ''
+                            
+                            if data['web_project_name'] != '':
+                                #print('click')
+                                options = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'my_project')))
+                                actions = ActionChains(driver)
+                                actions.move_to_element(options).click().perform()
+                                #print('clicked')
+                                inp = options.find_elements_by_xpath('//input[@class="search"]')[2]
+                                if data['listing_type'] == 'ขาย':
+                                    #print('sell')
+                                    inp = options.find_elements_by_xpath('//input[@class="search"]')[1]
+                                time.sleep(2)
+                                inp.send_keys(str(data['web_project_name'].split('(')[0].strip()))
+                                time.sleep(2)
+                                #inp.send_keys(Keys.TAB)
+                                #inp.send_keys(Keys.ENTER)
+                                #inp.send_keys(Keys.ARROW_DOWN)
+                                #print('typed')
+                                options = options.find_elements_by_class_name('item')
+                                for opt in options:
+                                    #print(opt.text)
+                                    if str(opt.text).replace(' ','').find(data['web_project_name'].replace(' ', ''))!=-1:
+                                        opt.click()
+                                        #print(str(opt.text))
+                                        #print(pro)
+                                        new_proj = False
+                                        break
+                        #print('project name done')
+                        driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
+                        if new_proj == True:
+                            options = driver.find_element_by_id('my_province')
+                            time.sleep(2)
+                            options.click()
+                            time.sleep(5)
+                            #print('clicked')
+                            flag = False
+                            options = options.find_elements_by_class_name('item')
+                            for opt in options:
+                                #print(opt.text)
+                                if str(opt.text).replace(' ', '').find(data['addr_province']) != -1 or data['addr_province'].find(str(opt.text).replace(' ', ''))!=-1:
+                                    opt.click()
+                                    flag = True
+                                    break
+                            if flag == False:
+                                for opt in options:
+                                    #print(opt.text)
+                                    opt.click()
+                                    break
+                            #print('province done')
+
+                            options = driver.find_element_by_id('my_city')
+                            time.sleep(2)
+                            options.click()
+                            time.sleep(5)
+                            #print('clicked')
+                            flag = False
+                            options = options.find_elements_by_class_name('item')
+                            for opt in options:
+                                #print(opt.text)
+                                if str(opt.text).replace(' ', '').find(data['addr_district']) != -1 or data['addr_district'].find(str(opt.text).replace(' ', ''))!=-1:
+                                    opt.click()
+                                    flag = True
+                                    break
+                            if flag == False:
+                                for opt in options:
+                                    #print(opt.text)
+                                    opt.click()
+                                    break
+                            #print('district done')
+                            #print('4')
+                            options = driver.find_element_by_id('my_area')
+                            time.sleep(2)
+                            options.click()
+                            time.sleep(5)
+                            #print('clicked')
+                            flag = False
+                            options = options.find_elements_by_class_name('item')
+                            for opt in options:
+                                #print(opt.text)
+                                if str(opt.text).replace(' ', '').find(data['addr_sub_district']) != -1 or data['addr_sub_district'].find(str(opt.text).replace(' ', ''))!=-1:
+                                    opt.click()
+                                    flag = True
+                                    break
+                            if flag == False:
+                                for opt in options:
+                                    #print(opt.text)
+                                    opt.click()
+                                    break
+                            #print('sub district done')
+                            driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
+                            driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
+
+                            #my_showMap
+                            options = driver.find_element_by_id('my_showMap').find_element_by_class_name('on-off')
+                            time.sleep(2)
+                            options.click()
+                            time.sleep(5)
+                            #print('5')
+                            #print('clicked')
+
+                            options = driver.find_element_by_id('my_geoType').find_element_by_class_name('on-off')
+                            options.click()
+                            #print('6')
+                            #print('clicked')
+
+                            elem = driver.find_element_by_name("latitude")
+                            elem.clear()
+                            elem.send_keys(str(data['geo_latitude']), Keys.ARROW_DOWN)
+                            elem = driver.find_element_by_name("longitude")
+                            elem.clear()
+                            elem.send_keys(str(data['geo_longitude']), Keys.ARROW_DOWN)
+                            #print('done map')
+                            #print('6')
+
+                        #Descriptions phrase
+                        elem = driver.find_element_by_name("title_th")
+                        elem.clear()
+                        if data['post_title_en'] is not None and data['post_title_en']!='' and data['post_description_en'] is not None and data['post_description_en'] != '':
+                            print('There is english description')
+                            elem.send_keys(str(data['post_title_th'])[:120], Keys.TAB, str(data['post_description_th']).replace('\r',''), Keys.TAB, str(data['post_title_en'])[:120], Keys.TAB, str(data['post_description_en']).replace('\r', ''))
+                        else:    
+                            elem.send_keys(str(data['post_title_th'])[:120], Keys.TAB, str(data['post_description_th']).replace('\r',''))
+                        """ elem = driver.find_element_by_xpath('//div[@id="my_description_th"]')
+                        time.sleep(2)
+                        elem.click()
+                        time.sleep(5)
+                        elem = driver.find_element_by_name("description_th")
+                        elem.clear()
+                        data['post_description_th'] = str(data['post_description_th']).replace('\r','')
+                        for i in range(10,0,-1):
+                            if i == 1:
+                                data['post_description_th'] = str(data['post_description_th']).replace('\n' * i, '<br>')
+                            else:
+                                data['post_description_th'] = str(data['post_description_th']).replace('\n' * i,
+                                                                                                        '<br>' + '<p><br></p>' * (
+                                                                                                                    i - 1))
+
+                        #print(data['post_description_th'])
+                        elem.send_keys(data['post_description_th'], Keys.ARROW_DOWN)
+                        if 'post_title_en' in data and data['post_title_en'] is not None and data['post_title_en']!='':
+                            elem = driver.find_element_by_name("title_en")
+                            elem.clear()
+                            elem.send_keys(str(data['post_title_en'])[:120], Keys.ARROW_DOWN)
+                        if 'post_description_en' in data and data['post_description_en'] is not None and data['post_description_en'] != '':
+                            elem = driver.find_element_by_name("description_en")
+                            elem.clear()
+                            data['post_description_en'] = str(data['post_description_en']).replace('\r', '')
+                            for i in range(10, 0, -1):
+                                if i == 1:
+                                    data['post_description_en'] = str(data['post_description_en']).replace('\n' * i, '<br>')
+                                else:
+                                    data['post_description_en'] = str(data['post_description_en']).replace('\n' * i,
+                                                                                                            '<br>' + '<p><br></p>' * (
+                                                                                                                        i - 1))
+                            elem.send_keys(data['post_description_en'], Keys.ARROW_DOWN) """
+
+                        #print('going to save')
+                        driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
+
+                        time.sleep(2)
+                        btn = driver.find_element_by_xpath('//button[@class="ui green button"]')
+                        time.sleep(1)
+                        btn.click()
+                        time.sleep(10)
+                        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'tgl'))).click()
+                        time.sleep(3)
+                        txt = str(driver.current_url)
+                        post_id = ''
+                        ind = txt.find('properties')+11
+                        while txt[ind]!='/':
+                            post_id+=txt[ind]
+                            ind+=1
+                        url = 'https://www.dotproperty.co.th/my-dashboard/properties'
+                        driver.get(url)
+                        time.sleep(10)
+                        #print('7')
+
+                        posts = driver.find_element_by_xpath('//table[@class="ui celled table unstackable"]').find_element_by_tag_name('tbody').find_elements_by_tag_name('tr')
+                        #print('here1')
+                        for post in posts:
+                            tds = post.find_elements_by_tag_name('td')
+                            #print('here2')
+
+                            #print('here3')
+                            if str(tds[2].text)==post_id:
+                                #print('here4')
+                                if len((tds[8].find_elements_by_tag_name('a')))>2:
+                                    post_url = str((tds[8].find_elements_by_tag_name('a'))[1].get_attribute('href'))
+                                    break
+                        detail = 'Post created'
+
+                except Exception as e:
+                    success = 'false'
+                    detail = 'Can not create post ' + str(e)
+                    post_url = ''
+                    post_id = ''
+        
+                finally:
+                    driver.close()
+                    driver.quit()
+            else:
+                post_url = ''
+                post_id = ''
         else:
             post_url = ''
             post_id = ''
