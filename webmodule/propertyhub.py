@@ -200,7 +200,7 @@ class propertyhub():
                             detail = 'Your project name does not match.' """
                 except:
                     success = 'false'
-                    detail = 'Your project is wrong. Please check.'
+                    detail = 'ไม่สามารถโพสต์ประกาศได้ เนื่องจากไม่เจอโครงการของคุณ'
                     
                 """ try:
                     project_sel = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[1]/div/form/div/div/div[1]/div[4]/div[2]/div/div/div[2]/div/div/div'))).click()

@@ -134,7 +134,7 @@ class livinginsider():
         soup = BeautifulSoup(r.text, self.parser)
         coin_cells = soup.findAll('span', {'class': 'coin_balance'})
         print("Coin: "+coin_cells[0].text)
-        if int(coin_cells[0].text) < 20:
+        if int(filter(str.isdigit,coin_cells[0].text)) < 20:
             detail = 'No balance to post.'
             success = False
             time_end = datetime.datetime.utcnow()
