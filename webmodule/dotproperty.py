@@ -143,7 +143,7 @@ class dotproperty():
         txt = str(driver.page_source)
         if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
             success = 'false'
-            detail = 'Invalid credentials'
+            detail = 'อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง'
         elif txt.find('email ต้องเป็นอีเมลแอดเดรสที่มีอยู่จริงเท่านั้น') != -1:
             success = 'false'
             detail = 'Your usename needs to be email pattern.'
