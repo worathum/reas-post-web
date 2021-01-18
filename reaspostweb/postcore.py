@@ -225,7 +225,7 @@ class postcore():
                             "post_id": "",
                         }
                     return {
-                        "success": "false",
+                        "success": "true",
                         "action": action,
                         "web": web
                     }
