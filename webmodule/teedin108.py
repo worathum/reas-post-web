@@ -151,6 +151,7 @@ class teedin108():
         r = httprequestObj.http_post(url_verify, data)
 
         # parse response received and set outputs accordingly
+        
         try:
             if r.json()["data"]["status"] == "A":
                 success = True
@@ -160,7 +161,7 @@ class teedin108():
                 detail = "You have not confirmed your email subscription." 
         except:
             success = False
-            detail = "Unexpected error"
+            detail = r.json()
         #
         # end process
 
