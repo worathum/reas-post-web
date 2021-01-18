@@ -205,6 +205,31 @@ class postcore():
                             imgcount = imgcount + 1
                         except:
                             pass
+                    else:
+                        logging.error('Issue with image urls')
+                        weblists = datarequest['web']
+                        web = {}
+                        for webitem in weblists:
+                            web[webitem['ds_name']] = {
+                                "websitename": webitem['ds_name'],
+                                "success": "false",
+                                "detail": "Your image url is not a proper content type.",
+                                "start_time": datetime.datetime.utcnow(),
+                                "end_time": datetime.datetime.utcnow(),
+                                "usage_time": datetime.datetime.utcnow(),
+                                "ds_name": webitem['ds_name'],
+                                "ds_id": webitem['ds_id'],
+                                "account_type": "",
+                                "post_url": "",
+                                "post_id": "",
+                            }
+                            if 'log_id' in webitem:
+                                web[webitem['ds_name']]['log_id'] = webitem['log_id']
+                        return {
+                            "success": "true",
+                            "action": action,
+                            "web": web
+                        }
                 else:
                     logging.error('Issue with image urls')
                     weblists = datarequest['web']
@@ -220,15 +245,41 @@ class postcore():
                             "ds_name": webitem['ds_name'],
                             "ds_id": webitem['ds_id'],
                             "account_type": "",
-                            "log_id": webitem['log_id'],
                             "post_url": "",
                             "post_id": "",
                         }
+                        if 'log_id' in webitem:
+                            web[webitem['ds_name']]['log_id'] = webitem['log_id']
                     return {
                         "success": "true",
                         "action": action,
                         "web": web
+                    }  
+            else:
+                logging.error('Issue with image urls')
+                weblists = datarequest['web']
+                web = {}
+                for webitem in weblists:
+                    web[webitem['ds_name']] = {
+                        "websitename": webitem['ds_name'],
+                        "success": "false",
+                        "detail": "Found 404 on your image link.",
+                        "start_time": datetime.datetime.utcnow(),
+                        "end_time": datetime.datetime.utcnow(),
+                        "usage_time": datetime.datetime.utcnow(),
+                        "ds_name": webitem['ds_name'],
+                        "ds_id": webitem['ds_id'],
+                        "account_type": "",
+                        "post_url": "",
+                        "post_id": "",
                     }
+                    if 'log_id' in webitem:
+                        web[webitem['ds_name']]['log_id'] = webitem['log_id']
+                return {
+                    "success": "true",
+                    "action": action,
+                    "web": web
+                }
 
                 # else:
                     # logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
