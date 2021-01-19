@@ -225,8 +225,16 @@ class dotproperty():
                     #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'ประกาศทั้งหมด')))
                     driver.get('https://www.dotproperty.co.th/my-dashboard/properties')
                     time.sleep(5)
-                    button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
-                    button[2].click()
+                    try:
+                        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'upload-btn')))
+                    except:
+                        pass
+                    try:
+                        button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
+                        button[2].click()
+                    except:
+                        button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
+                        button[1].click()
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     if soup.find('button', {'data-tooltip': 'คุณได้ออนไลน์ประกาศครบตามจำนวนที่กำหนดแล้ว'}):
                         success = 'false'
@@ -238,16 +246,34 @@ class dotproperty():
 
                     if success == 'true':
                         try:
-                            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
+                            try:
+                                WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
+                            except:
+                                route_link = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'router-link-active')))
+                                route_link[0].click()
+                                time.sleep(2)
+                                route_link[1].click()
+                                time.sleep(2)
+                                try:
+                                    button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
+                                    button[2].click()
+                                except:
+                                    button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
+                                    button[1].click()
+                                WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
                         except:
-                            route_link = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'router-link-active')))
-                            route_link[0].click()
-                            time.sleep(2)
-                            route_link[1].click()
-                            time.sleep(2)
-                            button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
-                            button[2].click()
-                            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'photos_container'))).click()
+                            return {
+                                "success": "false",
+                                "usage_time": str(datetime.datetime.utcnow() - time_start),
+                                "start_time": str(time_start),
+                                "end_time": str(datetime.datetime.utcnow()),
+                                "ds_id": data['ds_id'],
+                                "post_url": '',
+                                "post_id": '',
+                                "account_type": None,
+                                "detail": 'Please verify your account.',
+                                "websitename": "dotproperty"
+                            }   
                         cur_url = driver.current_url
                         #Image process
                         pic_post = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'photos')))

@@ -135,7 +135,7 @@ class livinginsider():
         coin_cells = soup.findAll('span', {'class': 'coin_balance'})
         print("Coin: "+coin_cells[0].text)
         coin = coin_cells[0].text
-        if int(coin.replace(',', '')) =< 20:
+        if int(coin.replace(',', '')) <= 20:
             detail = 'No balance to post.'
             success = False
             time_end = datetime.datetime.utcnow()
