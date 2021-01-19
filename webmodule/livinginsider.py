@@ -134,9 +134,10 @@ class livinginsider():
         soup = BeautifulSoup(r.text, self.parser)
         coin_cells = soup.findAll('span', {'class': 'coin_balance'})
         print("Coin: "+coin_cells[0].text)
-        coin = coin_cells[0].text
-        if int(coin.replace(',', '')) =< 20:
-            detail = 'No balance to post.'
+        coinTemp = coin_cells[0].text
+        coin = coinTemp.replace(',','')
+        if int(coin) < 20:
+            detail = 'No balance to post. you have only '+coin+' credit'
             success = False
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
