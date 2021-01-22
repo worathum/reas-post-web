@@ -825,6 +825,12 @@ class ddproperty():
                     nextbttn = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
                     self.firefox.execute_script("arguments[0].click();", nextbttn)
 
+                    try:
+                        cancel_plus_code = WebDriverWait(self.firefox, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'btn-default-outline')))
+                        cancel_plus_code[-1].click()
+                    except:
+                        pass
+
         # case match choose first argument
         else:
             #log.debug('found property name %s', projectname)
