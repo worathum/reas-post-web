@@ -553,6 +553,22 @@ class landmarket():
             files = {'image1': b'', 'image2': b'', 'image3': b'', 'image4': b''}
 
             r = httprequestObj.http_get(self.site_name+'/edit_property.php?id='+str(postdata['post_id']))
+            print(r.url)
+            print(r.text)
+            if '<META HTTP-EQUIV="Refresh" CONTENT="0;URL=maneg_property.php">' in r.text:
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
+                return {
+                    "success": "False",
+                    "usage_time": str(time_usage),
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "detail": "Post Not Found",
+                    "post_id": postdata['post_id'],
+                    "log_id": postdata['log_id'],
+                    "websitename": self.name,
+                    "ds_id": postdata['ds_id']
+                }
             if r.status_code==200:
                 soup = BeautifulSoup(r.text, features=self.parser)
                 inputs_list = ["name", "cate", "section", "Province", "District", "Subdistrict",
