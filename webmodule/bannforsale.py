@@ -9,6 +9,7 @@ import requests
 import urllib3
 import sys
 import json
+import re
 
 httprequestObj = lib_httprequest()
 
@@ -186,6 +187,7 @@ class bannforsale():
             if postdata['bed_room'] == None or postdata['bed_room'] == "":
                 postdata['bed_room'] = '0'
 
+            postdata['post_description_th']=postdata['post_description_th'].replace("\n","<br>")
             data = {
                 '_token' : (None,token),
                 'typesale' : (None,1),
