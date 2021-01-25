@@ -216,10 +216,6 @@ class postcore():
                             imgcount = imgcount + 1
                         except:
                             pass
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
                     else:
                         logging.error('Issue with image urls')
                         weblists = datarequest['web']
@@ -295,10 +291,6 @@ class postcore():
                     "action": action,
                     "web": web
                 }
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
 
                 # else:
                     # logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])

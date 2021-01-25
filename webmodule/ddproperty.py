@@ -1525,21 +1525,6 @@ class ddproperty():
         detail = test_login["detail"]
         agent_id = test_login["agent_id"]
       #log.debug('')
-
-        time_start = datetime.datetime.utcnow()
-
-        # start process
-        #
-        datahandled = self.postdata_handle(postdata)
-
-        # login
-        test_login = self.test_login(datahandled)
-        
-        # self.firefox.quit()
-
-        success = test_login["success"]
-        detail = test_login["detail"]
-        agent_id = test_login["agent_id"]
         
         try:
             if success == "true":
@@ -1558,7 +1543,6 @@ class ddproperty():
                 try:
                     all_rows = self.firefox.find_element_by_id('list-container')
                     myrow = all_rows.find_element_by_class_name('listing-item')
-                    success = "false"
                     try:
                         iden = "listing-item-"+ datahandled['post_id'] +"-performance"
                         item_perform = self.firefox.find_element_by_id(iden)
@@ -1567,15 +1551,28 @@ class ddproperty():
                     except:
                         post_view = ""                      
                     try:
-                        renew = myrow.find_element_by_class_name('repost')
-                        renew.click()
-                        success = "true"
-                        detail = "Post Renewed Successfully."                    
-                        time.sleep(3)
+                        renew_input = myrow.find_elements_by_class_name('listingIdCheckbox')
+                        if renew_input[0].get_attribute('data-list-id') == datahandled['post_id']:
+                            renew_input[0].click()
+                            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'bulkRepost'))).click()
+                            time.sleep(5)
+                            cssvalue = self.firefox.find_element_by_id('layerNotAllowToExtendListing').get_attribute('style')
+                            time.sleep(1)
+                            if cssvalue == '':
+                                success = "true"
+                                detail = "Post Renewed Successfully."                    
+                            else:
+                                success = "false"
+                                detail = "This post already renewed in this week."                    
+                        else:
+                            success = "false"
+                            detail = "Invalid Post Id."
                     except:
-                        detail = "Post cannot be Renewed as of now."
+                        success = "false"
+                        detail = "Can not detect element to renew post."
                 except:
-                    detail = "Invalid Post Id."
+                    success = "false"
+                    detail = "Can not detect element in thee page.."
         finally:
             # pass
             self.firefox.quit()
