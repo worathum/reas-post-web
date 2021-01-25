@@ -31,6 +31,16 @@ logging.basicConfig(level=logging.INFO, filename='log/app-' + str(datetime.date.
 # log = logging.getLogger()
 
 
+def deEmojify(text):
+    regrex_pattern = re.compile(pattern = "["
+        u"\U0001F600-\U0001F64F"  # emoticons
+        u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+        u"\U0001F680-\U0001F6FF"  # transport & map symbols
+        u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                           "]+", flags = re.UNICODE)
+    return regrex_pattern.sub(r'',text)
+
+
 class postcore():
 
     name = 'postcore'
@@ -88,13 +98,14 @@ class postcore():
         # replace string \n to \r\n , \t to ''
         # TODO how to replace all dict by foreach or array walk?
         try:
-            datarequest['post_title_th'] = datarequest['post_title_th'].strip().replace("/","-")
-            datarequest['post_title_th'] = re.sub(r'\n','\r\n',datarequest['post_title_th'])
-            datarequest['post_title_en'] = re.sub(r'\n','\r\n',datarequest['post_title_en'])
-            datarequest['short_post_title_th'] = re.sub(r'\n','\r\n',datarequest['short_post_title_th'])
-            datarequest['short_post_title_en'] = re.sub(r'\n','\r\n',datarequest['short_post_title_en'])
-            datarequest['post_description_th'] = re.sub(r'\n','\r\n',datarequest['post_description_th'])
-            datarequest['post_description_en'] = re.sub(r'\n','\r\n',datarequest['post_description_en'])
+            datarequest['post_title_th'] = deEmojify(datarequest['post_title_th'].strip().replace("/","-"))
+            datarequest['post_title_th'] = deEmojify(re.sub(r'\n','\r\n',datarequest['post_title_th']))
+            datarequest['post_title_en'] = deEmojify(re.sub(r'\n','\r\n',datarequest['post_title_en']))
+            datarequest['short_post_title_th'] = deEmojify(re.sub(r'\n','\r\n',datarequest['short_post_title_th']))
+            datarequest['short_post_title_en'] = deEmojify(re.sub(r'\n','\r\n',datarequest['short_post_title_en']))
+            datarequest['post_description_th'] = deEmojify(re.sub(r'\n','\r\n',datarequest['post_description_th']))
+            datarequest['post_description_en'] = deEmojify(re.sub(r'\n','\r\n',datarequest['post_description_en']))
+
             datarequest['post_title_th'] = re.sub(r'\t','',datarequest['post_title_th'])
             datarequest['post_title_en'] = re.sub(r'\t','',datarequest['post_title_en'])
             datarequest['short_post_title_th'] = re.sub(r'\t','',datarequest['short_post_title_th'])
@@ -205,6 +216,10 @@ class postcore():
                             imgcount = imgcount + 1
                         except:
                             pass
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
                     else:
                         logging.error('Issue with image urls')
                         weblists = datarequest['web']
@@ -280,6 +295,10 @@ class postcore():
                     "action": action,
                     "web": web
                 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
 
                 # else:
                     # logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
