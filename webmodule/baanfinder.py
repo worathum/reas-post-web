@@ -259,7 +259,7 @@ class baanfinder():
             "res.detailedInfo": self.dict_data(postdata, "post_description_th"),
             "res.enDetailedInfo": self.dict_data(postdata, "post_description_en"),
             "res.youtubeVideoId": "",
-            "res.howToFind": self.dict_data(postdata, "addr_near_by"),
+            "res.howToFind": self.dict_data(postdata, "addr_near_by")[:450],
             "res.address": self.dict_data(postdata, "addr_soi") + "\r\n" + self.dict_data(postdata, "addr_road") + "\r\n" + self.dict_data(postdata, "addr_sub_district") + "\r\n" + self.dict_data(postdata, "addr_district") + "\r\n" + self.dict_data(postdata, "addr_province") + "\r\n",
             "res.enAddress": "",
             "res.province": self.dict_data(postdata, "addr_province"),
