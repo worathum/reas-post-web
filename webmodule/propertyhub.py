@@ -155,8 +155,8 @@ class propertyhub():
             if success == 'true':
                 clear_pop = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, 'body'))).send_keys(Keys.ESCAPE)
                 sleep(1)
-                check_limit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sc-1rsvu2b-2')))
-                if int(check_limit[0].text.split('/')[0]) < int(check_limit[0].text.split('/')[1].replace(',', '')):
+                check_limit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sc-1rsvu2b-3')))
+                if int(check_limit[0].text.split('/')[0].replace(',', '')) < int(check_limit[0].text.split('/')[1].replace(',', '')):
                     success = 'true'
                 else:
                     success = 'false'
@@ -301,11 +301,26 @@ class propertyhub():
                                 sleep(5)
                             except:
                                 pass
-                            get_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, datahandled['post_title_th'])))
-                            post_url = get_link.get_attribute('href')
-                            post_id = post_url.split('---')[-1]
-                            success = 'true'
-                            detail = 'Post was created.'
+                            get_all_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-list-view')))
+                            
+                            title_check = ''
+                            a_link = []
+                            for link in get_all_link.find_elements_by_tag_name('a'):
+                                if link.get_attribute('href') != None:
+                                    if 'https://propertyhub.in.th/listings/' in link.get_attribute('href'):
+                                        title_check = link.find_element_by_tag_name('span').get_attribute("innerHTML").split('<i')[0].replace('&nbsp;', ' ')
+                                        if postdata['post_title_th'].replace(' ', '').replace('\xa0', '').strip() == title_check.replace(' ', '').strip():
+                                            a_link.append(link.get_attribute('href'))               
+                            if not a_link:
+                                success = 'false'
+                                detail = 'Your post already create but can not get the link. Please check your acount again'
+                                post_url = ''
+                                post_id = ''
+                            else:
+                                post_url = a_link[0]
+                                post_id = post_url.split('---')[-1]
+                                success = 'true'
+                                detail = 'Post was created.'
                         except:
                             success = 'false'
                             detail = 'Your post can not create. Please make sure your data is completed or make sure that you already verify you phone number via OTP.'
