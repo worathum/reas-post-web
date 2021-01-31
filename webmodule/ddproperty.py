@@ -679,9 +679,12 @@ class ddproperty():
         # 3 if web_project_name = '' or null , use post_title_th
 
         projectname = datahandled['project_name']
+        check_project = True
         if datahandled['web_project_name'] != '' and datahandled['web_project_name'] != 'null':
+            check_project = False
             projectname = datahandled['web_project_name']
         if projectname == '':
+            check_project = False
             projectname = datahandled['post_title_th']
 
         projectnametxt = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, "propertySearch")))
@@ -699,7 +702,7 @@ class ddproperty():
 
         # case no result projectname
         matchObj = re.search(r'ol class="no-match"', self.firefox.page_source)
-        if matchObj:
+        if matchObj or check_project:
             #log.debug('not found property name %s', projectname)
             if (datahandled['addr_province'] == '' or datahandled['addr_district'] == '' or datahandled['addr_sub_district'] == ''):
                 success = 'false'

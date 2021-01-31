@@ -238,7 +238,7 @@ class dotproperty():
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     if soup.find('button', {'data-tooltip': 'คุณได้ออนไลน์ประกาศครบตามจำนวนที่กำหนดแล้ว'}):
                         success = 'false'
-                        detail = 'Your online post reach the limitation.'
+                        detail = 'คุณได้ออนไลน์ประกาศครบตามจำนวนที่กำหนดแล้ว'
                         post_url = ''
                         post_id = ''
                     else: 
@@ -271,7 +271,7 @@ class dotproperty():
                                 "post_url": '',
                                 "post_id": '',
                                 "account_type": None,
-                                "detail": 'Please verify your account.',
+                                "detail": 'กรูณายืนยัน เบอร์มือถือ และอีเมลล์ ในบัญชีของคุณ',
                                 "websitename": "dotproperty"
                             }   
                         cur_url = driver.current_url

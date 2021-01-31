@@ -167,10 +167,11 @@ class livinginsider():
             theprodid = getProdId[str(postdata['property_type'])]
 
             if 'web_project_name' not in postdata or postdata['web_project_name'] is None or postdata['web_project_name'] == '':
-                if 'project_name' in postdata and postdata['project_name'] is not None:
-                    postdata['web_project_name'] = postdata['project_name']
-                else:
-                    postdata['web_project_name'] = postdata['post_title_th']
+                postdata['web_project_name'] = 'ไม่'
+                #if 'project_name' in postdata and postdata['project_name'] is not None:
+                #    postdata['web_project_name'] = postdata['project_name']
+                #else:
+                #    postdata['web_project_name'] = postdata['post_title_th']
 
             if 'floor_total' not in postdata:
                 postdata['floor_total'] = 1
@@ -234,6 +235,8 @@ class livinginsider():
                     if postdata['web_project_name'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
                         if data[i]['id'] != postdata['web_project_name']:
                             idzone = data[i]['id']
+                        else:
+                            idzone = '0'
                         break
 
                 if idzone is None:
