@@ -1544,35 +1544,42 @@ class ddproperty():
                 time.sleep(3)
 
                 try:
-                    all_rows = self.firefox.find_element_by_id('list-container')
-                    myrow = all_rows.find_element_by_class_name('listing-item')
                     try:
-                        iden = "listing-item-"+ datahandled['post_id'] +"-performance"
-                        item_perform = self.firefox.find_element_by_id(iden)
-                        perform_detail = item_perform.find_elements_by_class_name('component-listing-performance-detail-stats')
-                        post_view = perform_detail[1].text.split(' ')[0]
-                    except:
-                        post_view = ""                      
-                    try:
-                        renew_input = myrow.find_elements_by_class_name('listingIdCheckbox')
-                        if renew_input[0].get_attribute('data-list-id') == datahandled['post_id']:
-                            renew_input[0].click()
-                            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'bulkRepost'))).click()
-                            time.sleep(5)
-                            cssvalue = self.firefox.find_element_by_id('layerNotAllowToExtendListing').get_attribute('style')
-                            time.sleep(1)
-                            if cssvalue == '':
-                                success = "true"
-                                detail = "Post Renewed Successfully."                    
-                            else:
-                                success = "false"
-                                detail = "This post already renewed in this week."                    
-                        else:
-                            success = "false"
-                            detail = "Invalid Post Id."
+                        all_rows = self.firefox.find_element_by_id('list-container')
+                        myrow = all_rows.find_element_by_class_name('listing-item')
+                        success = "true"
                     except:
                         success = "false"
-                        detail = "Can not detect element to renew post."
+                        detail = "Post id not found"
+                        post_view = ""
+                    if success == "true":
+                        try:
+                            iden = "listing-item-"+ datahandled['post_id'] +"-performance"
+                            item_perform = self.firefox.find_element_by_id(iden)
+                            perform_detail = item_perform.find_elements_by_class_name('component-listing-performance-detail-stats')
+                            post_view = perform_detail[1].text.split(' ')[0]
+                        except:
+                            post_view = ""                      
+                        try:
+                            renew_input = myrow.find_elements_by_class_name('listingIdCheckbox')
+                            if renew_input[0].get_attribute('data-list-id') == datahandled['post_id']:
+                                renew_input[0].click()
+                                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'bulkRepost'))).click()
+                                time.sleep(5)
+                                cssvalue = self.firefox.find_element_by_id('layerNotAllowToExtendListing').get_attribute('style')
+                                time.sleep(1)
+                                if cssvalue == '':
+                                    success = "true"
+                                    detail = "Post Renewed Successfully."                    
+                                else:
+                                    success = "false"
+                                    detail = "This post already renewed in this week."                    
+                            else:
+                                success = "false"
+                                detail = "Invalid Post Id."
+                        except:
+                            success = "false"
+                            detail = "Can not detect element to renew post."
                 except:
                     success = "false"
                     detail = "Can not detect element in thee page.."

@@ -213,7 +213,7 @@ class dotproperty():
         if success == 'true':
             if data['listing_type'] == 'เช่า' and int(data['price_baht']) > 700000:
                 success = 'false'
-                detail = 'The list is rental type so the price can not be over than 700,000 bath.'
+                detail = 'ประเภททรัพย์ของท่านเป็นประเภทเช่า ซึงเว็บไซต์ไม่รองรับราคาเช่าที่เกินกว่า 700,000 บาท' #The list is rental type so the price can not be over than 700,000 bath.
                 driver.close()
                 driver.quit()
             else:
@@ -226,7 +226,7 @@ class dotproperty():
                     driver.get('https://www.dotproperty.co.th/my-dashboard/properties')
                     time.sleep(5)
                     try:
-                        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'upload-btn')))
+                        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'upload-btn'))).click()
                     except:
                         pass
                     try:

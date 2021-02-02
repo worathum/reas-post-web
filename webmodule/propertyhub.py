@@ -555,18 +555,19 @@ class propertyhub():
                 sleep(1)
                 clear_pop = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, 'body'))).send_keys(Keys.ESCAPE)
                 sleep(1)
-                check_limit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sc-1rsvu2b-2')))
-                if int(check_limit[0].text.split('/')[0]) < int(check_limit[0].text.split('/')[1].replace(',', '')):
+                check_limit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sc-1rsvu2b-3')))
+                if int(check_limit[1].text.split('/')[0].replace(',', '')) < int(check_limit[1].text.split('/')[1].replace(',', '')):
                     success = 'true'
                 else:
                     success = 'false'
                     detail = 'You can not boost your post any more cause reaching the limit.'
 
                 if success == 'true':
-                    search = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'kLYpXZ'))).click()
+                    search = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="sc-1r06t7h-0 cxhLHS hp6yc9-0 hMAYxM"]'))).click()
+                    sleep(1)
                     iden = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'listingId'))).send_keys(postdata['post_id'])
                     apply = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'kQuBJO'))).click()
-
+                    sleep(1)
                     try:
                         refresh = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnRefreshListing'))).click()
                         success = 'true'

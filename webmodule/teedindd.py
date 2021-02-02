@@ -675,6 +675,19 @@ class teedindd():
                     'ds_id': postdata['ds_id'],
                     'post_id': ""
                 }
+            if len(postdata['post_description_th'].replace('\u200b', ' ').strip()) <= 610:
+                postdata['post_description_th'] = postdata['post_description_th'].replace('\u200b', ' ').strip()
+            else:
+                return {
+                    "websitename": "teedindd",
+                    "success": "false",
+                    "detail": "ทรัพย์ของท่านมีรายละเอียดยาวเกิน 600 ตัวอักษร ซึงเว็บไซต์นี้ไม่รองรับ",
+                    "start_time": str(time_start),
+                    "ds_id": postdata['ds_id'],
+                    "end_time": str(datetime.datetime.utcnow() - time_start),
+                    "post_url": "",
+                    "post_id": ""
+                }
             datapost = {
                 'sr': postdata['listing_type'],
                 'cid2': postdata['cate_id'],
