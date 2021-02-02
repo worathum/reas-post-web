@@ -224,7 +224,7 @@ class postcore():
                             web[webitem['ds_name']] = {
                                 "websitename": webitem['ds_name'],
                                 "success": "false",
-                                "detail": "Your image url is not a proper content type.",
+                                "detail": "ข้อมูลจากลิงค์รูปภาพของท่านมีประเภทที่ไม่สามารถดำเนินการในระบบได้ กรุณาตรวจสอบรูปภาพใหม่อีกครั้ง", #Your image url is not a proper content type.
                                 "start_time": datetime.datetime.utcnow(),
                                 "end_time": datetime.datetime.utcnow(),
                                 "usage_time": datetime.datetime.utcnow(),
@@ -249,7 +249,7 @@ class postcore():
                         web[webitem['ds_name']] = {
                             "websitename": webitem['ds_name'],
                             "success": "false",
-                            "detail": "There is no image in your data. Please kindly recheck.",
+                            "detail": "ลิงค์รูปภาพของท่านไม่มีข้อมูลรูปภาพ กรุณาตรวจสอบรูปภาพอีกครั้ง", #There is no image in your data. Please kindly recheck.
                             "start_time": datetime.datetime.utcnow(),
                             "end_time": datetime.datetime.utcnow(),
                             "usage_time": datetime.datetime.utcnow(),
@@ -274,7 +274,7 @@ class postcore():
                     web[webitem['ds_name']] = {
                         "websitename": webitem['ds_name'],
                         "success": "false",
-                        "detail": "Found 404 on your image link.",
+                        "detail": "ไม่สามารถเชื่อมต่อลิงค์รูปภาพของท่านได้ กรุณาตรวจสอบรูปภาพใหม่อีกครั้ง", #Found 404 on your image link.
                         "start_time": datetime.datetime.utcnow(),
                         "end_time": datetime.datetime.utcnow(),
                         "usage_time": datetime.datetime.utcnow(),
