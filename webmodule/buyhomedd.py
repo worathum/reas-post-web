@@ -155,3 +155,146 @@ class buyhomedd():
         }
 
         return result
+
+
+
+
+    def create_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "websitename": "buyhomedd",
+            "success": "false",
+            "start_time": str(time_start),
+            "usage_time": str(time_usage),
+            "end_time": str(time_end),
+            "ds_id": datahandled['ds_id'],
+            "post_url": "",
+            "post_id": "",
+            "account_type": "null",
+            "detail": "This website has been cancelled",
+        }
+
+
+    def edit_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        
+
+        return {
+            "websitename": "buyhomedd",
+            "success": "false",
+            "start_time": str(start_time),
+            "end_time": str(end_time),
+            "usage_time": str(end_time - start_time),
+            "log_id": postdata['log_id'],
+            "account_type": "null",
+            "ds_id" : str(postdata['ds_id']),
+            "post_id": str(postdata['post_id']),
+            "detail": "This website has been cancelled"
+        }
+
+
+    def boost_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        return {
+            "websitename": "buyhomedd",
+            "success": "false",
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": "This website has been cancelled",
+            "ds_id" : str(postdata['ds_id']),
+            "post_id": str(postdata['post_id']),
+            "log_id": postdata['log_id'],
+        }
+
+
+
+
+    def delete_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        return {
+            "websitename": "buyhomedd",
+            "success": "false",
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": "This website has been cancelled",
+            "ds_id" : str(postdata['ds_id']),
+            "post_id": str(postdata['post_id']),
+            "log_id": postdata['log_id'],
+        }
+
+
+    def search_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+ 
+        return {
+            "websitename": "buyhomedd",
+            "success": "false",
+            "start_time": str(start_time),
+            "end_time": str(end_time),
+            "usage_time": str(end_time - start_time),
+            "detail": "This website has been cancelled",
+            "account_type":'null',
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": str(postdata['post_id']),
+            "post_url": "",
+            "post_modify_time": "",
+            "post_create_time": "",
+            "post_view": "",
+            "post_found": "false"
+        }
+
+
+    def print_debug(self, msg):
+        if(self.debug == 1):
+            print(msg)
+        return True
+
+    def print_debug_data(self, data):
+        if(self.debugdata == 1):
+            print(data)
+        return True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
