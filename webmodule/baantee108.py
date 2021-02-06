@@ -590,7 +590,7 @@ class baantee108():
             except:
                 max_p = 1
 
-
+            success=False
             for i in range(1,max_p+1):
                 all_posts_url = f'http://www.baantee108.com/member/list-property.php?QueryString=value&Page={i}'
 
@@ -787,6 +787,8 @@ class baantee108():
                         success = "true"
                         detail = "Post edited successfully"
 
+                    if success:
+                        break
 
                 else:
                     success = "false"
