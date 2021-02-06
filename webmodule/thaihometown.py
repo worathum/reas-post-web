@@ -1406,7 +1406,75 @@ class thaihometown():
 
                 if success == "true":
                     soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-
+                    edit_img_link = soup.find('a', {'class': 'namelink'})['href']
+                    code_data = edit_img_link.split('&Pat')[0].split('&Mag')[-1].replace('=', '').strip()
+                    res = httprequestObj.http_get(edit_img_link)
+                    soupimg = BeautifulSoup(res.content, 'html.parser')
+                    scripts = soupimg.find_all('script')
+                    for script in scripts:
+                        #print(str(script.string))
+                        finddate = re.search(r'var datesing = (.*?);', str(script.string))
+                        if finddate is not None:
+                            datesing = finddate.group().split('=')[-1].replace(';', '').replace("'", '').strip()
+                            success = 'true'
+                            break
+                        else:
+                            success = 'false'
+                    
+                    if success == 'true':
+                        imglst = soupimg.find_all('div', {'class': 'deleteshow'})
+                        if len(imglst) > 0:
+                            for img in imglst:
+                                imgid = img['id'].split('image')[-1]
+                                datadel = {
+                                    'id': str(imgid),
+                                    'contact':  datahandled['post_id'],
+                                    'code': code_data,
+                                    'datesing': datesing,
+                                    'maction': '1',
+                                }
+                                headers = {
+                                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
+                                }
+                                r = httprequestObj.http_post('https://www.thaihometown.com/form/memberupload/delete.php', data=datadel, headers=headers)
+                                time.sleep(0.5)
+                        else:
+                            pass
+                        allowupload =len(datahandled['post_images'][:11])
+                        for i in range(allowupload):
+                            datapost = {
+                                        'id':str(i+1),
+                                        'contact': str(datahandled['post_id']), #post id
+                                        'code': str(code_data),
+                                        'datesing': str(datetime.datetime.utcnow().strftime('%Y-%m-%d')), #'2020-04-27'
+                                        'maction':'1',
+                                        'uploadfile':( str(i+1) + '.jpg', open(os.path.abspath(datahandled['post_images'][i]), 'rb'), 'image/jpeg'),
+                            }
+                            encoder = MultipartEncoder(fields=datapost)
+                            r = httprequestObj.http_post(
+                            'https://www.thaihometown.com/form/memberupload/upload-file.php?id='+str(i+1)+'&contact='+str(datahandled['post_id'])+'&code='+str(code_data)+'&datesing='+str(datetime.datetime.utcnow().strftime('%Y-%m-%d'))+'&maction=1',
+                            data=encoder,
+                            headers={'Content-Type': encoder.content_type}
+                            )
+                            time.sleep(0.5)
+                    else:
+                        time_end = datetime.datetime.utcnow()
+                        detail = 'Error while tring to delete all images'
+                        return {
+                                "success": success, 
+                                "usage_time": str(time_end - time_start), 
+                                "start_time": str(time_start), 
+                                "end_time": str(time_end), 
+                                "detail": detail, 
+                                "ds_id": postdata['ds_id'],
+                                "log_id": datahandled['log_id'],
+                                "ds_id": postdata['ds_id'], 
+                                "post_id": datahandled['post_id'],
+                                "websitename": self.websitename
+                            }
+                    r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
+                    data = r.text
+                    soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                     sas_name = soup.find("input", {"name": "sas_name"})['value']
                     code_edit = soup.find("input", {"name": "code_edit"})['value']
                     firstname = soup.find("input", {"name": "firstname"})['value']
@@ -1490,6 +1558,7 @@ class thaihometown():
 
                     r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
                     data = r.text
+
                     #f = open("debug_response/editpostthaihometown.html", "wb")
                     #f.write(data.encode('utf-8').strip())
 

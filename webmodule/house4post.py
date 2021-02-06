@@ -337,12 +337,14 @@ class house4post:
                             r = open(os.getcwd() + '/' + data['post_images'][i], 'rb')
                             files['photoimg'] = r
                             response = httprequestObj.http_post('https://www.house4post.com/ajax_img.php', data=None, files=files)
+                            time.sleep(3)
 
                     else:
                         for i in range(len(data['post_images'][:6])):
                             r = open(os.getcwd() + '/' + data['post_images'][i], 'rb')
                             files['photoimg'] = r
                             response = httprequestObj.http_post('https://www.house4post.com/ajax_img.php', data=None, files=files)
+                            time.sleep(3)
 
                     success = 'true'
                     detail = 'Successful post'

@@ -534,6 +534,27 @@ class hipflat():
             print(response.url)
             print(response.status_code)
 
+            if response.status_code == 500:
+                print('Free account')
+                res_free = httprequestObj.http_get('https://www.hipflat.co.th/en/account/listings/free', headers=headers)
+                soup_free = BeautifulSoup(res_free.content, 'html.parser')
+                listingheader = soup_free.find('h1', {'class': 'user-listings__header'}).find_all('span')
+                if len(listingheader) > 1:
+                    print(soup_free.find('h1', {'class': 'user-listings__header'}).find_all('span')[0].text)
+                    response = httprequestObj.http_get('https://www.hipflat.co.th/listings/add?rank=1', headers = headers)
+                else:
+                    return {
+                        "websitename": "hipflat",
+                        "success": 'false',
+                        "start_time": str(start_time),
+                        "end_time": str(datetime.datetime.utcnow()),
+                        "usage_time": str(datetime.datetime.utcnow() - start_time),
+                        "post_url": '',
+                        "ds_id": postdata['ds_id'],
+                        "post_id": '',
+                        "detail": 'บัญชีฟรีของท่านมีประกาศครบทั้ง 3 ประกาศแล้ว',
+                        "account_type": "null"
+                    }
             # with open('b.html', 'w') as f:
             #     f.write(response.text)
             # print("4")
