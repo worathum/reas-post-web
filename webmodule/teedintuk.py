@@ -377,12 +377,12 @@ class teedintuk():
             print(r.text)
             resp = httprequestObj.http_get('https://teedintuk.com/admin/properties/now')
             pid = BeautifulSoup(resp.text, 'html5lib')
-            print('ye nahi chla')
+            # print('ye nahi chla')
             post_id = pid.find('tbody').find('tr').find('td').text
-            print('ye bhi chla')
+            # print('ye bhi chla')
             if post_id_old == post_id:
                 success = 'false'
-                detail = 'Post not created'
+                detail = 'Post not created. Limit of 5 Posts Reached maybe!'
                 post_id = ''
             else:
                 post_url = 'https://teedintuk.com/properties/' + str(post_id)

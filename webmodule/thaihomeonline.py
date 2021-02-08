@@ -545,9 +545,10 @@ class thaihomeonline():
             r = BeautifulSoup(driver.page_source, features="html5lib")
 
             pages = r.find("div", attrs={"id": "pageBox"}).findAll("a")
+            totalpages=1
             for i in pages:
                 if i.text == "End":
-                    totalpages = int(i["href"].split("=")[1][0])
+                    totalpages = int(i["href"].split("=")[1].split("&")[0])
                     break
 
             for i in range(totalpages):
@@ -565,7 +566,22 @@ class thaihomeonline():
                 wait.until(lambda driver: driver.find_element_by_xpath('//div[@id="proptPushBoxButton"]'))
                 print('5')
                 time.sleep(3)
-                driver.find_element_by_id('proptPushConfirm').click()
+                try:
+                    driver.find_element_by_id('proptPushConfirm').click()
+                except:
+                    time_end = datetime.datetime.utcnow()
+                    driver.quit()
+                    return {
+                        "websitename": "thaihomeonline",
+                        "success": "false",
+                        "usage_time": time_end - time_start,
+                        "start_time": time_start,
+                        "end_time": time_end,
+                        "detail": "Time Remaining to postpone announcement, please try after sometime.",
+                        "ds_id": postdata['ds_id'],
+                        "log_id": postdata['log_id'],
+                        "post_id": postdata['post_id'],
+                    }
                 print('6')
                 driver.switch_to.alert.accept()
                 print('7')
@@ -573,13 +589,18 @@ class thaihomeonline():
                 driver.quit()
                 success = "True"
                 detail = "Boost successful"
+                driver.quit()
             else:
                 success = "false"
                 detail = "Post Not found"
+                driver.quit()
 
-        except :
+        except Exception as e:
+            print(e)
             success = "False"
-            detail = "Boost Unsuccessful"        
+            detail = "Boost Unsuccessful"
+            driver.quit()
+
         
         
         time_end = datetime.datetime.utcnow()

@@ -100,9 +100,11 @@ class adscondo():
 
     def test_login(self,userdata):
         
-        login_url = "https://www.adscondo.com/wp-admin/admin-ajax.php"
+        #login_url = "https://www.adscondo.com/wp-admin/admin-ajax.php"
+        login_url="https://api.adscondo.com/api/login"
         start_time = datetime.utcnow()
         res={'websitename':'adscondo', 'success':False, 'start_time': str(start_time), 'end_time': '0', 'usage_time': '0', 'detail': '','ds_id':userdata['ds_id']}
+        """
         login_pload = {
             'username': userdata['user'],
             'password': userdata['pass'],
@@ -129,6 +131,23 @@ class adscondo():
         endT,usage_time=set_end_time(start_time)
         res['end_time'] = str(endT)
         res['usage_time'] = str(usage_time)
+        """
+
+        login_pload = {
+            'email': userdata['user'],
+            'password': userdata['pass'],
+        }
+
+        r = httprequestObj.http_post(login_url, data=login_pload)
+        jr = json.loads(r.text)
+        r = httprequestObj.http_get("https://www.adscondo.com/user/"+jr["auth"]["id"])
+        print(r.text)
+        if "ออกจากระบบ" in r.text:
+            res['success'] = True
+            res['detail'] = 'User Logged In Successfully\n'
+        else:
+            res['success'] = False
+            res['detail'] = 'Login Failed'
         return res
 
 

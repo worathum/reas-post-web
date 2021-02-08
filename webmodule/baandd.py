@@ -600,30 +600,75 @@ class baandd():
                 for inp in form.find_all('input'):
                     if inp.get('type') not in ['file', 'checkbox']:
                         datapost[inp.get('name')] = inp.get('value')
-                
+
                 datapost['ad_type'] = "2"
                 datapost['category'] = "22"
                 ad_type = form.find(attrs={'name': 'ad_type'}).find_all('option', selected=True)
                 if ad_type:
+                    options = Options()
+                    options.set_headless(True)
+                    options.add_argument('--no-sandbox')
 
-                    datapost['ad_type'] = ad_type[-1].get('value')
-                    category = form.find(attrs={'name': 'category'}).find_all('option', selected=True)
-                    if category:
-                        datapost['category']  = category[-1].get('value')
-                    datapost['ad_text'] = form.find(attrs={'name': 'ad_text'}).getText()
-                    
-                    response = httprequestObj.http_post(self.site_name+'/index.php?option=com_marketplace&page=write_ad&Itemid=56', data=datapost, files=files)
-                    
-                    if response.status_code==200:
+                    chrome = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+                    chrome.implicitly_wait(4)
+                    print('Now here')
+                    # chrome = webdriver.Chrome(self.chromedriver_binary, options=self.options)
+                    delay = 3
+                    timeout = 10
+                    while timeout > 0:
+                        print(timeout)
+                        chrome.get("http://www.baan-dd.com" + '/index.php')
+                        form = WebDriverWait(chrome, delay).until(EC.presence_of_element_located((By.NAME, 'login')))
+
+                        username_in = form.find_element_by_name('username')
+                        username_in.send_keys(postdata['user'])
+                        password_in = form.find_element_by_name('passwd')
+                        password_in.send_keys(postdata['pass'])
+                        submit_btn = WebDriverWait(form, delay).until(EC.element_to_be_clickable((By.NAME, "Submit")))
+                        submit_btn.click()
+
+                        timeout -= 1
                         try:
-                            table = BeautifulSoup(response.text, features=self.parser).find(class_='contentpadding').find('table')
-                            if table.find_all('table')[-1].find('img').get('src')=='http://www.baan-dd.com/components/com_marketplace/images/system/success.gif':
+                            WebDriverWait(chrome, delay).until(EC.presence_of_element_located((By.NAME, 'logout')))
+                            break
+                        except TimeoutException:
+                            print('Timeout 1')
+                            if timeout == 0:
+                                success = "false"
+                                detail = "Login issue."
+                            pass
+
+                    # edit post details
+                    timeout = 5
+                    while timeout > 0:
+                        try:
+                            url = "http://www.baan-dd.com" + '/index.php?option=com_marketplace&page=write_ad&adid=' + postdata['post_id']+ '&Itemid=56'
+                            print(url)
+                            chrome.get(url)
+                            ad_form = WebDriverWait(chrome, delay).until(
+                                EC.presence_of_element_located((By.NAME, 'write_ad')))
+                            timeout -= 1
+
+                            post_submit_btn = WebDriverWait(ad_form, delay).until(
+                                EC.element_to_be_clickable((By.NAME, 'submit')))
+                            post_submit_btn.click()
+                            if chrome.current_url == "http://www.baan-dd.com/index.php?option=com_marketplace&page=write_ad&Itemid=56":
                                 success = "true"
                                 detail = "Post boosted successfully"
-                        except: 
-                            pass
-                    else:
-                        detail = 'Unable to boost post. An Error has occurred with response_code '+str(response.status_code) 
+                                break
+                            elif timeout == 0:
+                                print('Timeout 2')
+                                chrome.quit()
+                                success = "false"
+                                detail = "Boost Unsuccessful."
+                        except (StaleElementReferenceException, TimeoutException):
+                            if timeout == 0:
+                                print('Timeout 3')
+                                success = "false"
+                                detail = "Boost Unsuccessful."
+                            continue
+
+                    chrome.quit()
                 else:
                     detail = "No post found with given id"
         else:
