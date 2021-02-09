@@ -601,7 +601,24 @@ class dotproperty():
                         btn = driver.find_element_by_xpath('//button[@class="ui green button"]')
                         time.sleep(1)
                         btn.click()
-                        time.sleep(10)
+                        try:
+                            WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.CLASS_NAME, 'vue-notification-wrapper')))
+                            time.sleep(3)
+                        except:
+                            time_end = datetime.datetime.utcnow()
+                            time_usage = time_end - time_start
+                            return {
+                                "success": 'false',
+                                "usage_time": str(time_usage),
+                                "start_time": str(time_start),
+                                "end_time": str(time_end),
+                                "ds_id": data['ds_id'],
+                                "post_url": '',
+                                "post_id": '',
+                                "account_type": None,
+                                "detail": 'เว็บไซต์เกิดข้อผิดพลาด และไม่สามารถบันทึกรายละเอียดทั้งหมดของทรัพย์ของท่านได้ ระบบของเราจะดำเนินการโพสต์ประกาศให้ใหม่อีกครั้ง',
+                                "websitename": "dotproperty"
+                            }
                         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'tgl'))).click()
                         time.sleep(3)
                         txt = str(driver.current_url)

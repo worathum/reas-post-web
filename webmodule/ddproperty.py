@@ -1166,9 +1166,11 @@ class ddproperty():
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
-            try:                  
+            try: 
+                print('wait' + str(datetime.datetime.utcnow()))                 
                 wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, "//*[@id='step_media_photo']/div[1]/div[2]/ul/li["+str(len(datahandled['post_images']))+"]/div/div[2]/a")))
             except:
+                print('Finish')
                 pass
 
 
@@ -1183,7 +1185,7 @@ class ddproperty():
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')))
             WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/a')).click() 
             # self.firefox.save_screenshot("debug_response/newp10.png")
-            time.sleep(1)
+            time.sleep(5)
             #log.debug('click next')
             #print('here2')
             #TODO debug
