@@ -296,8 +296,6 @@ class livinginsider():
                     }
 
 
-            
-
             r = httprequestObj.http_post('https://www.livinginsider.com/a_zone_child.php', data={'web_zone_id': web_zone})
 
             prod_address = ""
@@ -312,25 +310,45 @@ class livinginsider():
             else:
                 typep = 1
 
-            data = {
-                'currentstep': '1',
-                'web_member_type': '1',
-                'web_member_username': postdata['user'],
-                'web_email': '',
-                'web_tel': '',
-                'web_lineid': '',
-                'web_post_type': typep,
-                'web_post_from': '2',
-                'web_building_type': theprodid,
-                'web_project_id': idzone,
-                'web_zone_id': web_zone,
-                'web_title': postdata['post_title_th'],
-                'web_description': postdata['post_description_th'],
-                'web_title_en': '',
-                'web_description_en': '',
-                'web_latitude': postdata['geo_latitude'],
-                'web_longitude': postdata['geo_longitude']
-            }
+            if str(postdata['property_type']) == '1':
+                data = {
+                    'currentstep': '1',
+                    'web_member_type': '1',
+                    'web_member_username': postdata['user'],
+                    'web_email': '',
+                    'web_tel': '',
+                    'web_lineid': '',
+                    'web_post_type': typep,
+                    'web_post_from': '2',
+                    'web_building_type': theprodid,
+                    'web_project_id': idzone,
+                    'web_zone_id': web_zone,
+                    'web_title': postdata['post_title_th'],
+                    'web_description': postdata['post_description_th'],
+                    'web_title_en': '',
+                    'web_description_en': '',
+                    'web_latitude': postdata['geo_latitude'],
+                    'web_longitude': postdata['geo_longitude']
+                }
+            else:
+                data = {
+                    'currentstep': '1',
+                    'web_member_type': '1',
+                    'web_member_username': postdata['user'],
+                    'web_email': '',
+                    'web_tel': '',
+                    'web_lineid': '',
+                    'web_post_type': typep,
+                    'web_post_from': '2',
+                    'web_building_type': theprodid,
+                    'web_zone_id': web_zone,
+                    'web_title': postdata['post_title_th'],
+                    'web_description': postdata['post_description_th'],
+                    'web_title_en': '',
+                    'web_description_en': '',
+                    'web_latitude': postdata['geo_latitude'],
+                    'web_longitude': postdata['geo_longitude']
+                }
 
             r = httprequestObj.http_post('https://www.livinginsider.com/a_add_living.php', data=data)
             data = r.text
@@ -434,6 +452,8 @@ class livinginsider():
                     data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
                     data['web_photo_caption[' + str(i) + '][caption]'] = ''
             elif theprodid == 2:
+                if land_size_wa == 0 or land_size_wa == '0':
+                    land_size_wa = int(postdata['floor_area'] )* 0.25
                 data = {
                     'currentstep': '2',
                     'web_room': postdata['bed_room'],
@@ -643,12 +663,8 @@ class livinginsider():
                 'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
             }
             # print('Posting data')
-            # print(data)
             r = httprequestObj.http_post(
                 'https://www.livinginsider.com/a_add_living.php', data=data, headers=headers)
-            print(r.url)
-            print(r.status_code)
-            print(r.text)
 
             data = {
                 'action': 'save',
