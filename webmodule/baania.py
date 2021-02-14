@@ -335,24 +335,23 @@ class baania():
 
         try:
             resp = httprequestObj.http_post('https://search.baania.com/api/v1/project', data = json.dumps(mydata).encode('utf-8'), headers=headers)
-            success = 'true'
+            check_proj = 'true'
         except:
-            success = 'false'
-            pass        
+            check_proj = 'false'
+            pass
 
-        if success == 'true':
+        if check_proj == 'true':
             try:
                 allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
-                success = 'true'
             except:
-                success = 'false'
+                
                 detail = str(resp.content.decode('utf-8'))
                 if 'cloudflare' in detail.lower():                            
                     detail = "Website has security by Cloud Flare! Couldn't complete the action."
 
                 return {
                 "websitename": "baania",
-                "success": success,
+                "success": "false",
                 "detail": detail,
                 "start_time": str(time_start),
                 "end_time": str(datetime.datetime.utcnow()),
@@ -361,8 +360,7 @@ class baania():
                 "post_id": ""
                 }
 
-        post_project = {}
-        if success == 'true':
+
             project_id = None
             if len(allres) != 0:
                 project_id = allres[0]["_id"]
@@ -374,12 +372,7 @@ class baania():
                 address['district'] = {"name":allres[0]["_source"]["address"]["district"]["title"]["th"],"id":allres[0]["_source"]["address"]["district"]["code"]}
                 address['sub_district'] = {"name":allres[0]["_source"]["address"]["subdistrict"]["title"]["th"],"id":allres[0]["_source"]["address"]["subdistrict"]["code"]}
                 address['post_code'] = str(allres[0]["_source"]["address"]["postcode"])
-                post_project = { "name": postdata["web_project_name"], "id": project_id, "keyId": project_id }
-        else:
-            project_id = 1
-            post_project = { "name": postdata["web_project_name"] }
 
-        success = 'true'
         listing = 0
 
         if postdata['listing_type'] != 'ขาย':
@@ -390,23 +383,48 @@ class baania():
             datapost["price_listing"] = postdata["price_baht"]
 
         if success == "true":
-            datapost = {
-                "listing_type": listing,
-                "project_keyId": project_id,
-                "property_type_id": theprodid,
-                "project": post_project,
-                "address": address,
-                "geo_point": {
-                    "lng": postdata["geo_longitude"],
-                    "lat": postdata["geo_latitude"]
-                },
-                "area_land":{
-                    "rai":postdata["land_size_rai"],
-                    "ngan":postdata["land_size_ngan"],
-                    "wa":postdata["land_size_wa"],
-                },
-                "area_usable": area
-            }
+            if check_proj == 'true':
+                datapost = {
+                    "listing_type": listing,
+                    "project_keyId": project_id,
+                    "property_type_id": theprodid,
+                    "project": {
+                        "name": postdata["web_project_name"],
+                        "id": project_id,
+                        "keyId": project_id
+                    },
+                    "address": address,
+                    "geo_point": {
+                        "lng": postdata["geo_longitude"],
+                        "lat": postdata["geo_latitude"]
+                    },
+                    "area_land":{
+                        "rai":postdata["land_size_rai"],
+                        "ngan":postdata["land_size_ngan"],
+                        "wa":postdata["land_size_wa"],
+                    },
+                    "area_usable": area
+                }
+            else:
+                datapost = {
+                    "listing_type": listing,
+                    "project_keyId": None,
+                    "property_type_id": 1,
+                    "project": {
+                        "name": postdata["web_project_name"]
+                    },
+                    "address": address,
+                    "geo_point": {
+                        "lng": postdata["geo_longitude"],
+                        "lat": postdata["geo_latitude"]
+                    },
+                    "area_land":{
+                        "rai":postdata["land_size_rai"],
+                        "ngan":postdata["land_size_ngan"],
+                        "wa":postdata["land_size_wa"],
+                    },
+                    "area_usable": area
+                }
             if postdata['listing_type'] != 'ขาย':
                 listing = 'for-rent'
                 datapost["price_renting"] = postdata["price_baht"]
@@ -418,8 +436,6 @@ class baania():
                 'content-type': 'application/json',
                 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
             }
-
-            print(datapost)
 
             r = httprequestObj.http_post(
                 'https://api.baania.com/api/v1/users/listings', data=json.dumps(datapost).encode('utf-8'), headers=headers)
