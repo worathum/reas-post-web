@@ -256,44 +256,16 @@ class livinginsider():
 
                 data = httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
                 data = json.loads(data.text)
-                print(data)
 
-                r = data['value']
-                soap = BeautifulSoup(r, self.parser)
-                option = soap.find('option')
-                web_zone = option.get('value')
-
-            else:
-                # term = postdata['web_location'].replace(' ', '+')
-                # r = httprequestObj.http_get(
-                #     'https://www.livinginsider.com/a_zone_list.php?term=' + term + '&_type=query&q=' + term)
-                            
-                # data = r.json()
-
-                # web_zone = None
-
-                # for i in range(len(data)):
-                #     if postdata['web_location'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_location'].strip().lower():
-                #         print(data[i])
-                #         web_zone = data[i]['id']
-                #         break
-                
-                try:
+                if data['result'] == 1:
+                    r = data['value']
+                    soap = BeautifulSoup(r, self.parser)
+                    option = soap.find('option')
+                    web_zone = option.get('value')
+                else:
                     web_zone = int(str(postdata['location_area']).strip())
-                except:
-                    time_end = datetime.datetime.utcnow()
-                    time_usage = time_end - time_start
-                    return {
-                        "success": False,
-                        "websitename": "livinginsider",
-                        "usage_time": str(time_usage),
-                        "start_time": str(time_start),
-                        "end_time": str(time_end),
-                        "post_url": "",
-                        "post_id": "",
-                        "account_type": "null",
-                        "detail": 'Location not Found. Post not created!',
-                    }
+            else:
+                web_zone = int(str(postdata['location_area']).strip())
 
 
             r = httprequestObj.http_post('https://www.livinginsider.com/a_zone_child.php', data={'web_zone_id': web_zone})
