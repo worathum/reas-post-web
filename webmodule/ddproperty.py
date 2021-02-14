@@ -259,7 +259,6 @@ class ddproperty():
             time.sleep(1.8)
 
             # input password and enter
-            self.firefox.save_screenshot('./log/ddproperty.png')
             passtxt = WebDriverWait(self.firefox, 30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
             passtxt.send_keys(postdata['pass'])
             #log.debug('input password')
