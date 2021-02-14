@@ -332,41 +332,54 @@ class baania():
             "sec-fetch-site": "same-site",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"
         }
-        resp = httprequestObj.http_post('https://search.baania.com/api/v1/project', data = json.dumps(mydata).encode('utf-8'), headers=headers)
-        
+
         try:
-            allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
+            resp = httprequestObj.http_post('https://search.baania.com/api/v1/project', data = json.dumps(mydata).encode('utf-8'), headers=headers)
+            success = 'true'
         except:
-            
-            detail = str(resp.content.decode('utf-8'))
-            if 'cloudflare' in detail.lower():                            
-                detail = "Website has security by Cloud Flare! Couldn't complete the action."
+            success = 'false'
+            pass        
 
-            return {
-            "websitename": "baania",
-            "success": "false",
-            "detail": detail,
-            "start_time": str(time_start),
-            "end_time": str(datetime.datetime.utcnow()),
-            "ds_id": postdata['ds_id'],
-            "post_url": "",
-            "post_id": ""
-            }
+        if success == 'true':
+            try:
+                allres = json.loads(resp.content.decode('utf-8'))["hits"]["hits"]
+                success = 'true'
+            except:
+                success = 'false'
+                detail = str(resp.content.decode('utf-8'))
+                if 'cloudflare' in detail.lower():                            
+                    detail = "Website has security by Cloud Flare! Couldn't complete the action."
 
+                return {
+                "websitename": "baania",
+                "success": success,
+                "detail": detail,
+                "start_time": str(time_start),
+                "end_time": str(datetime.datetime.utcnow()),
+                "ds_id": postdata['ds_id'],
+                "post_url": "",
+                "post_id": ""
+                }
 
-        project_id = None
-        if len(allres) != 0:
-            project_id = allres[0]["_id"]
-            postdata['web_project_name'] = allres[0]["_source"]["view_data"]["title"]["th"]
-            postdata["geo_longitude"] = allres[0]["_source"]["location"]["lon"]
-            postdata["geo_latitude"] = allres[0]["_source"]["location"]["lat"]
-            address = {}
-            address['province'] = {"name":allres[0]["_source"]["address"]["province"]["title"]["th"],"id":allres[0]["_source"]["address"]["province"]["code"]}
-            address['district'] = {"name":allres[0]["_source"]["address"]["district"]["title"]["th"],"id":allres[0]["_source"]["address"]["district"]["code"]}
-            address['sub_district'] = {"name":allres[0]["_source"]["address"]["subdistrict"]["title"]["th"],"id":allres[0]["_source"]["address"]["subdistrict"]["code"]}
-            address['post_code'] = str(allres[0]["_source"]["address"]["postcode"])
+        post_project = {}
+        if success == 'true':
+            project_id = None
+            if len(allres) != 0:
+                project_id = allres[0]["_id"]
+                postdata['web_project_name'] = allres[0]["_source"]["view_data"]["title"]["th"]
+                postdata["geo_longitude"] = allres[0]["_source"]["location"]["lon"]
+                postdata["geo_latitude"] = allres[0]["_source"]["location"]["lat"]
+                address = {}
+                address['province'] = {"name":allres[0]["_source"]["address"]["province"]["title"]["th"],"id":allres[0]["_source"]["address"]["province"]["code"]}
+                address['district'] = {"name":allres[0]["_source"]["address"]["district"]["title"]["th"],"id":allres[0]["_source"]["address"]["district"]["code"]}
+                address['sub_district'] = {"name":allres[0]["_source"]["address"]["subdistrict"]["title"]["th"],"id":allres[0]["_source"]["address"]["subdistrict"]["code"]}
+                address['post_code'] = str(allres[0]["_source"]["address"]["postcode"])
+                post_project = { "name": postdata["web_project_name"], "id": project_id, "keyId": project_id }
+        else:
+            project_id = 1
+            post_project = { "name": postdata["web_project_name"] }
 
-
+        success = 'true'
         listing = 0
 
         if postdata['listing_type'] != 'ขาย':
@@ -381,11 +394,7 @@ class baania():
                 "listing_type": listing,
                 "project_keyId": project_id,
                 "property_type_id": theprodid,
-                "project": {
-                    "name": postdata["web_project_name"],
-                    "id": project_id,
-                    "keyId": project_id
-                },
+                "project": post_project,
                 "address": address,
                 "geo_point": {
                     "lng": postdata["geo_longitude"],
@@ -409,6 +418,8 @@ class baania():
                 'content-type': 'application/json',
                 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
             }
+
+            print(datapost)
 
             r = httprequestObj.http_post(
                 'https://api.baania.com/api/v1/users/listings', data=json.dumps(datapost).encode('utf-8'), headers=headers)
