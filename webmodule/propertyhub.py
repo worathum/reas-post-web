@@ -323,7 +323,7 @@ class propertyhub():
                                 detail = 'Post was created.'
                         except:
                             success = 'false'
-                            detail = 'Your post can not create. Please make sure your data is completed or make sure that you already verify you phone number via OTP.'
+                            detail =  'ไม่สามารถโพสประกาศได้ กรุณาตรวจสอบว่าท่านได้ยืนยันเบอร์มือถือหรือไม่ หากยืนยันแล้วโปรดตรวจสอบว่าข้อมูลครบถ้วนหรือไม่' #'Your post can not create. Please make sure your data is completed or make sure that you already verify you phone number via OTP.'
                             post_url = ''
                             post_id = ''
                 else:

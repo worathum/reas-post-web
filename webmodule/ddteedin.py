@@ -676,71 +676,37 @@ class ddteedin():
     def delete_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-
-        theurl = ""
-        post_id = ""
-
-        # login
         test_login = self.test_login(postdata)
         success = test_login["success"]
-        ashopname = test_login["detail"]
-        # print(ashopname)
-        # for (key, value) in provincedata.items():
-        #     if type(value) is str and postdata['addr_province'].strip() in value.strip():
-        #         province_id = key
-        #         break
+        detail = test_login["detail"]
 
-        # for (key, value) in provincedata[province_id+"_province"].items():
-        #     if postdata['addr_district'].strip() in value.strip():
-        #         amphur_id = key
-        #         break
         if success == "true":
-            tumbon_id = '01'
             r = httprequestObj.http_get(
                 'https://www.ddteedin.com/myposts/?rf=login', verify=False)
-            data = r.text
-            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-            alls = soup.findAll('script')
-            id1 = ""
-            i = 0
-            for x in alls:
-                if i == 3:
-                    id1 = id1 + (str(x))
-                i += 1
-            id1 = re.sub("[^0-9]", "", id1)
-            print(id1)
+            time.sleep(1)
+            print(r.url)
+            user_id = r.url.split('/')[-2]
             query_element = {
                 'q': postdata['post_id'],
                 'pv': '',
                 'order': 'createdate',
                 'btn_srch': 'search'
             }
-            query_string = 'https://www.ddteedin.com/myposts/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
+            query_string = 'https://www.ddteedin.com/myposts/' + user_id + '/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
                 ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-            r = httprequestObj.http_get(
-                query_string, verify=False)
+            r = httprequestObj.http_get(query_string, verify=False)
             data = r.text
-            id = postdata['post_id']
-            query_string = 'https://www.ddteedin.com/myposts/'+id1
-            # print(r.text)
             if data.find(" ไม่พบประกาศ") != -1:
                 success = "false"
+                detail = 'Your post id not found.'
             else:
-                # soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                # id = soup.find("div", {"class": "it st1"})['id']
-                # id = id.replace('r', '')
-                # print(id)
-                # id1 = postdata['log_id']
-                # query_element['q'] = ''
+                del_link = 'https://www.ddteedin.com/myposts/' + user_id +'/?rf=login'
                 datapost = {
-                    'id': id,
+                    'id': postdata['post_id'],
                     'act': 'del'
                 }
-                r = httprequestObj.http_post(query_string, data=datapost)
-                print(r.text)
-                query_string = 'https://www.ddteedin.com/'+postdata['post_id']
-            # print(r.text)
-            # print(r.status_code)
+                r = httprequestObj.http_post(del_link, data=datapost)
+                detail = 'Deleted post succesful'
         else:
             success = "false"
 
@@ -752,13 +718,16 @@ class ddteedin():
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "post_url": query_string,
-            'ds_id': postdata['ds_id'],
+            "usage_time": str(time_usage),
+            "detail": detail,
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
-            "post_id": id,
-            "account_type": "null",
-            "ds_id": postdata['ds_id']
+            "account_type": "",
+            "ds_name": "hipflat"
         }
+        
+
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
