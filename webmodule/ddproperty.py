@@ -781,6 +781,28 @@ class ddproperty():
                     detail = 'for a new project name, province , district , subdistrict error'
                     #log.error('area error ' + str(e))
 
+                try:
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
+                    time.sleep(2)
+                except:
+                    pass
+
+                """ #debug
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[1]/div[3]/div/div[3]/div')).click()
+                
+                #log.debug('input lat %s lng %s',datahandled['geo_latitude'],datahandled['geo_longitude'])
+                js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
+                self.firefox.execute_script(js)
+                time.sleep(0.5)
+
+                #TODO debug
+                element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[2]/a'))
+                self.firefox.execute_script("arguments[0].setAttribute('href','https://maps.google.com/maps?ll=13.649778,100.362285&z=14&t=m&hl=en-US&gl=US&mapclient=apiv3');", element)
+                time.sleep(0.5)
+                element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[7]/div[2]/a'))
+                self.firefox.execute_script("arguments[0].setAttribute('href','https://www.google.com/maps/@13.649778,100.362285,14z/data=!10m1!1e1!12b1?source=apiv3&rapsrc=apiv3');", element)
+                time.sleep(0.5) """
+
                 # road
                 try:
                     WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "street-name-field")))
@@ -792,34 +814,6 @@ class ddproperty():
                     pass
                     #log.warning('road error ' + str(e))
                 # self.firefox.save_screenshot("debug_response/newp33.png")
-
-                # longitude ,latitude
-                # TODO
-                try:
-                    time.sleep(0.5)
-                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
-                    time.sleep(2)
-                    #debug
-                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[1]/div[3]/div/div[3]/div')).click()
-                    
-                    #log.debug('input lat %s lng %s',datahandled['geo_latitude'],datahandled['geo_longitude'])
-                    js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
-                    self.firefox.execute_script(js)
-                    time.sleep(0.5)
-
-                    #TODO debug
-                    element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[2]/a'))
-                    self.firefox.execute_script("arguments[0].setAttribute('href','https://maps.google.com/maps?ll=13.649778,100.362285&z=14&t=m&hl=en-US&gl=US&mapclient=apiv3');", element)
-                    time.sleep(0.5)
-                    element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[7]/div[2]/a'))
-                    self.firefox.execute_script("arguments[0].setAttribute('href','https://www.google.com/maps/@13.649778,100.362285,14z/data=!10m1!1e1!12b1?source=apiv3&rapsrc=apiv3');", element)
-                    time.sleep(0.5)
-                    #TODO debug
-
-                   
-                except Exception as e:
-                    #log.warning('lat lng error ' + str(e))
-                    pass
 
                 if (success == 'true'):
                     self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
