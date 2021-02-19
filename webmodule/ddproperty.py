@@ -1215,10 +1215,13 @@ class ddproperty():
                     pass
                 return success, detail, post_id, account_type
             try:
-                WebDriverWait(self.firefox, 15).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
+                WebDriverWait(self.firefox, 30).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
                 time.sleep(1.8)
             except WebDriverException:
-                pass
+                success = 'false'
+                detail = 'Website not response. Your post will safe in the draft.'
+                post_id = ''
+                return success, detail, post_id, account_type
             #print('here4')
             #log.debug('click publish')
             # self.firefox.save_screenshot("debug_response/newp11.png")
