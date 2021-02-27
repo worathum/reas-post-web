@@ -227,11 +227,11 @@ class propertyhub():
                     child_sel_type2 = sel_type2.find_elements_by_tag_name('div')
                     if postdata['listing_type'] == 'ขาย':
                         #print(sel_type2[25].text)
-                        child_sel_type2[0].click()
+                        child_sel_type2[1].click()
                         sale_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forSale.price'))).send_keys(datahandled['price_baht'])
                     elif postdata['listing_type'] == 'เช่า':
                         #print(sel_type2[26].text)
-                        child_sel_type2[1].click()
+                        child_sel_type2[0].click()
                         rent_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forRent.monthly.price'))).send_keys(datahandled['price_baht'])
                         daily_price = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.daily.type')))[2].click()
                         deposit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.deposit.type')))[2].click()
