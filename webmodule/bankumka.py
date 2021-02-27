@@ -137,8 +137,15 @@ class bankumka():
             'submit': ''
         }
 
+        headers = {
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36"
+        }
+
+        res = httprequestObj.http_get('https://bankumka.com/access/logout', headers=headers)
+
         r = httprequestObj.http_post(
             'https://bankumka.com/access', data=datapost)
+        
         data = r.text
         # print(data)
         # print(r.text)

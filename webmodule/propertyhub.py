@@ -25,7 +25,7 @@ class propertyhub():
         options.add_argument('disable-infobars')
         options.add_argument('--disable-extensions')
         options.add_argument('disable-gpu')
-        options.add_argument('window-size=1024,768')
+        options.add_argument("--window-size=1920,1080")
         self.driver = webdriver.Chrome('./static/chromedriver', chrome_options=options)
 
         time_start = datetime.utcnow()
