@@ -649,7 +649,6 @@ class ddproperty():
                 success, detail = self.inputpostgeneral(datahandled)
             except:
                 time_end = datetime.datetime.utcnow()
-                self.firefox.close()
                 self.firefox.quit()
                 return {
                     "success": "false",
