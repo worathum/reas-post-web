@@ -645,14 +645,33 @@ class ddproperty():
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
             # self.firefox.save_screenshot("debug_response/location.png")
 
-            success, detail = self.inputpostgeneral(datahandled)
+            try:
+                success, detail = self.inputpostgeneral(datahandled)
+            except:
+                time_end = datetime.datetime.utcnow()
+                self.firefox.close()
+                self.firefox.quit()
+                return {
+                    "success": "false",
+                    "detail": "ชื่อโครงการมีปัญหาจากระบบของ ddproperty ทำให้ไม่สามารถโพสได้",
+                    "websitename": "ddproperty",
+                    "ds_name": datahandled['ds_name'],
+                    "usage_time": str(time_end - time_start),
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "account_type": "",
+                    "post_url": "",
+                    "ds_id": datahandled['ds_id'],
+                    "log_id": datahandled['log_id'],
+                    "post_id": ""
+                }
             if success == 'true':
                 success, detail, post_id, account_type = self.inputpostdetail(datahandled)
                 print(success, detail, post_id, account_type)
-        try:
-            self.firefox.quit()
-        except:
-            pass
+
+        self.firefox.close()
+        self.firefox.quit()
+
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
