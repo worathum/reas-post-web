@@ -669,8 +669,10 @@ class ddproperty():
                 success, detail, post_id, account_type = self.inputpostdetail(datahandled)
                 print(success, detail, post_id, account_type)
 
-        self.firefox.close()
-        self.firefox.quit()
+        try:
+            self.firefox.quit()
+        except:
+            pass
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
