@@ -87,7 +87,10 @@ class propertyhub():
             datahandled['post_title_en'] = ''
 
         try:
-            datahandled['project_name'] = postdata['project_name']
+            if postdata['web_project_name'] == '':
+                datahandled['project_name'] = postdata['project_name']
+            else:
+                datahandled['project_name'] = postdata['web_project_name']
         except KeyError as e:
             datahandled['project_name'] = ''
 
