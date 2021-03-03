@@ -661,6 +661,7 @@ class dotproperty():
         else:
             post_url = ''
             post_id = ''
+            driver.quit()
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -754,6 +755,10 @@ class dotproperty():
                     detail = 'post edited and saved'
                 else:
                     detail = 'Post not found'
+            finally:
+                driver.quit()
+        else:
+            driver.quit()
 
         end_time = datetime.datetime.utcnow()
         result = {
@@ -1299,6 +1304,7 @@ class dotproperty():
 
         else:
             post_url = ''
+            driver.quit()
 
         end_time = datetime.datetime.utcnow()
         result = {'success': success,
