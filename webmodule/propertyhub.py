@@ -77,12 +77,12 @@ class propertyhub():
         datahandled = {}
 
         try:
-            datahandled['post_title_th'] = postdata['post_title_th']
+            datahandled['post_title_th'] = postdata['post_title_th'].replace('\n', ' ')
         except KeyError as e:
             datahandled['post_title_th'] = ''
 
         try:
-            datahandled['post_title_en'] = postdata['post_title_en']
+            datahandled['post_title_en'] = postdata['post_title_en'].replace('\n', ' ')
         except KeyError as e:
             datahandled['post_title_en'] = ''
 
