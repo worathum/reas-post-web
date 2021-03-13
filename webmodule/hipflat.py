@@ -18,7 +18,7 @@ from selenium.webdriver.common.by import By
 
 httprequestObj = lib_httprequest()
 
-with open("./static/hipflat_province.json") as f:
+with open("./static/hipflat_province.json", encoding='utf-8') as f:
     provincedata = json.load(f)
 
 class hipflat():
@@ -561,60 +561,61 @@ class hipflat():
 
             soup = BeautifulSoup(response.content, features = "html.parser")
             # print(soup)
-            try:
-                data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
             
-                data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
-                data['listing[rank]'] = str(soup.find('input', attrs = {'name': 'listing[rank]'})['value'])
+            #try:
+            data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
+        
+            data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
+            data['listing[rank]'] = str(soup.find('input', attrs = {'name': 'listing[rank]'})['value'])
 
-                if postdata['listing_type'] == 'เช่า':
-                    data['listing[rent_availability_status]'] = 'true'
-                    data['listing[rent_price]'] = str(postdata['price_baht'])
-                else:
-                    data['listing[sale_availability_status]'] = 'true'
-                    data['listing[sale_price]'] = str(postdata['price_baht'])
+            if postdata['listing_type'] == 'เช่า':
+                data['listing[rent_availability_status]'] = 'true'
+                data['listing[rent_price]'] = str(postdata['price_baht'])
+            else:
+                data['listing[sale_availability_status]'] = 'true'
+                data['listing[sale_price]'] = str(postdata['price_baht'])
 
-                r = httprequestObj.http_post('https://www.hipflat.co.th/listings/add', data = data, headers = headers)
+            r = httprequestObj.http_post('https://www.hipflat.co.th/listings/add', data = data, headers = headers)
 
-                success = "true"
-                detail = "Post created successfully"
+            success = "true"
+            detail = "Post created successfully"
 
-                data = r.text
+            data = r.text
 
-                link = ''
-                aaas = []
-                self.test_login(postdata)
-                r = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/pro')
-                print(r.url)
-                print(r.status_code)
-                data=r.text
-                # print('1')
-                # with open('b.html', 'w') as f:
-                #     f.write(data)
-                soup = BeautifulSoup(data, features = "html.parser")
-                #aas = soup.findAll("a")
-                for i in soup.find_all('a'):
-                    # print(i['href'])
-                    try:
-                        if i.get('href').find('/edit') != -1:
-                            # link = i['href']
-                            aaas.append(i['href'])
-                    except:
-                        continue
-                # print(link)
-                link = str(aaas[0])
-                #print(link)
-                link = link.replace('/listings/','')
-                post_id = str(link.replace('/edit',''))
+            link = ''
+            aaas = []
+            self.test_login(postdata)
+            r = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/pro')
+            print(r.url)
+            print(r.status_code)
+            data=r.text
+            # print('1')
+            # with open('b.html', 'w') as f:
+            #     f.write(data)
+            soup = BeautifulSoup(data, features = "html.parser")
+            #aas = soup.findAll("a")
+            for i in soup.find_all('a'):
+                # print(i['href'])
+                try:
+                    if i.get('href').find('/edit') != -1:
+                        # link = i['href']
+                        aaas.append(i['href'])
+                except:
+                    continue
+            # print(link)
+            link = str(aaas[0])
+            #print(link)
+            link = link.replace('/listings/','')
+            post_id = str(link.replace('/edit',''))
 
-                post_url = str('https://www.hipflat.co.th/listing-preview/'+str(post_id))
+            post_url = str('https://www.hipflat.co.th/listing-preview/'+str(post_id))
 
-                if 'post_images' in postdata and len(postdata['post_images']) > 0:
-                    self.upload_file(postdata,post_id)
+            if 'post_images' in postdata and len(postdata['post_images']) > 0:
+                self.upload_file(postdata,post_id)
 
-            except:
+            """ except:
                 success = "false"
-                detail = "Could not create post. Maybe you're not using premium account."
+                detail = "Could not create post. Maybe you're not using premium account." """
 
         else:
             success = "false"

@@ -19,7 +19,7 @@ class lib_httprequest():
         self.encoding = 'utf-8'
         self.proxies = None
         self.parser = 'html.parser'
-        self.timeout = 30
+        self.timeout = 60
 
         self.session = requests.Session()
 
