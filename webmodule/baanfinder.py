@@ -225,6 +225,7 @@ class baanfinder():
             direction = ""
 
         datapost = {
+            "res.ownershipStatus": "IS_AGENT",
             "res.adTypes": adType,
             "res.type": prop_type_map[str(postdata["property_type"])],
             "res.name": self.dict_data(postdata, "post_title_th")[:99],
@@ -340,7 +341,7 @@ class baanfinder():
         options.add_argument('--no-sandbox')
 
         driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-        wait = WebDriverWait(driver, 600)
+        wait = WebDriverWait(driver, 30)
 
         url = 'https://www.baanfinder.com/login'
         driver.get(url)
@@ -357,16 +358,15 @@ class baanfinder():
         driver.get(url)        
         #print(url)
 
-        sub_dis=driver.find_element_by_id('sublocality')
-        sub_dis=Select(sub_dis)
+        sub_dis = wait.until(EC.presence_of_element_located((By.ID, 'sublocality')))
+        sub_dis = Select(sub_dis)
         try:
             sub_dis.select_by_value(postdata['addr_sub_district'])
         except:
             sub_dis.select_by_index(1)
 
         #choose_files_button = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/main/form/div/div[3]/div[22]/div[1]/div[1]/label")))
-        choose_files_button = wait.until(
-            EC.presence_of_element_located((By.XPATH, "/html/body/main/form/div/div[3]/div[22]/div[1]/div[1]/label")))
+        choose_files_button = wait.until(EC.presence_of_element_located((By.ID, "photos")))
 
         # upload_string = ''
         # for i in image_paths:
@@ -416,7 +416,7 @@ class baanfinder():
         # time.sleep(10)
 
         current_url = driver.current_url
-        submit_button = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/main/form/div/div[5]/button")))
+        submit_button = wait.until(EC.presence_of_element_located((By.ID, "res-publish-btn")))
         submit_button.click()
         WebDriverWait(driver, 15).until(EC.url_changes(current_url))
         driver.close()
