@@ -300,8 +300,8 @@ class residences():
             datapost = [
                 ('utf8', '✓'),
                 ('authenticity_token', auth_token),
-                ('apartment[name]', postdata['post_title_th']),
-                ('apartment[en_name]', postdata['post_title_th']),
+                ('apartment[name]', postdata['post_title_th'][:60]),
+                ('apartment[en_name]', postdata['post_title_en'][:60]),
                 ('apartment[apartment_type]', '0'),
                 ('apartment[province_id]', province_id),
                 ('apartment[amphur_id]', district_id),
@@ -321,9 +321,9 @@ class residences():
                 ('apartment[line_user_id]', postdata['line']),
                 ('apartment[facebook_url]', ''),
                 ('apartment[description]', postdata['post_description_th'].replace('\r\n', '<br>')),
+                ('apartment[en_description]', postdata['post_description_th'].replace('\r\n', '<br>')),
                 ('_wysihtml5_mode', '1'),
                 ('_wysihtml5_mode', '1'),
-                ('apartment[en_description]', ''),
                 ('apartment[create_level]', '1'),
                 ('ref_action', 'new'),
                 ('g-recaptcha-response', g)

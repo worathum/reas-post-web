@@ -416,6 +416,7 @@ class baanfinder():
         # time.sleep(10)
 
         current_url = driver.current_url
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, 'js-acceptAgentOrCoAgentTrue'))).click()
         submit_button = wait.until(EC.presence_of_element_located((By.ID, "res-publish-btn")))
         submit_button.click()
         WebDriverWait(driver, 15).until(EC.url_changes(current_url))
