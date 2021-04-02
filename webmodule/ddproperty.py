@@ -1576,7 +1576,6 @@ class ddproperty():
                     success = 'false'
                     detail = 'Post id not found.'
                 
-                print('Success: ', success)
                 if success == 'true':
                     btnid = 'repost-cta-' + datahandled['post_id']
                     try:
@@ -1629,37 +1628,53 @@ class ddproperty():
         success = test_login["success"]
         detail = test_login["detail"]
 
-        if success == "true":
-            # จะต้องไปหน้า listing_management เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป delete ได้
-            r = httprequestObj.http_get('https://agentnet.ddproperty.com/listing_management#DRAFT', verify=False)
-            data = r.text
-            # f = open("debug_response/ddpostlistdraft.html", "wb")
-            # f.write(data.encode('utf-8').strip())
+        try:
+            if success == "true":
 
-            # listing_id%5B%5D=7788093&remove=Delete%20selected&selecteds=7788093
-            datapost = {
-                "listing_id[]": post_id,
-                "remove": "Delete selected",
-                "selecteds": post_id,
-            }
-            r = httprequestObj.http_post('https://agentnet.ddproperty.com/remove_listing', data=datapost)
-            data = r.text
-            # f = open("debug_response/dddelete.html", "wb")
-            # f.write(data.encode('utf-8').strip())
-            detail = 'Post deleted successfully'
-            matchObj = re.search(r'message":"deleted', data)
-            if matchObj:
-                # ใกล้ความจริง แต่จะ delete สำเร็จหรือไม่มันก็ return deleted หมด ดังนั้นต้องเช็คจาก post id อีกทีว่า response 404 ป่าว
-                r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail/' + post_id, verify=False)
-                data = r.text
-                # f = open("debug_response/dddelete.html", "wb")
-                # f.write(data.encode('utf-8').strip())
-                if (r.status_code == 200):
-                    success = "false"
-                    detail = r.text
+                self.firefox.get("https://agentnet.ddproperty.com/v2/listing_management")
+                time.sleep(5)
 
-        #
-        # end process
+                filterbtn = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'filter-buttons-items')))
+                filterclick = filterbtn.find_elements_by_tag_name('div')
+                filterclick[0].click()
+
+                searchinput = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedStart.MuiOutlinedInput-inputAdornedStart')))
+                searchinput.click()
+                searchinput.send_keys(post_id)
+                time.sleep(0.5)
+                searchinput.send_keys(Keys.ENTER)
+                time.sleep(2)
+                
+                try:
+                    WebDriverWait(self.firefox, 3).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-card-content')))
+                except:
+                    success = 'false'
+                    detail = 'Post id not found.'
+                
+                if success == 'true':
+                    try:
+                        btn_sel = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'three-dot-button')))
+                        del_btn =  btn_sel.find_element_by_tag_name('button')
+                        del_btn.click()
+                        delete = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.MuiList-root.MuiList-padding')))
+                        del_btn = delete.find_elements_by_tag_name('li')
+                        del_btn[-1].click()
+                        cfm_sel = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.MuiDialogActions-root.MuiDialogActions-spacing')))
+                        confirm = cfm_sel.find_elements_by_tag_name('button')
+                        confirm[-1].click()
+                        time.sleep(1)
+                        success = 'true'
+                        detail = 'Delete post success.'
+                    except:
+                        success = 'false'
+                        detail = 'Delete fail. Please try again later.'
+
+        except:
+            success = 'false'
+            detail = 'System fail. Please retry the process.'
+                
+        finally:
+            self.firefox.quit()
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
