@@ -213,7 +213,7 @@ class ddproperty():
         options.add_argument('disable-infobars')
         options.add_argument("--disable-extensions")
         options.add_argument("disable-gpu")
-        options.add_argument("window-size=1024,768")
+        options.add_argument("window-size=1920,1080")
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
         # chrome_driver_binary = "/usr/bin/chromedriver"
@@ -1556,73 +1556,58 @@ class ddproperty():
                 #     "expectedCredits[]": 0,
                 # }
 
-                self.firefox.get("https://agentnet.ddproperty.com/listing_management#ACT")
-                search = self.firefox.find_element_by_id("listingId")
-                search.send_keys(datahandled['post_id'])
-                search.send_keys(Keys.ENTER)
-                time.sleep(3)
+                self.firefox.get("https://agentnet.ddproperty.com/v2/listing_management")
+                time.sleep(5)
 
+                filterbtn = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'filter-buttons-items')))
+                filterclick = filterbtn.find_elements_by_tag_name('div')
+                filterclick[0].click()
+
+                searchinput = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedStart.MuiOutlinedInput-inputAdornedStart')))
+                searchinput.click()
+                searchinput.send_keys(datahandled['post_id'])
+                time.sleep(0.5)
+                searchinput.send_keys(Keys.ENTER)
+                time.sleep(2)
+                
                 try:
-                    try:
-                        all_rows = self.firefox.find_element_by_id('list-container')
-                        myrow = all_rows.find_element_by_class_name('listing-item')
-                        success = "true"
-                    except:
-                        success = "false"
-                        detail = "Post id not found"
-                        post_view = ""
-                    if success == "true":
-                        try:
-                            iden = "listing-item-"+ datahandled['post_id'] +"-performance"
-                            item_perform = self.firefox.find_element_by_id(iden)
-                            perform_detail = item_perform.find_elements_by_class_name('component-listing-performance-detail-stats')
-                            post_view = perform_detail[1].text.split(' ')[0]
-                        except:
-                            post_view = ""                      
-                        try:
-                            renew_input = myrow.find_elements_by_class_name('listingIdCheckbox')
-                            if renew_input[0].get_attribute('data-list-id') == datahandled['post_id']:
-                                renew_input[0].click()
-                                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'bulkRepost'))).click()
-                                time.sleep(5)
-                                cssvalue = self.firefox.find_element_by_id('layerNotAllowToExtendListing').get_attribute('style')
-                                time.sleep(1)
-                                if cssvalue == '':
-                                    success = "true"
-                                    detail = "Post Renewed Successfully."                    
-                                else:
-                                    success = "false"
-                                    detail = "This post already renewed in this week."                    
-                            else:
-                                success = "false"
-                                detail = "Invalid Post Id."
-                        except:
-                            success = "false"
-                            detail = "Can not detect element to renew post."
+                    WebDriverWait(self.firefox, 3).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-card-content')))
                 except:
-                    success = "false"
-                    detail = "Can not detect element in thee page.."
+                    success = 'false'
+                    detail = 'Post id not found.'
+                
+                print('Success: ', success)
+                if success == 'true':
+                    btnid = 'repost-cta-' + datahandled['post_id']
+                    try:
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, btnid))).click()
+                        time.sleep(3)
+                        success = 'true'
+                        detail = 'Boost post success.'
+                    except:
+                        success = 'false'
+                        detail = 'Your post already renewalthis week, please wait for the next week.'
+
+        except:
+            success = 'false'
+            detail = 'System fail. Please retry the process.'
+                
         finally:
-            # pass
             self.firefox.quit()
-
-            # r = httprequestObj.http_post_with_headers('https://agentnet.ddproperty.com/repost_listing', datapost)
-            # print(r.content)
-            # print(r.status_code)
-            # print(r.url)
-            # datajson = r.json()
-            #f = open("debug_response/ddboostpostresponse.html", "wb")
-            #f.write(data.encode('utf-8').strip())
-            # if datajson['status'] != 0:
-            #     success = 'false'
-            #     detail = datajson['message']
-
-            #
-            # end process
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "post_id": datahandled['post_id'], "websitename": self.websitename, "post_view": post_view}
+        return {
+            "success": success, 
+            "usage_time": str(time_usage), 
+            "start_time": str(time_start), 
+            "end_time": str(time_end), 
+            "detail": detail, 
+            "log_id": datahandled['log_id'], 
+            "post_id": datahandled['post_id'], 
+            "websitename": self.websitename, 
+            "post_view": ""
+        }
 
     def delete_post(self, postdata):
         #log.debug('')

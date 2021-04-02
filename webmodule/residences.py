@@ -1099,18 +1099,18 @@ class residences():
 
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+        start_time = datetime.datetime.utcnow()
 
 
-        time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+        end_time = datetime.datetime.utcnow()
+        time_usage = end_time - start_time
  
         return {
             "websitename": "residences",
             "success": "false",
             "start_time": str(start_time),
             "end_time": str(end_time),
-            "usage_time": str(end_time - start_time),
+            "usage_time": str(time_usage),
             "detail": "Cannot perform this action. This may result in account getting banned.",
             "account_type":'null',
             "ds_id": postdata['ds_id'],
