@@ -879,7 +879,7 @@ class dotproperty():
 
         path = './static/chromedriver'
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--disable-notifications')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-infobars')
@@ -1115,7 +1115,7 @@ class dotproperty():
                         options = options.find_elements_by_class_name('item')
                         for opt in options:
                             #print(opt.text)
-                            if str(opt.text).replace(' ','').find(pro)!=-1:
+                            if str(opt.text).replace(' ','').find(data['web_project_name'])!=-1:
                                 opt.click()
                                 #print(str(opt.text))
                                 #print(pro)
