@@ -51,8 +51,8 @@ def home(request):
             </table>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <!-- <script type="text/javascript" src="static/jquery.base64.js"></script> -->
-        <script type="text/javascript" src="http://yckart.github.io/jquery.base64.js/jquery.base64.js"></script>
+        <script type="text/javascript" src="static/jquery.base64.js"></script>
+        <!-- <script type="text/javascript" src="http://yckart.github.io/jquery.base64.js/jquery.base64.js"></script> -->
 
         <script>
 

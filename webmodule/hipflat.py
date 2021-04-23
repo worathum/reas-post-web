@@ -1207,6 +1207,7 @@ class hipflat():
                 if found or count==0:
                     break
 
+            print(found)
             if found:
                 data = {
                     'utf8': '',
@@ -1218,7 +1219,7 @@ class hipflat():
                     'listing[rank]': '',
                     'listing[is_active]': 'true',
                     'listing[never_expires]': 'true',
-                    'commit': 'record'
+                    'commit': 'Save'
                 }
 
 

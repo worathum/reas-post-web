@@ -685,7 +685,7 @@ class dotproperty():
 
         path = './static/chromedriver'
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--disable-notifications')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-infobars')
@@ -879,13 +879,13 @@ class dotproperty():
 
         path = './static/chromedriver'
         options = Options()
-        #options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument('--disable-notifications')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-infobars')
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-gpu")
-        options.add_argument("--window-size=1024,768")
+        options.add_argument("--window-size=1920,1080")
         options.add_argument('--disable-notifications')
         options.add_argument('--disable-dev-shm-usage')
         driver = webdriver.Chrome(executable_path=path, options=options)
@@ -1122,7 +1122,7 @@ class dotproperty():
                                 new_proj = False
                                 break
                 #print('project name done')
-                driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
+                #driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
 
                 if new_proj == True:
                     options = driver.find_element_by_id('my_province')
@@ -1253,11 +1253,12 @@ class dotproperty():
                 #print('going to save')
                 driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
 
+                btn = driver.find_element_by_xpath('//button[@class="ui green button"]')
+                time.sleep(1.5)
+                btn.click()
+                time.sleep(8)
                 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'tgl'))).click()
                 time.sleep(2)
-                btn = driver.find_element_by_xpath('//button[@class="ui green button"]')
-                time.sleep(2)
-                btn.click()
                 txt = str(driver.current_url)
                 post_id = ''
                 ind = txt.find('properties')+11
