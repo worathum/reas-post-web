@@ -530,34 +530,30 @@ class hipflat():
                 data['listing[project_name]'] = 'วอร์เตอร์มาร์ค เจ้าพระยา'
                 data['listing[condo_id]'] = '5119af8eef23779a61000713'
 
+          
             response = httprequestObj.http_get('https://www.hipflat.co.th/listings/add?rank=100', headers = headers)
-            print(response.url)
-            print(response.status_code)
+            #print(response.status_code)
 
             if response.status_code == 500:
-                print('Free account')
-                res_free = httprequestObj.http_get('https://www.hipflat.co.th/en/account/listings/free', headers=headers)
-                soup_free = BeautifulSoup(res_free.content, 'html.parser')
-                listingheader = soup_free.find('h1', {'class': 'user-listings__header'}).find_all('span')
-                if len(listingheader) > 1:
-                    print(soup_free.find('h1', {'class': 'user-listings__header'}).find_all('span')[0].text)
+                response_free = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/free', headers = headers)
+                soup_free = BeautifulSoup(response_free.content,'html.parser')
+                list_post = soup_free.find('div',{'class' : 'user-listings__collection'}).find_all('div')
+                if len(list_post) < 3:
                     response = httprequestObj.http_get('https://www.hipflat.co.th/listings/add?rank=1', headers = headers)
                 else:
-                    return {
+                    return{
                         "websitename": "hipflat",
                         "success": 'false',
                         "start_time": str(start_time),
                         "end_time": str(datetime.datetime.utcnow()),
                         "usage_time": str(datetime.datetime.utcnow() - start_time),
-                        "post_url": '',
+                        "post_url": post_url,
                         "ds_id": postdata['ds_id'],
-                        "post_id": '',
-                        "detail": 'บัญชีฟรีของท่านมีประกาศครบทั้ง 3 ประกาศแล้ว',
+                        "post_id": post_id,
+                        "detail": 'บัญชีฟรีของท่านมีครบทั้ง 3 ประกาศแล้ว',
                         "account_type": "null"
                     }
-            # with open('b.html', 'w') as f:
-            #     f.write(response.text)
-            # print("4")
+
 
             soup = BeautifulSoup(response.content, features = "html.parser")
             # print(soup)
