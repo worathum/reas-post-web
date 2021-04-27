@@ -208,7 +208,7 @@ class ddteedin():
                 r = httprequestObj.http_get(
                     'http://www.ddteedin.com/post-land-for-sale', verify=False)
                 data = r.text
-                print(data)
+                #print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 try:
                     cverify = soup.find("input", {"name": "cverify"})['value']
@@ -222,8 +222,6 @@ class ddteedin():
                 detail = "request error"
             else:
                 datapost = {
-                    'action': 'create_post',
-                    'timeout':'5',
                     'name':postdata['post_title_th'],
                     'code':'',
                     'typeid':theprodid,
@@ -309,24 +307,58 @@ class ddteedin():
                     else:
                         datapost['floor'] = postdata['floor_level']
                     datapost['usagesize']= postdata['floor_area']
+                
+                datapost['sizewa'] =''
+                datapost['email'] = postdata['email']
+                datapost['phone'] = postdata['mobile']
+                datapost['lineid'] = postdata['line']
+                datapost['street'] = ''
+                datapost['soi'] = ''
+                datapost['files'] = ''
 
-                datapost['files']= ''
-                print(datapost)
-                r = httprequestObj.http_post(
-                    'https://www.ddteedin.com/post-land-for-sale/?rf=mypost', data=datapost)
-                # print(r.text,r.status_code)
+
+                r = httprequestObj.http_get('https://www.ddteedin.com/member-verify-phone/51288/?rf=addnew')
                 data = r.text
-                print(data,"ji")
+                soup = BeautifulSoup(data,self.parser)
+                s = soup.find('div',{'class':'verify'})
+                print('********')
+                print(s)
+                if s != None:
+                    return{
+                        success == 'false',
+                        detail == 'กรุณายืนยันเลขโทรศัพท์มือถือก่อนลงประกาศต่อไป'}
+                else:
+                    pass
+
+                get_token = httprequestObj.http_get('https://www.ddteedin.com/post/?rf=topbtn')
+                soup = BeautifulSoup(get_token.text,self.parser)
+                with open('./log/b.html','w') as f:
+                    f.write(get_token.text)
+                token = soup.findAll('script')[8].string
+                print('============================================')
+                print(token.split('function')[0].split('=')[-1].replace(';','').strip(' ').replace("'",''))
+                datapost['token'] = ''
+                #print(datapost['token'])
+                """ print('=====')
+                print(datapost)
+                print('=====') """
+                r = httprequestObj.http_post(
+                    'https://www.ddteedin.com/post/?rf=topbtn', data=datapost)
+                print(r.text,r.status_code)
+                data = r.text
+                print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                try:
-                    a = soup.find("a", {"class": "green"})['href']
-                    print(a)
-                    post_id = a.replace('/', '')
-                    theurl = 'https://www.ddteedin.com'+a
+                #try:
+                a = soup.find("a", {"class": "green"})['href']
+                post_id = a.replace('/', '')
+                theurl = 'https://www.ddteedin.com'+a
+                
                     
-                except:
+                """ except:
                     post_id = ''
                     theurl = ''
+                print('----------------------------------------------------')
+                print(theurl) """
                 if data.find('ชื่อประกาศซ้ำ หากมั่นใจว่าไม่ได้ลงซ้ำ ลองใส่รายละเอียดเพิ่มในชื่อประกาศ') != -1:
                     success = "false"
                     print("sed")
