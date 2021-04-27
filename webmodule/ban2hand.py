@@ -102,14 +102,15 @@ class ban2hand():
             "password": userdata['pass'],
             "sendurl": ""
         }
-
+        
         r = httprequestObj.http_post('https://www.ban2hand.com/signin2.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
-        # print(data)
-
-        if 'Welcome ! ' + username in r.text:
+        """ with open('./log/testban2hand.html','w') as f:
+            f.write(data) """
+        
+        if 'Welcome ! ' in r.text:
             success = True
             detail = "Login successful"
         else:
