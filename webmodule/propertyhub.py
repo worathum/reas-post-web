@@ -158,12 +158,20 @@ class propertyhub():
             if success == 'true':
                 clear_pop = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, 'body'))).send_keys(Keys.ESCAPE)
                 sleep(1)
-                check_limit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sc-1rsvu2b-3')))
-                if int(check_limit[0].text.split('/')[0].replace(',', '')) < int(check_limit[0].text.split('/')[1].replace(',', '')):
-                    success = 'true'
-                else:
-                    success = 'false'
-                    detail = 'You can not post any more cause reaching the limit.'
+                if postdata['listing_type'] == 'เช่า':
+                    check_limit_rent = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sc-1rsvu2b-3')))
+                    if int(check_limit_rent[0].text.split('/')[0].replace(',', '')) < int(check_limit_rent[0].text.split('/')[1].replace(',', '')):
+                        success = 'true'
+                    else:
+                        success = 'false'
+                        detail = 'You can not post any more cause reaching the limit.'
+                if postdata['listing_type'] == 'ขาย':
+                    check_limit_sell = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sc-1rsvu2b-3')))
+                    if int(check_limit_sell[1].text.split('/')[0].replace(',', '')) < int(check_limit_sell[1].text.split('/')[1].replace(',', '')):
+                        success = 'true'
+                    else:
+                        success = 'false'
+                        detail = 'You can not post any more cause reaching the limit.'
 
             if success == 'true':
                 self.driver.get('https://dashboard.propertyhub.in.th/members/listings/new')
@@ -316,7 +324,7 @@ class propertyhub():
                                             a_link.append(link.get_attribute('href'))               
                             if not a_link:
                                 success = 'false'
-                                detail = 'Your post already create but can not get the link. Please check your acount again'
+                                detail = 'Your post already created but can not get the link. Please check your acount again'
                                 post_url = ''
                                 post_id = ''
                             else:
@@ -384,24 +392,31 @@ class propertyhub():
                 project.send_keys(Keys.BACKSPACE)
                 sleep(0.6)
 
-                all_sel_pro = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'i8hizn-0')))
-                match = 0
-                for project_sel in all_sel_pro:
-                    """ print(project_sel.text.split('\n')[0])
-                    print(len(project_sel.text.split('\n')[0]))
-                    print(len(project_sel.text.split('\n')[0].split(' '))) """
-                    for word in slt_project:
-                        #print(word)
-                        if word in project_sel.text.split('\n')[0].split(' '):
-                            match += 1
-                    #print(match)
-                    if match >= len(project_sel.text.split('\n')[0].split(' '))-1:
-                        project_sel.click()
-                        success = 'true'
-                        break
-                    else:
-                        success = 'false'
-                        detail = 'Your project name does not match.'
+                try:
+                    all_sel_pro = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'i8hizn-0')))
+                    all_sel_pro[0].click()
+                    """ match = 0
+                    for project_sel in all_sel_pro:
+                        #print(project_sel.text)
+                        print(slt_project)
+                        for word in slt_project:
+                            #print(word.replace('(', '').replace(')', ''))
+                            if word.replace('(', '').replace(')', '') in project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '):
+                                print(project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '))
+                                print(word.replace('(', '').replace(')', ''))
+                                print('Match')
+                                match += 1
+                        #print(match)
+                        if match >= len(project_sel.text.split('\n')[0].replace('(', '').replace(')', '').split(' '))-1:
+                            project_sel.click()
+                            success = 'true'
+                            break
+                        else:
+                            success = 'false'
+                            detail = 'Your project name does not match.' """
+                except:
+                    success = 'false'
+                    detail = 'ไม่สามารถโพสต์ประกาศได้ เนื่องจากไม่เจอโครงการของคุณ'
                     
                 """ try:
                     project_sel = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[1]/div/form/div/div/div[1]/div[4]/div[2]/div/div/div[2]/div/div/div'))).click()
@@ -433,47 +448,41 @@ class propertyhub():
                     floor_area = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'roomInformation.roomArea')))
                     floor_area.send_keys(Keys.CONTROL + 'a')
                     floor_area.send_keys(datahandled['floor_area'])
-                    sel_posttype = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'postType')))[1].click()
-                    sel_type2 = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'item')))
-                    if postdata['listing_type'] == 'ขาย':
-                        sel_type2[25].click()
-                        sale_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forSale.price')))
-                        sale_price.send_keys(Keys.CONTROL + 'a')
-                        sale_price.send_keys(datahandled['price_baht'])
-                    elif postdata['listing_type'] == 'เช่า':
-                        sel_type2[26].click()
-                        rent_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forRent.monthly.price')))
-                        rent_price.send_keys(Keys.CONTROL + 'a')
-                        rent_price.send_keys(datahandled['price_baht'])
-                        daily_price = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.daily.type')))[2].click()
-                        deposit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.deposit.type')))[2].click()
-                        advance = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.advancePayment.type')))[2].click()
-                    else:
-                        success = 'false'
-                        detail = 'Your post type does not match'
 
-                    """ if 'เฟอร์นิเจอร์' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasFurniture'))).click()
-                    if 'เครื่องปรับอากาศ' in datahandled['post_description_th'] or 'แอร์' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasAir'))).click()
-                    if 'digital lock' in datahandled['post_description_th'].lower() or 'key card' in datahandled['post_description_th'].lower():
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasDigitalDoorLock'))).click()
-                    if 'tv' in datahandled['post_description_th'].lower() or 'ทีวี' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasTV'))).click()
-                    if 'ตู้เย็น' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasRefrigerator'))).click()
-                    if 'อินเตอร์เน็ต' in datahandled['post_description_th'] or 'wifi' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasInternet'))).click()
-                    if 'เครื่องทำน้ำอุ่น' in datahandled['post_description_th'] or 'เครื่องทำน้ำร้อน' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasWaterHeater'))).click()
-                    if 'อ่างอาบน้ำ' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasHotTub'))).click()
-                    if 'เตาไฟฟ้า' in datahandled['post_description_th'] or 'เตาแก๊ส' in datahandled['post_description_th'] or 'เตาทำอาหาร' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasKitchenStove'))).click()
-                    if 'ที่ดูดควัน' in datahandled['post_description_th'] or 'เครื่องดูดควัน' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasKitchenHood'))).click()
-                    if 'เครื่องซักผ้า' in datahandled['post_description_th']:
-                        sel_funiture = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'amenities.hasWasher'))).click() """
+                    sel_posttype = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'postType')))
+                    #print(sel_posttype.get_attribute('value'))
+                    try:
+                        sel_posttype = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'postType')))[1].click()
+                        sel_type2 = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@class="visible menu transition"]')))
+                        child_sel_type2 = sel_type2.find_elements_by_tag_name('div')
+                        if postdata['listing_type'] == 'ขาย':
+                            #print(sel_type2[25].text)
+                            child_sel_type2[1].click()
+                            sale_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forSale.price')))
+                            sale_price.send_keys(Keys.CONTROL + 'a')
+                            sale_price.send_keys(datahandled['price_baht'])
+                        elif postdata['listing_type'] == 'เช่า':
+                            #print(sel_type2[26].text)
+                            child_sel_type2[0].click()
+                            rent_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forRent.monthly.price')))
+                            rent_price.send_keys(Keys.CONTROL + 'a')
+                            rent_price.send_keys(datahandled['price_baht'])
+                            daily_price = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.daily.type')))[2].click()
+                            deposit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.deposit.type')))[2].click()
+                            advance = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.advancePayment.type')))[2].click()
+                    except:
+                        if sel_posttype.get_attribute('value') == 'FOR_SALE_TRIAL':
+                            sale_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forSale.price')))
+                            sale_price.send_keys(Keys.CONTROL + 'a')
+                            sale_price.send_keys(datahandled['price_baht'])
+                        elif sel_posttype.get_attribute('value') == 'FOR_RENT':
+                            rent_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'price.forRent.monthly.price')))
+                            rent_price.send_keys(Keys.CONTROL + 'a')
+                            rent_price.send_keys(datahandled['price_baht'])
+                            daily_price = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.daily.type')))[2].click()
+                            deposit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.deposit.type')))[2].click()
+                            advance = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.NAME, 'price.forRent.advancePayment.type')))[2].click()
+                        pass
 
                     images = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'dragablePreview')))
                     sel_img = images[0]
@@ -492,14 +501,14 @@ class propertyhub():
                     
                     upload = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[1]/div/form/div/div/div[3]/div[2]/input')))
                     upload.send_keys(all_images)
-        
+
                     detail_post = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ql-editor')))
-                    detail_post[0].click()
-                    detail_post[0].send_keys(Keys.CONTROL + 'a')
-                    detail_post[0].send_keys(datahandled['post_description_th'])
                     detail_post[1].click()
                     detail_post[1].send_keys(Keys.CONTROL + 'a')
-                    detail_post[1].send_keys(datahandled['post_description_en'])
+                    detail_post[1].send_keys(datahandled['post_description_th'])
+                    detail_post[2].click()
+                    detail_post[2].send_keys(Keys.CONTROL + 'a')
+                    detail_post[2].send_keys(datahandled['post_description_en'])
 
                     try:
                         last_img = '//*[@id="__next"]/div[1]/div/div/form/div/div/div[3]/div[2]/div/div/div[' + str(len(postdata['post_images'])) + ']/div[3]/div[2]'
@@ -511,17 +520,46 @@ class propertyhub():
                     
                     if success == 'true':
                         cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
-                        sleep(5)           
-                        """ get_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, datahandled['post_title_th'])))
-                        post_url = get_link.get_attribute('href')
-                        post_id = post_url.split('---')[-1] """
-                        success = 'true'
-                        detail = 'Post was edited.'
+                        sleep(5)
+                        try:
+                            check_eng = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'diLcnC'))).click()
+                            cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
+                            sleep(5)
+                        except:
+                            pass         
 
+                        postcheck = True
+                        while postcheck:
+                            get_all_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-list-view')))    
+                            title_check = ''
+                            a_link = []
+                            for link in get_all_link.find_elements_by_tag_name('a'):
+                                if link.get_attribute('href') != None:
+                                    if 'https://propertyhub.in.th/listings/' in link.get_attribute('href'):
+                                        title_check = link.find_element_by_tag_name('span').get_attribute("innerHTML").split('<i')[0].replace('&nbsp;', ' ')
+                                        if postdata['post_title_th'].replace(' ', '').replace('\xa0', '').strip() == title_check.replace(' ', '').strip():
+                                            a_link.append(link.get_attribute('href'))
+                            if a_link:
+                                post_url = a_link[0]
+                                postcheck = False
+                                success = 'true'
+                                detail = 'Post was edited.'
+                            if postcheck:
+                                #Pagination
+                                try:
+                                    pagi = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'sc-1p20b44-0')))
+                                    pagechk = pagi.find_elements_by_tag_name('li')[-1].click()
+                                except:
+                                    postcheck = False
+                                    success = 'false'
+                                    detail = 'Your post already edited but can not get the link. Please check your acount again'
+                                    post_url = ''
+                                    pass     
+                        
                 else:
-                    pass
+                    post_url = ''
             else:
-                pass
+                post_url = ''
 
         finally:
             self.driver.close()
@@ -536,7 +574,7 @@ class propertyhub():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "ds_id": postdata['ds_id'],
-            "post_url" : postdata['post_url'],
+            "post_url" : post_url,
             "post_id" : postdata['post_id'],
             "account_type": "null",
             "detail": detail,
@@ -558,8 +596,8 @@ class propertyhub():
                 sleep(1)
                 clear_pop = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, 'body'))).send_keys(Keys.ESCAPE)
                 sleep(1)
-                check_limit = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sc-1rsvu2b-3')))
-                if int(check_limit[1].text.split('/')[0].replace(',', '')) < int(check_limit[1].text.split('/')[1].replace(',', '')):
+                check_limit_rent = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sc-1rsvu2b-3')))
+                if int(check_limit_rent[1].text.split('/')[0].replace(',', '')) < int(check_limit_rent[1].text.split('/')[1].replace(',', '')):
                     success = 'true'
                 else:
                     success = 'false'
