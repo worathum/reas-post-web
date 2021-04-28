@@ -316,20 +316,6 @@ class ddteedin():
                 datapost['soi'] = ''
                 datapost['files'] = ''
 
-
-                r = httprequestObj.http_get('https://www.ddteedin.com/member-verify-phone/51288/?rf=addnew')
-                data = r.text
-                soup = BeautifulSoup(data,self.parser)
-                s = soup.find('div',{'class':'verify'})
-                print('********')
-                print(s)
-                if s != None:
-                    return{
-                        success == 'false',
-                        detail == 'กรุณายืนยันเลขโทรศัพท์มือถือก่อนลงประกาศต่อไป'}
-                else:
-                    pass
-
                 get_token = httprequestObj.http_get('https://www.ddteedin.com/post/?rf=topbtn')
                 soup = BeautifulSoup(get_token.text,self.parser)
                 with open('./log/b.html','w') as f:

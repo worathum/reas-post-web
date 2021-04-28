@@ -208,11 +208,14 @@ class hipflat():
 
         response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
         soup = BeautifulSoup(response.content, features = self.parser)
+        with open('./log/hip.html','wb') as f:
+            f.write(response.content)
 
         post_data = {
         '_method':'delete',
         'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
         }
+        
 
         httprequestObj.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
 
@@ -244,12 +247,13 @@ class hipflat():
 
                 data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
 
+                
                 response = httprequestObj.http_post('https://www.hipflat.co.th/login', data = data, headers = headers)
                 #print(response.status_code)
                 #print(response.url)
                 #
-
-                #print(response.text)
+                """ print('=======rest')
+                print(response.text) """
                 
                 #if 'อีเมลล์หรือรหัสผ่าน ไม่ถูกต้อง' in response.text:
                 if response.url == 'https://www.hipflat.co.th/login':
