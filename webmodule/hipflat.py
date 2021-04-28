@@ -208,9 +208,8 @@ class hipflat():
 
         response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
         soup = BeautifulSoup(response.content, features = self.parser)
-        with open('./log/hip.html','wb') as f:
-            f.write(response.content)
 
+        
         post_data = {
         '_method':'delete',
         'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
