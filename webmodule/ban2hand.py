@@ -645,7 +645,7 @@ class ban2hand():
         if success:
 
             r = httprequestObj.http_get('https://www.ban2hand.com/', params={'ac': 'complete'})
-            # print(r.url)
+            #print(r.url)
             # print(r.status_code)
 
             soup = BeautifulSoup(r.content, self.parser)
