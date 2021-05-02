@@ -1251,7 +1251,7 @@ class ddproperty():
                 matchObj = re.search(r'Active Unit Listing quota exceeded', self.firefox.page_source)
                 if matchObj:
                     success = "false"
-                    detail = 'Active Unit Listing quota exceeded'
+                    detail = 'จำนวนทรัพย์ของท่านเกินจำนวนที่กำหนดแล้ว'
             #print('here5')
             #บันทึกแล้วออก
             try:

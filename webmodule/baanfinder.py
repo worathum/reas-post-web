@@ -113,34 +113,59 @@ class baanfinder():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        login_data = postdata
-        # start process
-        #
         success = "true"
         detail = "Login Successful"
 
-        datapost = {
-        'username': login_data['user'],
-        'password': login_data['pass']
-        }
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
 
-        url = 'https://www.baanfinder.com/login'
-        r = httprequestObj.http_get(url, headers=self.headers)
-        soup = BeautifulSoup(r.content, 'lxml')
-        datapost['authenticityToken'] = soup.find('input', attrs={'name': 'authenticityToken'})['value']
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_argument("--headless")
+        options.add_argument('--no-sandbox')
+        options.add_argument('start-maximized')
+        options.add_argument('disable-infobars')
+        options.add_argument("--disable-extensions")
+        options.add_argument("disable-gpu")
+        options.add_argument("window-size=1920,1080")
 
-        r = httprequestObj.http_post(url, data=datapost, headers = self.headers)
-        data = r.text
+        driver = webdriver.Chrome('./static/chromedriver', options=options)
 
-        if data.find("อีเมล์ หรือ รหัสผ่าน ไม่ถูกต้อง") != -1:
-            detail = "incorrect email or password"
-            success = "false"
+        driver.get('https://www.baanfinder.com/login')
+
+        """ driver.save_screenshot('debug_response/1.png')
+        print(postdata) """
+        email = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.ID,'username')))
+        email.send_keys(postdata['user'])
+
+        password = WebDriverWait(driver,5).until(EC.presence_of_element_located((By.ID,'password')))
+        password.send_keys(postdata['pass'])
+
+        login = WebDriverWait(driver,5).until(EC.presence_of_element_located((By.ID,'js-login-submit')))
+        login.click()
+
         
-        #
-        # end process
 
+        try:
+            check_login = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CLASS_NAME,'alert.alert-success')))
+            if 'เข้าสู่ระบบเรียบร้อยแล้ว' in check_login.text:
+                print('testpass1')
+                success = 'true'
+                detail = 'login success'
+            else:
+                print('not pass')
+                success = 'false'
+                detail = 'maybe web is change'
+        except:
+            print('loginfailed')
+            success = 'false'
+            detail = 'login false'
+        finally:
+            driver.quit()
+        # end processlogin
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+
         return {
             "success": success,
             "usage_time": str(time_usage),
@@ -150,6 +175,7 @@ class baanfinder():
             "detail": detail,
             "websitename": "baanfinder",
         }
+        
 
     def check_post(self, postid):
         post_id = postid
