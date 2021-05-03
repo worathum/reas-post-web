@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from selenium.webdriver.common import action_chains
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
@@ -27,6 +28,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 import os
+
+import undetected_chromedriver.v2 as uc
 
 # ===========================================================================
 
@@ -116,38 +119,26 @@ class baanfinder():
         success = "true"
         detail = "Login Successful"
 
-        options = webdriver.ChromeOptions()
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
+        options = uc.ChromeOptions()
+        #options.headless = True
+        self.driver = uc.Chrome('./static/chromedriver', options=options)
+        #driver = webdriver.Chrome('./static/chromedriver', options=options)
 
-        options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_argument("--headless")
-        options.add_argument('--no-sandbox')
-        options.add_argument('start-maximized')
-        options.add_argument('disable-infobars')
-        options.add_argument("--disable-extensions")
-        options.add_argument("disable-gpu")
-        options.add_argument("window-size=1920,1080")
-
-        driver = webdriver.Chrome('./static/chromedriver', options=options)
-
-        driver.get('https://www.baanfinder.com/login')
+        self.driver.get('https://www.baanfinder.com/login')
 
         """ driver.save_screenshot('debug_response/1.png')
         print(postdata) """
-        email = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.ID,'username')))
+        email = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.ID,'username')))
         email.send_keys(postdata['user'])
 
-        password = WebDriverWait(driver,5).until(EC.presence_of_element_located((By.ID,'password')))
+        password = WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.ID,'password')))
         password.send_keys(postdata['pass'])
 
-        login = WebDriverWait(driver,5).until(EC.presence_of_element_located((By.ID,'js-login-submit')))
+        login = WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.ID,'js-login-submit')))
         login.click()
 
-        
-
         try:
-            check_login = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CLASS_NAME,'alert.alert-success')))
+            check_login = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.CLASS_NAME,'alert.alert-success')))
             if 'เข้าสู่ระบบเรียบร้อยแล้ว' in check_login.text:
                 print('testpass1')
                 success = 'true'
@@ -161,7 +152,8 @@ class baanfinder():
             success = 'false'
             detail = 'login false'
         finally:
-            driver.quit()
+            if postdata['action'] == 'test_login':
+                self.driver.quit()
         # end processlogin
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -461,13 +453,13 @@ class baanfinder():
         post_url = ""
 
         if success == "true":
-            #print("entered")
-            datapost = self.make_post_data(postdata)
-            #print("now")
-
-            url = 'https://www.baanfinder.com/new'
-            r = httprequestObj.http_get(url, headers = self.headers)
-            if('คุณยังไม่ได้ทำการยืนยันอีเมล์ค่ะ' in r.content.decode('utf-8')):
+            time_start = datetime.datetime.utcnow()
+            #Go to create post form
+            self.driver.get('https://www.baanfinder.com/new')
+            #Select agent type
+            try:
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'js-is-agent'))).click()
+            except:
                 time_end = datetime.datetime.now()
                 time_usage = time_end - time_start
                 return {
@@ -481,109 +473,124 @@ class baanfinder():
                     "detail": 'Email Id Not Verified',
                     "websitename": "baanfinder",
                 }
-
-
-            soup = BeautifulSoup(r.content, 'lxml')
-            #print("here ig")
-            try:
-                datapost['authenticityToken'] = soup.find('input', attrs={'name': 'authenticityToken'})['value']
-            except:
-                if "คุณกำลังใช้แพ็กเกจ Free ลงประกาศได้สูงสุด 10 ประกาศ" in r.text:
-                    time_end = datetime.datetime.utcnow()
+            #Select listing type
+            if postdata['listing_type'] == 'ขาย':
+                sel_type = 'sale'
+            elif postdata['list_type'] == 'เช่า':
+                sel_type = 'rent'
+            else:
+                sel_type = 'ขาย'
+            print('Type selected')
+            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, sel_type))).click()
+            #Select property type
+            prop_type_map = {
+                "1": 4,     #CONDOMINIUM    ->
+                "2": 1,     #HOUSE          ->
+                "3": 2,     #TWIN_HOUSE     ->
+                "4": 3,     #TOWNHOUSE      ->
+                "5": 6,     #SHOPHOUSE      ->
+                "6": 9,     #LAND           ->No project
+                "7": 5,     #APARTMENT      ->No project
+                "8": 11,    #HOTEL          ->No project
+                "9": 7,     #OFFICE         ->
+                "10": 10,   #FACTORY        ->No project
+                "25": 10    #FACTORY        ->No project
+            }
+            print('Property selecting')
+            sel_proptype = prop_type_map[postdata['property_type']]
+            select_proptype = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'res.type')))
+            select_proptype.click()
+            select_proptype.find_elements_by_tag_name('option')[sel_proptype].click()
+            #Post title th and en
+            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_name'))).send_keys(postdata['post_title_th'])
+            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_enName'))).send_keys(postdata['post_title_en'])
+            #Select Project
+            if postdata['property_type'] != '6' and postdata['property_type'] != '7' and postdata['property_type'] != '8' and postdata['property_type'] != '10' and postdata['property_type'] != '25':
+                #Select project
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'select2-js-resGroup-container'))).click()
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'select2-search__field'))).send_keys(postdata['project_name'])
+                type_ul = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'select2-js-resGroup-results')))
+                time.sleep(3)
+                type_li =  type_ul.find_elements_by_tag_name('li')[0]
+                #print(type_li.text)
+                if type_li.text == 'ไม่พบข้อมูล':
+                    time_end = datetime.datetime.now()
                     time_usage = time_end - time_start
                     return {
-                        "success": "false",
+                        "success": False,
                         "usage_time": str(time_usage),
                         "start_time": str(time_start),
                         "end_time": str(time_end),
-                        "post_url": post_url,
-                        "post_id": post_id,
+                        "post_url": '',
+                        "post_id": '',
                         "account_type": "null",
-                        "detail": "You are using the Free package to post up to 10 listings.",
-                        "ds_id": postdata['ds_id'],
+                        "detail": 'ไม่เจอโครงการที่ท่านต้องการจะลงประกาศ',
                         "websitename": "baanfinder",
                     }
+                else:
+                    type_li.click()
+            #Post price
+            if postdata['listing_type'] == 'ขาย':
+                price_ele = 'js-price-sale'
+            else:
+                price_ele = 'js-price-rent'
+            print('Price selecting')
+            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, price_ele))).send_keys(postdata['price_baht'].replace(',',''))
 
-            #print("no")
-            datapost['res.province'] = self.match_addr(postdata['addr_province'], 'res.province', soup)
-            datapost['res.district'] = postdata['addr_district']
-            datapost['res.sublocality'] = postdata['addr_sub_district']
+            #Detail
+            #For condominium
+            if postdata['property_type'] == '1':
+                print('Post condo data')
+                #Bath room
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_floorNumbering'))).send_keys(postdata['floor_level'])
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_totalFloors'))).send_keys(postdata['floor_total'])
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_area'))).send_keys(postdata['floor_area'])
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_bathrooms'))).send_keys(postdata['bath_room'])
+                bed_room = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="js-bedroom-section"]/div/div/span')))
+                bed_room.click()
+                bed_put = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/span[2]/span/span[1]/input')))
+                bed_put.send_keys(postdata['bed_room'])
+                bed_put.send_keys(Keys.ENTER)
+                post_detail = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.ID, 'additionalDetails')))
+                post_detail[0].send_keys(postdata['post_description_th'])
+                post_detail[1].send_keys(postdata['post_description_th'])            
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_howToFind'))).send_keys(postdata['addr_near_by'])
+                address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
+            
+            try:
+                upload = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'file')))
+                all_images = ""
+                for count, pic in enumerate(postdata['post_images'][:5]):
+                    if count < len(postdata['post_images'][:5])-1:
+                        all_images += os.path.abspath(pic) + '\n'
+                    else:
+                        all_images += os.path.abspath(pic)
+                print('Image process')
+                upload.send_keys(all_images)
+            except:
+                pass
 
-            #print("here1")
-            #image_upload_data = json.loads(str(soup.find('input', attrs={'type':'file', 'class':'cloudinary-fileupload'})['data-form-data']))
+            time.sleep(5)
 
-            r = httprequestObj.http_post(url, data=datapost, headers=self.headers)
-            #print(r.content.decode('utf-8'))
-            post_id = 1234
+            try:
+                print('Public post')
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'acceptAgentOrCoAgentFalse'))).click()
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res-publish-btn'))).click()
+                time.sleep(5)
+                print('Success click')
+                print(self.driver.current_url)
+                post_url = '' #self.driver.current_url
+                post_id = '' #post_url.split('_')[0].split('/')[-1]
+                print('Success post')
+            except:
+                success = 'false'
+                detail = 'ไม่สามารถลงประกาศได้เนื่องจากข้อมูลไม่ทราบถ้วน'
+                post_url = ''
+                post_id = ''
 
-            soup = BeautifulSoup(r.content, 'html.parser')
-
-            post_url = "https://www.baanfinder.com/th/property/"
-
-            post_id = soup.find('div', attrs={"class" : "res-urlId pull-left"}).text
-            post_id = post_id.split(':')
-            post_id = int(post_id[1])
-            post_url += str(post_id)
-
-            # for input_tag in soup.find_all('input'):
-            #     #print(input_tag)
-            #     if post_url in input_tag['value']:
-            #         post_id = input_tag['value'].split('/')[-1]
-            #
-            # post_url += post_id
-
-            #print("here2")
-
-            # image_uploader = 'https://www.baanfinder.com/th/property/'+str(post_id)+'_'+str(postdata['post_title_th']) +'/edit'
-            # uploader = httprequestObj.http_get(image_uploader)
-            # soup = BeautifulSoup(uploader.content, 'html.parser')
-            # image_element = soup.find('input',attrs = {"class" : "cloudinary-fileupload"})
-            # image_element = image_element.attrs['data-form-data']
-            # image_element = eval(image_element)
-            # del image_element['callback']
-            # signature_final = 'timestamp='+str(image_element['signature'])+'&type=private&upload_preset=nnixsrxb-res-photos'
-            # signature_final = hashlib.sha1(signature_final.encode())
-            # signature_final = signature_final.hexdigest()
-            # image_element['signature'] = signature_final
-            # print(image_element)
-            # allimages = postdata["post_images"][:5]
-            # files = {}
-            # r = open(os.getcwd() + "/" + allimages[0], 'rb')
-            # files['file'] = r
-            # post_image = httprequestObj.http_post('https://api.cloudinary.com/v1_1/baanfinder/auto/upload',data = image_element, files= files)
-            # print(post_image.content.decode('utf-8'))
-
-
-            # image_upload_url = "https://api.cloudinary.com/v1_1/baanfinder/auto/upload"
-            # files = {}
-            # for i in range(len(allimages)):
-            #
-            #     d = datetime.datetime.utcnow()
-            #     unixtime = calendar.timegm(d.utctimetuple())
-            #
-            #     signature = 'filename='+str(allimages[i])+'&name=file&timestamp='+str(unixtime)+'&type=private&upload_preset=nnixsrxb-res-photos398493742686488'
-            #     signature = hashlib.sha1(signature.encode())
-            #     signature = signature.hexdigest()
-            #
-            #     r = open(os.getcwd() + "/" + allimages[i], 'rb')
-            #     files['file'] = r
-            #     data = {
-            #         "timestamp": unixtime,
-            #         "signature" : signature,
-            #         "api_key": "398493742686488",
-            #         "type" : "private",
-            #         "upload_preset" : "nnixsrxb-res-photos",
-            #         "name" : "file",
-            #         "filename" : allimages[i],
-            #     }
-            #     image_upload = httprequestObj.http_post('https://api.cloudinary.com/v1_1/baanfinder/auto/upload', data = data, files = files)
-            #     print(image_upload.content)
-            if(len(postdata['post_images']) != 0):
-                #time.sleep(30)
-                self.upload_images(postdata, post_id)
-
-            detail = "Post Created"
-
+        self.driver.close()
+            
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
