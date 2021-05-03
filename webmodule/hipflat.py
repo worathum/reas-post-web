@@ -15,6 +15,8 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.webdriver.common.by import By
+import cloudscraper
+import undetected_chromedriver.v2 as uc
 
 httprequestObj = lib_httprequest()
 
@@ -46,16 +48,16 @@ class hipflat():
 
     def upload_file(self,postdata,post_id):
 
-        options = Options()
-        options.set_headless(True)
-        options.add_argument('--no-sandbox')
+        options = uc.ChromeOptions()
+        options.headless = True
         
 
         try:
-            browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+            browser = uc.Chrome('./static/chromedriver', options=options)
             browser.implicitly_wait(10)
 
             browser.get('https://www.hipflat.co.th/login')
+            browser.save_screenshot('./log/hipfalt.png')
             time.sleep(1)
             email = browser.find_element_by_id('user_email')
             email.send_keys(postdata['user'])
@@ -85,12 +87,12 @@ class hipflat():
             browser.find_element_by_name('commit').click()
             browser.get('https://www.hipflat.co.th/logout')
         finally:
-            browser.close()
+            #browser.close()
             browser.quit()
             try:
                 alert = browser.switch_to.alert
                 alert.accept()
-                browser.close()
+                #browser.close()
                 browser.quit()
             except:
                 pass
@@ -193,6 +195,8 @@ class hipflat():
         start_time = datetime.datetime.utcnow()
         print('1')
 
+        scraper = cloudscraper.create_scraper()
+
         data = {
             'utf8': '',
             'authenticity_token': '',
@@ -206,7 +210,7 @@ class hipflat():
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
         }
 
-        response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
+        response = scraper.get('https://www.hipflat.co.th/login', headers = headers)
         soup = BeautifulSoup(response.content, features = self.parser)
 
         
@@ -216,7 +220,7 @@ class hipflat():
         }
         
 
-        httprequestObj.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
+        scraper.post('https://www.hipflat.co.th/logout', data=post_data)
 
         success = "false"
         detail = ""
@@ -228,7 +232,7 @@ class hipflat():
         else:
             try:
 
-                response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
+                response = scraper.get('https://www.hipflat.co.th/login', headers = headers)
                 soup = BeautifulSoup(response.content, features = "html.parser")
                 try:
                     data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
@@ -238,8 +242,8 @@ class hipflat():
                     'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
                     }
 
-                    httprequestObj.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
-                    response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
+                    scraper.post('https://www.hipflat.co.th/logout', data=post_data)
+                    response = scraper.get('https://www.hipflat.co.th/login', headers = headers)
                     soup = BeautifulSoup(response.content, features = "html.parser")
                     data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
 
@@ -247,7 +251,7 @@ class hipflat():
                 data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
 
                 
-                response = httprequestObj.http_post('https://www.hipflat.co.th/login', data = data, headers = headers)
+                response = scraper.post('https://www.hipflat.co.th/login', data = data, headers = headers)
                 #print(response.status_code)
                 #print(response.url)
                 #
@@ -288,7 +292,44 @@ class hipflat():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
 
-        login = self.test_login(postdata)
+        scraper = cloudscraper.create_scraper()
+        success = 'false'
+        detail = ''
+        data = {
+            'utf8': '',
+            'authenticity_token': '',
+            'user[email]': str(postdata['user']),
+            'user[password]': str(postdata['pass']),
+            'user[remember_me]': '0',
+            'commit': 'ลงชื่อเข้าใช้'
+        }
+        headers = {
+            'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
+        }
+        try:
+            response = scraper.get('https://www.hipflat.co.th/login', headers = headers)
+            soup = BeautifulSoup(response.content, features = "html.parser")
+            try:
+                data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
+            except:
+                post_data = {
+                    '_method':'delete',
+                    'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
+                }
+                scraper.post('https://www.hipflat.co.th/logout', data=post_data)
+                response = scraper.get('https://www.hipflat.co.th/login', headers = headers)
+                soup = BeautifulSoup(response.content, features = "html.parser")
+                data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
+            data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
+            response = scraper.post('https://www.hipflat.co.th/login', data = data, headers = headers)
+            if response.url == 'https://www.hipflat.co.th/login':
+                success = "false"
+                detail = 'Incorrect Username or Password !!'
+            else:
+                success = "true"
+                detail = 'Logged in successfully'
+        except:
+            detail = "Network Problem occured"
 
         post_id = ''
         post_url = ''
@@ -297,7 +338,7 @@ class hipflat():
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
         }
 
-        if (login["success"] == "true"):
+        if success == 'true':
 
             if 'web_project_name' not in postdata or postdata['web_project_name'] == "":
                 if 'project_name' in postdata and postdata['project_name'] != "":
@@ -388,7 +429,7 @@ class hipflat():
             
 
             if postdata['property_type'] == "1":
-                res = httprequestObj.http_post(f'https://tom76npq59-dsn.algolia.net/1/indexes/PROD_Projects/query?x-algolia-api-key=318055435c6b9c9bdb6fefe330216299&x-algolia-application-id=TOM76NPQ59&x-algolia-agent=Algolia%20for%20jQuery%203.10.2', data=json.dumps(dataque))
+                res = scraper.post(f'https://tom76npq59-dsn.algolia.net/1/indexes/PROD_Projects/query?x-algolia-api-key=318055435c6b9c9bdb6fefe330216299&x-algolia-application-id=TOM76NPQ59&x-algolia-agent=Algolia%20for%20jQuery%203.10.2', data=json.dumps(dataque))
                 project = res.json()
                 if len(project['hits']) > 0:
                     condo_id = str(project['hits'][0]['objectID'])
@@ -534,15 +575,16 @@ class hipflat():
                 data['listing[condo_id]'] = '5119af8eef23779a61000713'
 
           
-            response = httprequestObj.http_get('https://www.hipflat.co.th/listings/add?rank=100', headers = headers)
+            response = scraper.get('https://www.hipflat.co.th/listings/add?rank=100', headers = headers)
+            print('Check response')
             #print(response.status_code)
 
             if response.status_code == 500:
-                response_free = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/free', headers = headers)
+                response_free = scraper.get('https://www.hipflat.co.th/account/listings/free', headers = headers)
                 soup_free = BeautifulSoup(response_free.content,'html.parser')
                 list_post = soup_free.find('div',{'class' : 'user-listings__collection'}).find_all('div')
                 if len(list_post) < 3:
-                    response = httprequestObj.http_get('https://www.hipflat.co.th/listings/add?rank=1', headers = headers)
+                    response = scraper.get('https://www.hipflat.co.th/listings/add?rank=1', headers = headers)
                 else:
                     return{
                         "websitename": "hipflat",
@@ -556,7 +598,6 @@ class hipflat():
                         "detail": 'บัญชีฟรีของท่านมีครบทั้ง 3 ประกาศแล้ว',
                         "account_type": "null"
                     }
-
 
             soup = BeautifulSoup(response.content, features = "html.parser")
             # print(soup)
@@ -574,7 +615,7 @@ class hipflat():
                 data['listing[sale_availability_status]'] = 'true'
                 data['listing[sale_price]'] = str(postdata['price_baht'])
 
-            r = httprequestObj.http_post('https://www.hipflat.co.th/listings/add', data = data, headers = headers)
+            r = scraper.post('https://www.hipflat.co.th/listings/add', data = data, headers = headers)
 
             success = "true"
             detail = "Post created successfully"
@@ -584,7 +625,7 @@ class hipflat():
             link = ''
             aaas = []
             self.test_login(postdata)
-            r = httprequestObj.http_get('https://www.hipflat.co.th/account/listings/pro')
+            r = scraper.get('https://www.hipflat.co.th/account/listings/pro')
             print(r.url)
             print(r.status_code)
             data=r.text

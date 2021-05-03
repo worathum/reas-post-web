@@ -120,7 +120,7 @@ class baanfinder():
         detail = "Login Successful"
 
         options = uc.ChromeOptions()
-        #options.headless = True
+        options.headless = True
         self.driver = uc.Chrome('./static/chromedriver', options=options)
         #driver = webdriver.Chrome('./static/chromedriver', options=options)
 
@@ -460,6 +460,7 @@ class baanfinder():
             try:
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'js-is-agent'))).click()
             except:
+                self.driver.quit()
                 time_end = datetime.datetime.now()
                 time_usage = time_end - time_start
                 return {
@@ -470,7 +471,7 @@ class baanfinder():
                     "post_url": '',
                     "post_id": '',
                     "account_type": "null",
-                    "detail": 'Email Id Not Verified',
+                    "detail": 'คุณยังไม่ได้ยืนยันอีเมลล์ หรือบัญชีของท่านลงประกาศครบ 10 ประกาศแล้ว',
                     "websitename": "baanfinder",
                 }
             #Select listing type
@@ -480,7 +481,6 @@ class baanfinder():
                 sel_type = 'rent'
             else:
                 sel_type = 'ขาย'
-            print('Type selected')
             WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, sel_type))).click()
             #Select property type
             prop_type_map = {
@@ -496,7 +496,6 @@ class baanfinder():
                 "10": 10,   #FACTORY        ->No project
                 "25": 10    #FACTORY        ->No project
             }
-            print('Property selecting')
             sel_proptype = prop_type_map[postdata['property_type']]
             select_proptype = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'res.type')))
             select_proptype.click()
@@ -514,6 +513,7 @@ class baanfinder():
                 type_li =  type_ul.find_elements_by_tag_name('li')[0]
                 #print(type_li.text)
                 if type_li.text == 'ไม่พบข้อมูล':
+                    self.driver.quit()
                     time_end = datetime.datetime.now()
                     time_usage = time_end - time_start
                     return {
@@ -534,13 +534,11 @@ class baanfinder():
                 price_ele = 'js-price-sale'
             else:
                 price_ele = 'js-price-rent'
-            print('Price selecting')
             WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, price_ele))).send_keys(postdata['price_baht'].replace(',',''))
 
             #Detail
             #For condominium
             if postdata['property_type'] == '1':
-                print('Post condo data')
                 #Bath room
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_floorNumbering'))).send_keys(postdata['floor_level'])
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_totalFloors'))).send_keys(postdata['floor_total'])
@@ -558,6 +556,22 @@ class baanfinder():
                 address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
             
+            else:
+                self.driver.quit()
+                time_end = datetime.datetime.now()
+                time_usage = time_end - time_start
+                return {
+                    "success": False,
+                    "usage_time": str(time_usage),
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "post_url": '',
+                    "post_id": '',
+                    "account_type": "null",
+                    "detail": 'The posting of this website is on the maintance period',
+                    "websitename": "baanfinder",
+                }
+            
             try:
                 upload = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'file')))
                 all_images = ""
@@ -566,7 +580,6 @@ class baanfinder():
                         all_images += os.path.abspath(pic) + '\n'
                     else:
                         all_images += os.path.abspath(pic)
-                print('Image process')
                 upload.send_keys(all_images)
             except:
                 pass
@@ -574,23 +587,21 @@ class baanfinder():
             time.sleep(5)
 
             try:
-                print('Public post')
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'acceptAgentOrCoAgentFalse'))).click()
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res-publish-btn'))).click()
                 time.sleep(5)
-                print('Success click')
-                print(self.driver.current_url)
-                post_url = '' #self.driver.current_url
-                post_id = '' #post_url.split('_')[0].split('/')[-1]
-                print('Success post')
+                success = 'true'
+                detail = 'ลงประกาศสำเร็จ'
+                post_url = self.driver.current_url
+                post_id = post_url.split('_')[0].split('/')[-1]
             except:
                 success = 'false'
                 detail = 'ไม่สามารถลงประกาศได้เนื่องจากข้อมูลไม่ทราบถ้วน'
                 post_url = ''
                 post_id = ''
+        
+        self.driver.quit()
 
-        self.driver.close()
-            
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
