@@ -32,7 +32,7 @@ from selenium.webdriver.common.keys import Keys
 httprequestObj = lib_httprequest()
 
 
-with open("./static/ploychao_province.json") as f:
+with open("./static/ploychao_province.json", encoding='utf-8') as f:
     provincedata = json.load(f)
 
 
@@ -206,8 +206,7 @@ class kaiteedin():
         script = soup.find("script", attrs={'language': 'JavaScript'})
         if script != None:
             success = "false"
-            if "อีเมล หรือ รหัสผ่านของท่านไม่ถูกต้องกรุณาตรวจสอบใหม่อีกครั้ง !" in script.text:
-                detail = "Wrong Password or verfiy need to email"
+            detail = "Wrong Password or verfiy need to email"
         else:
             success = "true"
             detail = "Logged in"

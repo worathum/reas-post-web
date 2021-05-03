@@ -88,7 +88,7 @@ class nineasset():
             'email' : email_user,
             'password' : email_pass,
         }
-        r = httprequestObj.http_get('http://9asset.com/login')
+        r = httprequestObj.http_get('https://9asset.com/login')
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         authenticityToken = soup.find("input", {"name": "_token"})['value']
@@ -97,7 +97,7 @@ class nineasset():
         
         
         # print(datapost)
-        r = httprequestObj.http_post('http://9asset.com/loginMember', data=datapost)
+        r = httprequestObj.http_post('https://9asset.com/loginMember', data=datapost)
         data = r.text
         matchObj = re.search(r'เข้าสู่ระบบสำเร็จ', data)  
         # print(data)
