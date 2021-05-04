@@ -129,29 +129,33 @@ class livinginsider():
         time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
-        
-        r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php?action=home')
-        soup = BeautifulSoup(r.text, self.parser)
-        coin_cells = soup.findAll('span', {'class': 'coin_balance'})
-        print("Coin: "+coin_cells[0].text)
-        coinTemp = coin_cells[0].text
-        coin = coinTemp.replace(',','')
-        if int(coin) < 20:
-            detail = 'No balance to post. you have only '+coin+' credit'
-            success = False
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
-            return {
-                "success": success,
-                "websitename": self.webname,
-                "usage_time": str(time_usage),
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                "post_url": "",
-                "post_id": "",
-                "account_type": "null",
-                "detail": detail,
-            }
+        if test_login['success'] == 'true' :
+
+            r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php?action=home')
+            """ print("--------")
+            print(r.url) """
+            soup = BeautifulSoup(r.text, self.parser)
+            coin_cells = soup.findAll('span', {'class': 'coin_balance'})
+            print("Coin: "+coin_cells[0].text)
+            coinTemp = coin_cells[0].text
+            coin = coinTemp.replace(',','')
+            if int(coin) < 20:
+                detail = 'No balance to post. you have only '+coin+' credit'
+                success = False
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
+                return {
+                    "success": success,
+                    "websitename": self.webname,
+                    "usage_time": str(time_usage),
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "post_url": "",
+                    "post_id": "",
+                    "account_type": "null",
+                    "detail": detail,
+                }
+            
 
         success = test_login["success"]
         detail = test_login["detail"]
