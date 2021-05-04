@@ -211,8 +211,6 @@ class hipflat():
         }
 
         response = scraper.get('https://www.hipflat.co.th/login', headers = headers)
-        with open('./log/hipflat.png', 'wb') as f:
-            f.write(response.content)
         soup = BeautifulSoup(response.content, features = self.parser)
 
         
