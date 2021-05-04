@@ -511,7 +511,7 @@ class baanfinder():
                 type_ul = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'select2-js-resGroup-results')))
                 time.sleep(3)
                 type_li =  type_ul.find_elements_by_tag_name('li')[0]
-                #print(type_li.text)
+                print(type_li.text)
                 if type_li.text == 'ไม่พบข้อมูล':
                     self.driver.quit()
                     time_end = datetime.datetime.now()
@@ -534,13 +534,15 @@ class baanfinder():
                 price_ele = 'js-price-sale'
             else:
                 price_ele = 'js-price-rent'
-            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, price_ele))).send_keys(postdata['price_baht'].replace(',',''))
+            chck_price = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, price_ele))).send_keys(postdata['price_baht'].replace(',',''))
+            print("-------------")
+            print(chck_price)
 
             #Detail
             #For condominium
-            if postdata['property_type'] == '1':
+            if postdata['property_type'] == '1' :
                 #Bath room
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_floorNumbering'))).send_keys(postdata['floor_level'])
+                #WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_floorNumbering'))).send_keys(postdata['floor_level'])
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_totalFloors'))).send_keys(postdata['floor_total'])
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_area'))).send_keys(postdata['floor_area'])
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_bathrooms'))).send_keys(postdata['bath_room'])
@@ -555,7 +557,29 @@ class baanfinder():
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_howToFind'))).send_keys(postdata['addr_near_by'])
                 address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
+
+            elif postdata['property_type'] == '2' or postdata['property_type'] == '3':
+                #Bath room
+                #WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_floorNumbering'))).send_keys(postdata['floor_level'])
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_totalFloors'))).send_keys(postdata['floor_total'])
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_area'))).send_keys(postdata['floor_area'])
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_bathrooms'))).send_keys(postdata['bath_room'])
+                bed_room = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="js-bedroom-section"]/div/div/span')))
+                bed_room.click()
+                bed_put = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/span[2]/span/span[1]/input')))
+                bed_put.send_keys(postdata['bed_room'])
+                bed_put.send_keys(Keys.ENTER)
+                post_detail = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.ID, 'additionalDetails')))
+                post_detail[0].send_keys(postdata['post_description_th'])
+                post_detail[1].send_keys(postdata['post_description_th'])            
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_howToFind'))).send_keys(postdata['addr_near_by'])
+                address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
+                """ print("++++")
+                print(address) """
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
             
+            
+             
             else:
                 self.driver.quit()
                 time_end = datetime.datetime.now()
