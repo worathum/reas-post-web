@@ -1116,34 +1116,32 @@ class ddproperty():
                     #log.warning('cannot input corporate data '+str(e))
                     print(e)
                     pass
-
-            self.firefox.save_screenshot('./log/ddproperty1.png')
             
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
             time.sleep(2)
             # next
-            #try:
-            next_button = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name('step-next'))
-            # self.firefox.execute_script("return arguments[0].scrollIntoView(true);", next_button)
-            time.sleep(5)
-            next_button.click()
-            #except WebDriverException as e:
-            """ print('except 1')
-            print(e) """
-            #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
-            success = 'false'
-            detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits'
-            time.sleep(10)
-            self.firefox.close()
-            self.firefox.quit()
             try:
-                alert = self.firefox.switch_to.alert
-                alert.accept()
+                next_button = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name('step-next'))
+                # self.firefox.execute_script("return arguments[0].scrollIntoView(true);", next_button)
+                time.sleep(5)
+                next_button.click()
+            except WebDriverException as e:
+                print('except 1')
+                print(e)
+                #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
+                success = 'false'
+                detail = str(e) #'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits'
+                time.sleep(10)
                 self.firefox.close()
                 self.firefox.quit()
-            except:
-                pass
-            return success, detail, post_id, account_type
+                try:
+                    alert = self.firefox.switch_to.alert
+                    alert.accept()
+                    self.firefox.close()
+                    self.firefox.quit()
+                except:
+                    pass
+                return success, detail, post_id, account_type
 
             # image page
             time.sleep(5)
