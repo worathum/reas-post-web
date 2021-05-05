@@ -1128,8 +1128,8 @@ class ddproperty():
             time.sleep(5)
             next_button.click()
             #except WebDriverException as e:
-            print('except 1')
-            print(e)
+            """ print('except 1')
+            print(e) """
             #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
             success = 'false'
             detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits'
