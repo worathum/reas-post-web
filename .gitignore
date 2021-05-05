@@ -8,6 +8,7 @@ __pycache__/
 
 #Chromerdriver
 static/chromedriver.exe
+chromedriver.exe
 
 # Distribution / packaging
 .Python

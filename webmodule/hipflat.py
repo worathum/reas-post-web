@@ -16,7 +16,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.webdriver.common.by import By
 import cloudscraper
-import undetected_chromedriver.v2 as uc
+import undetected_chromedriver as uc
 
 httprequestObj = lib_httprequest()
 
@@ -50,7 +50,7 @@ class hipflat():
 
         options = uc.ChromeOptions()
         options.headless = True
-        browser = uc.Chrome('./static/chromedriver', options=options)
+        browser = uc.Chrome(options=options)
 
         try:
 
