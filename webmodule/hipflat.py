@@ -56,7 +56,7 @@ class hipflat():
             browser.implicitly_wait(10)
 
             browser.get('https://www.hipflat.co.th/login')
-            browser.save_screenshot('./log/hipflat.png')
+            #browser.save_screenshot('./log/hipflat.png')
             time.sleep(1)
             email = browser.find_element_by_id('user_email')
             email.send_keys(postdata['user'])
