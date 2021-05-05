@@ -16,7 +16,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.webdriver.common.by import By
 import cloudscraper
-import undetected_chromedriver as uc
+import undetected_chromedriver.v2 as uc
 
 httprequestObj = lib_httprequest()
 
@@ -50,12 +50,13 @@ class hipflat():
 
         options = uc.ChromeOptions()
         options.headless = True
-        browser = uc.Chrome(options=options)
+        browser = uc.Chrome('./static/chromedriver', options=options)
 
         try:
+            browser.implicitly_wait(10)
 
             browser.get('https://www.hipflat.co.th/login')
-            browser.save_screenshot('./log/hipfalt.png')
+            browser.save_screenshot('./log/hipflat.png')
             time.sleep(1)
             email = browser.find_element_by_id('user_email')
             email.send_keys(postdata['user'])
