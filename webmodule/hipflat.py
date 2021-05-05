@@ -50,11 +50,9 @@ class hipflat():
 
         options = uc.ChromeOptions()
         options.headless = True
-        
+        browser = uc.Chrome('./static/chromedriver', options=options)
 
         try:
-            browser = uc.Chrome('./static/chromedriver', options=options)
-            browser.implicitly_wait(10)
 
             browser.get('https://www.hipflat.co.th/login')
             browser.save_screenshot('./log/hipfalt.png')
