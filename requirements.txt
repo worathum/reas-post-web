@@ -30,3 +30,5 @@ sqlparse==0.4.1
 urllib3==1.25.11
 webencodings==0.5.1
 yarl==1.6.3
+cloudscraper==1.2.58
+undetected-chromedriver==2.2.7

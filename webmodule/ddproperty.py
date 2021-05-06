@@ -1121,16 +1121,17 @@ class ddproperty():
             time.sleep(2)
             # next
             try:
-                next_button = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name('step-next'))
-                # self.firefox.execute_script("return arguments[0].scrollIntoView(true);", next_button)
+                next_button = WebDriverWait(self.firefox, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'c-step-change-next')))
                 time.sleep(5)
-                next_button.click()
+                next = next_button[-1].find_element_by_tag_name('a')
+                # self.firefox.execute_script("return arguments[0].scrollIntoView(true);", next_button)
+                next.click()
             except WebDriverException as e:
                 print('except 1')
                 print(e)
                 #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
                 success = 'false'
-                detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits'
+                detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits, Due to: ' + str(e)
                 time.sleep(10)
                 self.firefox.close()
                 self.firefox.quit()
