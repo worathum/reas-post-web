@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common import action_chains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -486,11 +487,15 @@ class propertyhub():
 
                     images = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'dragablePreview')))
                     sel_img = images[0]
-                    del_img = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'trceoc-0')))
                     for image in images:
                         action_chain = ActionChains(self.driver)
-                        action_chain.move_to_element(sel_img).click()
-                        action_chain.move_to_element(del_img).click().perform()
+                        action_chain.move_to_element(sel_img)
+                        sleep(1.5)
+                        del_img = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'trceoc-0')))
+                        action_chain.move_to_element(del_img)
+                        sleep(1.5)
+                        action_chain.click().perform()
+                        
 
                     all_images = ""
                     for count, pic in enumerate(postdata['post_images']):

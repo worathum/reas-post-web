@@ -455,7 +455,7 @@ class baanfinder():
         if success == "true":
             time_start = datetime.datetime.utcnow()
             #Go to create post form
-            self.driver.get('https://www.baanfinder.com/new')
+            self.driver.get('https://www.baanfinder.com/th/new?ref=my-properties')
             #Select agent type
             try:
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'js-is-agent'))).click()
@@ -577,8 +577,6 @@ class baanfinder():
                 """ print("++++")
                 print(address) """
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
-            
-            
              
             else:
                 self.driver.quit()
@@ -595,7 +593,44 @@ class baanfinder():
                     "detail": 'The posting of this website is on the maintance period',
                     "websitename": "baanfinder",
                 }
-            
+
+            if postdata['property_type'] != '1':
+                try:
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="addressArea"]/div[1]/div[1]/div/div/span'))).click()
+                    province = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'select2-search__field')))
+                    province.send_keys(postdata['addr_province'])
+                    province.send_keys(Keys.ENTER)
+                    time.sleep(1)
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="addressArea"]/div[1]/div[2]/div/div/span/span[1]/span'))).click()
+                    district = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'select2-search__field')))
+                    district.send_keys(postdata['addr_district'])
+                    district.send_keys(Keys.ENTER)
+                    time.sleep(1)
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="addressArea"]/div[2]/div[1]/div/div/span/span[1]/span'))).click()
+                    subdis = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'select2-search__field')))
+                    subdis.send_keys(postdata['addr_sub_district'])
+                    subdis.send_keys(Keys.ENTER)
+                    try:
+                        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_lat'))).send_keys(postdata['geo_latitude'])
+                        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_lng'))).send_keys(postdata['geo_longitude'])
+                    except:
+                        pass
+                except:
+                    self.driver.quit()
+                    time_end = datetime.datetime.now()
+                    time_usage = time_end - time_start
+                    return {
+                        "success": False,
+                        "usage_time": str(time_usage),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "post_url": '',
+                        "post_id": '',
+                        "account_type": "null",
+                        "detail": 'ไม่สามารถลงประกาศได้เนื่องจากไม่พบตำแหน่งทรัพย์ของท่าน',
+                        "websitename": "baanfinder",
+                    }
+
             try:
                 upload = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'file')))
                 all_images = ""
@@ -613,11 +648,17 @@ class baanfinder():
             try:
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'acceptAgentOrCoAgentFalse'))).click()
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res-publish-btn'))).click()
-                time.sleep(5)
-                success = 'true'
-                detail = 'ลงประกาศสำเร็จ'
-                post_url = self.driver.current_url
-                post_id = post_url.split('_')[0].split('/')[-1]
+                time.sleep(8)
+                if 'https://www.baanfinder.com/th/new?ref=my-properties' == str(self.driver.current_url):
+                    success = 'false'
+                    detail = 'ไม่สามารถลงประกาศได้เนื่องจากข้อมูลไม่ทราบถ้วน'
+                    post_url = ''
+                    post_id = ''
+                else:
+                    success = 'true'
+                    detail = 'ลงประกาศสำเร็จ'
+                    post_url = self.driver.current_url
+                    post_id = post_url.split('_')[0].split('/')[-1]
             except:
                 success = 'false'
                 detail = 'ไม่สามารถลงประกาศได้เนื่องจากข้อมูลไม่ทราบถ้วน'
