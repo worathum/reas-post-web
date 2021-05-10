@@ -455,7 +455,7 @@ class baanfinder():
         if success == "true":
             time_start = datetime.datetime.utcnow()
             #Go to create post form
-            self.driver.get('https://www.baanfinder.com/new')
+            self.driver.get('https://www.baanfinder.com/th/new?ref=my-properties')
             #Select agent type
             try:
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'js-is-agent'))).click()
@@ -558,74 +558,6 @@ class baanfinder():
                 address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
             
-            #for house,twinhouse,townhouse,shophouse,office
-            elif postdata['property_type'] == '2' or postdata['property_type'] == '3' or postdata['property_type'] == '4' or postdata['property_type'] == '5' or postdata['property_type'] == '9':
-                #Bath room
-                #WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_floorNumbering'))).send_keys(postdata['floor_level'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_totalFloors'))).send_keys(postdata['floor_total'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_area'))).send_keys(postdata['floor_area'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_bathrooms'))).send_keys(postdata['bath_room'])
-                bed_room = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="js-bedroom-section"]/div/div/span')))
-                bed_room.click()
-                bed_put = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/span[2]/span/span[1]/input')))
-                bed_put.send_keys(postdata['bed_room'])
-                bed_put.send_keys(Keys.ENTER)
-                post_detail = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.ID, 'additionalDetails')))
-                post_detail[0].send_keys(postdata['post_description_th'])
-                post_detail[1].send_keys(postdata['post_description_th'])            
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_howToFind'))).send_keys(postdata['addr_near_by'])
-                address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
-                """ print("++++")
-                print(address) """
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
-    
-            #for land
-            elif postdata['property_type'] == '6':
-                #Area
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_area'))).send_keys(postdata['floor_area'])
-                post_detail = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.ID, 'additionalDetails')))
-                post_detail[0].send_keys(postdata['post_description_th'])
-                post_detail[1].send_keys(postdata['post_description_th'])            
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_howToFind'))).send_keys(postdata['addr_near_by'])
-                address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
-                """ print("++++")
-                print(address) """
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
-
-            #for hotel
-            elif postdata['property_type'] == '8':
-                #area size
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_area'))).send_keys(postdata['floor_area'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_bathrooms'))).send_keys(postdata['bath_room'])
-                bed_room = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="js-bedroom-section"]/div/div/span')))
-                bed_room.click()
-                bed_put = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/span[2]/span/span[1]/input')))
-                bed_put.send_keys(postdata['bed_room'])
-                bed_put.send_keys(Keys.ENTER)
-                post_detail = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.ID, 'additionalDetails')))
-                post_detail[0].send_keys(postdata['post_description_th'])
-                post_detail[1].send_keys(postdata['post_description_th'])            
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_howToFind'))).send_keys(postdata['addr_near_by'])
-                address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
-                """ print("++++")
-                print(address) """
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
-
-            #for factory
-            elif postdata['property_type'] == '10' or postdata['property_type'] == '25':
-                #bath room
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_area'))).send_keys(postdata['floor_area'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_bathrooms'))).send_keys(postdata['bath_room'])
-                bed_room = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="js-bedroom-section"]/div/div/span')))
-                bed_room.click()
-                post_detail = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.ID, 'additionalDetails')))
-                post_detail[0].send_keys(postdata['post_description_th'])
-                post_detail[1].send_keys(postdata['post_description_th'])            
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_howToFind'))).send_keys(postdata['addr_near_by'])
-                address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
-                """ print("++++")
-                print(address) """
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
             
             
              
@@ -644,7 +576,44 @@ class baanfinder():
                     "detail": 'The posting of this website is on the maintance period',
                     "websitename": "baanfinder",
                 }
-            
+
+            if postdata['property_type'] != '1':
+                try:
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="addressArea"]/div[1]/div[1]/div/div/span'))).click()
+                    province = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'select2-search__field')))
+                    province.send_keys(postdata['addr_province'])
+                    province.send_keys(Keys.ENTER)
+                    time.sleep(1)
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="addressArea"]/div[1]/div[2]/div/div/span/span[1]/span'))).click()
+                    district = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'select2-search__field')))
+                    district.send_keys(postdata['addr_district'])
+                    district.send_keys(Keys.ENTER)
+                    time.sleep(1)
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="addressArea"]/div[2]/div[1]/div/div/span/span[1]/span'))).click()
+                    subdis = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'select2-search__field')))
+                    subdis.send_keys(postdata['addr_sub_district'])
+                    subdis.send_keys(Keys.ENTER)
+                    try:
+                        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_lat'))).send_keys(postdata['geo_latitude'])
+                        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_lng'))).send_keys(postdata['geo_longitude'])
+                    except:
+                        pass
+                except:
+                    self.driver.quit()
+                    time_end = datetime.datetime.now()
+                    time_usage = time_end - time_start
+                    return {
+                        "success": False,
+                        "usage_time": str(time_usage),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "post_url": '',
+                        "post_id": '',
+                        "account_type": "null",
+                        "detail": 'ไม่สามารถลงประกาศได้เนื่องจากไม่พบตำแหน่งทรัพย์ของท่าน',
+                        "websitename": "baanfinder",
+                    }
+
             try:
                 upload = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'file')))
                 all_images = ""
@@ -662,11 +631,17 @@ class baanfinder():
             try:
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'acceptAgentOrCoAgentFalse'))).click()
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res-publish-btn'))).click()
-                time.sleep(5)
-                success = 'true'
-                detail = 'ลงประกาศสำเร็จ'
-                post_url = self.driver.current_url
-                post_id = post_url.split('_')[0].split('/')[-1]
+                time.sleep(8)
+                if 'https://www.baanfinder.com/th/new?ref=my-properties' == str(self.driver.current_url):
+                    success = 'false'
+                    detail = 'ไม่สามารถลงประกาศได้เนื่องจากข้อมูลไม่ทราบถ้วน'
+                    post_url = ''
+                    post_id = ''
+                else:
+                    success = 'true'
+                    detail = 'ลงประกาศสำเร็จ'
+                    post_url = self.driver.current_url
+                    post_id = post_url.split('_')[0].split('/')[-1]
             except:
                 success = 'false'
                 detail = 'ไม่สามารถลงประกาศได้เนื่องจากข้อมูลไม่ทราบถ้วน'
