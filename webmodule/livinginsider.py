@@ -286,6 +286,8 @@ class livinginsider():
             else:
                 typep = 1
 
+            postdata['post_description_th'] = postdata['post_description_th'].replace('\r', '')
+
             if str(postdata['property_type']) == '1':
                 data = {
                     'currentstep': '1',
@@ -325,7 +327,6 @@ class livinginsider():
                     'web_latitude': postdata['geo_latitude'],
                     'web_longitude': postdata['geo_longitude']
                 }
-
             r = httprequestObj.http_post('https://www.livinginsider.com/a_add_living.php', data=data)
             data = r.text
             img_link = 'https://www.livinginsider.com/js_upload/php/'

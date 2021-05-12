@@ -476,6 +476,22 @@ class pantipmarket():
                     success = False
                     detail = 'Post with similar title already exists'
 
+                if post_id != '':
+                    boostdata =     {
+                        "ds_name": "pantipmarket",
+                        "ds_id": postdata['ds_id'],
+                        "post_id": post_id,
+                        "log_id": 1,
+                        "user": postdata['user'],
+                        "pass": postdata['pass']
+                    }
+                    boost = self.boost_post(boostdata)
+                    if boost['success']:
+                        detail += ' and post already boosted to maximum expiration date.'
+                    else:
+                        detail += ' and boost to maximum expiration date fail.'
+                else:
+                    detail += ' and cannot boost cause no id.'
 
             else:
                 end_time = datetime.utcnow()
