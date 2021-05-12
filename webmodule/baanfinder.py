@@ -484,15 +484,15 @@ class baanfinder():
             WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, sel_type))).click()
             #Select property type
             prop_type_map = {
-                "1": 4,     #CONDOMINIUM    ->
-                "2": 1,     #HOUSE          ->
-                "3": 2,     #TWIN_HOUSE     ->
-                "4": 3,     #TOWNHOUSE      ->
-                "5": 6,     #SHOPHOUSE      ->
+                "1": 4,     #CONDOMINIUM    -> '
+                "2": 1,     #HOUSE          -> '
+                "3": 2,     #TWIN_HOUSE     -> '
+                "4": 3,     #TOWNHOUSE      -> '
+                "5": 6,     #SHOPHOUSE      -> '
                 "6": 9,     #LAND           ->No project
                 "7": 5,     #APARTMENT      ->No project
                 "8": 11,    #HOTEL          ->No project
-                "9": 7,     #OFFICE         ->
+                "9": 7,     #OFFICE         -> '
                 "10": 10,   #FACTORY        ->No project
                 "25": 10    #FACTORY        ->No project
             }
@@ -557,26 +557,9 @@ class baanfinder():
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_howToFind'))).send_keys(postdata['addr_near_by'])
                 address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
-
-            elif postdata['property_type'] == '2' or postdata['property_type'] == '3':
-                #Bath room
-                #WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_floorNumbering'))).send_keys(postdata['floor_level'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_totalFloors'))).send_keys(postdata['floor_total'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_area'))).send_keys(postdata['floor_area'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_bathrooms'))).send_keys(postdata['bath_room'])
-                bed_room = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="js-bedroom-section"]/div/div/span')))
-                bed_room.click()
-                bed_put = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/span[2]/span/span[1]/input')))
-                bed_put.send_keys(postdata['bed_room'])
-                bed_put.send_keys(Keys.ENTER)
-                post_detail = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.ID, 'additionalDetails')))
-                post_detail[0].send_keys(postdata['post_description_th'])
-                post_detail[1].send_keys(postdata['post_description_th'])            
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'res_howToFind'))).send_keys(postdata['addr_near_by'])
-                address = postdata['addr_sub_district'] + ' ' + postdata['addr_district'] + ' ' + postdata['addr_province']
-                """ print("++++")
-                print(address) """
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'address'))).send_keys(address)
+            
+            
+            
              
             else:
                 self.driver.quit()

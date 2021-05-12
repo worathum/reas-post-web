@@ -108,7 +108,7 @@ class livinginsider():
             detail = 'Login successful'
         else:
             success = False
-            detail = 'Couldnot login'
+            detail = 'ไม่สามารถเข้าสู่ระบบได้ กรุณาตรวจสอบบัญชีอีกครั้ง'
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -155,8 +155,7 @@ class livinginsider():
                     "account_type": "null",
                     "detail": detail,
                 }
-            
-
+        
         success = test_login["success"]
         detail = test_login["detail"]
         post_id = ""
