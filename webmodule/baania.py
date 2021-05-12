@@ -11,6 +11,7 @@ import requests
 import shutil
 from urllib.parse import unquote
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+import math
 
 
 httprequestObj = lib_httprequest()
@@ -456,6 +457,17 @@ class baania():
                 datapost['num_floor'] = postdata['floor_total']
                 datapost['keyId'] = pid
 
+                if postdata['bed_room'] == '1':
+                    datapost['room_type'] = '1br'
+                elif postdata['bed_room'] == '2':
+                    datapost['room_type'] = '2br'
+                elif postdata['bed_room'] == '3':
+                    datapost['room_type'] = '3br' 
+                elif postdata['bed_room'] == '4':
+                    datapost['room_type'] = '4br' 
+                else:
+                    datapost['room_type'] = '5br' 
+
                 r = requests.patch('https://api.baania.com/api/v1/users/listings/' +
                                    pid+'/2', data=json.dumps(datapost).encode('utf-8'), headers=headers)
                 data = json.loads(r.text)
@@ -533,9 +545,21 @@ class baania():
 
             if success == "true":
                 headers['content-type'] = 'application/json'
-                # print(files)
+                datapost['price_per_sqm'] = math.floor(float(datapost['price_listing']) / float(datapost['area_usable']))
+
                 r = requests.patch('https://api.baania.com/api/v1/users/listings/' +
-                                   pid+'/3', data=json.dumps(files).encode('utf-8'), headers=headers)
+                                   pid+'/3', data=json.dumps(datapost).encode('utf-8'), headers=headers)
+                data = json.loads(r.text)
+                # print(data)
+                if r.status_code != 200:
+                    success = "false"
+                    detail = data["message"]
+            
+            if success == "true":
+                headers['content-type'] = 'application/json'
+
+                r = requests.patch('https://api.baania.com/api/v1/users/listings/' +
+                                   pid+'/4', data=json.dumps(files).encode('utf-8'), headers=headers)
                 data = json.loads(r.text)
                 # print(data)
                 if r.status_code != 200:
@@ -547,6 +571,7 @@ class baania():
                     "website": "baania.com",
                     "title_th": postdata["post_title_th"],
                     "contact_name": postdata["name"],
+                    "contact_email": postdata["email"],
                     "contact_tel": postdata["mobile"],
                     "description_th": postdata["post_description_th"].replace('\n','<br>'),
                     "is_publish": 1
@@ -554,7 +579,7 @@ class baania():
                 # print(postdata["post_description_th"].replace('\n','<br>'))
                 # print(postdata["post_description_th"])
                 r = requests.patch('https://api.baania.com/api/v1/users/listings/' +
-                                   pid+'/4', data=json.dumps(datapost).encode('utf-8'), headers=headers)
+                                   pid+'/5', data=json.dumps(datapost).encode('utf-8'), headers=headers)
                 data = json.loads(r.text)
                 if r.status_code == 200:
                     detail = "Post created successfully!"
