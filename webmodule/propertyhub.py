@@ -279,17 +279,16 @@ class propertyhub():
 
                     upload = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[1]/div/form/div/div/div[3]/div[2]/input')))
                     #all_images = ""
+
+                    all_images = ""
                     for count, pic in enumerate(postdata['post_images']):
                         if count < len(postdata['post_images'])-1:
-                            pics = os.path.abspath(pic)+ '\n'
-                            upload.send_keys(pics)
-                            #all_images += os.path.abspath(pic) + '\n'
+                            all_images += os.path.abspath(pic) + '\n'
                         else:
-                            last_pic = os.path.abspath(pic)
-                            upload.send_keys(last_pic)
-                    
-                    #upload = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[1]/div/form/div/div/div[3]/div[2]/input')))
-                    #upload.send_keys(all_images)
+                            all_images += os.path.abspath(pic)
+
+                    upload = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[1]/div/form/div/div/div[3]/div[2]/input')))
+                    upload.send_keys(all_images)
         
                     detail_post = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ql-editor')))
                     detail_post[1].click()
