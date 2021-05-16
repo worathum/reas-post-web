@@ -1121,11 +1121,10 @@ class ddproperty():
             time.sleep(2)
             # next
             try:
-                next_button = WebDriverWait(self.firefox, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'c-step-change-next')))
+                next_button = WebDriverWait(self.firefox, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'btn.step-next.btn-primary')))
                 time.sleep(5)
-                next = next_button[0].find_element_by_tag_name('a')
+                next = next_button[0].click()
                 # self.firefox.execute_script("return arguments[0].scrollIntoView(true);", next_button)
-                next.click()
             except WebDriverException as e:
                 print('except 1')
                 print(e)
