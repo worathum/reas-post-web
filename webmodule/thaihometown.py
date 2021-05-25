@@ -1165,8 +1165,9 @@ class thaihometown():
                         #log.debug('break')
                         break
             
-            if os.path.exists(os.getcwd()+imgname):
-                os.remove(os.getcwd()+imgname)      
+                     
+                    if os.path.exists(os.getcwd()+imgname):
+                        os.remove(os.getcwd()+imgname)      
 
         #
         # end process
