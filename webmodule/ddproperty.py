@@ -291,7 +291,8 @@ class ddproperty():
                 #log.warning('cannot login')
             if success == "true":
                 # agent_id = re.search(r'optimize_agent_id = (\d+);', self.firefox.page_source).group(1)
-                agent_id = re.search(r'{"user":{"id":(\d+),', self.firefox.page_source).group(1)
+                agent_id = re.search(r',"agent":{"id":(\d+),', self.firefox.page_source).group(1)
+
 
         #log.debug("login status %s agent id %s", success, agent_id)
 
