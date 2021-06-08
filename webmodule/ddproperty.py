@@ -207,7 +207,7 @@ class ddproperty():
 
         options = Options()
         # debug by comment option --headless
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -733,6 +733,19 @@ class ddproperty():
                 time.sleep(0.2)
                 # self.firefox.save_screenshot("debug_response/newp1.png")
 
+                #Plus code handler
+                plus_code = ''
+                try:
+                    res = httprequestObj.http_get('https://plus.codes/api?address=' + datahandled['geo_latitude'] + ',' + datahandled['geo_longitude'])
+                    plus_code = json.loads(res.text)['plus_code']['global_code']
+                except:
+                    pass
+                if plus_code != '':
+                    try:
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'plus-code-input'))).send_keys(plus_code)
+                    except:
+                        pass
+
                 # listing type
                 linktxt = ''
                 cssselect = ''
@@ -802,27 +815,12 @@ class ddproperty():
                     detail = 'for a new project name, province , district , subdistrict error'
                     #log.error('area error ' + str(e))
 
-                try:
-                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
-                    time.sleep(2)
-                except:
-                    pass
-
-                """ #debug
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[1]/div[3]/div/div[3]/div')).click()
-                
-                #log.debug('input lat %s lng %s',datahandled['geo_latitude'],datahandled['geo_longitude'])
-                js = 'guruApp.createListing.formData.map.lat = ' + datahandled['geo_latitude'] + '; guruApp.createListing.formData.map.lng = ' + datahandled['geo_longitude'] + '; '
-                self.firefox.execute_script(js)
-                time.sleep(0.5)
-
-                #TODO debug
-                element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[2]/a'))
-                self.firefox.execute_script("arguments[0].setAttribute('href','https://maps.google.com/maps?ll=13.649778,100.362285&z=14&t=m&hl=en-US&gl=US&mapclient=apiv3');", element)
-                time.sleep(0.5)
-                element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[10]/div/div[1]/div/div/div/div/div/div/div/div/div/div[7]/div[2]/a'))
-                self.firefox.execute_script("arguments[0].setAttribute('href','https://www.google.com/maps/@13.649778,100.362285,14z/data=!10m1!1e1!12b1?source=apiv3&rapsrc=apiv3');", element)
-                time.sleep(0.5) """
+                if plus_code == '' or datahandled['action'] == 'edit_post':
+                    try:
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("btn-mark-googlemaps")).click()
+                        time.sleep(2)
+                    except:
+                        pass
 
                 # road
                 try:
@@ -956,7 +954,7 @@ class ddproperty():
             #self.firefox.save_screenshot("debug_response/newp5.png")
 
             try:
-                self.firefox.find_element_by_id("live-tour-radio-false").click()
+                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'live-tour-radio-false'))).click()
             except:
                 pass
 
