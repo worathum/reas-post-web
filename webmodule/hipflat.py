@@ -50,7 +50,7 @@ class hipflat():
 
         options = uc.ChromeOptions()
         options.headless = True
-        browser = uc.Chrome('./static/chromedriver', options=options)
+        browser = uc.Chrome(options=options)
 
         try:
             browser.implicitly_wait(10)
@@ -320,6 +320,7 @@ class hipflat():
                 soup = BeautifulSoup(response.content, features = "html.parser")
                 data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
             data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
+            print(data['authenticity_token'])
             response = scraper.post('https://www.hipflat.co.th/login', data = data, headers = headers)
             if response.url == 'https://www.hipflat.co.th/login':
                 success = "false"
@@ -416,7 +417,7 @@ class hipflat():
             #'listing[bedrooms]': str(postdata['bed_room']),
             #    'listing[bathrooms]': str(postdata['bath_room']),
 
-            print('1')
+            
 
             dataque = {
                 "params": "query="+ str(postdata['web_project_name']) +"&hitsPerPage=1"
@@ -441,8 +442,6 @@ class hipflat():
                 pro_name = str(postdata['web_project_name'])
                 lat = str(postdata['geo_latitude'])
                 lng = str(postdata['geo_longitude'])
-
-
 
             data = {
                 'utf8': '',
@@ -549,9 +548,6 @@ class hipflat():
                 'commit': 'record'
             }
 
-            #'listing[bedrooms]': str(postdata['bed_room']),
-            #    'listing[bathrooms]': str(postdata['bath_room']),
-
             if(str(postdata['bed_room']) == "" or str(postdata['bed_room']) == "null" or 'bed_room' not in postdata or str(postdata['bed_room']) == None):
                 data['listing[bedrooms]'] == '0'
 
@@ -568,17 +564,26 @@ class hipflat():
             
                 data['listing[project_name]'] = 'วอร์เตอร์มาร์ค เจ้าพระยา'
                 data['listing[condo_id]'] = '5119af8eef23779a61000713'
-
+            
           
             response = scraper.get('https://www.hipflat.co.th/listings/add?rank=100', headers = headers)
-            print('Check response')
-            #print(response.status_code)
+            soup = BeautifulSoup(response.content,'html.parser')
+            alert = soup.find('div',{'class' : 'alert-backdrop'})
 
-            if response.status_code == 500:
+            if alert != None:
                 response_free = scraper.get('https://www.hipflat.co.th/account/listings/free', headers = headers)
                 soup_free = BeautifulSoup(response_free.content,'html.parser')
+                soup_free_count = 0
                 list_post = soup_free.find('div',{'class' : 'user-listings__collection'}).find_all('div')
-                if len(list_post) < 3:
+                for list_post_t in list_post:
+                    try:
+                        for list_post_t_2 in list_post_t['class']:
+                            if "user-listing__state--publishing" in list_post_t_2:
+                                soup_free_count += 1
+                    except:
+                        pass
+
+                if soup_free_count < 3:
                     response = scraper.get('https://www.hipflat.co.th/listings/add?rank=1', headers = headers)
                 else:
                     return{
@@ -593,11 +598,9 @@ class hipflat():
                         "detail": 'บัญชีฟรีของท่านมีครบทั้ง 3 ประกาศแล้ว',
                         "account_type": "null"
                     }
-
-            soup = BeautifulSoup(response.content, features = "html.parser")
-            # print(soup)
             
-            #try:
+            soup = BeautifulSoup(response.content, features = "html.parser")
+            
             data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
         
             data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
@@ -621,25 +624,19 @@ class hipflat():
             aaas = []
             self.test_login(postdata)
             r = scraper.get('https://www.hipflat.co.th/account/listings/pro')
-            print(r.url)
-            print(r.status_code)
             data=r.text
-            # print('1')
-            # with open('b.html', 'w') as f:
-            #     f.write(data)
+
             soup = BeautifulSoup(data, features = "html.parser")
-            #aas = soup.findAll("a")
+
             for i in soup.find_all('a'):
-                # print(i['href'])
                 try:
                     if i.get('href').find('/edit') != -1:
-                        # link = i['href']
+
                         aaas.append(i['href'])
                 except:
                     continue
-            # print(link)
+
             link = str(aaas[0])
-            #print(link)
             link = link.replace('/listings/','')
             post_id = str(link.replace('/edit',''))
 
@@ -647,10 +644,6 @@ class hipflat():
 
             if 'post_images' in postdata and len(postdata['post_images']) > 0:
                 self.upload_file(postdata,post_id)
-
-            """ except:
-                success = "false"
-                detail = "Could not create post. Maybe you're not using premium account." """
 
         else:
             success = "false"
@@ -670,11 +663,6 @@ class hipflat():
             "detail": detail,
             "account_type": "null"
         }
-
-
-
-
-
 
     def edit_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')

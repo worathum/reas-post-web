@@ -24,7 +24,7 @@ def home(request):
     # Create links and OpenID form to the Login handler.
     return HttpResponse('''
 
-        <h2>HELLO</h2>
+        <h2>HELLOs</h2>
         
         <form action="reaspostweb/apirequest" name="apirequest" method="post" enctype="multipart/form-data">
             <table>
