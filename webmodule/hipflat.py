@@ -578,7 +578,7 @@ class hipflat():
                 for list_post_t in list_post:
                     try:
                         for list_post_t_2 in list_post_t['class']:
-                            if "user-listing__state--publishing" in list_post_t_2:
+                            if "user-listing__state--live" in list_post_t_2:
                                 soup_free_count += 1
                     except:
                         pass
