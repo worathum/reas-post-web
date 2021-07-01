@@ -154,7 +154,6 @@ class propertyhub():
         detail = test_login["detail"]
 
         slt_project = datahandled['project_name'].split(' ')
-
         try:
             if success == 'true':
                 clear_pop = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, 'body'))).send_keys(Keys.ESCAPE)
@@ -308,6 +307,7 @@ class propertyhub():
                     
                     if success == 'true':
                         try:
+                            agreement = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'agreement'))).click()
                             cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
                             sleep(5)
                             try:
@@ -316,8 +316,8 @@ class propertyhub():
                                 sleep(5)
                             except:
                                 pass
-                            get_all_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-list-view')))
                             
+                            get_all_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-list-view')))
                             title_check = ''
                             a_link = []
                             for link in get_all_link.find_elements_by_tag_name('a'):
