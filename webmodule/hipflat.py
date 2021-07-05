@@ -50,7 +50,7 @@ class hipflat():
 
         options = uc.ChromeOptions()
         options.headless = True
-        browser = uc.Chrome(options=options)
+        browser = uc.Chrome('./static/chromedriver', options=options)
 
         try:
             browser.implicitly_wait(10)
@@ -1018,11 +1018,6 @@ class hipflat():
             "post_id": str(postdata['post_id']),
             "log_id": postdata['log_id']
         }
-
-
-
-
-
 
     def delete_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')

@@ -129,8 +129,8 @@ class livinginsider():
         time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
-        if test_login['success'] == 'true' :
-
+        
+        if (test_login['success'] == 'true' or test_login['success'] == True) :
             r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php?action=home')
             """ print("--------")
             print(r.url) """
