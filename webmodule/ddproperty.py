@@ -2209,7 +2209,11 @@ class ddproperty():
                         post_url = valid_urls[i]
                         post_id = valid_ids[i]
 
-
+        try:
+            self.firefox.close()
+            self.firefox.quit()
+        except:
+            pass
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start

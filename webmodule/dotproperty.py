@@ -225,6 +225,12 @@ class dotproperty():
                     #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'ประกาศทั้งหมด')))
                     driver.get('https://www.dotproperty.co.th/my-dashboard/properties')
                     time.sleep(5)
+
+                    try:
+                        ActionChains(driver).move_by_offset(10 , 10).click().perform()
+                    except:
+                        pass
+                    
                     try:
                         WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'upload-btn'))).click()
                     except:
@@ -237,11 +243,13 @@ class dotproperty():
                         button[1].click()
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     if soup.find('button', {'data-tooltip': 'คุณได้ออนไลน์ประกาศครบตามจำนวนที่กำหนดแล้ว'}):
+                        print('false')
                         success = 'false'
                         detail = 'คุณได้ออนไลน์ประกาศครบตามจำนวนที่กำหนดแล้ว'
                         post_url = ''
                         post_id = ''
                     else: 
+                        print('true')
                         success = 'true'
 
                     if success == 'true':
