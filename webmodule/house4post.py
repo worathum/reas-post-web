@@ -20,7 +20,12 @@ class house4post:
         self.debugresdata = 0
         self.parser = 'html.parser'
 
+    def logout_user(self):
+        url = "https://www.house4post.com/logout_member"
+        httprequestObj.http_get(url)
+
     def register_user(self, data):
+        self.logout_user()
         start_time = datetime.datetime.utcnow()
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
         success = 'true'
@@ -68,6 +73,7 @@ class house4post:
         return result
 
     def test_login(self, data):
+        self.logout_user()
         start_time = datetime.datetime.utcnow()
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
         postdata = {}
