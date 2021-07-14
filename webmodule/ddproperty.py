@@ -725,7 +725,7 @@ class ddproperty():
         matchObj = re.search(r'ol class="no-match"', self.firefox.page_source)
         if matchObj or check_project:
             #log.debug('not found property name %s', projectname)
-            if (datahandled['addr_province'] == '' or datahandled['addr_district'] == '' or datahandled['addr_sub_district'] == ''):
+            if (datahandled['addr_province'] == '' or datahandled['addr_district'] == ''):
                 success = 'false'
                 detail = 'for a new project name, ddproperty must require province , district and sub_district'
             if success == 'true':
