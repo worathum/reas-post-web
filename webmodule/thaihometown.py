@@ -878,7 +878,7 @@ class thaihometown():
             pass
 
         #upload image ,MultipartEncoder is very HARD, I use 24hr. for wrestle with it
-        allowupload =len(datahandled['post_images'][:11])
+        allowupload =len(datahandled['post_images'][:12])
         for i in range(allowupload):
             datapost = {
                         'id':str(i+1),

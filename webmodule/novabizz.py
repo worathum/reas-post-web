@@ -60,11 +60,15 @@ class novabizz():
             "detail": ""
         }
 
+    def logout_user(self):
+        url = "https://www.novabizz.com/logout.php"
+        httprequestObj.http_get(url)
+
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        httprequestObj.http_get('https://www.novabizz.com/logout.php')
+        self.logout_user()
 
         if 'name_th' not in postdata:
             return{
@@ -165,10 +169,10 @@ class novabizz():
     def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        self.logout_user()
 
         email = postdata['user']
         passwd = postdata['pass']
-        httprequestObj.http_get('https://www.novabizz.com/logout.php')
         r = httprequestObj.http_get('https://www.novabizz.com/member.php')
         soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('input', attrs={'name': 'save'})['value']
