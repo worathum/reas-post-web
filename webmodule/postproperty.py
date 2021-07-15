@@ -554,8 +554,6 @@ class postproperty:
         return result
 
     def delete_post(self,data):
-
-        # wp-list-table widefat fixed striped posts
         test_login = self.test_login(data)
         success = test_login["success"]
         start_time = datetime.datetime.utcnow()
@@ -564,47 +562,26 @@ class postproperty:
         detail = test_login["detail"]
 
         if success == "true":
-            url = 'https://post-property.com/wp-admin/edit.php'
+            url = 'https://post-property.com/wp-admin/post.php?post='+ post_id +'&action=edit'
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
             req = httprequestObj.http_get(url, headers=headers)
-            valid_ids = []
-            pages = []
             soup = BeautifulSoup(req.text, 'html5lib')
-            total_pages = int(soup.find('span', attrs={'class': 'total-pages'}).text)
-            # #print(total_pages)
-
-            for page_no in range(total_pages):
-                url = 'https://post-property.com/wp-admin/edit.php?paged=' + str(page_no + 1)
-                req = httprequestObj.http_get(url, headers=headers)
-                soup = BeautifulSoup(req.text, 'html5lib')
-                posts = soup.find('tbody',{'id':'the-list'}).findAll('tr')
-                for post in posts:
-                    valid_ids.append(str(post['id'])[5:])
-                    pages.append(page_no+1)
-
-            #print(valid_ids)
-            if post_id in valid_ids:
-                del_page = ''
-                for i in range(len(valid_ids)):
-                    if valid_ids[i] == post_id:
-                        del_page = str(pages[i])
-                        break
-                url = 'https://post-property.com/wp-admin/edit.php?s=&post_status=all&post_type=post&_wpnonce='+str(soup.find('input',{'name':'_wpnonce'})['value'])+'&_wp_http_referer=%2Fwp-admin%2Fedit.php&action=-1&paged='+del_page+'&post%5B%5D='+post_id+'&action2=trash'
-                #print(url)
-                req = httprequestObj.http_get(url, headers=headers)
-
-                txt = str(req.text)
-                if txt.find('ผิดพลาดระหว่างลบประกาศ') == -1:
+            try:
+                owner_id_chk = soup.find('h1', attrs={'class': 'wp-heading-inline'})
+                if ("ประกาศ" in str(owner_id_chk.text)):
+                    delete_a = soup.find('a', attrs={'class': 'submitdelete deletion'})
+                    delete_link = delete_a['href']
+                    req = httprequestObj.http_get(delete_link, headers=headers)
                     success = 'true'
                     detail = 'Post deleted'
                 else:
                     success = 'false'
-                    detail = 'Error while deleting'
-            else:
+                    detail = "Post not found"
+            except:
                 success = 'false'
-                detail = 'Post not found'
+                detail = "Cannot find post_id"
 
         end_time = datetime.datetime.utcnow()
         result = {
