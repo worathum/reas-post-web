@@ -240,6 +240,8 @@ class onlineannouncement():
             except:
                 theprodid = getProdId[str(postdata['property_type'])]
 
+            postdata['post_description_th'] = postdata['post_description_th'].replace("'","")
+
             datapost = {
                 'action': 'addpost',
                 'c_category': 'undefined',
@@ -397,6 +399,8 @@ class onlineannouncement():
                     postdata['property_type'] = proid[str(postdata['property_type'])]
                 except:
                     theprodid = getProdId[str(postdata['property_type'])]
+
+                postdata['post_description_th'] = postdata['post_description_th'].replace("'","")
 
                 datapost = {
                     'Submit': 'Submit',

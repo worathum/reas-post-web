@@ -545,6 +545,7 @@ class novabizz():
                 postdata['website']=""
             # postdata['post_title_th']=postdata['post_title_th'].replace('%','')
             # postdata['post_title_th']=postdata['post_title_th'][:84]
+            postdata['post_description_th']=postdata['post_description_th'].replace("'","")
             datapost = {
                 'save': save,
                 'email': postdata['user'],
@@ -988,6 +989,9 @@ class novabizz():
                 postdata['listing_type'] = 'sale'
             if 'website' not in postdata:
                 postdata['website']=""
+
+            postdata['post_description_th']=postdata['post_description_th'].replace("'","")
+            
             datapost = {
                 'save': save,
                 'email': postdata['user'],
