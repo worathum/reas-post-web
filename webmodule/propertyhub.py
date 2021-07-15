@@ -506,7 +506,6 @@ class propertyhub():
                         sleep(1.5)
                         action_chain.click().perform()
                         
-
                     all_images = ""
                     for count, pic in enumerate(postdata['post_images']):
                         if count < len(postdata['post_images'])-1:
@@ -516,6 +515,14 @@ class propertyhub():
                     
                     upload = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[1]/div/form/div/div/div[3]/div[2]/input')))
                     upload.send_keys(all_images)
+                    last_img = '//*[@id="__next"]/div[1]/div/div/form/div/div/div[3]/div[2]/div/div/div[' + str(len(postdata['post_images'])) + ']/div[3]/div[2]'
+                    wait_upload = WebDriverWait(self.driver, 60).until(EC.text_to_be_present_in_element((By.XPATH, last_img), "100%"))
+
+                    for i in range(len(postdata['post_images'])-1):
+                        drag = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="__next"]/div[1]/div/div/form/div/div/div[3]/div[2]/div/div/div[' + str(i+1) + ']')))
+                        drop = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="__next"]/div[1]/div/div/form/div/div/div[3]/div[2]/div/div/div[' + str(len(postdata['post_images'])) + ']')))
+                        ActionChains(self.driver).drag_and_drop(drag, drop).perform()
+                        ActionChains(self.driver).drag_and_drop(drop, drag).perform()
 
                     detail_post = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ql-editor')))
                     detail_post[1].click()
@@ -534,6 +541,7 @@ class propertyhub():
                         detail = 'Image are not uploaded successfully.'
                     
                     if success == 'true':
+                        agreement = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'agreement'))).click()
                         cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
                         sleep(5)
                         try:
@@ -541,11 +549,11 @@ class propertyhub():
                             cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
                             sleep(5)
                         except:
-                            pass         
+                            pass
 
                         postcheck = True
                         while postcheck:
-                            get_all_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-list-view')))    
+                            get_all_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-list-view')))
                             title_check = ''
                             a_link = []
                             for link in get_all_link.find_elements_by_tag_name('a'):
