@@ -190,22 +190,6 @@ class pantipmarket():
 
         # print(json.dumps(postdata, indent=4, sort_keys=True,default=str))
         start_time = datetime.utcnow()
-        test_login = self.test_login(postdata)
-
-        success = test_login["success"]
-        if success == False:
-            return {
-                "websitename": "pantipmarket",
-                "success": "false",
-                "post_url": "",
-                "start_time": start_time,
-                "end_time": datetime.utcnow(),
-                "time_usage": datetime.utcnow() - start_time,
-                "ds_id": postdata['ds_id'],
-                "post_id": "",
-                "account_type": "null",
-                "detail": "Unsuccessful login"
-            }
 
         if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
             if 'project_name' in postdata and postdata['project_name'] is not None:
@@ -339,8 +323,12 @@ class pantipmarket():
             driver.find_element_by_name("username").send_keys(postdata['user'])
             driver.find_element_by_name("password").send_keys(postdata['pass'])
             driver.find_element_by_name("btn_login_submit").click()
+            try:
+                error = driver.find_element_by_class_name("td_error")
+                success = False
+            except:
+                success = True
 
-            success = True
             end_time = datetime.utcnow()
             new_title = post_title_th.replace(" ", "%20")
 
@@ -349,34 +337,34 @@ class pantipmarket():
             #         postdata['web_project_name'] = postdata['project_name']
             #     else:
             #         postdata['web_project_name'] = postdata['post_title_th']
+            if success == True:
 
-            driver.get("https://www.pantipmarket.com/post/")
+                driver.get("https://www.pantipmarket.com/post/")
 
-            detail = ""
+                detail = ""
 
-            # post_title_th +=
-            driver.find_element_by_name("topic_th").send_keys(post_title_th)
-            time.sleep(10)
-            try:
-                if str(driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ')) != None:
-                    time.sleep(2)
-                    driver.find_element_by_name(
-                        'select_group').click()
-                    time.sleep(1)
+                # post_title_th +=
+                driver.find_element_by_name("topic_th").send_keys(post_title_th)
+                time.sleep(10)
+                try:
+                    if str(driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ')) != None:
+                        time.sleep(2)
+                        driver.find_element_by_name(
+                            'select_group').click()
+                        time.sleep(1)
 
-                    driver.find_element_by_xpath('//*[@id="lv"]/li[6]').click()
-                    time.sleep(1)
-                    driver.find_element_by_xpath(send_property).click()
-                else:
+                        driver.find_element_by_xpath('//*[@id="lv"]/li[6]').click()
+                        time.sleep(1)
+                        driver.find_element_by_xpath(send_property).click()
+                    else:
+                        detail = "A post with the same title already exists"
+                        success = False
+
+                except Exception as e:
                     detail = "A post with the same title already exists"
+                    # detail = str(e)
                     success = False
 
-            except Exception as e:
-                detail = "A post with the same title already exists"
-                # detail = str(e)
-                success = False
-
-            if success == True:
                 try:
                     element = WebDriverWait(driver, 5).until(
                         EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
@@ -509,6 +497,7 @@ class pantipmarket():
 
             else:
                 end_time = datetime.utcnow()
+                detail = "Unsuccessful login"
         finally:
                 driver.close()
                 driver.quit()
