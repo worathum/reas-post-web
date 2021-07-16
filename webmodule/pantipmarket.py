@@ -190,6 +190,22 @@ class pantipmarket():
 
         # print(json.dumps(postdata, indent=4, sort_keys=True,default=str))
         start_time = datetime.utcnow()
+        test_login = self.test_login(postdata)
+
+        success = test_login["success"]
+        if success == False:
+            return {
+                "websitename": "pantipmarket",
+                "success": "false",
+                "post_url": "",
+                "start_time": start_time,
+                "end_time": datetime.utcnow(),
+                "time_usage": datetime.utcnow() - start_time,
+                "ds_id": postdata['ds_id'],
+                "post_id": "",
+                "account_type": "null",
+                "detail": "Unsuccessful login"
+            }
 
         if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
             if 'project_name' in postdata and postdata['project_name'] is not None:
@@ -375,10 +391,8 @@ class pantipmarket():
                 driver.find_element_by_xpath('//*[@id="action_type"]/option[2]').click()
                 if postdata['listing_type'] == 'ขาย':
                     driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()
-
                 else:
                     driver.find_element_by_xpath('//*[@id="action_list_S2"]').click()
-
                 for i in range(len(postdata['post_images'])):
                     if i < 15:
                         filepath = os.getcwd() + "/" + postdata['post_images'][i]
