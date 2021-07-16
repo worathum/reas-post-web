@@ -825,6 +825,13 @@ class dotproperty():
             time.sleep(3)
             url = 'https://www.dotproperty.co.th/my-dashboard/properties'
             driver.get(url)
+            time.sleep(5)
+
+            try:
+                ActionChains(driver).move_by_offset(10 , 10).click().perform()
+            except:
+                pass
+
             # block create-btn
             inputs = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'input')))
             for search in inputs:
