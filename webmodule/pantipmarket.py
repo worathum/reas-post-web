@@ -453,11 +453,10 @@ class pantipmarket():
                 html.send_keys(Keys.END)
                 time.sleep(2)
                 try:
-                    error_data = driver.find_element_by_class_name("stat-error").text
-                    if('Line' in error_data):
-                        print('Wrong Line ID')
+                    error_data = driver.find_element_by_class_name("stat-error")
+                    data_error = True
                 except:
-                    pass
+                    data_error = False
                 slider = driver.find_element_by_xpath(
                     '//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
                 move = ActionChains(driver)
@@ -502,7 +501,8 @@ class pantipmarket():
                         detail += ' and boost to maximum expiration date fail.'
                 else:
                     detail += ' and cannot boost cause no id.'
-
+                if data_error:
+                        detail = 'Incorrect Line ID'
             else:
                 end_time = datetime.utcnow()
                 detail = "Unsuccessful login"
