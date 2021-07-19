@@ -352,17 +352,15 @@ class pantipmarket():
                         driver.find_element_by_name(
                             'select_group').click()
                         time.sleep(1)
-
                         driver.find_element_by_xpath('//*[@id="lv"]/li[6]').click()
                         time.sleep(1)
                         driver.find_element_by_xpath(send_property).click()
                     else:
                         detail = "A post with the same title already exists"
                         success = False
-
                 except Exception as e:
                     detail = "A post with the same title already exists"
-                    # detail = str(e)
+                    #detail = str(e)
                     success = False
 
                 try:
@@ -376,6 +374,10 @@ class pantipmarket():
 
                 driver.find_element_by_name("message_th").send_keys(post_description_th)
                 time.sleep(1)
+                move = driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]')
+                actions = ActionChains(driver)
+                actions.move_to_element(move).perform()
+                time.sleep(2)
                 driver.find_element_by_xpath('//*[@id="action_type"]/option[2]').click()
                 if postdata['listing_type'] == 'ขาย':
                     driver.find_element_by_xpath('//*[@id="action_list_S1"]').click()
@@ -450,6 +452,12 @@ class pantipmarket():
                 html = driver.find_element_by_tag_name('html')
                 html.send_keys(Keys.END)
                 time.sleep(2)
+                try:
+                    error_data = driver.find_element_by_class_name("stat-error").text
+                    if('Line' in error_data):
+                        print('Wrong Line ID')
+                except:
+                    pass
                 slider = driver.find_element_by_xpath(
                     '//*[@id="data_post"]/div[5]/fieldset/div/div/div[2]/div/div/div[1]/div')
                 move = ActionChains(driver)
