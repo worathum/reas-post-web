@@ -1143,19 +1143,30 @@ class ddproperty():
                 return success, detail, post_id, account_type
 
             # image page
-            time.sleep(5)
+            time.sleep(10)
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[3]/div[2]/span')).click()
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
-
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
-            if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) < 0):
+            if (datahandled['action'] == 'edit_post' and len(datahandled['post_images']) >= 0):
                 #log.debug('edit image')
+                imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
+                imglis = imgdiv.find_elements_by_link_text("...")
+                imglis[0].click()
+                time.sleep(1.5)
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
+                time.sleep(1.5)
+                alert = self.firefox.switch_to.alert
+                alert.accept()
+                time.sleep(1.5)
                 imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
                 for imgli in imglis:
                     imgid = imgli.get_attribute("id")
                     if imgid != None:
                         imgli.click()
+                        time.sleep(1.5)
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
+                        time.sleep(1.5)
                         #log.debug('delete image')
                         alert = self.firefox.switch_to.alert
                         alert.accept()
@@ -1168,14 +1179,13 @@ class ddproperty():
             #     time.sleep(1)
             #     self.firefox.refresh()
 
-
             all_images = ""
             for count, pic in enumerate(datahandled['post_images']):
                 if count < len(datahandled['post_images'])-1:
                     all_images += os.path.abspath(pic) + '\n'
                 else:
                     all_images += os.path.abspath(pic)
-        
+            time.sleep(3)
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
