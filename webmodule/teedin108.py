@@ -189,7 +189,7 @@ class teedin108():
         detail = login["detail"]
         post_id = ""
         post_url = ""
-        
+
         if not success:
             detail = "Invalid credentials to login"
         else:
