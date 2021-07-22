@@ -175,6 +175,7 @@ class postcore():
 
         for i in range(6):
             dirtmp = 'imgupload_' + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
+            uuni = dirtmp.split('_')[1]
             if os.path.isdir('imgtmp/' + dirtmp) == False:
                 try:
                     os.mkdir("imgtmp/" + dirtmp)
@@ -200,20 +201,20 @@ class postcore():
                     if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png': # Please make the condition if there is no image, please send success false directly
                         try:
                             extension = res.headers['Content-Type'].split("/")[-1]
-                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
+                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension, 'wb') as f:
                                 f.write(res.content)
                                 f.close()
-                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension)
+                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension)
                             imgcount = imgcount + 1
                         except:
                             pass
                     elif res.headers['Content-Type'] == 'application/octet-stream':
                         try:
                             extension = 'jpeg'
-                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension, 'wb') as f:
+                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension, 'wb') as f:
                                 f.write(res.content)
                                 f.close()
-                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "." + extension)
+                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension)
                             imgcount = imgcount + 1
                         except:
                             pass
@@ -297,7 +298,6 @@ class postcore():
                     # logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
             # else:
                 # logging.warning('image url response error %s', res.status_code)
-
 
 
 # ===========================================================================
