@@ -337,32 +337,34 @@ class pantipmarket():
             #         postdata['web_project_name'] = postdata['project_name']
             #     else:
             #         postdata['web_project_name'] = postdata['post_title_th']
-            if success == True:
 
-                driver.get("https://www.pantipmarket.com/post/")
+            driver.get("https://www.pantipmarket.com/post/")
 
-                detail = ""
+            detail = ""
 
-                # post_title_th +=
-                driver.find_element_by_name("topic_th").send_keys(post_title_th)
-                time.sleep(10)
-                try:
-                    if str(driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ')) != None:
-                        time.sleep(2)
-                        driver.find_element_by_name(
-                            'select_group').click()
-                        time.sleep(1)
-                        driver.find_element_by_xpath('//*[@id="lv"]/li[6]').click()
-                        time.sleep(1)
-                        driver.find_element_by_xpath(send_property).click()
-                    else:
-                        detail = "A post with the same title already exists"
-                        success = False
-                except Exception as e:
+            # post_title_th +=
+            driver.find_element_by_name("topic_th").send_keys(post_title_th)
+            time.sleep(10)
+            try:
+                if str(driver.page_source.find('หัวข้อประกาศนี้ ต้องไม่ซ้ำกับหัวข้อประกาศอื่นๆ')) != None:
+                    time.sleep(2)
+                    driver.find_element_by_name('select_group').click()
+                    time.sleep(1)
+                    driver.find_element_by_xpath('//*[@id="lv"]/li[6]').click()
+                    time.sleep(1)
+                    driver.find_element_by_xpath(send_property).click()
+                    same_title = False
+                else:
                     detail = "A post with the same title already exists"
-                    #detail = str(e)
                     success = False
+                    same_title = True
+            except Exception as e:
+                detail = "A post with the same title already exists"
+                #detail = str(e)
+                success = False
+                same_title = True
 
+            if success == True:
                 try:
                     element = WebDriverWait(driver, 5).until(
                         EC.presence_of_element_located((By.NAME, "jqi_state0_buttonOk"))
@@ -371,7 +373,7 @@ class pantipmarket():
                     print("Page is ready")
                 except:
                     print('Loading took too much time!')
-
+                
                 driver.find_element_by_name("message_th").send_keys(post_description_th)
                 time.sleep(1)
                 move = driver.find_element_by_xpath('//*[@id="PMKuploadfile-btn"]')
@@ -503,7 +505,8 @@ class pantipmarket():
                     detail += ' and cannot boost cause no id.'
             else:
                 end_time = datetime.utcnow()
-                detail = "Unsuccessful login"
+                if(same_title == False):
+                    detail = "Unsuccessful login"
         finally:
                 driver.close()
                 driver.quit()
