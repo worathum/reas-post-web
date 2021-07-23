@@ -612,63 +612,64 @@ class baandd():
                     chrome = webdriver.Chrome("./static/chromedriver", chrome_options=options)
                     chrome.implicitly_wait(4)
                     print('Now here')
-                    # chrome = webdriver.Chrome(self.chromedriver_binary, options=self.options)
-                    delay = 3
-                    timeout = 10
-                    while timeout > 0:
-                        print(timeout)
-                        chrome.get("http://www.baan-dd.com" + '/index.php')
-                        form = WebDriverWait(chrome, delay).until(EC.presence_of_element_located((By.NAME, 'login')))
+                    
+                    try:
+                        delay = 3
+                        timeout = 10
+                        while timeout > 0:
+                            print(timeout)
+                            chrome.get("http://www.baan-dd.com" + '/index.php')
+                            form = WebDriverWait(chrome, delay).until(EC.presence_of_element_located((By.NAME, 'login')))
 
-                        username_in = form.find_element_by_name('username')
-                        username_in.send_keys(postdata['user'])
-                        password_in = form.find_element_by_name('passwd')
-                        password_in.send_keys(postdata['pass'])
-                        submit_btn = WebDriverWait(form, delay).until(EC.element_to_be_clickable((By.NAME, "Submit")))
-                        submit_btn.click()
+                            username_in = form.find_element_by_name('username')
+                            username_in.send_keys(postdata['user'])
+                            password_in = form.find_element_by_name('passwd')
+                            password_in.send_keys(postdata['pass'])
+                            submit_btn = WebDriverWait(form, delay).until(EC.element_to_be_clickable((By.NAME, "Submit")))
+                            submit_btn.click()
 
-                        timeout -= 1
-                        try:
-                            WebDriverWait(chrome, delay).until(EC.presence_of_element_located((By.NAME, 'logout')))
-                            break
-                        except TimeoutException:
-                            print('Timeout 1')
-                            if timeout == 0:
-                                success = "false"
-                                detail = "Login issue."
-                            pass
-
-                    # edit post details
-                    timeout = 5
-                    while timeout > 0:
-                        try:
-                            url = "http://www.baan-dd.com" + '/index.php?option=com_marketplace&page=write_ad&adid=' + postdata['post_id']+ '&Itemid=56'
-                            print(url)
-                            chrome.get(url)
-                            ad_form = WebDriverWait(chrome, delay).until(
-                                EC.presence_of_element_located((By.NAME, 'write_ad')))
                             timeout -= 1
-
-                            post_submit_btn = WebDriverWait(ad_form, delay).until(
-                                EC.element_to_be_clickable((By.NAME, 'submit')))
-                            post_submit_btn.click()
-                            if chrome.current_url == "http://www.baan-dd.com/index.php?option=com_marketplace&page=write_ad&Itemid=56":
-                                success = "true"
-                                detail = "Post boosted successfully"
+                            try:
+                                WebDriverWait(chrome, delay).until(EC.presence_of_element_located((By.NAME, 'logout')))
                                 break
-                            elif timeout == 0:
-                                print('Timeout 2')
-                                chrome.quit()
-                                success = "false"
-                                detail = "Boost Unsuccessful."
-                        except (StaleElementReferenceException, TimeoutException):
-                            if timeout == 0:
-                                print('Timeout 3')
-                                success = "false"
-                                detail = "Boost Unsuccessful."
-                            continue
+                            except TimeoutException:
+                                print('Timeout 1')
+                                if timeout == 0:
+                                    success = "false"
+                                    detail = "Login issue."
+                                pass
 
-                    chrome.quit()
+                        # edit post details
+                        timeout = 5
+                        while timeout > 0:
+                            try:
+                                url = "http://www.baan-dd.com" + '/index.php?option=com_marketplace&page=write_ad&adid=' + postdata['post_id']+ '&Itemid=56'
+                                print(url)
+                                chrome.get(url)
+                                ad_form = WebDriverWait(chrome, delay).until(
+                                    EC.presence_of_element_located((By.NAME, 'write_ad')))
+                                timeout -= 1
+
+                                post_submit_btn = WebDriverWait(ad_form, delay).until(
+                                    EC.element_to_be_clickable((By.NAME, 'submit')))
+                                post_submit_btn.click()
+                                if chrome.current_url == "http://www.baan-dd.com/index.php?option=com_marketplace&page=write_ad&Itemid=56":
+                                    success = "true"
+                                    detail = "Post boosted successfully"
+                                    break
+                                elif timeout == 0:
+                                    print('Timeout 2')
+                                    success = "false"
+                                    detail = "Boost Unsuccessful."
+                            except (StaleElementReferenceException, TimeoutException):
+                                if timeout == 0:
+                                    print('Timeout 3')
+                                    success = "false"
+                                    detail = "Boost Unsuccessful."
+                                continue
+                    finally:
+                        chrome.close()
+                        chrome.quit()
                 else:
                     detail = "No post found with given id"
         else:
