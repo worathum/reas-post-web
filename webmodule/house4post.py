@@ -489,6 +489,7 @@ class house4post:
                             title = post.find_all('td')[1].a
                             title_text = " ".join(title.getText().strip().split())
                             if title_text==post_title:
+                                flag = False
                                 post_found = "true"
                                 detail = "Post found successfully"
                                 post_url = title.get('href')

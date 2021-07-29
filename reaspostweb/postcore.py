@@ -95,6 +95,11 @@ class postcore():
                 "detail": "Wrong json format (" + str(e) + ")",
             }
         
+        if 'property_id' in datarequest:
+            logging.warning("PR_ID : "+datarequest['property_id'])
+        else:
+            logging.warning("PR_ID : request not send.")
+        logging.info("==============================================================================")
 
         # replace string \n to \r\n , \t to ''
         # TODO how to replace all dict by foreach or array walk?
