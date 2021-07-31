@@ -318,11 +318,11 @@ class ddteedin():
 
                 get_token = httprequestObj.http_get('https://www.ddteedin.com/post/?rf=topbtn')
                 soup = BeautifulSoup(get_token.text,self.parser)
-                with open('./log/b.html','w') as f:
-                    f.write(get_token.text)
+                """with open('./log/b.html','w') as f:
+                    f.write(get_token.text)"""
                 token = soup.findAll('script')[8].string
-                print('============================================')
-                print(token.split('function')[0].split('=')[-1].replace(';','').strip(' ').replace("'",''))
+                #print('============================================')
+                #print(token.split('function')[0].split('=')[-1].replace(';','').strip(' ').replace("'",''))
                 datapost['token'] = ''
                 #print(datapost['token'])
                 """ print('=====')
@@ -332,13 +332,15 @@ class ddteedin():
                     'https://www.ddteedin.com/post/?rf=topbtn', data=datapost)
                 print(r.text,r.status_code)
                 data = r.text
-                print(data)
+                #print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                #print(soup)
                 #try:
-                a = soup.find("a", {"class": "green"})['href']
+                a = soup.find(id='detail')
+                print(a)
+                print(11111111111)
                 post_id = a.replace('/', '')
                 theurl = 'https://www.ddteedin.com'+a
-                
                     
                 """ except:
                     post_id = ''
