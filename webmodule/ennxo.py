@@ -10,7 +10,6 @@ import sys
 import requests
 import random
 import pytz
-import cv2
 
 
 category_types = {
