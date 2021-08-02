@@ -10,6 +10,7 @@ import sys
 import requests
 import random
 import pytz
+import cv2
 
 
 category_types = {
@@ -450,44 +451,44 @@ class ennxo():
                 "main_category": "อสังหาริมทรัพย์",
                 "sub_category": category_types[str(postdata['property_type'])][0],
                 "is_second_handed": True,
-                "province": province,
                 "subfields": subfields
             } 
 
             headers= {
                 "Authorization": auth
             }
-            
+
             images = []
             flag = True
             if len(postdata['post_images'])==0:
                 postdata['post_images'] = ['imgtmp/default/white.jpg']
-            r = httprequestObj.http_post(self.site_name+'/api/upload_photo', headers=headers, data={}, files={'file': open(os.getcwd()+"/"+postdata['post_images'][0], 'rb')})
-            json_r = r.json()
-            if r.status_code==200:
-                images.append({
-                    "_id": json_r['_id']['$oid'],
-                    "newUploaded": True,
-                    "isMainPhoto": True
-                })
-            else:
-                flag = False
-            
-            if flag:
-                for image in postdata['post_images'][1:6]:
-                    r = httprequestObj.http_post(self.site_name+'/api/upload_photo', headers=headers, data={}, files={'file': open(os.getcwd()+"/"+image, 'rb')})
-                    json_r = r.json()
-                    if r.status_code==200:
-                        images.append({
-                            "_id": json_r['_id']['$oid'],
-                            "newUploaded": True
-                        })
+
+            for count,file in enumerate(postdata['post_images']):
+                r = httprequestObj.http_post(self.site_name+'/api/presigned_url', headers=headers, data={},json={'filename':os.getcwd()+"/"+file})
+                json_r = r.json()
+                if r.status_code==200:
+                    main_data = {
+                        'key':json_r['presigned_url']['fields']['key'],
+                        'policy':json_r['presigned_url']['fields']['policy'],
+                        'x-amz-algorithm':json_r['presigned_url']['fields']['x-amz-algorithm'],
+                        'x-amz-credential':json_r['presigned_url']['fields']['x-amz-credential'],
+                        'x-amz-date':json_r['presigned_url']['fields']['x-amz-date'],
+                        'x-amz-signature':json_r['presigned_url']['fields']['x-amz-signature']
+                        }
+                else:
+                    flag = False
+                r = httprequestObj.http_post('https://storage.googleapis.com/ennxo_main',data=main_data, files={'file': open(os.getcwd()+"/"+file, 'rb')})
+                if r.status_code==204:
+                    r = httprequestObj.http_post(self.site_name+'/api/upload_photo',headers=headers,data={},json={'_id':json_r['_id']})
+                    upload_json = r.json()
+                    if count == 0:
+                        images.append({"_id":json_r['_id'],"newUploaded":True,"isMainPhoto":True})
                     else:
-                        flag = False
-                        break
-                datapost['photos'] = images
-            # print(json.dumps(datapost, indent=4))
-            print(datapost)
+                        images.append({"_id":json_r['_id'],"newUploaded":True})
+                else:
+                    flag = False
+            datapost["photos"] = images
+            #print(datapost)
             if flag:
                 response = httprequestObj.http_post(self.site_name+'/api/add_product', headers=headers, data={}, json=datapost)
                 json_response = response.json()
@@ -622,17 +623,33 @@ class ennxo():
                 "main_category": "อสังหาริมทรัพย์",
                 "sub_category": category_types[str(postdata['property_type'])][0],
                 "is_second_handed": True,
-                "province": province,
-                "product_id": int(postdata['post_id']),
-                "subfields": subfields
+                "subfields": subfields,
+                "product_id": str(postdata['post_id'])
             }
 
             headers= {
                 "Authorization": auth
             }
-
             images = []
             flag = True
+            r = httprequestObj.http_get(self.site_name+'/api/product/'+str(postdata['post_id']), headers=headers)
+            json_r = r.json()
+            if r.status_code==200:
+                for image in json_r['photos']:
+                    if 'cover' in image.keys():
+                        images.append({
+                            "_id": image['_id']['$oid'],
+                            "newUploaded": False,
+                            "isMainPhoto": True
+                        })
+                    else:
+                        images.append({
+                            "_id": image['_id']['$oid'],
+                            "newUploaded": False
+                        })
+            else:
+                flag = False
+            """
             if len(postdata['post_images'])==0:
                 r = httprequestObj.http_get(self.site_name+'/api/product/'+str(postdata['post_id']), headers=headers)
                 json_r = r.json()
@@ -652,31 +669,28 @@ class ennxo():
                 else:
                     flag = False
             else:
-                r = httprequestObj.http_post(self.site_name+'/api/upload_photo', headers=headers, data={}, files={'file': open(os.getcwd()+"/"+postdata['post_images'][0], 'rb')})
-                json_r = r.json()
-                if r.status_code==200:
-                    images.append({
-                        "_id": json_r['_id']['$oid'],
-                        "newUploaded": True,
-                        "isMainPhoto": True
-                    })
-                else:
-                    flag = False
-                
-                if flag:
-                    for image in postdata['post_images'][1:6]:
-                        r = httprequestObj.http_post(self.site_name+'/api/upload_photo', headers=headers, data={}, files={'file': open(os.getcwd()+"/"+image, 'rb')})
-                        json_r = r.json()
-                        if r.status_code==200:
-                            images.append({
-                                "_id": json_r['_id']['$oid'],
-                                "newUploaded": True
-                            })
+                for count,file in enumerate(postdata['post_images']):
+                    r = httprequestObj.http_post(self.site_name+'/api/presigned_url', headers=headers, data={},json={'filename':os.getcwd()+"/"+file})
+                    json_r = r.json()
+                    if r.status_code==200:
+                        main_data = {
+                            'key':json_r['presigned_url']['fields']['key'],
+                            'policy':json_r['presigned_url']['fields']['policy'],
+                            'x-amz-algorithm':json_r['presigned_url']['fields']['x-amz-algorithm'],
+                            'x-amz-credential':json_r['presigned_url']['fields']['x-amz-credential'],
+                            'x-amz-date':json_r['presigned_url']['fields']['x-amz-date'],
+                            'x-amz-signature':json_r['presigned_url']['fields']['x-amz-signature']
+                            }
+                    r = httprequestObj.http_post('https://storage.googleapis.com/ennxo_main',data=main_data, files={'file': open(os.getcwd()+"/"+file, 'rb')})
+                    if r.status_code==204:
+                        r = httprequestObj.http_post(self.site_name+'/api/upload_photo',headers=headers,data={},json={'_id':json_r['_id']})
+                        upload_json = r.json()
+                        if count == 0:
+                            images.append({"_id":json_r['_id'],"newUploaded":True,"isMainPhoto":True})
                         else:
-                            flag = False
-                            break
-            datapost['photos'] = images
-
+                            images.append({"_id":json_r['_id'],"newUploaded":True})"""
+            datapost["photos"] = images
+            #print(datapost)
             if flag:
                 response = httprequestObj.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
                 json_response = response.json()
