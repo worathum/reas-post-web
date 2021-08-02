@@ -1105,10 +1105,12 @@ class ddproperty():
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(Keys.DELETE)  # clear for edit action
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(Keys.DELETE)  # clear for edit action
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.CONTROL + "a")
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("corporate-name-field")).send_keys(datahandled['name'])
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-corporate-mobile")).send_keys(datahandled['mobile'])
+                    
+                    if datahandled['action'] == 'edit_post':
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.CONTROL + "a")
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(Keys.DELETE)
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("div[class='corporate-email-wrap']/textarea")).send_keys(datahandled['email'])
                     # WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("textarea[class='limit-text'][placeholder='ระบุหลายอีเมลล์ได้']")).send_keys(datahandled['email'])
                 except WebDriverException as e:
