@@ -790,7 +790,12 @@ class thaihometown():
                         post_url = self.getposturl(post_id,datahandled['property_type3'])
                         # print(str(datahandled['property_type']))
                         #upload image
-                        self.uploadimage(datahandled,post_id)
+                        status_upload = self.uploadimage(datahandled,post_id)
+                        success = status_upload['success']
+                        if success =='false':
+                            post_url = ""
+                            post_id = ""
+                            detail = status_upload['detail']
 
         #print('finish')
         time_end = datetime.datetime.utcnow()
@@ -843,6 +848,8 @@ class thaihometown():
         soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
         uploadcode = ''
         uploadlink = ''
+        success = 'true'
+        detail = ''
         try:
             uploadlink = soup.find('a',href=re.compile('memberupload'))['href']
             #log.debug('upload link ' +uploadlink)
@@ -894,6 +901,9 @@ class thaihometown():
             data=encoder,
             headers={'Content-Type': encoder.content_type}
             )
+            if(r.status_code !=200):
+                detail = 'Image upload fail'
+                success = 'false'
             #log.debug('image upload '+r.text)
         
         #fix black image //thaihometown bug
@@ -923,7 +933,10 @@ class thaihometown():
             #log.debug('post edit black image error')
             pass
          
-        return True
+        return {
+            'success':success,
+            'detail':detail
+        }
 
     def boost_post_bak(self, postdata):
         #log.debug('')
