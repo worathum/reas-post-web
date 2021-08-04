@@ -34,7 +34,6 @@ class condoable():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
-
     def logout_user(self):
         url = 'http://condoable.com/logout.jsp'
         httprequestObj.http_get(url)
@@ -42,16 +41,17 @@ class condoable():
     def register_user(self, userdata):
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        
         time_start = datetime.datetime.utcnow()
-        # print("here in register")
-        httprequestObj.http_get('http://condoable.com/logout.jsp')
+
+        success = "False"
+        detail = ""
 
         email = userdata['user']
         passwd = userdata['pass']
         first_name = userdata['name_th']
         last_name = userdata['surname_th']
         mobile = userdata['tel']
-        
         
         datapost={
             "email": email,
@@ -65,24 +65,42 @@ class condoable():
             "agree": "on"
         }
 
+        f1 = True
+        regex = '^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*$'
 
-
-        r = httprequestObj.http_get('http://condoable.com/checkUserId.do?function=register&userId='+email)
-        data = r.text
-        print(data)
-        success = ""
-        detail = ""
-        if(data == "true"):
-            r = httprequestObj.http_post('http://condoable.com/signupMember.do', data = datapost)
-            data = r.text
-            success = "True"
-            detail = "Registered Successfully"
+        if re.search(regex, datapost['email']):
+            f1 = True
         else:
-            success = "False"
-            detail = "User already exists"
+            f1 = False
+
+        if len(datapost['password']) <= 6:
+            success = 'False'
+            detail = 'Password length should be greater than 6'
+        elif f1 == False:
+            success = 'False'
+            detail = 'Invalid email id'
+        elif (datapost['firstName'] == "") or (datapost['lastName'] == ""):
+            success = 'False'
+            detail = 'Requier firstname and lastname fill.'
+        elif (datapost['phone'] == ""):
+            success = 'False'
+            detail = 'Requier phone fill.'
+        else:
+            r = httprequestObj.http_get('http://condoable.com/checkUserId.do?function=register&userId='+email)
+            data = r.text
+
+            if(data == "true"):
+                r = httprequestObj.http_post('http://condoable.com/signupMember.do', data = datapost)
+                data = r.text
+                success = "True"
+                detail = "Registered Successfully"
+            else:
+                success = "False"
+                detail = "User already exists"
        
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+
         return {
             "websitename": "condoable",
             'ds_id': userdata['ds_id'],
@@ -95,11 +113,13 @@ class condoable():
 
     def test_login(self, logindata):
         self.logout_user()
-        # print("Here in test_login")
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+
         time_start = datetime.datetime.utcnow()
 
-        httprequestObj.http_get('http://condoable.com/logout.jsp')
+        success = "False"
+        detail = ""
+
         email_user = logindata['user']
         email_pass = logindata['pass']
         
@@ -107,19 +127,19 @@ class condoable():
             "userId": email_user,
             "password": email_pass
         }
-        # print(datapost)
+
         r = httprequestObj.http_post('http://condoable.com/login.do', data=datapost)
         data = r.text
-        # print(data)
-        # print("Data Printed")
+
         matchObj = re.search(r'logout.jsp', data)
-        # print(matchObj)
+ 
         if matchObj:
             success = "True"
             detail = "Sucessful Login"
         else:
             success = "False"
             detail = "Login Unsucessful"
+            
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         
@@ -133,8 +153,6 @@ class condoable():
             "ds_id": logindata['ds_id'],
         }
         
-
-    
     def create_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
