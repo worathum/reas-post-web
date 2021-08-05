@@ -23,7 +23,6 @@ from selenium.common.exceptions import TimeoutException
 # from googletrans import Translator
 # translator = Translator()
 
-
 def set_end_time(start_time):
     time_end = datetime.datetime.utcnow()
     time_usage = time_end - start_time
@@ -48,19 +47,27 @@ class hometophit():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
-
     def logout_user(self):
         url = 'http://hometophit.com/hometh/logout.php'
         httprequestObj.http_get(url)
 
-
     def register_user(self, postdata):
         self.logout_user()
-        # self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        start_time=datetime.datetime.utcnow()
+
+        res = {
+            'websitename':'hometophit', 
+            'success':"false", 
+            'start_time': str(start_time), 
+            'end_time': '0', 
+            'ds_id': postdata['ds_id'], 
+            'usage_time': '0', 
+            'detail': ''
+        }
+
         register_data1={}
         register_data2={}
-        start_time=datetime.datetime.utcnow()
-        res={'websitename':'hometophit', 'success':"false", 'start_time': str(start_time), 'end_time': '0', 'ds_id': postdata['ds_id'], 'usage_time': '0', 'detail': ''}
+
         data=postdata
         try:
             register_data1['mem_user']=data['user'].split("@")[0]
@@ -71,32 +78,40 @@ class hometophit():
             res['detail']+='JSON format wrong'
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
+
         posturl='http://hometophit.com/hometh/register_check.php'
+
         userpass_regex=re.compile(r'^([a-zA-Z0-9_]{4,15})$')
         email_regex=re.compile(r'^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$')
+
         if(userpass_regex.search(register_data1['mem_user'])==None):
-            res['detail']+='User Name must be in az, AZ, 0-9 or _ only and should be 4-15 characters only. '
+            print(register_data1['mem_user'])
+            res['detail']+='User Name must be in az, AZ, 0-9 or _ only and should be 4-15 characters only.'
         if(userpass_regex.search(register_data1['mem_pwd'])==None):
-            res['detail']+='Password must be in az, AZ, 0-9 or _ only and should be 4-15 characters only. '
+            res['detail']+='Password must be in az, AZ, 0-9 or _ only and should be 4-15 characters only.'
         if(email_regex.search(register_data1['mem_email'])==None):
             res['detail']+='Invalid email. '
-    #     print(json.dumps(res, indent=4, sort_keys=False))
-        if(res['detail']!=''):
+        if(res['detail'] != ''):
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
+
         r = httprequestObj.http_post(posturl, data = register_data1)
         res['websitename']='hometophit'
+
         if r.encoding is None or r.encoding == 'ISO-8859-1':
             r.encoding = r.apparent_encoding
+
         user_dup_regex=re.compile(r'User Name.*มีสมาชิกท่านอื่นใช้แล้ว')
         email_dup_regex=re.compile(r'E-Mail.*มีสมาชิกท่านอื่นใช้แล้ว')
+
         if(user_dup_regex.search(r.text)!=None):
-            res['detail']+='Username already in use. '
+            res['detail']+='Username already in use.'
         if(email_dup_regex.search(r.text)!=None):
-            res['detail']+='E-mail already in use. '
+            res['detail']+='E-mail already in use.'
         if(res['detail']!=''):
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
+
         try:
             register_data2['mem_name']=data['name_th']+' '+data['surname_th']
             register_data2['mem_sex']="1"
@@ -122,34 +137,53 @@ class hometophit():
             res['detail']+='JSON format wrong'
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
-        if(len(data['name_th'])<1 or len(data['surname_th'])<1):
-            res['detail']+='First name and surname must be at least 1 character long. '
+
         phone_regex=re.compile(r'^([0-9]{8,10})$')
+
+        if(len(data['name_th'])<1 or len(data['surname_th'])<1):
+            res['detail']+='First name and surname must be at least 1 character long.'
         if(phone_regex.search(register_data2['mem_tel'])==None):
-            res['detail']+='Invalid phone number. '
+            res['detail']+='Invalid phone number.'
         if(res['detail']!=''):
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
+
         posturl='http://hometophit.com/hometh/submit_msn.php'
+
         r = httprequestObj.http_post(posturl, data = register_data2)
         res['websitename']="hometophit"
+
         if r.encoding is None or r.encoding == 'ISO-8859-1':
             r.encoding = r.apparent_encoding
+
         if(r.text==''):
-            res['detail']+='Something went wrong. '
+            res['detail']+='Something went wrong.'
         else:
             res['success']="true"
             res['detail']+='User successfully registered'
+
         res['end_time'],res['usage_time']=set_end_time(start_time)
+        
         return res
 
     def test_login(self, postdata):
         self.logout_user()
-        # self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        posturl='http://hometophit.com/hometh/secure.php'
-        login_data={}
         start_time=datetime.datetime.utcnow()
-        res={'websitename':'hometophit', 'success':"false", 'start_time': str(start_time), "ds_id": postdata['ds_id'], 'end_time': '0', 'usage_time': '0', 'detail': ''}
+
+        res = {
+            'websitename':'hometophit', 
+            'success':"false", 
+            'start_time': str(start_time), 
+            "ds_id": postdata['ds_id'], 
+            'end_time': '0', 
+            'usage_time': '0', 
+            'detail': ''
+        }
+
+        posturl='http://hometophit.com/hometh/secure.php'
+
+        login_data={}
+        
         try:
             login_data['mem_user']=postdata['user'].split("@")[0]
             login_data['mem_pwd']=postdata['pass']
@@ -157,22 +191,27 @@ class hometophit():
             res['detail']+='JSON format wrong'
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
-    #     with requests.Session() as s:
+
         r = httprequestObj.http_post(posturl, data = login_data)
+
         if r.encoding is None or r.encoding == 'ISO-8859-1':
             r.encoding = r.apparent_encoding
+
         res['websitename']="hometophit"
+
         if(r.url=='http://hometophit.com/hometh/mem_panel.php'):
             res['success']="true"
             res['detail']='user logged in'
         else:
             res['success']="false"
             print(r.text)
-            if(r.text=='<SCRIPT LANGUAGE="JavaScript">window.location = "login.php";alert(" User Name หรือ  Password ไม่ถูกต้องค่ะ  กรุณาตรวจสอบใหม่อีกครั้ง");</SCRIPT>'):
+            if('<SCRIPT LANGUAGE="JavaScript">window.location = "login.php";alert' in r.text):
                 res['detail']='username or pass wrong. Please try again'
             else:
                 res['detail']='some problem happened. Please try later'
+
         res['end_time'],res['usage_time']=set_end_time(start_time)
+        
         return res
 
     '''def edit_post(self, postdata):

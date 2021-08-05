@@ -25,10 +25,13 @@ class talad:
         self.parser = 'html.parser'
 
     def register_user(self, data):
+        req = httprequestObj.http_get('http://talad.me/user/logout')
+
         start_time = datetime.datetime.utcnow()
 
-        success = ''
+        success = 'false'
         detail = ''
+
         postdata = {
             'email': data['user'],
             'displayname': data['name_th'],
@@ -36,17 +39,21 @@ class talad:
             'confirm_password': data['pass'],
             'captcha': ''
         }
+
         url = 'http://talad.me/user/register'
+
         headers = {
         	'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
-        regex = '^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*$'
+
         f1 = True
         regex = '^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*$'
+
         if re.search(regex, postdata['email']):
             f1 = True
         else:
             f1 = False
+
         if len(data['pass']) <= 6:
             success = 'false'
             detail = 'Password length should be greater than 6'
@@ -70,16 +77,12 @@ class talad:
 
             if result[0] == 1:
                 captcha_code = result[1]
-                #print(captcha_code)
                 postdata['captcha'] = captcha_code
 
                 url = 'http://talad.me/user/register'
                 req = httprequestObj.http_post(url,data=postdata,headers=headers)
                 txt = str(req.text)
-                #print(req.status_code)
-                #f = open('file.html','w')
-                #f.write(req.text)
-                #f.close()
+
                 if txt.find('อีเมลล์นี้มีอยู่ในระบบแล้ว')!=-1:
                     success = 'false'
                     detail = 'User already exists'
@@ -93,34 +96,37 @@ class talad:
                 success = 'false'
                 detail = 'Problem with captcha'
 
-
-
         end_time = datetime.datetime.utcnow()
         result = {'websitename':'talad',
-         'success':success,
-         'start_time':str(start_time),
-         'end_time':str(end_time),
-         'usage_time':str(end_time - start_time),
-         'detail':detail,
-         'ds_id':data['ds_id']}
+            'success':success,
+            'start_time':str(start_time),
+            'end_time':str(end_time),
+            'usage_time':str(end_time - start_time),
+            'detail':detail,
+            'ds_id':data['ds_id']
+        }
+
         return result
 
     def test_login(self, data):
         req = httprequestObj.http_get('http://talad.me/user/logout')
-        # ไม่สามารถเข้าสู่ระบบได้, โปรดตรวจสอบอีเมล์และรหัสผ่านอีกครั้ง
+
         start_time = datetime.datetime.utcnow()
 
-        success = ''
+        success = 'false'
         detail = ''
+
         postdata = {
         	'email':data['user'],
         	'password':data['pass']
         }
 
-        url = 'http://talad.me/user/login'
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
+
+        url = 'http://talad.me/user/login'
+        
         req = httprequestObj.http_post(url,data=postdata,headers=headers)
         txt = req.text
         if txt.find('ไม่สามารถเข้าสู่ระบบได้, โปรดตรวจสอบอีเมล์และรหัสผ่านอีกครั้ง') == -1:
@@ -131,13 +137,16 @@ class talad:
             detail = 'Invalid credentials'
 
         end_time = datetime.datetime.utcnow()
+
         result = {'websitename':'talad',
-         'success':success,
-         'start_time':str(start_time),
-         'end_time':str(end_time),
-         'usage_time':str(end_time - start_time),
-         'ds_id':data['ds_id'],
-         'detail':detail}
+            'success':success,
+            'start_time':str(start_time),
+            'end_time':str(end_time),
+            'usage_time':str(end_time - start_time),
+            'ds_id':data['ds_id'],
+            'detail':detail
+        }
+
         return result
 
     def create_post(self, data):

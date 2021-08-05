@@ -46,18 +46,15 @@ class homedd():
             "detail": ""
         }
 
-
     def logout_user(self):
         url = 'http://homedd.co.th/logoff.php'
         httprequestObj.http_get(url)
-
 
     # To register a user
     def register_user(self,userdata):
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
 
-        
         datapost = {
             "tname" : userdata["name_th"] + " " + userdata["surname_th"],
             "tphone" : userdata["tel"],
@@ -65,20 +62,19 @@ class homedd():
             "tmypassword" : userdata["pass"],
             "tconfirmpassword" : userdata["pass"]
         }
+
         headers = {
-                    'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
-                  }
-
-        # filename = "response.txt"
-
+            'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
+        }
 
         success = False
+        detail = ""
+
         start_time = datetime.utcnow()
         end_time = datetime.utcnow()
-        detail = ""
+        
         f1 = True
 
-        # Check validity of an email ID
         regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*$'
         if(re.search(regex,datapost["tmyemail"])):  
             f1 = True
@@ -87,7 +83,7 @@ class homedd():
 
         if f1 == False:
             detail = "Invalid email-id"
-        elif datapost["tname"] == " " :
+        elif datapost["tname"] == "" :
             detail = "Please enter user's name"
         elif datapost["tmyemail"] == "" :
             detail = "Please enter user's email"            
@@ -97,11 +93,8 @@ class homedd():
             url = "http://homedd.co.th/member_register_aed.php?typ=add"
             try:
                 start_time = datetime.utcnow()
-                #A POST request to a url for registration
                 request = httprequestObj.http_post(url,data=datapost,headers=headers)
                 end_time = datetime.utcnow()
-
-                # Writes the response data to a file
                 
                 if 'อีเมลนี้ได้ถูกใช้แล้ว ไม่สามารถบันทึกได้ค่ะ' in str(request.text):
                     detail = "The user is already registered!"
@@ -109,22 +102,19 @@ class homedd():
                     detail = "Successfully Registered !"
                     success = True
 
-
             except requests.exceptions.RequestException as e: 
                 end_time = datetime.utcnow()
                 detail = "Network Problem"
+
         return {
-                    "websitename" : 'homedd',
-                    "success" : success,
-                    "start_time" : start_time,
-                    "end_time" : end_time,
-                    "usage_time" : end_time - start_time,
-                    "ds_id": userdata['ds_id'],
-                    "detail" : detail
-                }
-
-
-
+            "websitename" : 'homedd',
+            "success" : success,
+            "start_time" : start_time,
+            "end_time" : end_time,
+            "usage_time" : end_time - start_time,
+            "ds_id": userdata['ds_id'],
+            "detail" : detail
+        }
 
     # To login a user
     def test_login(self,postdata):
@@ -136,16 +126,17 @@ class homedd():
             'tlogin_password': postdata['pass']
         }
         headers = {
-                    'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
-                }
+            'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
+        }
 
-        # filename = "response.txt"
         success = False
-        start_time = datetime.utcnow()
-        end_time = datetime.utcnow()
         detail = ""
 
-        # Check validity of an email ID
+        start_time = datetime.utcnow()
+        end_time = datetime.utcnow()
+
+        f1 = True
+        
         regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*$'
         if(re.search(regex,datapost["tlogin_email"])):  
             f1 = True
@@ -162,40 +153,28 @@ class homedd():
             url = 'http://homedd.co.th/login_aed.php'
             try:
                 start_time = datetime.utcnow()
-                #A POST request to a url for login
                 request = httprequestObj.http_post(url,data=datapost,headers=headers)
                 end_time = datetime.utcnow()
 
-                # Writes the response data to a file
-                # f = open(filename,"w+")
-                # f.write(str(request.text))
-                # f.close()
-
-                # with open(filename,'r') as file:
                 if 'ยินดีต้อนรับ' in str(request.text):
                     success = True
                     detail = "Successfully logged in!"
                 else:
                     detail = "Unsucessful Login !"
-                #     file.close()                  
-                # os.remove(filename)
                 
             except requests.exceptions.RequestException as e:
                 end_time = datetime.utcnow()
                 detail = "Network Problem"
         
         return {
-                    "websitename" : "homedd",
-                    "success" : success,
-                    "start_time" : start_time,
-                    "end_time" : end_time,
-                    "usage_time" : end_time - start_time,
-                    "ds_id": postdata['ds_id'],
-                    "detail" : detail
-            }
-
-
-
+            "websitename" : "homedd",
+            "success" : success,
+            "start_time" : start_time,
+            "end_time" : end_time,
+            "usage_time" : end_time - start_time,
+            "ds_id": postdata['ds_id'],
+            "detail" : detail
+        }
 
     def create_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')

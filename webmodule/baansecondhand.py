@@ -63,13 +63,12 @@ class baansecondhand():
         url = 'https://www.baansecondhand.com/logout.php'
         httprequestObj.http_get(url)
 
-
     def register_user(self, postdata):
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+
         time_start = datetime.datetime.utcnow()
 
-        # start process
         success = "false"
         detail = 'An Error has Occurred'
         
@@ -82,9 +81,12 @@ class baansecondhand():
             "country": "กรุงเทพมหานคร   ",  
             "phone": postdata['tel'],
             "email": postdata['user'],
-            "bt_register": "สมัครสมาชิก"
+            "bt_register": "สมัครสมาชิก",
+            "img_ver": ""
         }
+
         r = httprequestObj.http_get(self.site_name+'/register.php')
+
         captcha_img = httprequestObj.http_get(self.site_name+'/images/cap.php', stream=True)
         if captcha_img.status_code==200:
             with open(os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg','wb') as local_file :
@@ -115,6 +117,7 @@ class baansecondhand():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+
         return {
             "success": success,
             "usage_time": str(time_usage),
@@ -125,14 +128,12 @@ class baansecondhand():
             "ds_id": postdata['ds_id']
         } 
 
-
-
     def test_login(self, postdata):
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+
         time_start = datetime.datetime.utcnow()
         
-        # start process
         success = "false"
         detail = 'An Error has Occurred'
 
@@ -159,6 +160,7 @@ class baansecondhand():
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+
         return {
             "success": success,
             "usage_time": str(time_usage),
@@ -168,8 +170,6 @@ class baansecondhand():
             "websitename": self.name,
             "ds_id": postdata['ds_id']
         }
-
-
 
     def create_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
