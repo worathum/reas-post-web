@@ -852,7 +852,8 @@ class ddproperty():
             #log.debug('found property name %s', projectname)
             # self.firefox.save_screenshot("debug_response/newp3.png")
             # select li first
-            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]/a')).click()
+            #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li/a')).click()
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div[1]/div[2]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li/a')).click()
             time.sleep(0.2)
             # self.firefox.save_screenshot("debug_response/newp4.png")
             linktxt = ''
@@ -1153,26 +1154,35 @@ class ddproperty():
                 #log.debug('edit image')
                 imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
-                imglis[0].click()
-                time.sleep(1.5)
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
-                time.sleep(1.5)
-                alert = self.firefox.switch_to.alert
-                alert.accept()
-                time.sleep(1.5)
-                imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
-                imglis = imgdiv.find_elements_by_link_text("...")
-                for imgli in imglis:
+                #imglis[0].click()
+                #time.sleep(3)
+                #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
+                while len(imglis)>0:
+                    try:
+                        imglis[0].click()
+                        time.sleep(3)
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
+                        time.sleep(3)
+                        alert = self.firefox.switch_to.alert
+                        alert.accept()
+                        time.sleep(3)
+                        imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
+                        imglis = imgdiv.find_elements_by_link_text("...")
+                    except:
+                        imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
+                        imglis = imgdiv.find_elements_by_link_text("...")
+                """for imgli in imglis:
                     imgid = imgli.get_attribute("id")
                     if imgid != None:
                         imgli.click()
-                        time.sleep(1.5)
+                        time.sleep(3)
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
-                        time.sleep(1.5)
+                        time.sleep(3)
                         #log.debug('delete image')
                         alert = self.firefox.switch_to.alert
+                        print(alert.text)
                         alert.accept()
-                        time.sleep(1.5)
+                        time.sleep(3)"""
 
             # for img in datahandled['post_images']:
             #     time.sleep(1)
@@ -1234,7 +1244,7 @@ class ddproperty():
                 #บันทึกแล้วออก
                 element = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
                 self.firefox.execute_script("arguments[0].click();", element)
-                #quit      
+                #quit
                 self.firefox.close()
                 self.firefox.quit()
                 try:
@@ -2142,10 +2152,11 @@ class ddproperty():
         #
         # end process
         try:
+            self.firefox.close()
             self.firefox.quit()
         except:
             pass
-
+        print('complete dd')
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "websitename": self.websitename}
