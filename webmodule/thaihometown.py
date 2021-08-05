@@ -724,7 +724,7 @@ class thaihometown():
                     #print('here6')
 
                     # https://www.thaihometown.com/addcontacts
-
+                    datahandled['post_description_th'] = datahandled['post_description_th'].replace('\r','')
                     datapost = {
                         'ActionForm2':'',
                         'Submit':'Active',
