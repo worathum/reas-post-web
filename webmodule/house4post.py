@@ -527,7 +527,7 @@ class house4post:
         post_url = ''
         post_id = data['post_id']
 
-        if success == 'true':
+        """if success == 'true':
             post_found = False
             page_num = 0
             flag = True
@@ -584,7 +584,14 @@ class house4post:
             else:
                 self.delete_post(data)
                 success, detail, post_url, post_id = self.create_post(data, to_edit=1)
-                detail = 'Successfully edited'
+                detail = 'Successfully edited'"""
+        try:
+            self.delete_post(data)
+            success, detail, post_url, post_id = self.create_post(data, to_edit=1)
+            detail = 'Successfully edited'
+        except:
+            success = 'false'
+            detail = 'No post found with given id'
         end_time = datetime.datetime.utcnow()
         result = {'success':success,
          'usage_time':str(end_time - start_time),

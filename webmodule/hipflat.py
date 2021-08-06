@@ -667,7 +667,7 @@ class hipflat():
     def edit_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
-        
+        print('start')
         scraper = cloudscraper.create_scraper()
         success = 'false'
         detail = ''
@@ -709,9 +709,9 @@ class hipflat():
         
         if success == "true":
             req_post_id = str(postdata['post_id'])
-            found = False
+            found = True
             page = 1
-            while True:
+            """while True:
                 res = scraper.get("https://www.hipflat.co.th/account/listings/pro/page/"+str(page), headers = headers).text
                 soup = BeautifulSoup(res, features = self.parser)
                 count = 0
@@ -725,7 +725,7 @@ class hipflat():
                             break
                 page += 1
                 if found or count==0:
-                    break
+                    break"""
 
             if found:
                 if 'web_project_name' not in postdata or postdata['web_project_name'] == "":
@@ -1004,7 +1004,7 @@ class hipflat():
         else :
             success = "false"
             detail = "Login failed"
-
+        print('complete hipflat')
         end_time = datetime.datetime.utcnow()
         
         return {

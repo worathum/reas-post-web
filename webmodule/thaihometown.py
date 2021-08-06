@@ -724,7 +724,7 @@ class thaihometown():
                     #print('here6')
 
                     # https://www.thaihometown.com/addcontacts
-
+                    datahandled['post_description_th'] = datahandled['post_description_th'].replace('\r','')
                     datapost = {
                         'ActionForm2':'',
                         'Submit':'Active',
@@ -1497,7 +1497,7 @@ class thaihometown():
                     email = soup.find("input", {"name": "email"})['value']
                     contact_code = soup.find("input", {"name": "contact_code"})['value']
                     old_price = soup.find("input", {"name": "selling_price"})['value']
-
+                    datahandled['post_description_th'] = datahandled['post_description_th'].replace('\r','')
                     datapost = {
                         'code_edit':code_edit,
                         'email':email,
