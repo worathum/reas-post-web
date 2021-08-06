@@ -99,7 +99,7 @@ class nineasset():
         # print(datapost)
         r = httprequestObj.http_post('https://9asset.com/loginMember', data=datapost)
         data = r.text
-        matchObj = re.search(r'เข้าสู่ระบบสำเร็จ', data)  
+        matchObj = re.search(r'เข้าสู่ระบบสำเร็จ', data)
         # print(data)
         # print("Data Printed")
         # print(matchObj)
@@ -362,8 +362,7 @@ class nineasset():
             for i in range(len(postdata['post_images'][:10])):
                 # print(i)
                 filestoup["images[0]"] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                r = httprequestObj.http_post('http://9asset.com/file/upload',data="", files = filestoup)
-                # print(r.json())
+                r = httprequestObj.http_post('https://www.9asset.com/file/upload',data="", files = filestoup)
                 imagename.append(r.json()[0]["full"])
                 datapost.append(('images[]', r.json()[0]["full"]))
             # print(imagename)
@@ -376,10 +375,9 @@ class nineasset():
                     datapost.append(('district', i[1]))
                     break
             # print(datapost)
-            r = httprequestObj.http_post('http://9asset.com/posted/save', data = datapost)#/property/show
+            r = httprequestObj.http_post('https://www.9asset.com/posted/save', data = datapost)#/property/show
             data = r.text
-            # print(data)
-            link = re.findall(r'คุณได้ทำการลงประกาศสำเร็จแล้ว',data)
+            link = re.findall(r'Posted form success',data)
             # print("printing link",link)
             if len(link) == 0:
                 success = "False"
