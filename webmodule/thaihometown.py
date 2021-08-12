@@ -17,7 +17,15 @@ import random
 from python3_anticaptcha import ImageToTextTask
 from python3_anticaptcha import errors
 from python3_anticaptcha import AntiCaptchaControl
-
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
 
 try:
     import configs
@@ -665,6 +673,7 @@ class thaihometown():
         #print('here')
         # start process
         #
+        fix_post = 'false'
         datahandled = self.postdata_handle(postdata)
         ds_id = postdata["ds_id"]
         #print('here1')
@@ -690,112 +699,157 @@ class thaihometown():
             test_login = self.test_login(datahandled)
             success = test_login["success"]
             detail = test_login["detail"]
-        #print('here3')
-        if success == "true":
-            #get provice district id
-            success,detail,datahandled = self.getprovincedistrictid(datahandled)
-            #print('got')
-            if success == 'true':
-                #get post authen value
-                r = httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
-                data = r.text
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                #print('here4')
-                #f = open("thihomepost.html", "wb")
-                #f.write(data.encode('utf-8').strip())
-                postlimit = soup.find("div",{"id":"posted_limit2"})
-
-                if postlimit:
-                    success = "false"
-                    detail = 'คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป'
-                    #log.debug('คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป')
-                #print('here5')
-
+        find_post = self.find_post(postdata)
+        """
+        valid_ids = []
+        valid_urls = []
+        valid_titles = []
+        url = 'https://www.thaihometown.com/member/'+str(self.logid)
+        req = httprequestObj.http_get(url)
+        soup = BeautifulSoup(req.content,'html.parser')
+        page = int(soup.find('div',{'id':'ShowList'}).find('span',{'id':"totalShowMember"}).text)//10+1
+        for i in range(1,page+1):
+            url = 'https://www.thaihometown.com/member/'+str(self.logid)+'?page=+'+str(i)
+            req = httprequestObj.http_get(url)
+            soup = BeautifulSoup(req.content,'html.parser')
+            posts = soup.find('div',{'id':'show_listings'}).findAll('div')[2:]
+            post_title = datahandled['post_title_th']
+            for post in posts:
+                if post.has_attr('id') and post['id'] is not None and str(post['id'])[:9] == 'indivList':
+                    id = str(post['id'])[13:]
+                    valid_ids.append(str(post['id'])[13:])
+                    urls = post.findAll('a')
+                    if str(urls[0]).find('member')!=-1:
+                        valid_titles.append(str(urls[1].text).strip())
+                    else:
+                        valid_titles.append(str(urls[0].text).strip())
+                    for url in urls:
+                        if str(url['href']).find(id)+len(id) == len(url['href']):
+                            valid_urls.append(str(url['href']))
+                            break
+        if post_title.strip() in valid_titles:
+            fix_post = 'true'
+            for i in range(len(valid_titles)):
+                if valid_titles[i] == post_title:
+                    post_id = valid_ids[i]
+                    post_url = valid_urls[i]
+                    break"""
+        if find_post['find_post']:
+            post_id = find_post['post_id']
+            post_url = find_post['find_url']
+            status_upload = self.uploadimage(datahandled,post_id)
+            success = status_upload['success']
+            if success =='false':
+                post_url = ""
+                post_id = ""
+                detail = status_upload['detail']
+        else:
+            #print('here3')
+            if success == "true":
+                #get provice district id
+                success,detail,datahandled = self.getprovincedistrictid(datahandled)
+                #print('got')
                 if success == 'true':
-                    string2 = soup.find("input", {"name": "string2"})['value']
-                    string1 = string2
-                    dasd = soup.find("input", {"name": "dasd"})['value']
-                    sas_name = soup.find("input", {"name": "sas_name"})['value']
-                    email = soup.find("input", {"name": "email"})['value']
-                    code_edit = soup.find("input", {"name": "code_edit"})['value']
-                    firstname = soup.find("input", {"name": "firstname"})['value']
-                    mobile = soup.find("input", {"name": "mobile"})['value']
-                    date_signup = soup.find("input", {"name": "date_signup"})['value']
-                    #print('here6')
-
-                    # https://www.thaihometown.com/addcontacts
-                    datahandled['post_description_th'] = datahandled['post_description_th'].replace('\r','')
-                    datapost = {
-                        'ActionForm2':'',
-                        'Submit':'Active',
-                        'ad_title':datahandled['post_description_th'].encode('cp874', 'ignore'),
-                        'carpark':'',
-                        'code_edit':code_edit,
-                        'conditioning':'',
-                        'contact_code':'',
-                        'dasd':dasd,
-                        'date_signup':date_signup,
-                        'email':email,
-                        'firstname':firstname,
-                        'headtitle':datahandled['post_title_th'].encode('cp874', 'ignore'),
-                        'id':'',
-                        'info[0]' :'ตกแต่งห้องนอน'.encode('cp874', 'ignore'),
-                        'info[1]' :'ตกแต่งห้องนั่งเล่น'.encode('cp874', 'ignore'),
-                        'info[2]' :'ปูพื้นเซรามิค'.encode('cp874', 'ignore'),
-                        'info[3]' :'เฟอร์นิเจอร์'.encode('cp874', 'ignore'),
-                        'info[4]' :'ไมโครเวฟ'.encode('cp874', 'ignore'),
-                        'info[5]' :'ชุดรับแขก'.encode('cp874', 'ignore'),
-                        'mobile':mobile,
-                        'price_unit':'',
-                        'property_area':size,
-                        'property_bts':'',
-                        'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
-                        'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
-                        'property_country_2':datahandled['property_country_2'].encode('cp874', 'ignore'),
-                        'property_mrt':'',
-                        'property_purple':'',
-                        'property_sqm':typeunit,
-                        'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
-                        'room1':datahandled['bed_room'],
-                        'room2':datahandled['bath_room'],
-                        'sas_name':sas_name,
-                        'rent_price':rent_price,
-                        'selling_price':selling_price,
-                        'type_forrent':'',
-                        'string1':string1,
-                        'string2':string2,
-                        'typepart':datahandled['listing_type'].encode('cp874', 'ignore'),
-                        'typeunit':'ต่อตร.ม'.encode('cp874', 'ignore'),
-                        'notprice': 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
-                    }
-                    #log.debug(datapost)
-                    #print('here7')
-                    r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
+                    #get post authen value
+                    r = httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
                     data = r.text
-                    # print(data)
+                    soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                    #print('here4')
                     #f = open("thihomepost.html", "wb")
                     #f.write(data.encode('utf-8').strip())
-                    # print(str(datahandled['property_type']))
-                    matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
-                    if not matchObj:
-                        success = "false"
-                        soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
-                        txtresponse = soup.find("font").text
-                        detail = unquote(txtresponse)
+                    postlimit = soup.find("div",{"id":"posted_limit2"})
 
-                    else:
-                        post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
-                     
-                        #get post url
-                        post_url = self.getposturl(post_id,datahandled['property_type3'])
+                    if postlimit:
+                        success = "false"
+                        detail = 'คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป'
+                        #log.debug('คุณประกาศครบ 10 รายการแล้ว กรุณาใช้บริการฝากประกาศใหม่อีกครั้งในวันถัดไป')
+                    #print('here5')
+
+                    if success == 'true':
+                        string2 = soup.find("input", {"name": "string2"})['value']
+                        string1 = string2
+                        dasd = soup.find("input", {"name": "dasd"})['value']
+                        sas_name = soup.find("input", {"name": "sas_name"})['value']
+                        email = soup.find("input", {"name": "email"})['value']
+                        code_edit = soup.find("input", {"name": "code_edit"})['value']
+                        firstname = soup.find("input", {"name": "firstname"})['value']
+                        mobile = soup.find("input", {"name": "mobile"})['value']
+                        date_signup = soup.find("input", {"name": "date_signup"})['value']
+                        #print('here6')
+
+                        # https://www.thaihometown.com/addcontacts
+                        datahandled['post_description_th'] = datahandled['post_description_th'].replace('\r','')
+                        datapost = {
+                            'ActionForm2':'',
+                            'Submit':'Active',
+                            'ad_title':datahandled['post_description_th'].encode('cp874', 'ignore'),
+                            'carpark':'',
+                            'code_edit':code_edit,
+                            'conditioning':'',
+                            'contact_code':'',
+                            'dasd':dasd,
+                            'date_signup':date_signup,
+                            'email':email,
+                            'firstname':firstname,
+                            'headtitle':datahandled['post_title_th'].encode('cp874', 'ignore'),
+                            'id':'',
+                            'info[0]' :'ตกแต่งห้องนอน'.encode('cp874', 'ignore'),
+                            'info[1]' :'ตกแต่งห้องนั่งเล่น'.encode('cp874', 'ignore'),
+                            'info[2]' :'ปูพื้นเซรามิค'.encode('cp874', 'ignore'),
+                            'info[3]' :'เฟอร์นิเจอร์'.encode('cp874', 'ignore'),
+                            'info[4]' :'ไมโครเวฟ'.encode('cp874', 'ignore'),
+                            'info[5]' :'ชุดรับแขก'.encode('cp874', 'ignore'),
+                            'mobile':mobile,
+                            'price_unit':'',
+                            'property_area':size,
+                            'property_bts':'',
+                            'property_city_2':datahandled['property_city_2'].encode('cp874', 'ignore'),
+                            'property_city_bkk':datahandled['property_city_bkk'].encode('cp874', 'ignore'),
+                            'property_country_2':datahandled['property_country_2'].encode('cp874', 'ignore'),
+                            'property_mrt':'',
+                            'property_purple':'',
+                            'property_sqm':typeunit,
+                            'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
+                            'room1':datahandled['bed_room'],
+                            'room2':datahandled['bath_room'],
+                            'sas_name':sas_name,
+                            'rent_price':rent_price,
+                            'selling_price':selling_price,
+                            'type_forrent':'',
+                            'string1':string1,
+                            'string2':string2,
+                            'typepart':datahandled['listing_type'].encode('cp874', 'ignore'),
+                            'typeunit':'ต่อตร.ม'.encode('cp874', 'ignore'),
+                            'notprice': 1 if datahandled['price_baht'] == 0 or datahandled['price_baht'] == None else 0,
+                        }
+                        #log.debug(datapost)
+                        #print('here7')
+                        r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
+                        data = r.text
+                        # print(data)
+                        #f = open("thihomepost.html", "wb")
+                        #f.write(data.encode('utf-8').strip())
                         # print(str(datahandled['property_type']))
-                        #upload image
-                        status_upload = self.uploadimage(datahandled,post_id)
-                        success = status_upload['success']
-                        if success =='false':
-                            post_url = ""
-                            post_id = ""
-                            detail = status_upload['detail']
+                        matchObj = re.search(r'https:\/\/www.thaihometown.com\/edit\/[0-9]+', data)
+                        if not matchObj:
+                            success = "false"
+                            soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
+                            txtresponse = soup.find("font").text
+                            detail = unquote(txtresponse)
+
+                        else:
+                            post_id = re.search(r'https:\/\/www.thaihometown.com\/edit\/(\d+)', data).group(1)
+                        
+                            #get post url
+                            post_url = self.getposturl(post_id,datahandled['property_type3'])
+                            # print(str(datahandled['property_type']))
+                            #upload image
+                            status_upload = self.uploadimage(datahandled,post_id)
+                            success = status_upload['success']
+                            if success =='false':
+                                post_url = ""
+                                post_id = ""
+                                detail = status_upload['detail']            
 
         #print('finish')
         time_end = datetime.datetime.utcnow()
@@ -886,7 +940,35 @@ class thaihometown():
 
         #upload image ,MultipartEncoder is very HARD, I use 24hr. for wrestle with it
         allowupload =len(datahandled['post_images'][:12])
-        for i in range(allowupload):
+        status = 200
+        no_img = 0
+        time_count = 0
+        while no_img<= allowupload-1:
+            datapost = {
+                        'id':str(no_img+1),
+                        'contact': str(post_id), #post id
+                        'code': str(uploadcode),
+                        'datesing': str(datetime.datetime.utcnow().strftime('%Y-%m-%d')), #'2020-04-27'
+                        'maction':'2',
+                        'uploadfile':( str(no_img+1) + '.jpg', open(os.path.abspath(datahandled['post_images'][no_img]), 'rb'), 'image/jpeg'),
+            }
+            encoder = MultipartEncoder(fields=datapost)
+            r = httprequestObj.http_post(
+            'https://www.thaihometown.com/form/memberupload/upload-file.php?id='+str(no_img+1)+'&contact='+str(post_id)+'&code='+str(uploadcode)+'&datesing='+str(datetime.datetime.utcnow().strftime('%Y-%m-%d'))+'&maction=2',
+            data=encoder,
+            headers={'Content-Type': encoder.content_type}
+            )
+            status = r.status_code
+            if(status ==200):
+                no_img+=1
+            else:
+                if(time_count>=50):
+                    success = 'false'
+                    detail = 'Cant upload image'
+                    break
+                time.sleep(5)
+                time_count +=5
+        """for i in range(allowupload):
             datapost = {
                         'id':str(i+1),
                         'contact': str(post_id), #post id
@@ -903,7 +985,7 @@ class thaihometown():
             )
             if(r.status_code !=200):
                 detail = 'Image upload fail'
-                success = 'false'
+                success = 'false'"""
             #log.debug('image upload '+r.text)
         
         #fix black image //thaihometown bug
@@ -1692,3 +1774,50 @@ class thaihometown():
             "websitename": self.websitename,
             #"post_url": post_url
         }
+    def find_post(self, postdata):
+            find_post = False
+            post_id = ''
+            find_url = ''
+            path = './static/chromedriver'
+            options = Options()
+
+            options.add_argument("--headless")
+            options.add_argument('--no-sandbox')
+            options.add_argument('start-maximized')
+            options.add_argument('disable-infobars')
+            options.add_argument("--disable-extensions")
+            options.add_argument("disable-gpu")
+            options.add_argument("window-size=1920,1080")
+
+            driver = webdriver.Chrome(executable_path=path, options=options)
+
+            try:
+                driver.get("https://www.thaihometown.com/member/")
+                time.sleep(2)
+
+                driver.find_element_by_xpath('/html/body/div[2]/table/tbody/tr/td/div/div/form/table/tbody/tr[2]/td[2]/input').send_keys(postdata['user'])
+                driver.find_element_by_xpath('/html/body/div[2]/table/tbody/tr/td/div/div/form/table/tbody/tr[3]/td[2]/input').send_keys(postdata['pass'])
+                time.sleep(1)
+
+                find_login = driver.find_element_by_xpath("/html/body/div[2]/table/tbody/tr/td/div/div/form/table/tbody/tr[4]/td[2]/table/tbody/tr/td[1]/input[1]").click()
+                time.sleep(5)
+
+                driver.find_element_by_name("Keyword").send_keys(postdata['post_title_th'])
+
+                find_submit = driver.find_element_by_id("SearchMember").click()
+                time.sleep(2)
+                find_id = driver.find_element_by_xpath("/html/body/div[2]/table/tbody/tr/td[1]/div[3]/div[2]/div[4]/div[1]/div[1]").text
+                find_url = driver.find_element_by_xpath("/html/body/div[2]/table/tbody/tr/td[1]/div[3]/div[2]/div[4]/div[2]/a").get_attribute('href')
+                post_id = str(find_id).split(' ')[1]
+                find_post = True
+            except:
+                pass
+            finally:
+                driver.close()
+                driver.quit()
+
+            return {
+                'find_post':find_post,
+                'post_id':post_id,
+                'find_url':find_url
+                }
