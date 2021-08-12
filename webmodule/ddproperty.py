@@ -251,18 +251,20 @@ class ddproperty():
                 time.sleep(rand_time)
 
             # input email and enter
-            emailtxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("emailInput"))
+            emailtxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("login-userid"))
             emailtxt.send_keys(postdata['user'])
+            passtxt = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("login-password"))
+            passtxt.send_keys(postdata['pass'])
             #log.debug('input email')
-            WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.ID, "next"))).click()
+            WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.ID, "btn_login"))).click()
             #log.debug('click next')
             time.sleep(1.8)
 
             # input password and enter
-            passtxt = WebDriverWait(self.firefox, 30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
+            """passtxt = WebDriverWait(self.firefox, 30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
             passtxt.send_keys(postdata['pass'])
             #log.debug('input password')
-            passtxt.send_keys(Keys.ENTER)
+            passtxt.send_keys(Keys.ENTER)"""
             #log.debug('click enter')
             time.sleep(3)
             
@@ -853,7 +855,7 @@ class ddproperty():
             # self.firefox.save_screenshot("debug_response/newp3.png")
             # select li first
             #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li/a')).click()
-            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div[1]/div[2]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li/a')).click()
+            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]')).click()
             time.sleep(0.2)
             # self.firefox.save_screenshot("debug_response/newp4.png")
             linktxt = ''
