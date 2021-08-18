@@ -1068,7 +1068,7 @@ class hipflat():
         
         if success == "true":
             req_post_id = str(postdata['post_id'])
-            found = False
+            """found = False
             page = 1
             while True:
                 res = scraper.get("https://www.hipflat.co.th/account/listings/pro/page/"+str(page), headers = headers).text
@@ -1084,9 +1084,9 @@ class hipflat():
                             break
                 page += 1
                 if found or count==0:
-                    break
+                    break"""
 
-            if found:
+            try:
 
                 '''if province_id == '0':
                     province_id = '5599801770726f1f36000019'
@@ -1235,7 +1235,7 @@ class hipflat():
                 detail = "Post deleted successfully"
 
 
-            else:
+            except:
                 success = "false"
                 detail = "post_id is incorrect"
 
@@ -1329,7 +1329,7 @@ class hipflat():
                     break
 
             print(found)
-            if found:
+            try:
                 data = {
                     'utf8': '',
                     '_method': 'put',
@@ -1362,7 +1362,7 @@ class hipflat():
                 success = "true"
                 detail = "Post boosted successfully"
 
-            else:
+            except:
                 success = "false"
                 detail = "post_id is incorrect"
 
@@ -1397,7 +1397,7 @@ class hipflat():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
-        
+        scraper = cloudscraper.create_scraper()
         headers = {
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
         }
@@ -1415,24 +1415,21 @@ class hipflat():
             detail = 'No post with this title'
 
             url = 'https://www.hipflat.co.th/account/listings/pro'
-
-            posts = httprequestObj.http_get(url, headers = headers).text
-
+            posts = scraper.get('https://www.hipflat.co.th/account/listings/free', headers = headers).text
             soup = BeautifulSoup(posts, features = "html.parser")
             pages = [p['href'] for p in soup.find_all('a', attrs={'data-remote': 'true'})]
             try:
                 max_pages = int(pages[-1].split('/')[-1])
             except:
-                max_pages = 0
+                max_pages = 1
 
             #  single page start
             for i in range(1,max_pages+1):
-
                 if detail == 'Post found':
                     break
                 # print(f'page--{i}')
-                all_posts_url = 'https://www.hipflat.co.th/account/listings/pro/page/' + str(i)
-                all_posts = httprequestObj.http_get(all_posts_url, headers = headers).text
+                all_posts_url = 'https://www.hipflat.co.th/account/listings/free/page/' + str(i)
+                all_posts = scraper.get(all_posts_url, headers = headers).text
                 soup = BeautifulSoup(all_posts, features = "html.parser")
                 req_post_title = str(postdata['post_title_th'])
                 aaas = []
