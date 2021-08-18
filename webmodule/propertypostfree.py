@@ -144,7 +144,7 @@ class propertypostfree():
             try:
                 response = httprequestObj.http_post('http://www.propertypostfree.com/login.php', data = data, headers = headers)
                 
-                if 'ขออภัยครับ ท่านกรอก Email และ/หรือ Password ไม่ถูกต้องครับ' in response.text:
+                if 'ขออภัยครับ ท่านกรอก Email และ/หรือ Password ไม่ถูกต้องครับ' in response.text or 'ขออภัยครับ ทางเว็บไซต์ยังไม่ได้ยืนยันการใช้งานระบบตัวแทนขายโครงการให้กับท่านครับ' in response.text:
                     success = "false"
                     detail = 'Incorrect Username or Password !!'
                 else:
