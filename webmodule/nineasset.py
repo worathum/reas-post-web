@@ -103,7 +103,7 @@ class nineasset():
         # print(data)
         # print("Data Printed")
         # print(matchObj)
-        if matchObj:
+        if r.url=='https://9asset.com/profile':
             success = "True"
             detail = "Sucessful Login"
         else:
