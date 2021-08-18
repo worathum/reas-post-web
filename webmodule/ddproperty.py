@@ -855,7 +855,10 @@ class ddproperty():
             # self.firefox.save_screenshot("debug_response/newp3.png")
             # select li first
             #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li/a')).click()
-            WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]')).click()
+            try:
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]')).click()
+            except:
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div[1]/div[2]/div/div/div/div[2]/div/div[1]/div/div/div/div/ol/li[1]')).click()
             time.sleep(0.2)
             # self.firefox.save_screenshot("debug_response/newp4.png")
             linktxt = ''
