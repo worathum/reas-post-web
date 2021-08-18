@@ -429,7 +429,7 @@ class teedindd():
                     'post_url': "",
                     'post_id': ""
                 }
-            
+            postdata['post_description_th'] = postdata['post_description_th'].replace('\u200b', ' ').strip()[:600]
             datapost = {
                 'sr': postdata['listing_type'],
                 'cid2': postdata['cate_id'],
@@ -675,7 +675,8 @@ class teedindd():
                     'ds_id': postdata['ds_id'],
                     'post_id': ""
                 }
-            if len(postdata['post_description_th'].replace('\u200b', ' ').strip()) <= 610:
+            postdata['post_description_th'] = postdata['post_description_th'].replace('\u200b', ' ').strip()[:600]
+            """if len(postdata['post_description_th'].replace('\u200b', ' ').strip()) <= 610:
                 postdata['post_description_th'] = postdata['post_description_th'].replace('\u200b', ' ').strip()
             else:
                 return {
@@ -687,7 +688,7 @@ class teedindd():
                     "end_time": str(datetime.datetime.utcnow() - time_start),
                     "post_url": "",
                     "post_id": ""
-                }
+                }"""
             datapost = {
                 'sr': postdata['listing_type'],
                 'cid2': postdata['cate_id'],
