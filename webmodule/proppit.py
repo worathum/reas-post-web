@@ -283,14 +283,22 @@ class proppit():
             time.sleep(2)
 
             find_submit = driver.find_element_by_xpath("//span[text()='บันทึก และ เผยแพร่ประกาศ']").click()
-            time.sleep(2)
-
+            time.sleep(5)
+            post_url = ''
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[1]').get_attribute('href'))+'|'
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[2]').get_attribute('href'))+'|'
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[3]').get_attribute('href'))+'|'
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[4]').get_attribute('href'))+'|'
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[5]').get_attribute('href'))
             gen_id_bool = True
         finally:
             driver.close()
             driver.quit()
 
-        return gen_id_bool
+        return {
+            'gen_id_bool':gen_id_bool,
+            'post_url':post_url
+        }
 
     def sort_date_id(self):
         last_id = ""
@@ -323,9 +331,9 @@ class proppit():
         post_url = ""
         post_id = ""
 
-        gen_id_bool = self.gen_id(postdata)
+        gen_id = self.gen_id(postdata)
 
-        if gen_id_bool == True:
+        if gen_id['gen_id_bool'] == True:
             test_login = self.test_login(postdata)
             if test_login["success"] == 'true':
                 post_id = self.sort_date_id()
@@ -340,7 +348,8 @@ class proppit():
                 if (r.status_code == 200) or (r.status_code == 201):
                     success = "true"
                     detail = "Post created successfully!"
-                    post_url = "https://proppit.com/properties/"+ post_id +"/edit"
+                    #post_url = "https://proppit.com/properties/"+ post_id +"/edit"
+                    post_url = gen_id['post_url']
                     post_id = post_id
                 else:
                     success = "false"
@@ -381,7 +390,7 @@ class proppit():
         post_url = "https://proppit.com/properties/"+ post_id +"/edit"
 
         test_login = self.test_login(postdata)
-
+        search_post = self.search_post(postdata)
         if test_login["success"] == 'true':
             temp_payload, files = self.payload_data(postdata,'edit',post_id)
             payload = {'ad': json.dumps(temp_payload)}
@@ -393,7 +402,8 @@ class proppit():
             if (r.status_code == 200) or (r.status_code == 201):
                 success = "true"
                 detail = "Post edit successfully!"
-                post_url = "https://proppit.com/properties/"+ post_id +"/edit"
+                #post_url = "https://proppit.com/properties/"+ post_id +"/edit"
+                post_url = search_post['post_url']
                 post_id = post_id
             else:
                 success = "false"
@@ -487,7 +497,45 @@ class proppit():
         post_view = ""
         post_found = "false"
         exists = False
+        path = './static/chromedriver'
+        options = Options()
 
+        options.add_argument("--headless")
+        options.add_argument('--no-sandbox')
+        options.add_argument('start-maximized')
+        options.add_argument('disable-infobars')
+        options.add_argument("--disable-extensions")
+        options.add_argument("disable-gpu")
+        options.add_argument("window-size=1920,1080")
+
+        driver = webdriver.Chrome(executable_path=path, options=options)
+
+        try:
+            driver.get("https://proppit.com/login")
+            time.sleep(2)
+
+            driver.find_element_by_id('email').send_keys(postdata['user'])
+            driver.find_element_by_id('password').send_keys(postdata['pass'])
+            time.sleep(1)
+
+            try:
+                find_login = driver.find_element_by_xpath("//span[text()='Log in']").click()
+            except:
+                find_login = driver.find_element_by_xpath("//span[text()='เข้าสู่ระบบ']").click()
+            time.sleep(2)
+            driver.get("https://proppit.com/properties")
+            time.sleep(2)
+            driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[2]/div[1]/div/div/div[1]/div/div/div/input').send_keys(postdata['post_title_th'])
+            driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[2]/div[1]/div/div/div[1]/div/div/div/input').send_keys(Keys.ENTER)
+            post_url = ''
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[1]').get_attribute('href'))+'|'
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[2]').get_attribute('href'))+'|'
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[3]').get_attribute('href'))+'|'
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[4]').get_attribute('href'))+'|'
+            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[5]').get_attribute('href'))
+        finally:
+            driver.close()
+            driver.quit()
         test_login = self.test_login(postdata)
 
         if test_login["success"] == 'true':
@@ -508,7 +556,7 @@ class proppit():
 
                         if exists == True:
                             post_id = ret_t['id']
-                            post_url = "https://proppit.com/properties/"+ ret_t['id'] +"/edit"
+                            #post_url = "https://proppit.com/properties/"+ ret_t['id'] +"/edit"
                             post_modify_time = ret_t['date']
 
                             post_found = "true"
