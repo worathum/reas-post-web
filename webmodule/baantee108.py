@@ -350,9 +350,9 @@ class baantee108():
 
 
 
-
+            print(111111111111111111)
             crt_post = httprequestObj.http_post('http://www.baantee108.com/member/p-post-property.php', data = data, files = file, headers = headers)
-            #print(crt_post.text)
+            print(crt_post.text)
 
             soup = BeautifulSoup(crt_post.content, features = "html.parser")
 
