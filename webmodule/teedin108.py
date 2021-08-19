@@ -297,6 +297,7 @@ class teedin108():
                 # subject
                 subject = ""
                 # description
+                postdata['post_description_th'] = postdata['post_description_th'].replace('\r','')
                 desc = str(postdata['post_description_th'])
 
                 if "post_title_th" in postdata:
@@ -552,6 +553,7 @@ class teedin108():
             detail = "Empty subject"
 
         # description
+        postdata['post_description_th'] = postdata['post_description_th'].replace('\r','')
         desc = postdata["post_description_th"]
         if desc == "":
             success = False
