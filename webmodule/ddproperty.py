@@ -17,6 +17,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.support.ui import Select
 import time
 from urllib.parse import urlsplit
 import string
@@ -974,7 +975,9 @@ class ddproperty():
             # bed room
             try:
                 if datahandled['bed_room'] != None and datahandled['bed_room'].strip() != '' and int(datahandled['bed_room']) > 0:
-                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
+                    element = self.firefox.find_element_by_xpath('//*[@id="bedRoomDropdown"]')
+                    self.firefox.execute_script("arguments[0].click();", element)
+                    #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("bedRoomDropdown")).click()
                     if int(datahandled['bed_room']) >= 10:
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text('10+ ห้องนอน')).click()
                     else:
@@ -984,7 +987,9 @@ class ddproperty():
 
             # bath room
             try:
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
+                element = self.firefox.find_element_by_xpath('//*[@id="bathRoomDropdown"]')
+                self.firefox.execute_script("arguments[0].click();", element)
+                #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("bathRoomDropdown")).click()
                 if datahandled['bath_room'] == None or datahandled['bath_room'].strip() == '' or int(datahandled['bath_room']) == 0:
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text('ไม่มีห้องน้ำ')).click()
                 elif int(datahandled['bath_room']) >= 1 and int(datahandled['bath_room']) < 9:
