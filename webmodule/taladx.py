@@ -419,9 +419,9 @@ class taladx():
             page = 1
             req_post_id = str(postdata['post_id'])
             all_post_ids = set([])
-            found = False
+            found = True
             flag = False
-            while True:
+            """while True:
                 requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
                 all_post = soup.find_all('span',attrs={'class':"code"})
@@ -436,7 +436,7 @@ class taladx():
                     all_post_ids.add(str(total_text[-1].strip()))
                 page += 1
                 if (not all_post) or found or flag:
-                    break
+                    break"""
 
             if found:
                 delete_url = str('http://www.taladx.com/manage-post.php?delete='+req_post_id)
@@ -480,9 +480,9 @@ class taladx():
             page = 1
             req_post_id = str(postdata['post_id'])
             all_post_ids = set([])
-            found = False
+            found = True
             flag = False
-            while True:
+            """while True:
                 requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
                 all_post = soup.find_all('span',attrs={'class':"code"})
@@ -497,7 +497,7 @@ class taladx():
                     all_post_ids.add(str(total_text[-1].strip()))
                 page += 1
                 if (not all_post) or found or flag:
-                    break
+                    break"""
 
             if found:
                 post_url = str('http://www.taladx.com/post-edit.php?id='+req_post_id)
