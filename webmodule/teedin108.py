@@ -409,7 +409,7 @@ class teedin108():
         log_id = postdata['log_id']
         post_id = postdata['post_id']
         user = postdata['user']
-        passwd = postdata['pass']
+        passwd = postdata['pass'][:10]
 
         # start process
         #
