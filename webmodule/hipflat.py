@@ -573,6 +573,7 @@ class hipflat():
             if alert != None:
                 response_free = scraper.get('https://www.hipflat.co.th/account/listings/free', headers = headers)
                 soup_free = BeautifulSoup(response_free.content,'html.parser')
+                company_account = str(soup_free.find('div',{'class' : 'col-md-7 col-md-offset-3 col-sm-8'}).find('h1').find('small').text).split('\n')[1]
                 soup_free_count = 0
                 list_post = soup_free.find('div',{'class' : 'user-listings__collection'}).find_all('div')
                 for list_post_t in list_post:
@@ -583,7 +584,7 @@ class hipflat():
                     except:
                         pass
 
-                if soup_free_count < 3:
+                if soup_free_count < 3 and company_account!='คุณใช้สิทธิ์การลงประกาศฟรีครบ 3 ประกาศแล้ว':
                     response = scraper.get('https://www.hipflat.co.th/listings/add?rank=1', headers = headers)
                 else:
                     return{
@@ -600,9 +601,9 @@ class hipflat():
                     }
             
             soup = BeautifulSoup(response.content, features = "html.parser")
-            
+
             data['utf8'] = str(soup.find('input', attrs = {'name': 'utf8'})['value'])
-        
+
             data['authenticity_token'] = str(soup.find('input', attrs = {'name': 'authenticity_token'})['value'])
             data['listing[rank]'] = str(soup.find('input', attrs = {'name': 'listing[rank]'})['value'])
 
