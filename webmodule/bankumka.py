@@ -604,12 +604,19 @@ class bankumka():
                 'https://bankumka.com/member/properties', verify=False)
             data = r.content
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-            all = soup.find_all("a", {"class": "my-property-name"})
-            posturl = ""
-            for i in all:
-                if postdata['post_id'] in i.get_text():
-                    posturl += i['href']
-            posturl += '/edit'
+            all_page=len(soup.find('select',{'name':'pageNo'}).find_all('option'))
+            for i in range(1,all_page+1):
+                r = httprequestObj.http_get(
+                'https://bankumka.com/member/properties/page/{}'.format(i), verify=False)
+                data = r.content
+                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
+                all = soup.find_all("a", {"class": "my-property-name"})
+                posturl = ""
+                for i in all:
+                    if postdata['post_id'] in i.get_text():
+                        posturl += i['href']
+                        break
+                posturl += '/edit'
             if(posturl == '/edit'):
                 success = False
                 posturl = ''
