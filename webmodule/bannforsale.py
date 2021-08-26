@@ -233,7 +233,7 @@ class bannforsale():
 
             if postdata['property_type'] == '1':
                 data['size'] = postdata['floor_area']
-                data['unitsize'] : 'ตร.ม.'
+                data['unitsize'] = 'ตร.ม.'
 
             else:
                 data['size'] = (400 * int(postdata['land_size_rai'])) + (100 * int(postdata['land_size_ngan'])) + (1*float(str(postdata['land_size_wa'])))
@@ -422,7 +422,7 @@ class bannforsale():
 
             if postdata['property_type'] == '1':
                 data['size'] = postdata['floor_area']
-                data['unitsize'] : 'ตร.ม.'
+                data['unitsize'] = 'ตร.ม.'
 
             else:
                 data['size'] = (400 * int(postdata['land_size_rai'])) + (100 * int(postdata['land_size_ngan'])) + (1*float(str(postdata['land_size_wa'])))
