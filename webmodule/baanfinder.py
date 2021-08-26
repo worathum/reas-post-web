@@ -120,7 +120,7 @@ class baanfinder():
         detail = "Login Successful"
 
         options = uc.ChromeOptions()
-        #options.headless = True
+        options.headless = True
         self.driver = uc.Chrome('./static/chromedriver', options=options)
         #driver = webdriver.Chrome('./static/chromedriver', options=options)
 
