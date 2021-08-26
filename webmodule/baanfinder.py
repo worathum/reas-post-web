@@ -120,7 +120,7 @@ class baanfinder():
         detail = "Login Successful"
 
         options = uc.ChromeOptions()
-        options.headless = True
+        #options.headless = True
         self.driver = uc.Chrome('./static/chromedriver', options=options)
         #driver = webdriver.Chrome('./static/chromedriver', options=options)
 
@@ -153,6 +153,7 @@ class baanfinder():
             detail = 'login false'
         finally:
             if postdata['action'] == 'test_login':
+                self.driver.close()
                 self.driver.quit()
         # end processlogin
         time_end = datetime.datetime.utcnow()
@@ -736,6 +737,7 @@ class baanfinder():
                 post_url = ''
                 post_id = ''
         
+        self.driver.close()
         self.driver.quit()
 
         time_end = datetime.datetime.utcnow()
@@ -788,7 +790,8 @@ class baanfinder():
             else:
                 success = "false"
                 detail = "No post found with given id."
-
+        self.driver.close()
+        self.driver.quit()
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -828,7 +831,8 @@ class baanfinder():
             else:
                 success = "false"
                 detail = "No post found with given id."
-
+        self.driver.close()
+        self.driver.quit()
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -868,7 +872,8 @@ class baanfinder():
             else:
                 success = "false"
                 detail = "No post found with given id."
-
+        self.driver.close()
+        self.driver.quit()
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
