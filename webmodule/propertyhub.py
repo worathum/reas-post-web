@@ -154,6 +154,24 @@ class propertyhub():
         detail = test_login["detail"]
 
         slt_project = datahandled['project_name'].split(' ')
+        if postdata['listing_type'] == 'เช่า':
+            if int(datahandled['price_baht'])>600000:
+                detail = 'กรุณาระบุราคาค่าเช่าไม่เกิน 600,000 บาท'
+                success = 'false'
+                time_end = datetime.utcnow()
+                time_usage = time_end - time_start
+                return {
+                    "success": success,
+                    "usage_time": str(time_usage),
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "ds_id": postdata['ds_id'],
+                    "post_url" : '',
+                    "post_id" : '',
+                    "account_type": "null",
+                    "detail": detail,
+                    "websitename": self.websitename
+                }
         try:
             if success == 'true':
                 clear_pop = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, 'body'))).send_keys(Keys.ESCAPE)
