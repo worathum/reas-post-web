@@ -673,6 +673,7 @@ class ddproperty():
                 print(success, detail, post_id, account_type)
 
         try:
+            self.firefox.close()
             self.firefox.quit()
         except:
             pass
@@ -1623,6 +1624,7 @@ class ddproperty():
             detail = 'System fail. Please retry the process.'
                 
         finally:
+            self.firefox.close()
             self.firefox.quit()
 
         time_end = datetime.datetime.utcnow()
