@@ -780,14 +780,18 @@ class ddproperty():
                 else:  # CONDO
                     linktxt = 'คอนโด'
                     cssselect = 'CONDO'
+             
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("propertyTypeSelect")).click()
                 time.sleep(0.1)
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text(linktxt)).click()
                 time.sleep(0.1)
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[type='radio'][value='" + cssselect + "']")).click()
                 time.sleep(0.2)
-                element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[4]/div/div[1]/div/div/div/div'))
-                self.firefox.execute_script("arguments[0].style.display = 'none';", element)
+                try:
+                    element = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/div/div[4]/div/div[1]/div/div/div/div'))
+                    self.firefox.execute_script("arguments[0].style.display = 'none';", element)
+                except:
+                    pass
                 #self.firefox.save_screenshot("debug_response/newp3.png")
 
                 # province district subdistrict
