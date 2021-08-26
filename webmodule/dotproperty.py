@@ -150,7 +150,10 @@ class dotproperty():
         else:
             success = 'true'
             detail = 'Log in success'
-
+        if (data['action'] == 'test_login'):
+            # self.firefox.quit()
+            driver.close()
+            driver.quit()
         end_time = datetime.datetime.utcnow()
         result = {'websitename': 'dotproperty',
                   'success': success,
@@ -764,8 +767,10 @@ class dotproperty():
                 else:
                     detail = 'Post not found'
             finally:
+                driver.close()
                 driver.quit()
         else:
+            driver.close()
             driver.quit()
 
         end_time = datetime.datetime.utcnow()
