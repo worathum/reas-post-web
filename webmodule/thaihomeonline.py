@@ -93,6 +93,7 @@ class thaihomeonline():
             time.sleep(1)
             driver.find_element_by_name('btnSubmit').click()
         except:
+            driver.close()
             driver.quit()
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
@@ -107,10 +108,12 @@ class thaihomeonline():
 
 
         if(re.search('การสมัครสมาชิกของท่านเสร็จสมบูรณ์',driver.page_source)):
+            driver.close()
             driver.quit()
             success = "True"
             detail = "Registered"
         else:
+            driver.close()
             driver.quit()
             success = "False"
             detail = 'not registered'
@@ -485,6 +488,7 @@ class thaihomeonline():
                     wait.until(lambda driver: driver.find_element_by_xpath('//div[@id="postPicItem'+str(i+1)+'"]//div[@class="pic"]'))          
                     time.sleep(1)
                 driver.find_element_by_name('btnSave').click()
+                driver.close()
                 driver.quit()
                 r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=next', data=step_four)
                 r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step-final/?proptID='+post_id+'&event=next', data={"hidStepCurrent": "postStepFinal"})
@@ -570,6 +574,7 @@ class thaihomeonline():
                     driver.find_element_by_id('proptPushConfirm').click()
                 except:
                     time_end = datetime.datetime.utcnow()
+                    driver.close()
                     driver.quit()
                     return {
                         "websitename": "thaihomeonline",
@@ -586,19 +591,21 @@ class thaihomeonline():
                 driver.switch_to.alert.accept()
                 print('7')
                 time.sleep(2)
+                driver.close()
                 driver.quit()
                 success = "True"
                 detail = "Boost successful"
-                driver.quit()
             else:
                 success = "false"
                 detail = "Post Not found"
+                driver.close()
                 driver.quit()
 
         except Exception as e:
             print(e)
             success = "False"
             detail = "Boost Unsuccessful"
+            driver.close()
             driver.quit()
 
         
@@ -968,6 +975,7 @@ class thaihomeonline():
                     wait.until(lambda driver: driver.find_element_by_xpath('//div[@id="postPicItem'+str(i+1)+'"]//div[@class="pic"]'))          
                     time.sleep(1)
                 driver.find_element_by_name('btnSave').click()
+                driver.close()
                 driver.quit()
                 r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=next', data=step_four)
                 r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step-final/?proptID='+post_id+'&event=next', data={"hidStepCurrent": "postStepFinal"})
