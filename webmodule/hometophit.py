@@ -595,6 +595,7 @@ class hometophit():
                 res['post_url'] = 'aaa'
                 res['end_time'], res['usage_time'] = set_end_time(start_time)
                 return res
+        driver.close()
         driver.quit()
         res['end_time'], res['usage_time'] = set_end_time(start_time)
         return res
@@ -829,6 +830,9 @@ class hometophit():
         except:
             success=False
             detail="Selenium Web browser Problem."
+        finally:
+            driver.close()
+            driver.quit()
         end_time,usage_time=set_end_time(start_time)
 
 
