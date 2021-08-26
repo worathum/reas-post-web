@@ -847,7 +847,17 @@ class ddteedin():
                 browser.find_element_by_name('login').click()
                 time.sleep(2)
 
-                search = browser.find_element_by_name('q')
+                browser.get('https://www.ddteedin.com/myposts')
+                time.sleep(2)
+                try:
+                    close_win = browser.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/input[2]')
+                    print(close_win.get_attribute('value'))
+                    if close_win.get_attribute('value') == 'ไว้ครั้งหน้า':
+                        close_win.click()
+                except:
+                    pass
+                time.sleep(2)
+                search = browser.find_element_by_name('srch')
                 search.send_keys(post_id + Keys.ENTER)
                 time.sleep(2)
 
