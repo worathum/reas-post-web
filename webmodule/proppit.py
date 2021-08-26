@@ -209,7 +209,7 @@ class proppit():
         recdata['amenities'] = []
         recdata['project'] = None
         if 'web_project_name' not in postdata:
-            postdata['web_project_name'] = ''
+            postdata['web_project_name'] = postdata['project_name']
         if (postdata['web_project_name'] is None) or (postdata['web_project_name'] == ''):
             pass
         else:
