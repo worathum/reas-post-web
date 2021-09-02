@@ -133,27 +133,31 @@ class dotproperty():
         driver = webdriver.Chrome(executable_path=path, options=options)
 
         #driver.maximize_window()
-        driver.get('https://www.dotproperty.co.th/login')
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'email'))).send_keys(data['user'])
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.NAME, 'password'))).send_keys(data['pass'])
-        login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
-        actions = ActionChains(driver)
-        actions.move_to_element(login_btn).click().perform()
-        time.sleep(3.5)
-        txt = str(driver.page_source)
-        if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
-            success = 'false'
-            detail = 'อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง'
-        elif txt.find('email ต้องเป็นอีเมลแอดเดรสที่มีอยู่จริงเท่านั้น') != -1:
-            success = 'false'
-            detail = 'Your usename needs to be email pattern.'
-        else:
-            success = 'true'
-            detail = 'Log in success'
-        if (data['action'] == 'test_login'):
-            # self.firefox.quit()
+        try:
+            driver.get('https://www.dotproperty.co.th/login')
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'email'))).send_keys(data['user'])
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.NAME, 'password'))).send_keys(data['pass'])
+            login_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'loginPopupBtn')))
+            actions = ActionChains(driver)
+            actions.move_to_element(login_btn).click().perform()
+            time.sleep(3.5)
+            txt = str(driver.page_source)
+            if txt.find('อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง')!=-1:
+                success = 'false'
+                detail = 'อีเมลและ/หรือรหัสผ่านของคุณไม่ตรงกัน โปรดลองใหม่อีกครั้ง'
+            elif txt.find('email ต้องเป็นอีเมลแอดเดรสที่มีอยู่จริงเท่านั้น') != -1:
+                success = 'false'
+                detail = 'Your usename needs to be email pattern.'
+            else:
+                success = 'true'
+                detail = 'Log in success'
+            if (data['action'] == 'test_login'):
+                driver.close()
+                driver.quit()
+        finally:
             driver.close()
             driver.quit()
+        
         end_time = datetime.datetime.utcnow()
         result = {'websitename': 'dotproperty',
                   'success': success,
@@ -691,12 +695,12 @@ class dotproperty():
 
     def boost_post(self, data):
         start_time = datetime.datetime.utcnow()
-        log_id = str(data['log_id'])
+        """log_id = str(data['log_id'])
         post_id = str(data['post_id'])
 
         path = './static/chromedriver'
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--disable-notifications')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-infobars')
@@ -733,6 +737,7 @@ class dotproperty():
                 driver.get(url)
                 # block create-btn
                 time.sleep(2)
+
                 valid_ids = []
                 while True:
                     driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_UP)
@@ -771,7 +776,7 @@ class dotproperty():
                 driver.quit()
         else:
             driver.close()
-            driver.quit()
+            driver.quit()"""
 
         end_time = datetime.datetime.utcnow()
         result = {
@@ -779,10 +784,10 @@ class dotproperty():
             "usage_time": str(end_time - start_time),
             "start_time": str(start_time),
             "end_time": str(end_time),
-            "detail": detail,
+            "detail": 'No option boost in this site',
             'ds_id': data['ds_id'],
-            "log_id": log_id,
-            "post_id": post_id,
+            "log_id": str(data['log_id']),
+            "post_id": str(data['post_id']),
             'websitename': 'dotproperty',
             "post_view": ""
         }
