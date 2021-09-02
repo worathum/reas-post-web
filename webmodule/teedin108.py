@@ -189,7 +189,21 @@ class teedin108():
         detail = login["detail"]
         post_id = ""
         post_url = ""
+        if int(postdata["price_baht"]) > 2140000000:
+            time_end = datetime.datetime.utcnow()
+            time_usage = time_end - time_start
 
+            return {
+                "websitename": "teedin108",
+                "success": False,
+                "ds_id": postdata['ds_id'],
+                "usage_time": str(time_usage),
+                "start_time": str(time_start),
+                "end_time": str(time_end),
+                "post_url": post_url,
+                "post_id": post_id,
+                "detail": "This website doesn't support property price more than 2,140,000,000"
+            }
         if not success:
             detail = "Invalid credentials to login"
         else:
