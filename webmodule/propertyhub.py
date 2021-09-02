@@ -51,14 +51,16 @@ class propertyhub():
             else:
                 success = 'false'
                 detail = 'Your email or password are wrong'
+            if postdata['action'] == 'test_login':
+                self.driver.close()
+                self.driver.quit()
         except:
             success = 'false'
             detail = 'Error when tring to login or can not reach the elements.'
-
-        if postdata['action'] == 'test_login':
+        finally:
             self.driver.close()
             self.driver.quit()
-
+        
         time_end = datetime.utcnow()
         time_usage = time_end-time_start
         
@@ -569,6 +571,13 @@ class propertyhub():
                         except:
                             pass
 
+                        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div/div[2]/div[5]/div/div[2]/button'))).click()
+                        search_id = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'listingId')))
+                        search_id.send_keys(Keys.CONTROL + 'a')
+                        search_id.send_keys(postdata['post_id'])
+                        sleep(2)
+                        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/form/div[2]/button[2]'))).click()
+                        sleep(2)
                         postcheck = True
                         while postcheck:
                             get_all_link = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-list-view')))
@@ -595,7 +604,7 @@ class propertyhub():
                                     success = 'false'
                                     detail = 'Your post already edited but can not get the link. Please check your acount again'
                                     post_url = ''
-                                    pass     
+                                    pass
                         
                 else:
                     post_url = ''
