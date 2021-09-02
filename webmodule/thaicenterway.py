@@ -14,7 +14,6 @@ import shutil
 from urllib.parse import unquote
 import urllib.request
 import urllib
-#from selenium import webdriver
 from PIL import Image
 
 httprequestObj = lib_httprequest()
