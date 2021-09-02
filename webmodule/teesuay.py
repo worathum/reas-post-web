@@ -722,7 +722,7 @@ class teesuay():
             page = 1
             found = False
             temp = len('property-')
-            while True:
+            """while True:
                 r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
                 soup = BeautifulSoup(r.content, features = self.parser)
                 count = 0
@@ -751,28 +751,21 @@ class teesuay():
                     "log_id": postdata['log_id'],
                     "post_view": ""
 
-                }
-            posturl="http://www.teesuay.com/member/slide-property.php?post_id="+postdata['post_id']
-            r=httprequestObj.http_get(posturl)
+                }"""
+            try:
+                posturl="http://www.teesuay.com/member/slide-property.php?post_id="+postdata['post_id']
+                r=httprequestObj.http_get(posturl)
+                detail = "Boosted Successfully"
+                success = 'true'
+            except:
+                detail = "wrong post id"
+                success = 'false'
             time_end = datetime.datetime.utcnow()
-            return {
-                "websitename": "teesuay",
-                "success": "true",
-                "time_usage": time_end - time_start,
-                "start_time": time_start,
-                "end_time": time_end,
-                'ds_id': postdata['ds_id'],
-                "detail": "Boosted Successfully",
-                "post_id": post_id,
-                "log_id": postdata['log_id'],
-                "post_view": ""
-                
-            }
-        else:
-            success = "false"
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
-            return {
+    
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        return {
                 'ds_id': postdata['ds_id'],
                 "websitename": "teesuay",
                 "success": success,
