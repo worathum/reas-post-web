@@ -1209,7 +1209,7 @@ class goodpriceproperty():
                     
         page = 1            
         found = False
-        while True:
+        """while True:
             requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
             soup = BeautifulSoup(requ, features = self.parser)
             ahref = soup.findAll('a')
@@ -1223,21 +1223,18 @@ class goodpriceproperty():
                     count += 1
             page += 1
             if found or count==0:
-                break
-
-
-        if not found:
+                break"""
+        try:
+            r = httprequestObj.http_get('http://www.xn--42cf4b4c7ahl7albb1b.com/member/slide-property.php',
+                                    headers=headers, params=params, verify=False)
+            if success == 'true' and 'เลื่อนประกาศเรียบร้อยแล้วครับ'  not in r.text:
+                success='false'
+                detail = 'Post already boosted'
+            elif success=='true':
+                detail = 'successfully boosted'
+        except:
             success='false'
             detail = 'Post id doesnt exist'
-        r = httprequestObj.http_get('http://www.xn--42cf4b4c7ahl7albb1b.com/member/slide-property.php',
-                                headers=headers, params=params, verify=False)
-
-        if success == 'true' and 'เลื่อนประกาศเรียบร้อยแล้วครับ'  not in r.text:
-            success='false'
-            detail = 'Post already boosted'
-        elif success=='true':
-            detail = 'successfully boosted'
-
         time_end = datetime.datetime.utcnow()
         return {
             "success": success,
