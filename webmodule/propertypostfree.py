@@ -399,7 +399,7 @@ class propertypostfree():
         login = self.test_login(postdata)
         
         if(login['success'] == "true"):
-            all_posts_url = 'http://www.propertypostfree.com/member/list-property.php'
+            """all_posts_url = 'http://www.propertypostfree.com/member/list-property.php'
 
             all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
 
@@ -431,11 +431,11 @@ class propertypostfree():
                 page += 1
                 if not all_post:
                     break
-            # print(all_post_ids)
+            # print(all_post_ids)"""
 
             req_post_id = str(postdata['post_id'])
 
-            if req_post_id in all_post_ids:
+            try:
                 boost_url = str('http://www.propertypostfree.com/member/slide-property.php?post_id='+req_post_id)
 
                 boo_post = httprequestObj.http_get(boost_url, headers = headers)
@@ -452,7 +452,7 @@ class propertypostfree():
 
 
 
-            else:
+            except:
                 success = "false"
                 detail = "post_id is incorrect"
 
