@@ -1,7 +1,6 @@
 import requests, re, random
 from bs4 import BeautifulSoup
 import json, datetime
-from selenium import webdriver
 from .lib_httprequest import *
 from .lib_captcha import  *
 httprequestObj = lib_httprequest()
@@ -447,7 +446,7 @@ class taradzod:
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
             
-            req = httprequestObj.http_get(url, headers=headers)
+            """req = httprequestObj.http_get(url, headers=headers)
             valid_ids = []
             valid_titles = []
             valid_urls = []
@@ -476,17 +475,16 @@ class taradzod:
                         id += url[ind]
                         ind += 1
                     valid_ids.append(id)
-                if post_id in valid_ids:
-                    url = 'http://www.taradzod.com/ajax/update-prakad.php?id='+post_id
-                    headers = {
-                        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-                    }   
-                    req = httprequestObj.http_get(url, headers=headers)
-                    detail = 'Announcement postponed'
-                    success = 'true'
-                    boosted = 1
-            
-            if boosted == 0:
+                if post_id in valid_ids:"""
+            try:
+                url = 'http://www.taradzod.com/ajax/update-prakad.php?id='+post_id
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+                }   
+                req = httprequestObj.http_get(url, headers=headers)
+                detail = 'Announcement postponed'
+                success = 'true'
+            except:
                 detail = 'Post not found'
                 success = 'false'
 
