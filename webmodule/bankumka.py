@@ -17,7 +17,7 @@ from urllib.parse import unquote
 httprequestObj = lib_httprequest()
 # options = Options()
 # options.set_headless(True)
-# browser = webdriver.Chrome(
+
     # executable_path='/usr/bin/chromedriver', options=options)
 
 # with open("./static/ploychao_province.json") as f:
