@@ -270,8 +270,9 @@ class ddproperty():
             time.sleep(3)
             
             matchObj = re.search(r'บัญชีผู้ใช้งานของท่านหมดอายุ', self.firefox.page_source)
+            matchObj4 = re.search(r'User account has been suspended.', self.firefox.page_source)
             matchObj2 = re.search(r'User account is not active', self.firefox.page_source)
-            if matchObj or matchObj2:
+            if matchObj or matchObj2 or matchObj4:
                 success = "false"
                 detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
                 #log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
@@ -288,7 +289,8 @@ class ddproperty():
             matchObj = re.search(r'Incorrect Captcha', self.firefox.page_source)
             matchObj2 = re.search(r'ฉันไม่ใช่โปรแกรมอัตโนมัติ', self.firefox.page_source)
             matchObj3 = re.search(r'Captcha ไม่ถูกต้อง', self.firefox.page_source)
-            if matchObj or matchObj2 or matchObj3:
+            matchObj5 = re.search(r'Invalid captcha value.', self.firefox.page_source)
+            if matchObj or matchObj2 or matchObj3 or matchObj5:
                 success = "false"
                 detail = 'cannot login'
                 #log.warning('cannot login')
@@ -836,7 +838,7 @@ class ddproperty():
                     if datahandled['action'] == 'edit_post':
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(Keys.DELETE)  # clear for edit action
-                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'])
+                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("street-name-field")).send_keys(datahandled['addr_road'][:50])
                 except Exception as e:
                     pass
                     #log.warning('road error ' + str(e))
@@ -1058,6 +1060,8 @@ class ddproperty():
             #self.firefox.save_screenshot("debug_response/newp00.png")
 
             # desc thai
+            datahandled['post_description_th'] = ''.join(c for c in datahandled['post_description_th'] if c <= '\uFFFF')
+            datahandled['post_description_en'] = ''.join(c for c in datahandled['post_description_en'] if c <= '\uFFFF')
             try:
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
