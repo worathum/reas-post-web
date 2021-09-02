@@ -556,10 +556,10 @@ class evaphukettown():
         if test_login['success'] == "true":
 
             page = 0
-            post_found = False
+            post_found = True
             tot_pages = 100
 
-            while True:
+            """while True:
                 page += 1
                 if page > tot_pages:
                     break
@@ -584,14 +584,14 @@ class evaphukettown():
                         break
 
                 if post_found:
-                    break
+                    break"""
             
-            if post_found:
+            try:
                 result['success'] = "true"
                 httprequestObj.http_get("http://www.evaphukettown.com/classified/manage-post.php?update={}".format(postdata['post_id']))
                 result['detail'] = "Post boosted successfully."
 
-            else:
+            except:
                 result['success'] = "false"
                 result['detail'] = "No post found with given id"
         
