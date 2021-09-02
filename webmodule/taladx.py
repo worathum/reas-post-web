@@ -376,12 +376,12 @@ class taladx():
                 if (not all_post) or found or flag:
                     break"""
 
-            if found:
+            try:
                 boost_url = str('http://www.taladx.com/manage-post.php?update='+req_post_id)
                 res = httprequestObj.http_get(boost_url, headers = headers)
                 success = "true"
                 detail = "Post boosted successfully"
-            else:
+            except:
                 success = "false"
                 detail = "post_id is incorrect"
             
