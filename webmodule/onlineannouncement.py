@@ -14,10 +14,6 @@ import sys
 import random
 from urllib.parse import unquote
 import os
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-
-import selenium.webdriver.support.ui as ui
 import time
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
