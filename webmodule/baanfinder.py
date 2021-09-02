@@ -872,8 +872,11 @@ class baanfinder():
             else:
                 success = "false"
                 detail = "No post found with given id."
-        self.driver.close()
-        self.driver.quit()
+        try:
+            self.driver.close()
+            self.driver.quit()
+        except:
+            pass
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
