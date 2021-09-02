@@ -2,7 +2,6 @@ import requests,re,random
 from bs4 import BeautifulSoup
 import json
 import datetime
-from selenium import webdriver
 from .lib_httprequest import *
 
 httprequestObj = lib_httprequest()
