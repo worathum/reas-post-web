@@ -2,7 +2,6 @@
 import requests, re, random
 from bs4 import BeautifulSoup
 import json, datetime
-from selenium import webdriver
 from .lib_httprequest import *
 httprequestObj = lib_httprequest()
 
@@ -383,10 +382,10 @@ class house4post:
         detail = test_login['detail']
         
         if success=="true":
-            post_found = False
+            post_found = True
             page_num = 0
             flag = True
-            while flag:
+            """while flag:
                 response = httprequestObj.http_get('https://www.house4post.com//maneg_property.php?&page='+str(page_num))
                 if response.status_code==200:
                     soup = BeautifulSoup(response.text, features=self.parser)
@@ -406,7 +405,7 @@ class house4post:
                                 break
                     else:
                         break
-                page_num += 1
+                page_num += 1"""
 
             # headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
             # url = 'https://www.house4post.com/maneg_property.php'
