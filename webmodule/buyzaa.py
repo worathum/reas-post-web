@@ -597,7 +597,7 @@ class buyzaa():
 
         if success:
 
-            page = 0
+            """page = 0
             post_found = False
             tot_pages = 100
 
@@ -626,9 +626,9 @@ class buyzaa():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
-            if post_found:
+            try:
                 r = httprequestObj.http_get('http://www.buyzaa.com/manage-post.php', params={'update': post_id})
                 # print(r.url)
                 # print(r.status_code)
@@ -642,7 +642,7 @@ class buyzaa():
                 else:
                     success = False
                     detail = "Couldnot boost post"
-            else:
+            except:
                 success = False
                 detail = "No post with given post_id"
 
