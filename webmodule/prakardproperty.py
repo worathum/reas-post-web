@@ -368,7 +368,7 @@ class prakardproperty():
                             login = driver.find_element_by_class_name('login-button')
                             login.click()
                         except:
-                            print("Login Error?: "+str(e))
+                            pass
 
                             pass
                         driver.get('http://www.prakardproperty.com/properties/edit/'+post_id)
