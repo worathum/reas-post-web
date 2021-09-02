@@ -1,7 +1,6 @@
 import requests, re, random
 from bs4 import BeautifulSoup
 import json, datetime
-from selenium import webdriver
 from .lib_httprequest import *
 from .lib_captcha import  *
 httprequestObj = lib_httprequest()
@@ -494,7 +493,7 @@ class talad:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url, headers=headers)
+            """req = httprequestObj.http_get(url, headers=headers)
             valid_ids = []
             soup = BeautifulSoup(req.text, 'html5lib')
             total_pages = int(soup.find('span', {'class': 'badge'}).text)
@@ -513,17 +512,17 @@ class talad:
                     while url[ind] != '-':
                         id += url[ind]
                         ind += 1
-                    valid_ids.append(id)
+                    valid_ids.append(id)"""
 
             #print(valid_ids)
-            if post_id in valid_ids:
+            try:
 
                 url = 'http://talad.me/user/post/?action=renew&id='+str(post_id)
                 req = httprequestObj.http_get(url,headers=headers)
                 success = 'true'
                 detail = 'Post edited and saved'
 
-            else:
+            except:
                 success = 'false'
                 detail = 'Post not found'
 
