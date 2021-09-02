@@ -607,8 +607,9 @@ class thaihomeonline():
             detail = "Boost Unsuccessful"
             driver.close()
             driver.quit()
-
-        
+        finally:
+            driver.close()
+            driver.quit()
         
         time_end = datetime.datetime.utcnow()
         return {
