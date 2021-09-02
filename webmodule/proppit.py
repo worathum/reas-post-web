@@ -85,6 +85,14 @@ class proppit():
         recdata = {}
 
         recdata['id'] = post_id
+        if 'line' in postdata:
+            recdata['contactLine'] = postdata['line']
+        else:
+            recdata['contactLine'] = None
+        if 'property_id' in postdata:
+            recdata['referenceId'] = postdata['property_id']
+        else:
+            recdata['referenceId'] = None
 
         recdata['operations'] = [{}]
 
@@ -149,14 +157,31 @@ class proppit():
 
             recdata['descriptionMultiLanguage'].append(temp)
 
-        recdata['bathrooms'] = postdata['bath_room']
+        recdata['bathrooms'] = None
         recdata['bedrooms'] = postdata['bed_room']
-        recdata['toilets'] = None
-        
-        recdata['plotArea'] = None
-        recdata['floorArea'] = postdata['floorarea_sqm']
+        if postdata['bath_room'] == '':
+            recdata['toilets'] = None
+        else:
+            recdata['toilets'] = postdata['bath_room']
+
+        area = ['land_size_rai','land_size_ngan','land_size_wa']
+        for i in area:
+            if (i not in postdata) or (postdata[i] == ''):
+                postdata[i] = 0
+            else:
+                postdata[i] = int(postdata[i])
+        area_sqm = (postdata['land_size_rai'] * 1600)+(postdata['land_size_ngan'] * 400)+(postdata['land_size_wa'] * 4)
+
+        if recdata['propertyType'] == "land":
+            recdata['plotAreaSqm'] = area_sqm
+            recdata['floorArea'] = area_sqm
+        else:
+            recdata['plotAreaSqm'] = None
+            recdata['floorArea'] = area_sqm
         recdata['usableArea'] = postdata['floorarea_sqm']
 
+        if ('floor_level' not in postdata) or (postdata['floor_level'] == ''):
+            postdata['floor_level'] = postdata['floor_total']
         recdata['floor'] = postdata['floor_level']
 
         recdata['rules'] = []
@@ -166,7 +191,6 @@ class proppit():
         recdata['contactPhone'] = postdata['mobile']
 
         recdata['contactWhatsApp'] = None
-        recdata['contactLine'] = None
         recdata['contactFacebookMessenger'] = None
         recdata['contactViber'] = None
         recdata['furnished'] = None
@@ -238,7 +262,8 @@ class proppit():
 
     def gen_id(self, postdata):
         gen_id_bool = False
-        
+        detail = ''
+        post_url = ''
         path = './static/chromedriver'
         options = Options()
 
@@ -285,20 +310,27 @@ class proppit():
 
             find_submit = driver.find_element_by_xpath("//span[text()='บันทึก และ เผยแพร่ประกาศ']").click()
             time.sleep(5)
-            post_url = ''
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[1]').get_attribute('href'))+'|'
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[2]').get_attribute('href'))+'|'
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[3]').get_attribute('href'))+'|'
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[4]').get_attribute('href'))+'|'
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[5]').get_attribute('href'))
-            gen_id_bool = True
+            try:
+                limit = driver.find_element_by_xpath('/html/body/div[3]/div[3]/div/div[1]/h2').text
+                if limit == 'คุณมีประกาศที่เผยแพร่เต็มจำนวนตามแพ็กเกจของคุณแล้ว':
+                    gen_id_bool = False
+                    detail = 'คุณมีประกาศที่เผยแพร่เต็มจำนวนตามแพ็กเกจของคุณแล้ว'
+            except:
+                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[1]').get_attribute('href'))+'|'
+                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[2]').get_attribute('href'))+'|'
+                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[3]').get_attribute('href'))+'|'
+                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[4]').get_attribute('href'))+'|'
+                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[5]').get_attribute('href'))
+                gen_id_bool = True
+                
         finally:
             driver.close()
             driver.quit()
 
         return {
             'gen_id_bool':gen_id_bool,
-            'post_url':post_url
+            'post_url':post_url,
+            'detail':detail
         }
 
     def sort_date_id(self):
@@ -361,6 +393,8 @@ class proppit():
         else:
             success = "false"
             detail = "cannot gen new id."
+            if gen_id['detail'] == 'คุณมีประกาศที่เผยแพร่เต็มจำนวนตามแพ็กเกจของคุณแล้ว':
+                detail = gen_id['detail']
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
