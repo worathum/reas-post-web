@@ -401,7 +401,7 @@ class khaidee():
         login = self.test_login(postdata)
         
         if(login['success'] == "true"):
-            all_posts_url = 'https://www.khaidee.co.th/member/list-property.php'
+            """all_posts_url = 'https://www.khaidee.co.th/member/list-property.php'
 
             all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
 
@@ -410,13 +410,13 @@ class khaidee():
             all_post_ids = []
 
             for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
-                all_post_ids.append(str(abc['value']))
+                all_post_ids.append(str(abc['value']))"""
 
             #print(all_post_ids)
 
             req_post_id = str(postdata['post_id'])
 
-            if req_post_id in all_post_ids:
+            try:
                 boost_url = str('https://www.khaidee.co.th/member/slide-property.php?post_id='+req_post_id)
 
                 boo_post = httprequestObj.http_get(boost_url, headers = headers)
@@ -430,10 +430,7 @@ class khaidee():
                 else:
                     success = "true"
                     detail = "Announcement postponed successfully"
-
-
-
-            else:
+            except:
                 success = "false"
                 detail = "post_id is incorrect"
 
