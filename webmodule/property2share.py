@@ -351,129 +351,43 @@ class property2share():
 
         # login with user info first
         login = self.test_login(postdata)
-
+        success = login['success']
         if (login['success'] == False):
             return login
 
-        check_posted = self.check_posted(postdata)
-        if ('log_id' not in postdata or postdata['log_id'] == None or postdata['log_id'] == ""):
-            log_id = ''
+            """check_posted = self.check_posted(postdata)
+            if ('log_id' not in postdata or postdata['log_id'] == None or postdata['log_id'] == ""):
+                log_id = ''
 
 
-        else:
-            log_id = int(postdata['log_id'])
+            else:
+                log_id = int(postdata['log_id'])
 
-        if(check_posted == False):
-            success = False
-            time_end = datetime.utcnow()
-            detail = 'This Post is not created by user'
-            return {
-                "success": success,
-                "time_usage": str(time_end - time_start),
-                'ds_id': postdata['ds_id'],
-                'log_id': postdata['log_id'],
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                "detail": detail,
-                "websitename": "property2share",
-                "post_view": ""
-            }
+            if(check_posted == False):
+                success = False
+                time_end = datetime.utcnow()
+                detail = 'This Post is not created by user'
+                return {
+                    "success": success,
+                    "time_usage": str(time_end - time_start),
+                    'ds_id': postdata['ds_id'],
+                    'log_id': postdata['log_id'],
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    "detail": detail,
+                    "websitename": "property2share",
+                    "post_view": ""
+                }"""
+        try:
+            response = httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+post_id)
+            if(response.status_code == 200):
+                success = True
+                detail = "Post Boosted Successfully"
 
-        response = httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+post_id)
-
-        #GET ALL PARAMTERS PREVIOUSLY ENTERED IN THE POST
-        # request = httprequestObj.http_get('https://www.property2share.com/pageuser/edit_publish.php?id='+str(post_id))
-        # soup = BeautifulSoup(request.content, 'html.parser')
-        # provinces = soup.find_all("select",{"name" : "province_id"})
-        # province_id = int(provinces[0].find_all("option", selected = True)[0]['value'])
-        #
-        # amphur = soup.find_all("select", {"name" : "amphur_id"})
-        # amphur_id = int(amphur[0].find_all("option", selected=True)[0]['value'])
-        #
-        # post_type = soup.find_all("select", {"name" : "type_publish"})
-        # post_type = int(post_type[0].find_all("option", selected=True)[0]['value'])
-        #
-        # asset_type = soup.find_all("select", {"name" : "asset_type"})
-        # asset_type = int(asset_type[0].find_all("option", selected = True)[0]['value'])
-        #
-        # post_title_th = soup.find_all("input", {"name" : "publish_title"})
-        # post_title_th = post_title_th[0]['value']
-        #
-        # post_description_th = soup.find_all("textarea", {"name" : "txtDescription"})
-        # post_description_th = (post_description_th[0].contents[0])
-        #
-        # addr_province = soup.find_all("input", {"name" : "location_detail"})
-        # addr_province = (addr_province[0]['value'])
-        #
-        # lat_longitude = soup.find_all("input",type="hidden")
-        # lat_longitude = lat_longitude[0]['value']
-        #
-        # price_baht = soup.find_all("input", {"name" : "publish_price"})
-        # price_baht = price_baht[0]['value']
-        #
-        # rai_size = soup.find_all("input", {"name" : "area_rai"})
-        # rai_size = rai_size[0]['value']
-        #
-        # ngan_size = soup.find_all("input", {"name" : "area_ngan"})
-        # ngan_size = ngan_size[0]['value']
-        #
-        # sqm_size = soup.find_all("input" , {"name" : "area_va2"})
-        # sqm_size = sqm_size[0]['value']
-        #
-        # floorarea_sqm = soup.find_all("input", {"name" : "area_use"})
-        # floorarea_sqm = floorarea_sqm[0]['value']
-        #
-        #
-        # contact_name = soup.find_all("input", {"name" : "contact_name"})
-        # contact_name = contact_name[0]['value']
-        #
-        # contact_tel = soup.find_all("input" , {"name" : "contact_tel"})
-        # contact_tel = contact_tel[0]['value']
-        #
-        # contact_mobile = soup.find_all("input", {"name" : "contact_mobile"})
-        # contact_mobile = contact_mobile[0]['value']
-        #
-        # contact_email = soup.find_all("input", {"name" : "contact_email"})
-        # contact_email = contact_email[0]['value']
-        #
-        # # boost post request
-        # url = 'https://www.property2share.com/pageuser/submitEdit_Publish.php?id=' + str(post_id) + '&type=2'
-        # data = {
-        #     'find_broker': 'on',
-        #     'type_publish': post_type,
-        #     'asset_type': asset_type,
-        #     'location_home': 'on',
-        #     'publish_title': post_title_th,
-        #     'txtDescription': post_description_th,
-        #     'publish_special': '',
-        #     'location_detail': addr_province,
-        #     'province_id': province_id,
-        #     'amphur_id': amphur_id,
-        #     'latLngPublish': lat_longitude,
-        #     'station_type': 0,
-        #     'station_id': 0,
-        #     'publish_price': price_baht,
-        #     'unit_price': 1,
-        #     'area_rai': rai_size,
-        #     'area_ngan': ngan_size,
-        #     'area_va2': sqm_size,
-        #     'area_use': floorarea_sqm,
-        #     'contact_name': contact_name,
-        #     'contact_tel': contact_tel,
-        #     'contact_mobile': contact_mobile,
-        #     'contact_email': contact_email,
-        #     'contact_website': ''
-        # }
-        #
-        # # Make Post request to the link
-        # res = httprequestObj.http_post(url, data=data)
-
-        #Check if request is successful
-        if(response.status_code == 200):
-            success = True
-            detail = "Post Boosted Successfully"
-
-        else:
+            else:
+                success = False
+                detail = "Unable to Boost the Boost"
+        except:
             success = False
             detail = "Unable to Boost the Boost"
 
@@ -487,7 +401,7 @@ class property2share():
             "post_link" :'https://www.property2share.com/property-'+str(post_id),
             'ds_id': postdata['ds_id'],
             "post_id": post_id,
-            "log_id" : log_id,
+            "log_id" : postdata['log_id'],
             "websitename": "property2share",
             "post_view": ""
         }
