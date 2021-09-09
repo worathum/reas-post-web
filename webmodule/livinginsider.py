@@ -235,6 +235,7 @@ class livinginsider():
                 idzone = None
 
                 for i in range(len(data)):
+                    idzone = data[1]['id']
                     if postdata['web_project_name'].strip().lower() in data[i]['text'].strip().lower() or data[i]['text'].strip().lower() in postdata['web_project_name'].strip().lower():
                         if data[i]['id'] != postdata['web_project_name']:
                             idzone = data[i]['id']
