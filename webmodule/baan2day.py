@@ -148,7 +148,13 @@ class baan2day():
                 postdata['web_project_name'] = postdata['project_name']
             else:
                 postdata['web_project_name'] = postdata['post_title_th']
-        
+        r = httprequestObj.http_get(self.site_name+'/member_property_list.php')
+        soup = BeautifulSoup(r.text, features=self.parser)
+        rows = soup.find('tbody').find_all('tr')
+        limit = soup.find_all("div", {"class": "col-md-6"})
+        limit = int(str(limit[3].find('span').get_text()).split(' ')[1])
+        if limit <= len(rows):
+            success = "false"
         if success=="true":
             taddress = ""
             for add in [postdata['addr_soi'],postdata['addr_road'],postdata['addr_sub_district'],postdata['addr_district'],postdata['addr_province']]:
@@ -229,7 +235,7 @@ class baan2day():
                 files["testimage"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
     
             response = httprequestObj.http_post(self.site_name+'/member_property_aed.php?typ=add', data=datapost, files=files)
-            
+
             success = "false" 
             if response.status_code==200:
                 if "window.location.href='member_property_list.php" in response.text:
@@ -272,6 +278,8 @@ class baan2day():
                     detail = 'Unable to create post. Maybe problem with the title. Error response_code '+str(response.status_code) 
         else:
             detail = "cannot login"
+            if limit <= len(rows):
+                detail = 'Active Unit Listing quota exceeded'
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
