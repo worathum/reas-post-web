@@ -393,7 +393,7 @@ class teesuay():
         page = 1
         found = False
         temp = len('property-')
-        while True:
+        """while True:
             r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
             soup = BeautifulSoup(r.content, features = self.parser)
             count = 0
@@ -415,7 +415,7 @@ class teesuay():
                 'success':'false',
                 "detail": "no post found with given id",
                 "log_id": postdata['log_id']
-            }
+            }"""
 
         for (key, value) in provincedata.items():
             if type(value) is str and postdata['addr_province'].strip() in value.strip():
@@ -559,10 +559,10 @@ class teesuay():
                 'map_lat':postdata['geo_latitude'],
                 'map_zoom':'',
                 'map_lng':postdata['geo_longitude'],
-                'input':'',
-                'bedroom':'',
-                'bathroom':'',
-                'floors':'',
+                'input':postdata['post_description_th'],
+                'bedroom':bedroom,
+                'bathroom':bathroom,
+                'floors':floor_total,
                 'area':floorarea,
                 'capcha':"ABCD",
                 'rands':"ABCD",
