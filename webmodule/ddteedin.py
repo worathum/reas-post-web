@@ -3,27 +3,20 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.ui import Select
 import os
 from .lib_httprequest import *
-import string
 from bs4 import BeautifulSoup
 import os.path
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC 
 # from urlparse import urlparse
 import re
 import json
 import datetime
-import time
+from time import sleep 
 import sys
-import shutil
 from urllib.parse import unquote
-
-# options = Options()
-# options.headless = True
 
 
 httprequestObj = lib_httprequest()
@@ -49,6 +42,8 @@ class ddteedin():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.Partner_user = 'vinvestor.online@gmail.com'
+        self.Partner_pwd = 'vinvestor'
 
     def logout_user(self):
         url = 'https://www.ddteedin.com/logout/'
@@ -60,52 +55,35 @@ class ddteedin():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        user = postdata['user']
-        passwd = postdata['pass']
         name_th = postdata["name_th"]
         surname_th = postdata["surname_th"]
         mobile_no = postdata["tel"]
         # start process
-        success = "true"
+        success = False
         detail = ""
-
-        datapost = dict(
-            email=user,
-            password=passwd,
-            password2=passwd,
-            cname=name_th + " " + surname_th,
-            mobile=mobile_no,
-            action='save_register',
-        )
-        data1 = {
-            'act':'check',
-            'email':user
+        data = {
+            'Partner_user':self.Partner_user,
+            'Partner_pwd':self.Partner_pwd,
+            'cname':name_th+ ' '+surname_th,
+            'email':postdata['user'],
+            'mobile':mobile_no,
+            'password':postdata['pass']
         }
-        r = httprequestObj.http_post('https://www.ddteedin.com/apis/profile', data = data1)
+        url = 'https://www.ddteedin.com/register'
+        r = httprequestObj.http_post(url, data = data)
         print(r.text)
-        if r.text != 'Yes':
-            success = "false"
-            detail = "Can't register"
-        data1 = {
-            "mobile":mobile_no
-        }
-        r = httprequestObj.http_post('https://www.ddteedin.com/apis/user_check', data = data1)
-        data = json.loads(r.text)
-        print(data)
-        if(data['result'] != 'yes'):
-            success = "false",
-            detail = 'Incorrect mobile number'
-        r = httprequestObj.http_post(
-            'https://www.ddteedin.com/register/', data=datapost)
-        # print("yes")
-        data = r.text
-        if r.status_code == 404:
-            detail = "Can't register"
-            success = "false"
+        response = (r.text).split('code')[1][1:-2]
+        if response=='r001':
+            detail = 'Register successful'
+            success = True
+        elif response == 'r003':
+            detail = 'This phone number is already used'
+        elif response == 'r004':
+            detail = 'This email is already used'
+        elif response == 'r005':
+            detail = 'Wrong data.Please recheck it again'
         else:
-            detail = "Registered"
-        # # end process
-
+            detail = 'response = {}.Please tell your developer to know this problem'.format(response)
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -122,29 +100,46 @@ class ddteedin():
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        success = False
+        detail = 'Something wrong in this website.Please tell your developer to know this problem.'
+        options = Options()
+        options.set_headless(True)
+        options.add_argument('--no-sandbox')
+        try:
+            self.driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
+            self.driver.get('https://www.ddteedin.com/login')
 
-        user = postdata['user']
-        passwd = postdata['pass']
+            WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.NAME,'log_u'))).send_keys(postdata['user'])
+            WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.NAME,'log_p'))).send_keys(postdata['pass'])
+            WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.NAME,'login'))).click()
+            sleep(2)
+            try:
+                alert = WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[4]/div/div[2]/form/div[1]'))).text
+                if 'Username หรือ Password ไม่ถูกต้องกรุณาตรวจสอบ' in alert:
+                    success = False
+                    detail = "Wrong username or password"
+            except:
+                webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
+                alert = WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[4]/div/h1'))).text
+                if 'ประกาศทั้งหมดของคุณ' in alert:
+                    self.driver.get('https://www.ddteedin.com/post/?rf=topbtn')
+                    try:
+                        alert = WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[4]/div[1]/div/div/h2'))).text
+                        if 'เงื่อนไขการลงประกาศฟรี' in alert:
+                            success = True
+                            detail = "Login successful"
+                        elif 'เลือกรูปแบบการยืนยัน' in alert:
+                            success = True
+                            detail = "Login successful.But if you need to post please verify your phone number first"
+                    except:
+                        alert = WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[4]/div/h1'))).text
+                        if 'กรุณายืนยันหมายเลขโทรศัพท์' in alert:
+                            success = True
+                            detail = "Login successful.But if you need to post please verify your phone number first"
 
-        success = "true"
-        detail = ""
-
-        datapost = {
-            'action': 'login',
-            'log_u': user,
-            'log_p': passwd,
-            'login': 'Login'
-        }
-
-        r = httprequestObj.http_post(
-            'https://www.ddteedin.com/login/', data=datapost)
-        data = r.text
-        # print(r.text)
-        if data.find("ไม่ถูกต้องกรุณาตรวจสอบ") != -1:
-            detail = "cannot login"
-            success = "false"
-        else:
-            detail = "login successfull"
+        finally:
+            self.driver.close()
+            self.driver.quit()        
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -156,22 +151,19 @@ class ddteedin():
             "detail": detail
         }
 
-    def create_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
+    def post_prop(self,action,postdata):
 
-        theurl = ""
-        post_id = ""
-        detail = ""
-        # login
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        ashopname = test_login["detail"]
-        print(test_login)
-        getProdId = {'1': 2, '2': 4, '3': 4, '4': 12, '5': 11,
-                     '6': 3, '7': 1, '8': 1, '9': 11, '10': 13, '25': 13}
-        theprodid = getProdId[str(postdata['property_type'])]
-        # theprodid = post
+        if postdata['listing_type'] == 'ขาย':
+            postdata['listing_type'] = '1'
+        else:
+            postdata['listing_type'] = '3'
+
+        property_type = {'1':'2','2':'4','3':'4','4':'12','5':'11','6':'3','7':'1','8':'1','9':'11','10':'13','25':'13','30':'3'}
+        postdata['property_type'] = property_type[postdata['property_type']]
+        
+        if ('floor_level' not in postdata) or (postdata['floor_level'] == ''):
+            postdata['floor_level'] = postdata['floor_total']
+        
         province_id = '0'
         amphur_id = '26'
         tumbon_id = '01'
@@ -189,254 +181,122 @@ class ddteedin():
                 if postdata['addr_sub_district'].strip().find(value.strip()) != -1:
                     tumbon_id = key
                     break
-        prod_address = ""
-        for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
-            if add is not None:
-                prod_address += add
-        prod_address = prod_address[:-1]
-        print(province_id)
-        print(amphur_id)
-        print(tumbon_id)
         if province_id == '0' or amphur_id == '26' or tumbon_id == '01':
-            # success = "false"
-            # detail = "wrong Province or amphur or tumbon"
             province_id = '81'
             amphur_id = '03'
             tumbon_id = '03'
-        if success == "true":
-            try:
-                r = httprequestObj.http_get(
-                    'http://www.ddteedin.com/post-land-for-sale', verify=False)
-                data = r.text
-                #print(data)
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                try:
-                    cverify = soup.find("input", {"name": "cverify"})['value']
-                except:
-                    cverify = ""    
-                    success = "false"
-                    detail = "wrong cverify"
-                
-            except:
-                success = "false"
-                detail = "request error"
-            else:
-                datapost = {
-                    'name':postdata['post_title_th'],
-                    'code':'',
-                    'typeid':theprodid,
-                    'price':postdata['price_baht'],
-                    'province':province_id,
-                    'amphur':amphur_id,
-                    'tumbon':tumbon_id,
-                    'detail':postdata['post_description_th'],
-                    'warning':'',
-                    'lat':postdata['geo_latitude'],
-                    'lng':postdata['geo_longitude'],
-                    'opts[]':62,
-                    'cverify':cverify
-                }
-
-                if postdata['listing_type'] == 'เช่า':
-                    # datapost.append(('forid','3'))
-                    datapost['forid'] = '3'
-                else:
-                    datapost['forid'] = '1'
-                    # datapost.append(('forid','1'))
-                for mykey in ['land_size_ngan','land_size_rai','land_size_wa']:
-                    if postdata[mykey] is None or postdata[mykey] == '':
-                        postdata[mykey] = 0
-
-                if theprodid != 2:
-                    datapost['sizerai']=postdata['land_size_rai']
-                    datapost['sizewa2']=100*int(postdata['land_size_ngan'])+int(postdata['land_size_wa'])
-                if theprodid != 3:
-                    datapost['isnew'] ='2'
-                    key = 'web_project_name'
-                    if key in postdata.keys() and postdata['web_project_name'] is not None:
-                        # datapost.append(('project',postdata['web_project_name']))
-                        if postdata['web_project_name'].find('watermark') != -1:
-                            postdata['web_project_name'] = 'Watermark Chaophraya River'
-                        # print(postdata['web_project_name'])
-                    elif 'project_name' in postdata.keys() and postdata['project_name'] is not None:
-                        # datapost.append(('project',postdata['project_name']))
-                        if postdata['project_name'].find('watermark') != -1:
-                            postdata['web_project_name'] = 'Watermark Chaophraya River'
-                        # print(postdata['project_name'])
-                        else:
-                            postdata['web_project_name'] = postdata['project_name']
-                    else:
-                        if postdata['post_title_th'].find('watermark') != -1:
-                            print("yes")
-                            postdata['web_project_name'] = 'Watermark Chaophraya River'
-                        else:
-                            postdata['web_project_name'] = postdata['post_title_th']
-                        # datapost.append(('project',postdata['post_title_th']))
-                    # datapost.append(('project', postdata['project_name']))
-                    dataquery = {
-                        "q":postdata['web_project_name']
-                    }
-                    r = httprequestObj.http_get('https://www.ddteedin.com/apis/project/?q='+dataquery["q"],verify = False)
-                    # data = json.loads(r.text)
-                    data = r.text
-                    lis = data.split("],[")
-                    j = []
-                    for i in lis:
-                        j = i.split(",")
-                        for k in range(len(j)):
-                            j[k] = j[k].replace("[","")
-                            j[k] = j[k].replace("]","")
-                            j[k] = j[k].replace('"',"")
-                    print(j)
-                    if len(j) > 1:
-                        postdata['web_project_name'] = j[0]
-                        postdata['project_id'] = j[1]
-                    else:
-                        postdata['project_id'] = '0'
-                            # print(k)
-                    # postdata['web_project_name'] = j[0]
-                    datapost['project'] = postdata['web_project_name']
-                    datapost['project_id'] = postdata['project_id']
-                    # datapost.append(('project',postdata['web_project_name']))
-                    # datapost.append(('project_id',postdata['project_id']))
-                    # datapost.append(('project', postdata['project_name']))
-                    datapost['rooms']=postdata['bed_room']
-                    datapost['bathroom']=postdata['bath_room']
-                    if theprodid != 2:
-                        datapost['floor']= postdata['floor_total']
-                    else:
-                        datapost['floor'] = postdata['floor_level']
-                    datapost['usagesize']= postdata['floor_area']
-                
-                datapost['sizewa'] =''
-                datapost['email'] = postdata['email']
-                datapost['phone'] = postdata['mobile']
-                datapost['lineid'] = postdata['line']
-                datapost['street'] = ''
-                datapost['soi'] = ''
-                datapost['files'] = ''
-
-                get_token = httprequestObj.http_get('https://www.ddteedin.com/post/?rf=topbtn')
-                soup = BeautifulSoup(get_token.text,self.parser)
-                """with open('./log/b.html','w') as f:
-                    f.write(get_token.text)"""
-                token = soup.findAll('script')[8].string
-                #print('============================================')
-                #print(token.split('function')[0].split('=')[-1].replace(';','').strip(' ').replace("'",''))
-                datapost['token'] = ''
-                #print(datapost['token'])
-                """ print('=====')
-                print(datapost)
-                print('=====') """
-                r = httprequestObj.http_post(
-                    'https://www.ddteedin.com/post/?rf=topbtn', data=datapost)
-                print(r.text,r.status_code)
-                data = r.text
-                #print(data)
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                #print(soup)
-                #try:
-                a = soup.find(id='detail')
-                print(a)
-                print(11111111111)
-                post_id = a.replace('/', '')
-                theurl = 'https://www.ddteedin.com'+a
-                    
-                """ except:
-                    post_id = ''
-                    theurl = ''
-                print('----------------------------------------------------')
-                print(theurl) """
-                if data.find('ชื่อประกาศซ้ำ หากมั่นใจว่าไม่ได้ลงซ้ำ ลองใส่รายละเอียดเพิ่มในชื่อประกาศ') != -1:
-                    success = "false"
-                    print("sed")
-                    detail = "duplicate title"
-                options = Options()
-                options.set_headless(True)
-                options.add_argument('--no-sandbox')
-
-                try:
-                    browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-                    wait = WebDriverWait(browser,10)
-                    browser.implicitly_wait(100)
-
-                    if post_id != '' and theurl != '':
-                        browser.get('https://www.ddteedin.com/login/')
-                        time.sleep(2)
-                        # global wait
-                        # email = wait.until(presence_of_element_located(By.NAME,'log_u'))
-
-                        email = browser.find_element_by_name('log_u')
-                        # email.clear()
-                        email.send_keys(postdata['user'])
-                        password = browser.find_element_by_name('log_p')
-                        # password.clear()
-                        password.send_keys(postdata['pass'])
-                        browser.find_element_by_name('login').click()
-                        browser.get('https://www.ddteedin.com/post/edit/'+post_id+'/')
-                        time.sleep(2)
-                        j = 0
-                        for i in postdata['post_images']:
-                            print(i)
-                            j += 1
-                            if j > 10:
-                                break
-                            # browser.set_window_size(1200, 900)
-                            # for p in range(10):
-                            #     browser.set_window_size(1200-p, 900)
-                            time.sleep(1)
-                            # wait = WebDriverWait(browser,10)
-                            # image = wait.until(presence_of_element_located(By.ID,'fileupload'))
-                            image = browser.find_element_by_id('fileupload')
-                            print(image.get_attribute('type'))
-                            print(str(os.getcwd())+"/"+str(i))
-                            image.send_keys(str(os.getcwd())+"/"+str(i))
-                        time.sleep(2)
-                        browser.find_element_by_name('btn_submit').click()
         
-                        time.sleep(2)
-                        browser.get('https://www.ddteedin.com/logout/')
-                finally:
-                    try:
-                        browser.close()
-                        browser.quit()
-                        try:
-                            alert = browser.switch_to.alert
-                            alert.accept()
-                            browser.close()
-                            browser.quit()
-                        except:
-                            pass
-                    except:
-                        pass
+        if postdata['property_type'] != '2':
+            postdata['land_size_rai']=postdata['land_size_rai']
+            postdata['land_size_wa']=100*int(postdata['land_size_ngan'])+int(postdata['land_size_wa'])
+        isnew = None
+        postdata['web_project_name'] = None
+        if postdata['property_type'] != '3':
+            isnew = '2'
+            if 'web_project_name' not in postdata:
+                postdata['web_project_name'] = postdata['project_name']
 
-                # query_element = {
-                #     'q': postdata['post_title_th'],
-                #     'pv': '',
-                #     'order': 'createdate',
-                #     'btn_srch': 'search'
-                # }
-                # query_string = 'https://www.ddteedin.com/myposts/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
-                #     ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-                # try:
-                #     r = httprequestObj.http_get(query_string, verify=False)
-                #     data = r.text
-                #     # print(data)
-                #     soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                #     id = soup.find("div",{"class":"it st1"})['id']
-                #     # theurl = div.find("a",{"class":"title"})['href']
-                #     id = id.replace('r', '')
-                # except:
-                #     success = False
-                #     id = ''
-                # post_id += id
-                # if(post_id != ''):
-                #     theurl = 'https://www.ddteedin.com/'+post_id
-            # print(r.text)
-            # print(r.status_code)
+        if action == 'create':
+            url = 'https://www.ddteedin.com/post/'
+        elif action =='edit':
+            url = 'https://www.ddteedin.com/post-land-for-sale/edit/{}'.format(postdata['post_id'])
+
+        data = [
+            ('Partner_user',self.Partner_user),
+            ('Partner_pwd',self.Partner_pwd),
+            ('Owner_user',postdata['user']),
+            ('Owner_pwd',postdata['pass']),
+            ('name',postdata['post_title_th']),
+            ('code',postdata['property_id']),
+            ('forid',postdata['listing_type']),
+            ('typeid',postdata['property_type']),
+            ('isnew',isnew),
+            ('project',postdata['web_project_name']),
+            ('rooms',postdata['bed_room']),
+            ('bathroom',postdata['bath_room']),
+            ('floor',postdata['floor_level']),
+            ('usagesize',postdata['floorarea_sqm']),
+            ('sizerai',postdata['land_size_rai']),
+            ('sizewa2',postdata['land_size_wa']),
+            ('price',postdata['price_baht']),
+            ('email',postdata['user']),
+            ('phone',postdata['mobile']),
+            ('lineid',postdata['line']),
+            ('street',postdata['addr_road']),
+            ('soi',postdata['addr_soi']),
+            ('warning',''),
+            ('lat',postdata['geo_latitude']),
+            ('lng',postdata['geo_longitude']),
+            ('opts[]',62),
+            ('province',province_id),
+            ('amphur',amphur_id),
+            ('tumbon',tumbon_id),
+            ('detail',postdata['post_description_th'])
+        ]
+
+        url_upload = 'https://www.ddteedin.com/upload/'
+        for i, image in enumerate(postdata['post_images'][:10]):
+            files = {'files': open(os.getcwd()+"/"+image, 'rb')}
+            r = httprequestObj.http_post(url_upload, data = data,files=files)
+            img_path = r.json()['images'][0][0]
+            data.append(('pid[]', ''))
+            data.append(('file[]', img_path))
+            if i == 0:
+                data.append(('df[]', '1'))
+            else:
+                data.append(('df[]', ''))
+
+        r = httprequestObj.http_post(url, data = data)
+        response = (r.text).split('code')[1][1:-2]
+        if response =='p001' or response =='p002':
+            post_id = (r.text).split('post_id')[1][1:-2]
+            post_url = (r.text).split('messages')[1][1:-2].split(' ')[1]
         else:
-            success = "false"
+            post_id = ''
+            post_url = ''
+        return {
+            'response':response,
+            'post_id':post_id,
+            'post_url':post_url
+        }
+    
+    def create_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
 
+        success = False
+        detail = ''
+        post_url = ''
+        post_id = ''
+        login = self.test_login(postdata)
+        if (login['success'] == True) and (login['detail'] == "Login successful"):
+            post = self.post_prop('create',postdata)
+            response = post['response']
+            post_id = post['post_id']
+            post_url = post['post_url']
+            
+            if response=='p001':
+                detail = 'Post successful'
+                success = True
+            elif response == 'p002':
+                success = True
+                detail = 'Post successful. Please wait website to verify your post'
+            elif response == 'p003':
+                detail = 'Your account is temporarily suspended. Because you have some posts are waiting to verify more than the agreement'
+            elif response == 'p004':
+                detail = 'Please verify your phone number'
+            elif response == 'p005':
+                detail = 'Your account has posted the daily quota.'
+            elif response == 'p006':
+                detail = 'Wrong data.Please recheck it again'
+            elif response == 'p007':
+                detail = "You don't have the right to manage this property or this property is already deleted"
+            elif response == 'u001':
+                detail = "Wrong username or password"
+            else:
+                detail = 'response = {}.Please tell your developer to know this problem.'.format(response)
+        else:
+            detail = login['detail']
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -447,235 +307,46 @@ class ddteedin():
             "detail":detail,
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "post_url": theurl,
+            "usage_time": str(time_usage),
+            "post_url": post_url,
             "ds_id": postdata['ds_id'],
             "post_id": post_id,
             "account_type": "null",
         }
-
+    
     def edit_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        theurl = ""
-        post_id = ""
-
-        # login
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        ashopname = test_login["detail"]
-        getProdId = {'1': 2, '2': 4, '3': 4, '4': 12, '5': 11,
-                     '6': 3, '7': 1, '8': 1, '9': 11, '10': 13, '25': 13}
-        theprodid = getProdId[str(postdata['property_type'])]
-
-        print(theprodid)
-        province_id = '0'
-        amphur_id = '26'
-        tumbon_id = '01'
-        for (key, value) in provincedata.items():
-            if type(value) is str and postdata['addr_province'].strip().find(value.strip()) != -1:
-                province_id = key
-                break
-        if province_id != '0':
-            for (key, value) in provincedata[province_id+"_province"].items():
-                if postdata['addr_district'].strip().find(value.strip()) != -1:
-                    amphur_id = key
-                    break
-        if amphur_id != '26':
-            for (key, value) in provincedata[amphur_id+"_amphur"].items():
-                if postdata['addr_sub_district'].strip().find(value.strip()) != -1:
-                    tumbon_id = key
-                    break
-        prod_address = ""
-        for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
-            if add is not None:
-                prod_address += add
-        prod_address = prod_address[:-1]
-        if success == "true":
-            # query_element = {
-            #     'q': postdata['name'],
-            #     'pv': '',
-            #     'order': 'createdate',
-            #     'btn_srch': 'search'
-            # }
-            # query_string = 'https://www.ddteedin.com/myposts/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
-            #     ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-            # r = httprequestObj.http_get(
-            #     query_string, verify=False)
-            # data = r.text
-            # soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-            # id = soup.find("div", {"class": "it st1"})['id']
-            # id = id.replace('r', '')
-            # # print(id)
-            id = postdata['post_id']
-            post_id += id
-            query_element = {
-                'q': postdata['post_id'],
-                'pv': '',
-                'order': 'createdate',
-                'btn_srch': 'search'
-            }
-            query_string = 'https://www.ddteedin.com/myposts/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
-                ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-            r = httprequestObj.http_get(
-                query_string, verify=False)
-            data = r.text
-            query_string = 'https://www.ddteedin.com/post-land-for-sale/edit/'+id
-            if data.find(" ไม่พบประกาศ") != -1:
-                success = "false"
-            else:
-                r = httprequestObj.http_get(query_string, verify=False)
-                data = r.text
-                # print(data)
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                try:
-                    cverify = soup.find("input", {"name": "cverify"})['value']
-                except:
-                    success = "false"
-
-                if tumbon_id == "01" or amphur_id == "26":
-                    # success = "false"
-                    province_id = '81'
-                    amphur_id = '03'
-                    tumbon_id = '03'
-                datapost = [
-                    ('action', 'edit_post'),
-                    ('timeout', '5'),
-                    ('name', postdata['post_title_th']),
-                    ('code', ''),
-                    ('typeid', theprodid),
-                    ('price', postdata['price_baht']),
-                    ('province', province_id),
-                    ('amphur', amphur_id),
-                    ('tumbon', tumbon_id),
-                    ('detail', postdata['post_description_th']),
-                    ('warning', ""),
-                    ('lat', postdata['geo_latitude']),
-                    ('lng', postdata['geo_longitude']),
-                    ('opts[]', 62),
-                    ('cverify', cverify)
-                ]
-                if postdata['listing_type'] == 'เช่า':
-                    datapost.append(('forid','3'))
-                else:
-                    datapost.append(('forid','1'))
-
-                for mykey in ['land_size_ngan','land_size_rai','land_size_wa']:
-                    if postdata[mykey] is None or postdata[mykey] == '':
-                        postdata[mykey] = 0
-
-                if theprodid != 2:
-                    datapost.append(('sizerai',postdata['land_size_rai']))
-                    datapost.append(('sizewa2',100*int(postdata['land_size_ngan'])+int(postdata['land_size_wa'])))
-                if theprodid != 3:
-                    datapost.append(('isnew', '2'))
-                    key = 'web_project_name'
-                    if key in postdata.keys() and postdata['web_project_name'] is not None:
-                        # datapost.append(('project',postdata['web_project_name']))
-                        if postdata['web_project_name'].find('watermark') != -1:
-                            postdata['web_project_name'] = 'Watermark Chaophraya River'
-                        # print(postdata['web_project_name'])
-                    elif 'project_name' in postdata.keys() and postdata['project_name'] is not None:
-                        # datapost.append(('project',postdata['project_name']))
-                        if postdata['project_name'].find('watermark') != -1:
-                            postdata['web_project_name'] = 'Watermark Chaophraya River'
-                        # print(postdata['project_name'])
-                        else:
-                            postdata['web_project_name'] = postdata['project_name']
-                    else:
-                        if postdata['post_title_th'].find('watermark') != -1:
-                            postdata['web_project_name']  = 'Watermark Chaophraya River'
-                        else:
-                            postdata['web_project_name'] = postdata['post_title_th']
-                        # datapost.append(('project',postdata['post_title_th']))
-                    # datapost.append(('project', postdata['project_name']))
-                    dataquery = {
-                        "q":postdata['web_project_name']
-                    }
-                    r = httprequestObj.http_get('https://www.ddteedin.com/apis/project/?q='+dataquery["q"],verify = False)
-                    # data = json.loads(r.text)
-                    data = r.text
-                    lis = data.split("],[")
-                    j = []
-                    for i in lis:
-                        j = i.split(",")
-                        for k in range(len(j)):
-                            j[k] = j[k].replace("[","")
-                            j[k] = j[k].replace("]","")
-                            j[k] = j[k].replace('"',"")
-                    print(j)
-                    if len(j) > 1:
-                        postdata['web_project_name'] = j[0]
-                        postdata['project_id'] = j[1]
-                    else:
-                        postdata['project_id'] = '0'
-                            # print(k)
-                    # postdata['web_project_name'] = j[0]
-                    datapost.append(('project',postdata['web_project_name']))
-                    datapost.append(('project_id',postdata['project_id']))
-                    datapost.append(('rooms', postdata['bed_room']))
-                    datapost.append(('bathroom', postdata['bath_room']))
-                    datapost.append(('floor', postdata['floor_total']))
-                    datapost.append(('usagesize', postdata['floor_area']))
-                query_string = 'https://www.ddteedin.com/post-land-for-sale/edit/'+id
-                options = Options()
-                options.set_headless(True)
-                options.add_argument('--no-sandbox')
-                try:
-                    browser = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-                    # browser = webdriver.Chrome(
-                        # executable_path='/usr/bin/chromedriver',options=options)
-                    wait = WebDriverWait(browser,10)
-                    browser.implicitly_wait(100)
-
-
-                    r = httprequestObj.http_post(
-                        query_string, data=datapost)
-                    browser.get('https://www.ddteedin.com/login')
-                    time.sleep(2)
-                    email = browser.find_element_by_name('log_u')
-                    # email.clear()
-                    email.send_keys(postdata['user'])
-                    password = browser.find_element_by_name('log_p')
-                    password.clear()
-                    password.send_keys(postdata['pass'])
-                    browser.find_element_by_name('login').click()
-                    browser.get('https://www.ddteedin.com/post/edit/'+postdata['post_id']+'/')
-                    j = 0
-                    for i in postdata['post_images']:
-                        print(i)
-                        j += 1
-                        if j > 10:
-                            break
-                        # browser.set_window_size(1200, 900)
-                        # for p in range(10):
-                        #     browser.set_window_size(1200-p, 900)
-                        time.sleep(1)
-                        image = browser.find_element_by_id('fileupload')
-                        print(image.get_attribute('type'))
-                        print(str(os.getcwd())+"/"+str(i))
-                        image.send_keys(str(os.getcwd())+"/"+str(i))
-                    time.sleep(2)
-                    browser.find_element_by_name('btn_submit').click()
-                    browser.get('https://www.ddteedin.com/logout/')
-                    query_string = 'https://www.ddteedin.com/'+postdata['post_id']
-                finally:
-                    try:
-                        browser.close()
-                        browser.quit()
-                        try:
-                            alert = browser.switch_to.alert
-                            alert.accept()
-                            browser.close()
-                            browser.quit()
-                        except:
-                            pass
-                    except:
-                        pass
-
-            # print(r.text)
+        success = False
+        detail = ''
+        post_url = ''
+        post_id = ''
+        edit = self.post_prop('edit',postdata)
+        response = edit['response']
+        post_id = edit['post_id']
+        post_url = edit['post_url']
+            
+        if response=='p001':
+            detail = 'Edit successful'
+            success = True
+        elif response == 'p002':
+            success = True
+            detail = 'Edit successful. Please wait website to verify your post'
+        elif response == 'p003':
+            detail = 'Your account is temporarily suspended. Because you have some posts are waiting to verify more than the agreement'
+        elif response == 'p004':
+            detail = 'Please verify your phone number'
+        elif response == 'p005':
+            detail = 'Your account has posted the daily quota.'
+        elif response == 'p006':
+            detail = 'Wrong data.Please recheck it again'
+        elif response == 'p007':
+            detail = "You don't have the right to manage this property or this property is already deleted"
+        elif response == 'u001':
+            detail = "Wrong username or password"
         else:
-            success = "false"
+            detail = 'response = {}.Please tell your developer to know this problem'.format(response)
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -683,52 +354,48 @@ class ddteedin():
         return {
             "websitename": "ddteedin",
             "success": success,
-            "log_id": postdata['log_id'],
+            "detail":detail,
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "post_url": query_string,
-            'ds_id': postdata['ds_id'],
-            "post_id": postdata['post_id'],
+            "usage_time": str(time_usage),
+            "post_url": post_url,
+            "ds_id": postdata['ds_id'],
+            "post_id": post_id,
             "account_type": "null",
-            "ds_id": postdata['ds_id']
         }
+
+    def manage_prop(self,action,postdata):
+        act = {'delete':'del','boost':'reindex'}
+        data = {
+            'Partner_user':self.Partner_user,
+            'Partner_pwd':self.Partner_pwd,
+            'Owner_user':postdata['user'],
+            'Owner_pwd':postdata['pass'],
+            'act':act[action],
+            'id':postdata['post_id']
+        }
+        url = 'https://www.ddteedin.com/myposts/'
+        r = httprequestObj.http_post(url, data = data)
+        print(r.text)
+        response = (r.text).split('code')[1][1:-2]
+        return response
 
     def delete_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        detail = test_login["detail"]
+        success = False
+        detail = ''
+        response = self.manage_prop('delete',postdata)
 
-        if success == "true":
-            r = httprequestObj.http_get(
-                'https://www.ddteedin.com/myposts/?rf=login', verify=False)
-            time.sleep(1)
-            print(r.url)
-            user_id = r.url.split('/')[-2]
-            query_element = {
-                'q': postdata['post_id'],
-                'pv': '',
-                'order': 'createdate',
-                'btn_srch': 'search'
-            }
-            query_string = 'https://www.ddteedin.com/myposts/' + user_id + '/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
-                ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-            r = httprequestObj.http_get(query_string, verify=False)
-            data = r.text
-            if data.find(" ไม่พบประกาศ") != -1:
-                success = "false"
-                detail = 'Your post id not found.'
-            else:
-                del_link = 'https://www.ddteedin.com/myposts/' + user_id +'/?rf=login'
-                datapost = {
-                    'id': postdata['post_id'],
-                    'act': 'del'
-                }
-                r = httprequestObj.http_post(del_link, data=datapost)
-                detail = 'Deleted post succesful'
+        if response=='p001':
+            detail = 'Post deleted'
+            success = True
+        elif response == 'p007':
+            detail = "You don't have the right to manage this property or this property is already deleted"
+        elif response == 'u001':
+            detail = "Wrong username or password"
         else:
-            success = "false"
+            detail = 'response = {}.Please tell your developer to know this problem'.format(response)
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -744,7 +411,7 @@ class ddteedin():
             "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
             "account_type": "",
-            "ds_name": "hipflat"
+            "ds_name": "ddteedin"
         }
         
 
@@ -769,10 +436,10 @@ class ddteedin():
         #     if postdata['addr_district'].strip() in value.strip():
         #         amphur_id = key
         #         break
-        found = "true"
+        found = False
         post_id = ""
         posturl = ""
-        if success == "true":
+        if success == True:
             query_element = {
                 "q":postdata['post_title_th'],
                 "pv":'',
@@ -786,13 +453,13 @@ class ddteedin():
             data = r.text
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             if(data.find(" ไม่พบประกาศ") != -1):
-                found = "false"
+                found = False
             else:
-                found = "true"
+                found = True
                 post_id = soup.find("strong").get_text().replace("#","")
                 posturl = 'https://www.ddteedin.com/'+post_id
         else:
-            success = "false"
+            success = False
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         log_id = ""
@@ -818,153 +485,34 @@ class ddteedin():
     def boost_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        success = False
+        detail = ''
+        response = self.manage_prop('boost',postdata)
 
-        post_id = postdata['post_id']
-        log_id = postdata['log_id']
-
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-
-
-        if success == "true":
-            options = Options()
-            options.set_headless(True)
-            options.add_argument('--no-sandbox')
-            try:
-                browser = webdriver.Chrome("./static/chromedriver",chrome_options=options)
-                #browser = webdriver.Chrome("./static/chromedriver")
-                wait = WebDriverWait(browser, 10)
-                browser.implicitly_wait(100)
-
-                browser.get('https://www.ddteedin.com/login/')
-                time.sleep(2)
-                email = browser.find_element_by_name('log_u')
-                email.clear()
-                email.send_keys(postdata['user'])
-                password = browser.find_element_by_name('log_p')
-                password.clear()
-                password.send_keys(postdata['pass'])
-                browser.find_element_by_name('login').click()
-                time.sleep(2)
-
-                browser.get('https://www.ddteedin.com/myposts')
-                time.sleep(2)
-                try:
-                    close_win = browser.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/input[2]')
-                    print(close_win.get_attribute('value'))
-                    if close_win.get_attribute('value') == 'ไว้ครั้งหน้า':
-                        close_win.click()
-                except:
-                    pass
-                time.sleep(2)
-                search = browser.find_element_by_name('srch')
-                search.send_keys(post_id + Keys.ENTER)
-                time.sleep(2)
-
-                soup = BeautifulSoup(browser.page_source, "html5lib")
-                if "ไม่พบประกาศ" not in soup.text:
-                    boost = browser.find_element_by_class_name('reindex')
-                    boost.click()
-                    time.sleep(10)
-                    soup1 = BeautifulSoup(browser.page_source, "html5lib")
-
-                    res=soup1.find("a", attrs={"class": "success"})
-
-                    if res != None:
-                        success=True
-                        detail="Post Boosted Successfully."
-                    elif soup1.find("a", attrs={"class": "disabled"}):
-                        success=False
-                        detail="Post already Boosted wait for another day."
-                    else:
-                        success=False
-                        detail="Post can't be Boosted."
-
-                else:
-                    success = False
-                    detail = "Post not found."
-
-            except:
-                success = False
-                detail = "Post can't be Boosted."
-
-            finally:
-                try:
-                    browser.close()
-                    browser.quit()
-                    try:
-                        alert = browser.switch_to.alert
-                        alert.accept()
-                        browser.close()
-                        browser.quit()
-                    except:
-                        pass
-                except:
-                    pass
-
-            """
-            # tumbon_id = '01'
-            r = httprequestObj.http_get('https://www.ddteedin.com/myposts/?rf=login', verify=False)
-
-            query_element = {
-                'q': postdata['post_id'],
-                'pv': '',
-                'order': 'createdate',
-                'btn_srch': 'search'
-            }
-            query_string = 'https://www.ddteedin.com/myposts/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
-                ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-            print(query_string)
-            r = httprequestObj.http_get(query_string, verify=False)
-            data = r.text
-
-            id = postdata['post_id']
-            # print(r.text)
-            if "ไม่พบประกาศ" in data:
-                success = "false"
-            else:
-
-                query_string = 'https://www.ddteedin.com/post-land-for-sale/edit/'+str(id)
-                r = httprequestObj.http_get(query_string, verify=False)
-                data = r.text
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                try:
-                    cverify = soup.find("input", {"name": "cverify"})['value']
-
-                    datapost = [
-                        ('action', 'edit_post'),
-                        ('act', 'edit'),
-                        ('timeout', '5'),
-                        ('code', ''),
-                        ('warning', ""),
-                        ('opts[]', 62),
-                        ('cverify', cverify),
-                        ('id', id),
-                        ('btn_submit',"บันทึกแก้ไข")
-                    ]
-
-                    r = httprequestObj.http_post(query_string, data=datapost)
-
-                except Exception as e:
-                    success = "false"
-            """
+        if response=='p001':
+            detail = 'Boost successful'
+            success = True
+        elif response == 'p007':
+            detail = "You don't have the right to manage this property or this property is already deleted"
+        elif response == 'u001':
+            detail = "Wrong username or password"
         else:
-            success = "false"
-            detail="Can't Login."
-
-
+            detail = 'response = {}.Please tell your developer to know this problem'.format(response)
         time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
         return {
             "websitename": "ddteedin",
             "success": success,
-            "time_usage": time_end - time_start,
-            "start_time": time_start,
-            "end_time": time_end,
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "usage_time": str(time_usage),
             "detail": detail,
-            'ds_id': postdata['ds_id'],
-            "log_id": log_id,
-            "post_id": post_id,
-            "ds_id": postdata['ds_id']
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id'],
+            "log_id": postdata['log_id'],
+            "account_type": "",
+            "ds_name": "ddteedin"
         }
 
     def print_debug(self, msg):
@@ -980,93 +528,3 @@ class ddteedin():
         if(self.debugdata == 1):
             print(data)
         return True
-
-
-# a = ddteedin()
-# credentials = {
-#     "action": "register_user",
-#     "timeout": "7",
-#     "web": [
-#         {
-#             "ds_name": "ddteedin",
-#             "ds_id": "4",
-#             "user": "amarin.ta@gmail.com",
-#             "pass": "5k4kk3253434",
-#             "company_name": "amarin inc",
-#             "name_title": "mr",
-#             "name_th": "อัมรินทร์",
-#             "surname_th": "บุญเกิด",
-#             "name_en": "Amarin",
-#             "surname_en": "Boonkirt",
-#             "tel": "0891999450",
-#             "line": "amarin.ta",
-#             "addr_province" : "nonthaburi"
-#         }
-#     ]
-# }
-
-# credentials = {
-#     "geo_latitude": "13.786862",
-#     "geo_longitude": "100.757815",
-#     "property_id": "4",
-#     "forid": "3",
-#     "typeid": "2",
-#     "isnew": "1",
-#     "post_title_th": "xxx",
-#     "short_post_title_th": "xxx",
-#     "post_description_th": "xxx",
-#     "post_title_en": "",
-#     "short_post_title_en": "xxx",
-#     "post_description_en": "",
-#     "price_baht": "3000",
-#     "listing_type": "ขาย",
-#     "property_type": "คอนโด",
-#     "floor_level  ": "11",
-#     "floor_total  ": "11",
-#     "floor_area  ": "11",
-#     "bath_room  ": "11",
-#     "bed_room  ": "11",
-#     "prominent_point  ": "จุดเด่น",
-#     "view_type ": "11",
-#     "direction_type": "11",
-#     "addr_province": "จังหวัด",
-#     "addr_district": "เขต",
-#     "addr_sub_district": "ตำบล แขวง",
-#     "addr_road": "ถนน",
-#     "addr_soi": "ซอย",
-#     "addr_near_by": "สถานที่ใกล้เคียง",
-#     "floor_area": "พื้นที่",
-#     "price": "1234",
-#     "product_details": "jslkfdklfjdfkldfjdflkdfjdflksjfklhgdfoewitogjdfjdlskfdsjfdklfgjfklgdhfdslkfdhfdlfhewioffhdlkghfdlkfdskjfdlkgjhglkdsfhlgdshkfefhioglshg",
-#     "options": {},
-#     "land_size_rai": "ขนาดที่ดินเป็นไร่",
-#     "land_size_ngan": "ขนาดที่ดินเป็นงาน",
-#     "land_size_wa": "ขนาดที่ดินเป็นวา",
-#     "name": "land on rent",
-#     "mobile": "9876543210",
-#     "email": "ramu@gmail.com",
-#     "line": "xxx",
-#     "project_name": "ลุมพีนีวิลล รามอินทราหลักสี่",
-#     "user": "ramu@gmail.com",
-#     "pass": "raam1234"
-# }
-# ret = a.create_post(credentials)
-# print(ret)
-# login_credentials = {
-#     "user":"reteh37681@fft-mail.com",
-#     "pass":'12345678',
-# }
-# ret = a.test_login(login_credentials)
-# print(ret)
-# postdata = {
-#     "action": "edit_post", "timeout": "5", "project_name": "ลุมพีนีวิลล", "post_img_url_lists": ["https://zignnet.sgp1.digitaloceanspaces.com/livingjoin/classified/189689/big/210120235215500991.jpg", "https://zignnet.sgp1.digitaloceanspaces.com/livingjoin/classified/189689/other/big/210120235220317918.jpg"], "geo_latitude": "13.786862", "geo_longitude": "100.757815", "property_id": "chu001", "post_title_th": "new edited ให้เช่า ที่ดินด่วน บางกรวยไทรน้อย 6 ไร่ เหมาะทำตลาด", "post_description_th": "What is description", "post_title_en": "Land for rent bangkloysainoi 6 rai suitable for developing", "post_description_en": "Land for rent bangkloysainoi 6 rai suita ble for developing", "price_baht": "100000", "listing_type": "เช่า", "property_type": "6", "prominent_point ": "หน้ากว้างมาก ให้เช่าถูกสุด", "direction_type": "11", "addr_province": "นนทบุรี", "addr_district": "เมืองนนทบุรี", "addr_sub_district": "บางกรวย", "addr_road": "บางกรวย-ไทรน้อย", "addr_soi": "ซอยบางกรวย-ไทรน้อย 34", "addr_near_by": "ถนนพระราม5\nถนนนครอินทร์", "land_size_rai": "6", "land_size_ngan": "0", "land_size_wa": "0", "name": "ชู", "mobile": "0992899999", "email": "panuwat.ruangrak@gmail.com", "line": "0992899999", "ds_name": "ddteedin", "ds_id": "120", "user": "reteh37681@fft-mail.com", "pass": "12345678", "post_id": "484916", "log_id": "48791", "account_type": "corperate"
-# }
-# a = ddteedin()
-# # ret = a.edit_post(postdata)
-# # print(ret)
-# email = "reteh37681@fft-mail.com"
-# site = "ddteedin.com"
-# thedata = { "action": "edit_post", "timeout": "5", "project_name": "ลุมพีนีวิลล รามอินทราหลักสี", "post_img_url_lists": [ "https://unsplash.com/photos/gZlycYbRtkk","https://zignnet.sgp1.digitaloceanspaces.com/livingjoin/classified/189689/big/210120235215500991.jpg", "https://zignnet.sgp1.digitaloceanspaces.com/livingjoin/classified/189689/other/big/210120235220317918.jpg"], "geo_latitude": "13.786862", "geo_longitude": "100.757815", "property_id" : "chu001", "post_title_th": "ให้เช่า ที่ดินด่วน บางกรวยไทรน้อย 6 ไร่ เหมาะทำตลาดสด เปิดท้าย", "post_description_th": "ขายที่ดินด่วน บางกรวยไทรน้อย 6 ไร่ เหมาะทำตลาด\r\nรายละเอียด\r\nที่ดิน\r\nขนาด 6 ไร่\r\nหน้ากว้าง 30 เมตร ติดถนนบางกรวยไทรน้อย\r\nที่ดินยังไม่ถมต่ำกว่าถนนประมาณ 1 เมตร\r\n\r\nสถานที่ใกล้เคียง\r\nถนนพระราม5\r\nถนนนครอินทร์\r\n\r\nให้เช่าระยะยาว 100,000 บาท ต่อเดือน\r\n\r\nสนใจติดต่อ คุณชู 0992899999\r\nline: 099289999", "post_title_en": "Land for rent bangkloysainoi 6 rai suitable for developing", "post_description_en": "Land for rent bangkloysainoi 6 rai suitable for developing\r\nLand Size 6 rai\r\nWidth 30 meter", "price_baht": "100000", "listing_type": "เช่า", "property_type": "6", "prominent_point " : "หน้ากว้างมาก ให้เช่าถูกสุด", "direction_type" : "11", "addr_province": "นนทบุรี", "addr_district": "เมืองนนทบุรี", "addr_sub_district": "บางกระสอ", "addr_road": "บางกรวย-ไทรน้อย", "addr_soi": "ซอยบางกรวย-ไทรน้อย 34", "addr_near_by": "ถนนพระราม5\r\nถนนนครอินทร์", "land_size_rai": "6", "land_size_ngan": "0", "land_size_wa": "0", "name": "fdjsljfkl", "mobile": "0992899999", "email": email, "line": "0992899999","ds_name": site, "ds_id": "120", "user": email, "pass": "12345678", "post_id":"486628"}
-# # a = ddteedin()
-# ret = a.edit_post(thedata)
-# print(ret)
