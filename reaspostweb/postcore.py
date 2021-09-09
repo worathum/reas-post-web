@@ -402,7 +402,7 @@ class postcore():
                         if 'account_type' not in response["web"][websitename]:
                             response["web"][websitename]['account_type'] = ""
                         
-                        if 'post_url' not in response["web"][websitename] and (action == "create_post" or action == "search_post"):
+                        if 'post_url' not in response["web"][websitename] and (action == "create_post" or action == "search_post" or action == 'edit_post'):
                             response["web"][websitename]['post_url'] = ""
 
                         if action == "search_post":
@@ -471,8 +471,7 @@ class postcore():
                                 error[0] = "Website has security by Cloud Flare! Couldn't complete the action."    
 
                             response["web"][webitem['ds_name']] = {'success':'false','detail': error[1], 'websitename':webitem['ds_name'], 'ds_name':webitem['ds_name'], 'start_time':datetime.datetime.utcnow(), 'end_time':datetime.datetime.utcnow(), 'account_type': ''}
-                            
-                            if action == "create_post":
+                            if action == "create_post" or action == "edit_post":
                                 response["web"][webitem['ds_name']]['post_url'] = ""
                             if action == "search_post":
                                 response["web"][webitem['ds_name']]['post_url'] = ""
@@ -487,7 +486,7 @@ class postcore():
                 response["web"][webitem['ds_name']]['ds_id'] = webitem['ds_id']      
                 response["web"][webitem['ds_name']]['log_id'] = webitem['log_id']    
                 if 'post_id' not in response["web"][webitem['ds_name']]:  
-                    response["web"][webitem['ds_name']]['post_id'] = webitem['post_id']      
+                    response["web"][webitem['ds_name']]['post_id'] = webitem['post_id']
 
 
 
