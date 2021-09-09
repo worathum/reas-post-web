@@ -175,6 +175,7 @@ class proppit():
         if recdata['propertyType'] == "land":
             recdata['plotAreaSqm'] = area_sqm
             recdata['floorArea'] = area_sqm
+            recdata['plotArea'] = [{"value":area_sqm,"unit":"m2"}]
         else:
             recdata['plotAreaSqm'] = None
             recdata['floorArea'] = area_sqm
@@ -267,7 +268,7 @@ class proppit():
         path = './static/chromedriver'
         options = Options()
 
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -279,7 +280,7 @@ class proppit():
 
         try:
             driver.get("https://proppit.com/login")
-            time.sleep(2)
+            time.sleep(4)
 
             driver.find_element_by_id('email').send_keys(postdata['user'])
             driver.find_element_by_id('password').send_keys(postdata['pass'])
@@ -289,10 +290,10 @@ class proppit():
                 find_login = driver.find_element_by_xpath("//span[text()='Log in']").click()
             except:
                 find_login = driver.find_element_by_xpath("//span[text()='เข้าสู่ระบบ']").click()
-            time.sleep(2)
+            time.sleep(3)
 
             driver.get("https://proppit.com/properties/new-property")
-            time.sleep(2)
+            time.sleep(4)
 
             driver.find_element_by_xpath("//input[@class='MuiInputBase-input MuiInput-input jss7 jss10']").send_keys(postdata['email'])
             driver.find_element_by_xpath("//input[@data-test='p-title-main']").send_keys(postdata['post_title_th'])
@@ -306,9 +307,9 @@ class proppit():
 
             driver.find_element_by_xpath("//input[@data-test='p-address']").send_keys(Keys.ARROW_DOWN)
             driver.find_element_by_xpath("//input[@data-test='p-address']").send_keys(Keys.ENTER)
-            time.sleep(2)
+            time.sleep(3)
 
-            find_submit = driver.find_element_by_xpath("//span[text()='บันทึก และ เผยแพร่ประกาศ']").click()
+            find_submit = driver.find_element_by_name("publish").click()
             time.sleep(5)
             try:
                 limit = driver.find_element_by_xpath('/html/body/div[3]/div[3]/div/div[1]/h2').text
