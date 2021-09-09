@@ -272,7 +272,8 @@ class ddproperty():
             matchObj = re.search(r'บัญชีผู้ใช้งานของท่านหมดอายุ', self.firefox.page_source)
             matchObj4 = re.search(r'User account has been suspended.', self.firefox.page_source)
             matchObj2 = re.search(r'User account is not active', self.firefox.page_source)
-            if matchObj or matchObj2 or matchObj4:
+            matchObj6 = re.search(r'Your user account has expired', self.firefox.page_source)
+            if matchObj or matchObj2 or matchObj4 or matchObj6:
                 success = "false"
                 detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
                 #log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
@@ -282,7 +283,8 @@ class ddproperty():
                 detail = 'รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่'
                 #log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
             matchObj = re.search(r'มีข้อผิดพลาดเกิดขึ้น', self.firefox.page_source)
-            if matchObj:
+            matchObj2 = re.search(r'Too many login attempts', self.firefox.page_source)
+            if matchObj or matchObj2:
                 success = "false"
                 detail = 'มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง'
                 #log.warning('มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง')
@@ -1014,6 +1016,16 @@ class ddproperty():
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
                 print(str(datahandled['floor_area']))
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floor_area']))
+                time.sleep(2)
+                try:
+                    alert_sqm = self.firefox.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/section/div/div[1]/div/div/div[1]/div[6]/div/div[1]/div/div/div/div[4]')
+                    if 'ไม่กำหนดพื้นที่ใช้สอยต่ำกว่า' in alert_sqm.text:
+                        minimum = str(alert_sqm.text).split(' ')[1]
+                        success = 'false'
+                        detail = 'property is require minimum >= {} sqm'.format(minimum)
+                        return success, detail, post_id, account_type
+                except:
+                    pass
             except WebDriverException as e:
                 #log.warning('cannot input floor area sqm '+str(e))
                 pass
