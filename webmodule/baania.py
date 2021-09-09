@@ -428,9 +428,8 @@ class baania():
             url = "https://api-feed.baania.com/listing/ranking"
 
             r = requests.post(url, data=json.dumps(datapost), headers=headers)
-            ret = json.loads(r.text)
 
-            if r.status_code == 200:
+            if r.status_code == 200 or r.status_code==502:
                 success = "true"
                 detail = "Post was boosted was successfully."
             else:
