@@ -328,6 +328,7 @@ class ennxo():
                     if from_function:
                         auth = json_response['access_token']
                         user_id = json_response['user_id']
+                        sms_verified = json_response['sms_verified']
         else:
             if "message" in json_response:
                 detail = json_response['message']
@@ -348,6 +349,7 @@ class ennxo():
         if from_function:
             return_data['auth'] = auth
             return_data['user_id'] = user_id
+            return_data['sms_verified'] = sms_verified
         return return_data
 
 
@@ -369,10 +371,11 @@ class ennxo():
             if 'project_name' in postdata and postdata['project_name'] is not None:
                 postdata['web_project_name'] = postdata['project_name']
             else:
-                postdata['web_project_name'] = postdata['post_title_th'] 
-        
-        if success=="true":   
-            auth = test_login['auth']         
+                postdata['web_project_name'] = postdata['post_title_th']
+        if test_login['sms_verified'] == False:
+            success = 'false'
+        if success=="true":
+            auth = test_login['auth']
             success = "false"
 
             addr_province = "".join(str(postdata['addr_province']).strip().split())
@@ -454,7 +457,7 @@ class ennxo():
             } 
 
             headers= {
-                "Authorization": auth
+                "authorization": auth
             }
 
             images = []
@@ -506,6 +509,8 @@ class ennxo():
                 detail = "An error occurred while uplaoding images. Error is: "+str(json_r)
         else:
             detail = "cannot login"
+            if test_login['sms_verified'] == False:
+                detail = 'Your post can not create. Please make sure your data is completed or make sure that you already verify you phone number via OTP.'
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -542,7 +547,8 @@ class ennxo():
                 postdata['web_project_name'] = postdata['project_name']
             else:
                 postdata['web_project_name'] = postdata['post_title_th']
-
+        if test_login['sms_verified'] == False:
+            success = 'false'
         if success=="true":
             auth = test_login['auth']
             success = "false"
@@ -706,6 +712,8 @@ class ennxo():
                 detail = "An error occurred while uplaoding images. Error is: "+str(json_r)
         else:
             detail = "cannot login"
+            if test_login['sms_verified'] == False:
+                detail = 'Your post can not create. Please make sure your data is completed or make sure that you already verify you phone number via OTP.'
         
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
