@@ -12,6 +12,11 @@ import requests
 import shutil
 from urllib.parse import unquote
 import random
+from selenium import webdriver
+from time import sleep
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 
 httprequestObj = lib_httprequest()
 
@@ -715,7 +720,48 @@ class ban2day():
 
                 ## STAGE III
 
-                r = httprequestObj.http_get('http://www.ban2day.com/edit_img.php', params={'id': postdata['post_id']})
+                try:
+                    options = Options()
+
+                    options.add_argument("--headless")
+                    options.add_argument('--no-sandbox')
+                    options.add_argument('start-maximized')
+                    options.add_argument('disable-infobars')
+                    options.add_argument("--disable-extensions")
+                    options.add_argument("disable-gpu")
+                    options.add_argument("window-size=1920,1080")
+                    path = './static/chromedriver'
+                    self.driver = webdriver.Chrome(executable_path=path, options=options)
+                    self.driver.get('http://www.ban2day.com/index.php')
+                    sleep(5)
+                    self.driver.find_element_by_xpath("/html/body/nav/div/div[2]/div/a[1]").click()
+                    sleep(3)
+                    self.driver.find_element_by_id('username').send_keys(postdata['user'])
+                    self.driver.find_element_by_id('password').send_keys(postdata['pass'])
+                    self.driver.find_element_by_name("submit").click()
+                    sleep(3)
+                    self.driver.get('http://www.ban2day.com/edit_img.php?id={}'.format(postdata['post_id']))
+                    sleep(3)
+                    while True:
+                        try:
+                            self.driver.find_element_by_xpath("/html/body/div[5]/div/div[1]/div/div[3]/div[2]/a/p/span").click()
+                            sleep(2)
+                            alert = self.driver.switch_to.alert
+                            alert.accept()
+                            sleep(2)
+                            webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
+                            sleep(1)
+                        except:
+                            break
+                    for pic in reversed(postdata['post_images']):
+                        upload = self.driver.find_element_by_id("photoimg")
+                        upload.send_keys(os.path.abspath(pic))
+                        sleep(3)
+                    sleep(3)
+                finally:
+                    self.driver.close()
+                    self.driver.quit()
+                """r = httprequestObj.http_get('http://www.ban2day.com/edit_img.php', params={'id': postdata['post_id']})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -732,7 +778,7 @@ class ban2day():
                     file_data = []
                     filename = str(i) + '.jpeg'
                     file_data.append(('photoimg', (filename, open(image, 'rb'), 'image/jpeg')))
-                    r = httprequestObj.http_post('http://www.ban2day.com/ajax_img.php', data={}, files=file_data)
+                    r = httprequestObj.http_post('http://www.ban2day.com/ajax_img.php', data={}, files=file_data)"""
                     # print(r.url)
                     # print(r.status_code)
 
