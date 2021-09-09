@@ -315,8 +315,18 @@ class bannforsale():
     def edit_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
-
-        test_login = self.test_login(postdata)
+        delete = self.delete_post(postdata)
+        success = 'false'
+        post_id = postdata['post_id']
+        if delete['success']== 'true':
+            post = self.create_post(postdata)
+            post_url = post['post_url']
+            post_id = post['post_id']
+            success = post['success']
+            detail = post['detail']
+        else:
+            detail = delete['detail']
+        """test_login = self.test_login(postdata)
         result =  {
             "success": test_login['success'],
             "usage_time": '',
@@ -474,22 +484,21 @@ class bannforsale():
 
         else:
             result['success'] = "false"
-            result['detail'] = 'cannot login'
+            result['detail'] = 'cannot login'"""
 
         end_time = datetime.datetime.utcnow()     
-        result['end_time'] = str(end_time)
-        result['usage_time'] = str(end_time - start_time)
 
         return {
-            "success": result['success'],
-            "usage_time": result['usage_time'],
-            "start_time": result['start_time'],
-            "end_time": result['end_time'],
+            "success": success,
+            "usage_time": str(end_time - start_time),
+            "start_time": str(start_time),
+            "end_time": str(end_time),
             "log_id": postdata['log_id'],
             "ds_id": str(postdata['ds_id']),
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
+            'post_url':post_url,
             "account_type": "null",
-            "detail": result['detail'],
+            "detail": detail,
             "websitename": self.name
         }
 
