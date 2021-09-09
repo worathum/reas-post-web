@@ -594,8 +594,7 @@ class klungbaan():
                     "prop_featured": "0",
                     "prop_payment": "not_paid"  
                 }
-
-            r = httprequestObj.http_get("https://www.klungbaan.com/property-create/?edit_property="+str(postdata['post_id']))
+            r = httprequestObj.http_get("https://rent.klungbaan.com/property-create/?edit_property="+str(postdata['post_id']))
             #print(website+'/property-create/?edit_property='+str(postdata['post_id']))
             if r.status_code==200:
                 try:
@@ -653,7 +652,7 @@ class klungbaan():
             else:
                 detail = 'Unable to update post. An Error has occurred while fetching page, with response_code '+str(r.status_code) 
         else:
-            detail = "cannot login"
+            detail = "Cannot login, "+test_login["detail"]
         
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -745,7 +744,7 @@ class klungbaan():
                             flag = True
                     page += 1
         else:
-            detail = "cannot login"
+            detail = "Cannot login, "+test_login["detail"]
         
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -820,7 +819,7 @@ class klungbaan():
             else:
                 detail = 'An Error has occurred during fetching page with response_code '+str(r.status_code)
         else:
-            detail = "cannot login"
+            detail = "Cannot login, "+test_login["detail"]
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
