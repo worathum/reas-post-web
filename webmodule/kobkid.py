@@ -568,7 +568,7 @@ class kobkid():
                                                     data=image_data)
                 result = json.loads(response.content.decode('utf-8'))
                 if (result['success'] == False):
-                    end_time = datetime.datetime.now
+                    end_time = datetime.datetime.utcnow()
                     return {
                         "success": False,
                         "start_time": str(start_time),
