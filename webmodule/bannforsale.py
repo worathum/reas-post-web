@@ -315,8 +315,11 @@ class bannforsale():
     def edit_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
-        delete = self.delete_post(postdata)
+        detail = ''
+        post_id = postdata['post_id']
+        post_url = ''
         success = 'false'
+        delete = self.delete_post(postdata)
         post_id = postdata['post_id']
         if delete['success']== 'true':
             post = self.create_post(postdata)
@@ -324,6 +327,8 @@ class bannforsale():
             post_id = post['post_id']
             success = post['success']
             detail = post['detail']
+            if success == 'true':
+                detail = "Post Edited Succesfully"
         else:
             detail = delete['detail']
         """test_login = self.test_login(postdata)
