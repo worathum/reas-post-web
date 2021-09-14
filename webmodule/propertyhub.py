@@ -41,9 +41,7 @@ class propertyhub():
             user = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'email'))).send_keys(postdata['user'])
             pasword = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'password'))).send_keys(postdata['pass'])
             btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'gagEqT'))).click()
-
-            sleep(1.5)
-
+            sleep(3)
             new_url = self.driver.current_url
             if new_url != url:
                 success = 'true'
@@ -57,9 +55,6 @@ class propertyhub():
         except:
             success = 'false'
             detail = 'Error when tring to login or can not reach the elements.'
-        finally:
-            self.driver.close()
-            self.driver.quit()
         
         time_end = datetime.utcnow()
         time_usage = time_end-time_start
@@ -559,19 +554,18 @@ class propertyhub():
                     except:
                         success = 'false'
                         detail = 'Image are not uploaded successfully.'
-                    
                     if success == 'true':
                         agreement = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'agreement'))).click()
                         cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
-                        sleep(5)
+                        success = 'true'
+                        detail = 'Post was edited.'
                         try:
                             check_eng = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'diLcnC'))).click()
                             cfm_post = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnSaveListing'))).click()
-                            sleep(5)
                         except:
                             pass
 
-                        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div/div[2]/div[5]/div/div[2]/button'))).click()
+                        """WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div/div[2]/div[5]/div/div[2]/button'))).click()
                         search_id = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'listingId')))
                         search_id.send_keys(Keys.CONTROL + 'a')
                         search_id.send_keys(postdata['post_id'])
@@ -609,7 +603,7 @@ class propertyhub():
                 else:
                     post_url = ''
             else:
-                post_url = ''
+                post_url = ''"""
 
         finally:
             self.driver.close()
@@ -624,7 +618,6 @@ class propertyhub():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "ds_id": postdata['ds_id'],
-            "post_url" : post_url,
             "post_id" : postdata['post_id'],
             "account_type": "null",
             "detail": detail,
