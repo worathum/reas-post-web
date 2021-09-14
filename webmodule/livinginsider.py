@@ -303,8 +303,8 @@ class livinginsider():
                     'web_zone_id': web_zone,
                     'web_title': postdata['post_title_th'],
                     'web_description': postdata['post_description_th'],
-                    'web_title_en': '',
-                    'web_description_en': '',
+                    'web_title_en': postdata['post_title_en'],
+                    'web_description_en': postdata['post_description_en'],
                     'web_latitude': postdata['geo_latitude'],
                     'web_longitude': postdata['geo_longitude']
                 }
@@ -322,8 +322,8 @@ class livinginsider():
                     'web_zone_id': web_zone,
                     'web_title': postdata['post_title_th'],
                     'web_description': postdata['post_description_th'],
-                    'web_title_en': '',
-                    'web_description_en': '',
+                    'web_title_en': postdata['post_title_en'],
+                    'web_description_en': postdata['post_description_en'],
                     'web_latitude': postdata['geo_latitude'],
                     'web_longitude': postdata['geo_longitude']
                 }
@@ -891,8 +891,8 @@ class livinginsider():
                     'web_zone_id': web_zone, 
                     'web_title': postdata['post_title_th'],
                     'web_description': postdata['post_description_th'],
-                    'web_title_en': '',
-                    'web_description_en': '',
+                    'web_title_en': postdata['post_title_en'],
+                    'web_description_en': postdata['post_description_en'],
                     'web_latitude': postdata['geo_latitude'],
                     'web_longitude': postdata['geo_longitude'],
                     'state_renew': '',
