@@ -731,11 +731,10 @@ class livinginsider():
         post_url = ""
         if success:
 
-            post_found = False
+            post_found = True
 
-            page = 1
+            """page = 1
 
-            post_found = False
             max_page = 100
             r = httprequestObj.http_get(
                 'https://www.livinginsider.com/mystock.php?action=1&pages=1&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=')
@@ -775,7 +774,7 @@ class livinginsider():
                         break
                 page += 1
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
 
