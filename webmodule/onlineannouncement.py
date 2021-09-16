@@ -317,8 +317,8 @@ class onlineannouncement():
 
         if success:
             i = 0
-            found = False
-            while True:
+            found = True
+            """while True:
                 if i == 0:
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post'
                 else:
@@ -338,7 +338,7 @@ class onlineannouncement():
                         found = True
                         break
                 if found:
-                    break
+                    break"""
 
             if found:
                 response = httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/posting')
@@ -504,8 +504,8 @@ class onlineannouncement():
         if success:
 
             i = 0
-            found = False
-            while True:
+            found = True
+            """while True:
                 if i == 0:
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post'
                 else:
@@ -525,7 +525,7 @@ class onlineannouncement():
                         found = True
                         break
                 if found:
-                    break
+                    break"""
 
             if found:
 
@@ -578,8 +578,8 @@ class onlineannouncement():
         if success:
 
             i = 0
-            found = False
-            while True:
+            found = True
+            """while True:
                 if i == 0:
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post'
                 else:
@@ -599,7 +599,7 @@ class onlineannouncement():
                         found = True
                         break
                 if found:
-                    break
+                    break"""
 
             if found:
                 params = {
