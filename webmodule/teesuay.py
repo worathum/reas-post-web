@@ -639,9 +639,9 @@ class teesuay():
         success = test_login["success"]
         detail = test_login["detail"]
         page = 1
-        found = False
+        found = True
         temp = len('property-')
-        while True:
+        """while True:
             r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
             soup = BeautifulSoup(r.content, features = self.parser)
             count = 0
@@ -656,7 +656,7 @@ class teesuay():
                         break
             page += 1
             if found or count==0:
-                break
+                break"""
 
         if not found:
             return {
