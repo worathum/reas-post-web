@@ -447,9 +447,9 @@ class ban2day():
         if success:
 
             ind = 0
-            post_found = False
+            post_found = True
 
-            while True:
+            """while True:
                 r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
                 # print(ind)
                 # print(r.url)
@@ -472,7 +472,7 @@ class ban2day():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
 
@@ -832,9 +832,9 @@ class ban2day():
         if success:
 
             ind = 0
-            post_found = False
+            post_found = True
 
-            while True:
+            """while True:
                 r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
                 # print(ind)
                 # print(r.url)
@@ -857,7 +857,7 @@ class ban2day():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
 
@@ -922,9 +922,9 @@ class ban2day():
         if success:
 
             ind = 0
-            post_found = False
+            post_found = True
 
-            while True:
+            """while True:
                 r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
                 # print(ind)
                 # print(r.url)
@@ -947,7 +947,7 @@ class ban2day():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
 
