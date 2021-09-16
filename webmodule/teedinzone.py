@@ -360,9 +360,9 @@ class teedinzone():
         if success:
 
             ind = 0
-            post_found = False
+            post_found = True
 
-            while True:
+            """while True:
                 ind += 1
                 params = {
                     'page': 'user',
@@ -391,7 +391,7 @@ class teedinzone():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
 
@@ -611,9 +611,9 @@ class teedinzone():
         if success:
 
             ind = 0
-            post_found = False
+            post_found = True
 
-            while True:
+            """while True:
                 ind += 1
                 params = {
                     'page': 'user',
@@ -642,7 +642,7 @@ class teedinzone():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
 
@@ -830,9 +830,9 @@ class teedinzone():
         if success:
 
             ind = 0
-            post_found = False
+            post_found = True
 
-            while True:
+            """while True:
                 ind += 1
                 params = {
                     'page': 'user',
@@ -861,7 +861,7 @@ class teedinzone():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
 
