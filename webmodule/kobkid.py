@@ -370,7 +370,6 @@ class kobkid():
                 detail = 'Post Created Successfully'
 
                 postdata['post_id'] = post_id
-                self.edit_post(postdata)
 
                 return {
                     "success": result['success'],
@@ -509,7 +508,23 @@ class kobkid():
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         start_time = datetime.datetime.utcnow()
 
-        orders = self.check_current_post(postdata)
+        detail = ''
+        post_id = postdata['post_id']
+        post_url = ''
+        success = 'false'
+        delete = self.delete_post(postdata)
+        post_id = postdata['post_id']
+        if delete['success']== True:
+            post = self.create_post(postdata)
+            post_url = post['post_url']
+            post_id = post['post_id']
+            success = post['success']
+            detail = post['detail']
+            if success == 'true':
+                detail = "Post Edited Succesfully"
+        else:
+            detail = delete['detail']
+        """orders = self.check_current_post(postdata)
 
         login = self.test_login(postdata)
         if(login['success'] == False):
@@ -624,16 +639,17 @@ class kobkid():
         try:
             log_id = postdata['log_id']
         except:
-            log_id = ""
+            log_id = """""
+        end_time = datetime.datetime.utcnow()
         return {
-            "success": result,
+            "success": success,
             "start_time": str(start_time),
             'ds_id': postdata['ds_id'],
-            "log_id": log_id,
+            "log_id": postdata['log_id'],
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
             "detail": detail,
-            "post_url": "https://www.kobkid.com/market/"+str(post_id),
+            "post_url": post_url,
             "post_id": post_id,
             "websitename": "kobkid"
         }
