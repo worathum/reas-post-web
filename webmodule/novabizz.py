@@ -791,7 +791,7 @@ class novabizz():
             x=1
         found = False
 
-        for i in range(1, x + 1):
+        """for i in range(1, x + 1):
             url_list = "https://www.novabizz.com/manage-post.php?page="+str(i)
             r = httprequestObj.http_get(url_list)
             soup = BeautifulSoup(r.content, features = self.parser)
@@ -814,18 +814,7 @@ class novabizz():
                     storeI = i
                     break
             if found == True:
-                break
-
-        if storeI == '':
-            return{
-                'websitename':'novabizz',
-                'success': 'false',
-                'ret': " Does not exist",
-                "ds_id": postdata['ds_id'],
-                "log_id": postdata['log_id'],
-                'post_url': "",
-                'post_id': ""
-            }
+                break"""
 
         post_id = ""
         detail = ""
