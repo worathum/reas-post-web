@@ -324,9 +324,9 @@ class quickdealfree():
         files = {}
         if success == "true":
             page = 1
-            found = False
+            found = True
             req_post_id = str(postdata['post_id'])
-            while True:
+            """while True:
                 r = httprequestObj.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
                 soup = BeautifulSoup(r.text, features=self.parser)
                 post_div = soup.find(id="frmMain")
@@ -341,7 +341,7 @@ class quickdealfree():
                             break
                 page +=1
                 if (not post_div) or (not all_posts) or found:
-                    break
+                    break"""
             
             if found:
                 datapost = [
@@ -424,9 +424,9 @@ class quickdealfree():
         detail = test_login["detail"]
         if success == "true":
             page = 1
-            found = False
+            found = True
             req_post_id = str(postdata['post_id'])
-            while True:
+            """while True:
                 r = httprequestObj.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
                 soup = BeautifulSoup(r.text, features=self.parser)
                 post_div = soup.find(id="frmMain")
@@ -441,7 +441,7 @@ class quickdealfree():
                             break
                 page +=1
                 if (not post_div) or (not all_posts) or found:
-                    break
+                    break"""
 
             if found:
                 r = httprequestObj.http_get(
@@ -491,9 +491,9 @@ class quickdealfree():
         detail = test_login["detail"]
         if success == "true":
             page = 1
-            found = False
+            found = True
             req_post_id = str(postdata['post_id'])
-            while True:
+            """while True:
                 r = httprequestObj.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
                 soup = BeautifulSoup(r.text, features=self.parser)
                 post_div = soup.find(id="frmMain")
@@ -508,7 +508,7 @@ class quickdealfree():
                             break
                 page +=1
                 if (not post_div) or (not all_posts) or found:
-                    break
+                    break"""
 
             if found:
                 detail = "Post boosted successfully"
