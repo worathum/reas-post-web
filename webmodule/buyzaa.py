@@ -356,10 +356,10 @@ class buyzaa():
         if success:
 
             page = 0
-            post_found = False
+            post_found = True
             tot_pages = 100
 
-            while True:
+            """while True:
                 page += 1
                 if page > tot_pages:
                     break
@@ -384,7 +384,7 @@ class buyzaa():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
                 if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
@@ -678,10 +678,10 @@ class buyzaa():
         if success:
 
             page = 0
-            post_found = False
+            post_found = True
             tot_pages = 100
 
-            while True:
+            """while True:
                 page += 1
                 if page > tot_pages:
                     break
@@ -706,7 +706,7 @@ class buyzaa():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
                 r = httprequestObj.http_get('http://www.buyzaa.com/manage-post.php', params={'delete': post_id})
