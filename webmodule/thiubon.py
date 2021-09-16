@@ -322,9 +322,9 @@ class thiubon():
         if success:
 
             page = 0
-            post_found = False
+            post_found = True
 
-            while True:
+            """while True:
                 page += 1
                 params = {
                     'QueryString': 'value',
@@ -344,7 +344,7 @@ class thiubon():
                     if post_id == postdata['post_id']:
                         post_found = True
                         # print('Post found')
-                        break
+                        break"""
 
             if post_found:
                 self.delete_post(postdata)
@@ -390,9 +390,9 @@ class thiubon():
         if success:
 
             page = 0
-            post_found = False
+            post_found = True
 
-            while True:
+            """while True:
                 page += 1
                 params = {
                     'QueryString': 'value',
@@ -418,7 +418,7 @@ class thiubon():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
                 r = httprequestObj.http_get('http://classified.thiubon.com/member/slide-classified-post.php',
@@ -473,9 +473,9 @@ class thiubon():
         if success:
 
             page = 0
-            post_found = False
+            post_found = True
 
-            while True:
+            """while True:
                 page += 1
                 params = {
                     'QueryString': 'value',
@@ -499,7 +499,7 @@ class thiubon():
                         break
 
                 if post_found:
-                    break
+                    break"""
 
             if post_found:
                 r = httprequestObj.http_get('http://classified.thiubon.com/member/del-classifieds.php',
