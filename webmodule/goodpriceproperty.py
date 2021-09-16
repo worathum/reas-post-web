@@ -690,9 +690,9 @@ class goodpriceproperty():
 
 
         # total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])
-        found = False
+        found = True
         page = 1
-        while True:
+        """while True:
             requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).text
             # print(requ)
             
@@ -709,7 +709,7 @@ class goodpriceproperty():
                     count += 1
             page += 1
             if found or count==0:
-                break
+                break"""
 
         if not found:
             return {
@@ -1208,7 +1208,7 @@ class goodpriceproperty():
         )
                     
         page = 1            
-        found = False
+        found = True
         """while True:
             requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
             soup = BeautifulSoup(requ, features = self.parser)
