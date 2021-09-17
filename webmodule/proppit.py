@@ -280,22 +280,18 @@ class proppit():
 
         try:
             driver.get("https://proppit.com/login")
-            time.sleep(4)
-
-            driver.find_element_by_id('email').send_keys(postdata['user'])
-            driver.find_element_by_id('password').send_keys(postdata['pass'])
-            time.sleep(1)
-
+            WebDriverWait(driver, 30).until(lambda x: x.find_element_by_id("email")).send_keys(postdata['user'])
+            WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("password")).send_keys(postdata['pass'])
             try:
-                find_login = driver.find_element_by_xpath("//span[text()='Log in']").click()
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Log in']"))).click()
             except:
-                find_login = driver.find_element_by_xpath("//span[text()='เข้าสู่ระบบ']").click()
-            time.sleep(3)
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='เข้าสู่ระบบ']"))).click()
 
-            driver.get("https://proppit.com/properties/new-property")
-            time.sleep(4)
-
-            driver.find_element_by_xpath("//input[@class='MuiInputBase-input MuiInput-input jss7 jss10']").send_keys(postdata['email'])
+            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/div/div/div[1]/nav/div/div[3]/a"))).click()
+            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div[1]/div/div/a"))).click()
+            
+            WebDriverWait(driver, 30).until(lambda x: x.find_element_by_xpath("//input[@class='MuiInputBase-input MuiInput-input jss7 jss10']")).send_keys(postdata['email'])
+            #driver.find_element_by_xpath("//input[@class='MuiInputBase-input MuiInput-input jss7 jss10']").send_keys(postdata['email'])
             driver.find_element_by_xpath("//input[@data-test='p-title-main']").send_keys(postdata['post_title_th'])
             driver.find_element_by_xpath("//input[@data-test='p-contact-phone']").send_keys(Keys.CONTROL + "a")
             driver.find_element_by_xpath("//input[@data-test='p-contact-phone']").send_keys(Keys.DELETE)
@@ -312,16 +308,20 @@ class proppit():
             find_submit = driver.find_element_by_name("publish").click()
             time.sleep(5)
             try:
-                limit = driver.find_element_by_xpath('/html/body/div[3]/div[3]/div/div[1]/h2').text
-                if limit == 'คุณมีประกาศที่เผยแพร่เต็มจำนวนตามแพ็กเกจของคุณแล้ว':
+                limit = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("confirmation-dialog-title")).text
+                print(limit)
+                print(limit=='You have reached the limit of published properties')
+                if limit in ['คุณมีประกาศที่เผยแพร่เต็มจำนวนตามแพ็กเกจของคุณแล้ว','You have reached the limit of published properties']:
                     gen_id_bool = False
-                    detail = 'คุณมีประกาศที่เผยแพร่เต็มจำนวนตามแพ็กเกจของคุณแล้ว'
+                    detail = 'You have reached the limit of published properties'
             except:
-                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[1]').get_attribute('href'))+'|'
-                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[2]').get_attribute('href'))+'|'
-                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[3]').get_attribute('href'))+'|'
-                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[4]').get_attribute('href'))+'|'
-                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[5]').get_attribute('href'))
+                post_url = ''
+                num_web= 5
+                for i in range(num_web):
+                    url = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[{}]'.format(i+1)))
+                    post_url += url.get_attribute('href')
+                    if i+1 != num_web:
+                        post_url += '|'
                 gen_id_bool = True
                 
         finally:
@@ -393,9 +393,7 @@ class proppit():
                 detail = "cannot login."
         else:
             success = "false"
-            detail = "cannot gen new id."
-            if gen_id['detail'] == 'คุณมีประกาศที่เผยแพร่เต็มจำนวนตามแพ็กเกจของคุณแล้ว':
-                detail = gen_id['detail']
+            detail = gen_id['detail']
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -423,10 +421,14 @@ class proppit():
         detail = "can't connect to edit."
 
         post_id = postdata['post_id']
-        post_url = "https://proppit.com/properties/"+ post_id +"/edit"
+        #post_url = "https://proppit.com/properties/"+ post_id +"/edit"
 
         test_login = self.test_login(postdata)
-        search_post = self.search_post(postdata)
+        try:
+            search_post = self.search_post(postdata)
+            post_url = search_post['post_url']
+        except:
+            post_url = ''
         if test_login["success"] == 'true':
             temp_payload, files = self.payload_data(postdata,'edit',post_id)
             payload = {'ad': json.dumps(temp_payload)}
@@ -439,7 +441,7 @@ class proppit():
                 success = "true"
                 detail = "Post edit successfully!"
                 #post_url = "https://proppit.com/properties/"+ post_id +"/edit"
-                post_url = search_post['post_url']
+                #post_url = search_post['post_url']
                 post_id = post_id
             else:
                 success = "false"
@@ -548,27 +550,32 @@ class proppit():
 
         try:
             driver.get("https://proppit.com/login")
-            time.sleep(2)
-
-            driver.find_element_by_id('email').send_keys(postdata['user'])
-            driver.find_element_by_id('password').send_keys(postdata['pass'])
-            time.sleep(1)
-
+            WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("email")).send_keys(postdata['user'])
+            WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("password")).send_keys(postdata['pass'])
             try:
-                find_login = driver.find_element_by_xpath("//span[text()='Log in']").click()
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Log in']"))).click()
             except:
-                find_login = driver.find_element_by_xpath("//span[text()='เข้าสู่ระบบ']").click()
-            time.sleep(2)
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='เข้าสู่ระบบ']"))).click()
+            time.sleep(5)
             driver.get("https://proppit.com/properties")
-            time.sleep(2)
-            driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[2]/div[1]/div/div/div[1]/div/div/div/input').send_keys(postdata['post_title_th'])
-            driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[2]/div[1]/div/div/div[1]/div/div/div/input').send_keys(Keys.ENTER)
-            post_url = ''
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[1]').get_attribute('href'))+'|'
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[2]').get_attribute('href'))+'|'
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[3]').get_attribute('href'))+'|'
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[4]').get_attribute('href'))+'|'
-            post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[5]').get_attribute('href'))
+            search_field = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[2]/div[1]/div/div/div[1]/div/div/div/input'))
+            search_field.send_keys(postdata['property_id'])
+            search_field.send_keys(Keys.ENTER)
+            time.sleep(5)
+            try:
+                post_url = ''
+                num_web= 5
+                for i in range(num_web):
+                    url = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[{}]'.format(i+1)))
+                    post_url += url.get_attribute('href')
+                    if i+1 != num_web:
+                        post_url += '|'
+                """post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[2]').get_attribute('href'))+'|'
+                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[3]').get_attribute('href'))+'|'
+                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[4]').get_attribute('href'))+'|'
+                post_url += (driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[5]').get_attribute('href'))"""
+            except:
+                detail = "No post found with given title."
         finally:
             driver.close()
             driver.quit()
