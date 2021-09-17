@@ -20,7 +20,7 @@ class propertyhub():
     def test_login(self, postdata):
         
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -647,10 +647,11 @@ class propertyhub():
                     detail = 'You can not boost your post any more cause reaching the limit.'
 
                 if success == 'true':
-                    if 'คุณยังไม่มีรายการประกาศที่แสดงผล' in WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/div[1]/div/div[2]/div[5]/div/div/div/div[2]/div/span'))).text:
-                        success = 'false'
-                        detail = 'Your post does not exist. Please check the post id.'
-                    else:
+                    try:
+                        if 'คุณยังไม่มีรายการประกาศที่แสดงผล' in WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/div[1]/div/div[2]/div[5]/div/div/div/div[2]/div/span'))).text:
+                            success = 'false'
+                            detail = 'Your post does not exist. Please check the post id.'
+                    except:
                         search = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="sc-1r06t7h-0 cxhLHS hp6yc9-0 hMAYxM"]'))).click()
                         sleep(1)
                         iden = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'listingId'))).send_keys(postdata['post_id'])
