@@ -150,37 +150,36 @@ class house4post:
         return self.dict_serializer(result)
 
     def test_login(self, data):
-        self.logout_user()
         start_time = datetime.datetime.utcnow()
+        self.logout_user()
+
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
         }
-        postdata = {}
-        postdata["log_u"] = data["user"]
-        postdata["log_p"] = data["pass"]
-        postdata["submit"] = "Login"
-        success = ""
-        detail = ""
+        postdata = {"log_u": data["user"], "log_p": data["pass"], "submit": "Login"}
+
         url = "https://www.house4post.com/login.php"
-        req = httprequestObj.http_post(url, data=postdata, headers=headers)
-        txt = req.text
-        if txt.find("Username หรือ Password ไม่ถูกต้อง") == -1:
-            success = "true"
-            detail = "Successfully login"
-        else:
-            success = "false"
+        response = httprequestObj.http_post(url, data=postdata, headers=headers)
+
+        if "Username หรือ Password ไม่ถูกต้อง" in response.text:
+            success = False
             detail = "User not registered yet"
+        else:
+            success = True
+            detail = "Successfully login"
+
         end_time = datetime.datetime.utcnow()
+
         result = {
-            "websitename": "house4post",
+            "websitename": self.website_name,
             "success": success,
-            "start_time": str(start_time),
-            "end_time": str(end_time),
-            "usage_time": str(end_time - start_time),
+            "start_time": start_time,
+            "end_time": end_time,
+            "usage_time": end_time - start_time,
             "ds_id": data["ds_id"],
             "detail": detail,
         }
-        return result
+        return self.dict_serializer(result)
 
     def create_post(self, data, to_edit=0):
         start_time = datetime.datetime.utcnow()
@@ -656,7 +655,7 @@ class house4post:
             "start_time": start_time,
             "end_time": end_time,
             "detail": login_info["detail"],
-            "websitename": "house4post",
+            "websitename": self.website_name,
             "account_type": None,
             "ds_id": postdata["ds_id"],
             "log_id": postdata["log_id"],
