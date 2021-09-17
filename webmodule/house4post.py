@@ -26,11 +26,13 @@ class house4post:
         self.debug = 0
         self.debugresdata = 0
         self.parser = "html.parser"
+        self.website_name = "house4post"
 
     def logout_user(self):
         url = "https://www.house4post.com/logout_member"
         httprequestObj.http_get(url)
 
+    """
     def register_user(self, data):
         self.logout_user()
         start_time = datetime.datetime.utcnow()
@@ -88,6 +90,64 @@ class house4post:
             "ds_id": data["ds_id"],
         }
         return result
+    """
+
+    def register_user(self, data: Dict[str, str]) -> Dict[str, str]:
+        start_time = datetime.datetime.utcnow()
+        self.logout_user()
+        end_time = datetime.datetime.utcnow()
+
+        result = {
+            "websitename": self.website_name,
+            "success": False,
+            "start_time": start_time,
+            "end_time": end_time,
+            "usage_time": end_time - start_time,
+            "detail": "",
+            "ds_id": data["ds_id"],
+        }
+
+        postdata = {
+            "username": data["user"].split("@")[0],
+            "pass": data["pass"],
+            "conpass": data["pass"],
+            "email": data["user"],
+            "name": data["name_th"],
+            "lastname": data["surname_th"],
+            "phone": data["tel"],
+            "address": "พญาไท,กรุงเทพ",
+            "submit": "",
+        }
+
+        if not all(
+            [
+                postdata.get(key)
+                for key in ["username", "pass", "name", "lastname", "phone"]
+            ]
+        ):
+            result["detail"] = "Empty credentials"
+            return self.dict_serializer(result)
+
+        EMAIL_REGEX = r"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*$"
+        if not re.search(EMAIL_REGEX, result["email"]):
+            result["detail"] = "Invalid email"
+            return self.dict_serializer(result)
+
+        url = "https://www.house4post.com/signup_member.php"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
+        }
+        response = httprequestObj.http_post(url, data=postdata, headers=headers)
+
+        if "สมัครสมาชิกเรียบร้อยแล้ว" in response.text:
+            result["success"] = True
+            result["detail"] = "Successfully Registered"
+        else:
+            result["detail"] = "Already a user"
+
+        end_time = datetime.datetime.utcnow()
+
+        return self.dict_serializer(result)
 
     def test_login(self, data):
         self.logout_user()
@@ -733,7 +793,7 @@ class house4post:
             "ds_id": data["ds_id"],
             "log_id": data["log_id"],
             "detail": detail,
-            "websitename": "house4post",
+            "websitename": self.website_name,
         }
         return result
 
