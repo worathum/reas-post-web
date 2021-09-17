@@ -515,6 +515,7 @@ class house4post:
         }
         return result
 
+    """
     def search_post(self, postdata):
         start_time = datetime.datetime.utcnow()
         test_login = self.test_login(postdata)
@@ -581,6 +582,71 @@ class house4post:
             "post_found": post_found,
         }
         return result
+    """
+
+    def search_post(self, postdata: Dict[str, str]) -> Dict[str, str]:
+        start_time = datetime.datetime.utcnow()
+        login_info = self.test_login(postdata)
+        login_success = True if login_info["success"] == "true" else False
+        end_time = datetime.datetime.utcnow()
+
+        result = {
+            "success": login_success,
+            "usage_time": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
+            "detail": login_info["detail"],
+            "websitename": "house4post",
+            "account_type": None,
+            "ds_id": postdata["ds_id"],
+            "log_id": postdata["log_id"],
+            "post_create_time": "",
+            "post_modify_time": "",
+            "post_view": "",
+            "post_id": "",
+            "post_url": "",
+            "post_found": False,
+        }
+
+        if not login_success:
+            result["detail"] = "cannot login"
+            return self.dict_serializer(result)
+
+        result["detail"] = "No post found with given title"
+
+        page = count(0)
+        while True:
+            response = httprequestObj.http_get(
+                f"https://www.house4post.com//maneg_property.php?&page={next(page)}"
+            )
+            if response.status_code != 200:
+                break
+
+            soup = BeautifulSoup(response.text, features=self.parser)
+            posts_element = soup.find(class_="well")
+            try:
+                posts = posts_element.find("tbody").find_all("tr")  # type: ignore
+            except AttributeError:
+                continue
+            for post in posts:
+                title = post.find_all("td")[1].a  # type: ignore
+                title_text = title.get_text().strip()
+                if title_text == str(postdata["post_title_th"]).strip():
+                    result["post_found"] = True
+                    result["detail"] = "Post found successfully"
+                    post_url = title.get("href")
+                    result["post_url"] = post_url
+                    result["post_id"] = re.findall(r"idasungha-(\d+)", post_url)[0]
+                    break  # for post in posts:
+
+            if len(posts) < 10 or result["post_found"]:
+                break
+
+        end_time = datetime.datetime.utcnow()
+        result["end_time"] = end_time
+        result["usage_time"] = end_time - start_time
+
+        return self.dict_serializer(result)
 
     def edit_post(self, data):
         start_time = datetime.datetime.utcnow()
@@ -737,3 +803,19 @@ class house4post:
             "websitename": "house4post",
         }
         return result
+
+    def dict_serializer(self, dict_obj: dict) -> Dict[str, str]:
+        if not isinstance(dict_obj, dict):
+            raise TypeError("Not a Dict-like Object")
+
+        dict_return = {}
+        for key, value in dict_obj.items():
+            if isinstance(value, bool):
+                value = "true" if value else "false"
+            elif value is None:
+                pass
+            else:
+                value = str(value)
+            dict_return.update({str(key): value})
+
+        return dict_return
