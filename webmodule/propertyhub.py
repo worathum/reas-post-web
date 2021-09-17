@@ -647,29 +647,33 @@ class propertyhub():
                     detail = 'You can not boost your post any more cause reaching the limit.'
 
                 if success == 'true':
-                    search = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="sc-1r06t7h-0 cxhLHS hp6yc9-0 hMAYxM"]'))).click()
-                    sleep(1)
-                    iden = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'listingId'))).send_keys(postdata['post_id'])
-                    apply = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'kLYpXZ'))).click()
-                    sleep(1)
-                    try:
-                        refresh = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnRefreshListing'))).click()
-                        success = 'true'
-                        detail = 'Your post has been boosted.'
-                    except:
+                    if 'คุณยังไม่มีรายการประกาศที่แสดงผล' in WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/div[1]/div/div[2]/div[5]/div/div/div/div[2]/div/span'))).text:
+                        success = 'false'
+                        detail = 'Your post does not exist. Please check the post id.'
+                    else:
+                        search = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="sc-1r06t7h-0 cxhLHS hp6yc9-0 hMAYxM"]'))).click()
+                        sleep(1)
+                        iden = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'listingId'))).send_keys(postdata['post_id'])
+                        apply = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'kLYpXZ'))).click()
+                        sleep(1)
                         try:
-                            refresh = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnRefreshTrialListing'))).click()
-                            sleep(5)
-                            try:
-                                elements = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "bp3-popover")))
-                                success = 'false'
-                                detail = 'Sales announcements can be boot one time per day.'
-                            except:
-                                success = 'true'
-                                detail = 'Your post has been boosted.'
+                            refresh = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnRefreshListing'))).click()
+                            success = 'true'
+                            detail = 'Your post has been boosted.'
                         except:
-                            success = 'false'
-                            detail = 'Your post does not exist. Please check the post id.'
+                            try:
+                                refresh = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'btnRefreshTrialListing'))).click()
+                                sleep(5)
+                                try:
+                                    elements = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "bp3-popover")))
+                                    success = 'false'
+                                    detail = 'Sales announcements can be boot one time per day.'
+                                except:
+                                    success = 'true'
+                                    detail = 'Your post has been boosted.'
+                            except:
+                                success = 'false'
+                                detail = 'Your post does not exist. Please check the post id.'
         finally:
             self.driver.close()
             self.driver.quit()
