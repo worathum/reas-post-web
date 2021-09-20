@@ -4,7 +4,7 @@ import json
 import random
 import re
 from itertools import count
-from typing import Dict
+from typing import Dict, List, Tuple
 
 import requests
 from bs4 import BeautifulSoup
@@ -181,6 +181,7 @@ class house4post:
         }
         return self.dict_serializer(result)
 
+    """
     def create_post(self, data, to_edit=0):
         start_time = datetime.datetime.utcnow()
         result = self.test_login(data)
@@ -485,6 +486,203 @@ class house4post:
                 "websitename": "house4post",
             }
             return result
+    """
+
+    def create_post(self, data: Dict[str, str]) -> Dict[str, str]:
+        start_time = datetime.datetime.utcnow()
+        login_result = self.test_login(data)
+        end_time = datetime.datetime.utcnow()
+
+        result = {
+            "success": False,
+            "usage_time": end_time - start_time,
+            "start_time": start_time,
+            "end_time": end_time,
+            "post_url": "",
+            "post_id": "",
+            "account_type": "null",
+            "ds_id": data["ds_id"],
+            "detail": login_result["detail"],
+            "websitename": self.website_name,
+        }
+
+        if login_result["success"] == "false":
+            return self.dict_serializer(result)
+
+        postdata = self.prepare_postdata(data)
+
+        try:
+            url = "https://www.house4post.com/add_property.php"
+            headers = {
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
+            }
+            response = httprequestObj.http_post(url, data=postdata, headers=headers)
+            soup = BeautifulSoup(response.content, "html.parser")
+
+            try:
+                post_id = soup.find(class_="well").meta["content"].split("=")[-1]  # type: ignore
+            except (AttributeError, KeyError):
+                result["success"] = False
+                alert = soup.find(class_="alert-danger")
+                if alert:
+                    result["detail"] = alert.get_text(strip=True)  # type: ignore
+                else:
+                    result["detail"] = "Network error"
+                # TODO using decorator to add start_time end_time
+                end_time = datetime.datetime.utcnow()
+                result["end_time"] = end_time
+                result["usage_time"] = end_time - start_time
+                # TODO Maybe use decorator to serialize dict.values() to str
+                return self.dict_serializer(result)
+
+            post_url = f"https://www.house4post.com/idasungha-{post_id}-{data['post_title_th']}"
+            post_url = post_url.replace(" ", "-")
+
+            img_url = f"https://www.house4post.com/add_img.php?id={post_id}"
+            httprequestObj.http_get(img_url)
+
+            if not data.get("post_images"):
+                data["post_images"] = ["./imgtmp/default/white.jpg"]  # type: ignore
+
+            for img in data["post_images"][:6]:
+                with open(os.getcwd() + "/" + img, "rb") as r:  # type: ignore
+                    response = httprequestObj.http_post(
+                        "https://www.house4post.com/ajax_img.php",
+                        data=None,
+                        files={"photoimg": r},
+                    )
+                    time.sleep(3)
+
+            result["post_url"] = post_url
+            result["post_id"] = post_id
+            result["success"] = True
+            result["detail"] = "Successful post"
+        except:
+            result["success"] = False
+            result["detail"] = "Something went wrong."
+
+        end_time = datetime.datetime.utcnow()
+        result["end_time"] = end_time
+        result["usage_time"] = end_time - start_time
+
+        return self.dict_serializer(result)
+
+    def prepare_postdata(self, data: Dict[str, str]) -> Dict[str, str]:
+        try:
+            if data.get("web_project_name", ""):
+                project = data["web_project_name"]
+            else:
+                project = data["project_name"]
+        except KeyError:
+            project = data["post_title_th"]
+
+        province_id, district_id, subdistrict_id = self._get_address_id(
+            data["addr_province"], data["addr_district"], data["addr_sub_district"]
+        )
+
+        area = ""
+        if data["land_size_rai"]:
+            area += f"{data['land_size_rai']} ไร่"
+        if data["land_size_ngan"]:
+            area += f"{data['land_size_ngan']} งาน"
+        if data["land_size_wa"]:
+            area += f"{data['land_size_wa']} ตรว"
+        if data["floor_area"]:
+            area += f"{data['floor_area']} ตรม"
+
+        postdata = {
+            "name": data["post_title_th"],
+            "project": project,
+            # "web_project_name": data["post_title_th"],
+            "number": "",
+            "cate": "1" if data["listing_type"] == "ขาย" else "2",
+            "section": self._get_postdata_section(data["property_type"]),
+            "soi": data["addr_soi"],
+            "road": data["addr_road"],
+            "Province": province_id,
+            "District": district_id,
+            "Subdistrict": subdistrict_id,
+            "price": data["price_baht"],
+            "area": area,
+            "layer": data["floor_total"],
+            "room": data["bed_room"],
+            "toilet": data["bath_room"],
+            "detail": data["post_description_th"],
+            "Submit": "Submit",
+        }
+
+        return self.dict_serializer(postdata)
+
+    def _get_postdata_section(self, property_type: str) -> str:
+        if not isinstance(property_type, str):
+            property_type = str(property_type)
+        property_type_id = {
+            "คอนโด": "1",
+            "บ้านเดี่ยว": "2",
+            "บ้านแฝด": "3",
+            "ทาวน์เฮ้าส์": "4",
+            "ตึกแถว-อาคารพาณิชย์": "5",
+            "ที่ดิน": "6",
+            "อพาร์ทเมนท์": "7",
+            "โรงแรม": "8",
+            "ออฟฟิศสำนักงาน": "9",
+            "โกดัง-โรงงาน": "10",
+            "โรงงาน": "25",
+        }
+        property_id_map = {
+            "1": "1",
+            "2": "5",
+            "3": "15",
+            "4": "3",
+            "5": "2",
+            "6": "4",
+            "7": "7",
+            "8": "13",
+            "9": "9",
+            "10": "8",
+            "25": "10",
+        }
+        try:
+            return property_id_map[property_type_id[property_type]]
+        except KeyError:
+            return property_id_map[property_type]
+
+    def _get_address_id(
+        self, province: str, district: str, subdistrict: str
+    ) -> Tuple[int, int, int]:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
+        }
+        response = httprequestObj.http_get_with_headers(
+            "https://www.house4post.com/add_property", headers=headers
+        )
+        soup = BeautifulSoup(response.content, "html.parser")
+        options = soup.find("select", {"name": "Province"}).find_all("option")  # type: ignore
+        province_id = int(options[0]["values"])  # type: ignore
+        for opt in options:
+            if province.strip() in opt.get_text(strip=True):  # type: ignore
+                province_id = int(opt["value"])  # type: ignore
+                break
+
+        url = (
+            f"https://www.house4post.com/getaddress.php?ID={province_id}&TYPE=District"
+        )
+        response = httprequestObj.http_get_with_headers(url, headers=headers)
+        district_json: List[Dict[str, str]] = json.loads(response.content)
+        district_id = int(district_json[0]["amphur_id"])
+        for dist in district_json:
+            if district.strip() in dist["amphur_name"].strip():
+                district_id = int(dist["amphur_id"])
+
+        url = f"https://www.house4post.com/getaddress.php?ID={district_id}&TYPE=Subdistrict"
+        response = httprequestObj.http_get_with_headers(url, headers=headers)
+        subdistrict_json: List[Dict[str, str]] = json.loads(response.content)
+        subdistrict_id = int(subdistrict_json[0]["district_id"])
+        for subdist in subdistrict_json:
+            if subdistrict.strip() in subdist["district_name"].strip():
+                subdistrict_id = int(subdist["district_id"])
+
+        return province_id, district_id, subdistrict_id
 
     def delete_post(self, postdata):
         test_login = self.test_login(postdata)
@@ -775,7 +973,11 @@ class house4post:
                 detail = 'Successfully edited'"""
         try:
             self.delete_post(data)
-            success, detail, post_url, post_id = self.create_post(data, to_edit=1)
+            edit_result = self.create_post(data)
+            success = edit_result["success"]
+            detail = edit_result["detail"]
+            post_url = edit_result["post_url"]
+            post_id = edit_result["post_id"]
             detail = "Successfully edited"
         except:
             success = "false"
