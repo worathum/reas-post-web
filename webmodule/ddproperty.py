@@ -797,10 +797,10 @@ class ddproperty():
                 except:
                     pass
                 try:
+                    WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "form-field-region")))
+                except:
                     WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'propertyTypeSelect'))).click()
                     time.sleep(0.2)
-                except:
-                    pass
                 #self.firefox.save_screenshot("debug_response/newp3.png")
 
                 # province district subdistrict
