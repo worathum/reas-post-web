@@ -10,8 +10,6 @@ from bs4 import BeautifulSoup
 from .lib_httprequest import *
 from .lib_utils import *
 
-httprequestObj = lib_httprequest()
-
 
 class house4post:
     def __init__(self):
@@ -30,7 +28,7 @@ class house4post:
 
     def logout_user(self):
         url = "https://www.house4post.com/logout_member"
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     """
     def register_user(self, data):
@@ -71,7 +69,7 @@ class house4post:
             detail = "Empty credentials"
         if success == "true":
             url = "https://www.house4post.com/signup_member.php"
-            req = httprequestObj.http_post(url, data=postdata, headers=headers)
+            req = self.session.http_post(url, data=postdata, headers=headers)
             txt = str(req.text)
             if txt.find("สมัครสมาชิกเรียบร้อยแล้ว") == -1:
                 success = "false"
@@ -134,7 +132,7 @@ class house4post:
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
         }
-        response = httprequestObj.http_post(url, data=payload, headers=headers)
+        response = self.session.http_post(url, data=payload, headers=headers)
 
         if "สมัครสมาชิกเรียบร้อยแล้ว" in response.text:
             result["success"] = True
@@ -166,7 +164,7 @@ class house4post:
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
         }
-        response = httprequestObj.http_post(url, data=payload, headers=headers)
+        response = self.session.http_post(url, data=payload, headers=headers)
 
         if "Username หรือ Password ไม่ถูกต้อง" in response.text:
             result["detail"] = "User not registered yet"
@@ -201,7 +199,7 @@ class house4post:
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
         }
         try:
-            response = httprequestObj.http_post(url, data=payload, headers=headers)
+            response = self.session.http_post(url, data=payload, headers=headers)
         except Exception as e:
             result["detail"] = f"Some thing went wrong when post: {e}"
             return result
@@ -226,10 +224,10 @@ class house4post:
 
         try:
             img_url = f"https://www.house4post.com/add_img.php?id={post_id}"
-            httprequestObj.http_get(img_url)
+            self.session.http_get(img_url)
             for img in postdata["post_images"][:6]:
                 with open(getcwd() + "/" + img, "rb") as r:
-                    response = httprequestObj.http_post(
+                    response = self.session.http_post(
                         "https://www.house4post.com/ajax_img.php",
                         data=None,
                         files={"photoimg": r},
@@ -333,7 +331,7 @@ class house4post:
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
         }
-        response = httprequestObj.http_get_with_headers(
+        response = self.session.http_get_with_headers(
             "https://www.house4post.com/add_property", headers=headers
         )
         soup = BeautifulSoup(response.content, "html.parser")
@@ -347,7 +345,7 @@ class house4post:
         url = (
             f"https://www.house4post.com/getaddress.php?ID={province_id}&TYPE=District"
         )
-        response = httprequestObj.http_get_with_headers(url, headers=headers)
+        response = self.session.http_get_with_headers(url, headers=headers)
         district_json: List[Dict[str, str]] = json.loads(response.content)
         district_id = int(district_json[0]["amphur_id"])
         for dist in district_json:
@@ -355,7 +353,7 @@ class house4post:
                 district_id = int(dist["amphur_id"])
 
         url = f"https://www.house4post.com/getaddress.php?ID={district_id}&TYPE=Subdistrict"
-        response = httprequestObj.http_get_with_headers(url, headers=headers)
+        response = self.session.http_get_with_headers(url, headers=headers)
         subdistrict_json: List[Dict[str, str]] = json.loads(response.content)
         subdistrict_id = int(subdistrict_json[0]["district_id"])
         for subdist in subdistrict_json:
@@ -385,7 +383,7 @@ class house4post:
         url = (
             f"https://www.house4post.com/maneg_property.php?delete={result['post_id']}"
         )
-        response = httprequestObj.http_get_with_headers(url)
+        response = self.session.http_get_with_headers(url)
 
         if "ลบรายการที่เลือกเรียบร้อยแล้ว" in response.text:
             result["detail"] = "Successfully deleted"
@@ -421,7 +419,7 @@ class house4post:
 
         page = count(0)
         while True:
-            response = httprequestObj.http_get(
+            response = self.session.http_get(
                 f"https://www.house4post.com//maneg_property.php?&page={next(page)}"
             )
             if response.status_code != 200:
@@ -496,7 +494,7 @@ class house4post:
         }
         url = "https://www.house4post.com/maneg_property.php"
         valid_ids = []
-        req = httprequestObj.http_get_with_headers(url, headers=headers)
+        req = self.session.http_get_with_headers(url, headers=headers)
         soup = BeautifulSoup(req.text, "html.parser")
         total_pages = 1
         if soup.find("ul", {"class": "pagination"}) != None:
@@ -505,7 +503,7 @@ class house4post:
                 total_pages -= 1
         for i in range(total_pages):
             url = "https://www.house4post.com/maneg_property.php?&page=" + str(i)
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
             soup = BeautifulSoup(req.text, "html.parser")
             posts = (
                 soup.find("table", {"class": "table table-striped"})
@@ -529,7 +527,7 @@ class house4post:
             url = "https://www.house4post.com/maneg_property.php?refresh=" + str(
                 post_id
             )
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
             txt = req.text
             if txt.find(" เลื่อนประกาศเรียบร้อยแล้ว") == -1:
                 success = "false"
