@@ -18,13 +18,13 @@ class house4post:
         except ImportError:
             configs = {}
 
-        self.encoding = "utf-8"
-        self.imgtmp = "imgtmp"
-        self.debug = 0
-        self.debugresdata = 0
+        self.website_name = "house4post"
+
         self.session = lib_httprequest()
         self.parser = "html.parser"
-        self.website_name = "house4post"
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
+        }
 
     def logout_user(self):
         url = "https://www.house4post.com/logout_member"
@@ -69,10 +69,7 @@ class house4post:
             return result
 
         url = "https://www.house4post.com/signup_member.php"
-        headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
-        }
-        response = self.session.http_post(url, data=payload, headers=headers)
+        response = self.session.http_post(url, data=payload, headers=self.headers)
 
         if "สมัครสมาชิกเรียบร้อยแล้ว" in response.text:
             result["success"] = True
@@ -101,10 +98,7 @@ class house4post:
         }
 
         url = "https://www.house4post.com/login.php"
-        headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
-        }
-        response = self.session.http_post(url, data=payload, headers=headers)
+        response = self.session.http_post(url, data=payload, headers=self.headers)
 
         if "Username หรือ Password ไม่ถูกต้อง" in response.text:
             result["detail"] = "User not registered yet"
@@ -135,15 +129,12 @@ class house4post:
         payload = self.prepare_postdata(postdata)
 
         url = "https://www.house4post.com/add_property.php"
-        headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
-        }
         try:
-            response = self.session.http_post(url, data=payload, headers=headers)
+            response = self.session.http_post(url, data=payload, headers=self.headers)
         except Exception as e:
             result["detail"] = f"Some thing went wrong when post: {e}"
             return result
-        soup = BeautifulSoup(response.content, "html.parser")
+        soup = BeautifulSoup(response.content, self.parser)
 
         try:
             post_id = soup.find(class_="well").meta["content"].split("=")[-1]  # type: ignore
@@ -268,13 +259,10 @@ class house4post:
     def _get_address_id(
         self, province: str, district: str, subdistrict: str
     ) -> Tuple[int, int, int]:
-        headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
-        }
         response = self.session.http_get_with_headers(
-            "https://www.house4post.com/add_property", headers=headers
+            "https://www.house4post.com/add_property", headers=self.headers
         )
-        soup = BeautifulSoup(response.content, "html.parser")
+        soup = BeautifulSoup(response.content, self.parser)
         options = soup.find("select", {"name": "Province"}).find_all("option")  # type: ignore
         province_id = int(options[0]["value"] or 0)  # type: ignore
         for opt in options:
@@ -285,7 +273,7 @@ class house4post:
         url = (
             f"https://www.house4post.com/getaddress.php?ID={province_id}&TYPE=District"
         )
-        response = self.session.http_get_with_headers(url, headers=headers)
+        response = self.session.http_get_with_headers(url, headers=self.headers)
         district_json: List[Dict[str, str]] = json.loads(response.content)
         district_id = int(district_json[0]["amphur_id"])
         for dist in district_json:
@@ -293,7 +281,7 @@ class house4post:
                 district_id = int(dist["amphur_id"])
 
         url = f"https://www.house4post.com/getaddress.php?ID={district_id}&TYPE=Subdistrict"
-        response = self.session.http_get_with_headers(url, headers=headers)
+        response = self.session.http_get_with_headers(url, headers=self.headers)
         subdistrict_json: List[Dict[str, str]] = json.loads(response.content)
         subdistrict_id = int(subdistrict_json[0]["district_id"])
         for subdist in subdistrict_json:
@@ -462,7 +450,7 @@ class house4post:
             current_page = next(page)
             url = f"https://www.house4post.com/maneg_property.php?&page={current_page}"
             response = self.session.http_get(url)
-            soup = BeautifulSoup(response.content, "html.parser")
+            soup = BeautifulSoup(response.content, self.parser)
             if soup.find("ul", {"class": "pagination"}):
                 total_page = (
                     len(soup.find("ul", {"class": "pagination"}).find_all("li")) - 1  # type: ignore
