@@ -24,6 +24,7 @@ class house4post:
         self.imgtmp = "imgtmp"
         self.debug = 0
         self.debugresdata = 0
+        self.session = lib_httprequest()
         self.parser = "html.parser"
         self.website_name = "house4post"
 
@@ -450,93 +451,36 @@ class house4post:
 
     @serialize_dict
     @timeit_to_dict()
-    def edit_post(self, data):
-        result = self.test_login(data)
-        success = result["success"]
-        detail = result["detail"]
-        post_url = ""
-        post_id = data["post_id"]
-
-        """if success == 'true':
-            post_found = False
-            page_num = 0
-            flag = True
-            while flag:
-                response = httprequestObj.http_get('https://www.house4post.com//maneg_property.php?&page='+str(page_num))
-                if response.status_code==200:
-                    soup = BeautifulSoup(response.text, features=self.parser)
-                    posts_element = soup.find(class_='well')             
-                    
-                    if posts_element and posts_element.find('tbody'): 
-                        posts = posts_element.find('tbody').find_all('tr')
-                        if len(posts)<10:
-                            flag = False
-                        for post in posts:
-                            id_link = post.find_all('td')[-1].a
-                            id = id_link.get('href').split("id=")[-1]
-                            if id==post_id:
-                                post_found = True
-                                break
-                    else:
-                        break
-                page_num += 1
-
-            # headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
-            # url = 'https://www.house4post.com/maneg_property.php'
-            # valid_ids = []
-            # req = httprequestObj.http_get_with_headers(url, headers=headers)
-            # soup = BeautifulSoup(req.text, 'html.parser')
-            # total_pages = 1
-            # if soup.find('ul', {'class': 'pagination'}) != None:
-            #     total_pages = len(soup.find('ul', {'class': 'pagination'}).findAll('li'))
-            #     if total_pages > 0:
-            #         total_pages -= 1
-            # for i in range(total_pages):
-            #     url = 'https://www.house4post.com/maneg_property.php?&page=' + str(i)
-            #     req = httprequestObj.http_get_with_headers(url, headers=headers)
-            #     soup = BeautifulSoup(req.text, 'html.parser')
-            #     posts = soup.find('table', {'class': 'table table-striped'}).find('tbody').findAll('tr')
-            #     for post in posts:
-            #         id = ''
-            #         a = str(post.find('a')['href'])
-            #         print(a)
-            #         ind = a.find('-') + 1
-            #         while a[ind] != '-':
-            #             id += a[ind]
-            #             ind += 1
-
-            #         valid_ids.append(id)
-
-            # print(valid_ids)
-            if not post_found:
-                success = 'false'
-                detail = 'No post found with given id'
-            else:
-                self.delete_post(data)
-                success, detail, post_url, post_id = self.create_post(data, to_edit=1)
-                detail = 'Successfully edited'"""
-        try:
-            self.delete_post(data)
-            edit_result = self.create_post(data)
-            success = edit_result["success"]
-            detail = edit_result["detail"]
-            post_url = edit_result["post_url"]
-            post_id = edit_result["post_id"]
-            detail = "Successfully edited"
-        except:
-            success = "false"
-            detail = "No post found with given id"
+    def edit_post(self, postdata: Dict[str, str]) -> Dict[str, str]:
+        login_info = self.test_login(postdata)
 
         result = {
-            "success": success,
-            "post_url": post_url,
-            "post_id": post_id,
-            "account_type": "null",
-            "ds_id": data["ds_id"],
-            "log_id": data["log_id"],
-            "detail": detail,
             "websitename": self.website_name,
+            "success": False,
+            "post_url": "",
+            "post_id": "",
+            "account_type": "null",
+            "ds_id": postdata["ds_id"],
+            "log_id": postdata["log_id"],
+            "detail": "",
         }
+
+        if login_info["success"] == "false":
+            result["detail"] = "Cannot Login"
+            return result
+
+        try:
+            self.delete_post(postdata)
+            edit_result = self.create_post(postdata)
+            result["success"] = edit_result["success"]
+            result["detail"] = edit_result["detail"]
+            result["post_url"] = edit_result["post_url"]
+            result["post_id"] = edit_result["post_id"]
+            result["detail"] = "Successfully edited"
+        except:
+            result["success"] = False
+            result["detail"] = "No post found with given id"
+
         return result
 
     @serialize_dict
