@@ -1,15 +1,14 @@
 # SEND username for login, not email
-import datetime
 import json
-import random
 import re
 from itertools import count
+from os import getcwd
 from typing import Dict, List, Tuple
 
-import requests
 from bs4 import BeautifulSoup
 
 from .lib_httprequest import *
+from .lib_utils import *
 
 httprequestObj = lib_httprequest()
 
@@ -92,52 +91,49 @@ class house4post:
         return result
     """
 
-    def register_user(self, data: Dict[str, str]) -> Dict[str, str]:
-        start_time = datetime.datetime.utcnow()
+    @serialize_dict
+    @timeit_to_dict()
+    def register_user(self, postdata: Dict[str, str]) -> Dict[str, str]:
         self.logout_user()
-        end_time = datetime.datetime.utcnow()
 
         result = {
             "websitename": self.website_name,
             "success": False,
-            "start_time": start_time,
-            "end_time": end_time,
-            "usage_time": end_time - start_time,
             "detail": "",
-            "ds_id": data["ds_id"],
+            "ds_id": postdata["ds_id"],
         }
 
-        postdata = {
-            "username": data["user"].split("@")[0],
-            "pass": data["pass"],
-            "conpass": data["pass"],
-            "email": data["user"],
-            "name": data["name_th"],
-            "lastname": data["surname_th"],
-            "phone": data["tel"],
+        payload = {
+            "username": postdata["user"].split("@")[0],
+            "pass": postdata["pass"],
+            "conpass": postdata["pass"],
+            "email": postdata["user"],
+            "name": postdata["name_th"],
+            "lastname": postdata["surname_th"],
+            "phone": postdata["tel"],
             "address": "พญาไท,กรุงเทพ",
             "submit": "",
         }
 
         if not all(
             [
-                postdata.get(key)
+                payload.get(key)
                 for key in ["username", "pass", "name", "lastname", "phone"]
             ]
         ):
             result["detail"] = "Empty credentials"
-            return self.dict_serializer(result)
+            return result
 
         EMAIL_REGEX = r"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*$"
         if not re.search(EMAIL_REGEX, result["email"]):
             result["detail"] = "Invalid email"
-            return self.dict_serializer(result)
+            return result
 
         url = "https://www.house4post.com/signup_member.php"
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
         }
-        response = httprequestObj.http_post(url, data=postdata, headers=headers)
+        response = httprequestObj.http_post(url, data=payload, headers=headers)
 
         if "สมัครสมาชิกเรียบร้อยแล้ว" in response.text:
             result["success"] = True
@@ -145,473 +141,156 @@ class house4post:
         else:
             result["detail"] = "Already a user"
 
-        end_time = datetime.datetime.utcnow()
+        return result
 
-        return self.dict_serializer(result)
-
-    def test_login(self, data):
-        start_time = datetime.datetime.utcnow()
+    @serialize_dict
+    @timeit_to_dict()
+    def test_login(self, postdata: Dict[str, str]) -> Dict[str, str]:
         self.logout_user()
 
+        result = {
+            "websitename": self.website_name,
+            "success": False,
+            "ds_id": postdata["ds_id"],
+            "detail": "Cannot Login",
+        }
+
+        payload = {
+            "log_u": postdata["user"].split("@")[0],
+            "log_p": postdata["pass"],
+            "submit": "Login",
+        }
+
+        url = "https://www.house4post.com/login.php"
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
         }
-        postdata = {"log_u": data["user"], "log_p": data["pass"], "submit": "Login"}
-
-        url = "https://www.house4post.com/login.php"
-        response = httprequestObj.http_post(url, data=postdata, headers=headers)
+        response = httprequestObj.http_post(url, data=payload, headers=headers)
 
         if "Username หรือ Password ไม่ถูกต้อง" in response.text:
-            success = False
-            detail = "User not registered yet"
+            result["detail"] = "User not registered yet"
         else:
-            success = True
-            detail = "Successfully login"
+            result["success"] = True
+            result["detail"] = "Successfully login"
 
-        end_time = datetime.datetime.utcnow()
+        return result
+
+    @serialize_dict
+    @timeit_to_dict()
+    def create_post(self, postdata: Dict[str, str]) -> Dict[str, str]:
+        login_result = self.test_login(postdata)
 
         result = {
             "websitename": self.website_name,
-            "success": success,
-            "start_time": start_time,
-            "end_time": end_time,
-            "usage_time": end_time - start_time,
-            "ds_id": data["ds_id"],
-            "detail": detail,
-        }
-        return self.dict_serializer(result)
-
-    """
-    def create_post(self, data, to_edit=0):
-        start_time = datetime.datetime.utcnow()
-        result = self.test_login(data)
-        success = result["success"]
-        detail = result["detail"]
-        post_url = ""
-        post_id = ""
-        if success == "true":
-            postdata = {}
-            postdata["name"] = data["post_title_th"]
-            postdata["project"] = ""
-            if "project_name" in data:
-                postdata["project"] = data["project_name"]
-            if "web_project_name" in data and data["web_project_name"] != None:
-                if data["web_project_name"] != "":
-                    postdata["project"] = data["web_project_name"]
-            if "project" in postdata and postdata["project"] == "":
-                postdata["project"] = data["post_title_th"]
-            else:
-                postdata["web_project_name"] = data["post_title_th"]
-            postdata["cate"] = "2"
-            if data["listing_type"] == "ขาย":
-                postdata["cate"] = "1"
-            headers = {
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
-            }
-            ids = {
-                "คอนโด": "1",
-                "บ้านเดี่ยว": "2",
-                "บ้านแฝด": "3",
-                "ทาวน์เฮ้าส์": "4",
-                "ตึกแถว-อาคารพาณิชย์": "5",
-                "ที่ดิน": "6",
-                "อพาร์ทเมนท์": "7",
-                "โรงแรม": "8",
-                "ออฟฟิศสำนักงาน": "9",
-                "โกดัง-โรงงาน": "10",
-                "โรงงาน": "25",
-            }
-            property_tp = {
-                "1": "1",
-                "2": "5",
-                "3": "15",
-                "4": "3",
-                "5": "2",
-                "6": "4",
-                "7": "7",
-                "8": "13",
-                "9": "9",
-                "10": "8",
-                "25": "10",
-            }
-            if str(data["property_type"]) in ids:
-                postdata["section"] = property_tp[ids[str(data["property_type"])]]
-            else:
-                postdata["section"] = property_tp[str(data["property_type"])]
-            postdata["number"] = ""
-            postdata["soi"] = data["addr_soi"]
-            postdata["road"] = data["addr_road"]
-            postdata["Province"] = ""
-            req = httprequestObj.http_get_with_headers(
-                "https://www.house4post.com/add_property", headers=headers
-            )
-            soup = BeautifulSoup(req.text, "html.parser")
-            options = soup.find("select", {"name": "Province"}).findAll("option")
-            count = 0
-            provinces = []
-            ids = []
-            for opt in options:
-                if count > 0:
-                    ids.append(opt["value"])
-                    provinces.append(opt.text)
-                count += 1
-
-            for i in range(len(provinces)):
-                if provinces[i] == data["addr_province"]:
-                    postdata["Province"] = ids[i]
-                    break
-
-            if postdata["Province"] == "":
-                for i in range(len(provinces)):
-                    if provinces[i].find(data["addr_province"]) != -1:
-                        postdata["Province"] = ids[i]
-                        break
-
-            if postdata["Province"] == "":
-                postdata["Province"] = ids[0]
-            postdata["District"] = ""
-            url = (
-                "https://www.house4post.com/getaddress.php?ID="
-                + str(postdata["Province"])
-                + "&TYPE=District"
-            )
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
-            txt = str(req.text)
-            districts = []
-            ids = []
-            while txt.find("amphur_id") != -1:
-                ind = txt.find("amphur_id")
-                c = 0
-                while c != 1 or txt[ind] != '"':
-                    if txt[ind] == '"':
-                        c += 1
-                    ind += 1
-
-                id = ""
-                ind += 1
-                while txt[ind] != '"':
-                    id += txt[ind]
-                    ind += 1
-
-                ids.append(id)
-                txt = txt[ind:]
-                ind = txt.find("amphur_name")
-                c = 0
-                while c != 1 or txt[ind] != '"':
-                    if txt[ind] == '"':
-                        c += 1
-                    ind += 1
-
-                dist = ""
-                ind += 1
-                while txt[ind] != '"':
-                    dist += txt[ind]
-                    ind += 1
-
-                districts.append(dist)
-                txt = txt[ind:]
-
-            for i in range(len(districts)):
-                if districts[i] == data["addr_district"]:
-                    postdata["District"] = ids[i]
-                    break
-
-            if postdata["District"] == "":
-                for i in range(len(districts)):
-                    if districts[i].find(data["addr_district"]) != -1:
-                        postdata["District"] = ids[i]
-                        break
-
-            if postdata["District"] == "":
-                postdata["District"] = ids[0]
-            postdata["Subdistrict"] = ""
-            url = (
-                "https://www.house4post.com/getaddress.php?ID="
-                + str(postdata["District"])
-                + "&TYPE=Subdistrict"
-            )
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
-            txt = str(req.text)
-            subdistricts = []
-            ids = []
-            while txt.find("district_id") != -1:
-                ind = txt.find("district_id")
-                c = 0
-                while c != 1 or txt[ind] != '"':
-                    if txt[ind] == '"':
-                        c += 1
-                    ind += 1
-
-                id = ""
-                ind += 1
-                while txt[ind] != '"':
-                    id += txt[ind]
-                    ind += 1
-
-                ids.append(id)
-                txt = txt[ind:]
-                ind = txt.find("district_name")
-                c = 0
-                while c != 1 or txt[ind] != '"':
-                    if txt[ind] == '"':
-                        c += 1
-                    ind += 1
-
-                subdist = ""
-                ind += 1
-                while txt[ind] != '"':
-                    subdist += txt[ind]
-                    ind += 1
-
-                subdistricts.append(subdist)
-                txt = txt[ind:]
-
-            for i in range(len(subdistricts)):
-                if subdistricts[i] == data["addr_sub_district"]:
-                    postdata["Subdistrict"] = ids[i]
-                    break
-
-            if postdata["Subdistrict"] == "":
-                for i in range(len(subdistricts)):
-                    if subdistricts[i].find(data["addr_sub_district"]) != -1:
-                        postdata["Subdistrict"] = ids[i]
-                        break
-
-            if postdata["Subdistrict"] == "":
-                postdata["Subdistrict"] = ids[0]
-            postdata["price"] = str(data["price_baht"])
-            postdata["area"] = ""
-            if data["land_size_rai"] == "" or data["land_size_rai"] == None:
-                data["land_size_rai"] = "0"
-            else:
-                postdata["area"] += str(str(data["land_size_rai"]) + "ไร่")
-            if data["land_size_ngan"] == "" or data["land_size_ngan"] == None:
-                data["land_size_ngan"] = "0"
-            else:
-                postdata["area"] += str(str(data["land_size_ngan"]) + "งาน")
-            if data["land_size_wa"] == "" or data["land_size_wa"] == None:
-                data["land_size_wa"] = "0"
-            else:
-                postdata["area"] += str(str(data["land_size_wa"]) + "ตรว")
-            if data["floor_area"] == "" or data["floor_area"] == None:
-                data["floor_area"] = "0"
-            else:
-                postdata["area"] += str(str(data["floor_area"]) + "ตรม")
-
-            # postdata['area'] = str( + str(data['land_size_ngan'])+'งาน' + str(data['land_size_wa'])+'ตรว' + str(data['floor_area'])+'ตรม')
-            postdata["layer"] = str(data["floor_total"])
-            postdata["room"] = str(data["bed_room"])
-            postdata["toilet"] = str(data["bath_room"])
-            postdata["detail"] = str(data["post_description_th"])
-            postdata["Submit"] = "Submit"
-
-            try:
-                url = "https://www.house4post.com/add_property.php"
-                req = httprequestObj.http_post(url, data=postdata, headers=headers)
-                txt = req.text
-
-                if txt.find(".php?id=") == -1:
-                    success = "false"
-                    soup = BeautifulSoup(txt, features=self.parser)
-                    alert = soup.find(class_="alert-danger")
-                    detail = "Network error"
-                    if alert:
-                        detail = alert.getText()
-                else:
-                    ind = txt.find(".php?id=") + 8
-                    while txt[ind] != ">":
-                        post_id += txt[ind]
-                        ind += 1
-
-                    post_url = (
-                        "https://www.house4post.com/idasungha-"
-                        + str(post_id)
-                        + "-"
-                        + data["post_title_th"]
-                    )
-                    post_url = post_url.replace(" ", "-")
-                    imgurl = "https://www.house4post.com/add_img.php?id={}".format(
-                        post_id
-                    )
-                    httprequestObj.http_get(imgurl)
-                    if "post_images" in data:
-                        if len(data["post_images"]) > 0:
-                            pass
-                    else:
-                        data["post_images"] = ["./imgtmp/default/white.jpg"]
-                    files = {}
-                    temp = 1
-                    if len(data["post_images"]) <= 6:
-                        for i in range(len(data["post_images"])):
-                            r = open(os.getcwd() + "/" + data["post_images"][i], "rb")
-                            files["photoimg"] = r
-                            response = httprequestObj.http_post(
-                                "https://www.house4post.com/ajax_img.php",
-                                data=None,
-                                files=files,
-                            )
-                            time.sleep(3)
-
-                    else:
-                        for i in range(len(data["post_images"][:6])):
-                            r = open(os.getcwd() + "/" + data["post_images"][i], "rb")
-                            files["photoimg"] = r
-                            response = httprequestObj.http_post(
-                                "https://www.house4post.com/ajax_img.php",
-                                data=None,
-                                files=files,
-                            )
-                            time.sleep(3)
-
-                    success = "true"
-                    detail = "Successful post"
-            except:
-                success = "false"
-                detail = "Something went wrong."
-
-        if to_edit == 1:
-            return (success, detail, post_url, post_id)
-        else:
-            end_time = datetime.datetime.utcnow()
-            result = {
-                "success": success,
-                "usage_time": str(end_time - start_time),
-                "start_time": str(start_time),
-                "end_time": str(end_time),
-                "post_url": post_url,
-                "post_id": post_id,
-                "account_type": "null",
-                "ds_id": data["ds_id"],
-                "detail": detail,
-                "websitename": "house4post",
-            }
-            return result
-    """
-
-    def create_post(self, data: Dict[str, str]) -> Dict[str, str]:
-        start_time = datetime.datetime.utcnow()
-        login_result = self.test_login(data)
-        end_time = datetime.datetime.utcnow()
-
-        result = {
             "success": False,
-            "usage_time": end_time - start_time,
-            "start_time": start_time,
-            "end_time": end_time,
             "post_url": "",
             "post_id": "",
             "account_type": "null",
-            "ds_id": data["ds_id"],
+            "ds_id": postdata["ds_id"],
             "detail": login_result["detail"],
-            "websitename": self.website_name,
         }
 
         if login_result["success"] == "false":
-            return self.dict_serializer(result)
+            return result
 
-        postdata = self.prepare_postdata(data)
+        payload = self.prepare_postdata(postdata)
+
+        url = "https://www.house4post.com/add_property.php"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
+        }
+        try:
+            response = httprequestObj.http_post(url, data=payload, headers=headers)
+        except Exception as e:
+            result["detail"] = f"Some thing went wrong when post: {e}"
+            return result
+        soup = BeautifulSoup(response.content, "html.parser")
 
         try:
-            url = "https://www.house4post.com/add_property.php"
-            headers = {
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
-            }
-            response = httprequestObj.http_post(url, data=postdata, headers=headers)
-            soup = BeautifulSoup(response.content, "html.parser")
+            post_id = soup.find(class_="well").meta["content"].split("=")[-1]  # type: ignore
+        except (AttributeError, KeyError):
+            result["success"] = False
+            alert = soup.find(class_="alert-danger")
+            if alert:
+                result["detail"] = alert.get_text(strip=True)  # type: ignore
+            else:
+                result["detail"] = "Network error"
+            return result
 
-            try:
-                post_id = soup.find(class_="well").meta["content"].split("=")[-1]  # type: ignore
-            except (AttributeError, KeyError):
-                result["success"] = False
-                alert = soup.find(class_="alert-danger")
-                if alert:
-                    result["detail"] = alert.get_text(strip=True)  # type: ignore
-                else:
-                    result["detail"] = "Network error"
-                # TODO using decorator to add start_time end_time
-                end_time = datetime.datetime.utcnow()
-                result["end_time"] = end_time
-                result["usage_time"] = end_time - start_time
-                # TODO Maybe use decorator to serialize dict.values() to str
-                return self.dict_serializer(result)
+        post_url = f"https://www.house4post.com/idasungha-{post_id}-{postdata['post_title_th']}"
+        post_url = post_url.replace(" ", "-")
 
-            post_url = f"https://www.house4post.com/idasungha-{post_id}-{data['post_title_th']}"
-            post_url = post_url.replace(" ", "-")
+        if not postdata.get("post_images"):
+            postdata["post_images"] = ["./imgtmp/default/white.jpg"]  # type: ignore
 
+        try:
             img_url = f"https://www.house4post.com/add_img.php?id={post_id}"
             httprequestObj.http_get(img_url)
-
-            if not data.get("post_images"):
-                data["post_images"] = ["./imgtmp/default/white.jpg"]  # type: ignore
-
-            for img in data["post_images"][:6]:
-                with open(os.getcwd() + "/" + img, "rb") as r:  # type: ignore
+            for img in postdata["post_images"][:6]:
+                with open(getcwd() + "/" + img, "rb") as r:
                     response = httprequestObj.http_post(
                         "https://www.house4post.com/ajax_img.php",
                         data=None,
                         files={"photoimg": r},
                     )
                     time.sleep(3)
+        except Exception as e:
+            result["detail"] = f"Some thing went wrong when upload img: {e}"
+            return result
 
-            result["post_url"] = post_url
-            result["post_id"] = post_id
-            result["success"] = True
-            result["detail"] = "Successful post"
-        except:
-            result["success"] = False
-            result["detail"] = "Something went wrong."
+        result["post_url"] = post_url
+        result["post_id"] = post_id
+        result["detail"] = "Successful post"
+        result["success"] = True
 
-        end_time = datetime.datetime.utcnow()
-        result["end_time"] = end_time
-        result["usage_time"] = end_time - start_time
+        return result
 
-        return self.dict_serializer(result)
-
-    def prepare_postdata(self, data: Dict[str, str]) -> Dict[str, str]:
+    def prepare_postdata(self, postdata: Dict[str, str]) -> Dict[str, str]:
         try:
-            if data.get("web_project_name", ""):
-                project = data["web_project_name"]
+            if postdata.get("web_project_name", ""):
+                project = postdata["web_project_name"]
             else:
-                project = data["project_name"]
+                project = postdata["project_name"]
         except KeyError:
-            project = data["post_title_th"]
+            project = postdata["post_title_th"]
 
         province_id, district_id, subdistrict_id = self._get_address_id(
-            data["addr_province"], data["addr_district"], data["addr_sub_district"]
+            postdata["addr_province"],
+            postdata["addr_district"],
+            postdata["addr_sub_district"],
         )
 
         area = ""
-        if data["land_size_rai"]:
-            area += f"{data['land_size_rai']} ไร่"
-        if data["land_size_ngan"]:
-            area += f"{data['land_size_ngan']} งาน"
-        if data["land_size_wa"]:
-            area += f"{data['land_size_wa']} ตรว"
-        if data["floor_area"]:
-            area += f"{data['floor_area']} ตรม"
+        if postdata.get("land_size_rai"):
+            area += f"{postdata['land_size_rai']} ไร่"
+        if postdata.get("land_size_ngan"):
+            area += f"{postdata['land_size_ngan']} งาน"
+        if postdata.get("land_size_wa"):
+            area += f"{postdata['land_size_wa']} ตรว"
+        if postdata.get("floor_area"):
+            area += f"{postdata['floor_area']} ตรม"
 
-        postdata = {
-            "name": data["post_title_th"],
+        payload = {
+            "name": postdata["post_title_th"],
             "project": project,
-            # "web_project_name": data["post_title_th"],
+            "cate": "1" if postdata["listing_type"] == "ขาย" else "2",
+            "section": self._get_postdata_section(postdata["property_type"]),
             "number": "",
-            "cate": "1" if data["listing_type"] == "ขาย" else "2",
-            "section": self._get_postdata_section(data["property_type"]),
-            "soi": data["addr_soi"],
-            "road": data["addr_road"],
+            "soi": postdata.get("addr_soi", ""),
+            "road": postdata.get("addr_road", ""),
             "Province": province_id,
             "District": district_id,
             "Subdistrict": subdistrict_id,
-            "price": data["price_baht"],
+            "price": postdata["price_baht"],
             "area": area,
-            "layer": data["floor_total"],
-            "room": data["bed_room"],
-            "toilet": data["bath_room"],
-            "detail": data["post_description_th"],
+            "layer": postdata.get("floor_total", ""),
+            "room": postdata.get("bed_room", ""),
+            "toilet": postdata.get("bath_room", ""),
+            "detail": postdata.get("post_description_th", ""),
             "Submit": "Submit",
         }
 
-        return self.dict_serializer(postdata)
+        return payload
 
     def _get_postdata_section(self, property_type: str) -> str:
         if not isinstance(property_type, str):
@@ -658,7 +337,7 @@ class house4post:
         )
         soup = BeautifulSoup(response.content, "html.parser")
         options = soup.find("select", {"name": "Province"}).find_all("option")  # type: ignore
-        province_id = int(options[0]["values"])  # type: ignore
+        province_id = int(options[0]["value"] or 0)  # type: ignore
         for opt in options:
             if province.strip() in opt.get_text(strip=True):  # type: ignore
                 province_id = int(opt["value"])  # type: ignore
@@ -684,11 +363,11 @@ class house4post:
 
         return province_id, district_id, subdistrict_id
 
+    @serialize_dict
+    @timeit_to_dict()
     def delete_post(self, postdata):
         test_login = self.test_login(postdata)
         success = test_login["success"]
-        start_time = datetime.datetime.utcnow()
-        end_time = datetime.datetime.utcnow()
         post_id = postdata["post_id"]
         detail = test_login["detail"]
 
@@ -758,12 +437,9 @@ class house4post:
                 else:
                     success = "true"
                     detail = "Successfully deleted"
-        end_time = datetime.datetime.utcnow()
+
         result = {
             "success": success,
-            "usage_time": str(end_time - start_time),
-            "start_time": str(start_time),
-            "end_time": str(end_time),
             "log_id": postdata["log_id"],
             "ds_id": postdata["ds_id"],
             "detail": detail,
@@ -841,20 +517,16 @@ class house4post:
         return result
     """
 
+    @serialize_dict
+    @timeit_to_dict()
     def search_post(self, postdata: Dict[str, str]) -> Dict[str, str]:
-        start_time = datetime.datetime.utcnow()
         login_info = self.test_login(postdata)
-        login_success = True if login_info["success"] == "true" else False
-        end_time = datetime.datetime.utcnow()
 
         result = {
-            "success": login_success,
-            "usage_time": end_time - start_time,
-            "start_time": start_time,
-            "end_time": end_time,
-            "detail": login_info["detail"],
             "websitename": self.website_name,
-            "account_type": None,
+            "success": False,
+            "detail": "No post found with given title",
+            "account_type": "null",
             "ds_id": postdata["ds_id"],
             "log_id": postdata["log_id"],
             "post_create_time": "",
@@ -865,11 +537,9 @@ class house4post:
             "post_found": False,
         }
 
-        if not login_success:
-            result["detail"] = "cannot login"
-            return self.dict_serializer(result)
-
-        result["detail"] = "No post found with given title"
+        if login_info["success"] == "false":
+            result["detail"] = "Cannot login"
+            return result
 
         page = count(0)
         while True:
@@ -899,14 +569,11 @@ class house4post:
             if len(posts) < 10 or result["post_found"]:
                 break
 
-        end_time = datetime.datetime.utcnow()
-        result["end_time"] = end_time
-        result["usage_time"] = end_time - start_time
+        return result
 
-        return self.dict_serializer(result)
-
+    @serialize_dict
+    @timeit_to_dict()
     def edit_post(self, data):
-        start_time = datetime.datetime.utcnow()
         result = self.test_login(data)
         success = result["success"]
         detail = result["detail"]
@@ -982,12 +649,9 @@ class house4post:
         except:
             success = "false"
             detail = "No post found with given id"
-        end_time = datetime.datetime.utcnow()
+
         result = {
             "success": success,
-            "usage_time": str(end_time - start_time),
-            "start_time": str(start_time),
-            "end_time": str(end_time),
             "post_url": post_url,
             "post_id": post_id,
             "account_type": "null",
@@ -998,8 +662,9 @@ class house4post:
         }
         return result
 
+    @serialize_dict
+    @timeit_to_dict()
     def boost_post(self, data):
-        start_time = datetime.datetime.utcnow()
         post_id = data["post_id"]
         log_id = data["log_id"]
         result = self.test_login(data)
@@ -1051,12 +716,8 @@ class house4post:
             else:
                 success = "true"
                 detail = "Successfully postponed"
-        end_time = datetime.datetime.utcnow()
         result = {
             "success": "true",
-            "usage_time": str(end_time - start_time),
-            "start_time": str(start_time),
-            "end_time": str(end_time),
             "detail": detail,
             "ds_id": data["ds_id"],
             "log_id": log_id,
@@ -1064,19 +725,3 @@ class house4post:
             "websitename": "house4post",
         }
         return result
-
-    def dict_serializer(self, dict_obj: dict) -> Dict[str, str]:
-        if not isinstance(dict_obj, dict):
-            raise TypeError("Not a Dict-like Object")
-
-        dict_return = {}
-        for key, value in dict_obj.items():
-            if isinstance(value, bool):
-                value = "true" if value else "false"
-            elif value is None:
-                pass
-            else:
-                value = str(value)
-            dict_return.update({str(key): value})
-
-        return dict_return
