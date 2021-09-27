@@ -30,66 +30,6 @@ class house4post:
         url = "https://www.house4post.com/logout_member"
         self.session.http_get(url)
 
-    """
-    def register_user(self, data):
-        self.logout_user()
-        start_time = datetime.datetime.utcnow()
-        headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
-        }
-        success = "true"
-        detail = ""
-        postdata = {}
-        postdata["username"] = data["user"].split("@")[0]
-        postdata["pass"] = postdata["conpass"] = data["pass"]
-        postdata["email"] = data["user"]
-        postdata["name"] = data["name_th"]
-        postdata["lastname"] = data["surname_th"]
-        postdata["phone"] = data["tel"]
-        postdata["address"] = "พญาไท,กรุงเทพ"
-        postdata["submit"] = ""
-        regex = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*$"
-        f1 = True
-        regex = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*$"
-        if re.search(regex, postdata["email"]):
-            f1 = True
-        else:
-            f1 = False
-        if f1 == False:
-            success = "false"
-            detail = "Invalid email"
-        if (
-            postdata["username"] == ""
-            or postdata["pass"] == ""
-            or postdata["name"] == ""
-            or postdata["lastname"] == ""
-            or postdata["phone"] == ""
-        ):
-            success = "false"
-            detail = "Empty credentials"
-        if success == "true":
-            url = "https://www.house4post.com/signup_member.php"
-            req = self.session.http_post(url, data=postdata, headers=headers)
-            txt = str(req.text)
-            if txt.find("สมัครสมาชิกเรียบร้อยแล้ว") == -1:
-                success = "false"
-                detail = "Already a user"
-            else:
-                success = "true"
-                detail = "Successfully Registered"
-        end_time = datetime.datetime.utcnow()
-        result = {
-            "websitename": "house4post",
-            "success": success,
-            "start_time": str(start_time),
-            "end_time": str(end_time),
-            "usage_time": str(end_time - start_time),
-            "detail": detail,
-            "ds_id": data["ds_id"],
-        }
-        return result
-    """
-
     @serialize_dict
     @timeit_to_dict()
     def register_user(self, postdata: Dict[str, str]) -> Dict[str, str]:
@@ -483,64 +423,65 @@ class house4post:
 
     @serialize_dict
     @timeit_to_dict()
-    def boost_post(self, data):
-        post_id = data["post_id"]
-        log_id = data["log_id"]
-        result = self.test_login(data)
-        success = result["success"]
-        detail = result["detail"]
-        headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36"
-        }
-        url = "https://www.house4post.com/maneg_property.php"
-        valid_ids = []
-        req = self.session.http_get_with_headers(url, headers=headers)
-        soup = BeautifulSoup(req.text, "html.parser")
-        total_pages = 1
-        if soup.find("ul", {"class": "pagination"}) != None:
-            total_pages = len(soup.find("ul", {"class": "pagination"}).findAll("li"))
-            if total_pages > 0:
-                total_pages -= 1
-        for i in range(total_pages):
-            url = "https://www.house4post.com/maneg_property.php?&page=" + str(i)
-            req = self.session.http_get_with_headers(url, headers=headers)
-            soup = BeautifulSoup(req.text, "html.parser")
-            posts = (
-                soup.find("table", {"class": "table table-striped"})
-                .find("tbody")
-                .findAll("tr")
-            )
-            for post in posts:
-                id = ""
-                a = str(post.find("a")["href"])
-                ind = a.find("-") + 1
-                while a[ind] != "-":
-                    id += a[ind]
-                    ind += 1
+    def boost_post(self, postdata: Dict[str, str]) -> Dict[str, str]:
+        login_info = self.test_login(postdata)
 
-                valid_ids.append(id)
-
-        if str(post_id) not in valid_ids:
-            success = "false"
-            detail = "Invalid id"
-        if success == "true":
-            url = "https://www.house4post.com/maneg_property.php?refresh=" + str(
-                post_id
-            )
-            req = self.session.http_get_with_headers(url, headers=headers)
-            txt = req.text
-            if txt.find(" เลื่อนประกาศเรียบร้อยแล้ว") == -1:
-                success = "false"
-                detail = "Postpone failed"
-            else:
-                success = "true"
-                detail = "Successfully postponed"
         result = {
-            "success": "true",
-            "detail": detail,
-            "ds_id": data["ds_id"],
-            "log_id": log_id,
-            "post_id": post_id,
-            "websitename": "house4post",
+            "websitename": self.website_name,
+            "success": False,
+            "detail": "",
+            "ds_id": postdata["ds_id"],
+            "log_id": postdata["log_id"],
+            "post_id": postdata["post_id"],
         }
+
+        if login_info["success"] == "false":
+            result["detail"] = "Cannot login"
+            return result
+
+        if not self.is_post_id_exist(int(postdata["post_id"])):
+            result["detail"] = "Post ID not found"
+            return result
+
+        url = (
+            f"https://www.house4post.com/maneg_property.php?refresh={result['post_id']}"
+        )
+        response = self.session.http_get(url)
+        if "เลื่อนประกาศเรียบร้อยแล้ว" in response.text:
+            result["detail"] = "Successfully postponed"
+            result["success"] = True
+        else:
+            result["detail"] = "Postpone failed"
+
         return result
+
+    def is_post_id_exist(self, post_id: int) -> bool:
+        is_found = False
+        page = count(0)
+        while True:
+            current_page = next(page)
+            url = f"https://www.house4post.com/maneg_property.php?&page={current_page}"
+            response = self.session.http_get(url)
+            soup = BeautifulSoup(response.content, "html.parser")
+            if soup.find("ul", {"class": "pagination"}):
+                total_page = (
+                    len(soup.find("ul", {"class": "pagination"}).find_all("li")) - 1  # type: ignore
+                )
+            else:
+                total_page = 0
+
+            try:
+                posts = soup.find("table", {"class": "table table-striped"}).tbody.find_all("tr")  # type: ignore
+            except AttributeError:
+                continue
+            for post in posts:
+                post_url = post.find("a")["href"]  # type: ignore
+                _post_id = re.findall(r"idasungha-(\d+)", post_url)[0]
+                if post_id == int(_post_id):
+                    is_found = True
+                    break  # for loop
+
+            if current_page >= total_page or is_found:
+                break
+
+        return is_found
