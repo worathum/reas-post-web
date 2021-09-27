@@ -366,156 +366,33 @@ class house4post:
     @serialize_dict
     @timeit_to_dict()
     def delete_post(self, postdata):
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        post_id = postdata["post_id"]
-        detail = test_login["detail"]
-
-        if success == "true":
-            post_found = True
-            page_num = 0
-            flag = True
-            """while flag:
-                response = httprequestObj.http_get('https://www.house4post.com//maneg_property.php?&page='+str(page_num))
-                if response.status_code==200:
-                    soup = BeautifulSoup(response.text, features=self.parser)
-                    posts_element = soup.find(class_='well')             
-                    
-                    if posts_element and posts_element.find('tbody'): 
-                        posts = posts_element.find('tbody').find_all('tr')
-                        if len(posts)<10:
-                            flag = False
-                        for post in posts:
-                            id_link = post.find_all('td')[-1].a
-                            id = id_link.get('href').split("id=")[-1]
-                            print(post_id, id, post_id==id)
-                            if id==post_id:
-                                post_found = True
-                                flag = False
-                                break
-                    else:
-                        break
-                page_num += 1"""
-
-            # headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
-            # url = 'https://www.house4post.com/maneg_property.php'
-            # valid_ids = []
-            # req = httprequestObj.http_get_with_headers(url, headers=headers)
-            # soup = BeautifulSoup(req.text, 'html.parser')
-            # total_pages = 1
-            # if soup.find('ul', {'class': 'pagination'}) != None:
-            #     total_pages = len(soup.find('ul', {'class': 'pagination'}).findAll('li'))
-            #     if total_pages > 0:
-            #         total_pages -= 1
-            # for i in range(total_pages):
-            #     url = 'https://www.house4post.com/maneg_property.php?&page=' + str(i)
-            #     req = httprequestObj.http_get_with_headers(url, headers=headers)
-            #     soup = BeautifulSoup(req.text, 'html.parser')
-            #     posts = soup.find('table', {'class': 'table table-striped'}).find('tbody').findAll('tr')
-            #     for post in posts:
-            #         id = ''
-            #         a = str(post.find('a')['href'])
-            #         ind = a.find('-') + 1
-            #         while a[ind] != '-':
-            #             id += a[ind]
-            #             ind += 1
-
-            #         valid_ids.append(id)
-
-            if not post_found:
-                success = "false"
-                detail = "Invalid id"
-            else:
-                url = "https://www.house4post.com/maneg_property.php?delete=" + str(
-                    post_id
-                )
-                req = httprequestObj.http_get_with_headers(url)
-                txt = req.text
-                if txt.find("ลบรายการที่เลือกเรียบร้อยแล้ว") == -1:
-                    success = "false"
-                    detail = "Network error"
-                else:
-                    success = "true"
-                    detail = "Successfully deleted"
+        login_info = self.test_login(postdata)
 
         result = {
-            "success": success,
+            "websitename": self.website_name,
+            "success": False,
+            "post_id": postdata["post_id"],
             "log_id": postdata["log_id"],
             "ds_id": postdata["ds_id"],
-            "detail": detail,
-            "post_id": str(post_id),
-            "websitename": "house4post",
+            "detail": "",
         }
-        return result
 
-    """
-    def search_post(self, postdata):
-        start_time = datetime.datetime.utcnow()
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        end_time = datetime.datetime.utcnow()
-        post_id = ""
-        post_url = ""
-        detail = test_login["detail"]
+        if login_info["success"] == "false":
+            result["detail"] = "Cannot login"
+            return result
 
-        if success == "true":
-            post_found = "false"
-            detail = "No post found with given title"
-            post_title = " ".join(str(postdata["post_title_th"]).strip().split())
+        url = (
+            f"https://www.house4post.com/maneg_property.php?delete={result['post_id']}"
+        )
+        response = httprequestObj.http_get_with_headers(url)
 
-            page_num = 0
-            flag = True
-            while flag:
-                response = httprequestObj.http_get(
-                    "https://www.house4post.com//maneg_property.php?&page="
-                    + str(page_num)
-                )
-                if response.status_code == 200:
-                    soup = BeautifulSoup(response.text, features=self.parser)
-                    posts_element = soup.find(class_="well")
-
-                    if posts_element and posts_element.find("tbody"):
-                        posts = posts_element.find("tbody").find_all("tr")
-                        if len(posts) < 10:
-                            flag = False
-                        for post in posts:
-                            title = post.find_all("td")[1].a
-                            title_text = " ".join(title.getText().strip().split())
-                            if title_text == post_title:
-                                flag = False
-                                post_found = "true"
-                                detail = "Post found successfully"
-                                post_url = title.get("href")
-                                post_id = post_url.split("/idasungha-")[-1].split("-")[
-                                    0
-                                ]
-                                break
-                    else:
-                        break
-                page_num += 1
+        if "ลบรายการที่เลือกเรียบร้อยแล้ว" in response.text:
+            result["detail"] = "Successfully deleted"
+            result["success"] = True
         else:
-            detail = "cannot login"
+            result["detail"] = "Network error"
 
-        end_time = datetime.datetime.utcnow()
-        result = {
-            "success": success,
-            "usage_time": str(end_time - start_time),
-            "start_time": str(start_time),
-            "end_time": str(end_time),
-            "detail": detail,
-            "websitename": "house4post",
-            "account_type": None,
-            "ds_id": postdata["ds_id"],
-            "log_id": postdata["log_id"],
-            "post_create_time": "",
-            "post_modify_time": "",
-            "post_view": "",
-            "post_id": post_id,
-            "post_url": post_url,
-            "post_found": post_found,
-        }
         return result
-    """
 
     @serialize_dict
     @timeit_to_dict()
