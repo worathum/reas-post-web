@@ -165,10 +165,8 @@ class onlineoops:
 
         r = httprequestObj.http_get(self.site_name + "/user/register")
         soup = BeautifulSoup(r.content, features=self.parser)
-        csrf = soup.find(attrs={"name": "_csrf"}).get("value")
 
         datapost = {
-            "_csrf": csrf,
             "Member[email]": postdata["user"],
             "Member[mobile]": postdata["tel"],
             "Member[username]": postdata["user"],
@@ -220,10 +218,8 @@ class onlineoops:
 
         r = httprequestObj.http_get(self.site_name + "/user/login")
         soup = BeautifulSoup(r.content, features=self.parser)
-        csrf = soup.find(attrs={"name": "_csrf"}).get("value")
 
         datapost = {
-            "_csrf": csrf,
             "LoginForm[username]": postdata["user"],
             "LoginForm[password]": postdata["pass"],
             "LoginForm[rememberMe]": 0,
@@ -283,7 +279,6 @@ class onlineoops:
         if success == "true":
             r = httprequestObj.http_get(self.site_name + "/post/free")
             soup = BeautifulSoup(r.text, features=self.parser)
-            csrf = soup.find(attrs={"name": "_csrf"}).get("value")
             province = province_list[0]
             for pr in province_list:
                 if postdata["addr_province"] in pr:
@@ -341,7 +336,6 @@ class onlineoops:
                 )
 
             datapost = {
-                "_csrf": csrf,
                 "PostmarketthTH[name]": postdata["post_title_th"],
                 "PostmarketthTH[quality_type]": "second",  # new or second
                 "PostmarketthTH[price]": postdata["price_baht"],
@@ -447,8 +441,6 @@ class onlineoops:
                 success = "false"
                 detail = "No post found with given id"
             else:
-                csrf = soup.find(attrs={"name": "_csrf"}).get("value")
-                header = {"x-csrf-token": csrf}
                 script = soup_.find("script", {"type": "text/javascript"})
                 script = str(script).split("var")
                 data = []
@@ -476,18 +468,14 @@ class onlineoops:
                 # print('\n\n\n----------->>',data)
                 d_ = {"key": str(data[0]) + ":" + str(postdata["post_id"])}
                 r_ = httprequestObj.http_post(
-                    "https://market.onlineoops.com/post/file-delete-thumb",
-                    data=d_,
-                    headers=header,
+                    "https://market.onlineoops.com/post/file-delete-thumb", data=d_
                 )
                 # print(r_.url,d_,r_.text)
 
                 for i in data[1]:
                     d_ = {"key": str(i) + ":" + str(postdata["post_id"])}
                     r_ = httprequestObj.http_post(
-                        "https://market.onlineoops.com/post/file-delete",
-                        data=d_,
-                        headers=header,
+                        "https://market.onlineoops.com/post/file-delete", data=d_
                     )
                     # text is false but pic will be deleted
                     # print(r_.url, d_, r_.text)
@@ -544,7 +532,6 @@ class onlineoops:
                     postdata["land_size"] = 1
 
                 datapost = {
-                    "_csrf": csrf,
                     "PostmarketthTH[name]": postdata["post_title_th"],
                     "PostmarketthTH[quality_type]": "second",  # new or second
                     "PostmarketthTH[price]": postdata["price_baht"],
@@ -789,9 +776,7 @@ class onlineoops:
             else:
                 success = "false"
                 detail = "Unable to boost post"
-                csrf = soup.find(attrs={"name": "_csrf"}).get("value")
                 datapost = {
-                    "_csrf": csrf,
                     "PostmarketthTH[name]": soup.find(
                         attrs={"name": "PostmarketthTH[name]"}
                     ).get("value"),
