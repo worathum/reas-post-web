@@ -63,8 +63,8 @@ class house4post:
             result["detail"] = "Empty credentials"
             return result
 
-        EMAIL_REGEX = r"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*$"
-        if not re.search(EMAIL_REGEX, result["email"]):
+        EMAIL_REGEX = r"^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*$"
+        if not re.search(EMAIL_REGEX, payload["email"]):
             result["detail"] = "Invalid email"
             return result
 
