@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
-import random
-from .lib_httprequest import *
-from bs4 import BeautifulSoup
-import os.path
-import re
+from datetime import datetime
 import json
-import datetime
-import sys
-import requests
+import os.path
 import random
+import re
+import sys
+from typing import Any, Dict, List, Tuple
+
+import requests
+from bs4 import BeautifulSoup
+
+from .lib_httprequest import *
+from .lib_utils import *
 
 province_list = [
     "กรุงเทพมหานคร",
@@ -141,6 +144,7 @@ class onlineoops:
         except ImportError:
             configs = {}
 
+        self.website_name = "onlineoops"
         self.encoding = "utf-8"
         self.imgtmp = "imgtmp"
         self.debug = 0
@@ -155,7 +159,7 @@ class onlineoops:
     def register_user(self, postdata):
         self.logout_user()
         self.print_debug("function [" + sys._getframe().f_code.co_name + "]")
-        time_start = datetime.datetime.utcnow()
+        time_start = datetime.utcnow()
         self.session.http_get(self.site_name + "/user/logout")
 
         # start process
@@ -193,7 +197,7 @@ class onlineoops:
             )
         # # end process
 
-        time_end = datetime.datetime.utcnow()
+        time_end = datetime.utcnow()
         time_usage = time_end - time_start
         return {
             "success": success,
@@ -208,7 +212,7 @@ class onlineoops:
     def test_login(self, postdata):
         self.logout_user()
         self.print_debug("function [" + sys._getframe().f_code.co_name + "]")
-        time_start = datetime.datetime.utcnow()
+        time_start = datetime.utcnow()
 
         # start process
         success = "false"
@@ -242,7 +246,7 @@ class onlineoops:
                 response.status_code
             )
 
-        time_end = datetime.datetime.utcnow()
+        time_end = datetime.utcnow()
         time_usage = time_end - time_start
         return {
             "success": success,
@@ -256,7 +260,7 @@ class onlineoops:
 
     def create_post(self, postdata):
         self.print_debug("function [" + sys._getframe().f_code.co_name + "]")
-        time_start = datetime.datetime.utcnow()
+        time_start = datetime.utcnow()
 
         # start process
         # login
@@ -392,7 +396,7 @@ class onlineoops:
                 )
         else:
             detail = "Unable to login"
-        time_end = datetime.datetime.utcnow()
+        time_end = datetime.utcnow()
         time_usage = time_end - time_start
         return {
             "success": success,
@@ -407,9 +411,28 @@ class onlineoops:
             "websitename": self.name,
         }
 
+    def _clear_post_img(self, postdata: Dict[str, str]):
+        url = f"https://market.onlineoops.com/post/free?id={postdata['post_id']}"
+        resp = self.session.http_get(url)
+        soup = BeautifulSoup(resp.content, self.parser)
+        script_soup = soup.find("script")
+
+        if not script_soup:
+            return
+
+        img_urls = re.findall(r"\"key\":\"([\w\\/.:]+)\"", script_soup.get_text())  # type: ignore
+        img_urls = [i.replace("\\/", "/") for i in img_urls]
+
+        for i, img_url in enumerate(img_urls):
+            _payload = {"key": img_url}
+            url = "https://market.onlineoops.com/post/" + (
+                "file-delete" if i else "file-delete-thumb"
+            )
+            self.session.http_post(url, data=_payload)
+
     def edit_post(self, postdata):
         self.print_debug("function [" + sys._getframe().f_code.co_name + "]")
-        time_start = datetime.datetime.utcnow()
+        time_start = datetime.utcnow()
 
         # start process
         # login
@@ -438,6 +461,8 @@ class onlineoops:
                 success = "false"
                 detail = "No post found with given id"
             else:
+                self._clear_post_img(postdata)
+                """
                 script = soup_.find("script", {"type": "text/javascript"})
                 script = str(script).split("var")
                 data = []
@@ -476,6 +501,7 @@ class onlineoops:
                     )
                     # text is false but pic will be deleted
                     # print(r_.url, d_, r_.text)
+                """
                 province = province_list[0]
                 for pr in province_list:
                     if postdata["addr_province"] in pr:
@@ -604,7 +630,7 @@ class onlineoops:
         else:
             detail = "Unable to login"
 
-        time_end = datetime.datetime.utcnow()
+        time_end = datetime.utcnow()
         time_usage = time_end - time_start
         return {
             "success": success,
@@ -621,7 +647,7 @@ class onlineoops:
 
     def delete_post(self, postdata):
         self.print_debug("function [" + sys._getframe().f_code.co_name + "]")
-        time_start = datetime.datetime.utcnow()
+        time_start = datetime.utcnow()
 
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -655,7 +681,7 @@ class onlineoops:
         else:
             detail = "Unable to login"
 
-        time_end = datetime.datetime.utcnow()
+        time_end = datetime.utcnow()
         time_usage = time_end - time_start
         return {
             "success": success,
@@ -671,7 +697,7 @@ class onlineoops:
 
     def search_post(self, postdata):
         self.print_debug("function [" + sys._getframe().f_code.co_name + "]")
-        time_start = datetime.datetime.utcnow()
+        time_start = datetime.utcnow()
 
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -730,7 +756,7 @@ class onlineoops:
         else:
             detail = "Unable to login"
 
-        time_end = datetime.datetime.utcnow()
+        time_end = datetime.utcnow()
         time_usage = time_end - time_start
         return {
             "success": success,
@@ -752,7 +778,7 @@ class onlineoops:
 
     def boost_post(self, postdata):
         self.print_debug("function [" + sys._getframe().f_code.co_name + "]")
-        time_start = datetime.datetime.utcnow()
+        time_start = datetime.utcnow()
 
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -830,7 +856,7 @@ class onlineoops:
         else:
             detail = "Unable to login"
 
-        time_end = datetime.datetime.utcnow()
+        time_end = datetime.utcnow()
         time_usage = time_end - time_start
         return {
             "success": success,
