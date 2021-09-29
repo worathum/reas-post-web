@@ -863,7 +863,22 @@ class livinginsider():
                 #print(r.status_code)
                 #print(r.url)
                 soup = BeautifulSoup(r.text, self.parser)
-                csrf_token = soup.find('meta', {'name': 'csrf-token'}).get('content')
+                try:
+                    csrf_token = soup.find('meta', {'name': 'csrf-token'}).get('content')
+                except:
+                    time_end = datetime.datetime.utcnow()
+                    time_usage = time_end - time_start
+                    return {
+                        "success": False,
+                        "websitename": "livinginsider",
+                        "usage_time": str(time_usage),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "post_url": '',
+                        "post_id": postdata['post_id'],
+                        "account_type": "null",
+                        "detail": 'Error can not edit post due to there is no edited link.'
+                    }
                 typeposes = soup.find_all('input', {'name': 'web_post_type'})
                 for typepose in typeposes:
                     if typepose.has_attr('checked'):
