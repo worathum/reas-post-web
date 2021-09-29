@@ -113,10 +113,8 @@ class onlineoops():
 
         r = httprequestObj.http_get(self.site_name+'/user/login')
         soup = BeautifulSoup(r.content, features=self.parser)
-        csrf  = soup.find(attrs={"name": "_csrf"}).get('value')
         
         datapost = {
-            "_csrf": csrf,
             "LoginForm[username]": postdata['user'],
             "LoginForm[password]": postdata['pass'],
             "LoginForm[rememberMe]": 0
