@@ -274,7 +274,7 @@ class baan2day():
                     #         pass
                 elif "alert('หัวข้อประกาศซ้ำค่ะ ไม่สามารถบันทึกได้ค่ะ');window.history.back()" in response.text:
                     detail = "Post Unsuccessful : same title post not allowed"
-            else:  
+            else:
                     detail = 'Unable to create post. Maybe problem with the title. Error response_code '+str(response.status_code) 
         else:
             detail = "cannot login"
@@ -402,15 +402,16 @@ class baan2day():
             
             response = httprequestObj.http_post(self.site_name+'/member_property_aed.php?typ=edit&id='+str(postdata['post_id']), data=datapost, files=files)
             success = "false"
-    
             if response.status_code==200:
                 if "window.location.href='member_property_list.php" in response.text:
                     success = "true"
                     detail = "Post Updated Successfully!"
                 elif "alert('หัวข้อประกาศซ้ำค่ะ ไม่สามารถบันทึกได้ค่ะ');window.history.back()" in response.text:
                     detail = "Unable to update post. A Post with same title already exists"
+                else:
+                    detail = 'Active Unit Listing quota exceeded'
             else:
-                    detail = 'Unable to update post.  Maybe problem with the title. Error response_code '+str(response.status_code) 
+                    detail = 'Unable to update post.  Maybe problem with the title. Error response_code '+str(response.status_code)
         else:
             detail = "cannot login"
         time_end = datetime.datetime.utcnow()
