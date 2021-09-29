@@ -243,11 +243,10 @@ class dotproperty():
                     except:
                         pass
                     try:
-                        button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
-                        button[2].click()
-                    except:
-                        button = WebDriverWait(driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'button')))
-                        button[1].click()
+                        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div[3]/div/div[2]/div[1]/div[2]/button"))).click()
+                    except Exception as e:
+                        success = 'false'
+                        detail = str(e)
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     if soup.find('button', {'data-tooltip': 'คุณได้ออนไลน์ประกาศครบตามจำนวนที่กำหนดแล้ว'}):
                         print('false')
