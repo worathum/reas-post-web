@@ -592,7 +592,7 @@ class buyzaa():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
-        post_id = ""
+        post_id = postdata['post_id']
         post_url = ""
 
         if success:
@@ -632,7 +632,6 @@ class buyzaa():
                 r = httprequestObj.http_get('http://www.buyzaa.com/manage-post.php', params={'update': post_id})
                 # print(r.url)
                 # print(r.status_code)
-
                 if 'ยินดีด้วยค่ะ ระบบได้ทำการเลื่อนประกาศให้ท่านเรียบร้อยแล้ว' in r.text:
                     success = True
                     detail = "Post boosted successfully"
@@ -672,7 +671,7 @@ class buyzaa():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
-        post_id = ""
+        post_id = postdata['post_id']
         post_url = ""
 
         if success:
