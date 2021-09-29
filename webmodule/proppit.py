@@ -134,28 +134,27 @@ class proppit():
         recdata['titleMultiLanguage'][0]['text'] = postdata['post_title_th']
         recdata['titleMultiLanguage'][0]['locale'] = "th-TH"
 
+        temp = {}
         if (postdata['post_title_en'] == "") or (postdata['post_title_en'] is None):
-            pass
+            temp['text'] = ' '
         else:
-            temp = {}
             temp['text'] = postdata['post_title_en']
-            temp['locale'] = "en-US"
-
-            recdata['titleMultiLanguage'].append(temp)
+        
+        temp['locale'] = "en-US"
+        recdata['titleMultiLanguage'].append(temp)
 
         recdata['descriptionMultiLanguage'] = [{}]
 
         recdata['descriptionMultiLanguage'][0]['text'] = postdata['post_description_th']
         recdata['descriptionMultiLanguage'][0]['locale'] = "th-TH"
-
+        
+        temp = {}
         if (postdata['post_description_en'] == "") or (postdata['post_description_en'] is None):
-            pass
+            temp['text'] = ' '
         else:
-            temp = {}
             temp['text'] = postdata['post_description_en']
-            temp['locale'] = "en-US"
-
-            recdata['descriptionMultiLanguage'].append(temp)
+        temp['locale'] = "en-US"
+        recdata['descriptionMultiLanguage'].append(temp)
 
         recdata['bathrooms'] = None
         recdata['bedrooms'] = postdata['bed_room']
@@ -173,9 +172,9 @@ class proppit():
         area_sqm = (postdata['land_size_rai'] * 1600)+(postdata['land_size_ngan'] * 400)+(postdata['land_size_wa'] * 4)
 
         if recdata['propertyType'] == "land":
-            recdata['plotAreaSqm'] = area_sqm
-            recdata['floorArea'] = area_sqm
-            recdata['plotArea'] = [{"value":area_sqm,"unit":"m2"}]
+            #recdata['plotAreaSqm'] = area_sqm
+            recdata['floorArea'] = None
+            recdata['plotArea'] = [{"value":postdata['land_size_rai'],"unit":"rai"},{"value":postdata['land_size_ngan'],"unit":"ngan"},{"value":postdata['land_size_wa'],"unit":"sqw"}]
         else:
             recdata['plotAreaSqm'] = None
             recdata['floorArea'] = area_sqm
@@ -234,7 +233,10 @@ class proppit():
         recdata['amenities'] = []
         recdata['project'] = None
         if 'web_project_name' not in postdata:
-            postdata['web_project_name'] = postdata['project_name']
+            if 'project_name' in postdata:
+                postdata['web_project_name'] = postdata['project_name']
+            else:
+                postdata['web_project_name'] = ''
         if (postdata['web_project_name'] is None) or (postdata['web_project_name'] == ''):
             pass
         else:
@@ -308,21 +310,23 @@ class proppit():
             find_submit = driver.find_element_by_name("publish").click()
             time.sleep(5)
             try:
-                limit = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("confirmation-dialog-title")).text
-                print(limit)
-                print(limit=='You have reached the limit of published properties')
-                if limit in ['คุณมีประกาศที่เผยแพร่เต็มจำนวนตามแพ็กเกจของคุณแล้ว','You have reached the limit of published properties']:
-                    gen_id_bool = False
-                    detail = 'You have reached the limit of published properties'
+                popup = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("confirmation-dialog-title")).text
+                print(popup=='อัปเกรดแพ็กเกจของคุณเพื่อ Boost ประกาศได้มากขึ้น')
+                if popup=='อัปเกรดแพ็กเกจของคุณเพื่อ Boost ประกาศได้มากขึ้น':
+                    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[2]/div[3]/div/div[2]/button"))).click()
             except:
-                post_url = ''
-                num_web= 5
-                for i in range(num_web):
-                    url = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div/span/a[{}]'.format(i+1)))
-                    post_url += url.get_attribute('href')
-                    if i+1 != num_web:
-                        post_url += '|'
-                gen_id_bool = True
+                pass
+            post_url = ''
+            num_web= 5
+            for i in range(num_web):
+                try:
+                    url = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div[2]/span/a[{}]'.format(i+1)))
+                except:
+                    url = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[1]/div/div[2]/span/a[{}]'.format(i+1)))
+                post_url += url.get_attribute('href')
+                if i+1 != num_web:
+                    post_url += '|'
+            gen_id_bool = True
                 
         finally:
             driver.close()
@@ -378,7 +382,7 @@ class proppit():
                 url = "https://api.proppit.com/properties"+"/"+post_id
 
                 r = httprequestObj.http_post(url, data=payload , files=files)
-                
+
                 if (r.status_code == 200) or (r.status_code == 201):
                     success = "true"
                     detail = "Post created successfully!"
@@ -387,7 +391,7 @@ class proppit():
                     post_id = post_id
                 else:
                     success = "false"
-                    detail = "Post failed!"
+                    detail = "Post failed!" + r.text
             else:
                 success = "false"
                 detail = "cannot login."
