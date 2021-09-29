@@ -431,12 +431,9 @@ class ennxo():
             if "floor_level" not in postdata or ("floor_level" in postdata and postdata["floor_level"].isnumeric()==False):
                 postdata["floor_level"] = 1
             postdata["floor_level"] = int(postdata["floor_level"])
-            if postdata["floor_level"] > 3:
-                postdata["floor_level"] = "3+"
             if "floor_area" not in postdata or ("floor_area" in postdata and postdata["floor_area"].isnumeric()==False):
                 postdata["floor_area"] = 1
             postdata["floor_area"] = int(postdata["floor_area"])
-
             subfields = category_types[str(postdata['property_type'])][1]
             for field in subfields:
                 if str(subfields[field]) in postdata:
@@ -606,8 +603,6 @@ class ennxo():
             if "floor_level" not in postdata or ("floor_level" in postdata and postdata["floor_level"].isnumeric()==False):
                 postdata["floor_level"] = 1
             postdata["floor_level"] = int(postdata["floor_level"])
-            if postdata["floor_level"] > 3:
-                postdata["floor_level"] = "3+"
             if "floor_area" not in postdata or ("floor_area" in postdata and postdata["floor_area"].isnumeric()==False):
                 postdata["floor_area"] = 1
             postdata["floor_area"] = int(postdata["floor_area"])
