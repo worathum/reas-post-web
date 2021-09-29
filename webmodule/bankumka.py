@@ -543,6 +543,7 @@ class bankumka():
         theurl = ""
         post_id = ""
         detail = ""
+        posturl = ""
         # login
         test_login = self.test_login(postdata)
         success = test_login["success"]
@@ -620,6 +621,7 @@ class bankumka():
             if(posturl == '/edit'):
                 success = False
                 posturl = ''
+                detail = "The post doesn't exist"
             else:
                 r = httprequestObj.http_get(
                     posturl, verify=False)
@@ -906,6 +908,7 @@ class bankumka():
                     detail = '\n'.join(data['message'])
                     posturl= ''
                     success = "false"
+                print(11111111111111)
                 # files = {}
                 # for i in range(len(postdata["post_img_url_lists"])):
                 #     resp = httprequestObj.http_get(
@@ -1218,6 +1221,7 @@ class bankumka():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         test_login = self.test_login(postdata)
+        detail = "The post doesn't exist"
         success = test_login["success"]
         ashopname = test_login["detail"]
         # print(test_login)
@@ -1242,8 +1246,10 @@ class bankumka():
                 }
                 r = httprequestObj.http_post(
                     'https://bankumka.com/member/api/pushProp', datapost)
+                detail = 'Boost post success.'
         else:
             success = "false"
+            detail = 'cannot login'
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -1253,6 +1259,7 @@ class bankumka():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_id": postdata['post_id'],
+            "detail": detail,
             "account_type": "null",
             "websitename": "bankumka",
             "ds_id": postdata['ds_id'],
