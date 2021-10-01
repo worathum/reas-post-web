@@ -2244,9 +2244,7 @@ class ddproperty():
                 req = httprequestObj.http_get(url,data=data,headers=headers)
 
                 soup = BeautifulSoup(req.text,'html.parser')
-                print(soup.prettify())
                 check = soup.find('div',{'id':'list-container'})
-                print(check)
                 if check is not None:
                     #print('here2')
                     posts = soup.find_all('div',{'class':'listing-item'})
@@ -2261,13 +2259,13 @@ class ddproperty():
                     flag = False
 
 
-
-            if datahandled['post_title_th'] in valid_titles:
-                post_found = 'true'
-                for i in range(len(valid_titles)):
-                    if valid_titles[i] == datahandled['post_title_th']:
-                        post_url = valid_urls[i]
-                        post_id = valid_ids[i]
+            if valid_titles != []:
+                if datahandled['post_title_th'] in valid_titles:
+                    post_found = 'true'
+                    for i in range(len(valid_titles)):
+                        if valid_titles[i] == datahandled['post_title_th']:
+                            post_url = valid_urls[i]
+                            post_id = valid_ids[i]
 
         try:
             self.firefox.close()
