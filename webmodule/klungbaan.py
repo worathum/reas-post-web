@@ -432,7 +432,6 @@ class klungbaan():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = "Unable to update post"
-        post_id = ""
         post_url = ""
 
         if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
