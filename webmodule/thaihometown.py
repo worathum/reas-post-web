@@ -11,7 +11,6 @@ import json, os
 import datetime
 import sys
 from urllib.parse import unquote,urlparse,parse_qs
-httprequestObj = lib_httprequest()
 from requests_toolbelt import MultipartEncoder
 import random
 from python3_anticaptcha import ImageToTextTask
@@ -40,9 +39,8 @@ log = logging.getLogger()
 class thaihometown():
 
     def __init__(self):
-
         self.websitename = 'thaihometown'
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
@@ -394,7 +392,7 @@ class thaihometown():
 
     def logout_user(self):
         url = 'https://www.thaihometown.com/member/logout/aHR0cHMlM0EvL3d3dy50aGFpaG9tZXRvd24uY29tL21lbWJlci8xNzM1MzE='
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
     def register_user(self, postdata):
         self.logout_user()
@@ -425,7 +423,7 @@ class thaihometown():
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
-        r = httprequestObj.http_post('https://www.thaihometown.com/member/register', data=datapost)
+        r = self.httprequestObj.http_post('https://www.thaihometown.com/member/register', data=datapost)
         data = r.text
         # print (data)
 
@@ -474,7 +472,7 @@ class thaihometown():
             'pwd_login': passwd,
             'user_login': user,
         }
-        r = httprequestObj.http_post('https://www.thaihometown.com/member/check', data=datapost)
+        r = self.httprequestObj.http_post('https://www.thaihometown.com/member/check', data=datapost)
         #log.debug('post login')
         data = r.text
         # print(data)
@@ -547,7 +545,7 @@ class thaihometown():
         #print(datahandled['addr_province'])
         #กรุงเทพ
         if datahandled['addr_province'] == 'กรุงเทพมหานคร' or datahandled['addr_province'] == 'กรุงเทพ':
-            r = httprequestObj.http_get('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
+            r = self.httprequestObj.http_get('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
             data = r.content
             soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
             try:
@@ -558,7 +556,7 @@ class thaihometown():
                 
         #ต่างจังหวัด
         else:
-            r = httprequestObj.http_get('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
+            r = self.httprequestObj.http_get('https://www.thaihometown.com/addnew', encoder='cp874',verify=False)
             data = r.content
             #print(data)
             """ f = open('file.html','w')
@@ -572,7 +570,7 @@ class thaihometown():
             except:
                 pass
             if datahandled['property_country_2'] != "":                
-                r = httprequestObj.http_get('https://www.thaihometown.com/search/state2012_addnew.php?PID='+str(datahandled['property_country_2']),verify=False)
+                r = self.httprequestObj.http_get('https://www.thaihometown.com/search/state2012_addnew.php?PID='+str(datahandled['property_country_2']),verify=False)
                 data = r.text
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 try:
@@ -705,12 +703,12 @@ class thaihometown():
         valid_urls = []
         valid_titles = []
         url = 'https://www.thaihometown.com/member/'+str(self.logid)
-        req = httprequestObj.http_get(url)
+        req = self.httprequestObj.http_get(url)
         soup = BeautifulSoup(req.content,'html.parser')
         page = int(soup.find('div',{'id':'ShowList'}).find('span',{'id':"totalShowMember"}).text)//10+1
         for i in range(1,page+1):
             url = 'https://www.thaihometown.com/member/'+str(self.logid)+'?page=+'+str(i)
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(req.content,'html.parser')
             posts = soup.find('div',{'id':'show_listings'}).findAll('div')[2:]
             post_title = datahandled['post_title_th']
@@ -751,7 +749,7 @@ class thaihometown():
                 #print('got')
                 if success == 'true':
                     #get post authen value
-                    r = httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
+                    r = self.httprequestObj.http_get('https://www.thaihometown.com/addnew', verify=False)
                     data = r.text
                     soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                     #print('here4')
@@ -824,7 +822,7 @@ class thaihometown():
                         }
                         #log.debug(datapost)
                         #print('here7')
-                        r = httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
+                        r = self.httprequestObj.http_post('https://www.thaihometown.com/addcontacts', data=datapost)
                         data = r.text
                         # print(data)
                         #f = open("thihomepost.html", "wb")
@@ -871,7 +869,7 @@ class thaihometown():
         #log.debug('')
         post_url = 'https://www.thaihometown.com/'+str(prop_type)+'/'+str(post_id)
 
-        r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(post_id),encoder='cp874', verify=False)
+        r = self.httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(post_id),encoder='cp874', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         # post is publish
@@ -897,7 +895,7 @@ class thaihometown():
     def uploadimage(self,datahandled,post_id):
         #log.debug('')
 
-        r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(post_id), verify=False)
+        r = self.httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(post_id), verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
         uploadcode = ''
@@ -915,7 +913,7 @@ class thaihometown():
 
         #if find image when editpost , to delete before new upload
         try:
-            r = httprequestObj.http_get(uploadlink, verify=False)
+            r = self.httprequestObj.http_get(uploadlink, verify=False)
             data = r.text
             soup = BeautifulSoup(data, self.parser,from_encoding='utf-8')
             allimage = soup.find_all('img',src=re.compile('small.jpg'))
@@ -930,7 +928,7 @@ class thaihometown():
                         'datesing': '',
                         'maction':'',
                         }
-                    r = httprequestObj.http_post(
+                    r = self.httprequestObj.http_post(
                     'https://www.thaihometown.com/form/memberupload/delete.php',
                     data=datapost,
                     )
@@ -953,7 +951,7 @@ class thaihometown():
                         'uploadfile':( str(no_img+1) + '.jpg', open(os.path.abspath(datahandled['post_images'][no_img]), 'rb'), 'image/jpeg'),
             }
             encoder = MultipartEncoder(fields=datapost)
-            r = httprequestObj.http_post(
+            r = self.httprequestObj.http_post(
             'https://www.thaihometown.com/form/memberupload/upload-file.php?id='+str(no_img+1)+'&contact='+str(post_id)+'&code='+str(uploadcode)+'&datesing='+str(datetime.datetime.utcnow().strftime('%Y-%m-%d'))+'&maction=2',
             data=encoder,
             headers={'Content-Type': encoder.content_type}
@@ -978,7 +976,7 @@ class thaihometown():
                         'uploadfile':( str(i+1) + '.jpg', open(os.path.abspath(datahandled['post_images'][i]), 'rb'), 'image/jpeg'),
             }
             encoder = MultipartEncoder(fields=datapost)
-            r = httprequestObj.http_post(
+            r = self.httprequestObj.http_post(
             'https://www.thaihometown.com/form/memberupload/upload-file.php?id='+str(i+1)+'&contact='+str(post_id)+'&code='+str(uploadcode)+'&datesing='+str(datetime.datetime.utcnow().strftime('%Y-%m-%d'))+'&maction=2',
             data=encoder,
             headers={'Content-Type': encoder.content_type}
@@ -991,7 +989,7 @@ class thaihometown():
         #fix black image //thaihometown bug
         try:
             #log.debug('fix black image')
-            r = httprequestObj.http_get('https://www.thaihometown.com/form/memberupload/image_update_copy.php?code='+str(uploadcode)+'&id='+str(post_id), verify=False)
+            r = self.httprequestObj.http_get('https://www.thaihometown.com/form/memberupload/image_update_copy.php?code='+str(uploadcode)+'&id='+str(post_id), verify=False)
             #log.debug(r.text)
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             is_total = soup.find('input',{'name':'is_total'})['value']
@@ -1007,7 +1005,7 @@ class thaihometown():
                 #log.debug("image name %s image value %s",img['id'],img['value'])
                 datapost[img['id']] = img['value']
             #log.debug(datapost)
-            r = httprequestObj.http_post('https://www.thaihometown.com/form/memberupload/image_update_copy.php?code='+str(uploadcode)+'&id='+str(post_id), data=datapost)
+            r = self.httprequestObj.http_post('https://www.thaihometown.com/form/memberupload/image_update_copy.php?code='+str(uploadcode)+'&id='+str(post_id), data=datapost)
             matchObj = re.search(r'&#3649;&#3585;&#3657;&#3652;&#3586;&#3619;&#3641;&#3611;&#3616;&#3634;&#3614;&#3648;&#3619;&#3637;&#3618;&#3610;&#3619;&#3657;&#3629;&#3618;', r.text) #แก้ไขรูปภาพเรียบร้อย
             #if matchObj:
                 #log.debug('fixed black image success')
@@ -1041,7 +1039,7 @@ class thaihometown():
 
         if (success == "true"):
 
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + post_id, verify=False)
+            r = self.httprequestObj.http_get('https://www.thaihometown.com/edit/' + post_id, verify=False)
             data = r.text
             #f = open("editpostthaihometown.html", "wb")
             #f.write(data.encode('utf-8').strip())
@@ -1127,7 +1125,7 @@ class thaihometown():
                     # typeunit5=''
                 )
 
-                r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
+                r = self.httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
                 data = r.text
                 #f = open("boostthaihometown.html", "wb")
                 #f.write(data.encode('utf-8').strip())
@@ -1179,7 +1177,7 @@ class thaihometown():
 
         if (success == "true"):
             #get code , it same upload code
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(datahandled['post_id']), verify=False)
+            r = self.httprequestObj.http_get('https://www.thaihometown.com/edit/'+str(datahandled['post_id']), verify=False)
             data = r.content
             soup = BeautifulSoup(data, self.parser)
             uploadcode = ''
@@ -1201,7 +1199,7 @@ class thaihometown():
                 #log.debug('try solve captcha image loop '+str(i+1))
 
                 #go to delete page
-                r = httprequestObj.http_get('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode,verify=False)
+                r = self.httprequestObj.http_get('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode,verify=False)
                 data = r.content
                 soup = BeautifulSoup(data, self.parser)
                 #log.debug(data)
@@ -1220,7 +1218,7 @@ class thaihometown():
                     contacts_id = soup.find("input", {"name": "contacts_id"})['value']
                     imgurl  =  soup.find("img",src=re.compile('securimage_show'))['src']
                     
-                    res = httprequestObj.http_get(imgurl, verify=False)
+                    res = self.httprequestObj.http_get(imgurl, verify=False)
                     imgname = "/imgtmp/" + str(random.randint(1, 999999999)) + '.png'
                     with open(os.getcwd()+imgname, 'wb') as f:
                         f.write(res.content)
@@ -1244,7 +1242,7 @@ class thaihometown():
                         'contacts_id' : contacts_id
                     }
 
-                    r = httprequestObj.http_post('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode, data=datapost)
+                    r = self.httprequestObj.http_post('https://www.thaihometown.com/member/delete/'+datahandled['post_id']+'/'+uploadcode, data=datapost)
                     data = r.text
                     # f = open("editpostthaihometown.html", "wb")
                     # f.write(data.encode('utf-8').strip())
@@ -1327,7 +1325,7 @@ class thaihometown():
             detail = test_login["detail"]
 
         if (success == "true"):
-            r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'],verify=False)
+            r = self.httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'],verify=False)
             data = r.text
             # f = open("editpostthaihometown.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1412,7 +1410,7 @@ class thaihometown():
                     property_country_2=property_country_2.encode('cp874', 'ignore'),
                 )
 
-                r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
+                r = self.httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
                 data = r.text
                 #f = open("editpostthaihometown.html", "wb")
                 #f.write(data.encode('utf-8').strip())
@@ -1481,7 +1479,7 @@ class thaihometown():
             success,detail,datahandled = self.getprovincedistrictid(datahandled)
             
             if success == 'true':
-                r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
+                r = self.httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
                 data = r.text
                 # f = open("editpostthaihometown.html", "wb")
                 # f.write(data.encode('utf-8').strip())
@@ -1504,7 +1502,7 @@ class thaihometown():
                     soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                     edit_img_link = soup.find('a', {'class': 'namelink'})['href']
                     code_data = edit_img_link.split('&Pat')[0].split('&Mag')[-1].replace('=', '').strip()
-                    res = httprequestObj.http_get(edit_img_link)
+                    res = self.httprequestObj.http_get(edit_img_link)
                     soupimg = BeautifulSoup(res.content, 'html.parser')
                     scripts = soupimg.find_all('script')
                     for script in scripts:
@@ -1532,7 +1530,7 @@ class thaihometown():
                                 headers = {
                                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
                                 }
-                                r = httprequestObj.http_post('https://www.thaihometown.com/form/memberupload/delete.php', data=datadel, headers=headers)
+                                r = self.httprequestObj.http_post('https://www.thaihometown.com/form/memberupload/delete.php', data=datadel, headers=headers)
                                 time.sleep(0.5)
                         else:
                             pass
@@ -1547,7 +1545,7 @@ class thaihometown():
                                         'uploadfile':( str(i+1) + '.jpg', open(os.path.abspath(datahandled['post_images'][i]), 'rb'), 'image/jpeg'),
                             }
                             encoder = MultipartEncoder(fields=datapost)
-                            r = httprequestObj.http_post(
+                            r = self.httprequestObj.http_post(
                             'https://www.thaihometown.com/form/memberupload/upload-file.php?id='+str(i+1)+'&contact='+str(datahandled['post_id'])+'&code='+str(code_data)+'&datesing='+str(datetime.datetime.utcnow().strftime('%Y-%m-%d'))+'&maction=1',
                             data=encoder,
                             headers={'Content-Type': encoder.content_type}
@@ -1568,7 +1566,7 @@ class thaihometown():
                                 "post_id": datahandled['post_id'],
                                 "websitename": self.websitename
                             }
-                    r = httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
+                    r = self.httprequestObj.http_get('https://www.thaihometown.com/edit/' + datahandled['post_id'], verify=False)
                     data = r.text
                     soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                     sas_name = soup.find("input", {"name": "sas_name"})['value']
@@ -1652,7 +1650,7 @@ class thaihometown():
 
                     #log.debug(datapost)
 
-                    r = httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
+                    r = self.httprequestObj.http_post('https://www.thaihometown.com/editcontacts', data=datapost)
                     data = r.text
 
                     #f = open("debug_response/editpostthaihometown.html", "wb")
@@ -1697,7 +1695,7 @@ class thaihometown():
         if success == 'true':
 
             url = 'https://www.thaihometown.com/member/'+str(self.logid)
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(req.content,'html.parser')
             posts = soup.find('div',{'id':'show_listings'}).findAll('div')[2:]
             valid_ids = []
