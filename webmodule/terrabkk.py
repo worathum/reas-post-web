@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
+from time import sleep
 from .lib_httprequest import *
 from .lib_captcha import *
 from bs4 import BeautifulSoup
 import os.path
 # from urlparse import urlparse
-import re
+import requests
 import json
 import datetime
 import sys
 from urllib.parse import unquote
 import os
-
 
 httprequestObj = lib_httprequest()
 captcha = lib_captcha()
@@ -115,660 +115,206 @@ class terrabkk():
             "detail": detail,
             "ds_id":userdata['ds_id']
         }
+    def logout_user(self,user_id,access_token):
+        
+        url = 'https://www.terrabkk.com/restapi/v2/token/{}'.format(user_id)
+        headers = {
+            'Authorization': access_token,
+            'Content-Type': 'application/json'
+        }
+        data = {'user_id':user_id}
+        r = requests.delete(url, data= json.dumps(data), headers=headers)
 
-    def test_login(self, logindata):
-        # print("Here in test_login")
+    def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        
+        success = False
+        detail = ''
+        user_id = ''
+        access_token = ''
 
-        email_user = logindata['user']
-        email_pass = logindata['pass']
-        r = httprequestObj.http_get('https://www.terrabkk.com/member/login', verify=False)
-        data = r.text
-        # with open("/home/maxslide/Real_Estate/temp.html",'w') as f:
-        #     f.write(data)
+        url = 'https://www.terrabkk.com/restapi/v2/token'
+        headers = {'Content-Type': 'application/json'}
         
-        # print(data)
-        soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-        recaptcha_token = ""
-        print(soup.find("iframe"))
-        print(recaptcha_token)
-        print()
-        datapost = {
-            'redirect': "https://www.terrabkk.com/member",
-            'email': email_user,
-            'password': email_pass
+        data = {
+            "app_id": 'dzI2Q3RRM3pPQzhKWlRad3JQY01Fdz09',
+            "email": postdata['user'],
+            "password": postdata['pass']
         }
-        
-        sitekey = "6LdrH6IUAAAAAOG7H98SJ7wv9diFEBuJuPlrDCL1"
-        
-        g_response = captcha.reCaptcha(sitekey, "https://www.terrabkk.com/member/login")
-        if g_response != 0:
-            print ("g-response: "+g_response)
-            datapost["g-recaptcha-response"] = g_response
-            r = httprequestObj.http_post('https://www.terrabkk.com/member/login_ajax', data=datapost)
-            success = str(r.json()["state"])
-            detail = r.json()["msg"]
+
+        r = httprequestObj.http_post(url, data= json.dumps(data), headers=headers)
+        response = r.json()
+
+        success = response['success']
+        if success == True:
+            detail = 'Login successful'
+            user_id = response['data']['user_id']
+            access_token = response['data']['access_token']
+            if postdata['action'] == 'test_login':
+                sleep(1)
+                self.logout_user(user_id,access_token)
         else:
-            success = "False"
-            detail = "reCaptcha error"
-        print(datapost)
-        # จำนวนประกาศ this is for login check
+            error = response['messages']
+            try:
+                detail = error[0]
+            except:
+                detail = '{}.Please tell your developer to know this problem'.format(error)
+
         time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
-        
+        time_usage = str(time_end - time_start)
+
         return {
             "websitename": "terrabkk",
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "usage_time": str(time_end-time_start),
-            "ds_id": logindata['ds_id'],
+            "usage_time": time_usage,
+            "ds_id": postdata['ds_id'],
             "detail": detail,
-            "ds_id":logindata['ds_id']
+            "user_id": user_id,
+            "access_token": access_token
         }
-        #
-        #
-        #
-    
 
 
+    def post_prop(self,action,access_token,postdata):
+        
+        if 'web_project_name' not in postdata:
+            if 'project_name' in postdata:
+                postdata['web_project_name'] = postdata['project_name']
+            else:
+                postdata['web_project_name'] = ''
+
+        postdata['post_description_th'] = ''.join(c for c in postdata['post_description_th'] if c <= '\uFFFF')
+        postdata['post_description_en'] = ''.join(c for c in postdata['post_description_en'] if c <= '\uFFFF')
+        postdata['post_description_th'] = postdata['post_description_th'].replace('\r\n', '<br>')
+        postdata['post_description_en'] = postdata['post_description_en'].replace('\r\n', '<br>')
+            
+        property_type = {
+            '1':'CONDOMINIUM',
+            '2':'DETACHED_HOUSE',
+            '3':'SEMI_DETACHED_HOUSE',
+            '4':'TOWNHOUSE',
+            '5':'SHOPHOUSE',
+            '6':'LAND',
+            '7':'APARTMENT',
+            '8':'HOTEL',
+            '9':'OFFICE',
+            '10':'WAREHOUSE',
+            '25':'FACTORY',
+            '30':'OTHER'
+            }
+        postdata['property_type'] = property_type[postdata['property_type']]
+        
+        address = ''
+        for i in ['addr_number','addr_road','addr_soi']:
+            if postdata[i] in ['-',' ']:
+                postdata[i] = ''
+            address += postdata[i]
+            if i != 'addr_soi':
+                address += ' '
+
+        sub_district_id = postdata['addr_sub_district_code']
+
+        headers = {
+            'Authorization': access_token,
+            'Content-Type': 'application/json'
+        }
+        url = 'https://www.terrabkk.com/restapi/v2/property'
+        data = {
+            'status': 'PUBLISH',
+            'reference_id': postdata['property_id'],
+            "title_th": postdata['post_title_th'][:50],
+            "title_en": postdata['post_title_en'][:50],
+            "detail_th": postdata['post_description_th'],
+            "detail_en": postdata['post_description_en'],
+            "project_name": postdata['web_project_name'],
+            "property_type": postdata['property_type'],
+            'address': address,
+            "sub_district_code": sub_district_id,
+            "floorarea": postdata['floor_area'],
+            "landarea_rai": postdata['land_size_rai'],
+            "landarea_ngaan": postdata['land_size_ngan'],
+            "landarea_sqw": postdata['land_size_wa'],
+            "areasize_sqm": postdata['floorarea_sqm'],
+            "lat": postdata['geo_latitude'],
+            "lng": postdata['geo_longitude'],
+            "numberoffloors": postdata['floor_total'],
+            "floor_position": postdata['floor_level'],
+            "cover_image":postdata['post_img_url_lists'][0],
+            "gallery_images": postdata['post_img_url_lists'][1:]
+        }
+
+        if postdata['property_type'] != 'LAND':
+            data["bedrooms"] = postdata['bed_room']
+            data["bathrooms"] = postdata['bath_room']
+
+        if postdata['listing_type'] == 'ขาย':
+            data["post_type"] = 'SELL'
+            data["sell_price"] = postdata['price_baht']
+        else:
+            data["post_type"] = 'RENT'
+            data["rent_price"] = postdata['price_baht']
+
+        if action == 'edit':
+            data['freepost_id'] = postdata['post_id']
+            r = requests.put(url, data= json.dumps(data), headers=headers)
+        else:
+            r = httprequestObj.http_post(url, data= json.dumps(data), headers=headers)
+            
+        ret = r.json()
+        success = ret['success']
+        if success == True:
+            post_id = ret['data']['freepost_id']
+            post_url = ret['data']['freepost_url']
+            detail = 'Post successful'
+        else:
+            error = ret['messages']
+            try:
+                detail = error[0]
+            except:
+                detail = '{}.Please tell your developer to know this problem'.format(error)
+            post_id = ''
+            post_url = ''
+
+        return {
+            'success': success,
+            'detail': detail,
+            'post_id': post_id,
+            'post_url': post_url
+        }
 
     def create_post(self, postdata):
-        # https://www.terrabkk.com/post/get_json_district?province_id=13   ->     for district
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        # print(postdata)
-        # postdata = postdata
-        # print(self.max_image)
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        post_img_url_lists = postdata['post_img_url_lists']
-        price_baht = postdata['price_baht']
-        addr_province = postdata['addr_province']
-        addr_district = postdata['addr_district']
-        addr_sub_district = postdata['addr_sub_district']
-        addr_road, addr_near_by, floorarea_sqm = ['-','','1']
-        addr_number = '1'
+        
+        success = ''
+        detail = ''
+        post_url = ''
+        post_id = ''
 
-
-        '''
-
-        'addr_number' = "1"
-        'addr_road' = "-"
-        land_size_rai = 0
-        land_size_ngang = 0
-        land_size_wah = 0
-        no of bedroom 
-        no of bathroom
-        usable sqare mt area 0 not allowed
-        no of parking sace
-        '''
-        if 'addr_road' in postdata and postdata['addr_road']!=None:
-            addr_road = postdata['addr_road']
-        else:
-            addr_road = "-"
-        if 'addr_near_by' in postdata:
-            addr_near_by = postdata['addr_near_by']
-        if 'floorarea_sqm' in postdata:
-            floorarea_sqm = postdata['floorarea_sqm']
-        if 'addr_number' in postdata:
-            addr_number = postdata['addr_number']
-        
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        post_title_en = postdata['post_title_en']
-        # post_description_en = postdata['post_description_en']
-        # floor_no = postdata['floor_level']
-        # bedroom = postdata['bed_room']
-        # bathroom = postdata['bath_room']
-        # ds_id = postdata["ds_id"]
-        name = postdata["name"]
-        mobile = postdata["mobile"]
-        email = postdata["email"]
-        # account_type = postdata["account_type"]
-        user = postdata["user"]
-        password = postdata["pass"]
-        # project_name = postdata["project_name"]
-        land_size_rai = postdata['land_size_rai']
-        land_size_ngan = postdata['land_size_ngan']
-        land_size_wah = postdata['land_size_wa']
-        print("printing create")
-        print(land_size_ngan,land_size_rai,land_size_wah)
-        if(post_title_en == ''):
-            post_title_en = post_title_th
-        try :
-            # land_size_ngan = land_size_ngan.srtip()
-            temp1 = int(land_size_ngan)
-            if temp1==None:
-                temp1 = 0
-        except:
-            land_size_ngan = '0'
-        try :
-            # land_size_rai = land_size_rai.srtip()
-            temp1 = int(land_size_rai)
-            if temp1==None:
-                temp1 = 0
-        except:
-            land_size_rai = '0'   
-        try :
-            # land_size_wah = land_size_wah.srtip()
-            temp1 = int(land_size_wah)
-            if temp1==None:
-                temp1 = 0
-        except:
-            land_size_wah = '0'
-        print(land_size_ngan,land_size_rai,land_size_wah)
-            
-        # post_description_en =  post_description_en.replace("\r\n","<br>")
-        # post_description_th =  post_description_th.replace("\r\n","<br>")
-        # post_description_th =  post_description_th.replace("\n","<br>")
-        
-        print(post_description_th)
-        province = {}
-        # print(addr_province)
-        # print(province[addr_province])
-        datapost = {
-           'act': 'ACT',
-            'freepost-id': '',
-            'case': '1',
-            'freepost-title_th': post_title_th,
-            'freepost-title_en': post_title_en + '.',
-            'freepost-property_id':'' ,
-            'freepost-other_property_name':'' ,
-            'freepost-permission': '1',
-            'freepost-post_type':'',#check for sell or rent and assign a number
-            'freepost-house_type': '', # Assign the property type here
-            'freepost_detail-post_by': '12',
-            'freepost_detail-build_type': '15',# check for what this build type correcponds to
-            'freepost_detail-address_street': addr_number,#check if adress is to be added
-            'freepost_detail-address_streetname': addr_road,#check if streetname is to be added
-            'freepost_detail-province_id':'',#Add the province id
-            'freepost_detail-amphur_id': '',#Add District accordingly
-            'freepost_detail-district_id': '',# subdistrict
-            'freepost_detail-postcode': '', # check if postal code is generated by some req and then assign it accordingly
-            'freepost-lat': geo_latitude,
-            'freepost-lng': geo_longitude,
-            'freepost-landarea_total_sqw':'', 
-            'freepost_detail-landsize_x': '',  #These might be only for land, since no field like this came for condo
-            'freepost_detail-landsize_y':'', 
-            'freepost_detail-property_condition': '0',
-            'freepost_detail-house_style': '0',
-            'freepost_detail-tenant': 'yes', 
-            'freepost_detail-detail_th': post_description_th,
-            'path': 'images/freepost/'
-        }
-        print(property_type)
-        land_area_sq = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
-        if(str(property_type) == str(1)):
-            datapost['freepost-house_type'] = '7'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                a = int(datapost['freepost-areasize_sqm'])
-                if datapost['freepost-areasize-sqm'] == None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']='0'  
-            datapost['freepost_detail-parking'] = '1'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            
-        elif(str(property_type) == str(2)):
-            datapost['freepost-house_type'] = '6'
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']='0'  
-            datapost['freepost_detail-parking'] = '1'
-            #datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-        elif(str(property_type) == str(3)):
-            datapost['freepost-house_type'] = '197'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-                
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '1'
-            #datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-        
-        elif(str(property_type) == str(4)):
-            datapost['freepost-house_type'] = '9'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'    
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44' 
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '1'
-            #datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0',
-            datapost['detail-sell_price_type']=''
-        elif(str(property_type) == str(5)):
-            datapost['freepost-house_type'] = '10'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = str(postdata['floor_area'])
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-                
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '1'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            datapost['freepost_detail-sell_discount_price']=''
-            datapost['freepost-sell_price_type'] = ''
-            del datapost['freepost_detail-build_type']
-        
-        elif(str(property_type) == str(6)):
-            datapost['freepost-house_type'] = '8'
-            datapost['freepost_detail-landarea_rai'] = land_size_rai
-            datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
-            datapost['freepost_detail-landarea_sqw'] = land_size_wah
-            try:
-                datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
-                a = int(datapost['freepost-landarea_total_sqw'])
-            except:
-                datapost['freepost-landarea_total_sqw'] = '0'
-                
-            datapost['freepost-sell_price_type'] = '26'
-        
-        elif(str(property_type) == str(7)):
-            datapost['freepost-house_type'] = '209'
-            datapost['freepost_detail-landarea_rai'] = land_size_rai
-            datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
-            datapost['freepost_detail-landarea_sqw'] = land_size_wah
-            
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            
-            try:
-                datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
-                a = int(datapost['freepost-landarea_total_sqw'])
-            except:
-                datapost['freepost-landarea_total_sqw'] = '0'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '0'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '0'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            datapost['freepost-sell_price_type'] = ''
-            datapost['freepost_detail-sell_discount_price']=''
-            
-        elif(str(property_type) == str(8)):
-            datapost['freepost-house_type'] = '210'
-            datapost['freepost_detail-landarea_rai'] = land_size_rai
-            datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
-            datapost['freepost_detail-landarea_sqw'] = land_size_wah
-            try :
-                datapost['freepost-are  asize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try:
-                datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
-                a = int(datapost['freepost-landarea_total_sqw'])
-            except:
-                datapost['freepost-landarea_total_sqw'] = '0'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '0'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '0'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            
-        elif(str(property_type) == str(9)):
-            datapost['freepost_detail-landarea_rai'] = land_size_rai
-            datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
-            datapost['freepost-house_type'] = '208'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-                
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '0'
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost-sell_price_type'] = '26'
-            datapost['freepost_detail-livingrooms']='' 
-            datapost['freepost_detail-parking']=''
-            datapost['freepost_detail-extrarooms']='' 
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            
-
-        elif(str(property_type) == str(10)):
-            datapost['freepost-house_type'] = '207'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '0'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '0'
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost-sell_price_type'] = '26'
-
-        elif(str(property_type) == str(25)):
-            datapost['freepost-house_type'] = '206'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost-sell_price_type'] = '26'
-            
-            
-        
-        else:
-            datapost['freepost-house_type'] = '11'
-            
-            
-            
-        if(listing_type == 'ขาย'):
-            datapost['freepost-post_type'] = '1'
-            datapost['freepost-sell_price']= price_baht
-            datapost['freepost-sell_price_type']='26'
-            datapost['freepost_detail-sell_discount_price']=''
-        else:
-            datapost['freepost-post_type'] = '4'
-            datapost['freepost_detail-rent_year'] = '34' #1 year rent
-            datapost['freepost-rent_price'] = price_baht
-            
-        with open('./static/9asset_province.json',encoding='utf-8') as f:
-            province = json.load(f)
-        # print(province)
-        for key in province:
-            # print("bleh")
-            # print(province[key])
-            if (addr_province.find(str(province[key]).strip()) != -1) :
-                # print("equuaallll")
-                addr_province = key
-                datapost['freepost_detail-province_id'] = '1' #addr_province
-        # login
         login = self.test_login(postdata)
-        success = login["success"]
-        detail = login["detail"]
-        post_id = ""
-        post_url = ""
-        filestoup = {}
-        print(success)
-        print(success=="True")
-        if(success == "True"):
-            datapost['freepost_detail-province_id'] = '1'
-            datapost['freepost_detail-district_id'] = '1' #i["id"]
-            datapost['freepost_detail-district_id'] = '1' #i["id"]
-            # print("debug2")
-            # for i in range(len(postdata['post_images'][:10])):
-            #     filestoup.append(('imgs', open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')))
-            #     filestoup.append(('imgs[]', open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')))
+        success = login['success']
+        detail = login['detail']
+        user_id = login['user_id']
+        access_token = login['access_token']
+        if success == True:
+            sleep(1)
+            post = self.post_prop('create',access_token,postdata)
+            success = post['success']
+            post_id = post['post_id']
+            post_url = post['post_url']
+            detail = post['detail']
 
-            r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_amphur_ajax/'+str(datapost['freepost_detail-province_id']), verify=False)
-            data = r.json()
-            print(data)
-            print("sent district : ",addr_district)
-            addr_district = addr_district.replace(' ','')
-            for i in data:
-                if(addr_district.find(i["name"]) != -1 or i["name"].find(addr_district) != -1):
-                    datapost['freepost_detail-amphur_id'] = '1' #i["id"]
-                    break
-            r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_district_ajax/'+str(datapost['freepost_detail-amphur_id']), verify=False)    
-            data = r.json()
-            addr_sub_district = addr_sub_district.replace(' ','')
-            for i in data:
-                if(addr_sub_district.find(i["name"]) != -1 or i["name"].find(addr_sub_district) != -1):
-                    datapost['freepost_detail-district_id'] ='1' #  i["id"]
-                    break
-            r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_postcode_ajax/'+str(datapost['freepost_detail-district_id']),verify=False)
-            datapost['freepost_detail-postcode'] = r.text.replace("\"",'')
-            r = httprequestObj.http_post('https://www.terrabkk.com/freepost/add_freepost_draft', data = datapost)#/property/show
-            print(r)
-            # print(r.text)
-            data = r.json()
-            # print(data)
-            check = data['state']
-            datapost['freepost-id'] = str(data['freepost_id'])
-            print("The data to be posted \n",datapost)
-            newdatapost = []
-            for key in datapost:
-                newdatapost.append((key,datapost[key]))
-            temp = []
-            for i in range(len(postdata['post_images'][:10])):
-                filestoup['imgs']=  open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                filestoup['imgs[]'] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                r = httprequestObj.http_post('https://www.terrabkk.com/uploader_front/freepost_img_upload/'+datapost['freepost-id'],data = newdatapost,files=filestoup)
-                data = r.json()
-                # print(r.text)
-                soup = BeautifulSoup(r.json()['text'], self.parser, from_encoding='utf-8')
-                r = soup.find('input',{"name" : "allpic[]"})["value"]
-                print(r)
-                temp.append(('allpic[]',r))
-                
-            # print(data)
-            # newdatapost = []
-            # for key in datapost:
-            #     newdatapost.append((key,datapost[key]))
-            # newdatapost.append(('freepost-id',datapost['freepost-id']))
-            # print(str(data["status"]))
-            print(check)
-            if(check) :
-                # soup = BeautifulSoup(data['text'], self.parser, from_encoding='utf-8')
-                # r = soup.findAll('input',{"name" : "allpic[]"})
-                # # print(r)
-                for i in temp:
-                    newdatapost.append(i)
-                print(newdatapost)
-                r = httprequestObj.http_post('https://www.terrabkk.com/free-post/'+datapost['freepost-id'],data=newdatapost)
-                if(re.search(r'โพสสำเร็จ',r.text)):
-                    success = "True"
-                    detail = "posted"
-                    post_id = datapost['freepost-id']
-                    post_url = 'https://www.terrabkk.com/freepost/show/'+post_id
-                else:
-                    success = "False"
-                    detail = "Post unsuccessful"
-            else :
-                success = "False"
-                detail = "Image not uploaded"
+            sleep(1)
+            self.logout_user(user_id,access_token)
         
         time_end = datetime.datetime.utcnow()
-        print({
+        time_usage = str(time_end - time_start)
+        return {
             "websitename": "terrabkk",
             "success": success,
-            "time_usage": time_end - time_start,
+            "time_usage": time_usage,
             "time_start": time_start,
             "time_end": time_end,
             "ds_id": postdata['ds_id'],
@@ -777,650 +323,41 @@ class terrabkk():
             "account_type": "",
             "detail": detail
         }
-        )
-        return {
-            "websitename": "terrabkk",
-            "success": success,
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
-            "ds_id": postdata['ds_id'],
-            "post_url": post_url,
-            "post_id": post_id,
-            "account_type": "",
-            "detail": detail
-        }
-
-    def boost_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
-
-        post_id = postdata['post_id']
-        log_id = postdata['log_id']
-        email_user = postdata['user']
-        email_pass = postdata['pass']
-        #https://www.terrabkk.com/member
-        #
-        #
-        #
-        login = self.test_login(postdata)
-        success = login["success"]
-        detail = login["detail"]
-        if(success == "True"):
-            
-            r = httprequestObj.http_get('https://www.terrabkk.com/freepost/push/'+str(post_id),verify=False)
-            # with open('/home/maxslide/Real_Estate/temp.html','w') as f:
-            #     f.write(r.text)
-            # print("Written")
-            if(r.text):
-                success = "True"
-                detail = "Boosted"
-            else:
-                success = "False"
-                detail = "Not boosted"
-        time_end = datetime.datetime.utcnow()
-        return {
-            "websitename": "terrabkk",
-            "success": success ,
-            "time_usage": time_end - time_start,
-            "time_start": time_start,
-            "time_end": time_end,
-            "ds_id": postdata['ds_id'],
-            "detail": detail,
-            "log_id": log_id,
-            "post_id": post_id,
-            "post_view": ""
-        }
-
-    def delete_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
-        
-        datapost = {'onsubmit': 'return remove_checkform();',
-        'freepost_id': '',
-        'remove-course': '3',
-        'remove-sellprice':'', 
-        'remove-date': '',
-        'remove-desc': 'dets'}
-        login = self.test_login(postdata)
-        success = login["success"]
-        detail = login["detail"]
-        post_id = postdata['post_id']
-        post_url = ''+post_id
-        if(success == "True"):
-            # print()
-            # print(postdata)
-            r = httprequestObj.http_post('https://www.terrabkk.com/freepost/client_cancel/'+str(post_id),data=datapost)
-            data = r.json()
-            # print(data)
-            # print(r.status_code)
-            success = str(data["state"])
-            detail = data["msg"]
-
-        time_end = datetime.datetime.utcnow()
-        return {
-            "websitename": "terrabkk",
-            "success": success,
-            "usage_time": time_end - time_start,
-            "start_time": time_start,
-            "end_time": time_end,
-            "detail": detail,
-            "ds_id": postdata['ds_id'],
-            "log_id": postdata['log_id'],
-        }
-
-
-
+    
     def edit_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        post_img_url_lists = postdata['post_img_url_lists']
-        price_baht = postdata['price_baht']
-        addr_province = postdata['addr_province']
-        addr_district = postdata['addr_district']
-        addr_sub_district = postdata['addr_sub_district']
-        addr_road, addr_near_by, floorarea_sqm = ['','','']
-        addr_number = '1'
-        if 'addr_road' in postdata:
-            addr_road = postdata['addr_road']
-        if 'addr_near_by' in postdata:
-            addr_near_by = postdata['addr_near_by']
-        if 'floorarea_sqm' in postdata:
-            floorarea_sqm = postdata['floorarea_sqm']
-        if 'addr_number' in postdata:
-            addr_number = postdata['addr_number']
-        
-        
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        post_title_en = postdata['post_title_th']
-        
-        name = postdata["name"]
-        mobile = postdata["mobile"]
-        email = postdata["email"]
-        # account_type = postdata["account_type"]
-        user = postdata["user"]
-        password = postdata["pass"]
-        land_size_rai = postdata['land_size_rai']
-        land_size_ngan = postdata['land_size_ngan']
-        land_size_wah = postdata['land_size_wa']
-        print(post_img_url_lists)
-        print("printing create")
 
-        if post_title_en == '':
-            post_title_en = post_title_th
-        try :
-            temp1 = int(land_size_ngan)
-        except:
-            land_size_ngan = '0'
-        try :
-            temp1 = int(land_size_rai)
-        except:
-            land_size_rai = '0'   
-        try :
-            temp1 = int(land_size_wah)
-        except:
-            land_size_wah = '0'
+        success = ''
+        detail = ''
+        post_url = ''
+        post_id = ''
 
-
-        province = {}
-        datapost = {
-            'act': 'act',
-            'freepost-id': str(postdata['post_id']),
-            'case': '1',
-            'freepost-title_th': post_title_th[:100],
-            'freepost-title_en': post_title_en[:100],
-            'freepost-property_id':'' ,
-            'freepost-other_property_name':'' ,
-            'freepost-permission': '1',
-            'freepost-post_type':'',#check for sell or rent and assign a number
-            'freepost-house_type': '', # Assign the property type here
-            'freepost_detail-post_by': '12',
-            'freepost_detail-build_type': '15',# check for what this build type correcponds to
-            'freepost_detail-address_street': addr_number,#check if adress is to be added
-            'freepost_detail-address_streetname': addr_road,#check if streetname is to be added
-            'freepost_detail-province_id': '1',#Add the province id
-            'freepost_detail-amphur_id': '1',#Add District accordingly
-            'freepost_detail-district_id': '1',# subdistrict
-            'freepost_detail-postcode': '10200', # check if postal code is generated by some req and then assign it accordingly
-            'freepost-lat': geo_latitude,
-            'freepost-lng': geo_longitude,
-            'freepost-landarea_total_sqw':'', 
-            'freepost_detail-landsize_x': '',  #These might be only for land, since no field like this came for condo
-            'freepost_detail-landsize_y':'', 
-            'freepost_detail-property_condition': '0',
-            'freepost_detail-house_style': '0',
-            'freepost_detail-tenant': 'yes',
-            'freepost_detail-landarea_rai': '',
-            'freepost_detail-landarea_ngaan': '',
-            'freepost-rent_price': '0',
-            'freepost_detail-detail_th': post_description_th,
-            'freepost_detail-rent_year': '0',
-            'freepost_detail-detail_en': '-'
-            # 'path': 'images/freepost/'
-        }
-
-        land_area_sq = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
-        if(str(property_type) == str(1)):
-            datapost['freepost-house_type'] = '7'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                a = int(datapost['freepost-areasize_sqm'])
-                if datapost['freepost-areasize-sqm'] == None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']='0'  
-            datapost['freepost_detail-parking'] = '1'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            
-        elif(str(property_type) == str(2)):
-            datapost['freepost-house_type'] = '6'
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']='0'  
-            datapost['freepost_detail-parking'] = '1'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-        elif(str(property_type) == str(3)):
-            datapost['freepost-house_type'] = '197'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-                
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '1'
-            #datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-        
-        elif(str(property_type) == str(4)):
-            datapost['freepost-house_type'] = '9'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'    
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44' 
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '1'
-            #datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0',
-            datapost['detail-sell_price_type']=''
-        elif(str(property_type) == str(5)):
-            datapost['freepost-house_type'] = '10'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = str(postdata['floor_area'])
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-                
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '1'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '44'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '1'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '1'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            datapost['freepost_detail-sell_discount_price']=''
-            datapost['freepost-sell_price_type'] = ''
-            del datapost['freepost_detail-build_type']
-        
-        elif(str(property_type) == str(6)):
-            datapost['freepost-house_type'] = '8'
-            datapost['freepost_detail-landarea_rai'] = land_size_rai
-            datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
-            datapost['freepost_detail-landarea_sqw'] = land_size_wah
-            try:
-                datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
-                a = int(datapost['freepost-landarea_total_sqw'])
-            except:
-                datapost['freepost-landarea_total_sqw'] = '0'
-                
-            datapost['freepost-sell_price_type'] = '26'
-        
-        elif(str(property_type) == str(7)):
-            datapost['freepost-house_type'] = '209'
-            datapost['freepost_detail-landarea_rai'] = land_size_rai
-            datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
-            datapost['freepost_detail-landarea_sqw'] = land_size_wah
-            
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            
-            try:
-                datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
-                a = int(datapost['freepost-landarea_total_sqw'])
-            except:
-                datapost['freepost-landarea_total_sqw'] = '0'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '0'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '0'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            datapost['freepost-sell_price_type'] = ''
-            datapost['freepost_detail-sell_discount_price']=''
-            
-        elif(str(property_type) == str(8)):
-            datapost['freepost-house_type'] = '210'
-            datapost['freepost_detail-landarea_rai'] = land_size_rai
-            datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
-            datapost['freepost_detail-landarea_sqw'] = land_size_wah
-            try :
-                datapost['freepost-are  asize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try:
-                datapost['freepost-landarea_total_sqw'] = str(400*int(land_size_rai) + 100*int(land_size_ngan) + 1*int(land_size_wah))
-                a = int(datapost['freepost-landarea_total_sqw'])
-            except:
-                datapost['freepost-landarea_total_sqw'] = '0'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '0'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '0'
-            datapost['freepost_detail-livingrooms']=''  
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost_detail-extrarooms']= '0'
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            
-        elif(str(property_type) == str(9)):
-            datapost['freepost_detail-landarea_rai'] = land_size_rai
-            datapost['freepost_detail-landarea_ngaan'] = land_size_ngan
-            datapost['freepost-house_type'] = '208'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-                
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '0'
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost-sell_price_type'] = '26'
-            datapost['freepost_detail-livingrooms']='' 
-            datapost['freepost_detail-parking']=''
-            datapost['freepost_detail-extrarooms']='' 
-            datapost['freepost_detail-property_finished_year']= '0'
-            datapost['freepost_detail-property_buy_year']= '0'
-            datapost['freepost_detail-facing']='0'
-            
-
-        elif(str(property_type) == str(10)):
-            datapost['freepost-house_type'] = '207'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            try :
-                datapost['freepost_detail-room_type'] = str(43 + min(int(postdata['bed_room']),10))
-                a = int(datapost['freepost_detail-room_type'])
-            except : 
-                datapost['freepost_detail-room_type'] = '0'
-            try : 
-                datapost['freepost_detail-bathrooms'] = postdata['bath_room']
-                a = int(datapost['freepost_detail-bathrooms'])
-            except :
-                datapost['freepost_detail-bathrooms'] = '0'
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost-sell_price_type'] = '26'
-
-        elif(str(property_type) == str(25)):
-            datapost['freepost-house_type'] = '206'
-            datapost['freepost_detail-landarea_sqw'] = land_area_sq
-            datapost['freepost-landarea_total_sqw'] = land_area_sq
-            try :
-                datapost['freepost-areasize_sqm'] = postdata['floor_area']
-                if datapost['freepost-areasize-sqm'] ==None or datapost['freepost-areasize-sqm'] == 0:
-                    datapost['freepost-areasize-sqm'] = '1'
-                a = int(datapost['freepost-areasize-sqm'])
-            except:
-                datapost['freepost-areasize_sqm'] = '1'
-            try :
-                datapost['freepost_detail-numberoffloors'] = postdata['floor_total']
-                a = int(datapost['freepost_detail-numberoffloors'])
-            except : 
-                datapost['freepost_detail-numberoffloors'] = '0'
-            datapost['freepost_detail-parking'] = '0'
-            datapost['freepost-sell_price_type'] = '26'
-        else:
-            datapost['freepost-house_type'] = '11'    
-        if(listing_type == 'ขาย'):
-            datapost['freepost-post_type'] = '1'
-            datapost['freepost-sell_price']= price_baht
-            datapost['freepost-sell_price_type']='26'
-            datapost['freepost_detail-sell_discount_price']=''
-        else:
-            datapost['freepost-post_type'] = '4'
-            datapost['freepost_detail-rent_year'] = '34' #1 year rent
-            datapost['freepost-rent_price'] = price_baht
-            
-        # login
         login = self.test_login(postdata)
-        success = login["success"]
-        detail = login["detail"]
-        post_id = str(postdata["post_id"])
-        post_url = ""
-        filestoup = {}
-        if success == "True":
-            with open('./static/9asset_province.json',encoding='utf-8') as f:
-                province = json.load(f)
-            for key in province:
-                if (addr_province.find(str(province[key]).strip()) != -1) :
-                    addr_province = key
-                    datapost['freepost_detail-province_id'] = key
-                    break
-            r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_amphur_ajax/'+str(datapost['freepost_detail-province_id']), verify=False)
-            data = r.json()
+        success = login['success']
+        detail = login['detail']
+        user_id = login['user_id']
+        access_token = login['access_token']
+        if success ==True:
+            sleep(1)
+            edit = self.post_prop('edit',access_token,postdata)
+            success = edit['success']
+            post_id = edit['post_id']
+            post_url = edit['post_url']
+            if success == True:
+                detail = 'Your post has been updated.'
+            else:
+                detail = edit['detail']
 
-            addr_district = addr_district.replace(' ','')
-            for i in data:
-                if(addr_district.find(i["name"]) != -1 or i["name"].find(addr_district) != -1):
-                    datapost['freepost_detail-amphur_id'] = i["id"]
-                    break
-            r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_district_ajax/'+str(datapost['freepost_detail-amphur_id']), verify=False)    
-            data = r.json()
-            addr_sub_district = addr_sub_district.replace(' ','')
-            for i in data:
-                if(addr_sub_district.find(i["name"]) != -1 or i["name"].find(addr_sub_district) != -1):
-                    datapost['freepost_detail-district_id'] = i["id"]
-                    break
-            r = httprequestObj.http_get('https://www.terrabkk.com/freepost/get_postcode_ajax/'+str(datapost['freepost_detail-district_id']),verify=False)
-            datapost['freepost_detail-postcode'] = r.text.replace("\"",'')
-
-
-            res = httprequestObj.http_post("https://www.terrabkk.com/freepost/add_freepost", data=datapost)
-            soup = BeautifulSoup(res.text, features=self.parser)
-            if len(postdata['post_images'])>0:
-                img_div = soup.find(id='sortFpImg')
-                if img_div:
-                    for img in img_div.find_all('a'):
-                        if img.get('href') and 'unlink_img' in img.get('href'):
-                            img_data = {
-                                'src': img.get('data-post')
-                            }
-                            httprequestObj.http_post("https://www.terrabkk.com/freepost/unlink_img/"+post_id, data=img_data)
-            print()
-            print(postdata['post_images'])
-            for image in postdata['post_images'][:10]:
-                img_data = {
-                    "act": "ACT",
-                    "path": "images/freepost/",
-                    "freepost-id": post_id    
-                }
-                f = open(os.getcwd() + "/"+ image,'rb')
-                files = {
-                    "imgs": f,
-                    "imgs[]": f
-                }
-                r = httprequestObj.http_post("https://www.terrabkk.com/uploader_front/freepost_img_upload/"+post_id, data=img_data, files=files)
-                print(r.status_code)
-                if r.status_code==200:
-                    r = r.json()
-                    print(r)
-                    if r['status']=="TRUE":
-                        soup = BeautifulSoup(r['text'], features=self.parser)
-                    else:
-                        success = "false"
-                        detail = r['text']
-            if success=="true":
-                image_links = [
-                    ("act", "ACT"),
-                    ("freepost-id", post_id),
-                    ("path", "images/freepost/")
-                ]
-                for img in soup.find_all('a'):
-                    # print(img.get('href'))
-                    if img.get('href') and 'unlink_img' in img.get('href'):
-                        image_links.append(("allpic[]", img.get('data-post')))
-                print(image_links)
-                r = httprequestObj.http_post("https://www.terrabkk.com/freepost/freepost_photos/"+post_id, data=image_links)
-                
-                print("Written")
-                if 'พสสำเร็จ' in r.text:
-                    success = "True"
-                    detail = "edited successfully"
-                    post_id = datapost['freepost-id']
-                    post_url = 'https://www.terrabkk.com/freepost/show/'+post_id
-                else:
-                    success = "False"
-                    detail = "Post unsuccessful"   
+            sleep(1)
+            self.logout_user(user_id,access_token)
       
         time_end = datetime.datetime.utcnow()
+        time_usage = str(time_end - time_start)
         return {
             "websitename": "terrabkk",
             "success": success,
-            "time_usage": time_end - time_start,
+            "time_usage": time_usage,
             "time_start": time_start,
             "time_end": time_end,
             "ds_id": postdata['ds_id'],
@@ -1431,104 +368,93 @@ class terrabkk():
             "detail": detail
         }
 
+    def boost_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+        success = False
+        detail = 'No option boost in this site'
+        time_end = datetime.datetime.utcnow()
+        time_usage = str(time_end - time_start)
+        return {
+            "websitename": "terrabkk",
+            "success": success ,
+            "time_usage": time_usage,
+            "time_start": time_start,
+            "time_end": time_end,
+            "ds_id": postdata['ds_id'],
+            "detail": detail,
+            "log_id": postdata['log_id'],
+            "post_id": postdata['post_id'],
+            "post_view": ""
+        }
+
+    def delete_post(self, postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+        success = False
+        detail = ''
+
+        login = self.test_login(postdata)
+        success = login['success']
+        detail = login['detail']
+        user_id = login['user_id']
+        access_token = login['access_token']
+        sleep(1)
+        if success == True:
+            url = 'https://www.terrabkk.com/restapi/v2/property'
+            headers = {
+                'Authorization': access_token,
+                'Content-Type': 'application/json'
+            }
+            data = {'freepost_id':postdata['post_id']}
+            r = requests.delete(url, data= json.dumps(data), headers=headers)
+            response = r.json()
+            success = response['success']
+            if success == True:
+                detail = 'Your post has been deleted.'
+            else:
+                error = response['messages']
+                try:
+                    detail = error[0]
+                except:
+                    detail = '{}.Please tell your developer to know this problem'.format(error)
+            sleep(1)
+            self.logout_user(user_id,access_token)
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = str(time_end - time_start)
+        return {
+            "websitename": "terrabkk",
+            "success": success,
+            "usage_time": time_usage,
+            "start_time": time_start,
+            "end_time": time_end,
+            "detail": detail,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+        }
 
     def search_post(self,postdata):
         #self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         #search
         start_time = datetime.datetime.utcnow()
-
-        login = self.test_login(postdata)
-        post_found = "False"
-        post_id = ""
-        post_url = ''
-        post_view = ''
-        post_modify_time = ''
-        post_create_time = ''
-        detail = 'No post with this title'
-        title = ''
-        # print(login['success']+"##")
-        if (login['success'] == 'True'):
-            try:
-                account = postdata['account_type']
-            except:
-                account = 'null'
-
-            r = httprequestObj.http_get('https://www.terrabkk.com/member/my-freepost?status=1')
-            soup = BeautifulSoup(r.content, 'html.parser')
-            pages = soup.find('ul', attrs={'class': 'pagination'})
-            last = pages.find_all('li')[-1]
-            max_p = int(last.find('a')['data-ci-pagination-page'])
-            print(max_p)
-
-            for page in range(1,max_p+1):
-                if post_found == "true" :
-                    break
-                print(page)
-                all_posts_url = 'https://www.terrabkk.com/member/my-freepost/%d?status=1' % page
-
-                all_posts = httprequestObj.http_get(all_posts_url)
-
-                page = BeautifulSoup(all_posts.content, features = "html.parser")
-
-
-                divi = page.find('div', attrs = {'class':'row pt-3'})
-                temp = divi.findAll('a',attrs={'target':'_blank'})
-                xyz = []
-                for i in range(len(temp)):
-                    if i%2 == 1:
-                        xyz.append(temp[i])
-                if xyz == None:
-                    detail = "Post Not Found"
-                else:
-                    flag= 0
-                    for one in xyz:
-                        #if one.has_attr('target') and one['target']=='_blank':
-                        post_url = one['href']
-                        titl = one.text
-                        if titl == None:
-                            continue
-                        if titl.strip() == postdata['post_title_th'].strip():
-
-                            post_found = "true"
-                            r = httprequestObj.http_get(post_url)
-                            sou = BeautifulSoup(r.text,'html.parser')
-                            datv = sou.find('div',attrs={'class':'item-share row'}).findAll('a',attrs={'class':'col-auto'})
-                            print(datv[1].text + "date")
-                            print(datv[2].text+"view")
-                            post_create_time = datv[1].text.split(' ')[-1]
-                            post_id = post_url.split('/')[-2]
-                            post_view = datv[2].text.split(' ')[0]
-                            detail = "Post Found "
-                            flag=1
-                            break
-                    if flag==0:
-                        detail = "Post Not Found"
-                        post_url=''
-                        post_found = 'False'
-                                  
-        else :
-            detail = login['detail']
-            post_found = 'False'
-
         end_time = datetime.datetime.utcnow()
-        
-
         return {
             "websitename": "terrabkk",
-            "success": login['success'],
+            "success": False,
             "start_time": str(start_time),
             "end_time": str(end_time),
             "usage_time": str(end_time - start_time),
-            "detail": detail,
-            "account_type":account,
+            "detail": "No post with given title",
+            "account_type":'null',
             "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
-            "post_id": post_id,
-            "post_url": post_url,
-            "post_modify_time": post_modify_time,
-            "post_create_time" : post_create_time,
-            "post_view": post_view,
-            "post_found": post_found
+            "post_id": "",
+            "post_url": "",
+            "post_modify_time": '',
+            "post_create_time" : '',
+            "post_view": '',
+            "post_found": False
         }
     def print_debug(self, msg):
         if(self.debug == 1):
