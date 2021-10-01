@@ -1,5 +1,6 @@
 from anticaptchaofficial.recaptchav2proxyless import *
 from anticaptchaofficial.imagecaptcha import *
+from anticaptchaofficial.hcaptchaproxyless import *
 import requests
 import os
 import shutil
@@ -7,10 +8,20 @@ import time
 
 class lib_captcha():
     def __init__(self):
-        self.set_key = "28b19f8fa1d583a46e2cec418f8b0172"
+        self.set_key = "b6cba1a55625222104231e2e3eeed069"
         
     def reCaptcha(self,sitekey, url):
         solver = recaptchaV2Proxyless()
+        solver.set_verbose(1)
+        solver.set_key(self.set_key)
+        solver.set_website_url(url)
+        solver.set_website_key(sitekey)
+
+        g_response = solver.solve_and_return_solution()
+        return g_response
+    
+    def HCaptcha(self,sitekey, url):
+        solver = hCaptchaProxyless()
         solver.set_verbose(1)
         solver.set_key(self.set_key)
         solver.set_website_url(url)
