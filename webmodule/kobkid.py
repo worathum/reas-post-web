@@ -512,134 +512,16 @@ class kobkid():
         post_id = postdata['post_id']
         post_url = ''
         success = 'false'
-        delete = self.delete_post(postdata)
+        self.delete_post(postdata)
         post_id = postdata['post_id']
-        if delete['success']== True:
-            post = self.create_post(postdata)
-            post_url = post['post_url']
-            post_id = post['post_id']
-            success = post['success']
-            detail = post['detail']
-            if success == 'true':
-                detail = "Post Edited Succesfully"
-        else:
-            detail = delete['detail']
-        """orders = self.check_current_post(postdata)
+        post = self.create_post(postdata)
+        post_url = post['post_url']
+        post_id = post['post_id']
+        success = post['success']
+        detail = post['detail']
+        if success == 'true':
+            detail = "Post Edited Succesfully"
 
-        login = self.test_login(postdata)
-        if(login['success'] == False):
-            end_time = datetime.datetime.utcnow()
-            return login
-        post_id = postdata['post_id']
-
-        if(str(post_id) not in orders):
-            result = False
-            detail = 'Post Not Created By User'
-            end_time = datetime.datetime.utcnow()
-            return {
-                "success": result,
-                "start_time": str(start_time),
-                "end_time": str(end_time),
-                'ds_id': postdata['ds_id'],
-                "log_id": postdata['log_id'],
-                "usage_time": str(end_time - start_time),
-                "detail": detail,
-                "websitename": "kobkid"
-            }
-
-        if (postdata['listing_type'] == 'เช่า'):
-            post_type = 'RENTAL'
-
-        else:
-            post_type = 'SELL'
-
-        if (post_type == 'SELL'):
-            posttag = '11'
-
-        else:
-            posttag = '0'
-
-        if (postdata['bed_room'] == 1):
-            room_type = 2
-
-        elif (postdata['bed_room'] == 2):
-            room_type = 3
-
-        elif (postdata['bed_room'] == 3):
-            room_type = 4
-
-        else:
-            room_type = 5
-        if(postdata['post_images'] != None):
-            allimages = postdata['post_images']
-            for i in range(len(allimages)):
-
-                image_data = {
-                    'post-id': post_id,
-                    'file': (allimages[i], open(os.getcwd()+"/"+allimages[i], 'rb'), 'image/png')
-                }
-
-                response = httprequestObj.http_post('https://www.kobkid.com/market/imgUpload.php', files=image_data,
-                                                    data=image_data)
-                result = json.loads(response.content.decode('utf-8'))
-                if (result['success'] == False):
-                    end_time = datetime.datetime.utcnow()
-                    return {
-                        "success": False,
-                        "start_time": str(start_time),
-                        "end_time": str(end_time),
-                        'ds_id': postdata['ds_id'],
-                        "log_id": postdata['log_id'],
-                        "usage_time": str(end_time - start_time),
-                        "detail": "Unable To Post Images",
-                        "websitename": "kobkid"
-                    }
-        if('building' not in postdata or postdata['building'] == None):
-            building_name = ''
-
-        else:
-            building_name = postdata['building']
-
-        if("floor_level" not in postdata or postdata['floor_level'] == None):
-            floor_level = ''
-        else:
-            floor_level = postdata['floor_level']
-
-        #print(floor_level)
-
-        if 'floor_level' not in postdata or postdata['floor_level'] is None:
-            postdata['floor_level'] = ''
-        edit_data = {
-            'action': 'postedit',
-            'postid': post_id,
-            'posttitle': postdata['post_title_th'],
-            'posttag': posttag,
-            'contactname': postdata['name'],
-            'contacttel': postdata['mobile'],
-            'contactemail': postdata['email'],
-            'postdetail': postdata['post_description_th'],
-            'roomtype': room_type,
-            'roomsize': postdata['floor_area'],
-            'buildingno': building_name,
-            'floorno': floor_level,
-            'postprice': postdata['price_baht'],
-            'postdeposit': '0',
-            'postfac': ''
-        }
-        response = httprequestObj.http_post('https://www.kobkid.com/market/postaction.php', data=edit_data)
-        result = json.loads(response.content.decode('utf-8'))['actionSuccess']
-
-        if(result == True):
-            detail = "Post Edited"
-
-        else:
-            detail = "Unable to Edit The Post"
-
-        end_time = datetime.datetime.utcnow()
-        try:
-            log_id = postdata['log_id']
-        except:
-            log_id = """""
         end_time = datetime.datetime.utcnow()
         return {
             "success": success,
