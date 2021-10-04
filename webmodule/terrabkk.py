@@ -305,8 +305,10 @@ class terrabkk():
             post_id = post['post_id']
             post_url = post['post_url']
             detail = post['detail']
-            if detail=='<p>The Listing Title (EN) field is required.</p>\n':
-                detail = 'This website requires an English post title.'
+            if '<p>The Listing Title (EN) field is required.</p>' in detail:
+                detail = 'This website is requires an English post title.'
+            elif '<p>The Sub district code field is required.</p>' in detail:
+                detail = 'This website is required to fill in the district information.'
             sleep(1)
             self.logout_user(user_id,access_token)
         
