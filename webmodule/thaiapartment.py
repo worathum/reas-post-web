@@ -361,8 +361,8 @@ class thaiapartment():
 
             if postdata['property_type'] == '7':
                 r = httprequestObj.http_get('https://www.thaiapartment.com/postadd')
-                print(r.url)
-                print(r.status_code)
+                #print(r.url)
+                #print(r.status_code)
 
                 ##with open('/home/codelover/Desktop/rough.html', 'w') as f:
                 #   #f.write(r.text)
@@ -378,11 +378,11 @@ class thaiapartment():
 
                 r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetProvince',
                                              headers={'content-type': 'application/json; charset=UTF-8'}, data=data)
-                print(r.url)
-                print(r.status_code)
+                #print(r.url)
+                #print(r.status_code)
 
                 data = r.json()['d']
-                print(data)
+                #print(data)
                 province_id = data[0]['value']
                 province_name = data[0]['name']
 
@@ -394,13 +394,13 @@ class thaiapartment():
                         province_name = area
                         break
 
-                print('Province_id = ' + province_id)
+                #print('Province_id = ' + province_id)
 
                 data = '{"knownCategoryValues":"PROVINCE_ID:' + province_id + ';","category":"AMPHUR_ID"}'
 
                 r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetAmphur', headers= {'content-type': 'application/json; charset=UTF-8'}, data=data)
-                print(r.url)
-                print(r.status_code)
+                #print(r.url)
+                #print(r.status_code)
 
                 data = r.json()['d']
                 district_id = data[0]['value']
@@ -414,14 +414,14 @@ class thaiapartment():
                         district_name = area
                         break
 
-                print('District_id = ' + district_id)
+                #print('District_id = ' + district_id)
 
                 data = '{"knownCategoryValues":"PROVINCE_ID:'+province_id+';AMPHUR_ID:'+district_id+';","category":"DISTRICT_ID"}'
 
                 r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetDistrict',
                                              headers={'content-type': 'application/json; charset=UTF-8'}, data=data)
-                print(r.url)
-                print(r.status_code)
+                #print(r.url)
+                #print(r.status_code)
 
                 data = r.json()['d']
                 sub_district_id = data[0]['value']
@@ -435,13 +435,12 @@ class thaiapartment():
                         sub_district_name = area
                         break
 
-                print('Subdistrict_id = ' + sub_district_id)
+                #print('Subdistrict_id = ' + sub_district_id)
 
                 # print(event_target)
                 # print(event_argument)
-                print(viewstate)
-                print(viewstate_gen)
-
+                #print(viewstate)
+                #print(viewstate_gen)
                 datapost = [
                     ('__EVENTTARGET', ''),
                     ('__EVENTARGUMENT', ''),
@@ -474,14 +473,10 @@ class thaiapartment():
                 ]
 
                 r = httprequestObj.http_post('https://www.thaiapartment.com/postadd', data=datapost)
-                print(r.url)
-                print(r.status_code)
 
                 post_id = r.url.split('=')[-1]
 
                 r = httprequestObj.http_get('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
-                print(r.url)
-                print(r.status_code)
 
                 soup = BeautifulSoup(r.content, self.parser)
                 # event_target = soup.find('input', {'name': '__EVENTTARGET'}).get('value')
@@ -513,12 +508,8 @@ class thaiapartment():
                 }
 
                 r = httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
-                print(r.url)
-                print(r.status_code)
 
                 r = httprequestObj.http_get('https://www.thaiapartment.com/post2?id=' + post_id)
-                print(r.url)
-                print(r.status_code)
 
                 soup = BeautifulSoup(r.content, self.parser)
                 # event_target = soup.find('input', {'name': '__EVENTTARGET'}).get('value')
@@ -550,8 +541,6 @@ class thaiapartment():
                 }
 
                 r = httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
-                print(r.url)
-                print(r.status_code)
 
                 # r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=3326', data=datapost)
                 # print(r.url)
@@ -565,16 +554,12 @@ class thaiapartment():
                 # event_validation = soup.find('input', {'name': '__EVENTVALIDATION'}).get('value')
 
                 r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
-                print(r.url)
-                print(r.status_code)
 
                 ##with open('/home/codelover/Desktop/rough.html', 'w') as f:
                 #   #f.write(r.text)
 
                 for i, img in enumerate(postdata['post_images']):
                     r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
-                    print(r.url)
-                    print(r.status_code)
 
                     # #with open('/home/codelover/Desktop/rough.html', 'w') as f:
                     #     #f.write(r.text)
@@ -598,12 +583,8 @@ class thaiapartment():
                     ]
 
                     r = httprequestObj.http_post('https://www.thaiapartment.com/post3?id=' + post_id, data={}, files=datapost)
-                    print(r.url)
-                    print(r.status_code)
 
                 r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
-                print(r.url)
-                print(r.status_code)
 
                 soup = BeautifulSoup(r.content, self.parser)
                 # event_target = soup.find('input', {'name': '__EVENTTARGET'}).get('value')
@@ -623,8 +604,6 @@ class thaiapartment():
                 ]
 
                 r = httprequestObj.http_post('https://www.thaiapartment.com/post3?id=' + post_id, data={}, files=datapost)
-                print(r.url)
-                print(r.status_code)
 
                 # #with open('/home/codelover/Desktop/rough.html', 'w') as f:
                 #     #f.write(r.text)
@@ -635,9 +614,6 @@ class thaiapartment():
 
             elif postdata['property_type'] == '1':
                 r = httprequestObj.http_get('https://www.thaiapartment.com/condoadd')
-                print(r.url)
-                print(r.status_code)
-
                 ######with open('/home/codelover/Desktop/rough.html', 'w') as f:
                 #    #f.write(r.text)
 
@@ -650,7 +626,7 @@ class thaiapartment():
 
                 project_names = soup.find('select', {'name': 'ctl00$ContentPlaceHolder1$lblProjectID'}).findChildren('option')[1:]
 
-                project_id = project_names[0].get('value')
+                project_id = 0
                 for project in project_names:
                     name = project.string
                     if name.replace(' ', '') in postdata['web_project_name'].replace(' ', '') or postdata['web_project_name'].replace(' ', '') in name.replace(' ', ''):
@@ -723,9 +699,6 @@ class thaiapartment():
 
                 # print(event_target)
                 # print(event_argument)
-                print(viewstate)
-                print(viewstate_gen)
-
                 datapost = [
                     ('__EVENTTARGET', ''),
                     ('__EVENTARGUMENT', ''),
@@ -1360,7 +1333,7 @@ class thaiapartment():
                                               {'name': 'ctl00$ContentPlaceHolder1$lblProjectID'}).findChildren(
                         'option')[1:]
 
-                    project_id = project_names[0].get('value')
+                    project_id = 0
                     for project in project_names:
                         name = project.string
                         if name.replace(' ', '') in postdata['web_project_name'].replace(' ', '') or postdata[
