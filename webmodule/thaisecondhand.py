@@ -10,8 +10,6 @@ import datetime
 import sys
 from urllib.parse import unquote
 import os
-import random
-
 
 httprequestObj = lib_httprequest()
 
@@ -282,7 +280,7 @@ class thaisecondhand():
             link = re.findall(r'https://www.thaisecondhand.com/product/\d+',data)
             # print("printing link",link)
             if len(link) == 0:
-                success = "False"    
+                success = "False"
                 detail = "Cannot post to Thai second hand"
                 while self.max_image > 1:
                     self.max_image -= 1               
