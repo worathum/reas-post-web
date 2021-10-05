@@ -19,7 +19,6 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from PIL import Image
 
-httprequestObj = lib_httprequest()
 
 '''
 https://www.dotproperty.co.th/login
@@ -43,13 +42,14 @@ class dotproperty():
         self.debug = 0
         self.debugresdata = 0
         self.PARSER = 'html.parser'
+        self.session = lib_httprequest()
 
 # _token=zTBJM5ODToev1CyL1fA6y2FwYf3hjYi6pgwHF61d&agency_id=&company_name=&email=amarin_ta@hotmail.com&mail_list=yes&name=amarin%20boonkirt&password=5k4kk3253434&phone=&phone-full=&seller_type=private&type_register=buyer&username=
     def register_user(self, data):
         #self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
 
-        r = httprequestObj.http_get_with_headers(self.primary_domain + '/signup', verify=False)
+        r = self.session.http_get_with_headers(self.primary_domain + '/signup', verify=False)
         data1 = r.text
         soup = BeautifulSoup(data1, self.PARSER)
 
@@ -89,7 +89,7 @@ class dotproperty():
             success = 'false'
             detail = 'Password length must be at least 6'
         else:
-            r = httprequestObj.http_post_with_headers(self.primary_domain + '/signup', data=postdata)
+            r = self.session.http_post_with_headers(self.primary_domain + '/signup', data=postdata)
             txt = str(r.text)
 
             if txt.find('ประเทศไทย เช่าอสังหาริมทรัพย')==-1:
