@@ -287,7 +287,7 @@ class livinginsider():
                 typep = 1
 
             postdata['post_description_th'] = postdata['post_description_th'].replace('\r', '')
-
+            postdata['post_title_th'] = (str(postdata['post_title_th']).replace("\n", ""))
             if str(postdata['property_type']) == '1':
                 data = {
                     'currentstep': '1',
@@ -511,8 +511,7 @@ class livinginsider():
                     data['web_photo_caption[' + str(i) + '][caption]'] = ''
 
             elif theprodid == 6:
-                # if land_size_wa == 0:
-                # land_size_wa=1
+                postdata['floorarea_sqm'] = int(postdata['floorarea_sqm'])/4
                 data = {
                     'currentstep': '2',
                     'web_room': postdata['bed_room'],
@@ -623,7 +622,7 @@ class livinginsider():
                     data['web_photo_caption[' + str(i) + '][web_id]'] = ''
                     data['web_photo_caption[' + str(i) + '][photoname]'] = files[i]
                     data['web_photo_caption[' + str(i) + '][caption]'] = ''
-            # print(data)
+            print(data)
             headers = {
                 'Connection': 'keep-alive',
                 'Pragma': 'no-cache',
