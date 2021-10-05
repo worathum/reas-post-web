@@ -708,36 +708,34 @@ class nineasset():
         filestoup = {}
         # print("postimages",postdata['post_images'])
         imagename = []
-        
+
         # print(datapost["first"])
         #print("debug")
         #print(success)
         # print(filestoup)
         if(success == "True"):
             for i in range(len(postdata['post_images'][:10])):
-                # print(i)
                 filestoup["images[0]"] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                r = httprequestObj.http_post('http://9asset.com/file/upload',data="", files = filestoup)
-                # print(r.json())
+                r = httprequestObj.http_post('https://www.9asset.com/file/upload',data="", files = filestoup)
                 imagename.append(r.json()[0]["full"])
                 datapost.append(('images[]', r.json()[0]["full"]))
             # print(imagename)
-            # print("debug2")
-            r = httprequestObj.http_post('http://9asset.com/getDistrictAjax', data = {"city" : addr_district })
+
+            r = httprequestObj.http_post('https://www.9asset.com/getDistrictAjax', data = {"city" : addr_district })
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             districtcontent = [[str(x.text),str(x['value'])] for x in soup.find_all('option')]
             for i in districtcontent:
                 if(i[0] == addr_district):
                     datapost.append(('district', i[1]))
                     break
-            r = httprequestObj.http_get('http://9asset.com/form/'+str(post_id)+'/edit')
+            r = httprequestObj.http_get('https://www.9asset.com/form/'+str(post_id)+'/edit')
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             project_id = soup.find("input", {"name": "project_ID"})
             if project_id:
                 project_id = project_id.get('value')
                 datapost.append(("project_ID", project_id))
                 # print(datapost)
-                r = httprequestObj.http_post('http://9asset.com/posted/save/'+str(post_id), data = datapost)#/property/show
+                r = httprequestObj.http_post('https://www.9asset.com/posted/save/'+str(post_id), data = datapost)#/property/show
                 data = r.text
                 # print(data)
                 link = re.findall(r'อัพเดทประกาศ',data)
