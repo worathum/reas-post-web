@@ -159,7 +159,7 @@ class terrabkk():
             try:
                 detail = error[0]
             except:
-                detail = '{}.Please tell your developer to know this problem'.format(error)
+                detail = '{}.'.format(error)
 
         time_end = datetime.datetime.utcnow()
         time_usage = str(time_end - time_start)
@@ -189,7 +189,15 @@ class terrabkk():
         postdata['post_description_en'] = ''.join(c for c in postdata['post_description_en'] if c <= '\uFFFF')
         postdata['post_description_th'] = postdata['post_description_th'].replace('\r\n', '<br>')
         postdata['post_description_en'] = postdata['post_description_en'].replace('\r\n', '<br>')
-            
+
+        postdata['land_size_wa'] = int(postdata['land_size_wa'])
+        postdata['land_size_rai'] = int(postdata['land_size_rai'])
+        if postdata['land_size_wa'] >=400:
+            postdata['land_size_rai'] += postdata['land_size_wa']//400
+            postdata['land_size_wa'] = postdata['land_size_wa']%400
+        postdata['land_size_wa'] = str(postdata['land_size_wa'])
+        postdata['land_size_rai'] = str(postdata['land_size_rai'])
+
         property_type = {
             '1':'CONDOMINIUM',
             '2':'DETACHED_HOUSE',
@@ -246,8 +254,10 @@ class terrabkk():
         }
 
         if postdata['property_type'] != 'LAND':
-            data["bedrooms"] = postdata['bed_room']
-            data["bathrooms"] = postdata['bath_room']
+            if postdata['bed_room'] != '':
+                data["bedrooms"] = postdata['bed_room']
+            if postdata['bath_room'] != '':
+                data["bathrooms"] = postdata['bath_room']
 
         if postdata['listing_type'] == 'ขาย':
             data["post_type"] = 'SELL'
@@ -273,7 +283,7 @@ class terrabkk():
             try:
                 detail = error[0]
             except:
-                detail = '{}.Please tell your developer to know this problem'.format(error)
+                detail = '{}.'.format(error)
             post_id = ''
             post_url = ''
 
@@ -334,7 +344,6 @@ class terrabkk():
         success = ''
         detail = ''
         post_url = ''
-        post_id = ''
 
         login = self.test_login(postdata)
         success = login['success']
@@ -366,7 +375,7 @@ class terrabkk():
             "ds_id": postdata['ds_id'],
             "log_id":postdata['log_id'],
             "post_url": post_url,
-            "post_id": post_id,
+            "post_id": postdata['post_id'],
             "account_type": "",
             "detail": detail
         }
@@ -420,7 +429,7 @@ class terrabkk():
                 try:
                     detail = error[0]
                 except:
-                    detail = '{}.Please tell your developer to know this problem'.format(error)
+                    detail = '{}.'.format(error)
             sleep(1)
             self.logout_user(user_id,access_token)
 
