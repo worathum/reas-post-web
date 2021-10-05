@@ -215,20 +215,15 @@ class novabizz():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
-        url_ = "https://www.novabizz.com/manage-post.php?page=1"
-        r = httprequestObj.http_get(url_)
-        soup = BeautifulSoup(r.content, features='html.parser')
-        li = soup.find('div', attrs={'class': 'pagination'}).find_all('li')
-        x = int(str(li[-1].find('a')['href']).split('=')[1])
-        found = False
-        try:
-            posturl="https://www.novabizz.com/manage-post.php?update="+postdata['post_id']
-            r=httprequestObj.http_get(posturl)
-            detail = 'Boost successful'
-            success = "true"
-        except:
-            detail ="wrong post id"
-            success = 'false'
+        if success == "true":
+            try:
+                posturl="https://www.novabizz.com/manage-post.php?update="+postdata['post_id']+'&page='
+                r=httprequestObj.http_get(posturl)
+                detail = 'Boost successful'
+                success = "true"
+            except:
+                detail ="wrong post id"
+                success = 'false'
         time_end = datetime.datetime.utcnow()
         return {
             "log_id": postdata['log_id'],
@@ -253,48 +248,6 @@ class novabizz():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
-
-        url_ = "https://www.novabizz.com/manage-post.php?page=1"
-        r = httprequestObj.http_get(url_)
-        soup = BeautifulSoup(r.content, features='html.parser')
-        li = soup.find('div', attrs={'class': 'pagination'}).find_all('li')
-        x = int(str(li[-1].find('a')['href']).split('=')[1])
-        found = False
-
-        for i in range(1, x + 1):
-
-            url_list = 'https://www.novabizz.com/manage-post.php?page='+str(i)
-            r = httprequestObj.http_get(url_list)
-            soup = BeautifulSoup(r.content, features = self.parser)
-            ahref = soup.findAll('a')
-            post_id = ''
-            storeI = ''
-            for i in ahref:
-                var = i['href']
-                j = len('//www.novabizz.com/p')
-                post_id = ''
-                while j < len(var) and var[j] != '/':
-                    post_id += var[j]
-                    j += 1
-                if post_id == postdata['post_id']:
-                    storeI = i
-                    found = True
-                    break
-            if found :
-                break
-        if storeI == '':    
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
-            return {
-                "websitename":"novabizz",
-                "log_id": postdata['log_id'],
-                "ds_id": postdata['ds_id'],
-                "post_id":postdata['post_id'],
-                "success": "false",
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                "detail": "wrong post id",
-            }
 
         if success == "true":
             datapost = {
