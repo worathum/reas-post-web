@@ -14,7 +14,6 @@ import random
 
 
 
-httprequestObj = lib_httprequest()
 
 with open("./static/novabizz.json") as f:
     provincedata = json.load(f)
@@ -30,7 +29,7 @@ class novabizz():
             import configs
         except ImportError:
             configs = {}
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
@@ -62,7 +61,7 @@ class novabizz():
 
     def logout_user(self):
         url = "https://www.novabizz.com/logout.php"
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
 
     def register_user(self, postdata):
@@ -102,7 +101,7 @@ class novabizz():
                 amphur_id = key
                 break
 
-        r = httprequestObj.http_get('https://www.novabizz.com/register.php')
+        r = self.httprequestObj.http_get('https://www.novabizz.com/register.php')
         soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('input', attrs={'id': 'save'})['value']
         prod_address = ""
@@ -132,7 +131,7 @@ class novabizz():
             accept=1
         )
         url_check = "https://www.novabizz.com/lib/checkuser.php"
-        r = httprequestObj.http_post(url_check, data=datapost)
+        r = self.httprequestObj.http_post(url_check, data=datapost)
         # print(r.text)
         if r.text == "-1":
             success = "false"
@@ -147,7 +146,7 @@ class novabizz():
                 "detail": detail,
             }
         url_n = "https://www.novabizz.com/register.php"
-        r = httprequestObj.http_post(url_n, data=datapost)
+        r = self.httprequestObj.http_post(url_n, data=datapost)
         data = r.text
         if data == '':
             success = "false"
@@ -173,7 +172,7 @@ class novabizz():
 
         email = postdata['user']
         passwd = postdata['pass']
-        r = httprequestObj.http_get('https://www.novabizz.com/member.php')
+        r = self.httprequestObj.http_get('https://www.novabizz.com/member.php')
         soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('input', attrs={'name': 'save'})['value']
         success = "true"
@@ -185,7 +184,7 @@ class novabizz():
             'password': passwd,
             'save': save
         }
-        r = httprequestObj.http_post(
+        r = self.httprequestObj.http_post(
             'https://www.novabizz.com/member.php', data=datapost)
         data = r.text
         soup = BeautifulSoup(r.content, features = self.parser)
@@ -218,7 +217,7 @@ class novabizz():
         if success == "true":
             try:
                 posturl="https://www.novabizz.com/manage-post.php?update="+postdata['post_id']+'&page='
-                r=httprequestObj.http_get(posturl)
+                r=self.httprequestObj.http_get(posturl)
                 detail = 'Boost successful'
                 success = "true"
             except:
@@ -255,7 +254,7 @@ class novabizz():
                 'delete': postdata['post_id'],
                 'page': ""
             }
-            r = httprequestObj.http_get(
+            r = self.httprequestObj.http_get(
                 'https://www.novabizz.com/manage-post.php', params=datapost)
             data = r.text
             if data == '':
@@ -287,7 +286,7 @@ class novabizz():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         ashopname = test_login["detail"]
-        r = httprequestObj.http_get('https://www.novabizz.com/post-add.php')
+        r = self.httprequestObj.http_get('https://www.novabizz.com/post-add.php')
         soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('input', attrs={'name': 'save'})['value']
         subcategory = {
@@ -506,7 +505,7 @@ class novabizz():
                     postdata['post_images'][i], "rb"), "image/png")
                 if i == 5:
                     break
-            r = httprequestObj.http_post(
+            r = self.httprequestObj.http_post(
                 'https://www.novabizz.com/post-add.php', data=datapost, files=files)
 
             data = r.text
@@ -516,7 +515,7 @@ class novabizz():
                 print("14")
             else:
                 list_url = 'https://www.novabizz.com/manage-post.php'
-                r = httprequestObj.http_get(list_url)
+                r = self.httprequestObj.http_get(list_url)
                 soup = BeautifulSoup(r.content, features = self.parser)
                 spancode=soup.find('span',attrs={'class':'code'}).text
                 i=len('รหัส ')
@@ -584,13 +583,13 @@ class novabizz():
             post_title = post_title.replace('.  ', '').replace('. ',' ')
             # exists, authenticityToken, post_title = self.check_post(post_id)
             url = "https://www.novabizz.com/manage-post.php?page=1"
-            r = httprequestObj.http_get(url)
+            r = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(r.content, features='html.parser')
             li = soup.find('div',attrs={'class':'pagination'}).find_all('li')
             x = int(str(li[-1].find('a')['href']).split('=')[1])
             for i in range(1,x+1):
                 url = "https://www.novabizz.com/manage-post.php?page=%d" % i
-                r = httprequestObj.http_get(url)
+                r = self.httprequestObj.http_get(url)
                 exists = False
                 soup = BeautifulSoup(r.content, features='html.parser')
 
@@ -735,7 +734,7 @@ class novabizz():
         success = test_login["success"]
         ashopname = test_login["detail"]
         url_ = "https://www.novabizz.com/manage-post.php?page=1"
-        r = httprequestObj.http_get(url_)
+        r = self.httprequestObj.http_get(url_)
         soup = BeautifulSoup(r.content, features='html.parser')
         li = soup.find('div', attrs={'class': 'pagination'}).find_all('li')
         if li !=[]:
@@ -746,7 +745,7 @@ class novabizz():
 
         """for i in range(1, x + 1):
             url_list = "https://www.novabizz.com/manage-post.php?page="+str(i)
-            r = httprequestObj.http_get(url_list)
+            r = self.httprequestObj.http_get(url_list)
             soup = BeautifulSoup(r.content, features = self.parser)
             ahref = soup.findAll('a')
             # print(ahref)
@@ -890,7 +889,7 @@ class novabizz():
         postdata['address'] = prod_address
         url_n = 'https://www.novabizz.com/post-edit.php?id='
         url_n += str(postdata['post_id'])
-        r = httprequestObj.http_get(url_n)
+        r = self.httprequestObj.http_get(url_n)
         soup = BeautifulSoup(r.content, features = self.parser)
         save = soup.find('input', attrs={'name': 'save'})['value']
         if success == "true":
@@ -938,7 +937,7 @@ class novabizz():
                     postdata['post_images'][i], "rb"), "image/png")
                 if i == 4:
                     break
-            r = httprequestObj.http_post(
+            r = self.httprequestObj.http_post(
                 url_n, data=datapost, files=files)
             success = "true"
         else:
