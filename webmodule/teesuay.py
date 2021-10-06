@@ -14,7 +14,6 @@ import sys
 from urllib.parse import unquote
 from urllib.request import urlopen
 
-httprequestObj = lib_httprequest()
 
 
 with open("./static/teesuay.json",encoding='utf-8') as f:
@@ -24,14 +23,13 @@ with open("./static/teesuay.json",encoding='utf-8') as f:
 class teesuay():
 
     name = 'teesuay'
-    httprequestObj = lib_httprequest()
     def __init__(self):
 
         try:
             import configs
         except ImportError:
             configs = {}
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
@@ -44,7 +42,7 @@ class teesuay():
     def register_user(self, postdata):        
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        httprequestObj.http_get("http://www.teesuay.com/member/logout.php")
+        self.httprequestObj.http_get("http://www.teesuay.com/member/logout.php")
 
         province_id=0
         amphur_id=0
@@ -104,7 +102,7 @@ class teesuay():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        httprequestObj.http_get("http://www.teesuay.com/member/logout.php")
+        self.httprequestObj.http_get("http://www.teesuay.com/member/logout.php")
         email = postdata['user']
         passwd = postdata['pass']
         btloginx=22
@@ -120,7 +118,7 @@ class teesuay():
             'btlogin.y':btloginy
         }
 
-        r = httprequestObj.http_post('http://www.teesuay.com/login.php', data=datapost)
+        r = self.httprequestObj.http_post('http://www.teesuay.com/login.php', data=datapost)
         data = r.text
         print(data)
         if data.find("ขออภัยครับ") != -1 or email == "" or passwd == "":
@@ -331,7 +329,7 @@ class teesuay():
                 datapost[arr[i]] = postdata['post_images'][i]
                 files[arr[i]] = (postdata['post_images'][i], open(postdata['post_images'][i], "rb"), "image/jpg")
 
-            r = httprequestObj.http_post(
+            r = self.httprequestObj.http_post(
                 'http://www.teesuay.com/member/p-post-property.php', data=datapost,files=files)
 
             data = r.text
@@ -341,7 +339,7 @@ class teesuay():
                 success = "false"
             else:
                 list_url = 'http://www.teesuay.com/member/list-property.php'
-                r = httprequestObj.http_get(list_url)
+                r = self.httprequestObj.http_get(list_url)
                 soup = BeautifulSoup(r.content, features = self.parser)
                 var = soup.find('a', attrs={'title': postdata['post_title_th']})['href']
                 # for i in '../property/':
@@ -394,7 +392,7 @@ class teesuay():
         found = False
         temp = len('property-')
         """while True:
-            r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
+            r = self.httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
             soup = BeautifulSoup(r.content, features = self.parser)
             count = 0
             for i in soup.findAll('a'):
@@ -593,7 +591,7 @@ class teesuay():
                 datapost[arr[i]] = postdata['post_images'][i]
                 files[arr[i]] = (postdata['post_images'][i], open(postdata['post_images'][i], "rb"), "image/jpg")
             url_n = 'http://www.teesuay.com/member/p-edit-property.php'
-            r = httprequestObj.http_post(
+            r = self.httprequestObj.http_post(
                 url_n, data=datapost, files=files)
 
 
@@ -603,7 +601,7 @@ class teesuay():
             #     'post_id': postdata["post_id"],
             #     'Submit': 'Save data >>'
             # }
-            # r_ = httprequestObj.http_post('http://www.teesuay.com/member/go-to-real-estate.php',d_)
+            # r_ = self.httprequestObj.http_post('http://www.teesuay.com/member/go-to-real-estate.php',d_)
             if r.status_code==200:
                 detail = "Post edited successfully"
                 success="true"
@@ -642,7 +640,7 @@ class teesuay():
         found = True
         temp = len('property-')
         """while True:
-            r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
+            r = self.httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
             soup = BeautifulSoup(r.content, features = self.parser)
             count = 0
             for i in soup.findAll('a'):
@@ -667,7 +665,7 @@ class teesuay():
                 "ds_id": postdata['ds_id']
             }
 
-        r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php')
+        r = self.httprequestObj.http_get('http://www.teesuay.com/member/list-property.php')
         soup = BeautifulSoup(r.content, features = self.parser)
         var = soup.find('input', attrs={'name': 'hdnCount'})['value']
         if len(var) == 0:
@@ -689,7 +687,7 @@ class teesuay():
                 'ds_id': postdata['ds_id'],
                 "log_id": postdata['log_id']
             }
-            r = httprequestObj.http_post('http://www.teesuay.com/member/manage-property-not-sale.php', data=datapost)
+            r = self.httprequestObj.http_post('http://www.teesuay.com/member/manage-property-not-sale.php', data=datapost)
             data = r.text
             if data == '':
                 success = "false"
@@ -723,7 +721,7 @@ class teesuay():
             found = False
             temp = len('property-')
             """while True:
-                r = httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
+                r = self.httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
                 soup = BeautifulSoup(r.content, features = self.parser)
                 count = 0
                 for i in soup.findAll('a'):
@@ -754,7 +752,7 @@ class teesuay():
                 }"""
             try:
                 posturl="http://www.teesuay.com/member/slide-property.php?post_id="+postdata['post_id']
-                r=httprequestObj.http_get(posturl)
+                r=self.httprequestObj.http_get(posturl)
                 detail = "Boosted Successfully"
                 success = 'true'
             except:
@@ -833,7 +831,7 @@ class teesuay():
             }
 
         url_list='http://www.teesuay.com/member/list-property.php'
-        r=httprequestObj.http_get(url_list)
+        r=self.httprequestObj.http_get(url_list)
         soup = BeautifulSoup(r.content, features = self.parser)
         post_id = ''
         detail = ''
