@@ -12,7 +12,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
 
 
 class thaiapartment():
@@ -25,6 +24,7 @@ class thaiapartment():
         except ImportError:
             configs = {}
 
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 1
@@ -39,7 +39,7 @@ class thaiapartment():
 
     def logout_user(self):
         url = 'https://www.thaiapartment.com/logout.aspx'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
     # Funtion to Calculate value of title to be sent with form data
     def title_value(self,title):
@@ -96,10 +96,10 @@ class thaiapartment():
 
         #session = requests.session()
         #r = session.get(url)
-        r=httprequestObj.http_get(url)
+        r=self.httprequestObj.http_get(url)
         register_data = self.register_details(r, postdata)
         #response = session.post(url, data=register_data)
-        response=httprequestObj.http_post(url,data=register_data)
+        response=self.httprequestObj.http_post(url,data=register_data)
         soup = BeautifulSoup(response.text, "html5lib")
         txt = soup.find("script", attrs={"type": "text/javascript"}).text
         detail = re.findall(r"'.*?'", txt)[0]
@@ -133,7 +133,7 @@ class thaiapartment():
         user = postdata['user']
         passwd = postdata['pass']
 
-        r = httprequestObj.http_get('https://www.thaiapartment.com/register')
+        r = self.httprequestObj.http_get('https://www.thaiapartment.com/register')
         print(r.url)
         print(r.status_code)
 
@@ -173,7 +173,7 @@ class thaiapartment():
             'ctl00$ContentPlaceHolder1$BtnRegister': 'สมัครสมาชิก'
         }
 
-        res = httprequestObj.http_post('http://thaiapartment.com/register',data=datapost)
+        res = self.httprequestObj.http_post('http://thaiapartment.com/register',data=datapost)
         print(res.url)
         print(res.status_code)
 
@@ -215,7 +215,7 @@ class thaiapartment():
         user = postdata['user']
         passwd = postdata['pass']
 
-        r = httprequestObj.http_get('https://www.thaiapartment.com/login')
+        r = self.httprequestObj.http_get('https://www.thaiapartment.com/login')
         print(r.url)
         print(r.status_code)
 
@@ -246,7 +246,7 @@ class thaiapartment():
             'ctl00$ContentPlaceHolder1$submit': 'Sign in'
         }
 
-        r = httprequestObj.http_post('https://www.thaiapartment.com/login', data=datapost)
+        r = self.httprequestObj.http_post('https://www.thaiapartment.com/login', data=datapost)
         print(r.url)
         print(r.status_code)
 
@@ -324,7 +324,7 @@ class thaiapartment():
                     prod_address += add + " "
             prod_address = prod_address[:-1]
 
-            r = httprequestObj.http_get('https://www.thaiapartment.com/agree')
+            r = self.httprequestObj.http_get('https://www.thaiapartment.com/agree')
             print(r.url)
             print(r.status_code)
 
@@ -353,14 +353,14 @@ class thaiapartment():
                 'ctl00$ContentPlaceHolder1$BtnSubmit': 'ยอมรับเงื่อนไขและลงประกาศ'
             }
 
-            r = httprequestObj.http_post('https://www.thaiapartment.com/agree', data=datapost)
+            r = self.httprequestObj.http_post('https://www.thaiapartment.com/agree', data=datapost)
             print(r.url)
             print(r.status_code)
 
             print('Agreement signed')
 
             if postdata['property_type'] == '7':
-                r = httprequestObj.http_get('https://www.thaiapartment.com/postadd')
+                r = self.httprequestObj.http_get('https://www.thaiapartment.com/postadd')
                 #print(r.url)
                 #print(r.status_code)
 
@@ -376,7 +376,7 @@ class thaiapartment():
 
                 data = '{"knownCategoryValues":"","category":"PROVINCE_ID"}'
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetProvince',
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetProvince',
                                              headers={'content-type': 'application/json; charset=UTF-8'}, data=data)
                 #print(r.url)
                 #print(r.status_code)
@@ -398,7 +398,7 @@ class thaiapartment():
 
                 data = '{"knownCategoryValues":"PROVINCE_ID:' + province_id + ';","category":"AMPHUR_ID"}'
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetAmphur', headers= {'content-type': 'application/json; charset=UTF-8'}, data=data)
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetAmphur', headers= {'content-type': 'application/json; charset=UTF-8'}, data=data)
                 #print(r.url)
                 #print(r.status_code)
 
@@ -418,7 +418,7 @@ class thaiapartment():
 
                 data = '{"knownCategoryValues":"PROVINCE_ID:'+province_id+';AMPHUR_ID:'+district_id+';","category":"DISTRICT_ID"}'
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetDistrict',
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetDistrict',
                                              headers={'content-type': 'application/json; charset=UTF-8'}, data=data)
                 #print(r.url)
                 #print(r.status_code)
@@ -472,11 +472,11 @@ class thaiapartment():
                     ('hiddenInputToUpdateATBuffer_CommonToolkitScripts', '0'),
                 ]
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/postadd', data=datapost)
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/postadd', data=datapost)
 
                 post_id = r.url.split('=')[-1]
 
-                r = httprequestObj.http_get('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
+                r = self.httprequestObj.http_get('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
 
                 soup = BeautifulSoup(r.content, self.parser)
                 # event_target = soup.find('input', {'name': '__EVENTTARGET'}).get('value')
@@ -507,9 +507,9 @@ class thaiapartment():
                     'ctl00$ContentPlaceHolder1$HtmlEditorExtender2_ClientState': ''
                 }
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
 
-                r = httprequestObj.http_get('https://www.thaiapartment.com/post2?id=' + post_id)
+                r = self.httprequestObj.http_get('https://www.thaiapartment.com/post2?id=' + post_id)
 
                 soup = BeautifulSoup(r.content, self.parser)
                 # event_target = soup.find('input', {'name': '__EVENTTARGET'}).get('value')
@@ -540,9 +540,9 @@ class thaiapartment():
                     'ctl00$ContentPlaceHolder1$BtnRegister': 'ขั้นตอนต่อไป'
                 }
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
 
-                # r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=3326', data=datapost)
+                # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3?id=3326', data=datapost)
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -553,13 +553,13 @@ class thaiapartment():
                 # viewstate_gen = soup.find('input', {'name': '__VIEWSTATEGENERATOR'}).get('value')
                 # event_validation = soup.find('input', {'name': '__EVENTVALIDATION'}).get('value')
 
-                r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
+                r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
 
                 ##with open('/home/codelover/Desktop/rough.html', 'w') as f:
                 #   #f.write(r.text)
 
                 for i, img in enumerate(postdata['post_images']):
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
 
                     # #with open('/home/codelover/Desktop/rough.html', 'w') as f:
                     #     #f.write(r.text)
@@ -582,9 +582,9 @@ class thaiapartment():
                         ('ctl00$ContentPlaceHolder1$uploadedFile', (None, 'Upload'))
                     ]
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/post3?id=' + post_id, data={}, files=datapost)
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/post3?id=' + post_id, data={}, files=datapost)
 
-                r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
+                r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
 
                 soup = BeautifulSoup(r.content, self.parser)
                 # event_target = soup.find('input', {'name': '__EVENTTARGET'}).get('value')
@@ -603,7 +603,7 @@ class thaiapartment():
                     ('ctl00$ContentPlaceHolder1$uploadedFile', (None, 'โพสประกาศอพาร์ทเม้นท์'))
                 ]
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/post3?id=' + post_id, data={}, files=datapost)
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/post3?id=' + post_id, data={}, files=datapost)
 
                 # #with open('/home/codelover/Desktop/rough.html', 'w') as f:
                 #     #f.write(r.text)
@@ -613,7 +613,7 @@ class thaiapartment():
                 detail = 'xxx'
 
             elif postdata['property_type'] == '1':
-                r = httprequestObj.http_get('https://www.thaiapartment.com/condoadd')
+                r = self.httprequestObj.http_get('https://www.thaiapartment.com/condoadd')
                 ######with open('/home/codelover/Desktop/rough.html', 'w') as f:
                 #    #f.write(r.text)
 
@@ -635,7 +635,7 @@ class thaiapartment():
 
                 # data = '{"knownCategoryValues":"","category":"PROVINCE_ID"}'
 
-                # r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetProvince',
+                # r = self.httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetProvince',
                 #                              headers={'content-type': 'application/json; charset=UTF-8'}, data=data)
                 # print(r.url)
                 # print(r.status_code)
@@ -657,7 +657,7 @@ class thaiapartment():
                 #
                 # data = '{"knownCategoryValues":"PROVINCE_ID:' + province_id + ';","category":"AMPHUR_ID"}'
                 #
-                # r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetAmphur',
+                # r = self.httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetAmphur',
                 #                              headers={'content-type': 'application/json; charset=UTF-8'}, data=data)
                 # print(r.url)
                 # print(r.status_code)
@@ -678,7 +678,7 @@ class thaiapartment():
                 #
                 # data = '{"knownCategoryValues":"PROVINCE_ID:' + province_id + ';AMPHUR_ID:' + district_id + ';","category":"DISTRICT_ID"}'
                 #
-                # r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetDistrict',
+                # r = self.httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetDistrict',
                 #                              headers={'content-type': 'application/json; charset=UTF-8'}, data=data)
                 # print(r.url)
                 # print(r.status_code)
@@ -730,14 +730,14 @@ class thaiapartment():
                     ('ctl00$ContentPlaceHolder1$BtnRegister', 'ขั้นตอนต่อไป'),
                 ]
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/condoadd', data=datapost)
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/condoadd', data=datapost)
                 print(r.url)
                 print(r.status_code)
 
 
                 post_id = r.url.split('=')[-1]
 
-                r = httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id, data=datapost)
+                r = self.httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id, data=datapost)
                 print(r.url)
                 print(r.status_code)
 
@@ -771,11 +771,11 @@ class thaiapartment():
                 #     'ctl00$ContentPlaceHolder1$HtmlEditorExtender2_ClientState': ''
                 # }
                 #
-                # r = httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
+                # r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
                 # print(r.url)
                 # print(r.status_code)
                 #
-                # r = httprequestObj.http_get('https://www.thaiapartment.com/post2?id=' + post_id)
+                # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post2?id=' + post_id)
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -808,11 +808,11 @@ class thaiapartment():
                 #     'ctl00$ContentPlaceHolder1$BtnRegister': 'ขั้นตอนต่อไป'
                 # }
                 #
-                # r = httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
+                # r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2?id=' + post_id, data=datapost)
                 # print(r.url)
                 # print(r.status_code)
 
-                # r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=3326', data=datapost)
+                # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3?id=3326', data=datapost)
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -823,7 +823,7 @@ class thaiapartment():
                 # viewstate_gen = soup.find('input', {'name': '__VIEWSTATEGENERATOR'}).get('value')
                 # event_validation = soup.find('input', {'name': '__EVENTVALIDATION'}).get('value')
 
-                # r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
+                # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3?id=' + post_id)
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -831,7 +831,7 @@ class thaiapartment():
                 #     #f.write(r.text)
 
                 for i, img in enumerate(postdata['post_images']):
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id)
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id)
                     print(r.url)
                     print(r.status_code)
 
@@ -857,12 +857,12 @@ class thaiapartment():
                         ('ctl00$ContentPlaceHolder1$lblPackage', (None, '0'))
                     ]
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/condo2?id=' + post_id, data={},
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/condo2?id=' + post_id, data={},
                                                  files=datapost)
                     print(r.url)
                     print(r.status_code)
 
-                r = httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id)
+                r = self.httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id)
                 print(r.url)
                 print(r.status_code)
 
@@ -889,7 +889,7 @@ class thaiapartment():
                     ('ctl00$ContentPlaceHolder1$BtnRegister', (None, 'โพสต์ประกาศคอนโด'))
                 ]
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/condo2?id=' + post_id, data={},
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/condo2?id=' + post_id, data={},
                                              files=datapost)
                 print(r.url)
                 print(r.status_code)
@@ -937,7 +937,7 @@ class thaiapartment():
 
             post_found = False
 
-            r = httprequestObj.http_get('https://www.thaiapartment.com/allpost')
+            r = self.httprequestObj.http_get('https://www.thaiapartment.com/allpost')
             print(r.url)
             print(r.status_code)
 
@@ -994,7 +994,7 @@ class thaiapartment():
 
                 if postdata['property_type'] == '7':
 
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/post', params={'id': post_id})
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/post', params={'id': post_id})
                     print(r.url)
                     print(r.status_code)
 
@@ -1012,7 +1012,7 @@ class thaiapartment():
 
                     data = '{"knownCategoryValues":"","category":"PROVINCE_ID"}'
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetProvince',
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetProvince',
                                                  headers={'content-type': 'application/json; charset=UTF-8'}, data=data)
                     print(r.url)
                     print(r.status_code)
@@ -1034,7 +1034,7 @@ class thaiapartment():
 
                     data = '{"knownCategoryValues":"PROVINCE_ID:' + province_id + ';","category":"AMPHUR_ID"}'
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetAmphur', headers= {'content-type': 'application/json; charset=UTF-8'}, data=data)
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetAmphur', headers= {'content-type': 'application/json; charset=UTF-8'}, data=data)
                     print(r.url)
                     print(r.status_code)
 
@@ -1054,7 +1054,7 @@ class thaiapartment():
 
                     data = '{"knownCategoryValues":"PROVINCE_ID:'+province_id+';AMPHUR_ID:'+district_id+';","category":"DISTRICT_ID"}'
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetDistrict',
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/propertyupdateservice.asmx/GetDistrict',
                                                  headers={'content-type': 'application/json; charset=UTF-8'}, data=data)
                     print(r.url)
                     print(r.status_code)
@@ -1109,11 +1109,11 @@ class thaiapartment():
                         ('hiddenInputToUpdateATBuffer_CommonToolkitScripts', '0'),
                     ]
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/post', params={'id': post_id}, data=datapost)
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/post', params={'id': post_id}, data=datapost)
                     print(r.url)
                     print(r.status_code)
 
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
                     print(r.url)
                     print(r.status_code)
 
@@ -1144,12 +1144,12 @@ class thaiapartment():
                         'FontSize': '1',
                         'ctl00$ContentPlaceHolder1$HtmlEditorExtender2_ClientState': ''
                     }
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id},
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id},
                                                  data=datapost)
                     print(r.url)
                     print(r.status_code)
 
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
                     print(r.url)
                     print(r.status_code)
 
@@ -1182,11 +1182,11 @@ class thaiapartment():
                         'ctl00$ContentPlaceHolder1$HtmlEditorExtender2_ClientState': ''
                     }
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id}, data=datapost)
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id}, data=datapost)
                     print(r.url)
                     print(r.status_code)
 
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
                     print(r.url)
                     print(r.status_code)
 
@@ -1219,11 +1219,11 @@ class thaiapartment():
                         'ctl00$ContentPlaceHolder1$BtnRegister': 'ขั้นตอนต่อไป'
                     }
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id}, data=datapost)
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id}, data=datapost)
                     print(r.url)
                     print(r.status_code)
 
-                    # r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=3326', data=datapost)
+                    # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3?id=3326', data=datapost)
                     # print(r.url)
                     # print(r.status_code)
                     #
@@ -1234,7 +1234,7 @@ class thaiapartment():
                     # viewstate_gen = soup.find('input', {'name': '__VIEWSTATEGENERATOR'}).get('value')
                     # event_validation = soup.find('input', {'name': '__EVENTVALIDATION'}).get('value')
 
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
                     print(r.url)
                     print(r.status_code)
 
@@ -1243,7 +1243,7 @@ class thaiapartment():
 
                     for img in old_images:
                         del_url = 'https://www.thaiapartment.com/' + img.get('href')
-                        r = httprequestObj.http_get(del_url)
+                        r = self.httprequestObj.http_get(del_url)
                         print(r.url)
                         print(r.status_code)
                     #
@@ -1251,7 +1251,7 @@ class thaiapartment():
                     #     #f.write(r.text)
 
                     for i, img in enumerate(postdata['post_images']):
-                        r = httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
+                        r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
                         print(r.url)
                         print(r.status_code)
 
@@ -1276,11 +1276,11 @@ class thaiapartment():
                             ('ctl00$ContentPlaceHolder1$uploadedFile', (None, 'Upload'))
                         ]
 
-                        r = httprequestObj.http_post('https://www.thaiapartment.com/post3', params={'id': post_id}, data={}, files=datapost)
+                        r = self.httprequestObj.http_post('https://www.thaiapartment.com/post3', params={'id': post_id}, data={}, files=datapost)
                         print(r.url)
                         print(r.status_code)
 
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
                     print(r.url)
                     print(r.status_code)
 
@@ -1301,7 +1301,7 @@ class thaiapartment():
                         ('ctl00$ContentPlaceHolder1$uploadedFile', (None, 'โพสประกาศอพาร์ทเม้นท์'))
                     ]
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/post3', params={'id': post_id}, data={}, files=datapost)
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/post3', params={'id': post_id}, data={}, files=datapost)
                     print(r.url)
                     print(r.status_code)
 
@@ -1313,7 +1313,7 @@ class thaiapartment():
 
                 elif postdata['property_type'] == '1':
 
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/condo', params={'id': post_id})
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/condo', params={'id': post_id})
                     print(r.url)
                     print(r.status_code)
 
@@ -1373,13 +1373,13 @@ class thaiapartment():
                         ('ctl00$ContentPlaceHolder1$BtnRegister', 'ขั้นตอนต่อไป'),
                     ]
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/condo', params={'id': post_id}, data=datapost)
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/condo', params={'id': post_id}, data=datapost)
                     print(r.url)
                     print(r.status_code)
 
                     post_id = r.url.split('=')[-1]
 
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id, data=datapost)
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id, data=datapost)
                     print(r.url)
                     print(r.status_code)
 
@@ -1393,12 +1393,12 @@ class thaiapartment():
 
                     for img in old_images:
                         del_url = 'https://www.thaiapartment.com/' + img.get('href')
-                        r = httprequestObj.http_get(del_url)
+                        r = self.httprequestObj.http_get(del_url)
                         print(r.url)
                         print(r.status_code)
 
                     for i, img in enumerate(postdata['post_images']):
-                        r = httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id)
+                        r = self.httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id)
                         print(r.url)
                         print(r.status_code)
 
@@ -1424,12 +1424,12 @@ class thaiapartment():
                             ('ctl00$ContentPlaceHolder1$lblPackage', (None, '0'))
                         ]
 
-                        r = httprequestObj.http_post('https://www.thaiapartment.com/condo2?id=' + post_id, data={},
+                        r = self.httprequestObj.http_post('https://www.thaiapartment.com/condo2?id=' + post_id, data={},
                                                      files=datapost)
                         print(r.url)
                         print(r.status_code)
 
-                    r = httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id)
+                    r = self.httprequestObj.http_get('https://www.thaiapartment.com/condo2?id=' + post_id)
                     print(r.url)
                     print(r.status_code)
 
@@ -1456,7 +1456,7 @@ class thaiapartment():
                         ('ctl00$ContentPlaceHolder1$BtnRegister', (None, 'โพสต์ประกาศคอนโด'))
                     ]
 
-                    r = httprequestObj.http_post('https://www.thaiapartment.com/condo2?id=' + post_id, data={},
+                    r = self.httprequestObj.http_post('https://www.thaiapartment.com/condo2?id=' + post_id, data={},
                                                  files=datapost)
                     print(r.url)
                     print(r.status_code)
@@ -1507,7 +1507,7 @@ class thaiapartment():
 
             post_found = False
 
-            r = httprequestObj.http_get('https://www.thaiapartment.com/allpost')
+            r = self.httprequestObj.http_get('https://www.thaiapartment.com/allpost')
             print(r.url)
             print(r.status_code)
 
@@ -1557,7 +1557,7 @@ class thaiapartment():
                 #         prod_address += add + " "
                 # prod_address = prod_address[:-1]
 
-                r = httprequestObj.http_get('https://www.thaiapartment.com/post', params={'id': post_id})
+                r = self.httprequestObj.http_get('https://www.thaiapartment.com/post', params={'id': post_id})
                 print(r.url)
                 print(r.status_code)
 
@@ -1596,14 +1596,14 @@ class thaiapartment():
                     ('hiddenInputToUpdateATBuffer_CommonToolkitScripts', '0'),
                 ]
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/post', params={'id': post_id}, data=datapost)
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/post', params={'id': post_id}, data=datapost)
                 print(r.url)
                 print(r.status_code)
 
                 #with open('/home/codelover/Desktop/rough.html', 'w') as f:
                     #f.write(r.text)
 
-                # r = httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
+                # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -1634,12 +1634,12 @@ class thaiapartment():
                 #     'FontSize': '1',
                 #     'ctl00$ContentPlaceHolder1$HtmlEditorExtender2_ClientState': ''
                 # }
-                # r = httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id},
+                # r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id},
                 #                              data=datapost)
                 # print(r.url)
                 # print(r.status_code)
                 #
-                # r = httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
+                # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -1672,11 +1672,11 @@ class thaiapartment():
                 #     'ctl00$ContentPlaceHolder1$HtmlEditorExtender2_ClientState': ''
                 # }
                 #
-                # r = httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id}, data=datapost)
+                # r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id}, data=datapost)
                 # print(r.url)
                 # print(r.status_code)
                 #
-                # r = httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
+                # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post2', params={'id': post_id})
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -1709,11 +1709,11 @@ class thaiapartment():
                 #     'ctl00$ContentPlaceHolder1$BtnRegister': 'ขั้นตอนต่อไป'
                 # }
                 #
-                # r = httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id}, data=datapost)
+                # r = self.httprequestObj.http_post('https://www.thaiapartment.com/post2', params={'id': post_id}, data=datapost)
                 # print(r.url)
                 # print(r.status_code)
                 #
-                # # r = httprequestObj.http_get('https://www.thaiapartment.com/post3?id=3326', data=datapost)
+                # # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3?id=3326', data=datapost)
                 # # print(r.url)
                 # # print(r.status_code)
                 # #
@@ -1724,7 +1724,7 @@ class thaiapartment():
                 # # viewstate_gen = soup.find('input', {'name': '__VIEWSTATEGENERATOR'}).get('value')
                 # # event_validation = soup.find('input', {'name': '__EVENTVALIDATION'}).get('value')
                 #
-                # r = httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
+                # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -1733,7 +1733,7 @@ class thaiapartment():
                 #
                 # for img in old_images:
                 #     del_url = 'https://www.thaiapartment.com/' + img.get('href')
-                #     r = httprequestObj.http_get(del_url)
+                #     r = self.httprequestObj.http_get(del_url)
                 #     print(r.url)
                 #     print(r.status_code)
                 # #
@@ -1741,7 +1741,7 @@ class thaiapartment():
                 # #     #f.write(r.text)
                 #
                 # for i, img in enumerate(postdata['post_images']):
-                #     r = httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
+                #     r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
                 #     print(r.url)
                 #     print(r.status_code)
                 #
@@ -1766,11 +1766,11 @@ class thaiapartment():
                 #         ('ctl00$ContentPlaceHolder1$uploadedFile', (None, 'Upload'))
                 #     ]
                 #
-                #     r = httprequestObj.http_post('https://www.thaiapartment.com/post3', params={'id': post_id}, data={}, files=datapost)
+                #     r = self.httprequestObj.http_post('https://www.thaiapartment.com/post3', params={'id': post_id}, data={}, files=datapost)
                 #     print(r.url)
                 #     print(r.status_code)
                 #
-                # r = httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
+                # r = self.httprequestObj.http_get('https://www.thaiapartment.com/post3', params={'id': post_id})
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -1791,7 +1791,7 @@ class thaiapartment():
                 #     ('ctl00$ContentPlaceHolder1$uploadedFile', (None, 'โพสประกาศอพาร์ทเม้นท์'))
                 # ]
                 #
-                # r = httprequestObj.http_post('https://www.thaiapartment.com/post3', params={'id': post_id}, data={}, files=datapost)
+                # r = self.httprequestObj.http_post('https://www.thaiapartment.com/post3', params={'id': post_id}, data={}, files=datapost)
                 # print(r.url)
                 # print(r.status_code)
                 #
@@ -1837,7 +1837,7 @@ class thaiapartment():
 
             post_found = False
 
-            r = httprequestObj.http_get('https://www.thaiapartment.com/allpost')
+            r = self.httprequestObj.http_get('https://www.thaiapartment.com/allpost')
             print(r.url)
             print(r.status_code)
 
@@ -1882,7 +1882,7 @@ class thaiapartment():
                     ('__EVENTVALIDATION', event_validation),
                 ]
 
-                r = httprequestObj.http_post('https://www.thaiapartment.com/allpost', data=datapost)
+                r = self.httprequestObj.http_post('https://www.thaiapartment.com/allpost', data=datapost)
                 print(r.url)
                 print(r.status_code)
 
@@ -1927,7 +1927,7 @@ class thaiapartment():
 
             post_found = False
 
-            r = httprequestObj.http_get('https://www.thaiapartment.com/allpost')
+            r = self.httprequestObj.http_get('https://www.thaiapartment.com/allpost')
             print(r.url)
             print(r.status_code)
 
@@ -1952,7 +1952,7 @@ class thaiapartment():
                 # post_title = post.find_all('div', recursive=False)[1].find('div', recursive=False).find('h3').find('a').string
                 purl=post.find_all('div', recursive=False)[1].find('div', recursive=False).find('h3').find('a')["href"]
                 purl="https://www.thaiapartment.com/"+purl
-                r=httprequestObj.http_get(purl)
+                r=self.httprequestObj.http_get(purl)
                 soup1=BeautifulSoup(r.text,"html5lib")
                 try:
                     post_title=soup1.find("input",attrs={"name":"ctl00$ContentPlaceHolder1$lblPropertyTitle"})["value"]
