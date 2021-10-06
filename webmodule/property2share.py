@@ -14,7 +14,6 @@ import json
 from datetime import  datetime
 from .lib_captcha import  *
 
-httprequestObj = lib_httprequest()
 
 
 class property2share():
@@ -27,7 +26,7 @@ class property2share():
             import configs
         except ImportError:
             configs = {}
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.primarydomain = ''
@@ -46,7 +45,7 @@ class property2share():
         surname_th = userdata["surname_th"]
         phone_num = userdata['tel']
 
-        response = httprequestObj.http_get(
+        response = self.httprequestObj.http_get(
             'https://www.property2share.com/capcha/captcha.php?width=100&amp;height=40&amp;characters=5')
         file = open('tmp.jpeg', 'wb')
         file.write(response.content)
@@ -81,7 +80,7 @@ class property2share():
             'txtTelephone': phone_num
         }
 
-        register_req = httprequestObj.http_post(self.register_link, data=reg_dat)
+        register_req = self.httprequestObj.http_post(self.register_link, data=reg_dat)
         decoded_result = register_req.content.decode('utf-8')
 
         time_end = datetime.now()
@@ -125,7 +124,7 @@ class property2share():
             'txtPass': passwd
         }
 
-        login_resp = httprequestObj.http_post(self.login_link, data = inc_data)
+        login_resp = self.httprequestObj.http_post(self.login_link, data = inc_data)
         decoded_result = login_resp.content.decode('utf-8')
         #print(decoded_result)
         en_time = datetime.utcnow()
@@ -174,7 +173,7 @@ class property2share():
             return login
 
         # MAKE GET REQUEST FOR GETTING DROPDOWN DETAILS
-        request = httprequestObj.http_get('https://www.property2share.com/pageuser/new_publish.php')
+        request = self.httprequestObj.http_get('https://www.property2share.com/pageuser/new_publish.php')
         soup = BeautifulSoup(request.content, 'html.parser')
         #GET PROVINCES BY SCRAPING
         provinces = soup.find_all("select", {"name": "province_id"})
@@ -206,7 +205,7 @@ class property2share():
 
         district_list_full = []
 
-        district_list_resp = httprequestObj.http_get('https://www.property2share.com/connection/amphur.php?province_id=' + province_id)
+        district_list_resp = self.httprequestObj.http_get('https://www.property2share.com/connection/amphur.php?province_id=' + province_id)
         district_list = district_list_resp.content.decode('utf-8')
         district_list = ast.literal_eval(district_list)
 
@@ -277,7 +276,7 @@ class property2share():
         }
 
         #POST REQUEST WITH DATA
-        res = httprequestObj.http_post(url,data=data)
+        res = self.httprequestObj.http_post(url,data=data)
         url = res.url
         print(res.status_code)
         url = url.split('?')
@@ -294,17 +293,17 @@ class property2share():
                 ('publish_id', post_id),
             )
             files['myfile'] = r
-            res1 = httprequestObj.http_post(url, data = None, params =params, files = files)
+            res1 = self.httprequestObj.http_post(url, data = None, params =params, files = files)
 
         url = 'https://www.property2share.com/pageuser/preview_publish.php?id='
         url += str(post_id)
         data = { 'publish_id': int(post_id) }
-        register_req = httprequestObj.http_post(url,data=data)
+        register_req = self.httprequestObj.http_post(url,data=data)
 
         #CHECK IF PROP
         time_end = datetime.utcnow()
         posturl = 'https://www.property2share.com/property-' + str(post_id)
-        retc = httprequestObj.http_get(posturl)
+        retc = self.httprequestObj.http_get(posturl)
         retc = retc.status_code
 
         success,posted = "false", "post not created"
@@ -331,7 +330,7 @@ class property2share():
         if(login['success'] == False):
             return login
 
-        all_posts_response = httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
+        all_posts_response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
         all_posts_response = all_posts_response.content.decode('utf-8')
         print(all_posts_response.find(str(postdata['post_id'])))
 
@@ -379,7 +378,7 @@ class property2share():
                     "post_view": ""
                 }"""
         try:
-            response = httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+post_id)
+            response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+post_id)
             if(response.status_code == 200):
                 success = True
                 detail = "Post Boosted Successfully"
@@ -441,7 +440,7 @@ class property2share():
 
         post_id = postdata['post_id']
         #Get request On the Delete Link
-        response = httprequestObj.http_get('https://www.property2share.com/pageuser/delete_publish.php?type=1&id='+ str(post_id) + '&flag=0')
+        response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/delete_publish.php?type=1&id='+ str(post_id) + '&flag=0')
 
         success = False
         # Check if Request is successful
@@ -508,7 +507,7 @@ class property2share():
                 "websitename": "property2share"
             }
 
-        request = httprequestObj.http_get('https://www.property2share.com/pageuser/new_publish.php')
+        request = self.httprequestObj.http_get('https://www.property2share.com/pageuser/new_publish.php')
         soup = BeautifulSoup(request.content, 'html.parser')
         provinces = soup.find_all("select", {"name": "province_id"})
         each_option = provinces[0].find_all("option")
@@ -537,7 +536,7 @@ class property2share():
 
         district_list_full = []
 
-        district_list_resp = httprequestObj.http_get(
+        district_list_resp = self.httprequestObj.http_get(
             'https://www.property2share.com/connection/amphur.php?province_id=' + province_id)
         district_list = district_list_resp.content.decode('utf-8')
         district_list = ast.literal_eval(district_list)
@@ -608,10 +607,10 @@ class property2share():
         }
 
 
-        res = httprequestObj.http_post(url, data=data)
+        res = self.httprequestObj.http_post(url, data=data)
         url = res.url
 
-        r_ = httprequestObj.http_get('https://www.property2share.com/pageuser/addPicPublish.php?publish_id=' + str(post_id))
+        r_ = self.httprequestObj.http_get('https://www.property2share.com/pageuser/addPicPublish.php?publish_id=' + str(post_id))
         soup = BeautifulSoup(r_.text, 'html.parser')
         all_img = soup.findAll('div', {'class':'divImg'})
         for del_id in all_img:
@@ -622,7 +621,7 @@ class property2share():
                 'id': int(del_id),
                 'type': 1
             }
-            res_ = httprequestObj.http_post(u_, data=data_)
+            res_ = self.httprequestObj.http_post(u_, data=data_)
             # print(res_.text)
         allimages = postdata["post_images"][:15]
         files = {}
@@ -633,13 +632,13 @@ class property2share():
                 ('publish_id', post_id),
             )
             files['myfile'] = r
-            res1 = httprequestObj.http_post('https://www.property2share.com/pageuser/upload.php', data=None, params=params, files=files)
+            res1 = self.httprequestObj.http_post('https://www.property2share.com/pageuser/upload.php', data=None, params=params, files=files)
             print(res1.text)
 
 
         time_end = datetime.utcnow()
         posturl = 'https://www.property2share.com/property-' + str(post_id)
-        retc = httprequestObj.http_get(posturl)
+        retc = self.httprequestObj.http_get(posturl)
         retc = retc.status_code
         success, posted = "false", "Unable to Edit the Post"
         if retc == 200:
@@ -676,7 +675,7 @@ class property2share():
             return login
 
         post_title = postdata['post_title_th']
-        all_posts_response = httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
+        all_posts_response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
         all_posts_response = json.loads(all_posts_response.content.decode('utf-8')[2:])
 
         if 'data' in all_posts_response:
