@@ -17,7 +17,7 @@ import os
 import time
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-httprequestObj = lib_httprequest()
+
 Captcha = lib_captcha()
 
 
@@ -30,7 +30,8 @@ class onlineannouncement():
             import configs
         except ImportError:
             configs = {}
-
+            
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.url = 'http://www.xn--12c2caf4bot4ba0ax4tzd.com'
@@ -58,7 +59,7 @@ class onlineannouncement():
             'submit': ''
         }
 
-        response = httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/register.php', data=reg_data)
+        response = self.httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/register.php', data=reg_data)
 
         time_end = datetime.datetime.utcnow()
 
@@ -83,7 +84,7 @@ class onlineannouncement():
         }
 
     def test_login(self, userdata):
-        response = httprequestObj.http_get('https://www.ประกาศออนไลน์.com/logout')
+        response = self.httprequestObj.http_get('https://www.ประกาศออนไลน์.com/logout')
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
 
@@ -93,7 +94,7 @@ class onlineannouncement():
             'submit': 'เข้าสู่ระบบ'
         }
 
-        response = httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/login', data=login_data)
+        response = self.httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/login', data=login_data)
 
         time_end = datetime.datetime.utcnow()
 
@@ -180,7 +181,7 @@ class onlineannouncement():
         post_id = ""
 
         if success:
-            response = httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/posting')
+            response = self.httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/posting')
             province_id = self.get_province(response.content, postdata['addr_province'])
 
             # print('Province id= ' + str(province_id))
@@ -191,7 +192,7 @@ class onlineannouncement():
                 'TYPE': 'District'
             }
 
-            response = httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/getaddress.php',
+            response = self.httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/getaddress.php',
                                                params=params)
 
             district_id = self.matching_district(response.json(), postdata['addr_district'])
@@ -261,7 +262,7 @@ class onlineannouncement():
                 # rent
                 datapost['c_color'] = 'ให้เช่า'
 
-            response = httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/process_function.php',
+            response = self.httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/process_function.php',
                                                 data=datapost)
 
             file = []
@@ -271,14 +272,14 @@ class onlineannouncement():
                 filename = str(i) + '.jpg'
                 file.append(('photoimg[]', (filename, open(img, "rb"), "image/jpeg")))
 
-            img_page = httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/imgcar')
+            img_page = self.httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/imgcar')
 
             try:
                 soup = BeautifulSoup(img_page.content, self.parser)
                 post_url = soup.find('a', 'btn btn-primary btn-block margint15').get('href')
                 post_id = post_url.split('-')[-1]
 
-                response = httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/ajax_img.php', data={},
+                response = self.httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/ajax_img.php', data={},
                                                     files=file)
 
                 success = True
@@ -323,7 +324,7 @@ class onlineannouncement():
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post'
                 else:
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post?&page=' + str(i)
-                response = httprequestObj.http_get(url)
+                response = self.httprequestObj.http_get(url)
                 # print(i)
                 # print(response.url)
                 i += 1
@@ -341,7 +342,7 @@ class onlineannouncement():
                     break"""
 
             if found:
-                response = httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/posting')
+                response = self.httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/posting')
                 province_id = self.get_province(response.content, postdata['addr_province'])
 
                 # print('Province id= ' + str(province_id))
@@ -351,7 +352,7 @@ class onlineannouncement():
                     'TYPE': 'District'
                 }
 
-                response = httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/getaddress.php',
+                response = self.httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/getaddress.php',
                                                    params=params)
 
                 district_id = self.matching_district(response.json(), postdata['addr_district'])
@@ -420,7 +421,7 @@ class onlineannouncement():
 
                 params = {'id': postdata['post_id']}
 
-                response = httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/edit_post',
+                response = self.httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/edit_post',
                                                     params=params,
                                                     data=datapost)
 
@@ -430,7 +431,7 @@ class onlineannouncement():
                     filename = str(i) + '.jpg'
                     file.append(('photoimg[]', (filename, open(img, "rb"), "image/jpeg")))
 
-                img_page = httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/edit_img', params=params)
+                img_page = self.httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/edit_img', params=params)
 
                 try:
                     soup = BeautifulSoup(img_page.content, self.parser)
@@ -443,7 +444,7 @@ class onlineannouncement():
                         if pid is not None and len(pid) > 5 and preview.get('id')[:5] == 'd_img':
                             # print(pid[5:])
                             img_id = pid[5:]
-                            response = httprequestObj.http_post(
+                            response = self.httprequestObj.http_post(
                                 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/process_function.php',
                                 data={'action': 'dimg', 'i_id': img_id})
 
@@ -453,11 +454,11 @@ class onlineannouncement():
                         filename = str(i) + '.jpg'
                         file.append(('photoimg[]', (filename, open(img, "rb"), "image/jpeg")))
 
-                    img_page = httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/edit_img',
+                    img_page = self.httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/edit_img',
                                                        params=params)
                     # print(img_page.url)
 
-                    response = httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/ajax_img.php',
+                    response = self.httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/ajax_img.php',
                                                         data={}, files=file)
                     # print(response.url)
 
@@ -510,7 +511,7 @@ class onlineannouncement():
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post'
                 else:
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post?&page=' + str(i)
-                response = httprequestObj.http_get(url)
+                response = self.httprequestObj.http_get(url)
                 # print(i)
                 # print(response.url)
                 i += 1
@@ -535,7 +536,7 @@ class onlineannouncement():
                     's_id': '1'
                 }
 
-                response = httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/process_function.php',
+                response = self.httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/process_function.php',
                                                     data=del_data)
                 # print(response.url)
                 # print(response.status_code)
@@ -584,7 +585,7 @@ class onlineannouncement():
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post'
                 else:
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post?&page=' + str(i)
-                response = httprequestObj.http_get(url)
+                response = self.httprequestObj.http_get(url)
                 # print(i)
                 # print(response.url)
                 i += 1
@@ -610,7 +611,7 @@ class onlineannouncement():
                     'Submit': 'Submit'
                 }
 
-                response = httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/edit_post', params=params,
+                response = self.httprequestObj.http_post('https://www.xn--12c2caf4bot4ba0ax4tzd.com/edit_post', params=params,
                                                     data=data)
 
                 # print(response.url)
@@ -665,7 +666,7 @@ class onlineannouncement():
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post'
                 else:
                     url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post?&page=' + str(i)
-                response = httprequestObj.http_get(url)
+                response = self.httprequestObj.http_get(url)
                 # print(i)
                 # print(response.url)
                 i += 1
