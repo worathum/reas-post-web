@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import json, datetime
 from .lib_httprequest import *
 from .lib_captcha import  *
-httprequestObj = lib_httprequest()
 import datetime
 import time,math
 import lxml
@@ -23,7 +22,8 @@ class taradzod:
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
-
+        self.httprequestObj = lib_httprequest()
+        
     def register_user(self, data):
         start_time = datetime.datetime.utcnow()
 
@@ -58,7 +58,7 @@ class taradzod:
             detail = 'Invalid email id'
         else:
             url = 'http://www.taradzod.com/members/register.php'
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
 
             soup = BeautifulSoup(req.text,'html.parser')
             if 'addr_province' in data and 'addr_district' in data and data['addr_province'] is not None and data['addr_district'] is not None and data['addr_province']!='' and data['addr_district']!='':
@@ -89,7 +89,7 @@ class taradzod:
             #print('here',result)
             postdata['captcha'] = result
             url = 'http://www.taradzod.com/members/register-complete.php'
-            req = httprequestObj.http_post(url,data=postdata,headers=headers)
+            req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
             txt = str(req.text)
             if txt.find('สมัครสมาชิกสำเร็จ')!=-1:
                 success = 'true'
@@ -120,14 +120,14 @@ class taradzod:
             'checkcon': ''
         }
         url = 'http://www.taradzod.com/login/'
-        req = httprequestObj.http_get(url)
+        req = self.httprequestObj.http_get(url)
         soup = BeautifulSoup(req.text,'html.parser')
         postdata['checkcon'] = soup.find('input',{'name':'checkcon'})['value']
         url = 'http://www.taradzod.com/login/login_check.php'
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
-        req = httprequestObj.http_post(url,data=postdata,headers=headers)
+        req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
         txt = str(req.text)
         if txt.find('ชื่อเข้าใช้งาน หรือ รหัสผ่าน ไม่ถูกต้อง')!=-1:
             success = 'false'
@@ -199,7 +199,7 @@ class taradzod:
                 postdata['v_id'] = property_tp[ids[str(data['property_type'])]]
             postdata['price'] = data['price_baht']
             url = 'http://www.taradzod.com/post.php'
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(req.text,'html.parser')
             postdata['p_ssid'] = str(soup.find('input',{'name':'p_ssid'})['value'])
             postdata['p_time'] = str(soup.find('input',{'name':'p_time'})['value'])
@@ -226,7 +226,7 @@ class taradzod:
             if postdata['province_id'] == '':
                 postdata['province_id'] = prov_ids[0]
             url = 'http://www.taradzod.com/aj_select_province.php?province_id='+str(postdata['province_id'])
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
             #print('here')
 
             soup = BeautifulSoup(req.text,'html.parser')
@@ -269,7 +269,7 @@ class taradzod:
                         'numImg': str(temp),
                         'maxImg': '9'
                     }
-                    response = httprequestObj.http_post('http://www.taradzod.com/ajax/upload.php', data=imgdata,
+                    response = self.httprequestObj.http_post('http://www.taradzod.com/ajax/upload.php', data=imgdata,
                                                         files=files)
                     #print(response.text)
                     temp = temp + 1
@@ -287,14 +287,14 @@ class taradzod:
                         'numImg': str(temp),
                         'maxImg': '9'
                     }
-                    response = httprequestObj.http_post('http://www.taradzod.com/ajax/upload.php', data=imgdata,
+                    response = self.httprequestObj.http_post('http://www.taradzod.com/ajax/upload.php', data=imgdata,
                                                         files=files)
                     #print(response.text)
                     temp = temp + 1
 
 
             url = 'http://www.taradzod.com/addprakad-complete.php?tok=yes'
-            req = httprequestObj.http_post(url,data=postdata,headers=headers)
+            req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
 
             txt = str(req.text)
             if txt.find('เพิ่มประกาศสำเร็จ') == -1:
@@ -305,10 +305,10 @@ class taradzod:
                 postdata['detailBox'] = 'abcd'
 
                 url = 'http://www.taradzod.com/addprakad-complete.php?tok=yes'
-                req = httprequestObj.http_post(url, data=postdata, headers=headers)
+                req = self.httprequestObj.http_post(url, data=postdata, headers=headers)
 
                 url = 'http://www.taradzod.com/prakad.php'
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text, 'html.parser')
 
                 # #print(soup.find('table',{'class':'table table-hover'}).find('tbody'))
@@ -329,7 +329,7 @@ class taradzod:
                 success = 'true'
                 detail = 'Post created'
                 url = 'http://www.taradzod.com/prakad.php'
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text,'html.parser')
 
                 #print(soup.find('table',{'class':'table table-hover'}).find('tbody'))
@@ -374,7 +374,7 @@ class taradzod:
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
             
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             valid_ids = []
             valid_titles = []
             valid_urls = []
@@ -388,7 +388,7 @@ class taradzod:
             #print(total_pages)
             for i in range(total_pages):
                 url = 'http://www.taradzod.com/prakad.php?page=' + str(i + 1)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html5lib')
 
@@ -411,7 +411,7 @@ class taradzod:
                     'action_id[]': post_id,
                     'action': 'del'
                 }
-                req = httprequestObj.http_post(url,data=postdata, headers=headers)
+                req = self.httprequestObj.http_post(url,data=postdata, headers=headers)
                 detail = 'Post deleted'
             else:
                 success = 'false'
@@ -446,7 +446,7 @@ class taradzod:
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
             
-            """req = httprequestObj.http_get(url, headers=headers)
+            """req = self.httprequestObj.http_get(url, headers=headers)
             valid_ids = []
             valid_titles = []
             valid_urls = []
@@ -461,7 +461,7 @@ class taradzod:
             boosted = 0
             for i in range(total_pages):
                 url = 'http://www.taradzod.com/prakad.php?page=' + str(i + 1)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html5lib')
 
@@ -481,7 +481,7 @@ class taradzod:
                 headers = {
                     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
                 }   
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
                 detail = 'Announcement postponed'
                 success = 'true'
             except:
@@ -520,7 +520,7 @@ class taradzod:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             valid_ids = []
             valid_titles = []
             valid_urls = []
@@ -534,7 +534,7 @@ class taradzod:
             #print(total_pages)
             for i in range(total_pages):
                 url = 'http://www.taradzod.com/prakad.php?page=' + str(i + 1)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html5lib')
 
@@ -600,7 +600,7 @@ class taradzod:
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
             
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             valid_ids = []
             valid_titles = []
             valid_urls = []
@@ -614,7 +614,7 @@ class taradzod:
             #print(total_pages)
             for i in range(total_pages):
                 url = 'http://www.taradzod.com/prakad.php?page=' + str(i + 1)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html5lib')
 
@@ -667,7 +667,7 @@ class taradzod:
                     postdata['v_id'] = property_tp[ids[str(data['property_type'])]]
                 postdata['price'] = data['price_baht']
                 url = 'http://www.taradzod.com/edit-post.php?id='+post_id
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text,'html.parser')
                 postdata['p_ssid'] = str(soup.find('input',{'name':'p_ssid'})['value'])
                 postdata['p_time'] = str(soup.find('input',{'name':'p_time'})['value'])
@@ -694,7 +694,7 @@ class taradzod:
                 if postdata['province_id'] == '':
                     postdata['province_id'] = prov_ids[0]
                 url = 'http://www.taradzod.com/aj_select_province.php?province_id='+str(postdata['province_id'])
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 #print('here')
 
                 soup = BeautifulSoup(req.text,'html.parser')
@@ -711,7 +711,7 @@ class taradzod:
                 if postdata['amphur_id'] == '':
                     postdata['amphur_id'] = dist_ids[0]
                 url = 'http://www.taradzod.com/edit-post.php?id=' + post_id
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 postdata['update_date'] = soup.find('input',{'name':'update_date'})['value']
                 postdata['status'] = 'yes'
@@ -724,7 +724,7 @@ class taradzod:
                         imgdata = {
                             'filename':img.find('img')['imgname']
                         }
-                        req = httprequestObj.http_post(url,data=imgdata,headers=headers)
+                        req = self.httprequestObj.http_post(url,data=imgdata,headers=headers)
 
                     if 'post_images' in data and len(data['post_images']) > 0:
                         pass
@@ -749,7 +749,7 @@ class taradzod:
                                 'numImg': str(temp),
                                 'maxImg': '9'
                             }
-                            response = httprequestObj.http_post('http://www.taradzod.com/ajax/upload.php', data=imgdata,
+                            response = self.httprequestObj.http_post('http://www.taradzod.com/ajax/upload.php', data=imgdata,
                                                                 files=files)
                             #print(response.text)
                             temp = temp + 1
@@ -767,14 +767,14 @@ class taradzod:
                                 'numImg': str(temp),
                                 'maxImg': '9'
                             }
-                            response = httprequestObj.http_post('http://www.taradzod.com/ajax/upload.php', data=imgdata,
+                            response = self.httprequestObj.http_post('http://www.taradzod.com/ajax/upload.php', data=imgdata,
                                                                 files=files)
                             #print(response.text)
                             temp = temp + 1
 
 
                 url = 'http://www.taradzod.com/updateprakad-complete.php?action=yes&id='+post_id
-                req = httprequestObj.http_post(url,data=postdata,headers=headers)
+                req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
 
                 txt = str(req.text)
 
