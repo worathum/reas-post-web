@@ -22,7 +22,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 
-httprequestObj = lib_httprequest()
 
 class proppit():
 
@@ -36,6 +35,7 @@ class proppit():
         except ImportError:
             configs = {}
 
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
@@ -58,7 +58,7 @@ class proppit():
         headers = {"Content-type": "application/json"}
         url = "https://api.proppit.com/login"
 
-        r = httprequestObj.http_post(url, data=json.dumps(datapost), headers=headers)
+        r = self.httprequestObj.http_post(url, data=json.dumps(datapost), headers=headers)
         ret = json.loads(r.text)
 
         if r.status_code == 200:
@@ -221,7 +221,7 @@ class proppit():
             temp['ref'] = i
             recdata['propertyImages'].append(temp)
 
-        r = httprequestObj.http_get("https://api.proppit.com/property-geolocations/coordinates?latitude="+ postdata['geo_latitude'] +"&longitude="+ postdata['geo_longitude'])
+        r = self.httprequestObj.http_get("https://api.proppit.com/property-geolocations/coordinates?latitude="+ postdata['geo_latitude'] +"&longitude="+ postdata['geo_longitude'])
         ret = json.loads(r.text)
 
         recdata['placeId'] = ret['data']['placeId']
@@ -240,7 +240,7 @@ class proppit():
         if (postdata['web_project_name'] is None) or (postdata['web_project_name'] == ''):
             pass
         else:
-            r = httprequestObj.http_get("https://api.proppit.com/project-suggestions?query=" + postdata['web_project_name'])
+            r = self.httprequestObj.http_get("https://api.proppit.com/project-suggestions?query=" + postdata['web_project_name'])
             ret = json.loads(r.text)
 
             if len(ret['data']) == 0:
@@ -342,7 +342,7 @@ class proppit():
         last_id = ""
 
         url = "https://api.proppit.com/properties"
-        r = httprequestObj.http_get(url)
+        r = self.httprequestObj.http_get(url)
         ret = json.loads(r.text)
 
         sort_date = []
@@ -381,7 +381,7 @@ class proppit():
 
                 url = "https://api.proppit.com/properties"+"/"+post_id
 
-                r = httprequestObj.http_post(url, data=payload , files=files)
+                r = self.httprequestObj.http_post(url, data=payload , files=files)
 
                 if (r.status_code == 200) or (r.status_code == 201):
                     success = "true"
@@ -439,7 +439,7 @@ class proppit():
 
             url = "https://api.proppit.com/properties"
 
-            r = httprequestObj.http_post(url, data=payload , files=files)
+            r = self.httprequestObj.http_post(url, data=payload , files=files)
             
             if (r.status_code == 200) or (r.status_code == 201):
                 success = "true"
@@ -588,7 +588,7 @@ class proppit():
         if test_login["success"] == 'true':
             url = "https://api.proppit.com/properties"
 
-            r = httprequestObj.http_get(url)
+            r = self.httprequestObj.http_get(url)
 
             if r.status_code == 200:
                 success = "true"
