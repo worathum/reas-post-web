@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import json, datetime
 from .lib_httprequest import *
 from .lib_captcha import  *
-httprequestObj = lib_httprequest()
 import datetime
 import time,math
 import lxml
@@ -17,6 +16,7 @@ class talad:
         except ImportError:
             configs = {}
 
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
@@ -24,7 +24,7 @@ class talad:
         self.parser = 'html.parser'
 
     def register_user(self, data):
-        req = httprequestObj.http_get('http://talad.me/user/logout')
+        req = self.httprequestObj.http_get('http://talad.me/user/logout')
 
         start_time = datetime.datetime.utcnow()
 
@@ -61,11 +61,11 @@ class talad:
             detail = 'Invalid email id'
         else:
             url = 'http://talad.me/user/register'
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
             soup = BeautifulSoup(req.text,'html.parser')
 
             url = soup.find('div',{'class':'controls'}).find('img')['src']
-            response = httprequestObj.http_get(url)
+            response = self.httprequestObj.http_get(url)
             file = open('tmp.jpeg', 'wb')
             file.write(response.content)
             file.close()
@@ -79,7 +79,7 @@ class talad:
                 postdata['captcha'] = captcha_code
 
                 url = 'http://talad.me/user/register'
-                req = httprequestObj.http_post(url,data=postdata,headers=headers)
+                req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
                 txt = str(req.text)
 
                 if txt.find('อีเมลล์นี้มีอยู่ในระบบแล้ว')!=-1:
@@ -108,7 +108,7 @@ class talad:
         return result
 
     def test_login(self, data):
-        req = httprequestObj.http_get('http://talad.me/user/logout')
+        req = self.httprequestObj.http_get('http://talad.me/user/logout')
 
         start_time = datetime.datetime.utcnow()
 
@@ -126,7 +126,7 @@ class talad:
 
         url = 'http://talad.me/user/login'
         
-        req = httprequestObj.http_post(url,data=postdata,headers=headers)
+        req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
         txt = req.text
         if txt.find('ไม่สามารถเข้าสู่ระบบได้, โปรดตรวจสอบอีเมล์และรหัสผ่านอีกครั้ง') == -1:
             success = 'true'
@@ -197,7 +197,7 @@ class talad:
             postdata['district'] = ''
             #print(data['addr_province'],data['addr_district'])
             url = 'http://talad.me/post'
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
             soup = BeautifulSoup(req.text,'html.parser')
             options = soup.find('select',{'name':'province'}).findAll('option')
             #print(options)
@@ -254,7 +254,7 @@ class talad:
 
                     r = open(os.getcwd() + '/' + i, 'rb')
                     files['files[]'] = r
-                    response = httprequestObj.http_post('http://talad.me/upload', data=postdata,
+                    response = self.httprequestObj.http_post('http://talad.me/upload', data=postdata,
                                                         files=files)
 
                     y = ''
@@ -275,7 +275,7 @@ class talad:
 
                     r = open(os.getcwd() + '/' + i, 'rb')
                     files['files[]'] = r
-                    response = httprequestObj.http_post('http://talad.me/upload', data=postdata,
+                    response = self.httprequestObj.http_post('http://talad.me/upload', data=postdata,
                                                         files=files)
 
                     y = ''
@@ -292,7 +292,7 @@ class talad:
 
             url = 'http://talad.me/post'
 
-            req = httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
+            req = self.httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
 
             soup = BeautifulSoup(req.text,'html5lib')
             try:
@@ -354,14 +354,14 @@ class talad:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
             valid_ids = []
             soup = BeautifulSoup(req.text,'html5lib')
             total_pages = int(soup.find('span',{'class':'badge'}).text)
             total_pages = int(math.ceil(total_pages/12))
             for i in range(total_pages):
                 url = 'http://talad.me/user/post?page='+str(i+1)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html5lib')
 
@@ -378,7 +378,7 @@ class talad:
             #print(valid_ids)
             if post_id in valid_ids:
                 url = 'http://talad.me/user/post/?action=delete&id='+str(post_id)
-                req = httprequestObj.http_get(url,headers=headers)
+                req = self.httprequestObj.http_get(url,headers=headers)
                 success = 'true'
                 detail = 'Post deleted'
             else:
@@ -416,7 +416,7 @@ class talad:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
             valid_ids = []
             valid_titles = []
             valid_urls = []
@@ -425,7 +425,7 @@ class talad:
             total_pages = int(math.ceil(total_pages/12))
             for i in range(total_pages):
                 url = 'http://talad.me/user/post?page='+str(i+1)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html5lib')
 
@@ -493,14 +493,14 @@ class talad:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            """req = httprequestObj.http_get(url, headers=headers)
+            """req = self.httprequestObj.http_get(url, headers=headers)
             valid_ids = []
             soup = BeautifulSoup(req.text, 'html5lib')
             total_pages = int(soup.find('span', {'class': 'badge'}).text)
             total_pages = int(math.ceil(total_pages / 12))
             for i in range(total_pages):
                 url = 'http://talad.me/user/post?page=' + str(i + 1)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html5lib')
 
@@ -518,7 +518,7 @@ class talad:
             try:
 
                 url = 'http://talad.me/user/post/?action=renew&id='+str(post_id)
-                req = httprequestObj.http_get(url,headers=headers)
+                req = self.httprequestObj.http_get(url,headers=headers)
                 success = 'true'
                 detail = 'Post edited and saved'
 
@@ -556,14 +556,14 @@ class talad:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             valid_ids = []
             soup = BeautifulSoup(req.text, 'html5lib')
             total_pages = int(soup.find('span', {'class': 'badge'}).text)
             total_pages = int(math.ceil(total_pages / 12))
             for i in range(total_pages):
                 url = 'http://talad.me/user/post?page=' + str(i + 1)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html5lib')
 
@@ -617,7 +617,7 @@ class talad:
                 postdata['district'] = ''
                 # print(data['addr_province'],data['addr_district'])
                 url = 'http://talad.me/post/edit/'+str(post_id)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 options = soup.find('select', {'name': 'province'}).findAll('option')
                 # print(options)
@@ -659,7 +659,7 @@ class talad:
 
                 # remove previous images
                 url = 'http://talad.me/post/edit/'+str(post_id)
-                req = httprequestObj.http_get(url,headers=headers)
+                req = self.httprequestObj.http_get(url,headers=headers)
                 soup = BeautifulSoup(req.text,'html5lib')
                 del_images = soup.find('div',{'class':'row fileupload-buttonbar'}).findAll('div',{'class':'col-sm-3 col-md-3 col-xs-6'})[:-1]
                 for img in del_images:
@@ -669,7 +669,7 @@ class talad:
                         'pic':str(img['id'])[4:]
                     }
                     #print(imgdata['pic'])
-                    req = httprequestObj.http_post(url,data=imgdata,headers=headers)
+                    req = self.httprequestObj.http_post(url,data=imgdata,headers=headers)
 
 
 
@@ -690,7 +690,7 @@ class talad:
 
                         r = open(os.getcwd() + '/' + i, 'rb')
                         files['files[]'] = r
-                        response = httprequestObj.http_post('http://talad.me/upload', data=postdata,
+                        response = self.httprequestObj.http_post('http://talad.me/upload', data=postdata,
                                                             files=files)
 
                         y = ''
@@ -711,7 +711,7 @@ class talad:
 
                         r = open(os.getcwd() + '/' + i, 'rb')
                         files['files[]'] = r
-                        response = httprequestObj.http_post('http://talad.me/upload', data=postdata,
+                        response = self.httprequestObj.http_post('http://talad.me/upload', data=postdata,
                                                             files=files)
 
                         y = ''
@@ -728,7 +728,7 @@ class talad:
 
                 url = 'http://talad.me/post/edit/' + str(post_id)
 
-                req = httprequestObj.http_post(url, data=postdata, files=file, headers=headers)
+                req = self.httprequestObj.http_post(url, data=postdata, files=file, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html5lib')
 
