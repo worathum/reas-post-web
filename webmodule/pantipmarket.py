@@ -28,9 +28,9 @@ from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 
-# httprequestObj = lib_httprequest()
-# httprequestObj = lib_httprequest()
-httprequestObj = lib_httprequest()
+# self.httprequestObj = lib_httprequest()
+# self.httprequestObj = lib_httprequest()
+
 
 
 # sess = requests.session()
@@ -44,7 +44,7 @@ class pantipmarket():
             import configs
         except ImportError:
             configs = {}
-
+        self.self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.primarydomain = 'https://www.pantipmarket.com/'
@@ -53,7 +53,7 @@ class pantipmarket():
 
     def logout_user(self):
         url = 'https://www.pantipmarket.com/member/logout.php?url=https%3A%2F%2Fwww.pantipmarket.com%2F'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
 
     def register_user(self, userdata):
@@ -62,7 +62,7 @@ class pantipmarket():
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
 
-        httprequestObj.http_get('https://www.pantipmarket.com/member/logout.php')
+        self.httprequestObj.http_get('https://www.pantipmarket.com/member/logout.php')
 
         for x in ['user', 'pass', 'name_th', 'surname_th', 'tel', 'company_name']:
             # print(x)
@@ -119,7 +119,7 @@ class pantipmarket():
         #     'cookie': '_ga=GA1.2.151159769.1589130796; _gid=GA1.2.1042363384.1589130796; pmk_ipage_id[528170]=0; pmk_ipage_id[528171]=0; pmk_ipage_id[528169]=0; pmk_ipage_id[528213]=0; SS_PANTIPMARKET_COM=g0b28h60ah1hkfj9fs04nf7np3; pmk_user_screen=1920|1080',
         # }
         success = True
-        r = httprequestObj.http_post('https://www.pantipmarket.com/member/register_2012.php', data=datapost)
+        r = self.httprequestObj.http_post('https://www.pantipmarket.com/member/register_2012.php', data=datapost)
         print(r.text)
         registered = "คุณเป็นสมาชิก" in r.content.decode('utf-8')
         if registered == False:
@@ -140,7 +140,7 @@ class pantipmarket():
         self.logout_user()
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
-        httprequestObj.http_get('https://www.pantipmarket.com/member/logout.php')
+        self.httprequestObj.http_get('https://www.pantipmarket.com/member/logout.php')
         success = True
         headers = {
             'authority': 'www.pantipmarket.com',
@@ -168,7 +168,7 @@ class pantipmarket():
             'url': 'https://www.pantipmarket.com/member/my/',
             'pop': ''
         }
-        r = httprequestObj.http_post('https://www.pantipmarket.com/member/login.php?step=&sCode=', headers=headers,
+        r = self.httprequestObj.http_post('https://www.pantipmarket.com/member/login.php?step=&sCode=', headers=headers,
                                      data=datapost)
 
         time_end = datetime.utcnow()
@@ -538,7 +538,7 @@ class pantipmarket():
         if success == True:
             post_url = "https://www.pantipmarket.com/items/" + post_id
 
-            request = httprequestObj.http_get(
+            request = self.httprequestObj.http_get(
                 "https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
             response_result = str(request.text)
             regex = '<div class="blue_box">ไม่พบข้อมูลของประกาศ</div>'
@@ -552,7 +552,7 @@ class pantipmarket():
             # print(success)
             if success == True:
                 url = "https://www.pantipmarket.com/member/my/"
-                request = httprequestObj.http_get(url)
+                request = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(request.text, 'lxml')
                 date = soup.find('input', attrs={'id': 'date' + post_id, 'name': 'date'})
                 if date:
@@ -575,7 +575,7 @@ class pantipmarket():
                 # f.close()
 
                 newurl = 'https://www.pantipmarket.com/member/my/action.php'
-                request = httprequestObj.http_post(newurl, data=datapost) """
+                request = self.httprequestObj.http_post(newurl, data=datapost) """
 
                 datapost = {
                     'act' : 'board_expire',
@@ -584,7 +584,7 @@ class pantipmarket():
                 }
 
                 newurl = 'https://www.pantipmarket.com/member/my/board_expire_ajax.php'
-                request = httprequestObj.http_post(newurl, data=datapost)
+                request = self.httprequestObj.http_post(newurl, data=datapost)
 
                 end_time = datetime.utcnow()
                 detail = "Successful boost"
@@ -626,7 +626,7 @@ class pantipmarket():
                 'url': 'https://www.pantipmarket.com/member/my/?view=ads&adsmode=delads'
             }
 
-            request = httprequestObj.http_get(
+            request = self.httprequestObj.http_get(
                 "https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
             response_result = str(request.text)
 
@@ -638,7 +638,7 @@ class pantipmarket():
                 post_url = ""
                 post_id = ""
             if success == True:
-                request = httprequestObj.http_post(url, data=datapost)
+                request = self.httprequestObj.http_post(url, data=datapost)
                 end_time = datetime.utcnow()
                 detail = "Successfully deleted the post"
         else:
@@ -782,7 +782,7 @@ class pantipmarket():
             driver.find_element_by_name("username").send_keys(postdata['user'])
             driver.find_element_by_name("password").send_keys(postdata['pass'])
             driver.find_element_by_name("btn_login_submit").click()
-            request = httprequestObj.http_get(
+            request = self.httprequestObj.http_get(
                 "https://www.pantipmarket.com/form.php?mode=board_delete&id=" + post_id + "&v12.0")
             response_result = str(request.text)
 
@@ -987,7 +987,7 @@ class pantipmarket():
 
         if resp['success'] is True:
 
-            resp = httprequestObj.http_get("https://www.pantipmarket.com/member/my/?view=ads")
+            resp = self.httprequestObj.http_get("https://www.pantipmarket.com/member/my/?view=ads")
             
 
             soup = BeautifulSoup(resp.text, 'html.parser')
