@@ -12,8 +12,6 @@ import sys
 from urllib.parse import unquote
 import requests
 
-httprequestObj = lib_httprequest()
-
 with open("./static/teedin108_provincedata.json") as f:
     # ./static/teedin108_provincedata.json
 
@@ -37,10 +35,11 @@ class teedin108():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.httprequestObj = lib_httprequest()
 
     def logout_user(self):
         url = 'https://www.teedin108.com/member/logout/'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
     def register_user(self, postdata):
         self.logout_user()
@@ -73,7 +72,7 @@ class teedin108():
         success = False
 
         # check if email already exists
-        resp_email = httprequestObj.http_post(url_email, data=email_data)
+        resp_email = self.httprequestObj.http_post(url_email, data=email_data)
 
         # note usage time and end time
         time_end = datetime.datetime.utcnow()
@@ -91,7 +90,7 @@ class teedin108():
                 detail = "This email already exists. Please confirm your email subscription."
             else:
                 # send POST request for registering
-                resp_reg = httprequestObj.http_post(url_register, data=data)
+                resp_reg = self.httprequestObj.http_post(url_register, data=data)
 
                 # parse register response
                 if resp_reg.json()["data"]["sended"]:
@@ -147,8 +146,8 @@ class teedin108():
         start = datetime.datetime.utcnow()
 
         # send POST request
-        # r = httprequestObj.http_post(url_verify, data)
-        r = httprequestObj.http_post(url_verify, data)
+        # r = self.httprequestObj.http_post(url_verify, data)
+        r = self.httprequestObj.http_post(url_verify, data)
 
         # parse response received and set outputs accordingly
         
@@ -217,7 +216,7 @@ class teedin108():
                 "posterEmail": p_email,
                 "posterTelephone": p_tel,
             }
-            r = httprequestObj.http_post('https://www.teedin108.com/post/bancheck/', data=datapost)
+            r = self.httprequestObj.http_post('https://www.teedin108.com/post/bancheck/', data=datapost)
             data = r.text
             datajson = r.json()
 
@@ -341,7 +340,7 @@ class teedin108():
 
                     # print("Before file upload")
 
-                    r = httprequestObj.http_post("https://www.teedin108.com/post/ajaxupload/", data={}, files = files)
+                    r = self.httprequestObj.http_post("https://www.teedin108.com/post/ajaxupload/", data={}, files = files)
                     r_json = r.json()
 
                     try:
@@ -381,7 +380,7 @@ class teedin108():
                         del data["photos[angle][]"]
 
                     url = ""     
-                    resp = httprequestObj.http_post("https://www.teedin108.com/post/add", data=data)
+                    resp = self.httprequestObj.http_post("https://www.teedin108.com/post/add", data=data)
                     soup = BeautifulSoup(resp.text, 'html.parser')
 
                     url = soup.find("meta", property="og:url")
@@ -437,7 +436,7 @@ class teedin108():
                 "post_id": post_id,
                 "password": passwd
             }
-            r = httprequestObj.http_post('https://www.teedin108.com/post/trash/', data=datapost)
+            r = self.httprequestObj.http_post('https://www.teedin108.com/post/trash/', data=datapost)
             data = r.text
             datajson = r.json()
             detail = "Successfully deleted"
@@ -474,8 +473,8 @@ class teedin108():
                 "password": postdata["pass"]
         }
 
-        r = httprequestObj.http_post("https://www.teedin108.com/post/verify/", data=data)
-        r = httprequestObj.http_get("https://www.teedin108.com/post/edit/"+str(post_id))
+        r = self.httprequestObj.http_post("https://www.teedin108.com/post/verify/", data=data)
+        r = self.httprequestObj.http_get("https://www.teedin108.com/post/edit/"+str(post_id))
 
         p_name = postdata["name"]
         p_tel = postdata["mobile"]
@@ -584,7 +583,7 @@ class teedin108():
                 files = {
                     "files[]": open(os.getcwd()+'/'+img, "rb")  
                 }
-                r = httprequestObj.http_post("https://www.teedin108.com/post/ajaxupload/", data={}, files = files)
+                r = self.httprequestObj.http_post("https://www.teedin108.com/post/ajaxupload/", data={}, files = files)
                 r_json = r.json()
 
                 try:
@@ -626,7 +625,7 @@ class teedin108():
             del data["photos[name][]"]
             del data["photos[angle][]"]
 
-        data = httprequestObj.http_post('https://www.teedin108.com/post/save/'+str(post_id), data=data)
+        data = self.httprequestObj.http_post('https://www.teedin108.com/post/save/'+str(post_id), data=data)
         success = True
         detail = "Successfully Edited"
         if not data.text:
@@ -661,7 +660,7 @@ class teedin108():
 
         title = postdata["post_title_th"]
 
-        r = httprequestObj.http_post("https://www.teedin108.com/search/", data)
+        r = self.httprequestObj.http_post("https://www.teedin108.com/search/", data)
         soup = BeautifulSoup(r.text, 'html.parser')
 
         div_container = []
@@ -689,7 +688,7 @@ class teedin108():
         post_view = ''
 
         for site in sites:
-            r = httprequestObj.http_get(site)
+            r = self.httprequestObj.http_get(site)
             soup = BeautifulSoup(r.text, 'html.parser')
             div_container = soup.find_all('div', class_='poster-detail')[1]
             # print(postdata['user'])
@@ -741,12 +740,12 @@ class teedin108():
                 "password": postdata["pass"]
         }
 
-        r = httprequestObj.http_post("https://www.teedin108.com/post/verify/", data=data)
+        r = self.httprequestObj.http_post("https://www.teedin108.com/post/verify/", data=data)
 
-        r = httprequestObj.http_get('https://www.teedin108.com/post/edit/'+str(post_id)+'/')
+        r = self.httprequestObj.http_get('https://www.teedin108.com/post/edit/'+str(post_id)+'/')
 
         data = {}
-        resp = httprequestObj.http_post('https://www.teedin108.com/post/save/'+post_id+'/', data=data)
+        resp = self.httprequestObj.http_post('https://www.teedin108.com/post/save/'+post_id+'/', data=data)
 
         detail = "Boosted successfully"
         success = True
