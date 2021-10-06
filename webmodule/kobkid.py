@@ -14,7 +14,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
 
 
 class kobkid():
@@ -27,7 +26,7 @@ class kobkid():
 
         except ImportError:
             configs = {}
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
@@ -77,7 +76,7 @@ class kobkid():
             'uname': username,
         }
 
-        result = httprequestObj.http_post(self.url_reg, data=email_check_data, headers=self.headers)
+        result = self.httprequestObj.http_post(self.url_reg, data=email_check_data, headers=self.headers)
         decoded_result = result.content.decode('utf-8')
         final_output = json.loads(decoded_result)
 
@@ -95,7 +94,7 @@ class kobkid():
                 "websitename": "kobkid",
             }
 
-        result = httprequestObj.http_post(self.url_reg, data=uname_check, headers=self.headers)
+        result = self.httprequestObj.http_post(self.url_reg, data=uname_check, headers=self.headers)
         decoded_result = result.content.decode('utf-8')
         final_output = json.loads(decoded_result)
 
@@ -113,7 +112,7 @@ class kobkid():
                 "websitename": "kobkid",
             }
 
-        result = httprequestObj.http_post(self.url_reg, data=register_data, headers=self.headers)
+        result = self.httprequestObj.http_post(self.url_reg, data=register_data, headers=self.headers)
         decoded_result = result.content.decode('utf-8')
         final_output = json.loads(decoded_result)
 
@@ -161,7 +160,7 @@ class kobkid():
             'rememe': '0',
         }
         # print(login_data)
-        result = httprequestObj.http_post(self.url_reg, data=login_data, headers=self.headers)
+        result = self.httprequestObj.http_post(self.url_reg, data=login_data, headers=self.headers)
         decoded_result = result.content.decode('utf-8')
         final_output = json.loads(decoded_result)
 
@@ -216,7 +215,7 @@ class kobkid():
                 'page_limit': '1'
             }
 
-            response = httprequestObj.http_post('https://www.kobkid.com/market/resource/php/condo_list.php',
+            response = self.httprequestObj.http_post('https://www.kobkid.com/market/resource/php/condo_list.php',
                                                     data=pid_data)
             result = json.loads(response.content.decode('utf-8', errors="ignore"))['condos']
             if(len(result) != 0):
@@ -227,7 +226,7 @@ class kobkid():
                     'condoid': condo_id
                 }
 
-                response = httprequestObj.http_post('https://www.kobkid.com/market/resource/php/condoZoneSearch.php',
+                response = self.httprequestObj.http_post('https://www.kobkid.com/market/resource/php/condoZoneSearch.php',
                                                         data=zoneid_data)
                 #print(response.content)
                 try:
@@ -292,7 +291,7 @@ class kobkid():
 
             #print(post_data)
 
-            response = httprequestObj.http_post('https://www.kobkid.com/market/resource/php/createMarketItem.php', data=post_data)
+            response = self.httprequestObj.http_post('https://www.kobkid.com/market/resource/php/createMarketItem.php', data=post_data)
             result = json.loads(response.content.decode('utf-8', errors="ignore"))
             #print(result)
             post_id = result['postid']
@@ -308,7 +307,7 @@ class kobkid():
                         'file': (allimages[i], open(os.getcwd() + "/" + allimages[i], 'rb'), 'image/png')
                     }
 
-                    response = httprequestObj.http_post('https://www.kobkid.com/market/imgUpload.php', files=image_data,
+                    response = self.httprequestObj.http_post('https://www.kobkid.com/market/imgUpload.php', files=image_data,
                                                         data=image_data)
                     result = json.loads(response.content.decode('utf-8'))
                     if (result['success'] == False):
@@ -363,7 +362,7 @@ class kobkid():
             }
 
             #print(publish_obj)
-            response = httprequestObj.http_post('https://www.kobkid.com/market/resource/php/publishMarketItem.php',data=publish_obj)
+            response = self.httprequestObj.http_post('https://www.kobkid.com/market/resource/php/publishMarketItem.php',data=publish_obj)
             result = json.loads(response.content.decode('utf-8'))
             end_time = datetime.datetime.utcnow()
             if(result['success'] == True):
@@ -426,7 +425,7 @@ class kobkid():
             'tagid': '11'
         }
 
-        response = httprequestObj.http_post('https://www.kobkid.com/market/postaction.php', data=boost_data)
+        response = self.httprequestObj.http_post('https://www.kobkid.com/market/postaction.php', data=boost_data)
         result = json.loads(response.content.decode('utf-8'))['actionSuccess']
 
         if(result == True):
@@ -467,7 +466,7 @@ class kobkid():
               'postid': post_id
             }
 
-            response = httprequestObj.http_post('https://www.kobkid.com/market/postaction.php', data=delete_post)
+            response = self.httprequestObj.http_post('https://www.kobkid.com/market/postaction.php', data=delete_post)
             result = json.loads(response.content.decode('utf-8'))['actionSuccess']
 
             if(result == True):
@@ -494,7 +493,7 @@ class kobkid():
         if(login['success'] == False):
             return login
 
-        response = httprequestObj.http_get('https://www.kobkid.com/member/post')
+        response = self.httprequestObj.http_get('https://www.kobkid.com/member/post')
         soup = BeautifulSoup(response.content, 'html.parser')
         id = soup.find_all("div", {"class": "market-item-edit"})
         list_of_orders = []
@@ -556,7 +555,7 @@ class kobkid():
             post_title = postdata['post_title_th']
             # exists, authenticityToken, post_title = self.check_post(post_id)
             url = "https://www.kobkid.com/member/post"
-            r = httprequestObj.http_get(url)
+            r = self.httprequestObj.http_get(url)
             exists = False
             soup = BeautifulSoup(r.content, features='html.parser')
             for title_row in soup.find_all('div', attrs={'class':'market-item-wrapper'}):
