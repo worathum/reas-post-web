@@ -9,8 +9,6 @@ from urllib.parse import unquote
 from datetime import datetime
 import random
 
-httprequestObj = lib_httprequest()
-httprequestObj.timeout = 60
 
 
 def set_end_time(start_time):
@@ -42,6 +40,8 @@ class teedintuk():
         except ImportError:
             configs = {}
 
+        self.httprequestObj = lib_httprequest()
+        self.httprequestObj.timeout = 60
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.primarydomain = 'https://teedintuk.com/'
@@ -51,7 +51,7 @@ class teedintuk():
 
     def logout_user(self):
         url = 'https://teedintuk.com/logout'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
     def register_user(self, userdata):
         # self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -92,7 +92,7 @@ class teedintuk():
             return res
 
         province = ''.join(map(str, str(userdata['addr_province']).split(' ')))
-        resp = httprequestObj.http_get(reqst_url)
+        resp = self.httprequestObj.http_get(reqst_url)
         token = soup(resp.text, 'html5lib')
 
         abc = token.find('select', attrs={'name': 'city'})
@@ -103,7 +103,7 @@ class teedintuk():
                 break
         payload['_token'] = str(token.find('input', attrs={'name': '_token'})['value'])
 
-        r = httprequestObj.http_post(reqst_url, data=payload)
+        r = self.httprequestObj.http_post(reqst_url, data=payload)
 
         parsedHtml = soup(r.text, 'html5lib')
         divd = parsedHtml.find('div', attrs={'class': 'alert alert-success'})
@@ -132,12 +132,12 @@ class teedintuk():
             'submit': ''
         }
 
-        resp = httprequestObj.http_get(login_url)
+        resp = self.httprequestObj.http_get(login_url)
         token = soup(resp.text, 'html5lib')
 
         login_pload['_token'] = str(token.find('input', attrs={'name': '_token'})['value'])
 
-        r = httprequestObj.http_post(login_url, data=login_pload)
+        r = self.httprequestObj.http_post(login_url, data=login_pload)
 
         parsedHtml = soup(r.text, 'html5lib')
         err = parsedHtml.find('div', attrs={'class': 'alert alert-danger'})
@@ -323,7 +323,7 @@ class teedintuk():
             else:
                 data['area'] = land_area_sq
 
-            resp = httprequestObj.http_get('https://teedintuk.com/admin/properties/now', headers=headers,
+            resp = self.httprequestObj.http_get('https://teedintuk.com/admin/properties/now', headers=headers,
                                            cookies=cookies)
             pid = BeautifulSoup(resp.text, 'html5lib')
 
@@ -334,7 +334,7 @@ class teedintuk():
             print('ye find chla')
 
             province = ''.join(map(str, str(postdata['addr_province']).split(' ')))
-            find_province = httprequestObj.http_get(reqst_url)
+            find_province = self.httprequestObj.http_get(reqst_url)
             # print("yha\n",find_province.text)
             provlist = BeautifulSoup(find_province.text, features="html5lib")
 
@@ -373,9 +373,9 @@ class teedintuk():
                     break
                 cnt += 1
 
-            r = httprequestObj.http_post("https://teedintuk.com/admin/properties/addproperty", data=data, files=file)
+            r = self.httprequestObj.http_post("https://teedintuk.com/admin/properties/addproperty", data=data, files=file)
             print(r.text)
-            resp = httprequestObj.http_get('https://teedintuk.com/admin/properties/now')
+            resp = self.httprequestObj.http_get('https://teedintuk.com/admin/properties/now')
             pid = BeautifulSoup(resp.text, 'html5lib')
             # print('ye nahi chla')
             post_id = pid.find('tbody').find('tr').find('td').text
@@ -417,14 +417,14 @@ class teedintuk():
 
         if (login["success"] == "true"):
             # del_data = {'post_id':post_id}
-            res = httprequestObj.http_get('https://teedintuk.com/admin/properties/now')
+            res = self.httprequestObj.http_get('https://teedintuk.com/admin/properties/now')
             sou = soup(res.text, 'html5lib')
             trs = sou.find('tbody').findAll('tr')
             flag = 0
             for tr in trs:
                 pid = tr.find('td').text
                 if pid == post_id:
-                    r = httprequestObj.http_get(post_url)
+                    r = self.httprequestObj.http_get(post_url)
                     success = "true"
                     detail = "Post Deleted successfully"
                     flag = 1
@@ -466,7 +466,7 @@ class teedintuk():
         acc_t = ''
         if (login["success"] == "true"):
 
-            res = httprequestObj.http_get('https://teedintuk.com/admin/properties/now')
+            res = self.httprequestObj.http_get('https://teedintuk.com/admin/properties/now')
             sou = soup(res.text, 'html5lib')
             trs = sou.find('tbody').findAll('tr')
             try:
@@ -481,7 +481,7 @@ class teedintuk():
                     post_found = "true"
                     post_id = pid[0].text
                     post_url = 'https://teedintuk.com/properties/' + str(post_id)
-                    r = httprequestObj.http_get(post_url)
+                    r = self.httprequestObj.http_get(post_url)
                     sou = BeautifulSoup(r.text, 'html5lib')
                     vd = sou.find('div', attrs={'class': 'meta-info'}).findAll('span')
                     post_create = vd[0].text
@@ -653,7 +653,7 @@ class teedintuk():
             else:
                 data['area'] = land_area_sq
 
-            res = httprequestObj.http_get('https://teedintuk.com/admin/properties/now')
+            res = self.httprequestObj.http_get('https://teedintuk.com/admin/properties/now')
             sou = soup(res.text, 'html5lib')
             trs = sou.find('tbody').findAll('tr')
             flag = 0
@@ -662,7 +662,7 @@ class teedintuk():
                 if pid == post_id:
 
                     province = ''.join(map(str, str(postdata['addr_province']).split(' ')))
-                    find_province = httprequestObj.http_get(reqst_url)
+                    find_province = self.httprequestObj.http_get(reqst_url)
                     print(find_province.url)
                     provlist = BeautifulSoup(find_province.text, features="html5lib")
 
@@ -705,7 +705,7 @@ class teedintuk():
                             break
                         cnt += 1
 
-                    r = httprequestObj.http_post("https://teedintuk.com/admin/properties/addproperty", data=data,
+                    r = self.httprequestObj.http_post("https://teedintuk.com/admin/properties/addproperty", data=data,
                                                  files=file)
 
                     flag = 1
