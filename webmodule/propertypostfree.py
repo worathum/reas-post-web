@@ -10,7 +10,6 @@ import random
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
-httprequestObj = lib_httprequest()
 
 class propertypostfree():
    
@@ -31,10 +30,11 @@ class propertypostfree():
         self.debugresdata = 0
         self.baseurl = 'http://www.propertypostfree.com'
         self.parser = 'html.parser'
+        self.httprequestObj = lib_httprequest()
 
     def logout_user(self):
         url = 'http://www.propertypostfree.com/member/logout.php'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
 
     def register_user(self, postdata):
@@ -54,7 +54,7 @@ class propertypostfree():
 
         
 
-        response = httprequestObj.http_post('http://www.propertypostfree.com/member-register.php', data = data1, headers = headers)
+        response = self.httprequestObj.http_post('http://www.propertypostfree.com/member-register.php', data = data1, headers = headers)
         
 
         soup = BeautifulSoup(response.content,features = 'html')
@@ -87,7 +87,7 @@ class propertypostfree():
             detail = "Please enter your phone number"
         else:
             try:
-                res = httprequestObj.http_post('http://www.propertypostfree.com/p-member-register.php', data = data, headers = headers)
+                res = self.httprequestObj.http_post('http://www.propertypostfree.com/p-member-register.php', data = data, headers = headers)
 
                 if 'มีอยู่ในระบบแล้วครับ' in res.text:
                     success = "false"
@@ -142,7 +142,7 @@ class propertypostfree():
             detail = "Invalid Password"
         else:
             try:
-                response = httprequestObj.http_post('http://www.propertypostfree.com/login.php', data = data, headers = headers)
+                response = self.httprequestObj.http_post('http://www.propertypostfree.com/login.php', data = data, headers = headers)
                 
                 if 'ขออภัยครับ ท่านกรอก Email และ/หรือ Password ไม่ถูกต้องครับ' in response.text or 'ขออภัยครับ ทางเว็บไซต์ยังไม่ได้ยืนยันการใช้งานระบบตัวแทนขายโครงการให้กับท่านครับ' in response.text:
                     success = "false"
@@ -150,7 +150,7 @@ class propertypostfree():
                 else:
                     success = "true"
                     detail = 'Logged in successfully'
-                    res = httprequestObj.http_get('http://www.propertypostfree.com/member/edit-personal.php')
+                    res = self.httprequestObj.http_get('http://www.propertypostfree.com/member/edit-personal.php')
                     #print(res.text)
             
             except requests.exceptions.RequestException:
@@ -276,7 +276,7 @@ class propertypostfree():
 
             province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
 
-            find_province = httprequestObj.http_get('http://www.propertypostfree.com/member/post-property.php', headers = headers).text
+            find_province = self.httprequestObj.http_get('http://www.propertypostfree.com/member/post-property.php', headers = headers).text
 
             soup = BeautifulSoup(find_province,features = self.parser)
             abc = soup.find('select',attrs = {'name':'province'})
@@ -291,7 +291,7 @@ class propertypostfree():
 
             url_district = str('http://www.propertypostfree.com/data_for_list3.php?province='+data['province'])
 
-            find_district = httprequestObj.http_get(url_district, headers = headers).text
+            find_district = self.httprequestObj.http_get(url_district, headers = headers).text
 
             soup = BeautifulSoup(find_district,features = self.parser)
 
@@ -304,7 +304,7 @@ class propertypostfree():
                 data['amphur'] = str(soup.find('option')['value'])
 
 
-            respo = httprequestObj.http_get('http://www.propertypostfree.com/member/post-property.php', headers = headers)
+            respo = self.httprequestObj.http_get('http://www.propertypostfree.com/member/post-property.php', headers = headers)
         
 
             soup = BeautifulSoup(respo.content,features = 'html')
@@ -347,7 +347,7 @@ class propertypostfree():
 
 
 
-            crt_post = httprequestObj.http_post('http://www.propertypostfree.com/member/p-post-property.php', data = data, files = file, headers = headers)
+            crt_post = self.httprequestObj.http_post('http://www.propertypostfree.com/member/p-post-property.php', data = data, files = file, headers = headers)
             #print(crt_post.text)
 
             soup = BeautifulSoup(crt_post.content, features = self.parser)
@@ -359,7 +359,7 @@ class propertypostfree():
 
             sec_step_url = str('http://www.propertypostfree.com/member/real-estate-features.php?post_id='+post_id)
 
-            sec_step = httprequestObj.http_get(sec_step_url, headers = headers)
+            sec_step = self.httprequestObj.http_get(sec_step_url, headers = headers)
 
             success = "true"
             detail = "Post created successfully"
@@ -401,13 +401,13 @@ class propertypostfree():
         if(login['success'] == "true"):
             """all_posts_url = 'http://www.propertypostfree.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+            all_posts = self.httprequestObj.http_get(all_posts_url, headers = headers)
 
             soup = BeautifulSoup(all_posts.content, features = self.parser)
 
             all_post_ids = []
             page = 1
-            r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
+            r = self.httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
             soup = BeautifulSoup(r.content, 'html.parser')
             pages = soup.find_all('a', attrs={'class': 'paginate'})
             if len(pages) > 0:
@@ -423,7 +423,7 @@ class propertypostfree():
             while page <= max_p:
 
                 all_posts_url = 'http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page='+str(page)
-                requ = httprequestObj.http_get(all_posts_url, headers=headers).content
+                requ = self.httprequestObj.http_get(all_posts_url, headers=headers).content
                 soup = BeautifulSoup(requ, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
@@ -438,7 +438,7 @@ class propertypostfree():
             try:
                 boost_url = str('http://www.propertypostfree.com/member/slide-property.php?post_id='+req_post_id)
 
-                boo_post = httprequestObj.http_get(boost_url, headers = headers)
+                boo_post = self.httprequestObj.http_get(boost_url, headers = headers)
 
                 #print(boo_post.text)
 
@@ -494,7 +494,7 @@ class propertypostfree():
             all_post_ids = []
             page = 1
 
-            r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
+            r = self.httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
             soup = BeautifulSoup(r.content, 'html.parser')
             pages = soup.find_all('a', attrs={'class': 'paginate'})
             if len(pages) > 0:
@@ -509,7 +509,7 @@ class propertypostfree():
             page = 1
             while page <= max_p:
                 all_posts_url = 'http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page='+str(page)
-                requ = httprequestObj.http_get(all_posts_url, headers=headers)
+                requ = self.httprequestObj.http_get(all_posts_url, headers=headers)
                 soup = BeautifulSoup(requ.content, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
@@ -527,7 +527,7 @@ class propertypostfree():
                     'hdnCount' : str(len(all_post_ids))
                 }
 
-                delete_post = httprequestObj.http_post('http://www.propertypostfree.com/member/manage-property-not-sale.php', data = data, headers = headers)
+                delete_post = self.httprequestObj.http_post('http://www.propertypostfree.com/member/manage-property-not-sale.php', data = data, headers = headers)
 
                 success = "true"
                 detail = "Post deleted successfully"
@@ -574,7 +574,7 @@ class propertypostfree():
         if login['success'] == 'true':
             all_post_ids = []
             page = 1
-            r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
+            r = self.httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
             soup = BeautifulSoup(r.content, 'html.parser')
             pages = soup.find_all('a', attrs={'class': 'paginate'})
             if len(pages) > 0:
@@ -591,7 +591,7 @@ class propertypostfree():
 
                 all_posts_url = 'http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page='+str(page)
 
-                requ = httprequestObj.http_get(all_posts_url, headers=headers).content
+                requ = self.httprequestObj.http_get(all_posts_url, headers=headers).content
                 soup = BeautifulSoup(requ, features = self.parser)
                 all_post = soup.find_all('input', attrs = {'name':'chkDel[]'})
                 for abc in all_post:
@@ -694,7 +694,7 @@ class propertypostfree():
 
                 pro_url = str('http://www.propertypostfree.com/member/edit-property.php?post_id='+req_post_id)
 
-                find_province = httprequestObj.http_get(pro_url, headers = headers).text
+                find_province = self.httprequestObj.http_get(pro_url, headers = headers).text
 
                 soup = BeautifulSoup(find_province,features = self.parser)
                 abc = soup.find('select',attrs = {'name':'province'})
@@ -709,7 +709,7 @@ class propertypostfree():
 
                 url_district = str('http://www.propertypostfree.com/data_for_list3.php?province='+data['province'])
 
-                find_district = httprequestObj.http_get(url_district, headers = headers).text
+                find_district = self.httprequestObj.http_get(url_district, headers = headers).text
 
                 soup = BeautifulSoup(find_district,features = self.parser)
 
@@ -748,13 +748,13 @@ class propertypostfree():
 
                     edit_post_url = str('http://www.propertypostfree.com/member/p-edit-property.php')
 
-                    edit_post = httprequestObj.http_post(edit_post_url, data = data, files = file, headers = headers)
+                    edit_post = self.httprequestObj.http_post(edit_post_url, data = data, files = file, headers = headers)
 
                     success = "true"
                     detail = "Post edited successfully"
                 else:
                     edit_post_url = str('http://www.propertypostfree.com/member/p-edit-property.php')
-                    edit_post = httprequestObj.http_post(edit_post_url, data = data, headers = headers)
+                    edit_post = self.httprequestObj.http_post(edit_post_url, data = data, headers = headers)
                     success = "true"
                     detail = "Post edited successfully"
 
@@ -809,7 +809,7 @@ class propertypostfree():
             post_create_time = ''
             post_modify_time = ''
             detail = 'No post with this title'
-            r = httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
+            r = self.httprequestObj.http_get('http://www.propertypostfree.com/member/list-property.php')
             soup = BeautifulSoup(r.content, 'html.parser')
             pages = soup.find_all('a', attrs={'class': 'paginate'})
             if len(pages)>0:
@@ -831,7 +831,7 @@ class propertypostfree():
                     break
                 all_posts_url = 'http://www.propertypostfree.com/member/list-property.php?QueryString=value&Page=%d' % page
 
-                all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+                all_posts = self.httprequestObj.http_get(all_posts_url, headers = headers)
 
                 soup = BeautifulSoup(all_posts.content, features = self.parser)
 
@@ -850,7 +850,7 @@ class propertypostfree():
                         post_modify_time = abc.span.text[13:]
                         detail = "Post found"
 
-                        find_info = httprequestObj.http_get(post_url, headers = headers)
+                        find_info = self.httprequestObj.http_get(post_url, headers = headers)
 
                         sou = BeautifulSoup(find_info.content, features = self.parser)
 
