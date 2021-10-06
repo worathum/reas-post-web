@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import json, datetime
 from .lib_httprequest import *
 from .lib_captcha import  *
-httprequestObj = lib_httprequest()
 import datetime
 import time,math
 
@@ -14,7 +13,7 @@ class kaiteedootee:
             import configs
         except ImportError:
             configs = {}
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
@@ -36,7 +35,7 @@ class kaiteedootee:
         headers = {
         	'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
-        req = httprequestObj.http_post(url,data=postdata,headers=headers)
+        req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
         txt = req.text
         if txt.find('มีอีเมลนี้ในระบบแล้ว')!=-1:
             success = 'false'
@@ -71,7 +70,7 @@ class kaiteedootee:
         headers = {
         	'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
-        req = httprequestObj.http_post(url,data=postdata,headers=headers)
+        req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
         txt = req.text
         if txt.find('Username หรือ Password ไม่ถูกต้อง') == -1:
             success = 'true'
@@ -143,7 +142,7 @@ class kaiteedootee:
                 'geo':''
             }
             url = 'http://kaiteedootee.com/NiSK.php?ACT=SearchGeo'
-            req = httprequestObj.http_post(url,data=temp_data,headers=headers)
+            req = self.httprequestObj.http_post(url,data=temp_data,headers=headers)
             txt = str(req.text)
             #print('here',txt)
             ind = 13
@@ -174,7 +173,7 @@ class kaiteedootee:
                 'province': postdata['data[province_id]']
             }
             url = 'http://kaiteedootee.com/NiSK.php?ACT=SearchProvince'
-            req = httprequestObj.http_post(url, data=temp_data, headers=headers)
+            req = self.httprequestObj.http_post(url, data=temp_data, headers=headers)
             txt = str(req.text)
             #print(txt)
             ind = 11
@@ -202,7 +201,7 @@ class kaiteedootee:
                 'amphur': postdata['data[amphur_id]']
             }
             url = 'http://kaiteedootee.com/NiSK.php?ACT=SearchAmphur'
-            req = httprequestObj.http_post(url, data=temp_data, headers=headers)
+            req = self.httprequestObj.http_post(url, data=temp_data, headers=headers)
             txt = str(req.text)
             ind = 9
             subdistricts_list = []
@@ -264,7 +263,7 @@ class kaiteedootee:
                 file.append((str('files_more[]'), (y, open(data['post_images'][0], "rb"), "image/jpg")))
 
             url = 'http://kaiteedootee.com/post.php'
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
             soup = BeautifulSoup(req.text,'html.parser')
             postdata['data[poster_name]'] = soup.find('input',{'name':'data[poster_name]'})['value']
             postdata['data[poster_telephone]'] = soup.find('input',{'name':'data[poster_telephone]'})['value']
@@ -274,9 +273,9 @@ class kaiteedootee:
 
             url = 'http://kaiteedootee.com/NiSK.php?ACT=PostKai'
 
-            req = httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
+            req = self.httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
             url = 'http://kaiteedootee.com/index.php'
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
             soup = BeautifulSoup(req.text,'html.parser')
             div = soup.findAll('div',{'class':'container'})[2]
             latests = div.findAll('div',{'class':'col-md-6'})
@@ -330,7 +329,7 @@ class kaiteedootee:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
             soup = BeautifulSoup(req.text,'html.parser')
             valid_ids = []
             delete_ids = []
@@ -360,7 +359,7 @@ class kaiteedootee:
                     'txtPassword':data['pass']
                 }
                 #print(data['pass'])
-                req = httprequestObj.http_post(url,data=postdata,headers=headers)
+                req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
                 detail = 'Post deleted'
             else:
                 success = 'false'
@@ -401,7 +400,7 @@ class kaiteedootee:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             valid_ids = []
             valid_titles = []
@@ -480,7 +479,7 @@ class kaiteedootee:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             valid_ids = []
             edit_ids = []
@@ -543,7 +542,7 @@ class kaiteedootee:
                     'geo':''
                 }
                 url = 'http://kaiteedootee.com/NiSK.php?ACT=SearchGeo'
-                req = httprequestObj.http_post(url,data=temp_data,headers=headers)
+                req = self.httprequestObj.http_post(url,data=temp_data,headers=headers)
                 txt = str(req.text)
                 #print('here',txt)
                 ind = 13
@@ -574,7 +573,7 @@ class kaiteedootee:
                     'province': postdata['data[province_id]']
                 }
                 url = 'http://kaiteedootee.com/NiSK.php?ACT=SearchProvince'
-                req = httprequestObj.http_post(url, data=temp_data, headers=headers)
+                req = self.httprequestObj.http_post(url, data=temp_data, headers=headers)
                 txt = str(req.text)
                 #print(txt)
                 ind = 11
@@ -602,7 +601,7 @@ class kaiteedootee:
                     'amphur': postdata['data[amphur_id]']
                 }
                 url = 'http://kaiteedootee.com/NiSK.php?ACT=SearchAmphur'
-                req = httprequestObj.http_post(url, data=temp_data, headers=headers)
+                req = self.httprequestObj.http_post(url, data=temp_data, headers=headers)
                 txt = str(req.text)
                 ind = 9
                 subdistricts_list = []
@@ -666,7 +665,7 @@ class kaiteedootee:
 
                 url = 'http://kaiteedootee.com/NiSK.php?ACT=Edit_post_data&PID='+str(post_id)
 
-                req = httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
+                req = self.httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
                 post_url = 'http://kaiteedootee.com/blog.php?ID='+str(post_id)
                 success = 'true'
                 detail = 'Successfully edited'
@@ -705,7 +704,7 @@ class kaiteedootee:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             valid_ids = []
             edit_ids = []
