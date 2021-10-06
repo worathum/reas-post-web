@@ -12,7 +12,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
 
 
 class livinginsider():
@@ -26,6 +25,7 @@ class livinginsider():
         except ImportError:
             configs = {}
 
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 1
@@ -35,7 +35,7 @@ class livinginsider():
 
     def logout_user(self):
         url = 'https://www.livinginsider.com/logout.php'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
     def register_user(self, postdata):
         self.logout_user()
@@ -57,7 +57,7 @@ class livinginsider():
             "mem_tel": postdata['tel']
         }
         # print(datapost)
-        r = httprequestObj.http_post('https://www.livinginsider.com/member_create.php', data=datapost)
+        r = self.httprequestObj.http_post('https://www.livinginsider.com/member_create.php', data=datapost)
         data = json.loads(r.text)
         # print(data)
         if data['error_field'] != '':
@@ -98,7 +98,7 @@ class livinginsider():
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
 
-        r = httprequestObj.http_post(
+        r = self.httprequestObj.http_post(
             'https://www.livinginsider.com/login.php', data=datapost)
         print(r.status_code)
         data = json.loads(r.text)
@@ -131,7 +131,7 @@ class livinginsider():
         test_login = self.test_login(postdata)
         
         if (test_login['success'] == 'true' or test_login['success'] == True) :
-            r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php?action=home')
+            r = self.httprequestObj.http_get('https://www.livinginsider.com/mystock.php?action=home')
             """ print("--------")
             print(r.url) """
             soup = BeautifulSoup(r.text, self.parser)
@@ -258,7 +258,7 @@ class livinginsider():
                         "detail": 'Project not Found. Post not created!',
                     }
 
-                data = httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
+                data = self.httprequestObj.http_post('https://www.livinginsider.com/a_project_child.php', data={'web_project_id': idzone})
                 data = json.loads(data.text)
 
                 if data['result'] == 1:
@@ -272,7 +272,7 @@ class livinginsider():
                 web_zone = int(str(postdata['location_area']).strip())
 
 
-            r = httprequestObj.http_post('https://www.livinginsider.com/a_zone_child.php', data={'web_zone_id': web_zone})
+            r = self.httprequestObj.http_post('https://www.livinginsider.com/a_zone_child.php', data={'web_zone_id': web_zone})
 
             prod_address = ""
             for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'],
@@ -327,7 +327,7 @@ class livinginsider():
                     'web_latitude': postdata['geo_latitude'],
                     'web_longitude': postdata['geo_longitude']
                 }
-            r = httprequestObj.http_post('https://www.livinginsider.com/a_add_living.php', data=data)
+            r = self.httprequestObj.http_post('https://www.livinginsider.com/a_add_living.php', data=data)
             data = r.text
             img_link = 'https://www.livinginsider.com/js_upload/php/'
             arr = ["files[]"]
@@ -338,7 +338,7 @@ class livinginsider():
             start = 1
             f = {}
             data = {}
-            k = httprequestObj.http_get('https://www.livinginsider.com/living_buysell2.php')
+            k = self.httprequestObj.http_get('https://www.livinginsider.com/living_buysell2.php')
             soup = BeautifulSoup(k.text, self.parser)
             webFolder = soup.select_one('#web_photo_folder')['value']
 
@@ -348,7 +348,7 @@ class livinginsider():
                 f[arr[0]] = (postdata['post_images'][i], open(
                     postdata['post_images'][i], "rb"), "image/jpeg")
                 # print(f)
-                r = httprequestObj.http_post(img_link, data={'web_photo_folder': webFolder}, files=f)
+                r = self.httprequestObj.http_post(img_link, data={'web_photo_folder': webFolder}, files=f)
 
                 if r.status_code == 200:
                     r = json.loads(r.text)
@@ -639,7 +639,7 @@ class livinginsider():
                 'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
             }
             # print('Posting data')
-            r = httprequestObj.http_post(
+            r = self.httprequestObj.http_post(
                 'https://www.livinginsider.com/a_add_living.php', data=data, headers=headers)
 
             data = {
@@ -648,7 +648,7 @@ class livinginsider():
                 'publish_flag': '1'
             }
 
-            r = httprequestObj.http_get('https://www.livinginsider.com/living_confirm.php')
+            r = self.httprequestObj.http_get('https://www.livinginsider.com/living_confirm.php')
             # print(r.url)
             # print(r.status_code)
             # print(r.text)
@@ -656,7 +656,7 @@ class livinginsider():
             # with open('b.html', 'w') as f:
             #     print(r.text, file=f)
 
-            r = httprequestObj.http_post('https://www.livinginsider.com/living_confirm.php', data=data)
+            r = self.httprequestObj.http_post('https://www.livinginsider.com/living_confirm.php', data=data)
             print(r.url)
             print(r.status_code)
             print(r.text)
@@ -735,7 +735,7 @@ class livinginsider():
             """page = 1
 
             max_page = 100
-            r = httprequestObj.http_get(
+            r = self.httprequestObj.http_get(
                 'https://www.livinginsider.com/mystock.php?action=1&pages=1&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=')
             soup = BeautifulSoup(r.content, self.parser)
             try:
@@ -760,7 +760,7 @@ class livinginsider():
                     ('search_zone_id', ''),
                     ('pagelimit', '50'),
                 )
-                r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
+                r = self.httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
                 if r.history:
                     break
                 soup = BeautifulSoup(r.content, self.parser)
@@ -791,7 +791,7 @@ class livinginsider():
                 }
 
 
-                r = httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': str(post_id)}, headers=headers)
+                r = self.httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': str(post_id)}, headers=headers)
                 print(r.status_code)
 
 
@@ -856,7 +856,7 @@ class livinginsider():
 
                     data = requests.get('https://www.livinginsider.com/a_project_list_json.php?term=' + term + '&_type=query&q=' + term)   
 
-                r = httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': postdata['post_id'], 'currentID': postdata['post_id']}, headers=headers, redirect=False)
+                r = self.httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': postdata['post_id'], 'currentID': postdata['post_id']}, headers=headers, redirect=False)
                 # print(r.url, "hi1")
                 
                 #print(r.status_code)
@@ -931,13 +931,13 @@ class livinginsider():
                     'X-Requested-With': 'XMLHttpRequest'
                 }
 
-                r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=data, headers=headers)
+                r = self.httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=data, headers=headers)
                 data = r.text
                 #print(r.url)
                 #print(r.status_code)
                 #print(data)
 
-                r = httprequestObj.http_get('https://www.livinginsider.com/living_edit2.php?topic_id='+ postdata['post_id'], headers=headers)
+                r = self.httprequestObj.http_get('https://www.livinginsider.com/living_edit2.php?topic_id='+ postdata['post_id'], headers=headers)
                 #print('Page 2', r.status_code)
                 soup = BeautifulSoup(r.text, self.parser)
 
@@ -957,7 +957,7 @@ class livinginsider():
                 start = 1
                 f = {}
                 data = {}
-                k = httprequestObj.http_get('https://www.livinginsider.com/living_buysell2.php')
+                k = self.httprequestObj.http_get('https://www.livinginsider.com/living_buysell2.php')
                 soup = BeautifulSoup(k.text, self.parser)
                 # webFolder = soup.find('input', {'id': 'web_photo_folder'}).get('value')
                 # print('WebFolder')
@@ -985,7 +985,7 @@ class livinginsider():
                         ('files[]', (filename, open(postdata['post_images'][i], "rb"), "image/jpeg")),
                     ]
                     # print(f)
-                    r = httprequestObj.http_post(img_link, data={}, files=datapost)
+                    r = self.httprequestObj.http_post(img_link, data={}, files=datapost)
                     # print(r.url)
                     # print(r.status_code)
                     # print(r.text)
@@ -1338,7 +1338,7 @@ class livinginsider():
                     'Accept-Language': 'en-IN,en-US;q=0.9,en;q=0.8',
                 }
                 # print('Posting data')
-                r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=data, headers=headers)
+                r = self.httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=data, headers=headers)
                 # print(r.url)
                 # print(r.status_code)
                 # print(r.text)
@@ -1351,7 +1351,7 @@ class livinginsider():
                     'state_renew': ''
             }
 
-            r = httprequestObj.http_post('https://www.livinginsider.com/living_edit_confirm.php', params={'topic_id': post_id}, data=data)
+            r = self.httprequestObj.http_post('https://www.livinginsider.com/living_edit_confirm.php', params={'topic_id': post_id}, data=data)
             #print(r.text)
             r = json.loads(r.text)
             link = r['link_copy']
@@ -1442,7 +1442,7 @@ class livinginsider():
 
             post_found = False
             max_page = 100
-            r = httprequestObj.http_get(
+            r = self.httprequestObj.http_get(
                 'https://www.livinginsider.com/mystock.php?action=1')
 
             device_id = r.text.split("let device_id")[1].split("'")[1].split("'")[0]            
@@ -1474,7 +1474,7 @@ class livinginsider():
                     ('group_list', ''),
                     ('pagelimit', '10'),
                 )
-                r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
+                r = self.httprequestObj.http_get('https://www.livinginsider.com/mystock.php', params=params)
                 soup = BeautifulSoup(r.content, self.parser)
                 all_posts = soup.find_all(class_='mystock-item')
                 for post in all_posts:
@@ -1496,7 +1496,7 @@ class livinginsider():
                 headers = {
                     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36',
                 }
-                r = httprequestObj.http_post('https://api.livinginsider.com/living_delete_reason.php', data=datapost, headers=headers)
+                r = self.httprequestObj.http_post('https://api.livinginsider.com/living_delete_reason.php', data=datapost, headers=headers)
                 # print(r.url)
                 # print(r.status_code)
                 if r.text:
@@ -1508,7 +1508,7 @@ class livinginsider():
                 datapost['web_id'] = post_id
                 datapost['web_delete_reason_text'] = ''
                 print(datapost)
-                r = httprequestObj.http_post('https://api.livinginsider.com/my_living_topic_delete.php', data=datapost, headers=headers)
+                r = self.httprequestObj.http_post('https://api.livinginsider.com/my_living_topic_delete.php', data=datapost, headers=headers)
                 print(r.status_code)
                 print(r.text)
                 # print(r.url)
@@ -1572,7 +1572,7 @@ class livinginsider():
                     'Accept-Encoding': 'gzip, deflate, br',
                     'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
                 }
-            res = httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': str(post_id)}, headers=headers)
+            res = self.httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': str(post_id)}, headers=headers)
             soup = BeautifulSoup(res.text, 'html.parser')
             #print(soup.find('meta', {'name': 'csrf-token'}).get('content'))
             csrf_token = soup.find('meta', {'name': 'csrf-token'}).get('content')
@@ -1595,8 +1595,8 @@ class livinginsider():
                 'X-Requested-With': 'XMLHttpRequest'
             }
 
-            r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=None, headers=headers)
-            res = httprequestObj.http_get('https://www.livinginsider.com/living_edit2.php?topic_id='+ postdata['post_id'], headers=headers)
+            r = self.httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=None, headers=headers)
+            res = self.httprequestObj.http_get('https://www.livinginsider.com/living_edit2.php?topic_id='+ postdata['post_id'], headers=headers)
             
             headers = {
                 'Connection': 'keep-alive',
@@ -1612,7 +1612,7 @@ class livinginsider():
                 'Accept-Language': 'en-IN,en-US;q=0.9,en;q=0.8',
             }
 
-            r = httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', headers=headers, data=None)
+            r = self.httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', headers=headers, data=None)
 
             data = {
                 'hidden_status': '',
@@ -1622,7 +1622,7 @@ class livinginsider():
                 'state_renew': ''
             }
 
-            r = httprequestObj.http_post('https://www.livinginsider.com/living_edit_confirm.php', params={'topic_id': post_id}, data=data)
+            r = self.httprequestObj.http_post('https://www.livinginsider.com/living_edit_confirm.php', params={'topic_id': post_id}, data=data)
 
             if r.status_code == 200:
                 success = 'true'
@@ -1666,7 +1666,7 @@ class livinginsider():
 
             post_found = False
             max_page = 100
-            r = httprequestObj.http_get(
+            r = self.httprequestObj.http_get(
                 'https://www.livinginsider.com/mystock.php?action=1&pages=%d&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=' % page)
             soup = BeautifulSoup(r.content, self.parser)
             try:
@@ -1678,7 +1678,7 @@ class livinginsider():
                 # if page == max_page:
                 #     print('\n\nsearched till max\n\n')
 
-                r = httprequestObj.http_get('https://www.livinginsider.com/mystock.php?action=1&pages=%d&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=' % page)
+                r = self.httprequestObj.http_get('https://www.livinginsider.com/mystock.php?action=1&pages=%d&pagelimit=50&actiontype=&posttype=&search_zone_id=&search_project_id=&web_id_for_publish=&web_id_hidden=&check_open_graph=&id_scroll=-1&search_bedroom=0&search_area=0&search_price=0&topic_sort=1&group_list=&searchword=' % page)
                 soup = BeautifulSoup(r.content, self.parser)
 
                 all_posts = soup.find_all('div', attrs={'class':'mystock-item'})
