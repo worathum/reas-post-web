@@ -13,7 +13,6 @@ import sys
 from urllib.parse import unquote
 import os
 
-httprequestObj = lib_httprequest()
 captcha = lib_captcha()
 
 class terrabkk():
@@ -27,6 +26,7 @@ class terrabkk():
         except ImportError:
             configs = {}
 
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.primarydomain = 'http://www.terrabkk.com/'
@@ -94,7 +94,7 @@ class terrabkk():
         
         if g_response != 0:
             datapost["g-recaptcha-response"] = g_response
-            r = httprequestObj.http_post("https://www.terrabkk.com/member/submit_profile_agent", data = datapost, files=filetoup)            
+            r = self.httprequestObj.http_post("https://www.terrabkk.com/member/submit_profile_agent", data = datapost, files=filetoup)            
             soup = BeautifulSoup(r.text, features=self.parser)
             if not soup.find(id="login"):
                 success = "True"
@@ -143,7 +143,7 @@ class terrabkk():
             "password": postdata['pass']
         }
 
-        r = httprequestObj.http_post(url, data= json.dumps(data), headers=headers)
+        r = self.httprequestObj.http_post(url, data= json.dumps(data), headers=headers)
         response = r.json()
 
         success = response['success']
@@ -270,7 +270,7 @@ class terrabkk():
             data['freepost_id'] = postdata['post_id']
             r = requests.put(url, data= json.dumps(data), headers=headers)
         else:
-            r = httprequestObj.http_post(url, data= json.dumps(data), headers=headers)
+            r = self.httprequestObj.http_post(url, data= json.dumps(data), headers=headers)
             
         ret = r.json()
         success = ret['success']
