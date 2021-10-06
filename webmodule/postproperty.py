@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import json, datetime
 from .lib_httprequest import *
 from .lib_captcha import  *
-httprequestObj = lib_httprequest()
 import datetime
 import time,math
 import lxml
@@ -24,12 +23,12 @@ class postproperty:
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
-
+        self.httprequestObj = lib_httprequest()
 
 
     def logout_user(self):
         url = 'https://post-property.com/wp-login.php?action=logout&_wpnonce=cf743bdc66"'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
 
     def register_user(self, data):
@@ -72,7 +71,7 @@ class postproperty:
             detail = 'Username length should be between 4 and 16'
         else:
 
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
 
             soup = BeautifulSoup(req.text,'html5lib')
 
@@ -94,7 +93,7 @@ class postproperty:
 
                 url = 'https://post-property.com/register'
 
-                req = httprequestObj.http_post(url,data=postdata,headers=headers)
+                req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
 
                 txt = str(req.text)
                 ##print(req.status_code)
@@ -157,7 +156,7 @@ class postproperty:
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
-        req = httprequestObj.http_post(url,data=postdata,headers=headers)
+        req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
         txt = req.text
 
         if txt.find('logout') != -1:
@@ -193,7 +192,7 @@ class postproperty:
             ##print('login')
             postdata = {}
             url = 'https://post-property.com/wp-admin/post-new.php'
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
             soup = BeautifulSoup(req.text,'html.parser')
             ##print('start1')
             postdata['_wpnonce'] = soup.find('input',{'name':'_wpnonce'})['value']
@@ -355,7 +354,7 @@ class postproperty:
                 postdata['project'] = data['web_project_name']
                 postdata['location_id'] = ''
                 url = 'https://post-property.com/wp-admin/post-new.php'
-                req = httprequestObj.http_get(url,headers=headers)
+                req = self.httprequestObj.http_get(url,headers=headers)
                 provinces = []
                 prov_id = []
                 data['addr_province'] = ''.join(map(str, str(data['addr_province']).split(' ')))
@@ -374,7 +373,7 @@ class postproperty:
                     loc_id = prov_id[0]
 
                 url = 'https://post-property.com/wp-admin/admin-ajax.php'
-                req = httprequestObj.http_post(url,data={'action':'get_district','location_id':loc_id},headers=headers)
+                req = self.httprequestObj.http_post(url,data={'action':'get_district','location_id':loc_id},headers=headers)
 
                 soup = BeautifulSoup(req.text,'html.parser')
                 districts = soup.findAll('a')
@@ -432,7 +431,7 @@ class postproperty:
                     }
                     ##print(imgdata)
 
-                    response = httprequestObj.http_post('https://post-property.com/wp-admin/async-upload.php',
+                    response = self.httprequestObj.http_post('https://post-property.com/wp-admin/async-upload.php',
                                                         data=imgdata, files=files)
 
                     txt = str(response.text)
@@ -481,7 +480,7 @@ class postproperty:
                         }
                         ##print(imgdata)
 
-                        response = httprequestObj.http_post('https://post-property.com/wp-admin/async-upload.php',
+                        response = self.httprequestObj.http_post('https://post-property.com/wp-admin/async-upload.php',
                                                             data=imgdata, files=files)
 
                         txt = str(response.text)
@@ -516,7 +515,7 @@ class postproperty:
             ##print(postdata['media_thumbnail_url[]'])
 
             url = 'https://post-property.com/wp-admin/post.php'
-            req = httprequestObj.http_post(url,data=postdata,headers=headers)
+            req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
             txt = str(req.text)
             soup = BeautifulSoup(req.text,'html.parser')
             post_url = str(soup.find('li',{'id':'wp-admin-bar-view'}).find('a')['href'])
@@ -565,14 +564,14 @@ class postproperty:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             soup = BeautifulSoup(req.text, 'html5lib')
             try:
                 owner_id_chk = soup.find('h1', attrs={'class': 'wp-heading-inline'})
                 if ("ประกาศ" in str(owner_id_chk.text)):
                     delete_a = soup.find('a', attrs={'class': 'submitdelete deletion'})
                     delete_link = delete_a['href']
-                    req = httprequestObj.http_get(delete_link, headers=headers)
+                    req = self.httprequestObj.http_get(delete_link, headers=headers)
                     success = 'true'
                     detail = 'Post deleted'
                 else:
@@ -614,7 +613,7 @@ class postproperty:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             soup = BeautifulSoup(req.text,'html.parser')
             valid_ids = []
             valid_titles = []
@@ -625,7 +624,7 @@ class postproperty:
 
             for page_no in range(total_pages):
                 url = 'https://post-property.com/wp-admin/edit.php?paged='+str(page_no+1)
-                req = httprequestObj.http_get(url,headers=headers)
+                req = self.httprequestObj.http_get(url,headers=headers)
                 soup = BeautifulSoup(req.text, 'html5lib')
                 posts = soup.find('tbody', {'id': 'the-list'}).findAll('tr')
                 for post in posts:
@@ -683,7 +682,7 @@ class postproperty:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get(url, headers=headers)
+            req = self.httprequestObj.http_get(url, headers=headers)
             valid_ids = []
             soup = BeautifulSoup(req.text, 'html5lib')
             total_pages = int(soup.find('span', attrs={'class': 'total-pages'}).text)
@@ -691,7 +690,7 @@ class postproperty:
 
             for page_no in range(total_pages):
                 url = 'https://post-property.com/wp-admin/edit.php?paged=' + str(page_no + 1)
-                req = httprequestObj.http_get(url, headers=headers)
+                req = self.httprequestObj.http_get(url, headers=headers)
                 soup = BeautifulSoup(req.text, 'html5lib')
                 posts = soup.find('tbody', {'id': 'the-list'}).findAll('tr')
                 for post in posts:
@@ -737,7 +736,7 @@ class postproperty:
             ##print('login')
             postdata = {}
             url = 'https://post-property.com/wp-admin/post.php?post='+post_id+'&action=edit'
-            req = httprequestObj.http_get(url,headers=headers)
+            req = self.httprequestObj.http_get(url,headers=headers)
             txt = str(req.text)
             ##print(txt)
             if txt.find('คุณพยายามแก้ไขสิ่งที่ไม่มีอยู่  บางทีมันอาจถูกลบไปแล้ว?')==-1:
@@ -904,7 +903,7 @@ class postproperty:
                     postdata['project'] = data['web_project_name']
                     postdata['location_id'] = ''
                     url = 'https://post-property.com/wp-admin/post.php?post=' + post_id + '&action=edit'
-                    req = httprequestObj.http_get(url,headers=headers)
+                    req = self.httprequestObj.http_get(url,headers=headers)
                     provinces = []
                     prov_id = []
                     data['addr_province'] = ''.join(map(str, str(data['addr_province']).split(' ')))
@@ -923,7 +922,7 @@ class postproperty:
                         loc_id = prov_id[0]
 
                     url = 'https://post-property.com/wp-admin/admin-ajax.php'
-                    req = httprequestObj.http_post(url,data={'action':'get_district','location_id':loc_id},headers=headers)
+                    req = self.httprequestObj.http_post(url,data={'action':'get_district','location_id':loc_id},headers=headers)
 
                     soup = BeautifulSoup(req.text,'html.parser')
                     districts = soup.findAll('a')
@@ -981,7 +980,7 @@ class postproperty:
                         }
                         ##print(imgdata)
 
-                        response = httprequestObj.http_post('https://post-property.com/wp-admin/async-upload.php',
+                        response = self.httprequestObj.http_post('https://post-property.com/wp-admin/async-upload.php',
                                                             data=imgdata, files=files)
 
                         txt = str(response.text)
@@ -1030,7 +1029,7 @@ class postproperty:
                             }
                             ##print(imgdata)
 
-                            response = httprequestObj.http_post('https://post-property.com/wp-admin/async-upload.php',
+                            response = self.httprequestObj.http_post('https://post-property.com/wp-admin/async-upload.php',
                                                                 data=imgdata, files=files)
 
                             txt = str(response.text)
@@ -1065,7 +1064,7 @@ class postproperty:
                 ##print(postdata['media_thumbnail_url[]'])
 
                 url = 'https://post-property.com/wp-admin/post.php'
-                req = httprequestObj.http_post(url,data=postdata,headers=headers)
+                req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
                 txt = str(req.text)
                 soup = BeautifulSoup(req.text,'html.parser')
                 post_url = str(soup.find('li',{'id':'wp-admin-bar-view'}).find('a')['href'])
