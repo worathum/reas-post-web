@@ -25,7 +25,6 @@ property_types = {
     '25': ('189', {'property_area_rai':'land_size_rai', 'property_area_ngan':'land_size_ngan', 'prop_land_area':'land_size_wa', 'prop_size':'floor_area', 'amount_floor':'floor_total', 'prop_beds':'bed_room', 'prop_baths':'bath_room'})
 }
 
-httprequestObj = lib_httprequest()
 captcha = lib_captcha()
 
 class klungbaan():
@@ -37,7 +36,7 @@ class klungbaan():
             import configs
         except ImportError:
             configs = {}
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
@@ -68,7 +67,7 @@ class klungbaan():
             "is_register_page": "1"
         }
         
-        r = httprequestObj.http_get(self.site_name+'/register-salesman/')
+        r = self.httprequestObj.http_get(self.site_name+'/register-salesman/')
         if r.status_code==200:
             soup = BeautifulSoup(r.text, features=self.parser)
             houzez_register_security2 = soup.find(id='houzez_register_security')
@@ -79,7 +78,7 @@ class klungbaan():
             if g_response != 0:
                 datapost["g-recaptcha-response"] = g_response
                 
-                response = httprequestObj.http_post(self.site_name+'/wp-admin/admin-ajax.php', data=datapost) 
+                response = self.httprequestObj.http_post(self.site_name+'/wp-admin/admin-ajax.php', data=datapost) 
                 if response.status_code==200: 
                     response = json.loads(response.text)
                     if response["success"]:
@@ -123,7 +122,7 @@ class klungbaan():
             "_wp_http_referer": "/",
             "action": "houzez_login"
         }
-        r = httprequestObj.http_get(self.site_name)
+        r = self.httprequestObj.http_get(self.site_name)
         if r.status_code==200:
             soup = BeautifulSoup(r.text, features=self.parser)
             houzez_login_security = soup.find(id='houzez_login_security')
@@ -134,7 +133,7 @@ class klungbaan():
             if g_response != 0:
                 datapost["g-recaptcha-response"] = g_response
             
-                response = httprequestObj.http_post(self.site_name+'/wp-admin/admin-ajax.php', data=datapost)
+                response = self.httprequestObj.http_post(self.site_name+'/wp-admin/admin-ajax.php', data=datapost)
         
                 if response.status_code==200:
                     response = json.loads(response.text)
@@ -334,7 +333,7 @@ class klungbaan():
                     "prop_payment": "not_paid"   
                 }
 
-            r = httprequestObj.http_get(website+'/property-create/')
+            r = self.httprequestObj.http_get(website+'/property-create/')
             exceed_post = False
             matchObj = re.search(r'จะสามารถลงประกาศขายในเว็บได้ไม่เกิน', r.text)
             if matchObj:
@@ -355,7 +354,7 @@ class klungbaan():
                 for image in postdata['post_images'][:10]:
                     data = {"name": image}
                     files = {"property_upload_file": open(os.getcwd()+"/"+image, 'rb')}
-                    r = httprequestObj.http_post(website+'/wp-admin/admin-ajax.php?action=houzez_property_img_upload&verify_nonce='+verify_nonce, data=data, files=files)
+                    r = self.httprequestObj.http_post(website+'/wp-admin/admin-ajax.php?action=houzez_property_img_upload&verify_nonce='+verify_nonce, data=data, files=files)
                     if r.status_code==200:
                         r = json.loads(r.text)
                         if not r["success"]:
@@ -374,13 +373,13 @@ class klungbaan():
                 
                 if flag:
                     datapost['propperty_image_ids[]'] = image_ids
-                    response = httprequestObj.http_post(website+'/property-create/', data=datapost)
+                    response = self.httprequestObj.http_post(website+'/property-create/', data=datapost)
     
                     if response.status_code==200:
                         if "thank-you" in response.url:
                             success = "true"
                             detail = "Post created successfully!"
-                            r = httprequestObj.http_get(website+'/my-properties/')
+                            r = self.httprequestObj.http_get(website+'/my-properties/')
                             if r.status_code==200:
                                 soup = BeautifulSoup(r.text, features=self.parser)
                                 post_div = soup.find(class_='dashboard-table-properties')
@@ -593,7 +592,7 @@ class klungbaan():
                     "prop_featured": "0",
                     "prop_payment": "not_paid"  
                 }
-            r = httprequestObj.http_get("https://rent.klungbaan.com/property-create/?edit_property="+str(postdata['post_id']))
+            r = self.httprequestObj.http_get("https://rent.klungbaan.com/property-create/?edit_property="+str(postdata['post_id']))
             #print(website+'/property-create/?edit_property='+str(postdata['post_id']))
             if r.status_code==200:
                 try:
@@ -616,14 +615,14 @@ class klungbaan():
                                 "thumb_id": image.get('value'),
                                 "removeNonce": verify_nonce
                             }
-                            r = httprequestObj.http_post(website+'/wp-admin/admin-ajax.php', data=data)
+                            r = self.httprequestObj.http_post(website+'/wp-admin/admin-ajax.php', data=data)
                     
                     image_ids = []
                     flag = True
                     for image in postdata['post_images'][:10]:
                         data = {"name": image}
                         files = {"property_upload_file": open(os.getcwd()+"/"+image, 'rb')}
-                        r = httprequestObj.http_post(website+'/wp-admin/admin-ajax.php?action=houzez_property_img_upload&verify_nonce='+verify_nonce, data=data, files=files)
+                        r = self.httprequestObj.http_post(website+'/wp-admin/admin-ajax.php?action=houzez_property_img_upload&verify_nonce='+verify_nonce, data=data, files=files)
                         if r.status_code==200:
                             r = json.loads(r.text)
                             if not r["success"]:
@@ -639,7 +638,7 @@ class klungbaan():
                     
                     if flag:
                         datapost['propperty_image_ids[]'] = image_ids
-                        response = httprequestObj.http_post(website+'/property-create/?edit_property='+str(postdata['post_id']), data=datapost)
+                        response = self.httprequestObj.http_post(website+'/property-create/?edit_property='+str(postdata['post_id']), data=datapost)
  
                         if response.status_code==200:
                             soup = BeautifulSoup(response.text, features=self.parser)
@@ -691,7 +690,7 @@ class klungbaan():
             flag = False
 
             while not flag:
-                response = httprequestObj.http_get('https://www.klungbaan.com/my-properties/page/'+str(page))
+                response = self.httprequestObj.http_get('https://www.klungbaan.com/my-properties/page/'+str(page))
                 if response.status_code==200:
                     soup = BeautifulSoup(response.text, features=self.parser)
                     post_div = soup.find(class_='dashboard-table-properties')
@@ -721,7 +720,7 @@ class klungbaan():
                 page = 1
                 flag = False
                 while not flag:
-                    response = httprequestObj.http_get('https://rent.klungbaan.com/my-properties/page/'+str(page))
+                    response = self.httprequestObj.http_get('https://rent.klungbaan.com/my-properties/page/'+str(page))
                     if response.status_code==200:
                         soup = BeautifulSoup(response.text, features=self.parser)
                         post_div = soup.find(class_='dashboard-table-properties')
@@ -777,7 +776,7 @@ class klungbaan():
 
         if success=="true":
             success = "false"
-            r = httprequestObj.http_get('https://klungbaan.com/my-properties/')
+            r = self.httprequestObj.http_get('https://klungbaan.com/my-properties/')
             print(r.url)
             print(r.status_code)
             if r.status_code==200:
@@ -789,14 +788,14 @@ class klungbaan():
                     "security": security
                 }
     
-                response = httprequestObj.http_post('https://klungbaan.com/wp-admin/admin-ajax.php', data=datapost)
+                response = self.httprequestObj.http_post('https://klungbaan.com/wp-admin/admin-ajax.php', data=datapost)
                 if response.status_code==200:
                     response = json.loads(response.text)
                     if response["success"]:
                         success = "true"
                         detail = "Post deleted successfully!"
                     else:
-                        r = httprequestObj.http_get('https://rent.klungbaan.com/my-properties/')
+                        r = self.httprequestObj.http_get('https://rent.klungbaan.com/my-properties/')
                         if r.status_code==200:
                             soup = BeautifulSoup(r.text, features=self.parser)
                             security = soup.find(class_='delete-property').get('data-nonce')    
@@ -805,7 +804,7 @@ class klungbaan():
                                 "prop_id": postdata['post_id'],
                                 "security": security
                             }
-                            response = httprequestObj.http_post('https://rent.klungbaan.com/wp-admin/admin-ajax.php', data=datapost)
+                            response = self.httprequestObj.http_post('https://rent.klungbaan.com/wp-admin/admin-ajax.php', data=datapost)
                             if response.status_code==200:
                                 response = json.loads(response.text)
                                 if response["success"]:
@@ -851,14 +850,14 @@ class klungbaan():
                 "propID": postdata['post_id']
             }
             
-            response = httprequestObj.http_post('https://www.klungbaan.com/wp-admin/admin-ajax.php', data=datapost)
+            response = self.httprequestObj.http_post('https://www.klungbaan.com/wp-admin/admin-ajax.php', data=datapost)
             if response.status_code==200:
                 response = json.loads(response.text)
                 if response["success"]:
                     success = "true"
                     detail = "Post boosted successfully!"
                 else:
-                    response = httprequestObj.http_post('https://rent.klungbaan.com/wp-admin/admin-ajax.php', data=datapost)
+                    response = self.httprequestObj.http_post('https://rent.klungbaan.com/wp-admin/admin-ajax.php', data=datapost)
                     if response.status_code==200:
                         response = json.loads(response.text)
                         if response["success"]:
