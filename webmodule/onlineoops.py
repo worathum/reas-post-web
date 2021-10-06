@@ -25,7 +25,6 @@ property_types = {
     '25': ('others',)
 }
 
-httprequestObj = lib_httprequest()
 
 
 class onlineoops():
@@ -37,7 +36,7 @@ class onlineoops():
             import configs
         except ImportError:
             configs = {}
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
@@ -46,19 +45,19 @@ class onlineoops():
 
     def logout_user(self):
         url = 'https://market.onlineoops.com/user/logout'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
     def register_user(self, postdata):
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        httprequestObj.http_get(self.site_name+'/user/logout')
+        self.httprequestObj.http_get(self.site_name+'/user/logout')
 
         # start process
         success = "false"
         detail = 'An Error has Occurred'
 
-        r = httprequestObj.http_get(self.site_name+'/user/register')
+        r = self.httprequestObj.http_get(self.site_name+'/user/register')
         soup = BeautifulSoup(r.content, features=self.parser)
         csrf  = soup.find(attrs={"name": "_csrf"}).get('value')
         
@@ -71,7 +70,7 @@ class onlineoops():
             "Member[isconfirm]": "1"
         }
 
-        response = httprequestObj.http_post(self.site_name+'/user/register', data=datapost)
+        response = self.httprequestObj.http_post(self.site_name+'/user/register', data=datapost)
     
         if response.status_code==200:
             soup = BeautifulSoup(response.content, features=self.parser)
@@ -108,10 +107,10 @@ class onlineoops():
         # start process
         success = "false"
         detail = 'An Error has Occurred'
-        httprequestObj.http_get(self.site_name+'/user/logout')
+        self.httprequestObj.http_get(self.site_name+'/user/logout')
 
 
-        r = httprequestObj.http_get(self.site_name+'/user/login')
+        r = self.httprequestObj.http_get(self.site_name+'/user/login')
         soup = BeautifulSoup(r.content, features=self.parser)
         
         datapost = {
@@ -120,7 +119,7 @@ class onlineoops():
             "LoginForm[rememberMe]": 0
         }
 
-        response = httprequestObj.http_post(self.site_name+'/user/login', data=datapost)
+        response = self.httprequestObj.http_post(self.site_name+'/user/login', data=datapost)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, features=self.parser)
             username = soup.find(class_='field-loginform-username')
@@ -170,7 +169,7 @@ class onlineoops():
                 postdata['web_project_name'] = postdata['post_title_th']
 
         if success=="true":
-            r = httprequestObj.http_get(self.site_name+'/post/free')
+            r = self.httprequestObj.http_get(self.site_name+'/post/free')
             soup = BeautifulSoup(r.text, features=self.parser)
             csrf = soup.find(attrs={'name':'_csrf'}).get('value')
             province = province_list[0]
@@ -234,7 +233,7 @@ class onlineoops():
                 else:
                     datapost['Attr['+str(i)+'][tmpvalue]'] = eachdata
             
-            response = httprequestObj.http_post(self.site_name+'/post/free', data=datapost, files = files)
+            response = self.httprequestObj.http_post(self.site_name+'/post/free', data=datapost, files = files)
             
             success = "false"
             if response.status_code==200:
@@ -248,7 +247,7 @@ class onlineoops():
                     files = {}
                     for image in postdata['post_images'][1:6]:
                         files["PostmarketthTH[images][]"] = open(os.getcwd()+"/"+image, 'rb')
-                        r = httprequestObj.http_post(self.site_name+'/post/free?id='+post_id, data=datapost, files = files)
+                        r = self.httprequestObj.http_post(self.site_name+'/post/free?id='+post_id, data=datapost, files = files)
             else:
                 detail += "Error code "+ str(response.status_code)+"     detail:"+response.text
         else:
@@ -290,7 +289,7 @@ class onlineoops():
                 postdata['web_project_name'] = postdata['post_title_th']
         
         if success=="true":
-            r = httprequestObj.http_get(self.site_name+'/post/free?id='+str(postdata['post_id']))
+            r = self.httprequestObj.http_get(self.site_name+'/post/free?id='+str(postdata['post_id']))
             soup = BeautifulSoup(r.text, features=self.parser)
             site_error = soup.find(class_ = 'site-error')
             soup_ = soup
@@ -323,14 +322,14 @@ class onlineoops():
                 d_ = {
                     'key': str(data[0]) + ':' + str(postdata["post_id"])
                 }
-                r_ = httprequestObj.http_post('https://market.onlineoops.com/post/file-delete-thumb', data=d_, headers=header)
+                r_ = self.httprequestObj.http_post('https://market.onlineoops.com/post/file-delete-thumb', data=d_, headers=header)
                 # print(r_.url,d_,r_.text)
 
                 for i in data[1]:
                     d_ = {
                         'key': str(i) + ':' + str(postdata["post_id"])
                     }
-                    r_ = httprequestObj.http_post('https://market.onlineoops.com/post/file-delete', data=d_, headers=header)
+                    r_ = self.httprequestObj.http_post('https://market.onlineoops.com/post/file-delete', data=d_, headers=header)
                     # text is false but pic will be deleted
                     # print(r_.url, d_, r_.text)
                 province = province_list[0]
@@ -396,11 +395,11 @@ class onlineoops():
                 if len(postdata['post_images'])>0:
                     files["PostmarketthTH[image]"] = open(os.getcwd()+"/"+postdata['post_images'][0], 'rb')
                 if len(postdata['post_images']) <= 1:
-                    response = httprequestObj.http_post(self.site_name+'/post/free?id='+str(postdata['post_id']), data=datapost, files = files)
+                    response = self.httprequestObj.http_post(self.site_name+'/post/free?id='+str(postdata['post_id']), data=datapost, files = files)
                         
                 for image in postdata['post_images'][1:6]:
                     files["PostmarketthTH[images][]"] = open(os.getcwd()+"/"+image, 'rb')
-                    response = httprequestObj.http_post(self.site_name+'/post/free?id='+str(postdata['post_id']), data=datapost, files = files)
+                    response = self.httprequestObj.http_post(self.site_name+'/post/free?id='+str(postdata['post_id']), data=datapost, files = files)
                     files = {}
                     if response.status_code!=200:
                         success = "false"
@@ -448,7 +447,7 @@ class onlineoops():
         detail = "Unable to delete post"
 
         if success=="true":
-            response = httprequestObj.http_get(self.site_name+'/post/close?id='+str(postdata['post_id']))
+            response = self.httprequestObj.http_get(self.site_name+'/post/close?id='+str(postdata['post_id']))
             if response.status_code==200:
                 soup = BeautifulSoup(response.text, features=self.parser)
                 confirmation_message = soup.find(id='w0')
@@ -498,14 +497,14 @@ class onlineoops():
             post_found = "false"
             detail = "No post found with given title"
 
-            response = httprequestObj.http_get(self.site_name+'/post/my-classified')
+            response = self.httprequestObj.http_get(self.site_name+'/post/my-classified')
             if response.status_code == 200:
                 class_ = 'dfghj'
                 url_ =  '/post/my-classified'
                 while class_ != None:
                     if post_found == "true":
                         break
-                    r = httprequestObj.http_get('https://market.onlineoops.com/%s' % url_)
+                    r = self.httprequestObj.http_get('https://market.onlineoops.com/%s' % url_)
                     soup = BeautifulSoup(r.content, 'html.parser')
                     pages = soup.find('ul', attrs={'class': 'pagination'})
                     if pages:
@@ -571,7 +570,7 @@ class onlineoops():
         detail = "An Error occurred. Unable to boost post."
         
         if success=="true":
-            r = httprequestObj.http_get(self.site_name+'/post/free?id='+str(postdata['post_id']))
+            r = self.httprequestObj.http_get(self.site_name+'/post/free?id='+str(postdata['post_id']))
             soup = BeautifulSoup(r.text, features=self.parser)
             site_error = soup.find(class_ = 'site-error')
             
@@ -607,7 +606,7 @@ class onlineoops():
                         except:
                             pass
                 files = {}
-                response = httprequestObj.http_post(self.site_name+'/post/free?id='+str(postdata['post_id']), data=datapost, files = files)
+                response = self.httprequestObj.http_post(self.site_name+'/post/free?id='+str(postdata['post_id']), data=datapost, files = files)
                 if response.status_code==200:
                     soup = BeautifulSoup(response.text, features=self.parser)
                     confirmation_message = soup.find(id="w0")
