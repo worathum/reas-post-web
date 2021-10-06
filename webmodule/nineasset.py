@@ -12,8 +12,6 @@ from urllib.parse import unquote
 import os
 
 
-httprequestObj = lib_httprequest()
-
 
 class nineasset():
 
@@ -25,7 +23,7 @@ class nineasset():
             import configs
         except ImportError:
             configs = {}
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.primarydomain = 'http://www.9asset.com'
@@ -50,12 +48,12 @@ class nineasset():
             'phone':userdata['tel']            
         }
 
-        r = httprequestObj.http_get('http://9asset.com/register')
+        r = self.httprequestObj.http_get('http://9asset.com/register')
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         authenticityToken = soup.find("input", {"name": "_token"})['value']
         datapost['_token'] = authenticityToken
-        r = httprequestObj.http_post('http://9asset.com/register', data = datapost)
+        r = self.httprequestObj.http_post('http://9asset.com/register', data = datapost)
         data = r.json()
         # print(data)
         
@@ -88,7 +86,7 @@ class nineasset():
             'email' : email_user,
             'password' : email_pass,
         }
-        r = httprequestObj.http_get('https://9asset.com/login')
+        r = self.httprequestObj.http_get('https://9asset.com/login')
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         authenticityToken = soup.find("input", {"name": "_token"})['value']
@@ -97,7 +95,7 @@ class nineasset():
         
         
         # print(datapost)
-        r = httprequestObj.http_post('https://9asset.com/loginMember', data=datapost)
+        r = self.httprequestObj.http_post('https://9asset.com/loginMember', data=datapost)
         data = r.text
         matchObj = re.search(r'เข้าสู่ระบบสำเร็จ', data)
         # print(data)
@@ -362,12 +360,12 @@ class nineasset():
             for i in range(len(postdata['post_images'][:10])):
                 # print(i)
                 filestoup["images[0]"] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                r = httprequestObj.http_post('https://www.9asset.com/file/upload',data="", files = filestoup)
+                r = self.httprequestObj.http_post('https://www.9asset.com/file/upload',data="", files = filestoup)
                 imagename.append(r.json()[0]["full"])
                 datapost.append(('images[]', r.json()[0]["full"]))
             # print(imagename)
             # print("debug2")
-            r = httprequestObj.http_post('http://9asset.com/getDistrictAjax', data = {"city" : addr_district })
+            r = self.httprequestObj.http_post('http://9asset.com/getDistrictAjax', data = {"city" : addr_district })
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             districtcontent = [[str(x.text),str(x['value'])] for x in soup.find_all('option')]
             for i in districtcontent:
@@ -375,7 +373,7 @@ class nineasset():
                     datapost.append(('district', i[1]))
                     break
             # print(datapost)
-            r = httprequestObj.http_post('https://www.9asset.com/posted/save', data = datapost)#/property/show
+            r = self.httprequestObj.http_post('https://www.9asset.com/posted/save', data = datapost)#/property/show
             data = r.text
             link = re.findall(r'Posted form success',data)
             # print("printing link",link)
@@ -383,7 +381,7 @@ class nineasset():
                 success = "False"
                 detail = "Cannot post to 9asset"
             else:
-                r = httprequestObj.http_get('http://9asset.com/profile')
+                r = self.httprequestObj.http_get('http://9asset.com/profile')
                 soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                 for a in soup.find_all('a'):
                     try:   
@@ -458,10 +456,10 @@ class nineasset():
         post_id = postdata['post_id']
 
         if success == "True":
-            # r = httprequestObj.http_get("http://9asset.com/myposted")
+            # r = self.httprequestObj.http_get("http://9asset.com/myposted")
             # data = r.text
             # if re.search(str(post_id), data):  
-            r = httprequestObj.http_get("http://9asset.com/posted/"+str(post_id)+"/delete")#/property/show
+            r = self.httprequestObj.http_get("http://9asset.com/posted/"+str(post_id)+"/delete")#/property/show
             data = r.text           
             if re.search("ลบข้อมูลประกาศของคุณสำเร็จ",data):
                 detail = "Post sucessfully deleted"   
@@ -716,26 +714,26 @@ class nineasset():
         if(success == "True"):
             for i in range(len(postdata['post_images'][:10])):
                 filestoup["images[0]"] = open(os.getcwd() + "/"+ postdata['post_images'][i],'rb')
-                r = httprequestObj.http_post('https://www.9asset.com/file/upload',data="", files = filestoup)
+                r = self.httprequestObj.http_post('https://www.9asset.com/file/upload',data="", files = filestoup)
                 imagename.append(r.json()[0]["full"])
                 datapost.append(('images[]', r.json()[0]["full"]))
             # print(imagename)
 
-            r = httprequestObj.http_post('https://www.9asset.com/getDistrictAjax', data = {"city" : addr_district })
+            r = self.httprequestObj.http_post('https://www.9asset.com/getDistrictAjax', data = {"city" : addr_district })
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             districtcontent = [[str(x.text),str(x['value'])] for x in soup.find_all('option')]
             for i in districtcontent:
                 if(i[0] == addr_district):
                     datapost.append(('district', i[1]))
                     break
-            r = httprequestObj.http_get('https://www.9asset.com/form/'+str(post_id)+'/edit')
+            r = self.httprequestObj.http_get('https://www.9asset.com/form/'+str(post_id)+'/edit')
             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             project_id = soup.find("input", {"name": "project_ID"})
             if project_id:
                 project_id = project_id.get('value')
                 datapost.append(("project_ID", project_id))
                 # print(datapost)
-                r = httprequestObj.http_post('https://www.9asset.com/posted/save/'+str(post_id), data = datapost)#/property/show
+                r = self.httprequestObj.http_post('https://www.9asset.com/posted/save/'+str(post_id), data = datapost)#/property/show
                 data = r.text
                 # print(data)
                 link = re.findall(r'อัพเดทประกาศ',data)
@@ -744,7 +742,7 @@ class nineasset():
                     success = "False"
                     detail = "Cannot edit to 9asset"
                 else:
-                    # r = httprequestObj.http_get('http://9asset.com/profile')
+                    # r = self.httprequestObj.http_get('http://9asset.com/profile')
                     # soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
                     # for a in soup.find_all('a'):
                     #     try:   
@@ -790,7 +788,7 @@ class nineasset():
         })
         if test_login['success'] == "True":
             post_title = str(postdata['post_title_th'])
-            r = httprequestObj.http_get('https://www.9asset.com/profile')
+            r = self.httprequestObj.http_get('https://www.9asset.com/profile')
             soup = BeautifulSoup(r.content, 'html.parser')
             pages = soup.find('ul', attrs={'class': 'pagination'})
             last = pages.find_all('li')[-1]
@@ -801,7 +799,7 @@ class nineasset():
                 url = "https://www.9asset.com/profile?page=%d" % page
                 if post_found == 'True':
                     break
-                r = httprequestObj.http_get(url)
+                r = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(r.content, 'html.parser')
                 soup = soup.find('table', attrs={'class':'table', 'id':'customers'})
                 if soup == None:
@@ -816,7 +814,7 @@ class nineasset():
                 for i in tURL.keys():
 
                     if str(i) == post_title:
-                        pg = httprequestObj.http_get(tURL[i])
+                        pg = self.httprequestObj.http_get(tURL[i])
                         page = BeautifulSoup(pg.text,'html.parser')
 
                         date = page.findAll('div',attrs = {'class':'col-xs-8 nopadding'})
