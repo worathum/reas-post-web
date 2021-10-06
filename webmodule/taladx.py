@@ -10,8 +10,6 @@ import random
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
-httprequestObj = lib_httprequest()
-
 class taladx():
    
     name = 'taladx'
@@ -31,14 +29,14 @@ class taladx():
         self.debugresdata = 0
         self.baseurl = 'http://www.taladx.com'
         self.parser = 'html.parser'
-
+        self.httprequestObj = lib_httprequest()
 
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
-        httprequestObj.http_get('http://www.taladx.com/logout.php')
+        self.httprequestObj.http_get('http://www.taladx.com/logout.php')
         
 
         headers = {
@@ -65,7 +63,7 @@ class taladx():
             'accept': '1'
         }
 
-        response = httprequestObj.http_get('http://www.taladx.com/register.php').text
+        response = self.httprequestObj.http_get('http://www.taladx.com/register.php').text
 
         soup = BeautifulSoup(response,features = self.parser)
 
@@ -93,7 +91,7 @@ class taladx():
             detail = "Password must be atleast 6 characters long"
         else:
             try:
-                response = httprequestObj.http_post('http://www.taladx.com/register.php', data = data, headers = headers)
+                response = self.httprequestObj.http_post('http://www.taladx.com/register.php', data = data, headers = headers)
                 #if response.text.find("มีอยู่ในระบบแล้ว") != -1:
                 if response.url == 'http://www.taladx.com/register.php':
                     success = "false"
@@ -126,7 +124,7 @@ class taladx():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
-        httprequestObj.http_get('http://www.taladx.com/logout.php')
+        self.httprequestObj.http_get('http://www.taladx.com/logout.php')
 
         data = {
             'save': 'pr1sb7ul4pvmuaogt7pk3aepj5',
@@ -147,7 +145,7 @@ class taladx():
             detail = "Invalid Password"
         else:
             try:
-                response = httprequestObj.http_post('http://www.taladx.com/member.php', data = data, headers = headers)
+                response = self.httprequestObj.http_post('http://www.taladx.com/member.php', data = data, headers = headers)
                 #print(response.url) 
                 
                 soup = BeautifulSoup(response.content , features = self.parser)
@@ -244,7 +242,7 @@ class taladx():
 
             province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
 
-            find_province = httprequestObj.http_get('http://www.taladx.com/post-add.php', headers = headers).text
+            find_province = self.httprequestObj.http_get('http://www.taladx.com/post-add.php', headers = headers).text
 
             soup = BeautifulSoup(find_province,features = self.parser)
 
@@ -259,7 +257,7 @@ class taladx():
 
             url_district = str('http://www.taladx.com/lib/district.php?province='+data['city'])
 
-            find_district = httprequestObj.http_get(url_district, headers = headers).text
+            find_district = self.httprequestObj.http_get(url_district, headers = headers).text
 
             soup = BeautifulSoup(find_district,features = self.parser)
 
@@ -299,7 +297,7 @@ class taladx():
                     file.append((str('photo'+str(temp)), (y, open(i, "rb"), "image/jpg")))
                     temp = temp + 1
 
-            post_create = httprequestObj.http_post("http://www.taladx.com/post-add.php", data = data, files = file, headers = headers)
+            post_create = self.httprequestObj.http_post("http://www.taladx.com/post-add.php", data = data, files = file, headers = headers)
             success = "true"
             detail = "Post created successfully"
             #print(post_create.url)
@@ -360,7 +358,7 @@ class taladx():
             found = True
             flag = False
             """while True:
-                requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
+                requ = self.httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
                 all_post = soup.find_all('span',attrs={'class':"code"})
                 for abc in all_post:
@@ -378,7 +376,7 @@ class taladx():
 
             try:
                 boost_url = str('http://www.taladx.com/manage-post.php?update='+req_post_id)
-                res = httprequestObj.http_get(boost_url, headers = headers)
+                res = self.httprequestObj.http_get(boost_url, headers = headers)
                 success = "true"
                 detail = "Post boosted successfully"
             except:
@@ -422,7 +420,7 @@ class taladx():
             found = True
             flag = False
             """while True:
-                requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
+                requ = self.httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
                 all_post = soup.find_all('span',attrs={'class':"code"})
                 for abc in all_post:
@@ -440,7 +438,7 @@ class taladx():
 
             if found:
                 delete_url = str('http://www.taladx.com/manage-post.php?delete='+req_post_id)
-                res = httprequestObj.http_get(delete_url, headers = headers)
+                res = self.httprequestObj.http_get(delete_url, headers = headers)
                 success = "true"
                 detail = "Post deleted successfully"
             else:
@@ -483,7 +481,7 @@ class taladx():
             found = True
             flag = False
             """while True:
-                requ = httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
+                requ = self.httprequestObj.http_get("http://www.taladx.com/manage-post.php?page=" + str(page), headers=headers).content
                 soup = BeautifulSoup(requ, features = "html.parser")
                 all_post = soup.find_all('span',attrs={'class':"code"})
                 for abc in all_post:
@@ -555,7 +553,7 @@ class taladx():
 
                 province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
 
-                find_province = httprequestObj.http_get(post_url, headers = headers).text
+                find_province = self.httprequestObj.http_get(post_url, headers = headers).text
 
                 soup = BeautifulSoup(find_province,features = self.parser)
 
@@ -572,7 +570,7 @@ class taladx():
 
                 url_district = str('http://www.taladx.com/lib/district.php?province='+data['city'])
 
-                find_district = httprequestObj.http_get(url_district, headers = headers).text
+                find_district = self.httprequestObj.http_get(url_district, headers = headers).text
 
                 soup = BeautifulSoup(find_district,features = self.parser)
 
@@ -590,15 +588,15 @@ class taladx():
                 if 'post_images' in postdata and len(postdata['post_images']) > 0:
                     for i in range(1,7):
                         delete_image_url = str('http://www.taladx.com/post-edit.php?id='+req_post_id+'&o=photo'+str(i)+'&n='+req_post_id+'-'+str(i)+'.png')
-                        delete_image = httprequestObj.http_get(delete_image_url, headers = headers)
+                        delete_image = self.httprequestObj.http_get(delete_image_url, headers = headers)
 
                     for i in range(1,7):
                         delete_image_url = str('http://www.taladx.com/post-edit.php?id='+req_post_id+'&o=photo'+str(i)+'&n='+req_post_id+'-'+str(i)+'.jpg')
-                        delete_image = httprequestObj.http_get(delete_image_url, headers = headers)
+                        delete_image = self.httprequestObj.http_get(delete_image_url, headers = headers)
 
                     for i in range(1,7):
                         delete_image_url = str('http://www.taladx.com/post-edit.php?id='+req_post_id+'&o=photo'+str(i)+'&n='+req_post_id+'-'+str(i)+'.gif')
-                        delete_image = httprequestObj.http_get(delete_image_url, headers = headers)
+                        delete_image = self.httprequestObj.http_get(delete_image_url, headers = headers)
 
                     file = []
                     temp = 1
@@ -618,12 +616,12 @@ class taladx():
                             file.append((str('photo'+str(temp)), (y, open(i, "rb"), "image/jpg")))
                             temp = temp + 1
 
-                    post_create = httprequestObj.http_post(post_url, data = data, files = file, headers = headers)
+                    post_create = self.httprequestObj.http_post(post_url, data = data, files = file, headers = headers)
                     success = "true"
                     detail = "Post edited successfully"
 
                 else:
-                    post_create = httprequestObj.http_post(post_url, data = data, headers = headers)
+                    post_create = self.httprequestObj.http_post(post_url, data = data, headers = headers)
                     success = "true"
                     detail = "Post edited successfully"
 
@@ -676,7 +674,7 @@ class taladx():
 
             urls = str('http://www.taladx.com/post-search.php?keyword='+str(postdata['post_title_th']).replace('.','').replace(' ', "+")+'&category=&subcategory=&province=&price=')
 
-            res = httprequestObj.http_get(urls, headers = headers)
+            res = self.httprequestObj.http_get(urls, headers = headers)
             #print(res.url)
 
             soup = BeautifulSoup(res.content ,features = self.parser)
@@ -699,7 +697,7 @@ class taladx():
                     detail = 'Post found'
                     temp_id = str(post_url.split('/')[3])
                     post_id = str(temp_id[4:])
-                    find_info = httprequestObj.http_get(post_url, headers = headers).text
+                    find_info = self.httprequestObj.http_get(post_url, headers = headers).text
                     soup1 = BeautifulSoup(find_info,features = self.parser)
 
                     ab = soup1.find('div',attrs = {'class':'data'})
