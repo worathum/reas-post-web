@@ -3,7 +3,6 @@ from datetime import datetime
 import shutil
 from .lib_httprequest import *
 
-httprequestObj = lib_httprequest()
 
 
 class homedd():
@@ -21,7 +20,8 @@ class homedd():
         self.imgtmp = 'imgtmp'
         self.debug = 0
         self.debugresdata = 0
-        self.parse = 'html.parser'
+        self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if(self.debug == 1):
@@ -48,7 +48,7 @@ class homedd():
 
     def logout_user(self):
         url = 'http://homedd.co.th/logoff.php'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     # To register a user
     def register_user(self,userdata):
@@ -93,7 +93,7 @@ class homedd():
             url = "http://homedd.co.th/member_register_aed.php?typ=add"
             try:
                 start_time = datetime.utcnow()
-                request = httprequestObj.http_post(url,data=datapost,headers=headers)
+                request = self.session.http_post(url,data=datapost,headers=headers)
                 end_time = datetime.utcnow()
                 
                 if 'อีเมลนี้ได้ถูกใช้แล้ว ไม่สามารถบันทึกได้ค่ะ' in str(request.text):
@@ -153,7 +153,7 @@ class homedd():
             url = 'http://homedd.co.th/login_aed.php'
             try:
                 start_time = datetime.utcnow()
-                request = httprequestObj.http_post(url,data=datapost,headers=headers)
+                request = self.session.http_post(url,data=datapost,headers=headers)
                 end_time = datetime.utcnow()
 
                 if 'ยินดีต้อนรับ' in str(request.text):
@@ -267,7 +267,7 @@ class homedd():
             #     addr_district = ""
 
             url = "http://homedd.co.th/member_property_add.php"
-            request = httprequestObj.http_get(url)
+            request = self.session.http_get(url)
             soup = BeautifulSoup(request.text, 'html5lib')
             
             tpCode = soup.find('input',attrs = {'name': 'tpCode'})['value']
@@ -382,7 +382,7 @@ class homedd():
             if success == True:
                 newurl = "http://homedd.co.th/member_property_aed.php?typ=add"
                 
-                request = httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
+                request = self.session.http_post(newurl, data=datapost,headers=headers,files=files)
                 end_time = datetime.utcnow()
 
 
@@ -405,7 +405,7 @@ class homedd():
 
                 if success == True:
                     url = "http://homedd.co.th/member_property_list.php"
-                    r = httprequestObj.http_get("http://homedd.co.th/member_property_list.php")
+                    r = self.session.http_get("http://homedd.co.th/member_property_list.php")
 
                     post_url = "http://www.homedd.co.th/property_display.php?id="
                     soup = BeautifulSoup(r.text,'lxml')
@@ -531,7 +531,7 @@ class homedd():
             #     addr_district = ""
             
             url = "http://homedd.co.th/member_property_add.php"
-            request = httprequestObj.http_get(url)
+            request = self.session.http_get(url)
             soup = BeautifulSoup(request.text, 'lxml')
             
             tpCode = soup.find('input',attrs = {'name': 'tpCode'})['value']
@@ -650,7 +650,7 @@ class homedd():
             if success == True:
                 newurl = "http://homedd.co.th/member_property_aed.php?typ=edit&id=" + postdata["post_id"]
 
-                request = httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
+                request = self.session.http_post(newurl, data=datapost,headers=headers,files=files)
                 end_time = datetime.utcnow()
 
                 # f = open(filename,"w+")
@@ -669,7 +669,7 @@ class homedd():
 
                 if success == True:
                     url = "http://homedd.co.th/member_property_list.php"
-                    r = httprequestObj.http_get("http://homedd.co.th/member_property_list.php")
+                    r = self.session.http_get("http://homedd.co.th/member_property_list.php")
                     end_time = datetime.utcnow()
 
 
@@ -728,7 +728,7 @@ class homedd():
             end_time = datetime.utcnow()
             
 
-            request = httprequestObj.http_get(url)
+            request = self.session.http_get(url)
             # f = open(filename,"w+")
             # f.write(str(request.text))
             # f.close()
@@ -770,6 +770,21 @@ class homedd():
         start_time = test_login["start_time"]
         end_time = test_login["end_time"]
 
+        # Don't do any thing for now
+        return {
+            "success": True,
+            "usage_time": str(end_time - start_time),
+            "log_id": postdata['log_id'],
+            "start_time": str(start_time),
+            "end_time": str(end_time),
+            "post_id": postdata['post_id'],
+            "ds_id": postdata['ds_id'],
+            "account_type": "null",
+            "detail": "Can't boost",
+            "websitename": "homedd",
+            "post_view": ""
+        }
+
         headers = {
                     'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
                   }
@@ -777,39 +792,76 @@ class homedd():
         # filename = "response.txt"
 
         if success == True:
+            try:
+                resp = self.session.http_get(f"http://www.homedd.co.th/member_property_add.php?id={postdata['post_id']}")
+                soup = BeautifulSoup(resp.content, self.parser)
 
-            datapost = {
-            "tpCode" : "",
-            "tproperty_type" : "",
-            "tproperty_formart" : "",
-            "ttitle" : "",
-            "tproject_asset" : "",
-            "taddress" : "",
-            "tstreet_name" : "",
-            "tprovince" : "",
-            "tamphur" : "",
-            "tdistrict" : "",
-            "tdetail" : "",
-            "tfloor" : "",
-            "tbedroom" : "",
-            "tbathroom" : "",
-            "tortherroom" : "",
-            "tspace" : "",
-            "tarea" : "",
-            "tprice" : "",
-            "towner" : "",
-            "tphone" : "",
-            "lat_value" : "",
-            "lon_value" : "",
-        }
+                tproperty_type = soup.find(id="tproperty_type").find_all('option', {'selected': True})[-1]
+                if tproperty_type:
+                    tproperty_type = tproperty_type.get("value")
+                else:
+                    tproperty_type = ""
 
-            files = {}
-            newurl = "http://homedd.co.th/member_property_aed.php?typ=edit&id=" + postdata["post_id"]
+                tproperty_formart = soup.find(id="tproperty_formart").find_all('option', {'selected': True})[-1]
+                if tproperty_formart:
+                    tproperty_formart = tproperty_formart.get("value")
+                else:
+                    tproperty_formart = ""
 
-            request = httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
-            end_time = datetime.utcnow()
-            detail = "Post edited and saved"
-            success = True
+                tprovince = soup.find(id="tprovince").find_all('option', {'selected': True})[-1]
+                if tprovince:
+                    tprovince = tprovince.get("value")
+                else:
+                    tprovince = ""
+
+                tamphur = soup.find(id="tamphur").find_all('option', {'selected': True})[-1]
+                if tamphur:
+                    tamphur = tamphur.get("value")
+                else:
+                    tamphur = ""
+
+                tdistrict = soup.find(id="tdistrict").find_all('option', {'selected': True})[-1]
+                if tdistrict:
+                    tdistrict = tdistrict.get("value")
+                else:
+                    tdistrict = ""
+
+                datapost = {
+                    "tpCode" : soup.find(id="tpCode").get("value"),
+                    "tproperty_type" : tproperty_type,
+                    "tproperty_formart" : tproperty_formart,
+                    "ttitle" : soup.find(id="ttitle").get("value"),
+                    "tproject_asset" : soup.find(id="tproject_asset").get("value"),
+                    "taddress" : soup.find(id="taddress").text,
+                    "tstreet_name" : soup.find(id="tstreet_name").get("value"),
+                    "tprovince" : tprovince,
+                    "tamphur" : tamphur,
+                    "tdistrict" : tdistrict,
+                    "tdetail" : soup.find(id="tdetail").text,
+                    "tfloor" : soup.find(id="tfloor").get("value"),
+                    "tbedroom" : soup.find(id="tbedroom").get("value"),
+                    "tbathroom" : soup.find(id="tbathroom").get("value"),
+                    "tortherroom" : soup.find(id="tortherroom").get("value"),
+                    "tspace" : soup.find(id="tspace").get("value"),
+                    "tarea" : soup.find(id="tarea").get("value"),
+                    "tprice" : soup.find(id="tprice").get("value"),
+                    "towner" : soup.find(id="towner").get("value"),
+                    "tphone" : soup.find(id="tphone").get("value"),
+                    "lat_value" : soup.find(id="lat_value").get("value"),
+                    "lon_value" : soup.find(id="lon_value").get("value"),
+                }
+
+                files = {}
+                newurl = "http://homedd.co.th/member_property_aed.php?typ=edit&id=" + postdata["post_id"]
+
+                request = self.session.http_post(newurl, data=datapost,headers=headers)
+                end_time = datetime.utcnow()
+                detail = "Post edited and saved"
+                success = True
+            except Exception as e:
+                end_time = datetime.utcnow()
+                detail = f"Boost post fail: {str(e)}"
+                success = False
 
         return {
             "success": success,
@@ -842,7 +894,7 @@ class homedd():
         post_found = False
 
         if success:
-            r = httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php')
+            r = self.session.http_get('http://www.homedd.co.th/member_property_list.php')
             # print(r.url)
             # print(r.status_code)
             soup = BeautifulSoup(r.content, 'html.parser')
@@ -854,7 +906,7 @@ class homedd():
 
                 if post_found:
                     break
-                r = httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php?&nowpage=%d' % page)
+                r = self.session.http_get('http://www.homedd.co.th/member_property_list.php?&nowpage=%d' % page)
                 soup = BeautifulSoup(r.content, 'html.parser')
 
                 all_posts = soup.find_all('tr')[2:]
@@ -870,7 +922,7 @@ class homedd():
                         post_id = info[3].find('a').get('href').split('=')[-1]
                         # print(post_id)
                         post_url = 'http://www.homedd.co.th/property_display.php?id='+post_id
-                        r = httprequestObj.http_get(post_url)
+                        r = self.session.http_get(post_url)
                         # print(r.url)
                         # print(r.status_code)
                         soup = BeautifulSoup(r.content, 'html.parser')
