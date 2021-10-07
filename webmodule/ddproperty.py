@@ -205,10 +205,10 @@ class ddproperty():
         success = "true"
         detail = ""
         agent_id = ""
-
+        
         options = Options()
         # debug by comment option --headless
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -310,7 +310,6 @@ class ddproperty():
                 self.firefox.quit()
         #
         # end process
-
         return {"success": success, "detail": detail, "agent_id": agent_id}
 
     def test_login(self, postdata):
@@ -1061,6 +1060,7 @@ class ddproperty():
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(datahandled['post_title_th'])
                 #log.debug('input title thai ')
             except WebDriverException as e:
+                print('post_title_th')
                 pass
                 #log.warning('cannot input title thai '+str(e))
 
@@ -1072,6 +1072,7 @@ class ddproperty():
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(datahandled['post_title_en'])
                 #log.debug('input title en')
             except WebDriverException as e:
+                print('post_title_en')
                 pass
                 #log.warning('cannot input title en '+str(e))
             #self.firefox.save_screenshot("debug_response/newp00.png")
@@ -1086,6 +1087,7 @@ class ddproperty():
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
                 #log.debug('input desc thai')
             except WebDriverException as e:
+                print('post_description_th')
                 pass
                 #log.warning('cannot input desc thai '+str(e))
             #self.firefox.save_screenshot("debug_response/newp11.png")
@@ -1098,6 +1100,7 @@ class ddproperty():
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
                 #log.debug('input desc en')
             except WebDriverException as e:
+                print('post_description_en')
                 pass
                 #log.warning('cannot input post_description_en '+str(e))
             #self.firefox.save_screenshot("debug_response/newp22.png")
@@ -1227,12 +1230,16 @@ class ddproperty():
             #     time.sleep(1)
             #     self.firefox.refresh()
 
-            all_images = ""
-            for count, pic in enumerate(datahandled['post_images']):
-                if count < len(datahandled['post_images'])-1:
-                    all_images += os.path.abspath(pic) + '\n'
-                else:
-                    all_images += os.path.abspath(pic)
+            # all_images = ""
+            # for count, pic in enumerate(datahandled['post_images']):
+            #     if count < len(datahandled['post_images'])-1:
+            #         all_images += os.path.abspath(pic) + '\n'
+            #     else:
+            #         all_images += os.path.abspath(pic)
+            
+            all_images = "\n".join([os.path.abspath(pic) for pic in datahandled["post_images"]])
+
+            # import pdb; pdb.set_trace()
             time.sleep(3)
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
@@ -2244,7 +2251,9 @@ class ddproperty():
                 req = httprequestObj.http_get(url,data=data,headers=headers)
 
                 soup = BeautifulSoup(req.text,'html.parser')
+                print(f"{soup.prettify()=}")
                 check = soup.find('div',{'id':'list-container'})
+                print(f"{check=}")
                 if check is not None:
                     #print('here2')
                     posts = soup.find_all('div',{'class':'listing-item'})
