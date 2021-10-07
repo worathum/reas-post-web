@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 import json
 import os.path
 import random
 import re
 import sys
+from datetime import datetime
 from typing import Any, Dict, List, Tuple
 
 import requests
 from bs4 import BeautifulSoup
 
 from .lib_httprequest import *
-from .lib_utils import *
 
 province_list = [
     "กรุงเทพมหานคร",
@@ -645,6 +644,90 @@ class onlineoops:
             "ds_id": postdata["ds_id"],
         }
 
+    def prepare_postdata(self, postdata: Dict[str, str]) -> Dict[str, Any]:
+        postdata["lat_long"] = f"{postdata['geo_latitude']},{postdata['geo_longitude']}"
+        sub_cate, sub_cate_attr = self._prepare_sub_cate(postdata)
+
+        province = province_list[0]
+        for p in province_list:
+            if postdata["addr_province"] in p:
+                province = p
+                break
+
+        payload = {
+            "PostmarketthTH[name]": postdata["post_title_th"],
+            "PostmarketthTH[quality_type]": "second",
+            "PostmarketthTH[price]": postdata["price_baht"],
+            "PostCategory[cate_class]": "property",
+            "PostCategory[subcate_class]": sub_cate,
+            "PostmarketthTH[detail]": postdata["post_description_th"].replace(
+                "\r\n", "<br>"
+            ),
+            "PostContact[province]": province,
+            "PostContact[district]": postdata["addr_district"],
+            "PostContact[mobile]": postdata["mobile"].replace("-", ""),
+            "ajax": "post-form",
+        }
+
+        payload.update(sub_cate_attr)
+
+        return payload
+
+    def _prepare_sub_cate(self, postdata: Dict[str, str]) -> Tuple[str, Dict[str, Any]]:
+        SUB_CATE_MAP = {
+            "1": (
+                "condominium",
+                ("bed_room", None, None, None, None, "floor_area", "lat_long"),
+            ),
+            "2": (
+                "home",
+                (
+                    "floor_total",
+                    "bed_room",
+                    None,
+                    None,
+                    None,
+                    "floor_area",
+                    "land_size",
+                    "lat_long",
+                ),
+            ),
+            "4": (
+                "townhouse",
+                (
+                    "floor_total",
+                    "bed_room",
+                    None,
+                    None,
+                    "floor_area",
+                    "land_size",
+                    "lat_long",
+                ),
+            ),
+            "5": (
+                "commercial-building",
+                (
+                    "floor_total",
+                    "bed_room",
+                    None,
+                    "floor_area",
+                    "land_size",
+                    "lat_long",
+                ),
+            ),
+            "6": ("land", (None, "land_size", "lat_long")),
+            "7": ("apartment", ()),
+            "9": ("office-space", (None, "floor_area", "lat_long")),
+        }
+
+        name, keys = SUB_CATE_MAP.get(postdata["property_type"], ("other", ()))
+
+        sub_cate_attr = {}
+        for i, key in enumerate(keys):
+            sub_cate_attr[f"Attr[{i}][tmpvalue]"] = postdata[key] if key else ""
+
+        return name, sub_cate_attr
+
     def delete_post(self, postdata):
         self.print_debug("function [" + sys._getframe().f_code.co_name + "]")
         time_start = datetime.utcnow()
@@ -703,7 +786,7 @@ class onlineoops:
         success = test_login["success"]
         post_url = ""
         post_id = ""
-        post_found = ""
+        post_found = "false"
         post_modify_time = ""
         post_create_time = ""
         post_view = ""
