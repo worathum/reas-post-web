@@ -1,31 +1,30 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+import json
 import logging
 import logging.config
-from .lib_httprequest import *
-httprequestObj = lib_httprequest()
-from bs4 import BeautifulSoup
 import os.path
+import random
 import re
-import json
-import datetime
+import string
 import sys
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.support.ui import Select
 import time
 from urllib.parse import urlsplit
-import string
-import random
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
-import numpy as np
 
+import numpy as np
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+# from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select, WebDriverWait
+
+from .lib_httprequest import *
 
 try:
     import configs
@@ -47,6 +46,7 @@ class ddproperty():
         self.imgtmp = 'imgtmp'
         self.parser = 'html.parser'
         self.handled = False
+        self.session = lib_httprequest()
 
     def register_user(self, postdata):
         #log.debug('')
@@ -70,7 +70,7 @@ class ddproperty():
         newtel = ''.join(tel)
 
         # จะต้องไปหน้า from login ก่อน เพื่อเก็บ session อะไรซักอย่าง จึงจะสามารถ post ไป register ได้
-        r = httprequestObj.http_get('https://www.ddproperty.com/agent-register?package=TRIAL', verify=False)
+        r = self.session.http_get('https://www.ddproperty.com/agent-register?package=TRIAL', verify=False)
         data = r.text
         #f = open("debug_response/ddloginfrom.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -104,7 +104,7 @@ class ddproperty():
             'months': ''
         }
 
-        r = httprequestObj.http_post('https://www.ddproperty.com/agent-register', data=datapost)
+        r = self.session.http_post('https://www.ddproperty.com/agent-register', data=datapost)
         data = r.text
         #f = open("debug_response/ddregister.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -149,7 +149,7 @@ class ddproperty():
         datapost = {
             'email': user,
         }
-        r = httprequestObj.http_post('https://agentnet.ddproperty.com/is_authentic_user', data=datapost)
+        r = self.session.http_post('https://agentnet.ddproperty.com/is_authentic_user', data=datapost)
         #log.debug('email post')
         data = r.text
         # f = open("debug_response/ddauthentic.html", "wb")
@@ -174,7 +174,7 @@ class ddproperty():
                 '': 'true',
                 'userid': user,
             }
-            r = httprequestObj.http_post('https://agentnet.ddproperty.com/ex_login_ajax', data=datapost)
+            r = self.session.http_post('https://agentnet.ddproperty.com/ex_login_ajax', data=datapost)
             #log.debug('post login')
             data = r.text
             #f = open("debug_response/logindd.html", "wb")
@@ -743,7 +743,7 @@ class ddproperty():
                 #Plus code handler
                 plus_code = ''
                 try:
-                    res = httprequestObj.http_get('https://plus.codes/api?address=' + datahandled['geo_latitude'] + ',' + datahandled['geo_longitude'])
+                    res = self.session.http_get('https://plus.codes/api?address=' + datahandled['geo_latitude'] + ',' + datahandled['geo_longitude'])
                     plus_code = json.loads(res.text)['plus_code']['global_code']
                 except:
                     pass
@@ -1361,16 +1361,16 @@ class ddproperty():
             # เพราะ response html เป็น js render ทีหลัง html ทำให้ไม่ได้ content มาเพื่อตรวจสอบ account type
             # ดังนั้น จะ get account_type ไม่ได้ แต่เวลา post จะใส่ name,mobile,email ให้หมด
             # get รายละเอียดตัวแทน
-            # r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/location', verify=r=httprequestObj.http_get('https://agentnet.ddproperty.com/sf2-agent/ajax/media/property/7015/photo', verify=False))
-            # r = httprequestObj.http_get('https://agentnet.ddproperty.com/sf2-agent/ajax/project-net/property/7015?language=th', verify=False)
-            # r = httprequestObj.http_get('https://agentnet.ddproperty.com/sf2-agent/ajax/media/property/7015/photo', verify=False)
-            # r = httprequestObj.http_get('https://agentnet.ddproperty.com/create-listing/detail', verify=False)
+            # r = self.session.http_get('https://agentnet.ddproperty.com/create-listing/location', verify=r=self.session.http_get('https://agentnet.ddproperty.com/sf2-agent/ajax/media/property/7015/photo', verify=False))
+            # r = self.session.http_get('https://agentnet.ddproperty.com/sf2-agent/ajax/project-net/property/7015?language=th', verify=False)
+            # r = self.session.http_get('https://agentnet.ddproperty.com/sf2-agent/ajax/media/property/7015/photo', verify=False)
+            # r = self.session.http_get('https://agentnet.ddproperty.com/create-listing/detail', verify=False)
             # data = r.text
             # f = open("debug_response/ddcreatelist.html", "wb")
             # f.write(data.encode('utf-8').strip())
 
             # get property attr
-            r = httprequestObj.http_get('https://services.propertyguru.com/v1/autocomplete?region=th&locale=th&limit=25&object_type=PROPERTY&query=' + datahandled['project_name'], verify=False)
+            r = self.session.http_get('https://services.propertyguru.com/v1/autocomplete?region=th&locale=th&limit=25&object_type=PROPERTY&query=' + datahandled['project_name'], verify=False)
             # data = r.text
             # f = open("debug_response/ddcreatelist.html", "wb")
             # f.write(data.encode('utf-8').strip())
@@ -1550,7 +1550,7 @@ class ddproperty():
                     }
                 }
                 datastr = json.dumps(datapost)
-                r = httprequestObj.http_post_json('https://agentnet.ddproperty.com/sf2-agent/ajax/listings', jsoncontent=datastr)
+                r = self.session.http_post_json('https://agentnet.ddproperty.com/sf2-agent/ajax/listings', jsoncontent=datastr)
                 data = r.text
                 #f = open("debug_response/postdd.html", "wb")
                 #f.write(data.encode('utf-8').strip())
@@ -1575,7 +1575,7 @@ class ddproperty():
 
                 #         ''',
                 #     }
-                #     r = httprequestObj.http_post('https://agentnet.ddproperty.com/sf2-agent/ajax/listings/7841959/media', data=data)
+                #     r = self.session.http_post('https://agentnet.ddproperty.com/sf2-agent/ajax/listings/7841959/media', data=data)
                 #     data = r.text
                 #     f = open("debug_response/uploadimg.html", "wb")
                 #     f.write(data.encode('utf-8').strip())
@@ -2141,7 +2141,7 @@ class ddproperty():
             }
             datastr = json.dumps(datapost)
             # print(datastr)
-            r = httprequestObj.http_put_json('https://agentnet.ddproperty.com/sf2-agent/ajax/update/' + post_id, jsoncontent=datastr)
+            r = self.session.http_put_json('https://agentnet.ddproperty.com/sf2-agent/ajax/update/' + post_id, jsoncontent=datastr)
             data = r.text
             f = open("debug_response/editpostdd.html", "wb")
             f.write(data.encode('utf-8').strip())
@@ -2248,7 +2248,7 @@ class ddproperty():
                 headers = {
                     'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
                 }
-                req = httprequestObj.http_get(url,data=data,headers=headers)
+                req = self.session.http_get(url,data=data,headers=headers)
 
                 soup = BeautifulSoup(req.text,'html.parser')
                 print(f"{soup.prettify()=}")
