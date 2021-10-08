@@ -12,7 +12,6 @@ import shutil
 from urllib.parse import unquote
 
 
-httprequestObj = lib_httprequest()
 
 with open("./static/home2all_province.json",encoding = 'utf-8') as f:
     provincedata = json.load(f)
@@ -35,6 +34,7 @@ class home2all():
         self.debug = False
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -67,7 +67,7 @@ class home2all():
             "__ASYNCPOST": "true",
             "RadAJAXControlID": "dnn_ctr_Register_UP"
         }
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'https://home2all.com/Register?returnurl=https%3a%2f%2fhome2all.com%2f', data=datapost)
         
         # with open('b.html','w') as f:
@@ -120,7 +120,7 @@ class home2all():
         success = "true"
         detail = "logged in"
         # print(postdata['user'], len(postdata['user']), len(postdata['user'].rstrip("\u200b")))
-        res = httprequestObj.http_get("https://home2all.com/home/ctl/Logoff")
+        res = self.session.http_get("https://home2all.com/home/ctl/Logoff")
         print(res.status_code)
         datapost = {
             "StylesheetManager_TSSM": '',
@@ -134,7 +134,7 @@ class home2all():
             "ScrollTop": "",
             "__dnnVariable": "`{`__scdoff`:`1`,`sf_siteRoot`:`/`,`sf_tabId`:`56`}"
         }
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'https://home2all.com/Login?returnurl=%2f', data=datapost)
     
         soup = BeautifulSoup(r.text, features='html.parser')
@@ -311,7 +311,7 @@ class home2all():
         else:
             listing = 1
 
-        r = httprequestObj.http_get(
+        r = self.session.http_get(
             'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5')
         soup = BeautifulSoup(r.text, 'lxml')
         viewstate = soup.select_one("#__VIEWSTATE")['value']
@@ -386,7 +386,7 @@ class home2all():
                 r = open(os.getcwd()+"/"+allimages[i-1], 'rb')
                 files["dnn$ctr438$AddTopic$FileUpload"+str(i)] = r
 
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5', data=datapost, files=files)
             data = r.text
            
@@ -582,7 +582,7 @@ class home2all():
 
 
         if success == "true":
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 'https://home2all.com/post/topicid/'+str(postdata['post_id']))
 
             print(r.text)
@@ -594,7 +594,7 @@ class home2all():
                 if topic.text.strip() == str(postdata['post_id']):
                 # if topic and topic.get('value'):
                     # print(topic.get('value'), len(topic.get('value')))
-                    r = httprequestObj.http_get(
+                    r = self.session.http_get(
                         'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5/topicid/'+postdata['post_id']+'/trk/-1')
                     soup = BeautifulSoup(r.text, features=self.parser)
                     viewstate = soup.select_one("#__VIEWSTATE")['value']
@@ -666,7 +666,7 @@ class home2all():
                         r = open(os.getcwd()+"/"+allimages[i-1], 'rb')
                         files["dnn$ctr438$AddTopic$FileUpload"+str(i)] = r
 
-                    r = httprequestObj.http_post(
+                    r = self.session.http_post(
                         'https://home2all.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5/topicid/'+postdata['post_id']+'/trk/-1', data=datapost, files=files)
                     data = r.text
                     soup = BeautifulSoup(r.text,'lxml')
@@ -720,7 +720,7 @@ class home2all():
         detail = test_login["detail"]
 
         if success == "true":
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 'https://home2all.com/post/topicid/'+postdata['post_id'])
             if r.text.find('ไม่พบประกาศที่ต้องการ') == -1:
                 soup = BeautifulSoup(r.text, 'lxml')
@@ -733,7 +733,7 @@ class home2all():
                     '__VIEWSTATE': viewstate,
                     "__VIEWSTATEGENERATOR": "CA0B0334"
                 }
-                r = httprequestObj.http_post(
+                r = self.session.http_post(
                     'https://home2all.com/post/topicid/'+postdata['post_id'], data=datapost)
                 # with open('b.html','w') as f:
                 #     print(r.text,file=f)
@@ -806,7 +806,7 @@ class home2all():
             tURL = dict()
             date = []
             url = "https://home2all.com/my-post/txt/" + post_title.replace(' ', '%20')
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             soup = BeautifulSoup(r.content, 'html.parser')
             # print(soup.prettify())
             div1 = soup.find_all('div', attrs={'class': 'tb-topic_tr_alt'})

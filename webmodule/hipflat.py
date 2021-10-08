@@ -18,7 +18,6 @@ from selenium.webdriver.common.by import By
 import cloudscraper
 import undetected_chromedriver.v2 as uc
 
-httprequestObj = lib_httprequest()
 
 with open("./static/hipflat_province.json", encoding='utf-8') as f:
     provincedata = json.load(f)
@@ -42,7 +41,7 @@ class hipflat():
         self.debugresdata = 0
         self.baseurl = 'https://www.hipflat.co.th'
         self.parser = 'html.parser'
-
+        self.session = lib_httprequest()
 
 
 
@@ -105,13 +104,13 @@ class hipflat():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         
         start_time = datetime.datetime.utcnow()
-        httprequestObj.http_get_with_headers('https://www.hipflat.co.th/logout')
+        self.session.http_get_with_headers('https://www.hipflat.co.th/logout')
 
         headers = {
             'user_agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Mobile Safari/537.36'
         }
 
-        response = httprequestObj.http_get('https://www.hipflat.co.th/login', headers = headers)
+        response = self.session.http_get('https://www.hipflat.co.th/login', headers = headers)
         soup = BeautifulSoup(response.content, features = self.parser)
 
         post_data = {
@@ -119,7 +118,7 @@ class hipflat():
         'authenticity_token': soup.find("meta",{"name":"csrf-token"})['content']
         }
 
-        httprequestObj.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
+        self.session.http_post_with_headers('https://www.hipflat.co.th/logout', data=post_data)
 
 
         success = "false"
@@ -144,7 +143,7 @@ class hipflat():
             detail = "Please enter your name"
         else:
             try:
-                response = httprequestObj.http_get('https://www.hipflat.co.th/signup', headers = headers)
+                response = self.session.http_get('https://www.hipflat.co.th/signup', headers = headers)
 
                 soup = BeautifulSoup(response.content, features = "html.parser")
 
@@ -154,7 +153,7 @@ class hipflat():
 
                 data['user[locale]'] = str(soup.find('input', attrs = {'name': 'user[locale]'})['value'])
 
-                res = httprequestObj.http_post('https://www.hipflat.co.th/signup', data = data, headers = headers)
+                res = self.session.http_post('https://www.hipflat.co.th/signup', data = data, headers = headers)
 
 
                 if 'มีผู้ลงทะเบียนใช้อีเมล' in res.text:
@@ -264,7 +263,7 @@ class hipflat():
                 else:
                     success = "true"
                     detail = 'Logged in successfully'
-                    #res = httprequestObj.http_get('http://www.estate.in.th/member/index.php')
+                    #res = self.session.http_get('http://www.estate.in.th/member/index.php')
                     #print(res.text)
             
             except:

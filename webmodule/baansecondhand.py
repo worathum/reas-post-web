@@ -40,7 +40,6 @@ category_types_rent = {
     '25': '8'
 }
 
-httprequestObj = lib_httprequest()
 captcha = lib_captcha()
 
 class baansecondhand():
@@ -58,10 +57,11 @@ class baansecondhand():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def logout_user(self):
         url = 'https://www.baansecondhand.com/logout.php'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self, postdata):
         self.logout_user()
@@ -85,9 +85,9 @@ class baansecondhand():
             "img_ver": ""
         }
 
-        r = httprequestObj.http_get(self.site_name+'/register.php')
+        r = self.session.http_get(self.site_name+'/register.php')
 
-        captcha_img = httprequestObj.http_get(self.site_name+'/images/cap.php', stream=True)
+        captcha_img = self.session.http_get(self.site_name+'/images/cap.php', stream=True)
         if captcha_img.status_code==200:
             with open(os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg','wb') as local_file :
                 for block in captcha_img.iter_content(1024):
@@ -99,7 +99,7 @@ class baansecondhand():
             if g_response[0]==1:
                 datapost['img_ver'] = g_response[1]
             
-                response = httprequestObj.http_post(self.site_name+'/register.php', data=datapost)    
+                response = self.session.http_post(self.site_name+'/register.php', data=datapost)    
                 if response.status_code==200:
                     if 'window.location="https://www.baansecondhand.com/"' in response.text:
                         success = "true"
@@ -143,13 +143,13 @@ class baansecondhand():
             "bt_login": "เข้าสู่ระบบ"
         }
 
-        response = httprequestObj.http_post(self.site_name+'/', data=datapost)   
+        response = self.session.http_post(self.site_name+'/', data=datapost)   
          
         if response.status_code==200:
             if "history.back()" in response.text:
                 detail = "Cannot Login" 
             else:
-                r = httprequestObj.http_get(self.site_name+"/mypage.php")
+                r = self.session.http_get(self.site_name+"/mypage.php")
                 if "history.back()" in r.text:
                     detail = "Cannot Login"
                 else:
@@ -283,13 +283,13 @@ class baansecondhand():
             if rent_error:
                 detail = "Can't post for rent at this time because of website issues."
             else:
-                response = httprequestObj.http_post(request_url, data=datapost, files=files)
+                response = self.session.http_post(request_url, data=datapost, files=files)
                 if response.status_code==200:
                     if 'https://www.baansecondhand.com/thank.php' in response.text:
                         success = "true"
                         detail = "Post created successfully"
                         post_title = str(postdata['post_title_th']).strip()
-                        r = httprequestObj.http_get('https://www.baansecondhand.com/mypage.php')
+                        r = self.session.http_get('https://www.baansecondhand.com/mypage.php')
                         if r.status_code==200:
                             soup = BeautifulSoup(r.text, features=self.parser)
                             posts_element = soup.find_all(class_='board')
@@ -350,7 +350,7 @@ class baansecondhand():
         if success=="true":
             success = "false"
 
-            r = httprequestObj.http_get('https://www.baansecondhand.com/mypage.php')
+            r = self.session.http_get('https://www.baansecondhand.com/mypage.php')
             if r.status_code==200:
                 soup = BeautifulSoup(r.text, features=self.parser)
                 posts_element = soup.find_all(class_='board')
@@ -460,7 +460,7 @@ class baansecondhand():
                     for i, image in enumerate(postdata['post_images'][:5]):
                         files["pic"+str(i+1)] = (str(random.random())[2:]+'.'+image.split('.')[-1], open(os.getcwd()+"/"+image, 'rb'), 'image/png')
                     
-                    response = httprequestObj.http_post(request_url, data=datapost, files=files)
+                    response = self.session.http_post(request_url, data=datapost, files=files)
                     if response.status_code==200:    
                         if "alert('บันทึกข้อมูลแล้วครับ')" in response.text:
                             success = "true"
@@ -511,7 +511,7 @@ class baansecondhand():
             post_title = str(postdata['post_title_th']).strip()
             
 
-            response = httprequestObj.http_get('https://www.baansecondhand.com/mypage.php')
+            response = self.session.http_get('https://www.baansecondhand.com/mypage.php')
             if response.status_code==200:
                 soup = BeautifulSoup(response.text, features=self.parser)
                 posts_element = soup.find_all(class_='board')
@@ -574,7 +574,7 @@ class baansecondhand():
         if success=="true":
             success = "false"
 
-            r = httprequestObj.http_get('https://www.baansecondhand.com/mypage.php')
+            r = self.session.http_get('https://www.baansecondhand.com/mypage.php')
             if r.status_code==200:
                 soup = BeautifulSoup(r.text, features=self.parser)
                 posts_element = soup.find_all(class_='board')
@@ -592,7 +592,7 @@ class baansecondhand():
                 
                 if flag:
                     delete_url = self.site_name+'/mypage.php?'+delete+'=true&home_id='+post_id
-                    response = httprequestObj.http_get(delete_url)
+                    response = self.session.http_get(delete_url)
                     if response.status_code==200:
                         if response.url==delete_url:
                             success = "true"
@@ -633,7 +633,7 @@ class baansecondhand():
             success = "false"
             detail = "Unable to boost post"
             
-            r = httprequestObj.http_get('https://www.baansecondhand.com/mypage.php')
+            r = self.session.http_get('https://www.baansecondhand.com/mypage.php')
             if r.status_code==200:
                 soup = BeautifulSoup(r.text, features=self.parser)
                 posts_element = soup.find_all(class_='board')
@@ -651,7 +651,7 @@ class baansecondhand():
 
                 if flag:
                     update_url = self.site_name+'/mypage.php?'+update+'=true&home_id='+post_id
-                    response = httprequestObj.http_get(update_url)
+                    response = self.session.http_get(update_url)
                     if response.status_code==200:
                         if response.url==update_url:
                             success = "true"

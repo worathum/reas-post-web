@@ -9,7 +9,6 @@ import urllib3
 import sys
 import json
 
-httprequestObj = lib_httprequest()
 
 class propertyadvantage():
     
@@ -29,6 +28,7 @@ class propertyadvantage():
         self.debugresdata = 0
         self.baseurl = 'https://propertyadvantage.net'
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     
     def register_user(self, postdata):
@@ -64,7 +64,7 @@ class propertyadvantage():
         data['lastname'] = postdata['surname_th']
         data['phone'] = postdata['tel']
 
-        response = httprequestObj.http_post('https://propertyadvantage.net/signup_member.php', data=data)
+        response = self.session.http_post('https://propertyadvantage.net/signup_member.php', data=data)
 
         soup = BeautifulSoup(response.content, features='html.parser')
         if soup.find_all('div',attrs={'class':"alert alert-danger"}):
@@ -114,7 +114,7 @@ class propertyadvantage():
         }
         result['start_time'] = str(start_time)
 
-        response = httprequestObj.http_post('https://propertyadvantage.net/login', data=data)
+        response = self.session.http_post('https://propertyadvantage.net/login', data=data)
 
         soup = BeautifulSoup(response.content, features='html.parser')
         if soup.find_all('div',attrs={'class':"alert alert-danger"}):
@@ -158,7 +158,7 @@ class propertyadvantage():
             params = (
                 ('id', postdata['post_id']),
             )
-            r = httprequestObj.http_get('https://propertyadvantage.net/edit_property', params=params)
+            r = self.session.http_get('https://propertyadvantage.net/edit_property', params=params)
             soup = BeautifulSoup(r.content,features='html.parser')
             if soup.text == '':
                 end_time = datetime.datetime.utcnow()     
@@ -259,7 +259,7 @@ class propertyadvantage():
                 ('TYPE', 'District'),
             )
             
-            districts = httprequestObj.http_get('https://propertyadvantage.net/getaddress.php', params= params).json()
+            districts = self.session.http_get('https://propertyadvantage.net/getaddress.php', params= params).json()
             district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
             for d in districts:
                 if district in ''.join(map(str,str(d['amphur_name'].split(' ')[0]).split(' '))):
@@ -271,7 +271,7 @@ class propertyadvantage():
                 ('TYPE', 'Subdistrict'),
             )
 
-            subdistricts = httprequestObj.http_get('https://propertyadvantage.net/getaddress.php', params=params).json()
+            subdistricts = self.session.http_get('https://propertyadvantage.net/getaddress.php', params=params).json()
             subdistrict = ''.join(map(str,str(postdata['addr_sub_district']).split(' ')))
             for sd in subdistricts:
                 if subdistrict in ''.join(map(str,str(sd['district_name'].split(' ')[0]).split(' '))):
@@ -293,10 +293,10 @@ class propertyadvantage():
                 ('id', postdata['post_id']),
             )
             data = urllib3.encode_multipart_formdata(data,boundary='---------------------------9886700451728219814370362055')[0].decode("utf-8")
-            response = httprequestObj.http_post('https://propertyadvantage.net/edit_property', headers=headers, params=params, data=data.encode("utf-8"))
+            response = self.session.http_post('https://propertyadvantage.net/edit_property', headers=headers, params=params, data=data.encode("utf-8"))
         
             mapurl = 'https://propertyadvantage.net/edit_map?id={}'.format(postdata['post_id'])
-            httprequestObj.http_get(mapurl)
+            self.session.http_get(mapurl)
             map_data = {
                 'action': 'addmap',
                 'lat_value': postdata['geo_latitude'],
@@ -307,7 +307,7 @@ class propertyadvantage():
             response = requests.post('https://propertyadvantage.net/process_function.php', data=map_data)
 
             imgurl = 'https://propertyadvantage.net/add_img?id={}'.format(postdata['post_id'])
-            httprequestObj.http_get(imgurl)
+            self.session.http_get(imgurl)
             
             files = {}
             imgtags = []
@@ -316,7 +316,7 @@ class propertyadvantage():
             for i in range(len(allimages)):
                 r = open(os.getcwd()+"/"+allimages[i], 'rb')
                 files['photoimg[]'] = r
-                response = httprequestObj.http_post('https://propertyadvantage.net/ajax_img.php',data=None, files=files)
+                response = self.session.http_post('https://propertyadvantage.net/ajax_img.php',data=None, files=files)
                 #print(response.text)
                 soup = BeautifulSoup(response.content, features='html.parser')
                 if soup.find('li') != None:
@@ -327,7 +327,7 @@ class propertyadvantage():
                 'ids': ''
             }
             data['ids'] = ','.join(map(str,imgtags))
-            response = httprequestObj.http_post('https://propertyadvantage.net/orderupdate.php', data=data)
+            response = self.session.http_post('https://propertyadvantage.net/orderupdate.php', data=data)
                         
             result['detail'] = "Post Edited Succesfully"
             result['success'] = "true"
@@ -376,7 +376,7 @@ class propertyadvantage():
 
         if test_login['success'] == "true":
 
-            r = httprequestObj.http_get("https://propertyadvantage.net/add_property")
+            r = self.session.http_get("https://propertyadvantage.net/add_property")
 
             if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
                 if 'project_name' in postdata and postdata['project_name'] is not None:
@@ -466,7 +466,7 @@ class propertyadvantage():
                 ('TYPE', 'District'),
             )
             
-            districts = httprequestObj.http_get('https://propertyadvantage.net/getaddress.php', params= params).json()
+            districts = self.session.http_get('https://propertyadvantage.net/getaddress.php', params= params).json()
             district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
             for d in districts:
                 if district in ''.join(map(str,str(d['amphur_name'].split(' ')[0]).split(' '))):
@@ -478,7 +478,7 @@ class propertyadvantage():
                 ('TYPE', 'Subdistrict'),
             )
 
-            subdistricts = httprequestObj.http_get('https://propertyadvantage.net/getaddress.php', params=params).json()
+            subdistricts = self.session.http_get('https://propertyadvantage.net/getaddress.php', params=params).json()
             subdistrict = ''.join(map(str,str(postdata['addr_sub_district']).split(' ')))
             for sd in subdistricts:
                 if subdistrict in ''.join(map(str,str(sd['district_name'].split(' ')[0]).split(' '))):
@@ -486,7 +486,7 @@ class propertyadvantage():
                     break
 
             
-            post_id = httprequestObj.http_post('https://propertyadvantage.net/process_function.php', data=data).text
+            post_id = self.session.http_post('https://propertyadvantage.net/process_function.php', data=data).text
             map_data = {
                 'action': 'addmap',
                 'lat_value': postdata['geo_latitude'],
@@ -494,10 +494,10 @@ class propertyadvantage():
                 'zoom_value': '0',
                 'id_value': post_id
             }
-            post_id = httprequestObj.http_post('https://propertyadvantage.net/process_function.php', data=map_data).text                        
+            post_id = self.session.http_post('https://propertyadvantage.net/process_function.php', data=map_data).text                        
             post_url = "https://propertyadvantage.net/property/{}-{}".format(post_id,data['p_name'])
             imgurl = 'https://propertyadvantage.net/add_img?id={}'.format(post_id)
-            httprequestObj.http_get(imgurl)
+            self.session.http_get(imgurl)
 
             files = {}
             imgtags = []
@@ -506,7 +506,7 @@ class propertyadvantage():
             for i in range(len(allimages)):
                 r = open(os.getcwd()+"/"+allimages[i], 'rb')
                 files['photoimg[]'] = r
-                response = httprequestObj.http_post('https://propertyadvantage.net/ajax_img.php',data=None, files=files)
+                response = self.session.http_post('https://propertyadvantage.net/ajax_img.php',data=None, files=files)
                 soup = BeautifulSoup(response.content, features='html.parser')
                 if soup.find('li') != None:
                     imgtags.append(soup.find('li').attrs.get('id').split('_')[-1])
@@ -517,7 +517,7 @@ class propertyadvantage():
             }
             data['ids'] = ','.join(map(str,imgtags))
 
-            response = httprequestObj.http_post('https://propertyadvantage.net/orderupdate.php', data=data)
+            response = self.session.http_post('https://propertyadvantage.net/orderupdate.php', data=data)
         
             result['post_url'] = post_url
             result['post_id'] = post_id
@@ -562,7 +562,7 @@ class propertyadvantage():
             "log_id": postdata['log_id']
         }
         if test_login['success'] == "true":
-            r = httprequestObj.http_get('https://propertyadvantage.net/maneg_property') 
+            r = self.session.http_get('https://propertyadvantage.net/maneg_property') 
             soup = BeautifulSoup(r.content,features='html.parser')
             postids = []
             if soup.find('ul',attrs={'class':'pagination'}):
@@ -572,7 +572,7 @@ class propertyadvantage():
                     pages.append(li.text)
                 for page in pages:
                     url = 'https://propertyadvantage.net/maneg_property.php?&page={}'.format(int(page)-1)
-                    r = httprequestObj.http_get(url) 
+                    r = self.session.http_get(url) 
                     soup = BeautifulSoup(r.content,features='html.parser')
                     tablerows = soup.find('table',attrs={'class':'table table-striped'}).find('tbody').find_all('tr')
                     for tr in tablerows:
@@ -592,7 +592,7 @@ class propertyadvantage():
                 result['detail'] = 'No post found with given id.'
             else:
                 delete_url = 'https://propertyadvantage.net/maneg_property?delete={}'.format(postdata['post_id'])
-                httprequestObj.http_get(delete_url)
+                self.session.http_get(delete_url)
                 result['success'] = "true"
                 result['detail'] = "Post deleted successfully."         
 
@@ -633,7 +633,7 @@ class propertyadvantage():
             "log_id": postdata['log_id']
         }
         if test_login['success'] == "true":
-            r = httprequestObj.http_get('https://propertyadvantage.net/maneg_property') 
+            r = self.session.http_get('https://propertyadvantage.net/maneg_property') 
             soup = BeautifulSoup(r.content, features='html.parser')
             postids = []
             posturls = []
@@ -646,7 +646,7 @@ class propertyadvantage():
                 
                 for page in range(1, max_pages+1):
                     url = 'https://propertyadvantage.net/maneg_property.php?&page={}'.format(int(page)-1)
-                    r = httprequestObj.http_get(url) 
+                    r = self.session.http_get(url) 
                     soup = BeautifulSoup(r.content,features='html.parser')
                     tablerows = soup.find('table',attrs={'class':'table table-striped'}).find('tbody').find_all('tr')
 
@@ -673,7 +673,7 @@ class propertyadvantage():
                 postidx = postids.index(postid)
                 post_url = posturls[postidx]
                 print(post_url)
-                httprequestObj.http_get(post_url)
+                self.session.http_get(post_url)
                 result['success'] = "true"
                 result['detail'] = "Post boosted successfully."
        
@@ -725,7 +725,7 @@ class propertyadvantage():
         }
 
         if test_login['success'] == "true":
-            r = httprequestObj.http_get('https://propertyadvantage.net/maneg_property') 
+            r = self.session.http_get('https://propertyadvantage.net/maneg_property') 
             soup = BeautifulSoup(r.content,features='html.parser')
             post_titles,post_urls,post_ids,post_views = [],[],[],[]
 
@@ -736,7 +736,7 @@ class propertyadvantage():
                     pages.append(li.text)
                 for page in pages:
                     url = 'https://propertyadvantage.net/maneg_property.php?&page={}'.format(int(page)-1)
-                    r = httprequestObj.http_get(url) 
+                    r = self.session.http_get(url) 
                     soup = BeautifulSoup(r.content,features='html.parser')
                     tablerows = soup.find('table',attrs={'class':'table table-striped'}).find('tbody').find_all('tr')
                     for tr in tablerows:

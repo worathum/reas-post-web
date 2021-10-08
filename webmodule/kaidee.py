@@ -32,7 +32,6 @@ categories_list = {
     '25': (133, [(26, 19)] )
 }
 
-httprequestObj = lib_httprequest()
 
 class kaidee():
     name = 'kaidee'
@@ -50,6 +49,7 @@ class kaidee():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
         self.options = Options()
         self.options.add_argument("--headless")  # Runs Firefox in headless mode.
@@ -97,7 +97,7 @@ class kaidee():
             "password": postdata['pass']
         }
 
-        response = httprequestObj.http_post(self.api_name+'/member/login', data={}, json=datapost)
+        response = self.session.http_post(self.api_name+'/member/login', data={}, json=datapost)
         json_response = json.loads(response.text)
 
         if response.status_code==200:
@@ -244,7 +244,7 @@ class kaidee():
             images = []
             for i,image in enumerate(postdata['post_images'][:18]):
                 files = {"image": open(os.getcwd()+"/"+image, 'rb')} 
-                r = httprequestObj.http_post(self.api_name+'/images/upload', data={}, files=files)
+                r = self.session.http_post(self.api_name+'/images/upload', data={}, files=files)
                 if r.status_code==200:
                     r = json.loads(r.text)
                     images.append({
@@ -262,7 +262,7 @@ class kaidee():
                 "privatetoken": privateToken
             }
 
-            response = httprequestObj.http_post(self.api_name+'/ads/create', headers=headers, data={}, json=datapost)
+            response = self.session.http_post(self.api_name+'/ads/create', headers=headers, data={}, json=datapost)
             json_response = json.loads(response.text)
             if response.status_code==200:
                
@@ -283,7 +283,7 @@ class kaidee():
                             }
                         ]
                     }
-                    r = httprequestObj.http_post(self.api_name+'/ven/buy/products/ads', headers=h, data={}, json=data)
+                    r = self.session.http_post(self.api_name+'/ven/buy/products/ads', headers=h, data={}, json=data)
                     json_r = json.loads(r.text)
 
                     if r.status_code==200:
@@ -414,7 +414,7 @@ class kaidee():
                 "attributes": attributes
             }
 
-            r = httprequestObj.http_get(self.api_name+'/ads/'+postdata['post_id'])
+            r = self.session.http_get(self.api_name+'/ads/'+postdata['post_id'])
             json_r = json.loads(r.text)
            
             if r.status_code==200:
@@ -427,7 +427,7 @@ class kaidee():
                     images = []
                     for i, image in enumerate(postdata['post_images'][:18]):
                         files = {"image": open(os.getcwd()+"/"+image, 'rb')} 
-                        r = httprequestObj.http_post(self.api_name+'/images/upload', data={}, files=files)
+                        r = self.session.http_post(self.api_name+'/images/upload', data={}, files=files)
                         if r.status_code==200:
                             r = json.loads(r.text)
                             images.append({
@@ -445,7 +445,7 @@ class kaidee():
                     "privatetoken": privateToken
                 }
                 
-                response = httprequestObj.http_post(self.api_name+'/ads/'+postdata['post_id']+'/edit', headers=headers, data={}, json=datapost)
+                response = self.session.http_post(self.api_name+'/ads/'+postdata['post_id']+'/edit', headers=headers, data={}, json=datapost)
                 json_response = json.loads(response.text)
                 
                 if response.status_code==200:
@@ -464,7 +464,7 @@ class kaidee():
                                 }
                             ]
                         }
-                        r = httprequestObj.http_post(self.api_name+'/ven/buy/products/ads', headers=h, data={}, json=data)
+                        r = self.session.http_post(self.api_name+'/ven/buy/products/ads', headers=h, data={}, json=data)
                         json_r = json.loads(r.text)
                         if r.status_code==200:
                             success = "true"
@@ -625,7 +625,7 @@ class kaidee():
                 "memberid": str(member_id),
                 "privatetoken": privateToken
             }
-            response = httprequestObj.http_post(self.api_name+'/ads/'+postdata['post_id']+'/close', headers=headers, data={}, json=datapost)
+            response = self.session.http_post(self.api_name+'/ads/'+postdata['post_id']+'/close', headers=headers, data={}, json=datapost)
             json_response = json.loads(response.text)
             
             if response.status_code==200:
@@ -690,7 +690,7 @@ class kaidee():
                 "memberid": str(member_id),
                 "privatetoken": privateToken
             }
-            response = httprequestObj.http_post(self.api_name+'/ads/'+str(postdata['post_id'])+'/extend', headers=headers, data={}, json=datapost)
+            response = self.session.http_post(self.api_name+'/ads/'+str(postdata['post_id'])+'/extend', headers=headers, data={}, json=datapost)
             json_response = json.loads(response.text)
             
             if response.status_code==200:

@@ -238,7 +238,6 @@ category_types = {
     ]
 }
 
-httprequestObj = lib_httprequest()
 
 
 class ennxo():
@@ -256,6 +255,7 @@ class ennxo():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
 
     def register_user(self, postdata):
@@ -278,7 +278,7 @@ class ennxo():
                 "lastname": postdata['surname_th']
             }
 
-            response = httprequestObj.http_post(self.site_name+'/api/signup', data={}, json=datapost)  
+            response = self.session.http_post(self.site_name+'/api/signup', data={}, json=datapost)  
             json_response = response.json()
             if response.status_code==200:
                 if 'user_id' in json_response:
@@ -319,7 +319,7 @@ class ennxo():
             "password": postdata['pass']
         }
 
-        response = httprequestObj.http_post(self.site_name+'/api/next_login', data={}, json=datapost)    
+        response = self.session.http_post(self.site_name+'/api/next_login', data={}, json=datapost)    
         json_response = response.json()
         if response.status_code==200:
             if 'user_id' in json_response:
@@ -463,7 +463,7 @@ class ennxo():
                 postdata['post_images'] = ['imgtmp/default/white.jpg']
 
             for count,file in enumerate(postdata['post_images']):
-                r = httprequestObj.http_post(self.site_name+'/api/presigned_url', headers=headers, data={},json={'filename':os.getcwd()+"/"+file})
+                r = self.session.http_post(self.site_name+'/api/presigned_url', headers=headers, data={},json={'filename':os.getcwd()+"/"+file})
                 json_r = r.json()
                 if r.status_code==200:
                     main_data = {
@@ -476,9 +476,9 @@ class ennxo():
                         }
                 else:
                     flag = False
-                r = httprequestObj.http_post('https://storage.googleapis.com/ennxo_main',data=main_data, files={'file': open(os.getcwd()+"/"+file, 'rb')})
+                r = self.session.http_post('https://storage.googleapis.com/ennxo_main',data=main_data, files={'file': open(os.getcwd()+"/"+file, 'rb')})
                 if r.status_code==204:
-                    r = httprequestObj.http_post(self.site_name+'/api/upload_photo',headers=headers,data={},json={'_id':json_r['_id']})
+                    r = self.session.http_post(self.site_name+'/api/upload_photo',headers=headers,data={},json={'_id':json_r['_id']})
                     upload_json = r.json()
                     if count == 0:
                         images.append({"_id":json_r['_id'],"newUploaded":True,"isMainPhoto":True})
@@ -489,7 +489,7 @@ class ennxo():
             datapost["photos"] = images
             #print(datapost)
             if flag:
-                response = httprequestObj.http_post(self.site_name+'/api/add_product', headers=headers, data={}, json=datapost)
+                response = self.session.http_post(self.site_name+'/api/add_product', headers=headers, data={}, json=datapost)
                 json_response = response.json()
                 if response.status_code==200:
                     if 'product_id' in json_response:
@@ -632,7 +632,7 @@ class ennxo():
             }
             images = []
             flag = True
-            r = httprequestObj.http_get(self.site_name+'/api/product/'+str(postdata['post_id']), headers=headers)
+            r = self.session.http_get(self.site_name+'/api/product/'+str(postdata['post_id']), headers=headers)
             json_r = r.json()
             if r.status_code==200:
                 for image in json_r['photos']:
@@ -651,7 +651,7 @@ class ennxo():
                 flag = False
             """
             if len(postdata['post_images'])==0:
-                r = httprequestObj.http_get(self.site_name+'/api/product/'+str(postdata['post_id']), headers=headers)
+                r = self.session.http_get(self.site_name+'/api/product/'+str(postdata['post_id']), headers=headers)
                 json_r = r.json()
                 if r.status_code==200:
                     for i, image in enumerate(json_r['photos']):
@@ -670,7 +670,7 @@ class ennxo():
                     flag = False
             else:
                 for count,file in enumerate(postdata['post_images']):
-                    r = httprequestObj.http_post(self.site_name+'/api/presigned_url', headers=headers, data={},json={'filename':os.getcwd()+"/"+file})
+                    r = self.session.http_post(self.site_name+'/api/presigned_url', headers=headers, data={},json={'filename':os.getcwd()+"/"+file})
                     json_r = r.json()
                     if r.status_code==200:
                         main_data = {
@@ -681,9 +681,9 @@ class ennxo():
                             'x-amz-date':json_r['presigned_url']['fields']['x-amz-date'],
                             'x-amz-signature':json_r['presigned_url']['fields']['x-amz-signature']
                             }
-                    r = httprequestObj.http_post('https://storage.googleapis.com/ennxo_main',data=main_data, files={'file': open(os.getcwd()+"/"+file, 'rb')})
+                    r = self.session.http_post('https://storage.googleapis.com/ennxo_main',data=main_data, files={'file': open(os.getcwd()+"/"+file, 'rb')})
                     if r.status_code==204:
-                        r = httprequestObj.http_post(self.site_name+'/api/upload_photo',headers=headers,data={},json={'_id':json_r['_id']})
+                        r = self.session.http_post(self.site_name+'/api/upload_photo',headers=headers,data={},json={'_id':json_r['_id']})
                         upload_json = r.json()
                         if count == 0:
                             images.append({"_id":json_r['_id'],"newUploaded":True,"isMainPhoto":True})
@@ -692,7 +692,7 @@ class ennxo():
             datapost["photos"] = images
             #print(datapost)
             if flag:
-                response = httprequestObj.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
+                response = self.session.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
                 json_response = response.json()
                 if response.status_code==200:
                     if 'product_id' in json_response:
@@ -749,7 +749,7 @@ class ennxo():
             flag = True
 
             while flag:
-                response = httprequestObj.http_get(self.site_name+'/api/get_user_products/'+user_id+'/'+str(page_num))
+                response = self.session.http_get(self.site_name+'/api/get_user_products/'+user_id+'/'+str(page_num))
                 json_response = response.json()
                 if response.status_code==200:
                     if json_response['count']> page_num*24:
@@ -814,9 +814,9 @@ class ennxo():
                 "referer": "https://www.ennxo.com/product/"+str(postdata['post_id'])
             }
 
-            r = httprequestObj.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
+            r = self.session.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
             data_id = r.text.split("/_buildManifest")[0].split("/")[-1]
-            r = httprequestObj.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
+            r = self.session.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
             json_r = r.json()["pageProps"]["product"]
             # print(json_r)
             if r.status_code==200:
@@ -847,7 +847,7 @@ class ennxo():
                         })
                 datapost['photos'] = images
 
-                response = httprequestObj.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
+                response = self.session.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
                 json_response = response.json()
                 if response.status_code==200:
                     if 'product_id' in json_response:
@@ -898,10 +898,10 @@ class ennxo():
                 "referer": "https://www.ennxo.com/product/"+str(postdata['post_id'])
             }
 
-            r = httprequestObj.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
+            r = self.session.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
             data_id = r.text.split("/_buildManifest")[0].split("/")[-1]
 
-            r = httprequestObj.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
+            r = self.session.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
 
             json_r = r.json()["pageProps"]["product"]
             if r.status_code==200:
@@ -932,7 +932,7 @@ class ennxo():
                         })
                 datapost['photos'] = images
 
-                response = httprequestObj.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
+                response = self.session.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
                 json_response = response.json()
                 if response.status_code==200:
                     if 'product_id' in json_response:

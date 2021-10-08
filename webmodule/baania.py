@@ -11,8 +11,6 @@ from urllib.parse import unquote
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 import math
 
-httprequestObj = lib_httprequest()
-
 class baania():
 
     name = 'baania'
@@ -30,6 +28,7 @@ class baania():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -54,7 +53,7 @@ class baania():
         headers = {"Content-type": "application/json"}
         url = "https://api-feed.baania.com/register"
 
-        r = httprequestObj.http_post(url, data=json.dumps(datapost), headers=headers)
+        r = self.session.http_post(url, data=json.dumps(datapost), headers=headers)
         ret = json.loads(r.text)
 
         if r.status_code == 200:
@@ -93,7 +92,7 @@ class baania():
         headers = {"Content-type": "application/json"}
         url = "https://api-feed.baania.com/login"
 
-        r = httprequestObj.http_post(url, data=json.dumps(datapost), headers=headers)
+        r = self.session.http_post(url, data=json.dumps(datapost), headers=headers)
         ret = json.loads(r.text)
 
         if r.status_code == 200:
@@ -269,7 +268,7 @@ class baania():
             
             url = "https://api-feed.baania.com/listing"
 
-            r = httprequestObj.http_post(url, data=json.dumps(payload), headers=headers)
+            r = self.session.http_post(url, data=json.dumps(payload), headers=headers)
             ret = json.loads(r.text)
 
             if r.status_code == 200:

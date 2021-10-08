@@ -16,7 +16,6 @@ import urllib.request
 import urllib
 from PIL import Image
 
-httprequestObj = lib_httprequest()
 captcha = lib_captcha()
 
 
@@ -36,6 +35,7 @@ class thaicenterway():
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.webname = 'thaicenterway'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if self.debug == 1:
@@ -49,7 +49,7 @@ class thaicenterway():
         detail = ""
 
         os.system('touch ./imgtmp/captcha.jpeg')
-        r = httprequestObj.http_get('http://www.thaicenterway.com/captcha.php?width=100&height=40&characters=5')
+        r = self.session.http_get('http://www.thaicenterway.com/captcha.php?width=100&height=40&characters=5')
         with open("./imgtmp/captcha.jpeg", 'wb') as img_f:
             img_f.write(r.content)
         # print(captcha_url)
@@ -80,7 +80,7 @@ class thaicenterway():
             "confirm2": captcha_text
         }
 
-        r = httprequestObj.http_post('http://www.thaicenterway.com/regis_process.php', params={'task': 'add'},
+        r = self.session.http_post('http://www.thaicenterway.com/regis_process.php', params={'task': 'add'},
                                      data=datapost)
         # print(r.url)
         # print(r.status_code)
@@ -116,7 +116,7 @@ class thaicenterway():
             'submit': 'เข้าสู่ระบบ',
 
         }
-        r = httprequestObj.http_post('http://www.thaicenterway.com/Login_check.php', data=datapost)
+        r = self.session.http_post('http://www.thaicenterway.com/Login_check.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
@@ -186,26 +186,26 @@ class thaicenterway():
                     prod_address += add + " "
             prod_address = prod_address[:-1]
 
-            r = httprequestObj.http_get('http://www.thaicenterway.com/myClassified.php')
+            r = self.session.http_get('http://www.thaicenterway.com/myClassified.php')
             # print(r.url)
             # print(r.status_code)
 
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 'http://www.thaicenterway.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5')
             # print(r.url)
             # print(r.status_code)
 
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 'http://www.thaicenterway.com/%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%94%E0%B8%B4%E0%B8%99-%E0%B8%AD%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%B2%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%97%E0%B8%A3%E0%B8%B1%E0%B8%9E%E0%B8%A2%E0%B9%8C')
             # print(r.url)
             # print(r.status_code)
 
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 'https://p4-hxzjxiqnyxtva-je26frt6rc5d6arg-286468-s1-v6exp3-v4.metric.gstatic.com/gen_204?ipv6exp=dz&sentinel=1&dz_img_dt=1141&4z_img_dt=808')
             # print(r.url)
             # print(r.status_code)
 
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 'http://www.thaicenterway.com/%E0%B8%A5%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%9F%E0%B8%A3%E0%B8%B5/10/%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99-%E0%B8%AD%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%B2%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%97%E0%B8%A3%E0%B8%B1%E0%B8%9E%E0%B8%A2%E0%B9%8C/')
             # print(r.url)
             # print(r.status_code)
@@ -323,7 +323,7 @@ class thaicenterway():
                 datapost.append(('picture2', (None, None)))
                 datapost.append(('alt2', (None, '')))
 
-            r = httprequestObj.http_post('http://www.thaicenterway.com/post_process.php', params={'task': 'add'},
+            r = self.session.http_post('http://www.thaicenterway.com/post_process.php', params={'task': 'add'},
                                          data={}, files=datapost)
             # print(r.url)
             # print(r.status_code)
@@ -373,11 +373,11 @@ class thaicenterway():
                 datapost.append(('delpic3', (None, '')))
                 datapost.append(('Submit', (None, 'แก้ไขประกาศ')))
 
-                r = httprequestObj.http_get('http://www.thaicenterway.com/ClassifiedEdit.php', params={'item': post_id})
+                r = self.session.http_get('http://www.thaicenterway.com/ClassifiedEdit.php', params={'item': post_id})
                 # print(r.url)
                 # print(r.status_code)
 
-                r = httprequestObj.http_post('http://www.thaicenterway.com/ClassifiedEditDo.php', data={}, files=datapost)
+                r = self.session.http_post('http://www.thaicenterway.com/ClassifiedEditDo.php', data={}, files=datapost)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -429,7 +429,7 @@ class thaicenterway():
 
         if success:
 
-            r = httprequestObj.http_get('http://www.thaicenterway.com/myClassified.php')
+            r = self.session.http_get('http://www.thaicenterway.com/myClassified.php')
             soup = BeautifulSoup(r.content, self.parser)
             all_posts = soup.find_all('td', {'valign': 'top', 'class': 'AR12BlackB'})
 
@@ -444,7 +444,7 @@ class thaicenterway():
                     break
 
             if post_found:
-                r = httprequestObj.http_get('http://www.thaicenterway.com/movefirst.php', params={'post_id': post_id})
+                r = self.session.http_get('http://www.thaicenterway.com/movefirst.php', params={'post_id': post_id})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -490,7 +490,7 @@ class thaicenterway():
 
         if success:
 
-            r = httprequestObj.http_get('http://www.thaicenterway.com/myClassified.php')
+            r = self.session.http_get('http://www.thaicenterway.com/myClassified.php')
             soup = BeautifulSoup(r.content, self.parser)
             all_posts = soup.find_all('td', {'valign': 'top', 'class': 'AR12BlackB'})
 
@@ -505,7 +505,7 @@ class thaicenterway():
                     break
 
             if post_found:
-                r = httprequestObj.http_get('http://www.thaicenterway.com/ClassifiedDel.php', params={'post_id': post_id})
+                r = self.session.http_get('http://www.thaicenterway.com/ClassifiedDel.php', params={'post_id': post_id})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -550,7 +550,7 @@ class thaicenterway():
 
         if success:
 
-            r = httprequestObj.http_get('http://www.thaicenterway.com/myClassified.php')
+            r = self.session.http_get('http://www.thaicenterway.com/myClassified.php')
             soup = BeautifulSoup(r.content, self.parser)
             all_posts = soup.find_all('td', {'valign': 'top', 'class': 'AR12BlackB'})
 
@@ -570,7 +570,7 @@ class thaicenterway():
             if post_found:
                 success = True
                 detail = "Post Found"
-                r = httprequestObj.http_get(post_url)
+                r = self.session.http_get(post_url)
                 # print(r.url)
                 # print(r.status_code)
 

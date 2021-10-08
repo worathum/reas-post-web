@@ -29,7 +29,6 @@ from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 
-httprequestObj = lib_httprequest()
 
 
 with open("./static/ploychao_province.json", encoding='utf-8') as f:
@@ -52,6 +51,7 @@ class kaiteedin():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if(self.debug == 1):
@@ -78,7 +78,7 @@ class kaiteedin():
 
     def logout_user(self):
         url = 'http://kaiteedin.net/member_signout.php'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
 
     def register_user(self, postdata):
@@ -198,7 +198,7 @@ class kaiteedin():
             'remember':  'on'
         }
 
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'http://kaiteedin.net/member_signin.php', data=datapost)
         data = r.text
         soup = BeautifulSoup(r.content, features='html.parser')
@@ -235,7 +235,7 @@ class kaiteedin():
         print(success)
         if success == "true":
             listurl="http://kaiteedin.net/mylisting.php"
-            r=httprequestObj.http_get(listurl)
+            r=self.session.http_get(listurl)
             soup=BeautifulSoup(r.content,features='html.parser')
             table=soup.find('table',attrs={'class':'table table-hover'})
             try:
@@ -375,7 +375,7 @@ class kaiteedin():
                 'listing_price': postdata['price_baht']
             }
             url_post = 'http://www.kaiteedin.net/listing.php'
-            r = httprequestObj.http_post(url_post, data=datapost)
+            r = self.session.http_post(url_post, data=datapost)
             soup2 = BeautifulSoup(r.content, features='html.parser')
             postdata['post_project_name']=postdata['post_description_th']
             postdata['post_description_th']=postdata['post_description_th'].replace('\r\n','<br>')
@@ -426,7 +426,7 @@ class kaiteedin():
             else:
                 # floorarea=str(400*int(postdata['land_size_rai']) + 100 * int(postdata['land_size_ngan']) + int(postdata['land_size_wa'])) +" ตรว"
                 floorarea = ""            
-            xml = httprequestObj.http_get('http://kaiteedin.net/thailand.xml')
+            xml = self.session.http_get('http://kaiteedin.net/thailand.xml')
             soup = BeautifulSoup(xml.content, 'lxml')
             province = soup.findAll('table', attrs={'name': 'province'})
             amphur = soup.findAll('table', attrs={'name': 'amphur'})
@@ -536,7 +536,7 @@ class kaiteedin():
                 datapost.append(
                     ('fileUpload[]', (y, open(i, "rb"), "image/jpg")))
                 file.append(('fileUpload[]', (y, open(i, "rb"), "image/jpg")))
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'http://www.kaiteedin.net/listing_insert.php', data=datapost, files=file)
             data = r.text
             if confirmtext not in data:
@@ -545,7 +545,7 @@ class kaiteedin():
                 post_id = ""
             else:
                 listurl="http://kaiteedin.net/mylisting.php"
-                r=httprequestObj.http_get(listurl)
+                r=self.session.http_get(listurl)
                 soup=BeautifulSoup(r.content,features='html.parser')
                 table=soup.find('table',attrs={'class':'table table-hover'})
                 tr=table.findAll('tr')
@@ -729,7 +729,7 @@ class kaiteedin():
                 }
 
             list_url = 'http://kaiteedin.net/mylisting.php'
-            r = httprequestObj.http_get(list_url)
+            r = self.session.http_get(list_url)
             soup = r.text
             if str(postdata['post_id']) not in soup:
                 time_end = datetime.datetime.utcnow()
@@ -862,7 +862,7 @@ class kaiteedin():
                 ('Listing_desc', postdata['post_description_th']),
                 ('Listing_status', 'yes'),
                 ]
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'http://kaiteedin.net/mylisting_edit_save.php', data=datapost)
             data = r.text
             if 'ระบบบันทึกข้อมูลของคุณแล้ว' in data:
@@ -902,7 +902,7 @@ class kaiteedin():
         success = test_login["success"]
         detail = test_login["detail"]
         list_url = 'http://kaiteedin.net/mylisting.php'
-        r = httprequestObj.http_get(list_url)
+        r = self.session.http_get(list_url)
         soup = r.text
         if str(postdata['post_id']) not in soup:
             time_end = datetime.datetime.utcnow()
@@ -924,7 +924,7 @@ class kaiteedin():
             }
             urldel = 'http://kaiteedin.net/mylisting_delete.php?id=' + \
                 str(postdata['post_id'])
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 urldel, data=datapost)
             data = r.text
             if 'ลบข้อมูลเรียบร้อย' not in data:
@@ -968,7 +968,7 @@ class kaiteedin():
             # exists, authenticityToken, post_title = self.check_post(post_id)
 
             url = "http://kaiteedin.net/mylisting.php"
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             exists = False
             soup = BeautifulSoup(r.content, features='html.parser')
             post_url = ""
@@ -1042,7 +1042,7 @@ class kaiteedin():
         success = test_login["success"]
         detail = test_login["detail"]
         list_url = 'http://kaiteedin.net/mylisting.php'
-        r = httprequestObj.http_get(list_url)
+        r = self.session.http_get(list_url)
         soup = r.text
         if str(postdata['post_id']) not in soup:
             time_end = datetime.datetime.utcnow()
@@ -1062,7 +1062,7 @@ class kaiteedin():
             datapost=[
                 ('Listing_id',postdata['post_id'])
             ]
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'http://kaiteedin.net/mylisting_edit_save.php', data=datapost)
             data = r.text
             if 'ระบบบันทึกข้อมูลของคุณแล้ว' in data:

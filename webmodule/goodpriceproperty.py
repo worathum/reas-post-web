@@ -14,7 +14,6 @@ import urllib.request
 from urllib.parse import unquote
 
 
-httprequestObj = lib_httprequest()
 
 
 with open("./static/ploychao_province.json", encoding='utf-8') as f:
@@ -37,10 +36,11 @@ class goodpriceproperty():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def logout_user(self):
         url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/logout.php'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
 
     def register_user(self, postdata):
@@ -124,7 +124,7 @@ class goodpriceproperty():
         url_n = "http://www.xn--42cf4b4c7ahl7albb1b.com/p-register.php"
         with requests.Session() as s:
             r = s.post(url_n, data=datapost, headers=headers)
-        # httprequestObj.http_post(url)
+        # self.session.http_post(url)
         # print(r.content)
         # print(r.text)
 
@@ -178,7 +178,7 @@ class goodpriceproperty():
             'Referer': 'http://www.xn--42cf4b4c7ahl7albb1b.com/index.php', 'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36'
         }
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'http://www.xn--42cf4b4c7ahl7albb1b.com/login.php', data=datapost, headers=headers)
 
         headers = {
@@ -340,7 +340,7 @@ class goodpriceproperty():
             }
 
             with requests.Session() as s:
-                r = httprequestObj.http_get_with_headers(
+                r = self.session.http_get_with_headers(
                     edit_url, headers=headers)
 
                 # r=s.post(edit_url,,headers=register_headers)
@@ -575,10 +575,10 @@ class goodpriceproperty():
                     files[arr[i]] = (postdata['post_images'][i], open(
                         postdata['post_images'][i], "rb"), "image/jpg")
 
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/p-post-property.php', data=datapost, files=files)
             list_url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php'
-            r = httprequestObj.http_get(list_url)
+            r = self.session.http_get(list_url)
             soup = BeautifulSoup(r.content, features = self.parser)
             var = soup.find('a', attrs={'title': postdata['post_title_th']})[
                 'href']
@@ -684,7 +684,7 @@ class goodpriceproperty():
             }
         
         url_list = 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php'
-        r = httprequestObj.http_get(url_list)
+        r = self.session.http_get(url_list)
         soup = BeautifulSoup(r.content, features = self.parser)
 
 
@@ -693,7 +693,7 @@ class goodpriceproperty():
         found = True
         page = 1
         """while True:
-            requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).text
+            requ = self.session.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).text
             # print(requ)
             
             soup = BeautifulSoup(requ, features = self.parser)
@@ -810,7 +810,7 @@ class goodpriceproperty():
             }
 
             with requests.Session() as s:
-                r = httprequestObj.http_get_with_headers(
+                r = self.session.http_get_with_headers(
                     edit_url, headers=headers, params=payload)
 
                 # r=s.post(edit_url,,headers=register_headers)
@@ -1049,7 +1049,7 @@ class goodpriceproperty():
                 files[arr[i]] = (postdata['post_images'][i], open(
                     postdata['post_images'][i], "rb"), "image/jpg")
 
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/p-edit-property.php', data=datapost, headers=headers, files=files)
             print("RETURN ", r.content)
             print("RETURN ", r.text)
@@ -1089,7 +1089,7 @@ class goodpriceproperty():
         if success == "true":
             page = 1            
             found = False
-            res = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php").content
+            res = self.session.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php").content
             soup = BeautifulSoup(res, features = self.parser)
             table = soup.find_all('table')[10]
             page_list = []
@@ -1101,7 +1101,7 @@ class goodpriceproperty():
             
             for page in range(1, int(total_page) + 1):
                 #print(page)
-                requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
+                requ = self.session.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
                 soup = BeautifulSoup(requ, features = self.parser)
                 table = soup.find_all('table')[10]
                 for link in table.find_all('a'):
@@ -1140,9 +1140,9 @@ class goodpriceproperty():
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36'
             }
 
-            r = httprequestObj.http_get_with_headers(
+            r = self.session.http_get_with_headers(
                 url, headers=headers, params=payload)
-            # r = httprequestObj.http_post(
+            # r = self.session.http_post(
             #     'https://www.ploychao.com/member/', data=datapost)
             data = r.text
             time_end = datetime.datetime.utcnow()
@@ -1210,7 +1210,7 @@ class goodpriceproperty():
         page = 1            
         found = True
         """while True:
-            requ = httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
+            requ = self.session.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).content
             soup = BeautifulSoup(requ, features = self.parser)
             ahref = soup.findAll('a')
             count = 0
@@ -1225,7 +1225,7 @@ class goodpriceproperty():
             if found or count==0:
                 break"""
         try:
-            r = httprequestObj.http_get('http://www.xn--42cf4b4c7ahl7albb1b.com/member/slide-property.php',
+            r = self.session.http_get('http://www.xn--42cf4b4c7ahl7albb1b.com/member/slide-property.php',
                                     headers=headers, params=params, verify=False)
             if success == 'true' and 'เลื่อนประกาศเรียบร้อยแล้วครับ'  not in r.text:
                 success='false'
@@ -1275,7 +1275,7 @@ class goodpriceproperty():
                     url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=' + str(
                         i)
                     # print(url)
-                    r = httprequestObj.http_get(url)
+                    r = self.session.http_get(url)
                     # print(r.url)
 
                     # print(r.status_code)
@@ -1300,7 +1300,7 @@ class goodpriceproperty():
                             post_id = info[1].get('href').split('/')[-2]
                             # print(post_id)
                             post_url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/property/' + post_id + '/' + title + '.html'
-                            r = httprequestObj.http_get(post_url)
+                            r = self.session.http_get(post_url)
                             # print(r.url)
                             # print(r.status_code)
                             soup = BeautifulSoup(r.content, self.parser)

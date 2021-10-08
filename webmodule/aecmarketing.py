@@ -12,8 +12,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
-
 
 class aecmarketing():
     name = 'aecmarketing'
@@ -52,6 +50,7 @@ class aecmarketing():
             'Accept-Encoding': 'gzip, deflate, br',
             'Accept-Language': 'en-US,en;q=0.9',
         }
+        self.session = lib_httprequest()
 
 
     def register_user(self, passdata):
@@ -72,7 +71,7 @@ class aecmarketing():
           'user_password': password
         }
 
-        result = httprequestObj.http_post(self.url_reg, data=register_data)
+        result = self.session.http_post(self.url_reg, data=register_data)
         decoded_result = result.content.decode('utf-8')
 
         final_output = json.loads(decoded_result)
@@ -119,7 +118,7 @@ class aecmarketing():
         }
 
         # print(login_data)
-        result = httprequestObj.http_post(self.url_login, data=login_data)
+        result = self.session.http_post(self.url_login, data=login_data)
         decoded_result = result.content.decode('utf-8')
         final_output = json.loads(decoded_result)
 
@@ -236,7 +235,7 @@ class aecmarketing():
 
         try:
             addr_subdis = postdata['addr_sub_district']
-            response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/'+str(zone_id))
+            response = self.session.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/'+str(zone_id))
             result = json.loads(response.content.decode('utf-8'))
 
             subdistrict_id = ''
@@ -313,7 +312,7 @@ class aecmarketing():
         # file = open('test1.html','a')
         # file.write(str(ad_data))
 
-        response = httprequestObj.http_post('https://www.aecmarketinghome.com/th/post/save_property.html', data=ad_data)
+        response = self.session.http_post('https://www.aecmarketinghome.com/th/post/save_property.html', data=ad_data)
         result = response.json()
 
         try:
@@ -403,7 +402,7 @@ class aecmarketing():
           'prop_id': post_id
         }
 
-        response = httprequestObj.http_post('https://www.aecmarketinghome.com/profile/delete', data=delete_post, headers=self.headers)
+        response = self.session.http_post('https://www.aecmarketinghome.com/profile/delete', data=delete_post, headers=self.headers)
         result = json.loads(response.content.decode('utf-8'))['result']['status_code']
 
         if(result == 200):
@@ -750,7 +749,7 @@ class aecmarketing():
                     break
 
         addr_subdis = postdata['addr_sub_district']
-        response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/' + str(zone_id))
+        response = self.session.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/' + str(zone_id))
 
         if response.text == 'null':
             end_time = datetime.datetime.utcnow()
@@ -837,13 +836,13 @@ class aecmarketing():
             ('location_lng', postdata['geo_longitude']),
         ]
 
-        # response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/post/edit/' + post_id + '.html')
+        # response = self.session.http_get('https://www.aecmarketinghome.com/th/post/edit/' + post_id + '.html')
         # soup = BeautifulSoup(response.content, 'html.parser')
         # id = soup.find_all("input", {"name": "photo_id[]"})
         # for i in range(len(id)):
         #     edit_data.append(('photo_id[]', id[i].attrs['value']))
 
-        response = httprequestObj.http_post(
+        response = self.session.http_post(
             'https://www.aecmarketinghome.com/th/post/save_property/' + post_id + '.html', data=edit_data)
         result = (response.json())
 
@@ -906,7 +905,7 @@ class aecmarketing():
 
         while(exists == False):
 
-            response = httprequestObj.http_get('https://www.aecmarketinghome.com/th/profile/index/%d.html' % itr)
+            response = self.session.http_get('https://www.aecmarketinghome.com/th/profile/index/%d.html' % itr)
             soup = BeautifulSoup(response.content, 'html.parser')
             post_div = soup.find_all("div", {"class" : "dashboard-wrapper list-mypost"})
             titles = post_div[0].find_all("div", {"class" : "row"})

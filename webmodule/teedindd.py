@@ -13,8 +13,6 @@ import sys
 from urllib.parse import unquote
 
 
-httprequestObj = lib_httprequest()
-
 
 with open("./static/ploychao_province.json",encoding = 'utf-8') as f:
     provincedata = json.load(f)
@@ -36,6 +34,7 @@ class teedindd():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if(self.debug == 1):
@@ -156,7 +155,7 @@ class teedindd():
             'BttSave':  'Login'
         }
 
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'https://www.teedindd.com/login-check.php', data=datapost)
         data = r.text
         soup = BeautifulSoup(r.content, features = self.parser)
@@ -195,7 +194,7 @@ class teedindd():
         success = test_login["success"]
         detail = test_login["detail"]     
         posturl="https://www.teedindd.com/admin/properties-process.php"
-        r=httprequestObj.http_post(posturl,data={'DunDate':'1'})
+        r=self.session.http_post(posturl,data={'DunDate':'1'})
         time_end = datetime.datetime.utcnow()
         return {
             "websitename": "teedindd",
@@ -227,7 +226,7 @@ class teedindd():
         if success == "true":
             if postdata['no'] == 0:
                 list_url = 'https://www.teedindd.com/post.php?pd=' + str(postdata['post_id'])
-                r = httprequestObj.http_get(list_url)
+                r = self.session.http_get(list_url)
                 soup = BeautifulSoup(r.content, features=self.parser)
                 all_img = soup.findAll('a', {'class':'delete'})
                 del_ = []
@@ -319,7 +318,7 @@ class teedindd():
                 }
 
             list_url = 'https://www.teedindd.com/post.php?pd='+str(postdata['post_id'])
-            r = httprequestObj.http_get(list_url)
+            r = self.session.http_get(list_url)
             soup = BeautifulSoup(r.content, features = self.parser)
             var=soup.find('input',attrs={'id':'ti'})
             if not var or (var and var['value']==""):
@@ -334,7 +333,7 @@ class teedindd():
                 }
 
             url_post = 'https://www.teedindd.com/post.php?pd='+str(postdata['post_id'])
-            r = httprequestObj.http_get(url_post)
+            r = self.session.http_get(url_post)
             soup = BeautifulSoup(r.content, features = self.parser)
             var = soup.findAll('option')
             postdata['addr_province']=postdata['addr_province'].replace(' ','')
@@ -361,7 +360,7 @@ class teedindd():
             PropAction = soup.find('input', attrs={'id': 'PropAction'})
             # print(PropAction)
             url_district = 'https://www.teedindd.com/admin/step-process.php'
-            r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
+            r = self.session.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
             
             for i in json.loads(r.text):
                 if i['name'] == postdata['addr_district']:
@@ -378,7 +377,7 @@ class teedindd():
 
 
             url_district = 'https://www.teedindd.com/admin/step-process.php'
-            r = httprequestObj.http_post(url_district, data={
+            r = self.session.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
             for i in json.loads(r.text):
                 if i['name'] == postdata['addr_sub_district']:
@@ -463,7 +462,7 @@ class teedindd():
                 i=postdata['no']
                 data[filename] = (postdata['post_images'][i], open(
                     postdata['post_images'][i], "rb"), "image/jpg")
-            response = httprequestObj.http_post(
+            response = self.session.http_post(
                 'https://www.teedindd.com/upload-tmp/', data=datapost , files=data)
             res=json.loads(response.text)
             if len(postdata['post_images']) != 0:
@@ -471,7 +470,7 @@ class teedindd():
             else:
                 datapost['photo_name[]']=None
             datapost['photo_name_old']=''
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'https://www.teedindd.com/admin/properties-process.php', data=datapost)
             data = r.text
             detail="edited"
@@ -581,7 +580,7 @@ class teedindd():
                 postdata['addr_road']=''
         
             url_post = 'https://www.teedindd.com/post.php'
-            r = httprequestObj.http_get(url_post)
+            r = self.session.http_get(url_post)
             soup = BeautifulSoup(r.content, features = self.parser)
             var = soup.findAll('option')
 
@@ -606,7 +605,7 @@ class teedindd():
             PropAction = soup.find('input', attrs={'name': 'PropAction'})
             # print(PropAction)
             url_district = 'https://www.teedindd.com/admin/step-process.php'
-            r = httprequestObj.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
+            r = self.session.http_post(url_district, data={'pid': postdata['addr_pros'].split(',')[0], 'name': postdata['addr_pros'].split(',')[1]})
             
             for i in json.loads(r.text):
                 if i['name'] == postdata['addr_district']:
@@ -622,7 +621,7 @@ class teedindd():
                 postdata['addr_dis'] = json.loads(r.text)[0]
 
             url_district = 'https://www.teedindd.com/admin/step-process.php'
-            r = httprequestObj.http_post(url_district, data={
+            r = self.session.http_post(url_district, data={
                                         'aid': postdata['addr_dis']['aid'], 'name': postdata['addr_dis']['name']})
             for i in json.loads(r.text):
                 if i['name'] == postdata['addr_sub_district']:
@@ -716,12 +715,12 @@ class teedindd():
             data={}
             data[filename] = (postdata['post_images'][i], open(
                 postdata['post_images'][i], "rb"), "image/jpg")
-            response = httprequestObj.http_post(
+            response = self.session.http_post(
                 'https://www.teedindd.com/upload-tmp/', data=datapost , files=data)
             res=json.loads(response.text)
             datapost['photo_name[]']=res['files'][0]['name']
             datapost['photo_name_old']=''
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'https://www.teedindd.com/admin/properties-process.php', data=datapost)
             data = r.text
             # filename = "files[]"
@@ -735,7 +734,7 @@ class teedindd():
             #     i = postdata['no']
             #     data[filename] = (postdata['post_images'][i], open(
             #         postdata['post_images'][i], "rb"), "image/jpg")
-            # response = httprequestObj.http_post(
+            # response = self.session.http_post(
             #     'https://www.teedindd.com/upload-tmp/', data=datapost, files=data)
             # res = json.loads(response.text)
             # if len(postdata['post_images']) != 0:
@@ -743,7 +742,7 @@ class teedindd():
             # else:
             #     datapost['photo_name[]'] = None
             # datapost['photo_name_old'] = ''
-            # r = httprequestObj.http_post(
+            # r = self.session.http_post(
             #     'https://www.teedindd.com/admin/properties-process.php', data=datapost)
             # data = r.text
 
@@ -751,7 +750,7 @@ class teedindd():
                 success = "false"
             else:
                 list_url = 'https://www.teedindd.com/admin/'
-                r = httprequestObj.http_get(list_url)
+                r = self.session.http_get(list_url)
                 soup = BeautifulSoup(r.content, features = self.parser)
                 var = soup.findAll('div')
                 store=""
@@ -775,7 +774,7 @@ class teedindd():
                 postdata['post_id']=post_id
                 list_url = 'https://www.teedindd.com/post.php?pd='
                 list_url+=postdata['post_id']
-                r = httprequestObj.http_get(list_url)
+                r = self.session.http_get(list_url)
                 soup = BeautifulSoup(r.content, features = self.parser)
                 data=soup.find('input',attrs={'id':'ti'})
                 if data =="":
@@ -842,7 +841,7 @@ class teedindd():
             x=['1','2','3','4','5','6','7','8','9','10']
             for i in x:
                 url = "https://www.teedindd.com/admin/index.php?page="+i    
-                r = httprequestObj.http_get(url)
+                r = self.session.http_get(url)
                 exists = False
                 soup = BeautifulSoup(r.content, features = self.parser)
 
@@ -919,7 +918,7 @@ class teedindd():
             j=self.editpost(postdata)
         if j['success'] == "true":
             for i,id in enumerate(prev_img):
-                r = httprequestObj.http_get('https://www.teedindd.com/admin/properties-process.php?imgDelete=' + str(id))
+                r = self.session.http_get('https://www.teedindd.com/admin/properties-process.php?imgDelete=' + str(id))
                 print(i,r.text)
 
         j['log_id'] = postdata['log_id']
@@ -938,7 +937,7 @@ class teedindd():
         detail = test_login["detail"]
 
         if success == "true":
-            r = httprequestObj.http_get('https://www.teedindd.com/post.php?pd=' + str(postdata['post_id']))
+            r = self.session.http_get('https://www.teedindd.com/post.php?pd=' + str(postdata['post_id']))
             soup = BeautifulSoup(r.content, features = self.parser)
             var = soup.find('input',attrs={'id':'ti'})
             if var and var['value']=="":
@@ -958,7 +957,7 @@ class teedindd():
                 'properties-delete':'1',
                 'userDeleteProp':postdata['post_id']
             }
-            r = httprequestObj.http_post('https://www.teedindd.com/admin/properties-process.php', data=datapost)
+            r = self.session.http_post('https://www.teedindd.com/admin/properties-process.php', data=datapost)
             data = r.text
             if data == '':
                 success = "false"

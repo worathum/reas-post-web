@@ -8,7 +8,6 @@ import sys
 import requests
 import random
 
-httprequestObj = lib_httprequest()
 
 class onedproperty():
    
@@ -29,6 +28,7 @@ class onedproperty():
         self.debugresdata = 0
         self.baseurl = 'https://www.onedproperty.com'
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
    
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -71,7 +71,7 @@ class onedproperty():
             detail = "Password must be atleast 6 characters long"
         else:
             try:
-                response = httprequestObj.http_post('http://www.onedproperty.com/register', data = data,headers = headers)
+                response = self.session.http_post('http://www.onedproperty.com/register', data = data,headers = headers)
                 if response.text.find("มีอยู่ในระบบแล้ว") != -1:
                 #if response.url == 'http://www.onedproperty.com/register' :
                     success = "false"
@@ -126,7 +126,7 @@ class onedproperty():
             detail = "Invalid Password"
         else:
             try:
-                response = httprequestObj.http_post('http://www.onedproperty.com/login', data = data, headers = headers)
+                response = self.session.http_post('http://www.onedproperty.com/login', data = data, headers = headers)
                 if response.text.find("Email หรือ Password ไม่ถูกต้อง") !=-1:
                     success = "false"
                     detail = 'Incorrect Username or Password !!'
@@ -167,7 +167,7 @@ class onedproperty():
         post_id = ""
 
         if (login["success"] == "true"):
-            post_page = httprequestObj.http_get("http://www.onedproperty.com/property/add",headers = headers)
+            post_page = self.session.http_get("http://www.onedproperty.com/property/add",headers = headers)
         
             if 'web_project_name' not in postdata or postdata['web_project_name'] =="":
                 if 'project_name' in postdata and postdata['project_name'] != "":
@@ -223,7 +223,7 @@ class onedproperty():
             
             data['category_id'] = pd_properties[str(postdata['property_type'])]
             
-            #post_id = httprequestObj.http_post("http://www.onedproperty.com/property/add", data = data, headers = headers)
+            #post_id = self.session.http_post("http://www.onedproperty.com/property/add", data = data, headers = headers)
             #success = "re"
             
             fp = open('./static/onedproperty_province.json')
@@ -241,7 +241,7 @@ class onedproperty():
             
             url_pro = str('http://www.onedproperty.com/getAmphoe/'+data['province_id']+'/0?province_id='+data['province_id'])
             
-            all_amphoe = httprequestObj.http_get(url_pro, headers = headers).text
+            all_amphoe = self.session.http_get(url_pro, headers = headers).text
             
             soup = BeautifulSoup(all_amphoe,features = self.parser)
             
@@ -276,11 +276,11 @@ class onedproperty():
                 file.append(('image_gallery[]', (y, open(i, "rb"), "image/jpg")))
 
                 
-            post_create = httprequestObj.http_post("http://www.onedproperty.com/property/add", data = data, files = file, headers = headers)
+            post_create = self.session.http_post("http://www.onedproperty.com/property/add", data = data, files = file, headers = headers)
             success = "true"
             detail = "Post created successfully"
             
-            post_info = httprequestObj.http_get('http://www.onedproperty.com/member/property', headers = headers).text
+            post_info = self.session.http_get('http://www.onedproperty.com/member/property', headers = headers).text
             
             soup = BeautifulSoup(post_info,features = self.parser)
             
@@ -326,7 +326,7 @@ class onedproperty():
         login = self.test_login(postdata)
         
         if login['success'] == 'true':
-            all_posts = httprequestObj.http_get('http://www.onedproperty.com/member/property', headers = headers).text
+            all_posts = self.session.http_get('http://www.onedproperty.com/member/property', headers = headers).text
             
             soup = BeautifulSoup(all_posts,features = self.parser)
             
@@ -345,7 +345,7 @@ class onedproperty():
             if req_post_id in all_post_id:
                 post_url = str('http://www.onedproperty.com/property/update/'+str(req_post_id))
                 
-                pqr = httprequestObj.http_get(post_url, headers = headers).text
+                pqr = self.session.http_get(post_url, headers = headers).text
                 
                 soup = BeautifulSoup(pqr,features = "html")
                 
@@ -353,7 +353,7 @@ class onedproperty():
                     image_id = ab['data-image-id']
                     #print(image_id)
                     image_delete_url = str('http://www.onedproperty.com/property/deleteImage/'+str(image_id))
-                    pqr1 = httprequestObj.http_get(image_delete_url, headers = headers)
+                    pqr1 = self.session.http_get(image_delete_url, headers = headers)
 
                 data = {
                 'category_id' : '1',
@@ -377,7 +377,7 @@ class onedproperty():
 
                 edit_url = str('http://www.onedproperty.com/property/update/'+req_post_id)
 
-                edit_save = httprequestObj.http_post(edit_url, data = data, headers = headers)
+                edit_save = self.session.http_post(edit_url, data = data, headers = headers)
 
                 #print(edit_save.url)
                 
@@ -420,7 +420,7 @@ class onedproperty():
         login = self.test_login(postdata)
         
         if(login['success'] == "true"):
-            all_posts = httprequestObj.http_get('http://www.onedproperty.com/member/property', headers = headers).text
+            all_posts = self.session.http_get('http://www.onedproperty.com/member/property', headers = headers).text
             
             soup = BeautifulSoup(all_posts,features = self.parser)
             
@@ -441,7 +441,7 @@ class onedproperty():
                     'btn-submit' : '1'
                 }
                 
-                edit_save = httprequestObj.http_post(edit_url, data = data, headers = headers)
+                edit_save = self.session.http_post(edit_url, data = data, headers = headers)
                 
                 success = "true"
                 detail = "Post boosted successfully"
@@ -488,7 +488,7 @@ class onedproperty():
         login = self.test_login(postdata)
         
         if login['success'] == 'true':
-            all_posts = httprequestObj.http_get('http://www.onedproperty.com/member/property', headers = headers).text
+            all_posts = self.session.http_get('http://www.onedproperty.com/member/property', headers = headers).text
             soup = BeautifulSoup(all_posts,features = self.parser).find(class_='property-list')
             all_post_id = []
             
@@ -504,7 +504,7 @@ class onedproperty():
                 
                 post_url = str('http://www.onedproperty.com/property/update/'+str(req_post_id))
                 
-                pqr = httprequestObj.http_get(post_url, headers = headers).text
+                pqr = self.session.http_get(post_url, headers = headers).text
                 
                 soup = BeautifulSoup(pqr,features = "html")
                 
@@ -512,7 +512,7 @@ class onedproperty():
                     image_id = ab['data-image-id']
                     #print(image_id)
                     image_delete_url = str('http://www.onedproperty.com/property/deleteImage/'+str(image_id))
-                    pqr1 = httprequestObj.http_get(image_delete_url, headers = headers)
+                    pqr1 = self.session.http_get(image_delete_url, headers = headers)
                 
                 if 'web_project_name' not in postdata or postdata['web_project_name'] == "":
                     if 'project_name' in postdata and postdata['project_name'] != "":
@@ -582,7 +582,7 @@ class onedproperty():
             
                 url_pro = str('http://www.onedproperty.com/getAmphoe/'+data['province_id']+'/0?province_id='+data['province_id'])
             
-                all_amphoe = httprequestObj.http_get(url_pro, headers = headers).text
+                all_amphoe = self.session.http_get(url_pro, headers = headers).text
             
                 soup = BeautifulSoup(all_amphoe,features = self.parser)
             
@@ -616,7 +616,7 @@ class onedproperty():
                     
                 edit_url = str('http://www.onedproperty.com/property/update/'+str(postdata['post_id']))
                     
-                post_create = httprequestObj.http_post(edit_url, data = data, files = file, headers = headers)
+                post_create = self.session.http_post(edit_url, data = data, files = file, headers = headers)
                 success = "true"
                 detail = "Post edited successfully"
     
@@ -670,7 +670,7 @@ class onedproperty():
                 "btn_search" : "1"
             }
             
-            res = httprequestObj.http_post('http://www.onedproperty.com/property/search', data = data, headers = headers)
+            res = self.session.http_post('http://www.onedproperty.com/property/search', data = data, headers = headers)
             
             soup = BeautifulSoup(res.content ,features = "html")
             
@@ -680,7 +680,7 @@ class onedproperty():
                     post_url = str('http://www.onedproperty.com/property/'+post_id)
                     post_found = "true"
                     detail = 'Post found'
-                    find_view = httprequestObj.http_get(post_url, headers = headers).text
+                    find_view = self.session.http_get(post_url, headers = headers).text
                     soup1 = BeautifulSoup(find_view,features = "html")
                     post_v = soup1.find('ul',attrs={'class':'mb-0'})
                     pqr = 0

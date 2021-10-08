@@ -13,7 +13,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
 captcha = lib_captcha()
 
 
@@ -33,6 +32,7 @@ class hongpak():
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.webname = 'hongpak'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if self.debug == 1:
@@ -41,7 +41,7 @@ class hongpak():
 
     def logout_user(self):
         url = 'https://www.hongpak.in.th/logout/'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
 
     def register_user(self, postdata):
@@ -52,7 +52,7 @@ class hongpak():
         success = "true"
         detail = ""
 
-        r = httprequestObj.http_get('https://www.hongpak.in.th/register/')
+        r = self.session.http_get('https://www.hongpak.in.th/register/')
         print(r.url)
         print(r.status_code)
 
@@ -63,7 +63,7 @@ class hongpak():
         captcha_url = 'https://hongpak.in.th' + soup.select(".control-label img")[0].get('src')
         print(captcha_url)
 
-        r = httprequestObj.http_get(captcha_url)
+        r = self.session.http_get(captcha_url)
         print(r.url)
         print(r.status_code)
 
@@ -84,7 +84,7 @@ class hongpak():
             "codecheck": captcha_text
         }
 
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'https://www.hongpak.in.th/register/', data=datapost)
         print(r.url)
         print(r.status_code)
@@ -105,11 +105,11 @@ class hongpak():
             'btSubmit': 'แก้ไขข้อมูล'
         }
 
-        r = httprequestObj.http_get('https://www.hongpak.in.th/profile/newuser?reg=1')
+        r = self.session.http_get('https://www.hongpak.in.th/profile/newuser?reg=1')
         print(r.url)
         print(r.status_code)
 
-        r = httprequestObj.http_post('https://www.hongpak.in.th/profile', data=datapost)
+        r = self.session.http_post('https://www.hongpak.in.th/profile', data=datapost)
         print(r.url)
         print(r.status_code)
 
@@ -145,7 +145,7 @@ class hongpak():
         detail = ""
         print('Here')
 
-        r = httprequestObj.http_get('https://www.hongpak.in.th/login/')
+        r = self.session.http_get('https://www.hongpak.in.th/login/')
         print(r.url)
         print(r.status_code)
 
@@ -155,11 +155,11 @@ class hongpak():
             "autolog": 'Y'
         }
 
-        r = httprequestObj.http_post('https://www.hongpak.in.th/login/', data=datapost)
+        r = self.session.http_post('https://www.hongpak.in.th/login/', data=datapost)
         print(r.url)
         print(r.status_code)
 
-        #r = httprequestObj.http_get('https://www.hongpak.in.th/', data=datapost)
+        #r = self.session.http_get('https://www.hongpak.in.th/', data=datapost)
         #print(r.url)
         #print(r.status_code)
         #data = r.text
@@ -179,17 +179,17 @@ class hongpak():
         #     'btSubmit': 'แก้ไขข้อมูล'
         # }
         #
-        # r = httprequestObj.http_get('https://www.hongpak.in.th/profile/newuser?reg=1')
+        # r = self.session.http_get('https://www.hongpak.in.th/profile/newuser?reg=1')
         # print(r.url)
         # print(r.status_code)
         #
-        # r = httprequestObj.http_post('https://www.hongpak.in.th/profile', data=datapost)
+        # r = self.session.http_post('https://www.hongpak.in.th/profile', data=datapost)
         # print(r.url)
         # print(r.status_code)
 
         #with open('/home/aymaan/Desktop/rough.html', 'w') as f:
         #    f.write(r.text)
-        r = httprequestObj.http_get('https://www.hongpak.in.th/profile')
+        r = self.session.http_get('https://www.hongpak.in.th/profile')
 
         if postdata["user"] in r.text :
             success = True
@@ -266,7 +266,7 @@ class hongpak():
 
             print('Going to post')
 
-            r = httprequestObj.http_get('https://www.hongpak.in.th/roominfo/new')
+            r = self.session.http_get('https://www.hongpak.in.th/roominfo/new')
             print(r.url)
             print(r.status_code)
 
@@ -309,7 +309,7 @@ class hongpak():
                 'allowcomm': 'Y',
                 'acept_warning': '1',
             }
-            r = httprequestObj.http_post('https://www.hongpak.in.th/roominfo/new', data=tempdata)
+            r = self.session.http_post('https://www.hongpak.in.th/roominfo/new', data=tempdata)
             print(r.url)
             print(r.status_code)
 
@@ -338,7 +338,7 @@ class hongpak():
                 'allowcomm': 'Y',
                 'acept_warning': '1',
             }
-            r = httprequestObj.http_post('https://www.hongpak.in.th/roominfo/new', data=tempdata)
+            r = self.session.http_post('https://www.hongpak.in.th/roominfo/new', data=tempdata)
             print(r.url)
             print(r.status_code)
 
@@ -416,7 +416,7 @@ class hongpak():
                 ]
                 filename = str(i) + '.jpeg'
                 imgdata.append(('files', (filename, open(image, 'rb'), 'image/jpeg')))
-                r = httprequestObj.http_post('https://www.hongpak.in.th/upload/', data={}, files=imgdata)
+                r = self.session.http_post('https://www.hongpak.in.th/upload/', data={}, files=imgdata)
                 print(r.url)
                 print(r.status_code)
                 print(r.json())
@@ -428,7 +428,7 @@ class hongpak():
                 else:
                     datapost.append(('df[]', ''))
 
-            r = httprequestObj.http_post('https://www.hongpak.in.th/roominfo/new', data=datapost)
+            r = self.session.http_post('https://www.hongpak.in.th/roominfo/new', data=datapost)
             print(r.url)
             print(r.status_code)
 
@@ -488,7 +488,7 @@ class hongpak():
 
             while True:
                 page += 1
-                r = httprequestObj.http_get('https://www.hongpak.in.th/myrooms/?p=' + str(page))
+                r = self.session.http_get('https://www.hongpak.in.th/myrooms/?p=' + str(page))
                 print(r.url)
                 print(r.status_code)
 
@@ -550,7 +550,7 @@ class hongpak():
 
                 print('Going to post')
 
-                r = httprequestObj.http_get('https://www.hongpak.in.th/roominfo/' + post_id)
+                r = self.session.http_get('https://www.hongpak.in.th/roominfo/' + post_id)
                 print(r.url)
                 print(r.status_code)
 
@@ -576,7 +576,7 @@ class hongpak():
                     'allowcomm': 'Y',
                     'acept_warning': '1',
                 }
-                r = httprequestObj.http_post('https://www.hongpak.in.th/roominfo/new', data=tempdata)
+                r = self.session.http_post('https://www.hongpak.in.th/roominfo/new', data=tempdata)
                 print(r.url)
                 print(r.status_code)
 
@@ -623,7 +623,7 @@ class hongpak():
                     'allowcomm': 'Y',
                     'acept_warning': '1',
                 }
-                r = httprequestObj.http_post('https://www.hongpak.in.th/roominfo/new', data=tempdata)
+                r = self.session.http_post('https://www.hongpak.in.th/roominfo/new', data=tempdata)
                 print(r.url)
                 print(r.status_code)
 
@@ -706,7 +706,7 @@ class hongpak():
                     filename = str(i) + '.jpeg'
                     imgdata.append(('files', (filename, open(image, 'rb'), 'image/jpeg')))
                     print(imgdata)
-                    r = httprequestObj.http_post('https://www.hongpak.in.th/upload/', data={}, files=imgdata)
+                    r = self.session.http_post('https://www.hongpak.in.th/upload/', data={}, files=imgdata)
                     print(r.url)
                     print(r.status_code)
                     print(r.json())
@@ -720,7 +720,7 @@ class hongpak():
                         datapost.append(('df[]', ''))
 
                 edit_url = 'https://www.hongpak.in.th/roominfo/' + post_id
-                r = httprequestObj.http_post(edit_url, data=datapost)
+                r = self.session.http_post(edit_url, data=datapost)
                 print(r.url)
                 print(r.status_code)
 
@@ -775,7 +775,7 @@ class hongpak():
 
             while True:
                 page += 1
-                r = httprequestObj.http_get('https://www.hongpak.in.th/myrooms/?p=' + str(page))
+                r = self.session.http_get('https://www.hongpak.in.th/myrooms/?p=' + str(page))
                 print(r.url)
                 print(r.status_code)
 
@@ -801,7 +801,7 @@ class hongpak():
                     'xact': 'renew',
                     'id': post_id
                 }
-                r = httprequestObj.http_post(boost_url, data=datapost)
+                r = self.session.http_post(boost_url, data=datapost)
                 print(r.url)
                 print(r.status_code)
                 data = r.json()
@@ -856,7 +856,7 @@ class hongpak():
 
             while True:
                 page += 1
-                r = httprequestObj.http_get('https://www.hongpak.in.th/myrooms/?p=' + str(page))
+                r = self.session.http_get('https://www.hongpak.in.th/myrooms/?p=' + str(page))
                 print(r.url)
                 print(r.status_code)
 
@@ -892,7 +892,7 @@ class hongpak():
                     'cstatus': 'hide',
                     'id': post_id
                 }
-                r = httprequestObj.http_post(del_url, data=datapost)
+                r = self.session.http_post(del_url, data=datapost)
                 print(r.url)
                 print(r.status_code)
                 data = r.text
@@ -953,7 +953,7 @@ class hongpak():
 
             while True:
                 page += 1
-                r = httprequestObj.http_get('https://www.hongpak.in.th/myrooms/?p=' + str(page))
+                r = self.session.http_get('https://www.hongpak.in.th/myrooms/?p=' + str(page))
                 print(r.url)
                 print(r.status_code)
 
@@ -977,7 +977,7 @@ class hongpak():
                         post_created = str(dates[0].split(':')[1] + ':' + dates[0].split(':')[-1])
                         post_modified = str(dates[1].split(':')[1] + ':' + dates[1].split(':')[-1])
                         view_url = 'https://www.hongpak.in.th/roomstats/' + post_id + '/?rf=page'
-                        r = httprequestObj.http_get(view_url)
+                        r = self.session.http_get(view_url)
                         print(r.url)
                         print(r.status_code)
                         soup = BeautifulSoup(r.content, self.parser)

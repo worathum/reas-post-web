@@ -11,7 +11,6 @@ import json
 import datetime
 import sys
 from urllib.parse import unquote
-httprequestObj = lib_httprequest()
 from requests_toolbelt import MultipartEncoder
 import string
 import random
@@ -40,6 +39,7 @@ class renthub():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
         self.handled = False
     
     def postdata_handle(self, postdata):
@@ -400,7 +400,7 @@ class renthub():
         # get district id
         if success == "true":
             datapost = {'province_code': datahandled['province_code'] , 'model_class':'condo_project'}
-            r = httprequestObj.http_post('https://renthub.in.th/misc/on_select_province_changed',data=datapost)
+            r = self.session.http_post('https://renthub.in.th/misc/on_select_province_changed',data=datapost)
             data = r.text
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             try:
@@ -417,7 +417,7 @@ class renthub():
         # get subdistrict id
         if success == "true":
             datapost = {'district_code': datahandled['district_code'] , 'model_class':'condo_project'}
-            r = httprequestObj.http_post('https://renthub.in.th/misc/on_select_district_changed',data=datapost)
+            r = self.session.http_post('https://renthub.in.th/misc/on_select_district_changed',data=datapost)
             data = r.text
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             try:
@@ -446,7 +446,7 @@ class renthub():
         #
         success = "true"
         detail = "ระบบกำลังส่ง email เพื่อยืนยันการสมัครสมาชิกไปยัง email ที่ให้ไว้ คุณจะได้รับ email ใน 5 นาที กรุณาตรวจสอบ และกด link เพื่อยืนยัน"
-        httprequestObj.http_get('https://renthub.in.th/logout', verify=False)
+        self.session.http_get('https://renthub.in.th/logout', verify=False)
         datahandled = self.postdata_handle(postdata)
        
         fullname = datahandled["name_th"] + ' ' + datahandled["surname_th"]
@@ -454,7 +454,7 @@ class renthub():
         tel = datahandled["tel"]
         passwd = datahandled['pass']
 
-        r = httprequestObj.http_get('https://renthub.in.th/signup',verify=False)
+        r = self.session.http_get('https://renthub.in.th/signup',verify=False)
         soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
         authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
         datapost = {
@@ -471,7 +471,7 @@ class renthub():
             'utf8':'✓',
         }
 
-        r = httprequestObj.http_post('https://renthub.in.th/signup', data=datapost)
+        r = self.session.http_post('https://renthub.in.th/signup', data=datapost)
         if re.search(r'ระบบกำลังส่ง email', r.text) == None:
             success = "false"
             detail = 'register error'
@@ -508,9 +508,9 @@ class renthub():
         detail = ""
 
         #clear session
-        r = httprequestObj.http_get('https://renthub.in.th/logout', verify=False)
+        r = self.session.http_get('https://renthub.in.th/logout', verify=False)
 
-        r = httprequestObj.http_get('https://renthub.in.th/login', verify=False)
+        r = self.session.http_get('https://renthub.in.th/login', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
@@ -525,7 +525,7 @@ class renthub():
         }
        
 
-        r = httprequestObj.http_post('https://renthub.in.th/login', data=datapost)
+        r = self.session.http_post('https://renthub.in.th/login', data=datapost)
         data = r.text
         #f = open("debug_response/renthublogin.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -661,7 +661,7 @@ class renthub():
         posturl = ''
 
         # require login again , why why why ???????????
-        r = httprequestObj.http_get('https://renthub.in.th/login', verify=False)
+        r = self.session.http_get('https://renthub.in.th/login', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
@@ -675,7 +675,7 @@ class renthub():
             "commit": "Sign in",
             "authenticity_token": authenticity_token
         }
-        r = httprequestObj.http_post('https://renthub.in.th/login', data=datapost)
+        r = self.session.http_post('https://renthub.in.th/login', data=datapost)
         data = r.text
         #f = open("debug_response/renthublogin.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -687,7 +687,7 @@ class renthub():
 
 
         if success == 'true':
-            r = httprequestObj.http_get('https://renthub.in.th/apartments/new', verify=False)
+            r = self.session.http_get('https://renthub.in.th/apartments/new', verify=False)
             data = r.text
             #f = open("debug_response/renthubcreate.html", "wb")
             #f.write(data.encode('utf-8').strip())
@@ -787,7 +787,7 @@ class renthub():
                 'utf8':'✓'
             }
             # print(datapost)
-            r = httprequestObj.http_post('https://www.renthub.in.th/apartments', data=datapost)
+            r = self.session.http_post('https://www.renthub.in.th/apartments', data=datapost)
             data = r.text
 
             success,post_id,posturl,detail = self.getpostdataapartment(datahandled)        
@@ -803,7 +803,7 @@ class renthub():
         posturl = ''
 
         # require login again , why why why ???????????
-        r = httprequestObj.http_get('https://renthub.in.th/login', verify=False)
+        r = self.session.http_get('https://renthub.in.th/login', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
@@ -817,7 +817,7 @@ class renthub():
             "commit": "Sign in",
             "authenticity_token": authenticity_token
         }
-        r = httprequestObj.http_post('https://renthub.in.th/login', data=datapost)
+        r = self.session.http_post('https://renthub.in.th/login', data=datapost)
         data = r.text
         #f = open("debug_response/renthublogin.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -828,7 +828,7 @@ class renthub():
             #log.debug('login fail')
 
         if success == "true":
-            r = httprequestObj.http_get('https://renthub.in.th/condo_listings/new', verify=False)
+            r = self.session.http_get('https://renthub.in.th/condo_listings/new', verify=False)
             data = r.text
             #f = open("debug_response/renthubcreate.html", "wb")
             #f.write(data.encode('utf-8').strip())
@@ -914,7 +914,7 @@ class renthub():
                 'condo_project[postcode]':datahandled['addr_postcode'],
             }
             # print(datapost)
-            r = httprequestObj.http_post('https://renthub.in.th/condo_listings', data=datapost)
+            r = self.session.http_post('https://renthub.in.th/condo_listings', data=datapost)
             data = r.text
             
 
@@ -930,7 +930,7 @@ class renthub():
     def getprojectid(self,projectname):
         #log.debug('')
         projectid = projectname
-        r = httprequestObj.http_get('https://renthub.in.th/condo_listings/search_project?name='+str(projectname), verify=False)
+        r = self.session.http_get('https://renthub.in.th/condo_listings/search_project?name='+str(projectname), verify=False)
         # print(r.text)
         data = json.loads(r.text)
 
@@ -959,7 +959,7 @@ class renthub():
                         'file':( str(i+1) + '.jpg', open(os.path.abspath(datahandled['post_images'][i]), 'rb'), 'image/jpeg'),
             }
             encoder = MultipartEncoder(fields=datapost)
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
             urlupload,
             data=encoder,
             headers={'Content-Type': encoder.content_type}
@@ -981,7 +981,7 @@ class renthub():
         success = 'true'
 
         #get from not publish
-        r = httprequestObj.http_get('https://renthub.in.th/dashboard/apartments', verify=False)
+        r = self.session.http_get('https://renthub.in.th/dashboard/apartments', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         try:
@@ -1010,7 +1010,7 @@ class renthub():
         success = 'true'
 
         #get from not publish
-        r = httprequestObj.http_get('https://renthub.in.th/dashboard/condo_listings?need_revise=true', verify=False)
+        r = self.session.http_get('https://renthub.in.th/dashboard/condo_listings?need_revise=true', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         try:
@@ -1028,7 +1028,7 @@ class renthub():
             #log.debug('not found in ประกาศรอแก้ไข')
 
         #get from current publish
-        r = httprequestObj.http_get('https://renthub.in.th/dashboard/condo_listings', verify=False)
+        r = self.session.http_get('https://renthub.in.th/dashboard/condo_listings', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         try:
@@ -1080,7 +1080,7 @@ class renthub():
             foundpost = False
 
             #boost by url condo
-            r = httprequestObj.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
+            r = self.session.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
             if r.status_code == 200 and r.url == 'https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit':
                 #log.debug('this post id is condo listing')
                 foundpost =  True
@@ -1089,7 +1089,7 @@ class renthub():
                 datapost = {
                     'id' : str(datahandled['post_id'])
                 }
-                r = httprequestObj.http_post('https://renthub.in.th/dashboard/condo_listings/refresh', 
+                r = self.session.http_post('https://renthub.in.th/dashboard/condo_listings/refresh', 
                 data=datapost,
                 headers={'X-CSRF-Token': token,}
                 )
@@ -1101,7 +1101,7 @@ class renthub():
 
             #boost by url apartment
             if foundpost == False:
-                r = httprequestObj.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
+                r = self.session.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
                 if r.status_code == 200 and r.url == 'https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit':
                     #log.debug('this post id is apartment listing')
                     foundpost =  True
@@ -1113,7 +1113,7 @@ class renthub():
                         'listing_type': 'apartment',
                         'condo_project_id':'',
                     }
-                    r = httprequestObj.http_post('https://renthub.in.th/dashboard/apartments/update_listing_type', 
+                    r = self.session.http_post('https://renthub.in.th/dashboard/apartments/update_listing_type', 
                     data=datapost,
                     headers={'X-CSRF-Token': token,}
                     )
@@ -1174,7 +1174,7 @@ class renthub():
             foundpost = False
 
             #delete by url condo
-            r = httprequestObj.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
+            r = self.session.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
             # can edit and not redirect to dashboard
             if r.status_code == 200 and r.url == 'https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit':
                 #log.debug('this post id is condo listing')
@@ -1184,7 +1184,7 @@ class renthub():
                 datapost = {
                     'id' : str(datahandled['post_id'])
                 }
-                r = httprequestObj.http_post('https://renthub.in.th/dashboard/condo_listings/active_toggle', 
+                r = self.session.http_post('https://renthub.in.th/dashboard/condo_listings/active_toggle', 
                 data=datapost,
                 headers={'X-CSRF-Token': token,}
                 )
@@ -1193,7 +1193,7 @@ class renthub():
                     #request ไปอีกครั้ง เพราะถ้า มัน not_active อยู่แล้วจะ response เป็น active เพราะจะ show/notshow ใช้ url เดียวกัน
                     if r.text == "active":
                         #log.debug('is actived post again for not active')
-                        r = httprequestObj.http_post('https://renthub.in.th/dashboard/condo_listings/active_toggle', 
+                        r = self.session.http_post('https://renthub.in.th/dashboard/condo_listings/active_toggle', 
                         data=datapost,
                         headers={'X-CSRF-Token': token,}
                         )
@@ -1205,7 +1205,7 @@ class renthub():
 
             #delete by url apartment
             if foundpost == False:
-                r = httprequestObj.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
+                r = self.session.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
                 # can edit and not redirect to dashboard
                 if r.status_code == 200 and r.url == 'https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit':
                     #log.debug('this post id is apartment listing')
@@ -1215,7 +1215,7 @@ class renthub():
                     datapost = {
                         'id' : str(datahandled['post_id'])
                     }
-                    r = httprequestObj.http_post('https://renthub.in.th/dashboard/apartments/active_toggle', 
+                    r = self.session.http_post('https://renthub.in.th/dashboard/apartments/active_toggle', 
                     data=datapost,
                     headers={'X-CSRF-Token': token,}
                     )
@@ -1224,7 +1224,7 @@ class renthub():
                         #request ไปอีกครั้ง เพราะถ้า มัน not_active อยู่แล้วจะ response เป็น active เพราะจะ show/notshow ใช้ url เดียวกัน
                         if r.text == "active":
                             #log.debug('is actived post again for not active')
-                            r = httprequestObj.http_post('https://renthub.in.th/dashboard/apartments/active_toggle', 
+                            r = self.session.http_post('https://renthub.in.th/dashboard/apartments/active_toggle', 
                             data=datapost,
                             headers={'X-CSRF-Token': token,}
                             )
@@ -1284,7 +1284,7 @@ class renthub():
             success,detail,datahandled = self.getareaid(datahandled)
         
         # require login again , why why why ???????????
-        r = httprequestObj.http_get('https://renthub.in.th/login', verify=False)
+        r = self.session.http_get('https://renthub.in.th/login', verify=False)
         data = r.text
         soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
         authenticity_token = soup.find("input", {"name": "authenticity_token"})['value']
@@ -1298,7 +1298,7 @@ class renthub():
             "commit": "Sign in",
             "authenticity_token": authenticity_token
         }
-        r = httprequestObj.http_post('https://renthub.in.th/login', data=datapost)
+        r = self.session.http_post('https://renthub.in.th/login', data=datapost)
         data = r.text
         #f = open("debug_response/renthublogin.html", "wb")
         #f.write(data.encode('utf-8').strip())
@@ -1314,7 +1314,7 @@ class renthub():
             foundpost = False
 
             #edit by url condo
-            r = httprequestObj.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
+            r = self.session.http_get('https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit', verify=False)
             # can edit and not redirect to dashboard
             if r.status_code == 200 and r.url == 'https://renthub.in.th/condo_listings/'+str(datahandled['post_id'])+'/edit':
                 #log.debug('this post id is condo listing')
@@ -1324,7 +1324,7 @@ class renthub():
 
             #edit by url apartment
             if foundpost == False:
-                r = httprequestObj.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
+                r = self.session.http_get('https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit', verify=False)
                 # can edit and not redirect to dashboard
                 if r.status_code == 200 and r.url == 'https://renthub.in.th/apartments/'+str(datahandled['post_id'])+'/edit':
                     #log.debug('this post id is apartment listing')
@@ -1461,7 +1461,7 @@ class renthub():
         }
 
 
-        r = httprequestObj.http_post('https://renthub.in.th/condo_listings/'+str(datahandled['post_id']), 
+        r = self.session.http_post('https://renthub.in.th/condo_listings/'+str(datahandled['post_id']), 
         data=datapost)
         #f = open("debug_response/renthubedit.html", "wb")
         #f.write(r.text.encode('utf-8').strip())
@@ -1594,7 +1594,7 @@ class renthub():
             'commit':'แก้ไขประกาศ',
         }
         
-        r = httprequestObj.http_post('https://renthub.in.th/apartments/'+str(datahandled['post_id']), 
+        r = self.session.http_post('https://renthub.in.th/apartments/'+str(datahandled['post_id']), 
         data=datapost)
         # f = open("debug_response/renthubedit.html", "wb")
         # f.write(r.text.encode('utf-8').strip())
@@ -1627,7 +1627,7 @@ class renthub():
             valid_urls = []
             views = []
             url = 'https://www.renthub.in.th/dashboard/condo_listings'
-            req = httprequestObj.http_get(url)
+            req = self.session.http_get(url)
             soup = BeautifulSoup(req.text,'html.parser')
             posts = soup.find('div',{'class':'result_panel'}).findAll('li')
             for post in posts:
@@ -1654,7 +1654,7 @@ class renthub():
 
 
             url = 'https://www.renthub.in.th/dashboard/apartments'
-            req = httprequestObj.http_get(url)
+            req = self.session.http_get(url)
             soup = BeautifulSoup(req.text, 'html.parser')
             posts = soup.find('div', {'class': 'result_panel'}).findAll('li')
             for post in posts:

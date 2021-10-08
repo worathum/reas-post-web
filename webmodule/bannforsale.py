@@ -11,7 +11,6 @@ import sys
 import json
 import re
 
-httprequestObj = lib_httprequest()
 
 class bannforsale():
 
@@ -30,9 +29,10 @@ class bannforsale():
         self.debugresdata = 0
         self.baseurl = 'https://bannforsale.com/'
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def register_user(self,postdata):
-        httprequestObj.http_get("https://bannforsale.com/front/logout")
+        self.session.http_get("https://bannforsale.com/front/logout")
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
         
@@ -47,7 +47,7 @@ class bannforsale():
         }
 
         checkmailurl = "https://bannforsale.com/register/check-email?email={}".format(postdata['user'])
-        if httprequestObj.http_get(checkmailurl).json() == 'no':
+        if self.session.http_get(checkmailurl).json() == 'no':
             result['success'] = "false"
             result['detail'] = "User already registered!!"
             end_time = datetime.datetime.utcnow()     
@@ -64,7 +64,7 @@ class bannforsale():
                 "detail": result['detail']
             }
 
-        r = httprequestObj.http_get("https://bannforsale.com/registers")
+        r = self.session.http_get("https://bannforsale.com/registers")
         soup = BeautifulSoup(r.content,'lxml')
         token = soup.find('input',attrs={'name':'_token'}).attrs.get('value')
 
@@ -77,7 +77,7 @@ class bannforsale():
             'repassword': postdata['pass']
         }
         
-        httprequestObj.http_post('https://bannforsale.com/register/regis', data=data)
+        self.session.http_post('https://bannforsale.com/register/regis', data=data)
   
         end_time = datetime.datetime.utcnow()     
         result['end_time'] = str(end_time)
@@ -94,7 +94,7 @@ class bannforsale():
         }
 
     def test_login(self,postdata):
-        httprequestObj.http_get("https://bannforsale.com/front/logout")
+        self.session.http_get("https://bannforsale.com/front/logout")
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
 
@@ -108,7 +108,7 @@ class bannforsale():
             "detail": '',
         }
 
-        r = httprequestObj.http_get("https://bannforsale.com/registers")
+        r = self.session.http_get("https://bannforsale.com/registers")
         soup = BeautifulSoup(r.content,'lxml')
         token = soup.find('input',attrs={'name':'_token'}).attrs.get('value')
 
@@ -118,7 +118,7 @@ class bannforsale():
             'passwords': postdata['pass']
         }
 
-        response = httprequestObj.http_post('https://bannforsale.com/front/login', data=data)
+        response = self.session.http_post('https://bannforsale.com/front/login', data=data)
         #soup = BeautifulSoup(response.content,'lxml')
         #if soup.text.find("ท่านต้องยืนยันการสมัครสมาชิก ในอีเมล์ของท่านก่อน") != -1:
         if response.text.find("ท่านต้องยืนยันการสมัครสมาชิก ในอีเมล์ของท่านก่อน") != -1:
@@ -162,7 +162,7 @@ class bannforsale():
 
         if test_login['success'] == "true":
 
-            r = httprequestObj.http_get("https://bannforsale.com/post")
+            r = self.session.http_get("https://bannforsale.com/post")
             soup = BeautifulSoup(r.content,'lxml')
             token = soup.find('input',attrs={'name':'_token'}).attrs.get('value')
             
@@ -276,14 +276,14 @@ class bannforsale():
                 theimgs.append(('photo[]',r))
                 files.append(('upgal[]',r))
 
-            response = httprequestObj.http_post('https://bannforsale.com/product/test/sendimg', data={}, files=theimgs)
+            response = self.session.http_post('https://bannforsale.com/product/test/sendimg', data={}, files=theimgs)
             #print(response.text)
 
 
-            response = httprequestObj.http_post('https://bannforsale.com/member/addproduct', data=data, files=files)
+            response = self.session.http_post('https://bannforsale.com/member/addproduct', data=data, files=files)
             #print(response.status_code)
 
-            r = httprequestObj.http_get("https://bannforsale.com/view-post")
+            r = self.session.http_get("https://bannforsale.com/view-post")
             soup = BeautifulSoup(r.content, 'lxml')
             post_url = soup.find('tbody').find('tr').find('a').attrs.get('href')
             result['post_url'] = post_url
@@ -346,7 +346,7 @@ class bannforsale():
 
         if test_login['success'] == "true":
             url = 'https://bannforsale.com/post/{}/edit'.format(postdata['post_id'])
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             if r.status_code == 500:
                 end_time = datetime.datetime.utcnow()     
                 result['end_time'] = str(end_time)
@@ -368,7 +368,7 @@ class bannforsale():
             if 'bath_room' not in postdata:
                 postdata['bath_room'] = 0
             
-            r = httprequestObj.http_get("https://bannforsale.com/post")
+            r = self.session.http_get("https://bannforsale.com/post")
             soup = BeautifulSoup(r.content,'lxml')
             token = soup.find('input',attrs={'name':'_token'}).attrs.get('value')
             
@@ -478,11 +478,11 @@ class bannforsale():
                 theimgs.append(('photo[]',r))
                 files.append(('upgal[]',r))
 
-            response = httprequestObj.http_post('https://bannforsale.com/product/test/sendimg', data={}, files=theimgs)
+            response = self.session.http_post('https://bannforsale.com/product/test/sendimg', data={}, files=theimgs)
             #print(response.text)
 
 
-            response = httprequestObj.http_post('https://bannforsale.com/member/editproduct', data=data, files=files)
+            response = self.session.http_post('https://bannforsale.com/member/editproduct', data=data, files=files)
             
             result['detail'] = "Post Edited Succesfully"
             result['success'] = "true"
@@ -585,7 +585,7 @@ class bannforsale():
 
         if test_login['success'] == "true":
             flag = True
-            r = httprequestObj.http_get("https://bannforsale.com/view-post")
+            r = self.session.http_get("https://bannforsale.com/view-post")
             x = 2
             while(flag):
                 soup = BeautifulSoup(r.content, 'lxml')
@@ -605,7 +605,7 @@ class bannforsale():
                         break
 
                 if found == 0:
-                    r = httprequestObj.http_get('https://bannforsale.com/view-post?page={}'.format(x))
+                    r = self.session.http_get('https://bannforsale.com/view-post?page={}'.format(x))
                     x = x+1
                     soup2 = BeautifulSoup(r.content, 'lxml')
                     if len(soup2.find('tbody').find_all('tr')) == 0:
@@ -661,7 +661,7 @@ class bannforsale():
 
         if test_login['success'] == "true":
             flag = True
-            r = httprequestObj.http_get("https://bannforsale.com/view-post")
+            r = self.session.http_get("https://bannforsale.com/view-post")
             x = 2
             while(flag):
                 soup = BeautifulSoup(r.content, 'lxml')
@@ -677,7 +677,7 @@ class bannforsale():
                         break
 
                 if found == 0:
-                    r = httprequestObj.http_get('https://bannforsale.com/view-post?page={}'.format(x))
+                    r = self.session.http_get('https://bannforsale.com/view-post?page={}'.format(x))
                     x = x+1
                     soup2 = BeautifulSoup(r.content, 'lxml')
                     if len(soup2.find('tbody').find_all('tr')) == 0:

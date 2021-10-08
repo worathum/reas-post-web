@@ -4,7 +4,6 @@ import json
 import datetime
 from .lib_httprequest import *
 
-httprequestObj = lib_httprequest()
 
 class freeannouncement():
 
@@ -21,10 +20,11 @@ class freeannouncement():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def logout_user(self):
         url = 'http://www.xn--12c5cnoc2a8cr4a.com/logout.php'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self,data):
         self.logout_user()
@@ -32,7 +32,7 @@ class freeannouncement():
         headers = {
             'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
-        req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/register.php',headers = headers)
+        req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/register.php',headers = headers)
         soup = BeautifulSoup(req.text,'html.parser')
         save = soup.find('input',{'name':'save'})['value']
         ##print(save)
@@ -102,14 +102,14 @@ class freeannouncement():
 
         if success == 'true':
             url = 'http://www.xn--12c5cnoc2a8cr4a.com/lib/checkuser.php'
-            req = httprequestObj.http_post(url,data=postdata,headers=headers)
+            req = self.session.http_post(url,data=postdata,headers=headers)
             ##print(req.text)
             if str(req.text) == '-1':
                 success = 'false'
                 detail = 'user already exist'
             else:
                 url = 'http://www.xn--12c5cnoc2a8cr4a.com/register.php'
-                req = httprequestObj.http_post(url,data=postdata,headers=headers)
+                req = self.session.http_post(url,data=postdata,headers=headers)
                 success = 'true'
                 detail = 'User registered'
         end_time = datetime.datetime.utcnow()
@@ -130,7 +130,7 @@ class freeannouncement():
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
-        req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/member.php', headers=headers)
+        req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/member.php', headers=headers)
         soup = BeautifulSoup(req.text, 'html.parser')
         try:
             save = soup.find('input', {'name': 'save'})['value']
@@ -155,7 +155,7 @@ class freeannouncement():
             'password':password
         }
         url = 'http://www.xn--12c5cnoc2a8cr4a.com/member.php'
-        req = httprequestObj.http_post(url,data=postdata,headers=headers)
+        req = self.session.http_post(url,data=postdata,headers=headers)
 
         ind = str(req.text).find('ขออภัยค่ะ ไม่สามารถเข้าระบบได้ในขณะนี้ กรุณาติดต่อผู้ดูแลเว็บไซต์ค่ะ')
         success = ''
@@ -201,7 +201,7 @@ class freeannouncement():
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
-            req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-add.php', headers=headers)
+            req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-add.php', headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             ##print('here1',success)
             postdata1['save'] = soup.find('input', {'name': 'save'})['value']
@@ -257,7 +257,7 @@ class freeannouncement():
 
             ##print('here3',success)
             url = 'http://www.xn--12c5cnoc2a8cr4a.com/lib/district.php?province='+postdata1['city']
-            req = httprequestObj.http_get_with_headers(url,headers=headers)
+            req = self.session.http_get_with_headers(url,headers=headers)
             soup = BeautifulSoup(req.text,'html.parser')
             options = soup.findAll('option')
             districts = []
@@ -291,7 +291,7 @@ class freeannouncement():
 
             provinces = []
             values = []
-            req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-add.php',
+            req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-add.php',
                                                        headers=headers)
 
             soup = BeautifulSoup(req.text, 'html.parser')
@@ -319,7 +319,7 @@ class freeannouncement():
 
                 ##print('here5',success)
                 url = 'http://www.xn--12c5cnoc2a8cr4a.com/lib/amphur.php?province=' + postdata1['province']
-                req = httprequestObj.http_get_with_headers(url, headers=headers)
+                req = self.session.http_get_with_headers(url, headers=headers)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 options = soup.findAll('option')
                 districts = []
@@ -345,7 +345,7 @@ class freeannouncement():
                 postdata1['zipcode'] = '10400'
                 postdata1['website'] = '11111'
                 postdata1['password'] = data['pass']
-                req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-add.php',
+                req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-add.php',
                                                            headers=headers)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 postdata1['answer']=postdata1['hiddenanswer'] = soup.find('input', {'name': 'hiddenanswer'})['value']
@@ -353,7 +353,7 @@ class freeannouncement():
                 postdata1['accept'] = 'on'
             else:
                 ##print('here')
-                req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-add.php',headers=headers)
+                req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-add.php',headers=headers)
                 soup = BeautifulSoup(req.text,'html.parser')
                 postdata1['contact'] = soup.find('input',{'name':'contact'})['value']
                 postdata1['email'] = soup.find('input', {'name': 'email'})['value']
@@ -367,7 +367,7 @@ class freeannouncement():
 
             postdata = postdata1
             url = 'http://www.xn--12c5cnoc2a8cr4a.com/lib/checkpost.php'
-            req = httprequestObj.http_post(url,data=postdata1,headers=headers)
+            req = self.session.http_post(url,data=postdata1,headers=headers)
             txt = str(req.text)
             ##print(txt)
 
@@ -403,7 +403,7 @@ class freeannouncement():
                         temp = temp + 1
 
                 url = 'http://www.xn--12c5cnoc2a8cr4a.com/post-add.php'
-                req = httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
+                req = self.session.http_post(url,data=postdata,files=file,headers=headers)
                 soup = BeautifulSoup(req.text,'html.parser')
                 succ = soup.find('h3',{'class','success'})
                 if succ != None:
@@ -450,7 +450,7 @@ class freeannouncement():
             }
             url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php?delete='+str(post_id)
             ##print(url)
-            req = httprequestObj.http_get_with_headers(url,headers=headers)
+            req = self.session.http_get_with_headers(url,headers=headers)
 
             if str(req.text).find('ยินดีด้วยค่ะ ระบบได้ทำการลบประกาศให้ท่านเรียบร้อยแล้ว')!=-1:
                 detail = 'Successfully deleted'
@@ -493,7 +493,7 @@ class freeannouncement():
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
             url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php'
-            req = httprequestObj.http_get_with_headers(url,headers=headers)
+            req = self.session.http_get_with_headers(url,headers=headers)
 
             soup = BeautifulSoup(req.text,'html.parser')
             if soup.find('div', {'class': 'pagination'}) == None:
@@ -510,7 +510,7 @@ class freeannouncement():
             valid_urls = []
             for i in range(total_pages):
                 url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php?page='+str(i+1)
-                req = httprequestObj.http_get_with_headers(url,headers=headers)
+                req = self.session.http_get_with_headers(url,headers=headers)
 
                 soup = BeautifulSoup(req.text,'html.parser')
                 posts = soup.find('div',{'class':'postlist'}).findAll('ul')
@@ -570,7 +570,7 @@ class freeannouncement():
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
             url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php'
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
 
             soup = BeautifulSoup(req.text, 'html.parser')
             if soup.find('div', {'class': 'pagination'}) == None:
@@ -586,7 +586,7 @@ class freeannouncement():
 
             for i in range(total_pages):
                 url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php?page=' + str(i + 1)
-                req = httprequestObj.http_get_with_headers(url, headers=headers)
+                req = self.session.http_get_with_headers(url, headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html.parser')
                 posts = soup.find('div', {'class': 'postlist'}).findAll('ul')
@@ -601,7 +601,7 @@ class freeannouncement():
                 headers = {
                     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
                 }
-                req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-edit.php?id='+str(post_id), headers=headers)
+                req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-edit.php?id='+str(post_id), headers=headers)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 #print('here1',success)
                 postdata1['save'] = soup.find('input', {'name': 'save'})['value']
@@ -673,7 +673,7 @@ class freeannouncement():
 
                 #print('here3',success)
                 url = 'http://www.xn--12c5cnoc2a8cr4a.com/lib/district.php?province='+postdata1['city']
-                req = httprequestObj.http_get_with_headers(url,headers=headers)
+                req = self.session.http_get_with_headers(url,headers=headers)
                 soup = BeautifulSoup(req.text,'html.parser')
                 options = soup.findAll('option')
                 districts = []
@@ -707,7 +707,7 @@ class freeannouncement():
 
                 provinces = []
                 values = []
-                req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-edit.php?id='+str(post_id),
+                req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-edit.php?id='+str(post_id),
                                                            headers=headers)
 
                 soup = BeautifulSoup(req.text, 'html.parser')
@@ -735,7 +735,7 @@ class freeannouncement():
 
                     ##print('here5',success)
                     url = 'http://www.xn--12c5cnoc2a8cr4a.com/lib/amphur.php?province=' + postdata1['province']
-                    req = httprequestObj.http_get_with_headers(url, headers=headers)
+                    req = self.session.http_get_with_headers(url, headers=headers)
                     soup = BeautifulSoup(req.text, 'html.parser')
                     options = soup.findAll('option')
                     districts = []
@@ -761,7 +761,7 @@ class freeannouncement():
                     postdata1['zipcode'] = '10400'
                     postdata1['website'] = '11111'
                     postdata1['password'] = data['pass']
-                    req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-edit.php?id='+str(post_id),
+                    req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-edit.php?id='+str(post_id),
                                                                headers=headers)
                     soup = BeautifulSoup(req.text, 'html.parser')
                     postdata1['answer']=postdata1['hiddenanswer'] = soup.find('input', {'name': 'hiddenanswer'})['value']
@@ -769,7 +769,7 @@ class freeannouncement():
                     postdata1['accept'] = 'on'
                 else:
                     ##print('here')
-                    req = httprequestObj.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-edit.php?id='+str(post_id),headers=headers)
+                    req = self.session.http_get_with_headers('http://www.xn--12c5cnoc2a8cr4a.com/post-edit.php?id='+str(post_id),headers=headers)
                     soup = BeautifulSoup(req.text,'html.parser')
                     postdata1['contact'] = soup.find('input',{'name':'contact'})['value']
                     postdata1['email'] = soup.find('input', {'name': 'email'})['value']
@@ -783,7 +783,7 @@ class freeannouncement():
 
                 postdata = postdata1
                 url = 'http://www.xn--12c5cnoc2a8cr4a.com/lib/checkpost.php'
-                req = httprequestObj.http_post(url,data=postdata1,headers=headers)
+                req = self.session.http_post(url,data=postdata1,headers=headers)
                 txt = str(req.text)
                 ##print(txt)
 
@@ -819,7 +819,7 @@ class freeannouncement():
                             temp = temp + 1
 
                     url = 'http://www.xn--12c5cnoc2a8cr4a.com/post-edit.php?id='+str(post_id)
-                    req = httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
+                    req = self.session.http_post(url,data=postdata,files=file,headers=headers)
                     soup = BeautifulSoup(req.text,'html.parser')
                     succ = soup.find('h3',{'class','success'})
                     if succ != None:
@@ -863,7 +863,7 @@ class freeannouncement():
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
         url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php'
-        req = httprequestObj.http_get_with_headers(url, headers=headers)
+        req = self.session.http_get_with_headers(url, headers=headers)
 
         soup = BeautifulSoup(req.text, 'html.parser')
         if soup.find('div', {'class': 'pagination'}) == None:
@@ -880,7 +880,7 @@ class freeannouncement():
 
         for i in range(total_pages):
             url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php?page=' + str(i + 1)
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
 
             soup = BeautifulSoup(req.text, 'html.parser')
             posts = soup.find('div', {'class': 'postlist'}).findAll('ul')
@@ -892,7 +892,7 @@ class freeannouncement():
         #print('finish')
         if int(post_id) in valid_ids:
             url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php?update='+str(post_id)
-            req = httprequestObj.http_get_with_headers(url,headers=headers)
+            req = self.session.http_get_with_headers(url,headers=headers)
             success = 'true'
             detail = 'Post boosted successfully'
         else:

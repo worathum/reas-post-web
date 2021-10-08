@@ -13,7 +13,6 @@ import json
 from json import JSONEncoder
 from .lib_captcha import *
 
-httprequestObj = lib_httprequest()
 captcha = lib_captcha()
 
 
@@ -34,6 +33,7 @@ class thaiproperty():
         self.parser = 'html.parser'
         self.authtoken = None
         self.webname = 'thaiproperty'
+        self.session = lib_httprequest()
 
         self.sess = requests.Session()
 
@@ -136,7 +136,7 @@ class thaiproperty():
             'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         }
 
-        # r = httprequestObj.http_get('https://www.google.com/recaptcha/api2/anchor?ar=1&k=6LcLmboUAAAAADH3JCFgRjiBFh6gtuZeV9-mOjja&co=aHR0cHM6Ly93d3cudGhhaXByb3BlcnR5LmluLnRoOjQ0Mw..&hl=en&type=image&v=nuX0GNR875hMLA1LR7ayD9tc&theme=light&size=normal&badge=bottomright&cb=oxm3bh97kk5x')
+        # r = self.session.http_get('https://www.google.com/recaptcha/api2/anchor?ar=1&k=6LcLmboUAAAAADH3JCFgRjiBFh6gtuZeV9-mOjja&co=aHR0cHM6Ly93d3cudGhhaXByb3BlcnR5LmluLnRoOjQ0Mw..&hl=en&type=image&v=nuX0GNR875hMLA1LR7ayD9tc&theme=light&size=normal&badge=bottomright&cb=oxm3bh97kk5x')
         # print(r.url)
         # print(r.status_code)
 
@@ -1242,7 +1242,7 @@ class thaiproperty():
 
                 # if len(allimages) == 1:
                 #     img_url = 'https://api.thaiproperty.in.th/api/images/image/' + post_id
-                #     r = httprequestObj.http_post(img_url, headers=headers, data={}, files=[])
+                #     r = self.session.http_post(img_url, headers=headers, data={}, files=[])
                 #     print(r.url)
                 #     print(r.status_code)
 
@@ -1610,13 +1610,13 @@ class thaiproperty():
                 #         img_url = 'https://api.thaiproperty.in.th/api/images/logoimage/' + post_id
                 #     else:
                 #         img_url = 'https://api.thaiproperty.in.th/api/images/image/' + post_id
-                #     r = httprequestObj.http_post(img_url, headers=headers, data={}, files=datapost)
+                #     r = self.session.http_post(img_url, headers=headers, data={}, files=datapost)
                 #     print(r.url)
                 #     print(r.status_code)
                 #
                 # if len(allimages) == 1:
                 #     img_url = 'https://api.thaiproperty.in.th/api/images/image/' + post_id
-                #     r = httprequestObj.http_post(img_url, headers=headers, data={}, files=[])
+                #     r = self.session.http_post(img_url, headers=headers, data={}, files=[])
                 #     print(r.url)
                 #     print(r.status_code)
 

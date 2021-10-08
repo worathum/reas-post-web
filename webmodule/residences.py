@@ -13,7 +13,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
 lib_captcha = lib_captcha()
 
 
@@ -33,6 +32,7 @@ class residences():
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.webname = 'residences'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if self.debug == 1:
@@ -41,14 +41,14 @@ class residences():
 
     def logout_user(self):
         url = 'https://www.residences.in.th/users/sign_out'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self, postdata):
         self.logout_user()
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
 
-        r = httprequestObj.http_get('https://www.residences.in.th/users/sign_up')
+        r = self.session.http_get('https://www.residences.in.th/users/sign_up')
         print(r.url)
         print(r.status_code)
 
@@ -68,7 +68,7 @@ class residences():
             'user[email_notice]': '0',
             'commit': 'สมัครสมาชิก'
         }
-        r = httprequestObj.http_post('https://www.residences.in.th/users', data=datapost)
+        r = self.session.http_post('https://www.residences.in.th/users', data=datapost)
         data = r.text
         print(r.url)
         print(r.status_code)
@@ -103,7 +103,7 @@ class residences():
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
 
-        r = httprequestObj.http_get('https://www.residences.in.th/users/sign_in')
+        r = self.session.http_get('https://www.residences.in.th/users/sign_in')
         print(r.url)
         print(r.status_code)
 
@@ -119,11 +119,11 @@ class residences():
             'user[remember_me]': '0',
             'commit': 'เข้าสู่ระบบ'
         }
-        r = httprequestObj.http_post('https://www.residences.in.th/users/sign_in', data=datapost)
+        r = self.session.http_post('https://www.residences.in.th/users/sign_in', data=datapost)
         print(r.url)
         print(r.status_code)
 
-        r = httprequestObj.http_get('https://www.residences.in.th/dashboard/apartments')
+        r = self.session.http_get('https://www.residences.in.th/dashboard/apartments')
         print(r.url)
         print(r.status_code)
         data = r.text
@@ -198,7 +198,7 @@ class residences():
                     prod_address += add + " "
             prod_address = prod_address[:-1]
 
-            r = httprequestObj.http_get('https://www.residences.in.th/apartments/new')
+            r = self.session.http_get('https://www.residences.in.th/apartments/new')
             print(r.url)
             print(r.status_code)
 
@@ -246,7 +246,7 @@ class residences():
                     province_id = province.get('value')
                     break
 
-            r = httprequestObj.http_post('https://www.residences.in.th/dynamic_amphurs/' + province_id,
+            r = self.session.http_post('https://www.residences.in.th/dynamic_amphurs/' + province_id,
                                          data={province_id: ''})
             print(r.url)
             print(r.status_code)
@@ -267,7 +267,7 @@ class residences():
 
             print('District id = ' + district_id)
 
-            r = httprequestObj.http_post('https://www.residences.in.th/dynamic_districts/' + district_id,
+            r = self.session.http_post('https://www.residences.in.th/dynamic_districts/' + district_id,
                                          data={district_id: ''})
             print(r.url)
             print(r.status_code)
@@ -329,7 +329,7 @@ class residences():
                 ('g-recaptcha-response', g)
             ]
 
-            r = httprequestObj.http_post('https://www.residences.in.th/apartments', data=datapost)
+            r = self.session.http_post('https://www.residences.in.th/apartments', data=datapost)
             print(r.url)
             print(r.status_code)
 
@@ -340,7 +340,7 @@ class residences():
 
             second_url = r.url
 
-            r = httprequestObj.http_get(second_url)
+            r = self.session.http_get(second_url)
             print(r.url)
             print(r.status_code)
 
@@ -373,15 +373,15 @@ class residences():
                     ('apartment[images_attributes][][attachment]', (filename, open(img, 'rb'), 'image/jpeg')),
                 ]
                 # print(second_url[:-10])
-                # print(httprequestObj)
+                # print(self.session)
                 # print(auth_token)
-                r = httprequestObj.http_post(second_url[:-10], data={}, files=datapost)
+                r = self.session.http_post(second_url[:-10], data={}, files=datapost)
                 # print(r)
                 print(r.url)
                 print(r.status_code)
                 print(r.text)
 
-                r = httprequestObj.http_get(second_url)
+                r = self.session.http_get(second_url)
                 print(r.url)
                 print(r.status_code)
 
@@ -413,7 +413,7 @@ class residences():
                 ('ref_action', ref_action)
             ]
 
-            r = httprequestObj.http_post(second_url[:-10], data=datapost)
+            r = self.session.http_post(second_url[:-10], data=datapost)
             print(r.url)
             print(r.status_code)
 
@@ -423,7 +423,7 @@ class residences():
             print('Second part done')
 
             third_url = r.url + '/roomtypes'
-            r = httprequestObj.http_get(third_url)
+            r = self.session.http_get(third_url)
             print(r.url)
             print(r.status_code)
 
@@ -493,26 +493,26 @@ class residences():
                 ('ref_action', 'roomtypes'),
             ]
 
-            r = httprequestObj.http_post(third_url[:-10], data=datapost)
+            r = self.session.http_post(third_url[:-10], data=datapost)
             print(r.url)
             print(r.status_code)
 
             url = 'https://www.residences.in.th/dashboard/apartments'
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             print(r.url)
             print(r.status_code)
 
             url = third_url[:-10] + '/edit'
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             print(r.url)
             print(r.status_code)
 
             url = third_url[:-10] + '/information'
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             print(r.url)
             print(r.status_code)
 
-            r = httprequestObj.http_get(third_url)
+            r = self.session.http_get(third_url)
             print(r.url)
             print(r.status_code)
 
@@ -580,7 +580,7 @@ class residences():
                 ('ref_action', 'roomtypes'),
             ]
 
-            r = httprequestObj.http_post(third_url[:-10], data=datapost)
+            r = self.session.http_post(third_url[:-10], data=datapost)
             print(r.url)
             print(r.status_code)
 
@@ -590,7 +590,7 @@ class residences():
             print('Third part done')
 
             fourth_url = r.url + '/verify'
-            r = httprequestObj.http_get(fourth_url)
+            r = self.session.http_get(fourth_url)
             print(r.url)
             print(r.status_code)
 
@@ -667,7 +667,7 @@ class residences():
                     prod_address += add + " "
             prod_address = prod_address[:-1]
 
-            r = httprequestObj.http_get('https://www.residences.in.th/apartments/new')
+            r = self.session.http_get('https://www.residences.in.th/apartments/new')
             print(r.url)
             print(r.status_code)
 
@@ -684,7 +684,7 @@ class residences():
                     province_id = province.get('value')
                     break
 
-            r = httprequestObj.http_post('https://www.residences.in.th/dynamic_amphurs/' + province_id,
+            r = self.session.http_post('https://www.residences.in.th/dynamic_amphurs/' + province_id,
                                          data={province_id: ''})
             print(r.url)
             print(r.status_code)
@@ -705,7 +705,7 @@ class residences():
 
             print('District id = ' + district_id)
 
-            r = httprequestObj.http_post('https://www.residences.in.th/dynamic_districts/' + district_id,
+            r = self.session.http_post('https://www.residences.in.th/dynamic_districts/' + district_id,
                                          data={district_id: ''})
             print(r.url)
             print(r.status_code)
@@ -764,7 +764,7 @@ class residences():
                 ('g-recaptcha-response', g)
             ]
 
-            r = httprequestObj.http_post('https://www.residences.in.th/apartments', data=datapost)
+            r = self.session.http_post('https://www.residences.in.th/apartments', data=datapost)
             print(r.url)
             print(r.status_code)
 
@@ -775,7 +775,7 @@ class residences():
 
             second_url = r.url
 
-            r = httprequestObj.http_get(second_url)
+            r = self.session.http_get(second_url)
             print(r.url)
             print(r.status_code)
 
@@ -808,15 +808,15 @@ class residences():
                     ('apartment[images_attributes][][attachment]', (filename, open(img, 'rb'), 'image/jpeg')),
                 ]
                 # print(second_url[:-10])
-                # print(httprequestObj)
+                # print(self.session)
                 # print(auth_token)
-                r = httprequestObj.http_post(second_url[:-10], data={}, files=datapost)
+                r = self.session.http_post(second_url[:-10], data={}, files=datapost)
                 # print(r)
                 print(r.url)
                 print(r.status_code)
                 print(r.text)
 
-                r = httprequestObj.http_get(second_url)
+                r = self.session.http_get(second_url)
                 print(r.url)
                 print(r.status_code)
 
@@ -848,7 +848,7 @@ class residences():
                 ('ref_action', ref_action)
             ]
 
-            r = httprequestObj.http_post(second_url[:-10], data=datapost)
+            r = self.session.http_post(second_url[:-10], data=datapost)
             print(r.url)
             print(r.status_code)
 
@@ -858,7 +858,7 @@ class residences():
             print('Second part done')
 
             third_url = r.url + '/roomtypes'
-            r = httprequestObj.http_get(third_url)
+            r = self.session.http_get(third_url)
             print(r.url)
             print(r.status_code)
 
@@ -928,26 +928,26 @@ class residences():
                 ('ref_action', 'roomtypes'),
             ]
 
-            r = httprequestObj.http_post(third_url[:-10], data=datapost)
+            r = self.session.http_post(third_url[:-10], data=datapost)
             print(r.url)
             print(r.status_code)
 
             url = 'https://www.residences.in.th/dashboard/apartments'
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             print(r.url)
             print(r.status_code)
 
             url = third_url[:-10] + '/edit'
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             print(r.url)
             print(r.status_code)
 
             url = third_url[:-10] + '/information'
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             print(r.url)
             print(r.status_code)
 
-            r = httprequestObj.http_get(third_url)
+            r = self.session.http_get(third_url)
             print(r.url)
             print(r.status_code)
 
@@ -1015,7 +1015,7 @@ class residences():
                 ('ref_action', 'roomtypes'),
             ]
 
-            r = httprequestObj.http_post(third_url[:-10], data=datapost)
+            r = self.session.http_post(third_url[:-10], data=datapost)
             print(r.url)
             print(r.status_code)
 
@@ -1025,7 +1025,7 @@ class residences():
             print('Third part done')
 
             fourth_url = r.url + '/verify'
-            r = httprequestObj.http_get(fourth_url)
+            r = self.session.http_get(fourth_url)
             print(r.url)
             print(r.status_code)
 

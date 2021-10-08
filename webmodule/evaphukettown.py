@@ -10,7 +10,6 @@ import urllib3
 import sys
 import json
 
-httprequestObj = lib_httprequest()
 
 class evaphukettown():
 
@@ -28,6 +27,7 @@ class evaphukettown():
         self.debug = 0
         self.debugresdata = 0
         self.baseurl = 'http://www.evaphukettown.com/classified/'
+        self.session = lib_httprequest()
 
     def register_user(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -44,7 +44,7 @@ class evaphukettown():
         }
 
         url = "http://www.evaphukettown.com/classified/register.php"
-        r = httprequestObj.http_get(url)
+        r = self.session.http_get(url)
         soup = BeautifulSoup(r.content,'lxml')
         save = soup.find('input',attrs={'id':'save'}).attrs.get('value')
         answer = soup.find('input',attrs={'id':'hiddenanswer'}).attrs.get('value')
@@ -69,7 +69,7 @@ class evaphukettown():
             'accept': '1'
         }
 
-        r = httprequestObj.http_post('http://www.evaphukettown.com/classified/lib/checkuser.php', data=data)
+        r = self.session.http_post('http://www.evaphukettown.com/classified/lib/checkuser.php', data=data)
         if str(r.text) == '-1':
             result['success'] = "false"
             result['detail'] = "User already registered!!"
@@ -87,7 +87,7 @@ class evaphukettown():
                 "detail": result['detail']
             }
 
-        r = httprequestObj.http_post('http://www.evaphukettown.com/classified/register.php', data=data)
+        r = self.session.http_post('http://www.evaphukettown.com/classified/register.php', data=data)
         end_time = datetime.datetime.utcnow()     
         result['end_time'] = str(end_time)
         result['usage_time'] = str(end_time - start_time)
@@ -103,7 +103,7 @@ class evaphukettown():
         }
 
     def test_login(self,postdata):
-        r = httprequestObj.http_get('http://www.evaphukettown.com/classified/logout.php')
+        r = self.session.http_get('http://www.evaphukettown.com/classified/logout.php')
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         start_time = datetime.datetime.utcnow()
 
@@ -118,7 +118,7 @@ class evaphukettown():
         }
 
         url = "http://www.evaphukettown.com/classified/member.php"
-        r = httprequestObj.http_get(url)
+        r = self.session.http_get(url)
         soup = BeautifulSoup(r.content,'lxml')
         save = soup.find('input',attrs={'id':'save'}).attrs.get('value')
 
@@ -127,7 +127,7 @@ class evaphukettown():
             'email' : postdata['user'],
             'password' : postdata['pass']
         }
-        r = httprequestObj.http_post(url, data=data)
+        r = self.session.http_post(url, data=data)
         soup = BeautifulSoup(r.content,'lxml')
 
         if soup.find('h3').attrs.get('class')[0] == 'fail':
@@ -172,7 +172,7 @@ class evaphukettown():
         if test_login['success'] == "true":
             
             url = "http://www.evaphukettown.com/classified/post-add.php"
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             soup = BeautifulSoup(r.content,'lxml')
             save = soup.find('input',attrs={'id':'save'}).attrs.get('value')
 
@@ -249,7 +249,7 @@ class evaphukettown():
                 name = 'photo{}'.format(i+1)
                 files[name] = ("{}".format(allimages[i]),r,"image/jpeg")
             
-            response = httprequestObj.http_post('http://www.evaphukettown.com/classified/post-add.php', data=data, files=files)
+            response = self.session.http_post('http://www.evaphukettown.com/classified/post-add.php', data=data, files=files)
             soup = BeautifulSoup(response.content, 'lxml')
             post_url = soup.find('h3',attrs={'class':'success'}).find('a').attrs.get('href')
             result['post_url'] = post_url
@@ -298,7 +298,7 @@ class evaphukettown():
         if test_login['success'] == "true":
             
             url = "http://www.evaphukettown.com/classified/post-edit.php?id={}".format(postdata['post_id'])
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             soup = BeautifulSoup(r.content,'lxml')
             save = soup.find('input',attrs={'id':'save'}).attrs.get('value')
 
@@ -375,12 +375,12 @@ class evaphukettown():
                 name = 'photo{}'.format(i+1)
                 files[name] = ("{}".format(allimages[i]),r,"image/jpeg")
             
-            response = httprequestObj.http_get(url)
+            response = self.session.http_get(url)
             if response.text.find('กฏสำคัญการลงประกาศ') == -1:
                 result['detail'] = 'Invalid Post ID'
                 result['success'] = 'false'
             else:
-                response = httprequestObj.http_post(url, data=data, files=files)
+                response = self.session.http_post(url, data=data, files=files)
                 result['detail'] = "Post Edited Succesfully"
                 result['success'] = "true"
         
@@ -424,7 +424,7 @@ class evaphukettown():
         if test_login['success'] == "true":
             
             url = "http://www.evaphukettown.com/classified/manage-post.php?delete={}".format(postdata['post_id'])
-            response = httprequestObj.http_get(url)
+            response = self.session.http_get(url)
             soup = BeautifulSoup(response.content,'lxml')
             if soup.find('h3',attrs={'class':'success'}) == None:
                 result['success'] = "false"
@@ -485,7 +485,7 @@ class evaphukettown():
                 page += 1
                 if page > tot_pages:
                     break
-                r = httprequestObj.http_get('http://www.evaphukettown.com/classified/manage-post.php', params={'page': str(page)})
+                r = self.session.http_get('http://www.evaphukettown.com/classified/manage-post.php', params={'page': str(page)})
                 print(r.url)
                 # print(r.status_code)
 
@@ -563,7 +563,7 @@ class evaphukettown():
                 page += 1
                 if page > tot_pages:
                     break
-                r = httprequestObj.http_get('http://www.evaphukettown.com/classified/manage-post.php', params={'page': str(page)})
+                r = self.session.http_get('http://www.evaphukettown.com/classified/manage-post.php', params={'page': str(page)})
                 print(r.url)
                 # print(r.status_code)
 
@@ -588,7 +588,7 @@ class evaphukettown():
             
             try:
                 result['success'] = "true"
-                httprequestObj.http_get("http://www.evaphukettown.com/classified/manage-post.php?update={}".format(postdata['post_id']))
+                self.session.http_get("http://www.evaphukettown.com/classified/manage-post.php?update={}".format(postdata['post_id']))
                 result['detail'] = "Post boosted successfully."
 
             except:

@@ -5,9 +5,10 @@ import datetime
 
 from .lib_httprequest import *
 
-httprequestObj = lib_httprequest()
 
 class buyhomedd():
+    def __init__(self) -> None:
+        self.session = lib_httprequest()
 
     def register_user(self,data):
 
@@ -68,7 +69,7 @@ class buyhomedd():
                 start_time = datetime.datetime.utcnow()
 
                 # making a POST request to fill and submit the form
-                req = httprequestObj.http_post(url,data=register_data,headers=headers)
+                req = self.session.http_post(url,data=register_data,headers=headers)
                 end_time = datetime.datetime.utcnow()
 
                 txt = req.text
@@ -130,7 +131,7 @@ class buyhomedd():
                 start_time = datetime.datetime.utcnow()
 
                 # making a POST request to fill and submit the form
-                req = httprequestObj.http_post(url,data=login_data,headers=headers)
+                req = self.session.http_post(url,data=login_data,headers=headers)
                 end_time = datetime.datetime.utcnow()
 
                 txt = req.text

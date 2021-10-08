@@ -13,8 +13,6 @@ from urllib.parse import unquote
 import os
 
 
-httprequestObj = lib_httprequest()
-
 
 class condoable():
 
@@ -33,10 +31,11 @@ class condoable():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def logout_user(self):
         url = 'http://condoable.com/logout.jsp'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self, userdata):
         self.logout_user()
@@ -86,11 +85,11 @@ class condoable():
             success = 'False'
             detail = 'Requier phone fill.'
         else:
-            r = httprequestObj.http_get('http://condoable.com/checkUserId.do?function=register&userId='+email)
+            r = self.session.http_get('http://condoable.com/checkUserId.do?function=register&userId='+email)
             data = r.text
 
             if(data == "true"):
-                r = httprequestObj.http_post('http://condoable.com/signupMember.do', data = datapost)
+                r = self.session.http_post('http://condoable.com/signupMember.do', data = datapost)
                 data = r.text
                 success = "True"
                 detail = "Registered Successfully"
@@ -128,7 +127,7 @@ class condoable():
             "password": email_pass
         }
 
-        r = httprequestObj.http_post('http://condoable.com/login.do', data=datapost)
+        r = self.session.http_post('http://condoable.com/login.do', data=datapost)
         data = r.text
 
         matchObj = re.search(r'logout.jsp', data)
@@ -219,7 +218,7 @@ class condoable():
                     raise Exception
             except :
                 project_name = postdata['post_title_th']
-        resp = httprequestObj.http_get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
+        resp = self.session.http_get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
         allres = json.loads(resp.content.decode('utf-8').replace('""', '"'), strict = False)
         condoprojectid = None
         if len(allres) != 0:
@@ -250,7 +249,7 @@ class condoable():
                     "latitude": geo_latitude,
                     "longitude": geo_longitude,
                 }
-                r = httprequestObj.http_post('http://condoable.com/advertise/addOtherCondoProject.do?zoneId=20', data=data_Test)
+                r = self.session.http_post('http://condoable.com/advertise/addOtherCondoProject.do?zoneId=20', data=data_Test)
                 condoprojectid = ""
                 for i in r.json():
                     if str(i['latitude']) == str(data_Test["latitude"]) and str(i['longitude']) == str(data_Test["longitude"]):
@@ -277,7 +276,7 @@ class condoable():
                 "next": "true"
             }
             print(datapost)
-            r = httprequestObj.http_post('http://condoable.com/addAdvertiseDetail.do', data=datapost)
+            r = self.session.http_post('http://condoable.com/addAdvertiseDetail.do', data=datapost)
             print(r.status_code)
             
             soup = BeautifulSoup(r.text, self.parser)
@@ -302,8 +301,8 @@ class condoable():
                 filestoup = {}
                 for i in postdata['post_images']:
                     filestoup['files[]'] = open(os.getcwd() + "/"+ i,'rb')
-                    r = httprequestObj.http_post('http://condoable.com/uploadFile.do?type=advertiseImage8/'+post_id +'&advertiseId='+post_id,data="",files=filestoup)
-                r = httprequestObj.http_post('http://condoable.com/addAdvertiseMoreDetail.do',data=datapost)
+                    r = self.session.http_post('http://condoable.com/uploadFile.do?type=advertiseImage8/'+post_id +'&advertiseId='+post_id,data="",files=filestoup)
+                r = self.session.http_post('http://condoable.com/addAdvertiseMoreDetail.do',data=datapost)
                 if(re.search(r'ลงประกาศเรียบร้อยแล้ว',r.text)):
                     success = "true"
                     detail = "Sucessfully posted"
@@ -355,13 +354,13 @@ class condoable():
         detail = login["detail"]
         # print(login)
         if success == "True":
-            r = httprequestObj.http_get('https://www.condoable.com/member', verify=False)
+            r = self.session.http_get('https://www.condoable.com/member', verify=False)
             data = r.text
             print(data)
             csrf = re.findall(r'csrf_token:"\w+',data)
             datapost["csrf_token"] = csrf[0].replace("csrf_token:\"", "")
             if(re.search(r''+post_id,data)):
-                r = httprequestObj.http_post('https://www.condoable.com/member/product_postpone', data=datapost)
+                r = self.session.http_post('https://www.condoable.com/member/product_postpone', data=datapost)
                 if r.status_code != 200:
                     success = "False"
                     detail = "Cannot boost post with id"+post_id
@@ -399,7 +398,7 @@ class condoable():
         
         if(success == "True"):
             # print()
-            r = httprequestObj.http_get(post_url)
+            r = self.session.http_get(post_url)
             print(r.status_code)
             if r.status_code == 500:
                 success = "False"
@@ -409,7 +408,7 @@ class condoable():
                     success = "Flase"
                     detail = "The Post has already been deleted"
                 else:    
-                    r = httprequestObj.http_post("http://condoable.com/action/advertise/deleteAdvertise.jsp",data={"advertiseId": post_id})
+                    r = self.session.http_post("http://condoable.com/action/advertise/deleteAdvertise.jsp",data={"advertiseId": post_id})
                     if(re.search(r'ลบประกาศเลขที่',r.text)):
                         success = "true"
                         detail = "Announcement deleted"
@@ -438,7 +437,7 @@ class condoable():
         for i, img in enumerate(all_img):
             link = img['onclick'].split(',')[1].replace('\r\n\t\t\t        url: "', '').replace('"', '')
             try:
-                del_ = httprequestObj.http_post('http://condoable.com/' + str(link), '')
+                del_ = self.session.http_post('http://condoable.com/' + str(link), '')
                 print(i, del_.text)
             except:
                 pass
@@ -508,7 +507,7 @@ class condoable():
             except :
                 project_name = postdata['post_title_th']
 
-        resp = httprequestObj.http_get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
+        resp = self.session.http_get('http://condoable.com/action/advertise/searchCondoProject.jsp?term=' + project_name)
         allres = json.loads(resp.content.decode('utf-8').replace('""', '"'), strict = False)
         condoprojectid = None
         if len(allres) != 0:
@@ -540,7 +539,7 @@ class condoable():
                 "latitude": geo_latitude,
                 "longitude": geo_longitude,
             }
-            r = httprequestObj.http_post('http://condoable.com/advertise/addOtherCondoProject.do?zoneId=20', data=data_Test)
+            r = self.session.http_post('http://condoable.com/advertise/addOtherCondoProject.do?zoneId=20', data=data_Test)
             condoprojectid = ""
             for i in r.json():
                 if str(i['latitude']) == str(data_Test["latitude"]) and str(i['longitude']) == str(data_Test["longitude"]):
@@ -567,7 +566,7 @@ class condoable():
             "publish": "false",
             "next": "true"
         }
-        r = httprequestObj.http_post('http://condoable.com/addAdvertiseDetail.do', data=datapost)
+        r = self.session.http_post('http://condoable.com/addAdvertiseDetail.do', data=datapost)
         soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
         authenticityToken = soup.find("input", {"name": "token"})
         if authenticityToken:
@@ -585,7 +584,7 @@ class condoable():
             }
             # http://condoable.com/uploadFile.do?type=advertiseImage8/288227&advertiseId=288227
             filestoup = {}
-            r_ = httprequestObj.http_post('http://condoable.com/listImage.do?id='+ str(post_id) + '&type=advertiseImage&atc=' + str(authenticityToken) + '&sid=78','')
+            r_ = self.session.http_post('http://condoable.com/listImage.do?id='+ str(post_id) + '&type=advertiseImage&atc=' + str(authenticityToken) + '&sid=78','')
             soup = BeautifulSoup(r_.content, self.parser)
             # f'listImage.do?id={post_id}&type=advertiseImage&atc={authenticityToken}&sid=78'
             # print(r_.text)
@@ -600,8 +599,8 @@ class condoable():
 
             for i in postdata['post_images']:
                 filestoup['files[]'] = open(os.getcwd() + "/"+ i,'rb')
-                r = httprequestObj.http_post('http://condoable.com/uploadFile.do?type=advertiseImage8/'+post_id +'&advertiseId='+post_id,data="",files=filestoup)
-            r = httprequestObj.http_post('http://condoable.com/addAdvertiseMoreDetail.do',data=datapost)
+                r = self.session.http_post('http://condoable.com/uploadFile.do?type=advertiseImage8/'+post_id +'&advertiseId='+post_id,data="",files=filestoup)
+            r = self.session.http_post('http://condoable.com/addAdvertiseMoreDetail.do',data=datapost)
             if(re.search(r'ลงประกาศเรียบร้อยแล้ว',r.text)):
                 success = "true"
                 detail = "Sucessfully Edited post with id "+post_id
@@ -654,7 +653,7 @@ class condoable():
         post_created = ""
 
         if success:
-            r = httprequestObj.http_get('http://condoable.com/myAdvertise.jsp')
+            r = self.session.http_get('http://condoable.com/myAdvertise.jsp')
             # print(r.url)
             # print(r.status_code)
 
@@ -672,7 +671,7 @@ class condoable():
                     post_found = True
                     post_id = info[1].string.strip()
                     post_url = 'http://condoable.com/viewAdvertise.do?advertiseId='+post_id
-                    r = httprequestObj.http_get(post_url)
+                    r = self.session.http_get(post_url)
                     # print(r.url)
                     # print(r.status_code)
                     soup = BeautifulSoup(r.content, self.parser)

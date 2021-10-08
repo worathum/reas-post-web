@@ -12,7 +12,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
 
 
 class buyzaa():
@@ -31,6 +30,7 @@ class buyzaa():
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.webname = 'buyzaa'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if self.debug == 1:
@@ -44,7 +44,7 @@ class buyzaa():
         user = postdata['user']
         passwd = postdata['pass']
 
-        r = httprequestObj.http_get('http://www.buyzaa.com/register.php')
+        r = self.session.http_get('http://www.buyzaa.com/register.php')
         print(r.url)
         print(r.status_code)
 
@@ -70,12 +70,12 @@ class buyzaa():
             "hiddenanswer": sum,
             "accept": '1',
         }
-        r = httprequestObj.http_post('http://www.buyzaa.com/lib/checkuser.php', data=datapost)
+        r = self.session.http_post('http://www.buyzaa.com/lib/checkuser.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
 
-        r = httprequestObj.http_post('http://www.buyzaa.com/register.php', data=datapost)
+        r = self.session.http_post('http://www.buyzaa.com/register.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
@@ -105,7 +105,7 @@ class buyzaa():
         }
 
     def test_login(self, postdata):
-        r = httprequestObj.http_get('http://www.buyzaa.com/logout.php')
+        r = self.session.http_get('http://www.buyzaa.com/logout.php')
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
 
@@ -115,7 +115,7 @@ class buyzaa():
         success = ""
         detail = ""
 
-        r = httprequestObj.http_get('http://www.buyzaa.com/member.php')
+        r = self.session.http_get('http://www.buyzaa.com/member.php')
         # print(r.url)
         # print(r.status_code)
 
@@ -125,7 +125,7 @@ class buyzaa():
             "password": passwd,
         }
 
-        r = httprequestObj.http_post('http://www.buyzaa.com/member.php', data=datapost)
+        r = self.session.http_post('http://www.buyzaa.com/member.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
@@ -189,7 +189,7 @@ class buyzaa():
             except:
                 theprodid = getProdId[str(postdata['property_type'])]
 
-            r = httprequestObj.http_get('http://www.buyzaa.com/post-add.php')
+            r = self.session.http_get('http://www.buyzaa.com/post-add.php')
             # print(r.url)
             # print(r.status_code)
 
@@ -206,7 +206,7 @@ class buyzaa():
 
             # print("Province_id = " + province_id)
 
-            r = httprequestObj.http_get('http://www.buyzaa.com/lib/district.php', params={'province': province_id})
+            r = self.session.http_get('http://www.buyzaa.com/lib/district.php', params={'province': province_id})
             # print(r.url)
             # print(r.status_code)
 
@@ -264,7 +264,7 @@ class buyzaa():
                 # rent
                 datapost['want'] = 'forrent'
 
-            r = httprequestObj.http_post('http://www.buyzaa.com/lib/checkpost.php', data=datapost)
+            r = self.session.http_post('http://www.buyzaa.com/lib/checkpost.php', data=datapost)
             # print(r.url)
             # print(r.status_code)
 
@@ -307,7 +307,7 @@ class buyzaa():
                 indexname = 'photo' + str(i + 1)
                 datapost.append((indexname, (filename, open(img, 'rb'), 'image/jpeg')))
 
-            r = httprequestObj.http_post('http://www.buyzaa.com/post-add.php', data={}, files=datapost)
+            r = self.session.http_post('http://www.buyzaa.com/post-add.php', data={}, files=datapost)
             # print(r.url)
             # print(r.status_code)
 
@@ -363,7 +363,7 @@ class buyzaa():
                 page += 1
                 if page > tot_pages:
                     break
-                r = httprequestObj.http_get('http://www.buyzaa.com/manage-post.php', params={'page': str(page)})
+                r = self.session.http_get('http://www.buyzaa.com/manage-post.php', params={'page': str(page)})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -416,7 +416,7 @@ class buyzaa():
                 except:
                     theprodid = getProdId[str(postdata['property_type'])]
 
-                r = httprequestObj.http_get('http://www.buyzaa.com/post-edit.php', params={'id': postdata['post_id']})
+                r = self.session.http_get('http://www.buyzaa.com/post-edit.php', params={'id': postdata['post_id']})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -433,7 +433,7 @@ class buyzaa():
 
                 # print("Province_id = " + province_id)
 
-                r = httprequestObj.http_get('http://www.buyzaa.com/lib/district.php', params={'province': province_id})
+                r = self.session.http_get('http://www.buyzaa.com/lib/district.php', params={'province': province_id})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -499,11 +499,11 @@ class buyzaa():
                         'n': post_id + '-' + str(i + 1) + '.jpeg'
                     }
 
-                    r = httprequestObj.http_get('http://www.buyzaa.com/post-edit.php', params=params)
+                    r = self.session.http_get('http://www.buyzaa.com/post-edit.php', params=params)
                     # print(r.url)
                     # print(r.status_code)
 
-                r = httprequestObj.http_post('http://www.buyzaa.com/lib/checkpost.php', data=datapost)
+                r = self.session.http_post('http://www.buyzaa.com/lib/checkpost.php', data=datapost)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -554,7 +554,7 @@ class buyzaa():
                     'n': post_id + '-' + str(n) + '.jpeg'
                 }
 
-                r = httprequestObj.http_post('http://www.buyzaa.com/post-edit.php', params=params, data={},
+                r = self.session.http_post('http://www.buyzaa.com/post-edit.php', params=params, data={},
                                              files=datapost)
                 # print(r.url)
                 # print(r.status_code)
@@ -605,7 +605,7 @@ class buyzaa():
                 page += 1
                 if page > tot_pages:
                     break
-                r = httprequestObj.http_get('http://www.buyzaa.com/manage-post.php', params={'page': str(page)})
+                r = self.session.http_get('http://www.buyzaa.com/manage-post.php', params={'page': str(page)})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -629,7 +629,7 @@ class buyzaa():
                     break"""
 
             try:
-                r = httprequestObj.http_get('http://www.buyzaa.com/manage-post.php', params={'update': post_id})
+                r = self.session.http_get('http://www.buyzaa.com/manage-post.php', params={'update': post_id})
                 # print(r.url)
                 # print(r.status_code)
                 if 'ยินดีด้วยค่ะ ระบบได้ทำการเลื่อนประกาศให้ท่านเรียบร้อยแล้ว' in r.text:
@@ -684,7 +684,7 @@ class buyzaa():
                 page += 1
                 if page > tot_pages:
                     break
-                r = httprequestObj.http_get('http://www.buyzaa.com/manage-post.php', params={'page': str(page)})
+                r = self.session.http_get('http://www.buyzaa.com/manage-post.php', params={'page': str(page)})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -708,7 +708,7 @@ class buyzaa():
                     break"""
 
             if post_found:
-                r = httprequestObj.http_get('http://www.buyzaa.com/manage-post.php', params={'delete': post_id})
+                r = self.session.http_get('http://www.buyzaa.com/manage-post.php', params={'delete': post_id})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -767,7 +767,7 @@ class buyzaa():
                 page += 1
                 if page > tot_pages:
                     break
-                r = httprequestObj.http_get('http://www.buyzaa.com/manage-post.php', params={'page': str(page)})
+                r = self.session.http_get('http://www.buyzaa.com/manage-post.php', params={'page': str(page)})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -787,7 +787,7 @@ class buyzaa():
                         post_found = True
                         post_id = post.find('li', 'title').find('a').get('href').split('/')[-2][4:]
                         post_url = 'http://www.buyzaa.com/view' + post_id + '/' + post_title
-                        r = httprequestObj.http_get(post_url)
+                        r = self.session.http_get(post_url)
                         # print(r.url)
                         # print(r.status_code)
                         soup = BeautifulSoup(r.content, self.parser)

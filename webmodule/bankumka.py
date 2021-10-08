@@ -14,7 +14,6 @@ import shutil
 from urllib.parse import unquote
 
 
-httprequestObj = lib_httprequest()
 # options = Options()
 # options.set_headless(True)
 
@@ -40,6 +39,7 @@ class bankumka():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -53,9 +53,9 @@ class bankumka():
         # start process
         success = "true"
         detail = ""
-        # r = httprequestObj.http_get('https://bankumka.com/access/register/checker',verify = False)
+        # r = self.session.http_get('https://bankumka.com/access/register/checker',verify = False)
         # print(r.content)
-        r = httprequestObj.http_get(
+        r = self.session.http_get(
             'https://bankumka.com/themes/default/assets/js/member/register.js', verify=False)
         # print(r.text)
         datapost = {
@@ -69,10 +69,10 @@ class bankumka():
             'phone': mobile_no,
             'token': ''
         }
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'https://bankumka.com/access/register/checker', data=datapost)
         # print(r.text)
-        # r = httprequestObj.http_get('https://bankumka.com/access',verify= False)
+        # r = self.session.http_get('https://bankumka.com/access',verify= False)
         # print(type(r.text))
         # data = r.text
         data = json.loads(r.text)
@@ -93,7 +93,7 @@ class bankumka():
             # for i in r.text:
             #     print(i.token)
 
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'https://bankumka.com/access/register', data=datapost)
         # print("yes")
             # print(r.text)
@@ -103,7 +103,7 @@ class bankumka():
                 success = "false"
             else:
                 detail = "Registered"
-                # r = httprequestObj.http_get('https://bankumka.com/access/register/success',verify = False)
+                # r = self.session.http_get('https://bankumka.com/access/register/success',verify = False)
                 # print(r.text)
         # # end process
         else:
@@ -141,9 +141,9 @@ class bankumka():
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36"
         }
 
-        res = httprequestObj.http_get('https://bankumka.com/access/logout', headers=headers)
+        res = self.session.http_get('https://bankumka.com/access/logout', headers=headers)
 
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'https://bankumka.com/access', data=datapost)
         
         data = r.text
@@ -200,7 +200,7 @@ class bankumka():
         print(success,"lol")
         if success == "true":
             detail = ""
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 'https://bankumka.com/property/announce', verify=False)
             data = r.text
             # print(data)
@@ -227,7 +227,7 @@ class bankumka():
                 # print("data: "+i.text+" value: "+i.value)
             # print(province_id)
             query_string = 'https://bankumka.com/ajax/listcities/'+province_id
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 query_string, verify=False)
             data = json.loads(r.text)
             # print(data)
@@ -251,7 +251,7 @@ class bankumka():
 
             # print(amphur_id)
             query_string = 'https://bankumka.com/ajax/listcities/'+amphur_id
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 query_string, verify=False)
             data = json.loads(r.text)
             # print(data)
@@ -286,7 +286,7 @@ class bankumka():
             mydata = {
                 'query': project_n
             }
-            resp = httprequestObj.http_post('https://bankumka.com/ajax/listproject/', data=mydata)
+            resp = self.session.http_post('https://bankumka.com/ajax/listproject/', data=mydata)
             allres = json.loads(resp.content.decode('utf-8'))["suggestions"]
             project_id = '0'
 
@@ -295,7 +295,7 @@ class bankumka():
                 project_n = allres[0]["value"]
 
                 mydata = {'id':project_id}
-                resp1 = httprequestObj.http_post("https://bankumka.com/ajax/getLocationProject/", data=mydata)
+                resp1 = self.session.http_post("https://bankumka.com/ajax/getLocationProject/", data=mydata)
                 res1 = json.loads(resp1.content.decode('utf-8'))['result']
 
                 postdata["geo_longitude"] = res1["project_lng"]
@@ -304,7 +304,7 @@ class bankumka():
                 amphur_id = res1["project_district"]
                 tumbon_id = res1["project_subdistrict"]
             
-            r = httprequestObj.http_get('https://bankumka.com/property/announce')
+            r = self.session.http_get('https://bankumka.com/property/announce')
             soup = BeautifulSoup(r.text, features=self.parser)
             csrf_time = soup.find(attrs={'name': 'csrf_time'})
             csrf_token = soup.find(attrs={'name': 'csrf_token'})
@@ -392,7 +392,7 @@ class bankumka():
                 datapost[11] = ('prop_pricerent', '')
                 datapost[9] = ('prop_price', postdata['price_baht'])
             # print(datapost)
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'https://bankumka.com/ajax/checkProperty', data=datapost)
             data = json.loads(r.text)
             print(data)
@@ -474,7 +474,7 @@ class bankumka():
                 # for i, myimg in enumerate(postdata['post_images'][:10]):
                 for i in range(len(postdata['post_images'])):
                 # for i in range(len(postdata["post_img_url_lists"])):
-                    # resp = httprequestObj.http_get(
+                    # resp = self.session.http_get(
                     #     postdata["post_img_url_lists"][i], stream=True)
                     # resp.raw.decode_content = True
                     # with open('image'+str(i)+'.jpg', 'wb') as lfile:
@@ -492,7 +492,7 @@ class bankumka():
                     }
                     datapost.append(('prop_gallery'+str(i+1), val))
                 
-                r = httprequestObj.http_post(
+                r = self.session.http_post(
                     'https://bankumka.com/property/save', data=datapost, files=files)
                 # print(r.text)
                 data = r.text
@@ -500,7 +500,7 @@ class bankumka():
                 post_id = soup.find("input", {"name": "prop_id"})['value']
                 # print(post_id)
                 if post_id != '':
-                    r = httprequestObj.http_get(
+                    r = self.session.http_get(
                         'https://bankumka.com/member/properties', verify=False)
                     data = r.text
                     soup = BeautifulSoup(
@@ -581,7 +581,7 @@ class bankumka():
         mydata = {
             'query': project_n
         }
-        resp = httprequestObj.http_post('https://bankumka.com/ajax/listproject/', data=mydata)
+        resp = self.session.http_post('https://bankumka.com/ajax/listproject/', data=mydata)
         allres = json.loads(resp.content.decode('utf-8'))["suggestions"]
         project_id = '0'
         # print( json.loads(resp.content.decode('utf-8')))
@@ -590,7 +590,7 @@ class bankumka():
             project_n = allres[0]["value"]
 
             mydata = {'id':project_id}
-            resp1 = httprequestObj.http_post("https://bankumka.com/ajax/getLocationProject/", data=mydata)
+            resp1 = self.session.http_post("https://bankumka.com/ajax/getLocationProject/", data=mydata)
             res1 = json.loads(resp1.content.decode('utf-8'))['result']
 
             postdata["geo_longitude"] = res1["project_lng"]
@@ -601,13 +601,14 @@ class bankumka():
             # print(f'tumbon_id--{tumbon_id}')
 
         if success == "true":
-            r = httprequestObj.http_get(
+            # TODO
+            r = self.session.http_get(
                 'https://bankumka.com/member/properties', verify=False)
             data = r.content
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             all_page=len(soup.find('select',{'name':'pageNo'}).find_all('option'))
             for i in range(1,all_page+1):
-                r = httprequestObj.http_get(
+                r = self.session.http_get(
                 'https://bankumka.com/member/properties/page/{}'.format(i), verify=False)
                 data = r.content
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -623,7 +624,7 @@ class bankumka():
                 posturl = ''
                 detail = "The post doesn't exist"
             else:
-                r = httprequestObj.http_get(
+                r = self.session.http_get(
                     posturl, verify=False)
                 data = r.content
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -643,7 +644,7 @@ class bankumka():
                     # print(i.get_text())
                     # print("data: "+i.text+" value: "+i.value)
                 query_string = 'https://bankumka.com/ajax/listcities/'+province_id
-                r = httprequestObj.http_get(
+                r = self.session.http_get(
                     query_string, verify=False)
                 data = json.loads(r.text)
                 amphur_found = False
@@ -661,7 +662,7 @@ class bankumka():
                             amphur_id = i['id']
                             break
                 query_string = 'https://bankumka.com/ajax/listcities/'+amphur_id
-                r = httprequestObj.http_get(
+                r = self.session.http_get(
                     query_string, verify=False)
                 data = json.loads(r.text)
                 tumbon_found = False
@@ -686,7 +687,7 @@ class bankumka():
                 # except:
                 #     csrf_time = 0
                 #     csrf_token = ''
-                r = httprequestObj.http_get('https://bankumka.com/property/announce')
+                r = self.session.http_get('https://bankumka.com/property/announce')
                 soup = BeautifulSoup(r.text, features=self.parser)
                 csrf_time = soup.find(attrs={'name': 'csrf_time'})
                 csrf_token = soup.find(attrs={'name': 'csrf_token'})
@@ -781,7 +782,7 @@ class bankumka():
                     datapost[2] = ('prop_type', 32)
                     datapost[9] = ('prop_pricerent', '')
                     datapost[7] = ('prop_price', postdata['price_baht'])
-                r = httprequestObj.http_post(
+                r = self.session.http_post(
                     'https://bankumka.com/ajax/checkProperty', data=datapost)
                 data = json.loads(r.text)
                 if data['status'] == 'OK':
@@ -880,7 +881,7 @@ class bankumka():
 
                     for i, myimg in enumerate(postdata['post_images'][:10]):
                     # for i in range(len(postdata["post_img_url_lists"])):
-                        # resp = httprequestObj.http_get(
+                        # resp = self.session.http_get(
                         #     postdata["post_img_url_lists"][i], stream=True)
                         # resp.raw.decode_content = True
                         # with open('image'+str(i)+'.jpg', 'wb') as lfile:
@@ -899,7 +900,7 @@ class bankumka():
                             "Content-Type": 'image/jpg'
                         }
                         datapost.append(('prop_gallery'+str(i+1), val))
-                    r = httprequestObj.http_post(
+                    r = self.session.http_post(
                         'https://bankumka.com/property/save', data=datapost, files=files)
                     success = 'true'
                     detail = 'Edit post successful'
@@ -911,7 +912,7 @@ class bankumka():
                 print(11111111111111)
                 # files = {}
                 # for i in range(len(postdata["post_img_url_lists"])):
-                #     resp = httprequestObj.http_get(
+                #     resp = self.session.http_get(
                 #         postdata["post_img_url_lists"][i], stream=True)
                 #     resp.raw.decode_content = True
                 #     with open('image'+str(i)+'.jpg', 'wb') as lfile:
@@ -927,10 +928,10 @@ class bankumka():
                 #         files["file"+str(i)] = r
                 #     datapost.append(('file[]', postdata["post_img_url_lists"][i]))
                 #     # datapost['file[]'] = i
-                #     r = httprequestObj.http_post(
+                #     r = self.session.http_post(
                 #         'https://www.ddteedin.com/upload', datapost)
 
-                # r = httprequestObj.http_post(
+                # r = self.session.http_post(
                 #     'https://www.ddteedin.com/post-land-for-sale/?rf=mypost', data=datapost, files=files)
                 # # print(r.text)
                 # query_element = {
@@ -941,7 +942,7 @@ class bankumka():
                 # }
                 # query_string = 'https://www.ddteedin.com/myposts/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
                 #     ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-                # r = httprequestObj.http_get(
+                # r = self.session.http_get(
                 #     query_string, verify=False)
                 # data = r.text
                 # soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -990,7 +991,7 @@ class bankumka():
             posturl = ""
             found = False
             while True:
-                r = httprequestObj.http_get(
+                r = self.session.http_get(
                     'https://bankumka.com/member/properties/page/'+str(page), verify=False)
                 data = r.text
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -1009,7 +1010,7 @@ class bankumka():
                 detail  = "No post found with given id"
                 success = "false"
             else:
-                r = httprequestObj.http_get(
+                r = self.session.http_get(
                     posturl, verify=False)
                 data = r.text
                 # print(data)
@@ -1038,7 +1039,7 @@ class bankumka():
                 strng += "\""+ans[indices[len(indices)-1]:len(ans)]
                 # print(strng)
                 data1 = json.loads(strng)
-                r = httprequestObj.http_get('https://bankumka.com/property/announce')
+                r = self.session.http_get('https://bankumka.com/property/announce')
                 soup = BeautifulSoup(r.text, features=self.parser)
                 csrf_time = soup.find(attrs={'name': 'csrf_time'})
                 csrf_token = soup.find(attrs={'name': 'csrf_token'})
@@ -1106,7 +1107,7 @@ class bankumka():
                     ('action', 'update'),
                     ('prop_id', data1['prop_id'])
                 ]
-                r = httprequestObj.http_post(
+                r = self.session.http_post(
                     'https://bankumka.com/ajax/checkProperty', data=datapost)
                 data = json.loads(r.text)
                 print(data)
@@ -1170,7 +1171,7 @@ class bankumka():
                         ('action', 'update'),
                         ('prop_id', data1['prop_id'])
                     ]
-                    r = httprequestObj.http_post(
+                    r = self.session.http_post(
                         'https://bankumka.com/property/save', data=datapost)
                     detail  = "Post deleted successfully"
                     # print(r.text)
@@ -1178,7 +1179,7 @@ class bankumka():
                     success = "false"
             # files = {}
             # for i in range(len(postdata["post_img_url_lists"])):
-            #     resp = httprequestObj.http_get(
+            #     resp = self.session.http_get(
             #         postdata["post_img_url_lists"][i], stream=True)
             #     resp.raw.decode_content = True
             #     with open('image'+str(i)+'.jpg', 'wb') as lfile:
@@ -1194,7 +1195,7 @@ class bankumka():
             #         files["file"+str(i)] = r
             #     datapost.append(('file[]', postdata["post_img_url_lists"][i]))
             #     # datapost['file[]'] = i
-            #     r = httprequestObj.http_post(
+            #     r = self.session.http_post(
             #         'https://www.ddteedin.com/upload', datapost)
 
         else:
@@ -1226,7 +1227,7 @@ class bankumka():
         ashopname = test_login["detail"]
         # print(test_login)
         if success == "true":
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 'https://bankumka.com/member/properties', verify=False)
             data = r.text
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -1244,7 +1245,7 @@ class bankumka():
                 datapost = {
                     'prop_id': postdata['post_id']
                 }
-                r = httprequestObj.http_post(
+                r = self.session.http_post(
                     'https://bankumka.com/member/api/pushProp', datapost)
                 detail = 'Boost post success.'
         else:
@@ -1284,7 +1285,7 @@ class bankumka():
         posturl = ""
         if success == "true":
 
-            r = httprequestObj.http_get('https://bankumka.com/member/properties', verify = False)
+            r = self.session.http_get('https://bankumka.com/member/properties', verify = False)
             data = r.text
             soup = BeautifulSoup(data,self.parser, from_encoding='utf-8')
             alldiv = soup.findAll("div",{"class":"my-property-box"})

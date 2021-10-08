@@ -12,7 +12,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
 
 
 class thiubon():
@@ -31,6 +30,7 @@ class thiubon():
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.webname = 'thiubon'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if self.debug == 1:
@@ -44,7 +44,7 @@ class thiubon():
         success = "true"
         detail = ""
 
-        r = httprequestObj.http_get('http://classified.thiubon.com/signup.php')
+        r = self.session.http_get('http://classified.thiubon.com/signup.php')
         # print(r.url)
         # print(r.status_code)
 
@@ -53,7 +53,7 @@ class thiubon():
             ('submit', (None, 'สมัครสมาชิกใหม่'))
         ]
 
-        r = httprequestObj.http_post('http://classified.thiubon.com/register.php', data={}, files=datapost)
+        r = self.session.http_post('http://classified.thiubon.com/register.php', data={}, files=datapost)
         # print(r.url)
         # print(r.status_code)
 
@@ -70,7 +70,7 @@ class thiubon():
             ('submit', (None, 'สมัครสมาชิก'))
         ]
 
-        r = httprequestObj.http_post('http://classified.thiubon.com/p-register.php', data={}, files=datapost)
+        r = self.session.http_post('http://classified.thiubon.com/p-register.php', data={}, files=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
@@ -103,7 +103,7 @@ class thiubon():
         success = "true"
         detail = ""
 
-        r = httprequestObj.http_get('http://classified.thiubon.com/signup.php')
+        r = self.session.http_get('http://classified.thiubon.com/signup.php')
         # print(r.url)
         # print(r.status_code)
 
@@ -113,7 +113,7 @@ class thiubon():
             'submit': 'เข้าสู่ระบบ'
         }
 
-        r = httprequestObj.http_post('http://classified.thiubon.com/login.php', data=datapost)
+        r = self.session.http_post('http://classified.thiubon.com/login.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
@@ -185,7 +185,7 @@ class thiubon():
                     prod_address += add + " "
             prod_address = prod_address[:-1]
 
-            r = httprequestObj.http_get('http://classified.thiubon.com/member/classifieds-post.php')
+            r = self.session.http_get('http://classified.thiubon.com/member/classifieds-post.php')
             # print(r.url)
             # print(r.status_code)
 
@@ -263,7 +263,7 @@ class thiubon():
 
             # print("here\n", datapost)
 
-            r = httprequestObj.http_post('http://classified.thiubon.com/member/p-classifieds-post.php', data={},
+            r = self.session.http_post('http://classified.thiubon.com/member/p-classifieds-post.php', data={},
                                          files=datapost)
             # print(r.url)
             # print(r.status_code)
@@ -274,7 +274,7 @@ class thiubon():
             if 'ระบบจัดการข้อมูลสมาชิก | ไทอุบลดอทคอม' in data:
                 success = True
                 detail = "Post created successfully"
-                r = httprequestObj.http_get('http://classified.thiubon.com/member/list-classifieds.php')
+                r = self.session.http_get('http://classified.thiubon.com/member/list-classifieds.php')
                 # print(r.url)
                 # print(r.status_code)
 
@@ -330,7 +330,7 @@ class thiubon():
                     'QueryString': 'value',
                     'Page': str(page)
                 }
-                r = httprequestObj.http_get('http://classified.thiubon.com/member/list-classifieds.php', params=params)
+                r = self.session.http_get('http://classified.thiubon.com/member/list-classifieds.php', params=params)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -398,7 +398,7 @@ class thiubon():
                     'QueryString': 'value',
                     'Page': str(page)
                 }
-                r = httprequestObj.http_get('http://classified.thiubon.com/member/list-classifieds.php', params=params)
+                r = self.session.http_get('http://classified.thiubon.com/member/list-classifieds.php', params=params)
                 print(r.url)
                 # print(r.status_code)
 
@@ -421,7 +421,7 @@ class thiubon():
                     break"""
 
             if post_found:
-                r = httprequestObj.http_get('http://classified.thiubon.com/member/slide-classified-post.php',
+                r = self.session.http_get('http://classified.thiubon.com/member/slide-classified-post.php',
                                             params={'id': post_id})
                 # print(r.url)
                 # print(r.status_code)
@@ -481,7 +481,7 @@ class thiubon():
                     'QueryString': 'value',
                     'Page': str(page)
                 }
-                r = httprequestObj.http_get('http://classified.thiubon.com/member/list-classifieds.php', params=params)
+                r = self.session.http_get('http://classified.thiubon.com/member/list-classifieds.php', params=params)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -502,7 +502,7 @@ class thiubon():
                     break"""
 
             if post_found:
-                r = httprequestObj.http_get('http://classified.thiubon.com/member/del-classifieds.php',
+                r = self.session.http_get('http://classified.thiubon.com/member/del-classifieds.php',
                                             params={'id': post_id})
                 # print(r.url)
                 # print(r.status_code)
@@ -562,7 +562,7 @@ class thiubon():
                     'QueryString': 'value',
                     'Page': str(page)
                 }
-                r = httprequestObj.http_get('http://classified.thiubon.com/member/list-classifieds.php', params=params)
+                r = self.session.http_get('http://classified.thiubon.com/member/list-classifieds.php', params=params)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -583,7 +583,7 @@ class thiubon():
                         post_id = post.find('td').find('a').get('href').split('/')[1].split('-')[-1]
                         post_url = 'http://classified.thiubon.com' + post.find('td').find('a').get('href')[2:]
 
-                        r = httprequestObj.http_get(post_url)
+                        r = self.session.http_get(post_url)
                         # print(r.url)
                         # print(r.status_code)
 

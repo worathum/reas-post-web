@@ -24,7 +24,6 @@ property_types = {
     '6': '10',
     '8': '11'
 }
-httprequestObj = lib_httprequest()
 
 class baan2day():
     name = 'baan2day'
@@ -41,11 +40,12 @@ class baan2day():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
 
     def logout_user(self):
         url = 'https://www.baan2day.com/logoff.php'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self, postdata):
         self.logout_user()
@@ -63,7 +63,7 @@ class baan2day():
             "tconfirmpass": postdata['pass']
         }
 
-        response = httprequestObj.http_post(self.site_name+'/member_register_aed.php?typ=add', data=datapost)
+        response = self.session.http_post(self.site_name+'/member_register_aed.php?typ=add', data=datapost)
     
         if response.status_code==200:
             if "window.location.href='member.php';" in response.text:
@@ -103,7 +103,7 @@ class baan2day():
             "tlogin_password": postdata['pass']
         }
         
-        response = httprequestObj.http_post(self.site_name+'/login_aed.php', data=datapost)
+        response = self.session.http_post(self.site_name+'/login_aed.php', data=datapost)
         
         if response.status_code==200:
             soup = BeautifulSoup(response.text, features=self.parser)
@@ -148,7 +148,7 @@ class baan2day():
                 postdata['web_project_name'] = postdata['project_name']
             else:
                 postdata['web_project_name'] = postdata['post_title_th']
-        r = httprequestObj.http_get(self.site_name+'/member_property_list.php')
+        r = self.session.http_get(self.site_name+'/member_property_list.php')
         soup = BeautifulSoup(r.text, features=self.parser)
         rows = soup.find('tbody').find_all('tr')
         limit = soup.find_all("div", {"class": "col-md-6"})
@@ -234,21 +234,21 @@ class baan2day():
             for i,image in enumerate(postdata["post_images"][:10]):
                 files["testimage"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
     
-            response = httprequestObj.http_post(self.site_name+'/member_property_aed.php?typ=add', data=datapost, files=files)
+            response = self.session.http_post(self.site_name+'/member_property_aed.php?typ=add', data=datapost, files=files)
 
             success = "false" 
             if response.status_code==200:
                 if "window.location.href='member_property_list.php" in response.text:
                     success = "true"
                     detail = "Post Created Successfully!"
-                    r = httprequestObj.http_get(self.site_name+'/member_property_list.php')
+                    r = self.session.http_get(self.site_name+'/member_property_list.php')
                     soup = BeautifulSoup(r.text, features=self.parser)
                     try:
                         rows = soup.find('tbody').find_all('tr')
                     except:
                         try:
                             time.sleep(3)
-                            r = httprequestObj.http_get(self.site_name+'/member_property_list.php')
+                            r = self.session.http_get(self.site_name+'/member_property_list.php')
                             soup = BeautifulSoup(r.text, features=self.parser)
                             rows = soup.find('tbody').find_all('tr')
                         except:
@@ -393,14 +393,14 @@ class baan2day():
 
             files = {}
             if len(postdata['post_images'])>0:
-                r = httprequestObj.http_get(self.site_name+'/member_property_add.php?id='+postdata['post_id'])
+                r = self.session.http_get(self.site_name+'/member_property_add.php?id='+postdata['post_id'])
                 soup = BeautifulSoup(r.text, features=self.parser)
                 images = soup.find(attrs={'name': 'fproperty_member'}).find_all('a')
                 l = int(len(images)/2)
                 for i,image in enumerate(postdata["post_images"][:10-l]):
                     files["testimage"+str(i+l+1)] = open(os.getcwd()+"/"+image, 'rb')
             
-            response = httprequestObj.http_post(self.site_name+'/member_property_aed.php?typ=edit&id='+str(postdata['post_id']), data=datapost, files=files)
+            response = self.session.http_post(self.site_name+'/member_property_aed.php?typ=edit&id='+str(postdata['post_id']), data=datapost, files=files)
             success = "false"
             if response.status_code==200:
                 if "window.location.href='member_property_list.php" in response.text:
@@ -440,7 +440,7 @@ class baan2day():
         detail = "Unable to delete post"
 
         if success=="true":
-            response = httprequestObj.http_get(self.site_name+'/member_property_aed.php?typ=delete&id='+postdata['post_id'])
+            response = self.session.http_get(self.site_name+'/member_property_aed.php?typ=delete&id='+postdata['post_id'])
             success = "false"
             if response.status_code==200:
                 if "alert('ลบข้อมูลเรียบร้อยแล้วค่ะ');window.location.href='member_property_list.php';" in response.text:
@@ -502,8 +502,8 @@ class baan2day():
             #     'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8,mr;q=0.7'
             #     'cookie': 'PHPSESSID=msnf65h17ttaulrumulnod0a83; _ga=GA1.2.4920401.1592423018; __cfduid=da9234d6905dc8640adc4361fe23997e21605463034; _gid=GA1.2.647891004.1606323097',
             # }
-            # response = httprequestObj.http_get(self.site_name+'/member_property_list.php?&nowpage='+str(page))
-            response = httprequestObj.http_get(self.site_name+'/member_property_list.php')
+            # response = self.session.http_get(self.site_name+'/member_property_list.php?&nowpage='+str(page))
+            response = self.session.http_get(self.site_name+'/member_property_list.php')
             if response.status_code==200:
                 soup = BeautifulSoup(response.text, features=self.parser)
                 rows = soup.find('table')
@@ -559,7 +559,7 @@ class baan2day():
         if success=="true":
             success = "false"
              
-            response = httprequestObj.http_get(self.site_name+'/member_property_aed.php?typ=uptop&id='+postdata['post_id'])
+            response = self.session.http_get(self.site_name+'/member_property_aed.php?typ=uptop&id='+postdata['post_id'])
             if response.status_code==200:
                 if "window.location.href='member_property_list.php" in response.text:
                     success = "true"

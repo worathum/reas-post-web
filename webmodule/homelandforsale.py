@@ -10,7 +10,6 @@ import random
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
-httprequestObj = lib_httprequest()
 
 class homelandforsale():
    
@@ -31,10 +30,11 @@ class homelandforsale():
         self.debugresdata = 0
         self.baseurl = 'http://รับขายบ้านที่ดิน.com'
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def logout_user(self):
         url = 'http://xn--22c0bihcbb7dg4lnac3am9zla.com/member/logout.php'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self, postdata):
 
@@ -57,7 +57,7 @@ class homelandforsale():
 
         print('3')
 
-        response = httprequestObj.http_post('http://รับขายบ้านที่ดิน.com/member-register.php', data = data1)
+        response = self.session.http_post('http://รับขายบ้านที่ดิน.com/member-register.php', data = data1)
         print(response.url)
         print(response.status_code)
 
@@ -91,7 +91,7 @@ class homelandforsale():
             detail = "Please enter your phone number"
         else:
             try:
-                res = httprequestObj.http_post('http://รับขายบ้านที่ดิน.com/p-member-register.php', data = data, headers = headers)
+                res = self.session.http_post('http://รับขายบ้านที่ดิน.com/p-member-register.php', data = data, headers = headers)
 
                 if 'มีอยู่ในระบบแล้วครับ' in res.text:
                     success = "false"
@@ -144,7 +144,7 @@ class homelandforsale():
             detail = "Invalid Password"
         else:
             try:
-                response = httprequestObj.http_post('http://รับขายบ้านที่ดิน.com/login.php', data = data, headers = headers)
+                response = self.session.http_post('http://รับขายบ้านที่ดิน.com/login.php', data = data, headers = headers)
                 
                 if 'ขออภัยครับ ท่านกรอก Email และ/หรือ Password ไม่ถูกต้องครับ' in response.text:
                     success = "false"
@@ -152,7 +152,7 @@ class homelandforsale():
                 else:
                     success = "true"
                     detail = 'Logged in successfully'
-                    res = httprequestObj.http_get('http://รับขายบ้านที่ดิน.com/member/index.php')
+                    res = self.session.http_get('http://รับขายบ้านที่ดิน.com/member/index.php')
                     #print(res.text)
             
             except requests.exceptions.RequestException:
@@ -280,7 +280,7 @@ class homelandforsale():
 
             province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
 
-            find_province = httprequestObj.http_get('http://รับขายบ้านที่ดิน.com/member/post-property.php', headers = headers).text
+            find_province = self.session.http_get('http://รับขายบ้านที่ดิน.com/member/post-property.php', headers = headers).text
 
             soup = BeautifulSoup(find_province,features = "html")
 
@@ -295,7 +295,7 @@ class homelandforsale():
 
             url_district = str('http://รับขายบ้านที่ดิน.com/data_for_list3.php?province='+data['province'])
 
-            find_district = httprequestObj.http_get(url_district, headers = headers).text
+            find_district = self.session.http_get(url_district, headers = headers).text
             #print(find_district)
 
             soup = BeautifulSoup(find_district,features = "html")
@@ -313,7 +313,7 @@ class homelandforsale():
                 data['amphur'] = str(soup.find('option')['value'])
 
 
-            respo = httprequestObj.http_get('http://รับขายบ้านที่ดิน.com/member/post-property.php', headers = headers)
+            respo = self.session.http_get('http://รับขายบ้านที่ดิน.com/member/post-property.php', headers = headers)
         
 
             soup = BeautifulSoup(respo.content,features = 'html')
@@ -356,7 +356,7 @@ class homelandforsale():
 
 
 
-            crt_post = httprequestObj.http_post('http://รับขายบ้านที่ดิน.com/member/p-post-property.php', data = data, files = file, headers = headers)
+            crt_post = self.session.http_post('http://รับขายบ้านที่ดิน.com/member/p-post-property.php', data = data, files = file, headers = headers)
             #print(crt_post.text)
 
             soup = BeautifulSoup(crt_post.content, features = "html")
@@ -368,7 +368,7 @@ class homelandforsale():
 
             sec_step_url = str('http://รับขายบ้านที่ดิน.com/member/real-estate-features.php?post_id='+post_id)
 
-            sec_step = httprequestObj.http_get(sec_step_url, headers = headers)
+            sec_step = self.session.http_get(sec_step_url, headers = headers)
 
 
 
@@ -416,7 +416,7 @@ class homelandforsale():
 
             all_posts_url = 'http://รับขายบ้านที่ดิน.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers=headers)
+            all_posts = self.session.http_get(all_posts_url, headers=headers)
 
             soup = BeautifulSoup(all_posts.content, features="html")
 
@@ -427,7 +427,7 @@ class homelandforsale():
             for i in range(pages):
                 url = "http://xn--22c0bihcbb7dg4lnac3am9zla.com/member/list-property.php?QueryString=value&Page=" + str(
                     i + 1)
-                posts = httprequestObj.http_get(url, headers=headers)
+                posts = self.session.http_get(url, headers=headers)
                 soup = BeautifulSoup(posts.text, "html5lib")
 
                 for abc in soup.find_all('input', attrs={'name': 'chkDel[]'}):
@@ -440,7 +440,7 @@ class homelandforsale():
             if req_post_id in all_post_ids:
                 boost_url = str('http://รับขายบ้านที่ดิน.com/member/slide-property.php?post_id='+req_post_id)
 
-                boo_post = httprequestObj.http_get(boost_url, headers = headers)
+                boo_post = self.session.http_get(boost_url, headers = headers)
 
                 #print(boo_post.text)
 
@@ -498,7 +498,7 @@ class homelandforsale():
 
             all_posts_url = 'http://รับขายบ้านที่ดิน.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+            all_posts = self.session.http_get(all_posts_url, headers = headers)
 
             soup = BeautifulSoup(all_posts.content, features = "html")
 
@@ -508,7 +508,7 @@ class homelandforsale():
 
             for i in range(pages):
                 url="http://xn--22c0bihcbb7dg4lnac3am9zla.com/member/list-property.php?QueryString=value&Page="+str(i+1)
-                posts=httprequestObj.http_get(url, headers = headers)
+                posts=self.session.http_get(url, headers = headers)
                 soup = BeautifulSoup(posts.text,"html5lib")
 
                 for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
@@ -526,7 +526,7 @@ class homelandforsale():
                     'hdnCount' : str(len(all_post_ids))
                 }
 
-                delete_post = httprequestObj.http_post('http://รับขายบ้านที่ดิน.com/member/manage-property-not-sale.php', data = data, headers = headers)
+                delete_post = self.session.http_post('http://รับขายบ้านที่ดิน.com/member/manage-property-not-sale.php', data = data, headers = headers)
 
                 success = "true"
                 detail = "Post deleted successfully"
@@ -575,7 +575,7 @@ class homelandforsale():
 
             all_posts_url = 'http://รับขายบ้านที่ดิน.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+            all_posts = self.session.http_get(all_posts_url, headers = headers)
 
             soup = BeautifulSoup(all_posts.content, features = "html")
 
@@ -585,7 +585,7 @@ class homelandforsale():
 
             for i in range(pages):
                 url="http://xn--22c0bihcbb7dg4lnac3am9zla.com/member/list-property.php?QueryString=value&Page="+str(i+1)
-                posts=httprequestObj.http_get(url, headers = headers)
+                posts=self.session.http_get(url, headers = headers)
                 soup = BeautifulSoup(posts.text,"html5lib")
 
                 for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
@@ -686,7 +686,7 @@ class homelandforsale():
 
                 pro_url = str('http://รับขายบ้านที่ดิน.com/member/edit-property.php?post_id='+req_post_id)
 
-                find_province = httprequestObj.http_get(pro_url, headers = headers).text
+                find_province = self.session.http_get(pro_url, headers = headers).text
 
                 soup = BeautifulSoup(find_province,features = "html")
 
@@ -702,7 +702,7 @@ class homelandforsale():
 
                 url_district = str('http://รับขายบ้านที่ดิน.com/data_for_list3.php?province='+data['province'])
 
-                find_district = httprequestObj.http_get(url_district, headers = headers).text
+                find_district = self.session.http_get(url_district, headers = headers).text
 
                 soup = BeautifulSoup(find_district,features = "html")
 
@@ -743,7 +743,7 @@ class homelandforsale():
 
                     edit_post_url = str('http://รับขายบ้านที่ดิน.com/member/p-edit-property.php')
 
-                    edit_post = httprequestObj.http_post(edit_post_url, data = data, files = file, headers = headers)
+                    edit_post = self.session.http_post(edit_post_url, data = data, files = file, headers = headers)
 
                     success = "true"
                     detail = "Post edited successfully"
@@ -752,7 +752,7 @@ class homelandforsale():
                 else:
                     edit_post_url = str('http://รับขายบ้านที่ดิน.com/member/p-edit-property.php')
 
-                    edit_post = httprequestObj.http_post(edit_post_url, data = data, headers = headers)
+                    edit_post = self.session.http_post(edit_post_url, data = data, headers = headers)
 
                     success = "true"
                     detail = "Post edited successfully"
@@ -813,7 +813,7 @@ class homelandforsale():
 
             all_posts_url = 'http://รับขายบ้านที่ดิน.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+            all_posts = self.session.http_get(all_posts_url, headers = headers)
 
             soup = BeautifulSoup(all_posts.content, features = "html")
 
@@ -821,7 +821,7 @@ class homelandforsale():
 
             for i in range(pages):
                 url="http://xn--22c0bihcbb7dg4lnac3am9zla.com/member/list-property.php?QueryString=value&Page="+str(i+1)
-                posts=httprequestObj.http_get(url, headers = headers)
+                posts=self.session.http_get(url, headers = headers)
                 soup = BeautifulSoup(posts.text,"html5lib")
 
                 xyz = soup.find('table', attrs={'class':'table table-hover'})
@@ -835,7 +835,7 @@ class homelandforsale():
                         post_modify_time = abc.span.text[13:]
                         detail = "Post found"
 
-                        find_info = httprequestObj.http_get(post_url, headers = headers)
+                        find_info = self.session.http_get(post_url, headers = headers)
 
                         sou = BeautifulSoup(find_info.content, features = "html")
 

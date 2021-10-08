@@ -9,10 +9,6 @@ from urllib.parse import unquote
 from datetime import datetime
 import random
 
-httprequestObj = lib_httprequest()
-
-httprequestObj.timeout = 150
-
 
 def set_end_time(start_time):
     time_end = datetime.utcnow()
@@ -49,6 +45,9 @@ class adscondo():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
+
+        self.session.timeout = 150
 
     def register_user(self, userdata):
         #self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -78,12 +77,12 @@ class adscondo():
         if(email_regex.search(payload['useremail'])==None):
             res['detail']+='Invalid email. '
     
-        r = httprequestObj.http_get('https://www.adscondo.com/')
+        r = self.session.http_get('https://www.adscondo.com/')
         sou = BeautifulSoup(r.text,'html5lib')
         payload['houzez_register_security'] = sou.find('input',attrs = {'name':'houzez_register_security'})['value']
         payload['_wp_http_referer'] = (sou.findAll('form')[1]).find('input',attrs = {'name':'_wp_http_referer'})['value']
         print(payload)
-        r = httprequestObj.http_post(reqst_url, data=payload)
+        r = self.session.http_post(reqst_url, data=payload)
         jr = json.loads(r.text)
         
         if jr['success'] == False:
@@ -113,12 +112,12 @@ class adscondo():
             'action': 'houzez_login'
         }
         
-        r = httprequestObj.http_get('https://www.adscondo.com/')
+        r = self.session.http_get('https://www.adscondo.com/')
         sou = BeautifulSoup(r.text,'html5lib')
         login_pload['houzez_login_security'] = sou.find('input',attrs = {'name':'houzez_login_security'})['value']
         login_pload['_wp_http_referer'] = sou.findAll('form')[0].find('input',attrs = {'name':'_wp_http_referer'})['value']
 
-        r= httprequestObj.http_post(login_url, data=login_pload)
+        r= self.session.http_post(login_url, data=login_pload)
 
         jr = json.loads(r.text)
         
@@ -138,9 +137,9 @@ class adscondo():
             'password': userdata['pass'],
         }
 
-        r = httprequestObj.http_post(login_url, data=login_pload)
+        r = self.session.http_post(login_url, data=login_pload)
         jr = json.loads(r.text)
-        r = httprequestObj.http_get("https://www.adscondo.com/user/"+jr["auth"]["id"])
+        r = self.session.http_get("https://www.adscondo.com/user/"+jr["auth"]["id"])
         print(r.text)
         if "ออกจากระบบ" in r.text:
             res['success'] = True
@@ -264,7 +263,7 @@ class adscondo():
             else:
                 data['prop_status'] = '85'
 
-            r = httprequestObj.http_get(reqst_url)
+            r = self.session.http_get(reqst_url)
             sou = BeautifulSoup(r.text,'html5lib')
             
             pattern = re.compile('var houzezProperty = {.*?};')
@@ -319,7 +318,7 @@ class adscondo():
                 # y=str(datetime.utcnow()).replace('-','').replace(":","").replace(".","").replace(" ","")+".jpg"
                 #print(y)
                 file = {'property_upload_file': (i, open(i, "rb"), "image/jpeg")}
-                upload_file = httprequestObj.http_post(img_upload,data = {'name':i},files=file)
+                upload_file = self.session.http_post(img_upload,data = {'name':i},files=file)
                 print(upload_file.text)
                 jr = json.loads(upload_file.text)
                 at_id.append(jr['attachment_id'])
@@ -330,9 +329,9 @@ class adscondo():
             
             url = 'https://www.adscondo.com/%E0%B8%AD%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%B2%E0%B8%AF%E0%B8%82%E0%B8%AD%E0%B8%87%E0%B8%89%E0%B8%B1%E0%B8%99%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94/'
             
-            r = httprequestObj.http_post(reqst_url,data = data)
+            r = self.session.http_post(reqst_url,data = data)
             
-            page = httprequestObj.http_get(url)
+            page = self.session.http_get(url)
             sou = soup(page.text,'html5lib')
             delt = sou.find('a',attrs= {'class':'delete-property'})
             divi = sou.find('div', attrs = {'class':'item-wrap'})
@@ -393,7 +392,7 @@ class adscondo():
             post_id = str(postdata['post_id'])
             p_title = ''
             get_url = 'https://www.adscondo.com/%E0%B8%AD%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%B2%E0%B8%AF%E0%B8%82%E0%B8%AD%E0%B8%87%E0%B8%89%E0%B8%B1%E0%B8%99%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94/'
-            r = httprequestObj.http_get(get_url)
+            r = self.session.http_get(get_url)
             sou = BeautifulSoup(r.text,'html5lib')
             security = sou.findAll('a',attrs = {'class':'delete-property'})
             heading = sou.findAll('h4',attrs = {'class':'my-heading'})
@@ -499,7 +498,7 @@ class adscondo():
             else:
                 data['prop_status'] = '85'
 
-            r = httprequestObj.http_get(reqst_url)
+            r = self.session.http_get(reqst_url)
             sou = BeautifulSoup(r.text,'html5lib')
             
             pattern = re.compile('var houzezProperty = {.*?};')
@@ -565,7 +564,7 @@ class adscondo():
                         'thumb_id': delt['data-attachment-id'],
                         'removeNonce': removeNonce
                     }
-                    r=httprequestObj.http_post(img_upload,data=del_data)
+                    r=self.session.http_post(img_upload,data=del_data)
                     print(r.text)
 
             #upload all images    
@@ -573,7 +572,7 @@ class adscondo():
             img_upload = 'https://www.adscondo.com/wp-admin/admin-ajax.php?action=houzez_property_img_upload&verify_nonce='+removeNonce
             for ind, i in enumerate(postdata['post_images']):
                 file = {'property_upload_file': (i, open(i, "rb"), "image/jpeg")} 
-                upload_file = httprequestObj.http_post(img_upload,data = {'name':i},files=file)
+                upload_file = self.session.http_post(img_upload,data = {'name':i},files=file)
                 jr = json.loads(upload_file.text)
                 at_id.append(jr['attachment_id'])
             print('yha')
@@ -582,7 +581,7 @@ class adscondo():
                 data['propperty_image_ids[]'].append(at_id[i])
 
             
-            r = httprequestObj.http_post(reqst_url,data = data)
+            r = self.session.http_post(reqst_url,data = data)
             #post_url = 'https://www.adscondo.com/คอนโด/'+p_title
             success = True
             detail = "Post edited successfully"
@@ -624,7 +623,7 @@ class adscondo():
             except:
                 account = 'null'
             get_url = 'https://www.adscondo.com/%E0%B8%AD%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%B2%E0%B8%AF%E0%B8%82%E0%B8%AD%E0%B8%87%E0%B8%89%E0%B8%B1%E0%B8%99%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94/'
-            r = httprequestObj.http_get(get_url)
+            r = self.session.http_get(get_url)
             sou = BeautifulSoup(r.text,'html5lib')
             security = sou.findAll('a',attrs = {'class':'delete-property'})
             
@@ -642,7 +641,7 @@ class adscondo():
                 detail = 'Post Not Found'
 
             else:
-                r = httprequestObj.http_post(url,data = data)
+                r = self.session.http_post(url,data = data)
                 jr = json.loads(r.text)
         
                 if jr['success'] == False:
@@ -695,7 +694,7 @@ class adscondo():
                 print(page)
                 all_posts_url = 'https://www.adscondo.com/%e0%b8%ad%e0%b8%aa%e0%b8%b1%e0%b8%87%e0%b8%ab%e0%b8%b2%e0%b8%af%e0%b8%82%e0%b8%ad%e0%b8%87%e0%b8%89%e0%b8%b1%e0%b8%99%e0%b8%82%e0%b8%b2%e0%b8%a2%e0%b8%84%e0%b8%ad%e0%b8%99%e0%b9%82%e0%b8%94/' + page
 
-                all_posts = httprequestObj.http_get(all_posts_url)
+                all_posts = self.session.http_get(all_posts_url)
 
                 page = soup(all_posts.text, features = "html5lib")
                 #print(page,"###")
@@ -721,7 +720,7 @@ class adscondo():
                             post_found = "true"
                             
                             post_id = one.find('a',attrs = {'class':'delete-property'})['data-id']
-                            r = httprequestObj.http_get(post_url)
+                            r = self.session.http_get(post_url)
                             sou = BeautifulSoup(r.text,'html5lib')
 
                             post_modify_time =  sou.findAll('div',attrs = {'class':'title-right'})[1].find('p').text[15:]

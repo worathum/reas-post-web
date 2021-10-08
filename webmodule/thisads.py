@@ -13,7 +13,6 @@ import sys
 import urllib.request
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
 province_arr = ['เลือกหมวดหมู่', 'เครื่องสำอางค์', 'น้ำหอม', 'ครีม โลชั่น', 'เกี่ยวกับผิวหน้า', 'เกี่ยวกับผม', 'เกี่ยวกับมือและเล็บ', 'เกี่ยวกับความสะอาดร่างกาย', 'เสริมความงาม', 'อื่นๆ', 'อื่นๆ', 'Resume', 'คนหางาน', 'Part Time', 'รายได้เสริม', 'งานพิเศษ', 'งานราชการ', 'งานประจำ', 'อื่นๆ', 'สินเชื่อและไฟแนนซ์', 'ประกันภัยและพรบ', 'ศูนย์บริการ', 'จักรยาน', 'ประดับยนต์', 'เครื่องเสียง', 'อะไหล่', 'มอเตอร์ไซค์', 'รถยนต์', 'อื่นๆ', 'งานวิจัย', 'พิมพ์งาน เข้าเล่ม', 'งานแปล', 'บัญชี', 'รับเหมา', 'รับจ้าง', 'ขายตรง', 'งานพิมพ์', 'กฎหมาย', 'ก่อสร้าง', 'อื่นๆ', 'โรงแรม', 'โรงงาน โกดัง', 'ทาวน์เฮาส์', 'ตึกแถว', 'ร้านค้า พื้นที่ขายของ', 'สำนักงาน', 'หอพัก', 'คอนโดมิเนียม', 'ที่ดิน', 'บ้านเดี่ยว', 'การสักบนร่างกาย', 'ศัลยกรรม', 'อื่นๆ', 'เครื่องสำอางค์', 'อาหารเสริม', 'การแพทย์', 'เสริมความงาม', 'การรักษาโรค', 'การนวด', 'สปา', 'อื่นๆ', 'น้ำหอม', 'เครื่องสำอาง', 'เด็กหญิง', 'เด็กชาย', 'เนคไท ผ้าพันคอ', 'รองเท้า ถุงเท้า', 'ชุดนอน', 'ชุดชั้นใน', 'เสื้อผ้าสตรี', 'เสื้อผ้าบุรุษ', 'กระเป๋า', 'อื่นๆ', 'วัสดุอุปกรณ์', 'ตกแต่งภายใน', 'ห้องน้ำ', 'ห้องรับแขก', 'ห้องนอน', 'ห้องครัว', 'อื่นๆ', 'บริการไอที', 'โฮสติ้ง', 'เว็บไซต์', 'Server', 'Hardware', 'Software', 'Printer Scaner', 'PDA', 'Notebook', 'PC', 'อื่นๆ', 'บริการ ซ่อม', 'อุปกรณ์เสริม', 'ซิมการ์ด บัตรเติมเงิน', 'PABX', 'โทรศัพท์บ้าน', 'วิทยุสื่อสาร', 'PCT', 'มือถือ', 'อื่นๆ', 'บริการถ่ายภาพ', 'อุปกรณ์เสริม', 'เมมโมรี่การ์ด', 'กล้องส่องทางไกล', 'กล้องวงจรปิด', 'กล้องวีดีโอ', 'กล้องดิจิตอล', 'กล้องใช้ฟิล์ม', 'อื่นๆ', 'ต่างหู ตุ้มหู', 'สร้อย จี้', 'เพชร', 'แหวน', 'เพชร', 'ทอง', 'จิวเวลลี่', 'อื่นๆ', 'บริการซ่อม', 'เคเบิ้ล จานดาวเทียม', 'หลอดไฟ โคมไฟ', 'เครื่องครัว', 'เครื่องซักผ้า', 'เครื่องทำความเย็น', 'เครื่องปรับอากาศ', 'เครื่องเล่นเพลง หนัง', 'เครื่องเสียง', 'วิทยุ เทป', 'ทีวี', 'อื่นๆ', 'ทำผม', 'ตกแต่งเล็บ', 'สายรัดข้อมือ ข้อเท้า', 'เข็มขัด', 'หมวก', 'ที่ดัดฟัน', 'คอนแท็คเลนส์', 'แว่นตา', 'นาฬิกา', 'อื่นๆ', 'ตกแต่งขน', 'กรง ที่อยู่สัตว์', 'รักษาสัตว์', 'อาหารสัตว์', 'สัตว์เลี้ยง', 'อื่นๆ', 'คู่มือ บทสรุป', 'เกมส์คอมพิวเตอร์', 'เกมส์ออนไลน์', 'XBox', 'Nintendo', 'PlayStation', 'อื่นๆ', 'วัสดุอุปกรณ์ วัตถุดิบ', 'เครื่องมือ', 'เครื่องจักรกล', 'โรงงาน', 'ส่งออก', 'นำเข้า', 'อุตสาหกรรม', 'อื่นๆ', 'โปสการ์ด', 'เหรียญ', 'แสตมป์', 'โมเดล', 'การ์ด', 'รถบังคับ', 'ของเก่า', 'ตุ๊กตา', 'พระเครื่อง', 'อื่นๆ', 'ละครเวที', 'แสดงสินค้า', 'แต่งงาน', 'คอนเสิร์ต', 'ไนท์คลับ', 'คาราโอเกะ', 'ร้านอาหาร', 'ผับ บาร์', 'อื่นๆ', 'สารคดี', 'รายการทีวี', 'คอนเสิร์ต',
                 'ละคร VCD', 'CD เพลง', 'เทป', 'หนัง DVD', 'หนัง VCD', 'อื่นๆ', 'ห้องซ้อม', 'วงดนตรี', 'เครื่องตี', 'เครื่องสาย', 'เครื่องเป่า', 'อิเล็กโทน', 'กลอง', 'เบส', 'กีตาร์', 'อื่นๆ', 'เสื้อผ้า', 'รับเลี้ยงเด็ก', 'เฟอร์นิเจอร์เด็ก', 'อาบน้ำเด็ก', 'ที่นอน', 'ของเล่น', 'อื่นๆ', 'สถาบัน', 'อบรม สัมนา', 'สอนภาษา', 'สอนพิเศษ', 'กวดวิชา', 'เตรียมสอบ', 'เรียนต่อ', 'นิตยสาร', 'นวนิยาย', 'การ์ตูน', 'Textbook', 'ตำราเรียน', 'หนังสือ', 'อื่นๆ', 'โต๊ะ เก้าอี้', 'แฟกซ์', 'โปรเจ็กเตอร์', 'เครื่องถ่ายเอกสาร', 'เครื่องเขียน', 'อื่นๆ', 'เย็บปักถักร้อย', 'รูปปั้น', 'ภาพถ่าย', 'ภาพวาด', 'เทียน', 'ดินเผา', 'ผ้า', 'ไม้', 'โลหะ', 'แก้ว', 'เครื่องสาน', 'อื่นๆ', 'กรอบรูป', 'ของพรีเมี่ยม', 'ของกิ๊ฟชอป', 'ผ้าไหม', 'สินค้าท้องถิ่น', 'ของชำร่วย', 'ของฝาก', 'ของที่ระลึก', 'อื่นๆ', 'ปุ๋ย เคมี', 'กระถาง', 'หญ้า', 'ไม้ประดับ', 'ร้านดอกไม้', 'ดอกไม้', 'ร้านต้นไม้', 'ต้นไม้', 'อื่นๆ', 'ฟิตเนส โยคะ', 'เครื่องออกกำลังกาย', 'อุปกรณ์', 'งานเลี้ยง', 'นันทนาการ', 'กิจกรรม', 'กีฬา', 'อื่นๆ', 'อุปกรณ์ท่องเที่ยว', 'จองตั๋วเครื่องบินรถเรือ', 'บริการเช่า', 'โปรแกรมทัวร์', 'บริษัททัวร์', 'ที่พัก', 'จองโรงแรมต่างประเทศ', 'จองโรงแรมในประเทศ', 'อื่นๆ', 'อุปกรณ์', 'เครื่องจักร', 'ทำสวน ทำไร่', 'ปลูกพืช', 'การเกษตร', 'อื่นๆ', 'คู่มือทำอาหาร', 'ภัตราคาร', 'ร้านอาหาร', 'เครื่องดื่ม', 'อาหาร', 'อื่นๆ', 'ใบปลิว', 'การ์ด', 'คูปอง', 'บัตร', 'ตั๋ว', 'อื่นๆ', 'ไม่มีหมวด', 'กินไม่ได้', 'กินได้', 'กรุณาเลือก', 'อยากขาย', 'อยากซื้อ', 'อยากเช่า', 'ให้เช่า', 'แนะนำ', 'รับจ้าง', 'บริการ', 'หาคน', 'กรุณาเลือก', 'สินค้าใหม่', 'สินค้ามือสอง', 'กรุณาเลือก', 'กรุงเทพมหานคร', 'กระบี่', 'กาญจนบุรี', 'กาฬสินธุ์', 'กำแพงเพชร', 'ขอนแก่น', 'จันทบุรี', 'ฉะเชิงเทรา', 'ชลบุรี', 'ชัยนาท', 'ชัยภูมิ', 'ชุมพร', 'เชียงราย', 'เชียงใหม่', 'ตรัง', 'ตราด', 'ตาก', 'นครนายก', 'นครปฐม', 'นครพนม', 'นครราชสีมา', 'นครศรีธรรมราช', 'นครสวรรค์', 'นนทบุรี', 'นราธิวาส', 'น่าน', 'บุรีรัมย์', 'ปทุมธานี', 'ประจวบคีรีขันธ์', 'ปราจีนบุรี', 'ปัตตานี', 'พระนครศรีอยุธยา', 'พะเยา', 'พังงา', 'พัทลุง', 'พิจิตร', 'พิษณุโลก', 'เพชรบุรี', 'เพชรบูรณ์', 'แพร่', 'ภูเก็ต', 'มหาสารคาม', 'มุกดาหาร', 'แม่ฮ่องสอน', 'ยโสธร', 'ยะลา', 'ร้อยเอ็ด', 'ระนอง', 'ระยอง', 'ราชบุรี', 'ลพบุรี', 'ลำปาง', 'ลำพูน', 'เลย', 'ศรีสะเกษ', 'สกลนคร', 'สงขลา', 'สตูล', 'สมุทรปราการ', 'สมุทรสงคราม', 'สมุทรสาคร', 'สระแก้ว', 'สระบุรี', 'สิงห์บุรี', 'สุโขทัย', 'สุพรรณบุรี', 'สุราษฎร์ธานี', 'สุรินทร์', 'หนองคาย', 'หนองบัวลำภู', 'อ่างทอง', 'อำนาจเจริญ', 'อุดรธานี', 'อุตรดิตถ์', 'อุทัยธานี', 'อุบลราชธานี', '7', '15', '30', '45', '60', '90']
 
@@ -34,6 +33,7 @@ class thisads():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def register_user(self, postdata):
         time_start = datetime.datetime.utcnow()
@@ -71,7 +71,7 @@ class thisads():
             'Connection': 'keep-alive',
             'Referer': 'http://thisads.com/register.php',
         }
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'http://thisads.com/ajax_register.php', headers=headers, data=data)
 
         data = r.text
@@ -118,7 +118,7 @@ class thisads():
             'mpassword': passwd,
             'login': ' Login '
         }
-        r = httprequestObj.http_post('http://thisads.com/ajax_login.php',
+        r = self.session.http_post('http://thisads.com/ajax_login.php',
                                      headers=headers, data=data)
         data = r.text
         if data != '\ufeff1':
@@ -232,7 +232,7 @@ class thisads():
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0',
         }
-        r = httprequestObj.http_post('http://thisads.com/ajax_fullpost.php', headers=headers, data=data, files=files)
+        r = self.session.http_post('http://thisads.com/ajax_fullpost.php', headers=headers, data=data, files=files)
         print(r.text)
         if str(r.text) != '\ufeff1':
             success = 'false'
@@ -254,7 +254,7 @@ class thisads():
             }
 
         # getting post id and url
-        r = httprequestObj.http_get(
+        r = self.session.http_get(
             'http://www.thisads.com/ajax_showproduct.php', headers=headers, verify=False)
         soup = BeautifulSoup(r.content, 'html5lib')
         # with open('temp.html', 'w') as f:
@@ -397,7 +397,7 @@ class thisads():
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0',
         }
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'http://www.thisads.com/ajax_fulledit.php', headers=headers, data=data, files=files)
         #print(str(r.text),str(r.content))
         if str(r.text) != '\ufeff1':
@@ -432,7 +432,7 @@ class thisads():
             ('id', pid),
         )
         # getting post id and url
-        r = httprequestObj.http_get(
+        r = self.session.http_get(
             'http://www.thisads.com/ajax_showproduct.php', headers=headers, verify=False)
         soup = BeautifulSoup(r.content, 'html5lib')
         # with open('temp.html', 'w') as f:
@@ -449,7 +449,7 @@ class thisads():
             detail = 'Error while deleting or post id dont exist'
         else:
             detail = 'Success fully deleted'
-        r = httprequestObj.http_get(
+        r = self.session.http_get(
             'http://www.thisads.com/ajax_deleteproduct.php', headers=headers, params=params, verify=False)
 
         time_end = datetime.datetime.utcnow()
@@ -476,7 +476,7 @@ class thisads():
         params = (
             ('id', '0'),
         )
-        response = httprequestObj.http_get('http://www.thisads.com/ajax_moveproduct.php', headers=headers, params=params, verify=False)
+        response = self.session.http_get('http://www.thisads.com/ajax_moveproduct.php', headers=headers, params=params, verify=False)
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         if success=='true':
@@ -501,7 +501,7 @@ class thisads():
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0',
         }
-        r = httprequestObj.http_get(
+        r = self.session.http_get(
             'http://www.thisads.com/ajax_showproduct.php', headers=headers, verify=False)
         soup = BeautifulSoup(r.content, 'html5lib')
         # with open('temp.html', 'w') as f:
@@ -524,7 +524,7 @@ class thisads():
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0',
         }
-        r = httprequestObj.http_get(
+        r = self.session.http_get(
             'http://www.thisads.com/ajax_showproduct.php', headers=headers, verify=False)
         soup = BeautifulSoup(r.content, 'html5lib')
         for value in soup.findAll('a'):
@@ -536,7 +536,7 @@ class thisads():
                     ('id', post_id),
                 )
 
-                r = httprequestObj.http_get(
+                r = self.session.http_get(
                     'http://www.thisads.com/ajax_deleteproduct.php', headers=headers, params=params)
 
     def search_post(self,postdata):
@@ -580,9 +580,9 @@ class thisads():
                 'Accept-Language': 'en-US,en;q=0.9,hi;q=0.8',
             }
             pi_url  = 'http://thisads.com/member.php'
-            pi = httprequestObj.http_get(pi_url)
+            pi = self.session.http_get(pi_url)
             #print(pi.text)
-            all_posts = httprequestObj.http_get(all_posts_url)
+            all_posts = self.session.http_get(all_posts_url)
 
             page = BeautifulSoup(all_posts.text, features = "html5lib")
             

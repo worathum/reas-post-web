@@ -2,7 +2,6 @@ import requests, re, random
 from bs4 import BeautifulSoup
 import json, datetime
 from .lib_httprequest import *
-httprequestObj = lib_httprequest()
 
 class condoforrent:
 
@@ -17,6 +16,7 @@ class condoforrent:
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def register_user(self, data):
         start_time = datetime.datetime.utcnow()
@@ -48,7 +48,7 @@ class condoforrent:
             detail = 'Empty credentials'
         if success == 'true':
             url = 'http://xn--42cm3at5gj3b0hpal2dj.com/signup_member.php'
-            req = httprequestObj.http_post(url, data=postdata, headers=headers)
+            req = self.session.http_post(url, data=postdata, headers=headers)
             txt = str(req.text)
             if txt.find('สมัครสมาชิกเรียบร้อยแล้ว') == -1:
                 success = 'false'
@@ -76,7 +76,7 @@ class condoforrent:
         success = ''
         detail = ''
         url = 'http://xn--42cm3at5gj3b0hpal2dj.com/login.php'
-        req = httprequestObj.http_post(url, data=postdata, headers=headers)
+        req = self.session.http_post(url, data=postdata, headers=headers)
         txt = req.text
         if txt.find('Username หรือ Password ไม่ถูกต้อง') == -1:
             success = 'true'
@@ -164,7 +164,7 @@ class condoforrent:
             data['addr_district'] = ''.join(map(str, str(data['addr_district']).split(' ')))
             data['addr_sub_district'] = ''.join(map(str, str(data['addr_sub_district']).split(' ')))
             postdata['Province'] = ''
-            req = httprequestObj.http_get_with_headers('http://xn--42cm3at5gj3b0hpal2dj.com/add_property.php', headers=headers)
+            req = self.session.http_get_with_headers('http://xn--42cm3at5gj3b0hpal2dj.com/add_property.php', headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             options = soup.find('select', {'name': 'Province'}).findAll('option')
             count = 0
@@ -191,7 +191,7 @@ class condoforrent:
                 postdata['Province'] = ids[0]
             postdata['District'] = ''
             url = 'http://xn--42cm3at5gj3b0hpal2dj.com/getaddress.php?ID=' + str(postdata['Province']) + '&TYPE=District'
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
             txt = str(req.text)
             districts = []
             ids = []
@@ -242,7 +242,7 @@ class condoforrent:
                 postdata['District'] = ids[0]
             postdata['Subdistrict'] = ''
             url = 'http://xn--42cm3at5gj3b0hpal2dj.com/getaddress.php?ID=' + str(postdata['District']) + '&TYPE=Subdistrict'
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
             txt = str(req.text)
             subdistricts = []
             ids = []
@@ -318,7 +318,7 @@ class condoforrent:
             ##print('done')
             try:
                 url = 'http://xn--42cm3at5gj3b0hpal2dj.com/add_property.php'
-                req = httprequestObj.http_post(url, data=postdata, headers=headers)
+                req = self.session.http_post(url, data=postdata, headers=headers)
                 txt = req.text
 
                 if txt.find('.php?id=') == -1:
@@ -343,10 +343,10 @@ class condoforrent:
                         'Submit': 'Add map data'
                     }
                     url = 'http://xn--42cm3at5gj3b0hpal2dj.com/add_map.php?id='+str(post_id)
-                    req = httprequestObj.http_post(url,data=postdata,headers=headers)
+                    req = self.session.http_post(url,data=postdata,headers=headers)
 
                     imgurl = 'http://xn--42cm3at5gj3b0hpal2dj.com/add_img.php?id='+str(post_id)
-                    httprequestObj.http_get(imgurl)
+                    self.session.http_get(imgurl)
                     if 'post_images' in data:
                         if len(data['post_images']) > 0:
                             pass
@@ -359,7 +359,7 @@ class condoforrent:
                     for i in range(len(data['post_images'])):
                         r = open(os.getcwd() + '/' + data['post_images'][i], 'rb')
                         files['photoimg'] = r
-                        response = httprequestObj.http_post('http://xn--42cm3at5gj3b0hpal2dj.com/ajax_img.php', data=None, files=files)
+                        response = self.session.http_post('http://xn--42cm3at5gj3b0hpal2dj.com/ajax_img.php', data=None, files=files)
 
                     success = 'true'
                     detail = 'Successful post'
@@ -393,7 +393,7 @@ class condoforrent:
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
         url = 'http://xn--42cm3at5gj3b0hpal2dj.com/maneg_property.php'
         valid_ids = []
-        req = httprequestObj.http_get_with_headers(url, headers=headers)
+        req = self.session.http_get_with_headers(url, headers=headers)
         soup = BeautifulSoup(req.text, 'html.parser')
         total_pages = 1
         if soup.find('ul', {'class': 'pagination'}) != None:
@@ -402,7 +402,7 @@ class condoforrent:
                 total_pages -= 1
         for i in range(total_pages):
             url = 'http://xn--42cm3at5gj3b0hpal2dj.com/maneg_property.php?&page=' + str(i)
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             posts = soup.find('table', {'class': 'table table-striped'}).find('tbody').findAll('tr')
             for post in posts:
@@ -421,7 +421,7 @@ class condoforrent:
             detail = 'Invalid id'
         if success == 'true':
             url = 'http://xn--42cm3at5gj3b0hpal2dj.com/maneg_property.php?delete=' + str(post_id)
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
             txt = req.text
             success = 'true'
             detail = 'Successfully deleted'
@@ -452,7 +452,7 @@ class condoforrent:
         valid_titles = []
         urls = []
         views = []
-        req = httprequestObj.http_get_with_headers(url, headers=headers)
+        req = self.session.http_get_with_headers(url, headers=headers)
         soup = BeautifulSoup(req.text, 'html.parser')
         post_found = 'true'
         total_pages = 1
@@ -462,7 +462,7 @@ class condoforrent:
                 total_pages -= 1
         for i in range(total_pages):
             url = 'http://xn--42cm3at5gj3b0hpal2dj.com/maneg_property.php?&page=' + str(i)
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             posts = soup.find('table', {'class': 'table table-striped'}).find('tbody').findAll('tr')
             for post in posts:
@@ -531,7 +531,7 @@ class condoforrent:
             headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
             url = 'http://xn--42cm3at5gj3b0hpal2dj.com/maneg_property.php'
             valid_ids = []
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             total_pages = 1
             if soup.find('ul', {'class': 'pagination'}) != None:
@@ -540,7 +540,7 @@ class condoforrent:
                     total_pages -= 1
             for i in range(total_pages):
                 url = 'http://xn--42cm3at5gj3b0hpal2dj.com/maneg_property.php?&page=' + str(i)
-                req = httprequestObj.http_get_with_headers(url, headers=headers)
+                req = self.session.http_get_with_headers(url, headers=headers)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 posts = soup.find('table', {'class': 'table table-striped'}).find('tbody').findAll('tr')
                 for post in posts:
@@ -623,7 +623,7 @@ class condoforrent:
                 data['addr_district'] = ''.join(map(str, str(data['addr_district']).split(' ')))
                 data['addr_sub_district'] = ''.join(map(str, str(data['addr_sub_district']).split(' ')))
                 postdata['Province'] = ''
-                req = httprequestObj.http_get_with_headers('http://xn--42cm3at5gj3b0hpal2dj.com/edit_property.php?id='+str(post_id),
+                req = self.session.http_get_with_headers('http://xn--42cm3at5gj3b0hpal2dj.com/edit_property.php?id='+str(post_id),
                                                            headers=headers)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 options = soup.find('select', {'name': 'Province'}).findAll('option')
@@ -653,7 +653,7 @@ class condoforrent:
                 postdata['District'] = ''
                 url = 'http://xn--42cm3at5gj3b0hpal2dj.com/getaddress.php?ID=' + str(
                     postdata['Province']) + '&TYPE=District'
-                req = httprequestObj.http_get_with_headers(url, headers=headers)
+                req = self.session.http_get_with_headers(url, headers=headers)
                 txt = str(req.text)
                 districts = []
                 ids = []
@@ -706,7 +706,7 @@ class condoforrent:
                 postdata['Subdistrict'] = ''
                 url = 'http://xn--42cm3at5gj3b0hpal2dj.com/getaddress.php?ID=' + str(
                     postdata['District']) + '&TYPE=Subdistrict'
-                req = httprequestObj.http_get_with_headers(url, headers=headers)
+                req = self.session.http_get_with_headers(url, headers=headers)
                 txt = str(req.text)
                 subdistricts = []
                 ids = []
@@ -783,7 +783,7 @@ class condoforrent:
                 ##print('done')
                 try:
                     url = 'http://xn--42cm3at5gj3b0hpal2dj.com/edit_property.php?id='+str(post_id)
-                    req = httprequestObj.http_post(url, data=postdata, headers=headers)
+                    req = self.session.http_post(url, data=postdata, headers=headers)
                     txt = req.text
 
                     if txt.find('บันทึกข้อมูลเรียบร้อยแล้ว') == -1:
@@ -806,19 +806,19 @@ class condoforrent:
                             'Submit': 'Edit map data'
                         }
                         url = 'http://xn--42cm3at5gj3b0hpal2dj.com/edit_map.php?id=' + str(post_id)
-                        req = httprequestObj.http_post(url, data=postdata, headers=headers)
+                        req = self.session.http_post(url, data=postdata, headers=headers)
 
                         # deleting previous images
                         url = 'http://xn--42cm3at5gj3b0hpal2dj.com/edit_img.php?id='+str(post_id)
-                        req = httprequestObj.http_get(url)
+                        req = self.session.http_get(url)
                         soup = BeautifulSoup(req.text,'html.parser')
                         imgs = soup.findAll('div',{'class':'col-xs-12 col-md-4 col-sm-6 col-mm-4'})
                         for img in imgs:
                             url = 'http://xn--42cm3at5gj3b0hpal2dj.com/'+str(img.find('a')['href'])
-                            req = httprequestObj.http_get(url)
+                            req = self.session.http_get(url)
 
                         imgurl = 'http://xn--42cm3at5gj3b0hpal2dj.com/add_img.php?id=' + str(post_id)
-                        httprequestObj.http_get(imgurl)
+                        self.session.http_get(imgurl)
                         if 'post_images' in data:
                             if len(data['post_images']) > 0:
                                 pass
@@ -831,7 +831,7 @@ class condoforrent:
                         for i in range(len(data['post_images'])):
                             r = open(os.getcwd() + '/' + data['post_images'][i], 'rb')
                             files['photoimg'] = r
-                            response = httprequestObj.http_post('http://xn--42cm3at5gj3b0hpal2dj.com/ajax_img.php',
+                            response = self.session.http_post('http://xn--42cm3at5gj3b0hpal2dj.com/ajax_img.php',
                                                                 data=None, files=files)
 
                         success = 'true'
@@ -866,7 +866,7 @@ class condoforrent:
             headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
             url = 'http://xn--42cm3at5gj3b0hpal2dj.com/maneg_property.php'
             valid_ids = []
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.session.http_get_with_headers(url, headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             total_pages = 1
             if soup.find('ul', {'class': 'pagination'}) != None:
@@ -875,7 +875,7 @@ class condoforrent:
                     total_pages -= 1
             for i in range(total_pages):
                 url = 'http://xn--42cm3at5gj3b0hpal2dj.com/maneg_property.php?&page=' + str(i)
-                req = httprequestObj.http_get_with_headers(url, headers=headers)
+                req = self.session.http_get_with_headers(url, headers=headers)
                 soup = BeautifulSoup(req.text, features='html.parser')
                 print(soup.find('table', {'class': 'table table-striped'}))
                 posts = soup.find('table', {'class': 'table table-striped'}).find('tbody').findAll('tr')

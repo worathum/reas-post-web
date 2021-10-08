@@ -28,7 +28,6 @@ def set_end_time(start_time):
     time_usage = time_end - start_time
     return time_end, time_usage
 
-httprequestObj = lib_httprequest()
 class hometophit():
 
     name = 'hometophit'
@@ -46,10 +45,11 @@ class hometophit():
         self.debug = 1
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def logout_user(self):
         url = 'http://hometophit.com/hometh/logout.php'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self, postdata):
         self.logout_user()
@@ -95,7 +95,7 @@ class hometophit():
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
 
-        r = httprequestObj.http_post(posturl, data = register_data1)
+        r = self.session.http_post(posturl, data = register_data1)
         res['websitename']='hometophit'
 
         if r.encoding is None or r.encoding == 'ISO-8859-1':
@@ -150,7 +150,7 @@ class hometophit():
 
         posturl='http://hometophit.com/hometh/submit_msn.php'
 
-        r = httprequestObj.http_post(posturl, data = register_data2)
+        r = self.session.http_post(posturl, data = register_data2)
         res['websitename']="hometophit"
 
         if r.encoding is None or r.encoding == 'ISO-8859-1':
@@ -192,7 +192,7 @@ class hometophit():
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
 
-        r = httprequestObj.http_post(posturl, data = login_data)
+        r = self.session.http_post(posturl, data = login_data)
 
         if r.encoding is None or r.encoding == 'ISO-8859-1':
             r.encoding = r.apparent_encoding
@@ -280,7 +280,7 @@ class hometophit():
             return res
         post_id = data['post_id']
         posturl = 'http://hometophit.com/hometh/mem_panel.php'
-        r = httprequestObj.http_get(posturl)
+        r = self.session.http_get(posturl)
         listed_reg = r'\"home_view\.php\?home_id=' + post_id + '\"'
         if re.search(listed_reg, r.text, re.DOTALL) is None:
             res['detail'] = 'Post not found.'
@@ -288,7 +288,7 @@ class hometophit():
             res['end_time'], res['usage_time'] = set_end_time(start_time)
             return res
         posturl = 'http://hometophit.com/hometh/update_homepost.php'
-        r = httprequestObj.http_post(posturl, data=create)
+        r = self.session.http_post(posturl, data=create)
 
         #     print(r.cookies,r.history[0].cookies)
         # res['websitename']=r.url
@@ -450,7 +450,7 @@ class hometophit():
         print('fin')
         post_id = data['post_id']
         posturl = 'http://hometophit.com/hometh/mem_panel.php'
-        r = httprequestObj.http_get(posturl)
+        r = self.session.http_get(posturl)
         listed_reg = r'\"home_view\.php\?home_id=' + post_id + '\"'
         if re.search(listed_reg, r.text, re.DOTALL) is None:
             res['detail'] = 'Post not found.'
@@ -460,7 +460,7 @@ class hometophit():
         posturl = 'http://hometophit.com/hometh/update_homepost.php'
         create['Submit'] = '   record'
         create['home_id'] = post_id
-        r = httprequestObj.http_post(posturl, data=create)
+        r = self.session.http_post(posturl, data=create)
         #print(str(r.text).find('คลิ๊กที่นี่ เพื่อดูประกาศของท่าน.!'))
 
         #     print(r.cookies,r.history[0].cookies)
@@ -725,7 +725,7 @@ class hometophit():
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
         posturl='http://hometophit.com/hometh/submit_homepost.php'
-        r = httprequestObj.http_post(posturl, data = create, files = file)
+        r = self.session.http_post(posturl, data = create, files = file)
         
     #     print(r.cookies,r.history[0].cookies)
         #res['websitename']=r.url
@@ -761,7 +761,7 @@ class hometophit():
             'Submit': 'Delete data'
         }
         posturl='http://hometophit.com/hometh/mem_panel.php'
-        r=httprequestObj.http_get(posturl)
+        r=self.session.http_get(posturl)
         listed_reg=r'\"home_view\.php\?home_id='+delete['home_id[]']+'\"'
         if re.search(listed_reg, r.text, re.DOTALL) is None:
             res['detail']='Post not found.'
@@ -769,7 +769,7 @@ class hometophit():
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
         posturl='http://hometophit.com/hometh/delete_homepost.php'
-        r = httprequestObj.http_post(posturl, data = delete)
+        r = self.session.http_post(posturl, data = delete)
     #     print(r.text, r.status_code, r.url)
         if(r.text==''):
             res['detail']+='Something went wrong. '
@@ -861,7 +861,7 @@ class hometophit():
         res={'websitename':'hometophit', 'success':"false", 'start_time': str(start_time), 'end_time': '0', 'usage_time': '0', 'detail': '', 'account_type':"null", "post_create_time": '', "post_modify_time": '', "post_view": ''}
         post_title = data['post_title_th']
         posturl='http://hometophit.com/hometh/mem_panel.php'
-        r=httprequestObj.http_get(posturl)
+        r=self.session.http_get(posturl)
 
         listed_reg=r'title="'+post_title+'\"'
         #print(r.text)
@@ -913,14 +913,14 @@ class hometophit():
             return res_login
         res={'websitename':'hometophit', 'success':"false", 'start_time': str(start_time), 'end_time': '0', 'usage_time': '0', 'detail': '', 'account_type':"null", "post_id": postdata['post_id']}
         posturl='http://hometophit.com/hometh/mem_panel.php'
-        r=httprequestObj.http_get(posturl)
+        r=self.session.http_get(posturl)
         listed_reg=r'\"home_view\.php\?home_id='+post_id+'\"'
         if re.search(listed_reg, r.text, re.DOTALL) is None:
             res['detail']='Post not found.'
             res['websitename']='hometophit'
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
-        r=httprequestObj.http_get("http://hometophit.com/hometh/update_home_uptime.php?home_id="+post_id)
+        r=self.session.http_get("http://hometophit.com/hometh/update_home_uptime.php?home_id="+post_id)
         if(r.text==''):
             res['detail']+='Something went wrong. '
         else:

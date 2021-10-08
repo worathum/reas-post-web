@@ -16,7 +16,6 @@ import urllib.request
 import urllib
 from PIL import Image
 
-httprequestObj = lib_httprequest()
 captcha = lib_captcha()
 
 
@@ -36,6 +35,7 @@ class ban2hand():
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.webname = 'ban2hand'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if self.debug == 1:
@@ -47,7 +47,7 @@ class ban2hand():
         time_start = datetime.datetime.utcnow()
 
         os.system('touch ./imgtmp/captcha.jpeg')
-        r = httprequestObj.http_get('https://www.ban2hand.com/captcha.php')
+        r = self.session.http_get('https://www.ban2hand.com/captcha.php')
         with open("./imgtmp/captcha.jpeg", 'wb') as img_f:
             img_f.write(r.content)
 
@@ -65,7 +65,7 @@ class ban2hand():
             "accept": "1"
         }
 
-        r = httprequestObj.http_post('https://www.ban2hand.com/signup.php', data=datapost)
+        r = self.session.http_post('https://www.ban2hand.com/signup.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
@@ -102,7 +102,7 @@ class ban2hand():
             "sendurl": ""
         }
         
-        r = httprequestObj.http_post('https://www.ban2hand.com/signin2.php', data=datapost)
+        r = self.session.http_post('https://www.ban2hand.com/signin2.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
@@ -195,7 +195,7 @@ class ban2hand():
                     prod_address += add + " "
             prod_address = prod_address[:-1]
 
-            r = httprequestObj.http_get('https://www.ban2hand.com/addhome.php')
+            r = self.session.http_get('https://www.ban2hand.com/addhome.php')
             # print(r.url)
             # print(r.status_code)
 
@@ -206,7 +206,7 @@ class ban2hand():
 
             province_url = 'https://www.ban2hand.com/findState.php'
 
-            r = httprequestObj.http_get(province_url, params={'country': province_id})
+            r = self.session.http_get(province_url, params={'country': province_id})
             # print(r.url)
             # print(r.status_code)
 
@@ -217,7 +217,7 @@ class ban2hand():
 
             district_url = 'https://www.ban2hand.com/findCity.php'
 
-            r = httprequestObj.http_get(district_url, params={'country': province_id, 'state': district_id})
+            r = self.session.http_get(district_url, params={'country': province_id, 'state': district_id})
             # print(r.url)
             # print(r.status_code)
 
@@ -292,7 +292,7 @@ class ban2hand():
                 else:
                     datapost.append((index_name, (None, None)))
 
-            r = httprequestObj.http_post('https://www.ban2hand.com/savehome.php', data={}, files=datapost)
+            r = self.session.http_post('https://www.ban2hand.com/savehome.php', data={}, files=datapost)
             # print(r.url)
             # print(r.status_code)
 
@@ -374,7 +374,7 @@ class ban2hand():
                     prod_address += add + " "
             prod_address = prod_address[:-1]
 
-            r = httprequestObj.http_get('https://www.ban2hand.com/', params={'ac': 'complete'})
+            r = self.session.http_get('https://www.ban2hand.com/', params={'ac': 'complete'})
             # print(r.url)
             # print(r.status_code)
 
@@ -390,7 +390,7 @@ class ban2hand():
                 'topic': 'all'
             }
 
-            r = httprequestObj.http_get('https://www.ban2hand.com/membertool.php', params=params)
+            r = self.session.http_get('https://www.ban2hand.com/membertool.php', params=params)
             # print(r.url)
             # print(r.status_code)
 
@@ -408,7 +408,7 @@ class ban2hand():
 
             if post_found:
 
-                r = httprequestObj.http_get('https://www.ban2hand.com/addhome.php', params={'eid': post_id})
+                r = self.session.http_get('https://www.ban2hand.com/addhome.php', params={'eid': post_id})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -419,7 +419,7 @@ class ban2hand():
 
                 province_url = 'https://www.ban2hand.com/findState.php'
 
-                r = httprequestObj.http_get(province_url, params={'country': province_id})
+                r = self.session.http_get(province_url, params={'country': province_id})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -430,7 +430,7 @@ class ban2hand():
 
                 district_url = 'https://www.ban2hand.com/findCity.php'
 
-                r = httprequestObj.http_get(district_url, params={'country': province_id, 'state': district_id})
+                r = self.session.http_get(district_url, params={'country': province_id, 'state': district_id})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -500,7 +500,7 @@ class ban2hand():
                 for image in old_images:
                     pic_id = image.get('id').split('_')[-1]
                     # print(pic_id)
-                    r = httprequestObj.http_get('https://www.ban2hand.com/delpici.php', params={'id': pic_id})
+                    r = self.session.http_get('https://www.ban2hand.com/delpici.php', params={'id': pic_id})
                     # print(r.url)
                     # print(r.status_code)
 
@@ -513,7 +513,7 @@ class ban2hand():
                     else:
                         datapost.append((index_name, (None, None)))
 
-                r = httprequestObj.http_post('https://www.ban2hand.com/savehome.php', data={}, files=datapost)
+                r = self.session.http_post('https://www.ban2hand.com/savehome.php', data={}, files=datapost)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -563,7 +563,7 @@ class ban2hand():
 
         if success:
 
-            r = httprequestObj.http_get('https://www.ban2hand.com/', params={'ac': 'complete'})
+            r = self.session.http_get('https://www.ban2hand.com/', params={'ac': 'complete'})
             # print(r.url)
             # print(r.status_code)
 
@@ -579,7 +579,7 @@ class ban2hand():
                 'topic': 'all'
             }
 
-            r = httprequestObj.http_get('https://www.ban2hand.com/membertool.php', params=params)
+            r = self.session.http_get('https://www.ban2hand.com/membertool.php', params=params)
             # print(r.url)
             # print(r.status_code)
 
@@ -602,7 +602,7 @@ class ban2hand():
                     'action': 'update'
                 }
 
-                r = httprequestObj.http_get('https://www.ban2hand.com/product.php?id=105654&action=update', params=params)
+                r = self.session.http_get('https://www.ban2hand.com/product.php?id=105654&action=update', params=params)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -643,7 +643,7 @@ class ban2hand():
 
         if success:
 
-            r = httprequestObj.http_get('https://www.ban2hand.com/', params={'ac': 'complete'})
+            r = self.session.http_get('https://www.ban2hand.com/', params={'ac': 'complete'})
             #print(r.url)
             # print(r.status_code)
 
@@ -659,7 +659,7 @@ class ban2hand():
                 'topic': 'all'
             }
 
-            r = httprequestObj.http_get('https://www.ban2hand.com/membertool.php', params=params)
+            r = self.session.http_get('https://www.ban2hand.com/membertool.php', params=params)
             # print(r.url)
             # print(r.status_code)
 
@@ -682,7 +682,7 @@ class ban2hand():
                     'job': 'del'
                 }
 
-                r = httprequestObj.http_get('https://www.ban2hand.com/product.php?job=del&id=105644', params=params)
+                r = self.session.http_get('https://www.ban2hand.com/product.php?job=del&id=105644', params=params)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -725,7 +725,7 @@ class ban2hand():
 
         if success:
 
-            r = httprequestObj.http_get('https://www.ban2hand.com/', params={'ac': 'complete'})
+            r = self.session.http_get('https://www.ban2hand.com/', params={'ac': 'complete'})
             # print(r.url)
             # print(r.status_code)
 
@@ -741,7 +741,7 @@ class ban2hand():
                 'topic': 'all'
             }
 
-            r = httprequestObj.http_get('https://www.ban2hand.com/membertool.php', params=params)
+            r = self.session.http_get('https://www.ban2hand.com/membertool.php', params=params)
             # print(r.url)
             # print(r.status_code)
 
@@ -760,7 +760,7 @@ class ban2hand():
                     post_id = post_url.split('/')[-2].split('-')[-1]
                     # print(post_url)
 
-                    r = httprequestObj.http_get(post_url)
+                    r = self.session.http_get(post_url)
                     # print(r.url)
                     # print(r.status_code)
 
