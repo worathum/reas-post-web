@@ -1,18 +1,20 @@
-import requests
+import datetime
+import json
 import os
-from .lib_httprequest import *
-import string
-from bs4 import BeautifulSoup
 import os.path
 # from urlparse import urlparse
 import re
-import json
-import datetime
-import time
-import sys
 import shutil
+import string
+import sys
+import time
+from itertools import count
 from urllib.parse import unquote
 
+import requests
+from bs4 import BeautifulSoup
+
+from .lib_httprequest import *
 
 # options = Options()
 # options.set_headless(True)
@@ -601,31 +603,14 @@ class bankumka():
             # print(f'tumbon_id--{tumbon_id}')
 
         if success == "true":
-            # TODO
-            r = self.session.http_get(
-                'https://bankumka.com/member/properties', verify=False)
-            data = r.content
-            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-            all_page=len(soup.find('select',{'name':'pageNo'}).find_all('option'))
-            for i in range(1,all_page+1):
-                r = self.session.http_get(
-                'https://bankumka.com/member/properties/page/{}'.format(i), verify=False)
-                data = r.content
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                all = soup.find_all("a", {"class": "my-property-name"})
-                posturl = ""
-                for i in all:
-                    if postdata['post_id'] in i.get_text():
-                        posturl += i['href']
-                        break
-                posturl += '/edit'
-            if(posturl == '/edit'):
+            posturl = self._get_post_url(postdata["post_id"])
+
+            if not posturl:
                 success = False
                 posturl = ''
                 detail = "The post doesn't exist"
             else:
-                r = self.session.http_get(
-                    posturl, verify=False)
+                r = self.session.http_get(posturl, verify=False)
                 data = r.content
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 alls = soup.find_all("option")
@@ -987,31 +972,13 @@ class bankumka():
         province_id = '10'
         amphur_id = '26'
         if success == "true":
-            page = 1
-            posturl = ""
-            found = False
-            while True:
-                r = self.session.http_get(
-                    'https://bankumka.com/member/properties/page/'+str(page), verify=False)
-                data = r.text
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                all_ = soup.findAll("a", {"class": "my-property-name"})
-                for i in all_:
-                    if (i.get_text()).find(str(postdata['post_id'])) != -1:
-                        posturl += i['href']
-                        found = True
-                        break
-                page += 1
-                if not all_ or found:
-                    break
-            posturl += '/edit'
+            posturl = self._get_post_url(postdata["post_id"])
 
-            if posturl == '/edit':
+            if not posturl:
                 detail  = "No post found with given id"
                 success = "false"
             else:
-                r = self.session.http_get(
-                    posturl, verify=False)
+                r = self.session.http_get(posturl, verify=False)
                 data = r.text
                 # print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -1227,19 +1194,8 @@ class bankumka():
         ashopname = test_login["detail"]
         # print(test_login)
         if success == "true":
-            r = self.session.http_get(
-                'https://bankumka.com/member/properties', verify=False)
-            data = r.text
-            soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-            all = soup.findAll("a", {"class": "my-property-name"})
-            posturl = ""
-            for i in all:
-                # print(i.get_text())
-                if (i.get_text()).find(str(postdata['post_id'])) != -1:
-                    posturl += i['href']
-            posturl += '/edit'
-            # print(posturl)
-            if(posturl == '/edit'):
+            posturl = self._get_post_url(postdata["post_id"])
+            if not posturl:
                 success = False
             else:
                 datapost = {
@@ -1334,6 +1290,32 @@ class bankumka():
             "post_view":"",
             "ds_id": postdata['ds_id']
         }
+
+    def _get_post_url(self, post_id):
+        page = count(1)
+        while True:
+            current_page = next(page)
+            r = self.session.http_get(f"https://bankumka.com/member/properties/page/{current_page}", verify=False)
+            soup = BeautifulSoup(r.content, self.parser, from_encoding="utf-8")
+            try:
+                total_page = len(soup.find('select',{'name':'pageNo'}).find_all('option'))
+            except:
+                total_page = 1
+
+            listings = soup.find_all("a", {"class": "my-property-name"})
+            posturl = ""
+            for l in listings:
+                if post_id in l.get_text():
+                    posturl = l["href"]
+                    posturl += "/edit"
+                    break # for loop
+
+            if current_page >= total_page or posturl:
+                break
+
+        return posturl
+
+    
     def print_debug(self, msg):
         if(self.debug == 1):
             print(msg)
