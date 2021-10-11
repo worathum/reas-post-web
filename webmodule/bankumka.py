@@ -614,6 +614,7 @@ class bankumka():
                 data = r.content
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 alls = soup.find_all("option")
+                del_cover_ids = [c["id"].split("_")[-1] for c in soup.find_all("div", {"id": re.compile(r"cover_\d+")})]
                 province_found = False
                 for i in alls:
                     if postdata['addr_province'].replace(" ","").strip() == i.get_text().replace(" ","").strip():
@@ -767,6 +768,10 @@ class bankumka():
                     datapost[2] = ('prop_type', 32)
                     datapost[9] = ('prop_pricerent', '')
                     datapost[7] = ('prop_price', postdata['price_baht'])
+
+                for c in del_cover_ids:
+                    datapost.append(("deletecover[]", c))
+
                 r = self.session.http_post(
                     'https://bankumka.com/ajax/checkProperty', data=datapost)
                 data = json.loads(r.text)
@@ -832,6 +837,10 @@ class bankumka():
                         ('action', 'update'),
                         ('prop_id', postdata['post_id'])
                     ]
+
+                    for c in del_cover_ids:
+                        datapost.append(("deletecover[]", c))
+                        
                     if theprodid == 2:
                         datapost.append(('prop_area_rai', ''))
                         datapost.append(('prop_area_ngan', ''))
@@ -951,7 +960,7 @@ class bankumka():
             'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "end_time": str(time_end),
-            "post_url": posturl,
+            "post_url": posturl.strip("/edit"),
             "post_id": postdata['post_id'],
             "account_type": "null",
             "ds_id": postdata['ds_id']
