@@ -396,9 +396,13 @@ class baan2day():
                 r = self.session.http_get(self.site_name+'/member_property_add.php?id='+postdata['post_id'])
                 soup = BeautifulSoup(r.text, features=self.parser)
                 images = soup.find(attrs={'name': 'fproperty_member'}).find_all('a')
-                l = int(len(images)/2)
-                for i,image in enumerate(postdata["post_images"][:10-l]):
-                    files["testimage"+str(i+l+1)] = open(os.getcwd()+"/"+image, 'rb')
+
+                del_imgs = [i["src"] for i in soup.find_all("img", {"class": "thumb-image"})]
+                for i in del_imgs:
+                    self.session.http_get(f"{self.site_name}/deletefile.php?dir_imgname={i}")
+
+                for i,image in enumerate(postdata["post_images"][:10]):
+                    files["testimage"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
             
             response = self.session.http_post(self.site_name+'/member_property_aed.php?typ=edit&id='+str(postdata['post_id']), data=datapost, files=files)
             success = "false"
@@ -411,7 +415,7 @@ class baan2day():
                 else:
                     detail = 'Active Unit Listing quota exceeded'
             else:
-                    detail = 'Unable to update post.  Maybe problem with the title. Error response_code '+str(response.status_code)
+                detail = 'Unable to update post.  Maybe problem with the title. Error response_code '+str(response.status_code)
         else:
             detail = "cannot login"
         time_end = datetime.datetime.utcnow()
