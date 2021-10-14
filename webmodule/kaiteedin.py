@@ -619,8 +619,8 @@ class kaiteedin():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        theurl = ""
-        post_id = ""
+        post_id = postdata["post_id"]
+        post_url = ""
 
         # login
         test_login = self.test_login(postdata)
@@ -628,6 +628,21 @@ class kaiteedin():
         ashopname = test_login["detail"]
         #print(success)
         if success == "true":
+            del_result = self.delete_post(postdata)
+            if del_result["success"] == "true":
+                create_result = self.create_post(postdata)
+                if create_result["success"] == "true":
+                    post_id = create_result["post_id"]
+                    post_url = create_result["post_url"]
+                    detail = "Edited"
+                    success = create_result["success"]
+                else:
+                    detail = create_result["detail"]
+                    success = create_result["success"]
+            else:
+                detail = "Old post delete fail"
+                success = del_result["success"]
+            """
             if 'name' not in postdata:
                 return{
                 'websitename': 'kaiteedin',
@@ -870,6 +885,7 @@ class kaiteedin():
             else:
                 success = "False"
                 detail = "Failed to Edit"
+            """
 
         else:
             success = "False"
@@ -885,7 +901,8 @@ class kaiteedin():
             "end_time": str(time_end),
             "detail": detail,
             "ds_id": postdata['ds_id'],
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
+            "post_url": post_url,
             "log_id": postdata['log_id']
         }
 
