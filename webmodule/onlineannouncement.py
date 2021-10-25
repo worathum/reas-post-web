@@ -2,7 +2,6 @@
 import base64
 
 from .lib_httprequest import *
-from .lib_captcha import *
 from bs4 import BeautifulSoup
 import os.path
 from shutil import copyfile
@@ -16,10 +15,6 @@ from urllib.parse import unquote
 import os
 import time
 from requests_toolbelt.multipart.encoder import MultipartEncoder
-
-
-Captcha = lib_captcha()
-
 
 class onlineannouncement():
 
@@ -314,33 +309,11 @@ class onlineannouncement():
         success = test_login["success"]
         detail = test_login["detail"]
 
-        post_id = ""
-
         if success:
             i = 0
             found = True
-            """while True:
-                if i == 0:
-                    url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post'
-                else:
-                    url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post?&page=' + str(i)
-                response = self.httprequestObj.http_get(url)
-                # print(i)
-                # print(response.url)
-                i += 1
-
-                soup = BeautifulSoup(response.content, self.parser)
-                all_posts = soup.find_all('a', 'blue')
-                if len(all_posts) == 0:
-                    break
-
-                for post in all_posts:
-                    if post.get('href').split('-')[-1] == postdata['post_id']:
-                        found = True
-                        break
-                if found:
-                    break"""
-
+            if postdata['post_id'] == '':
+                postdata['post_id'] = self.search_post(postdata)['post_id']
             if found:
                 response = self.httprequestObj.http_get('https://www.xn--12c2caf4bot4ba0ax4tzd.com/posting')
                 province_id = self.get_province(response.content, postdata['addr_province'])
@@ -436,7 +409,6 @@ class onlineannouncement():
                 try:
                     soup = BeautifulSoup(img_page.content, self.parser)
                     preview_parent = soup.find('div', {'id': 'preview'})
-                    # print(preview_parent)
                     previews = preview_parent.findChildren('div')
 
                     for preview in previews:
@@ -483,7 +455,7 @@ class onlineannouncement():
             "websitename": self.webname,
             "success": success,
             "ds_id": postdata["ds_id"],
-            "post_id": post_id,
+            "post_id": postdata['post_id'],
             "log_id": postdata["log_id"],
             "start_time": str(time_start),
             "end_time": str(time_end),
@@ -580,27 +552,8 @@ class onlineannouncement():
 
             i = 0
             found = True
-            """while True:
-                if i == 0:
-                    url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post'
-                else:
-                    url = 'https://www.xn--12c2caf4bot4ba0ax4tzd.com/post?&page=' + str(i)
-                response = self.httprequestObj.http_get(url)
-                # print(i)
-                # print(response.url)
-                i += 1
-
-                soup = BeautifulSoup(response.content, self.parser)
-                all_posts = soup.find_all('a', 'blue')
-                if len(all_posts) == 0:
-                    break
-
-                for post in all_posts:
-                    if post.get('href').split('-')[-1] == postdata['post_id']:
-                        found = True
-                        break
-                if found:
-                    break"""
+            if postdata['post_id'] == '':
+                postdata['post_id'] = self.search_post(postdata)['post_id']
 
             if found:
                 params = {
