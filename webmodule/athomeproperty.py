@@ -24,7 +24,6 @@ category_types = {
     '10': '7',
     '25': '7'
 }
-httprequestObj = lib_httprequest()
 captcha = lib_captcha()
 
 class athomeproperty():
@@ -42,6 +41,7 @@ class athomeproperty():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.httprequestObj = lib_httprequest()
 
 
     def register_user(self, postdata):
@@ -67,10 +67,10 @@ class athomeproperty():
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
         }
         
-        r = httprequestObj.http_get(self.site_name+'/signup.php', headers=headers)
+        r = self.httprequestObj.http_get(self.site_name+'/signup.php', headers=headers)
         if r.status_code==200:
             soup = BeautifulSoup(r.text, features=self.parser)
-            captcha_img = httprequestObj.http_get(soup.find(id='captcha').get('src'), stream=True)
+            captcha_img = self.httprequestObj.http_get(soup.find(id='captcha').get('src'), stream=True)
             with open(os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg','wb') as local_file :
                 for block in captcha_img.iter_content(1024):
                     if not block:
@@ -81,7 +81,7 @@ class athomeproperty():
             if g_response[0]==1:
                 datapost['captcha'] = g_response[1]
 
-                response = httprequestObj.http_post(self.site_name+'/signup.php', data=datapost, headers=headers)
+                response = self.httprequestObj.http_post(self.site_name+'/signup.php', data=datapost, headers=headers)
                 if response.status_code==200:
                     if "http://www.athomeproperty.com/signin.php?ac=active" in response.url:
                         success = "true"
@@ -123,8 +123,8 @@ class athomeproperty():
             "password": postdata['pass'],
             "sendurl": "" 
         }
-
-        response = httprequestObj.http_post(self.site_name+'/signin2.php', data=datapost)
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        response = self.httprequestObj.http_post(self.site_name+'/signin2.php', data=datapost,headers=headers)
         # with open("temp.html", "w") as f:
         #     f.write(response.text)
         if response.status_code==200:
@@ -132,7 +132,7 @@ class athomeproperty():
                 success = "true"
                 detail = "Logged in successfully!"
                 if from_function:
-                    r = httprequestObj.http_get('http://www.athomeproperty.com?ac=complete')
+                    r = self.httprequestObj.http_get('http://www.athomeproperty.com?ac=complete')
                     soup = BeautifulSoup(r.text, features=self.parser)
                     user_id = soup.find(class_='blinktop').get('href').split('id=')[1].split('&')[0]
             elif response.url=="http://www.athomeproperty.com/signin.php?ac=invalid":
@@ -255,7 +255,7 @@ class athomeproperty():
                 "email": postdata['email'],
                 "savedata": "ลงประกาศ"
             }
-            r = httprequestObj.http_get(self.site_name+'/addpackage.php?map='+subdistrict)
+            r = self.httprequestObj.http_get(self.site_name+'/addpackage.php?map='+subdistrict)
             if r.status_code==200:
                 soup = BeautifulSoup(r.text, features=self.parser)
                 form = soup.find(attrs={'name': 'picForm'})
@@ -272,7 +272,7 @@ class athomeproperty():
                     if len(postdata['post_images'])>0:
                         image = postdata['post_images'][0]
                         files = {'filename': open(os.getcwd()+"/"+image, 'rb')}
-                        r = httprequestObj.http_post(self.site_name+'/ajaxupload.php?relPath=25&picname=pk&sm=4&tb=tb_centershop&pkz=yes&fn=pic1&eid='+id_topic, data={'filename':'filename'}, files=files)
+                        r = self.httprequestObj.http_post(self.site_name+'/ajaxupload.php?relPath=25&picname=pk&sm=4&tb=tb_centershop&pkz=yes&fn=pic1&eid='+id_topic, data={'filename':'filename'}, files=files)
                         if r.status_code==200:
                             if "http://www.108home.com/img/error.gif" in r.text:
                                 flag = False
@@ -282,13 +282,13 @@ class athomeproperty():
                             detail = "An error occurred while uploading images"
 
                     if flag:
-                        response = httprequestObj.http_post(self.site_name+'/addpackage.php', data=datapost)
+                        response = self.httprequestObj.http_post(self.site_name+'/addpackage.php', data=datapost)
                         if response.status_code==200:
                             if "cid" in response.url:
                                 success = "true"
                                 detail = "Post created successfully!"
             
-                                r = httprequestObj.http_get(self.site_name+'/membertool.php?id='+user_id+'&job=product&topic=all')
+                                r = self.httprequestObj.http_get(self.site_name+'/membertool.php?id='+user_id+'&job=product&topic=all')
                                 soup = BeautifulSoup(r.text, features=self.parser)
                                 form = soup.find(attrs={'name':'frmSample'})
                                 if form:
@@ -422,7 +422,7 @@ class athomeproperty():
                 "email": postdata['email'],
                 "savedata": "ลงประกาศ"
             }
-            r = httprequestObj.http_get(self.site_name+'/addpackage.php?eid='+postdata['post_id'])
+            r = self.httprequestObj.http_get(self.site_name+'/addpackage.php?eid='+postdata['post_id'])
             if r.status_code==200:
                 soup = BeautifulSoup(r.text, features=self.parser)
                 form = soup.find(attrs={'name': 'picForm'})
@@ -434,7 +434,7 @@ class athomeproperty():
                     if len(postdata['post_images'])>0:
                         image = postdata['post_images'][0]
                         files = {'filename': open(os.getcwd()+"/"+image, 'rb')}
-                        r = httprequestObj.http_post(self.site_name+'/ajaxupload.php?relPath=25&picname=pk&sm=4&tb=tb_centershop&pkz=yes&fn=pic1&eid='+str(postdata['post_id']), data={'filename':'filename'}, files=files)
+                        r = self.httprequestObj.http_post(self.site_name+'/ajaxupload.php?relPath=25&picname=pk&sm=4&tb=tb_centershop&pkz=yes&fn=pic1&eid='+str(postdata['post_id']), data={'filename':'filename'}, files=files)
                         if r.status_code==200:
                             if "http://www.108home.com/img/error.gif" in r.text:
                                 flag = False
@@ -444,13 +444,13 @@ class athomeproperty():
                             detail = "An error occurred while uploading images"
 
                     if flag:
-                        response = httprequestObj.http_post(self.site_name+'/addpackage.php', data=datapost)
+                        response = self.httprequestObj.http_post(self.site_name+'/addpackage.php', data=datapost)
                         if response.status_code==200:
                             if "cid" in response.url:
                                 success = "true"
                                 detail = "Post updated successfully!"
                     else:
-                        detail = 'An Error has occurred with response_code '+str(response.status_code)
+                        detail = 'An Error has occurred with response_code '
             else:
                 detail = 'An Error has occurred while fetching page, with response_code '+str(r.status_code)
             self.logout()
@@ -493,7 +493,7 @@ class athomeproperty():
             detail = "No post found with given title"
             post_title = " ".join(str(postdata['post_title_th']).strip().split())
 
-            response = httprequestObj.http_get(self.site_name+'/membertool.php?id='+user_id+'&job=product&topic=all')
+            response = self.httprequestObj.http_get(self.site_name+'/membertool.php?id='+user_id+'&job=product&topic=all')
             if response.status_code==200:
                 soup = BeautifulSoup(response.text, features=self.parser)
                 form = soup.find(attrs={'name':'frmSample'})
@@ -545,7 +545,7 @@ class athomeproperty():
         detail = "Unable to delete post"
 
         if success=="true":
-            response = httprequestObj.http_get(self.site_name+'/product.php?job=del&id='+str(postdata['post_id']))
+            response = self.httprequestObj.http_get(self.site_name+'/product.php?job=del&id='+str(postdata['post_id']))
             success = "true"
             detail = "Post deleted successfully!"
             self.logout()
@@ -577,7 +577,7 @@ class athomeproperty():
         
         if success=="true":
             url = self.site_name+'/product.php?id='+postdata['post_id']+'&action=update'
-            response = httprequestObj.http_get(url)
+            response = self.httprequestObj.http_get(url)
             success = "true"
             detail = "Post boosted successfully!"
             self.logout()
@@ -600,13 +600,13 @@ class athomeproperty():
     
 
     def logout(self):
-        response = httprequestObj.http_get(self.site_name)
+        response = self.httprequestObj.http_get(self.site_name)
         if response.status_code==200:
             soup = BeautifulSoup(response.text, features=self.parser)
             url_div = soup.find_all(class_="blinktop")
             for url in url_div:
                 if url.get("href") and "logout.php" in url.get("href"):
-                    httprequestObj.http_get(url.get("href"))
+                    self.httprequestObj.http_get(url.get("href"))
 
 
     def print_debug(self, msg):
