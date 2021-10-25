@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from time import sleep
 from .lib_captcha import *
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
@@ -143,22 +144,23 @@ class hongpak():
 
         success = "true"
         detail = ""
-        print('Here')
 
         r = httprequestObj.http_get('https://www.hongpak.in.th/login/')
-        print(r.url)
-        print(r.status_code)
+        data = BeautifulSoup(r.content,'html.parser')
+        a = data.findAll('script',{'type':'text/javascript'})
+        key = str(a[2]).split('=')[3].split("'")[1]
+        value = str(a[2]).split('=')[5].split("'")[1]
 
         datapost = {
             "log_u": postdata['user'],
             "log_p": postdata['pass'],
-            "autolog": 'Y'
+            key: value
         }
 
         r = httprequestObj.http_post('https://www.hongpak.in.th/login/', data=datapost)
-        print(r.url)
-        print(r.status_code)
-
+        #print(r.url)
+        #print(r.status_code)
+        #print(r.text)
         #r = httprequestObj.http_get('https://www.hongpak.in.th/', data=datapost)
         #print(r.url)
         #print(r.status_code)
@@ -190,14 +192,16 @@ class hongpak():
         #with open('/home/aymaan/Desktop/rough.html', 'w') as f:
         #    f.write(r.text)
         r = httprequestObj.http_get('https://www.hongpak.in.th/profile')
-
+        sleep(5)
+        #print(r.status_code)
+        #print(r.history)
         if postdata["user"] in r.text :
             success = True
             detail = "Login successful"
         else:
             success = False
             detail = "Couldnot login"
-
+        #print(a.text)
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
