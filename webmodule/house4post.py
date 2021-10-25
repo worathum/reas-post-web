@@ -3,7 +3,6 @@ import requests, re, random
 from bs4 import BeautifulSoup
 import json, datetime
 from .lib_httprequest import *
-httprequestObj = lib_httprequest()
 
 class house4post:
 
@@ -18,10 +17,11 @@ class house4post:
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.httprequestObj = lib_httprequest()
 
     def logout_user(self):
         url = "https://www.house4post.com/logout_member"
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
     def register_user(self, data):
         self.logout_user()
@@ -53,7 +53,7 @@ class house4post:
             detail = 'Empty credentials'
         if success == 'true':
             url = 'https://www.house4post.com/signup_member.php'
-            req = httprequestObj.http_post(url, data=postdata, headers=headers)
+            req = self.httprequestObj.http_post(url, data=postdata, headers=headers)
             txt = str(req.text)
             if txt.find('สมัครสมาชิกเรียบร้อยแล้ว') == -1:
                 success = 'false'
@@ -82,7 +82,7 @@ class house4post:
         success = ''
         detail = ''
         url = 'https://www.house4post.com/login.php'
-        req = httprequestObj.http_post(url, data=postdata, headers=headers)
+        req = self.httprequestObj.http_post(url, data=postdata, headers=headers)
         txt = req.text
         if txt.find('Username หรือ Password ไม่ถูกต้อง') == -1:
             success = 'true'
@@ -154,7 +154,7 @@ class house4post:
             postdata['soi'] = data['addr_soi']
             postdata['road'] = data['addr_road']
             postdata['Province'] = ''
-            req = httprequestObj.http_get_with_headers('https://www.house4post.com/add_property', headers=headers)
+            req = self.httprequestObj.http_get_with_headers('https://www.house4post.com/add_property', headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             options = soup.find('select', {'name': 'Province'}).findAll('option')
             count = 0
@@ -181,7 +181,7 @@ class house4post:
                 postdata['Province'] = ids[0]
             postdata['District'] = ''
             url = 'https://www.house4post.com/getaddress.php?ID=' + str(postdata['Province']) + '&TYPE=District'
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.httprequestObj.http_get_with_headers(url, headers=headers)
             txt = str(req.text)
             districts = []
             ids = []
@@ -232,7 +232,7 @@ class house4post:
                 postdata['District'] = ids[0]
             postdata['Subdistrict'] = ''
             url = 'https://www.house4post.com/getaddress.php?ID=' + str(postdata['District']) + '&TYPE=Subdistrict'
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.httprequestObj.http_get_with_headers(url, headers=headers)
             txt = str(req.text)
             subdistricts = []
             ids = []
@@ -309,7 +309,7 @@ class house4post:
             
             try:
                 url = 'https://www.house4post.com/add_property.php'
-                req = httprequestObj.http_post(url, data=postdata, headers=headers)
+                req = self.httprequestObj.http_post(url, data=postdata, headers=headers)
                 txt = req.text
                 
                 if txt.find('.php?id=') == -1:
@@ -328,7 +328,7 @@ class house4post:
                     post_url = 'https://www.house4post.com/idasungha-' + str(post_id) + '-' + data['post_title_th']
                     post_url = post_url.replace(' ', '-')
                     imgurl = 'https://www.house4post.com/add_img.php?id={}'.format(post_id)
-                    httprequestObj.http_get(imgurl)
+                    self.httprequestObj.http_get(imgurl)
                     if 'post_images' in data:
                         if len(data['post_images']) > 0:
                             pass
@@ -341,14 +341,14 @@ class house4post:
                         for i in range(len(data['post_images'])):
                             r = open(os.getcwd() + '/' + data['post_images'][i], 'rb')
                             files['photoimg'] = r
-                            response = httprequestObj.http_post('https://www.house4post.com/ajax_img.php', data=None, files=files)
+                            response = self.httprequestObj.http_post('https://www.house4post.com/ajax_img.php', data=None, files=files)
                             time.sleep(3)
 
                     else:
                         for i in range(len(data['post_images'][:6])):
                             r = open(os.getcwd() + '/' + data['post_images'][i], 'rb')
                             files['photoimg'] = r
-                            response = httprequestObj.http_post('https://www.house4post.com/ajax_img.php', data=None, files=files)
+                            response = self.httprequestObj.http_post('https://www.house4post.com/ajax_img.php', data=None, files=files)
                             time.sleep(3)
 
                     success = 'true'
@@ -386,7 +386,7 @@ class house4post:
             page_num = 0
             flag = True
             """while flag:
-                response = httprequestObj.http_get('https://www.house4post.com//maneg_property.php?&page='+str(page_num))
+                response = self.httprequestObj.http_get('https://www.house4post.com//maneg_property.php?&page='+str(page_num))
                 if response.status_code==200:
                     soup = BeautifulSoup(response.text, features=self.parser)
                     posts_element = soup.find(class_='well')             
@@ -410,7 +410,7 @@ class house4post:
             # headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
             # url = 'https://www.house4post.com/maneg_property.php'
             # valid_ids = []
-            # req = httprequestObj.http_get_with_headers(url, headers=headers)
+            # req = self.httprequestObj.http_get_with_headers(url, headers=headers)
             # soup = BeautifulSoup(req.text, 'html.parser')
             # total_pages = 1
             # if soup.find('ul', {'class': 'pagination'}) != None:
@@ -419,7 +419,7 @@ class house4post:
             #         total_pages -= 1
             # for i in range(total_pages):
             #     url = 'https://www.house4post.com/maneg_property.php?&page=' + str(i)
-            #     req = httprequestObj.http_get_with_headers(url, headers=headers)
+            #     req = self.httprequestObj.http_get_with_headers(url, headers=headers)
             #     soup = BeautifulSoup(req.text, 'html.parser')
             #     posts = soup.find('table', {'class': 'table table-striped'}).find('tbody').findAll('tr')
             #     for post in posts:
@@ -437,7 +437,7 @@ class house4post:
                 detail = 'Invalid id'
             else:
                 url = 'https://www.house4post.com/maneg_property.php?delete=' + str(post_id)
-                req = httprequestObj.http_get_with_headers(url)
+                req = self.httprequestObj.http_get_with_headers(url)
                 txt = req.text
                 if txt.find('ลบรายการที่เลือกเรียบร้อยแล้ว') == -1:
                     success = 'false'
@@ -475,7 +475,7 @@ class house4post:
             page_num = 0
             flag = True
             while flag:
-                response = httprequestObj.http_get('https://www.house4post.com//maneg_property.php?&page='+str(page_num))
+                response = self.httprequestObj.http_get('https://www.house4post.com//maneg_property.php?&page='+str(page_num))
                 if response.status_code==200:
                     soup = BeautifulSoup(response.text, features=self.parser)
                     posts_element = soup.find(class_='well')             
@@ -531,7 +531,7 @@ class house4post:
             page_num = 0
             flag = True
             while flag:
-                response = httprequestObj.http_get('https://www.house4post.com//maneg_property.php?&page='+str(page_num))
+                response = self.httprequestObj.http_get('https://www.house4post.com//maneg_property.php?&page='+str(page_num))
                 if response.status_code==200:
                     soup = BeautifulSoup(response.text, features=self.parser)
                     posts_element = soup.find(class_='well')             
@@ -553,7 +553,7 @@ class house4post:
             # headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
             # url = 'https://www.house4post.com/maneg_property.php'
             # valid_ids = []
-            # req = httprequestObj.http_get_with_headers(url, headers=headers)
+            # req = self.httprequestObj.http_get_with_headers(url, headers=headers)
             # soup = BeautifulSoup(req.text, 'html.parser')
             # total_pages = 1
             # if soup.find('ul', {'class': 'pagination'}) != None:
@@ -562,7 +562,7 @@ class house4post:
             #         total_pages -= 1
             # for i in range(total_pages):
             #     url = 'https://www.house4post.com/maneg_property.php?&page=' + str(i)
-            #     req = httprequestObj.http_get_with_headers(url, headers=headers)
+            #     req = self.httprequestObj.http_get_with_headers(url, headers=headers)
             #     soup = BeautifulSoup(req.text, 'html.parser')
             #     posts = soup.find('table', {'class': 'table table-striped'}).find('tbody').findAll('tr')
             #     for post in posts:
@@ -616,7 +616,7 @@ class house4post:
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'}
         url = 'https://www.house4post.com/maneg_property.php'
         valid_ids = []
-        req = httprequestObj.http_get_with_headers(url, headers=headers)
+        req = self.httprequestObj.http_get_with_headers(url, headers=headers)
         soup = BeautifulSoup(req.text, 'html.parser')
         total_pages = 1
         if soup.find('ul', {'class': 'pagination'}) != None:
@@ -625,7 +625,7 @@ class house4post:
                 total_pages -= 1
         for i in range(total_pages):
             url = 'https://www.house4post.com/maneg_property.php?&page=' + str(i)
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.httprequestObj.http_get_with_headers(url, headers=headers)
             soup = BeautifulSoup(req.text, 'html.parser')
             posts = soup.find('table', {'class': 'table table-striped'}).find('tbody').findAll('tr')
             for post in posts:
@@ -643,7 +643,7 @@ class house4post:
             detail = 'Invalid id'
         if success == 'true':
             url = 'https://www.house4post.com/maneg_property.php?refresh=' + str(post_id)
-            req = httprequestObj.http_get_with_headers(url, headers=headers)
+            req = self.httprequestObj.http_get_with_headers(url, headers=headers)
             txt = req.text
             if txt.find(' เลื่อนประกาศเรียบร้อยแล้ว') == -1:
                 success = 'false'
