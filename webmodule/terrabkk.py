@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from time import sleep
+
+from requests.adapters import Response
 from .lib_httprequest import *
 from .lib_captcha import *
 from bs4 import BeautifulSoup
@@ -34,96 +36,62 @@ class terrabkk():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
-    def register_user(self, userdata):
+    def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        # print("here in register")
 
-        email = userdata['user']
-        passwd = userdata['pass']
-        name_title = userdata['name_title']
-        name_th = userdata['name_th']
-        surname_th = userdata['surname_th']
-        tel = userdata['tel']
-        line = userdata['line']
-        company_name = ""
-        if 'company_name' in userdata:
-            company_name = userdata['company_name']
-        nmaetitledic = { "ms": 'นางสาว', "mrs":'นาง', "mr" : 'นาย'}
-        try:
-            prefix = nmaetitledic[name_title]
-        except:
-            prefix = 'นาย'
+        success = False
 
-        datapost={
-            "hid_mode": "add",
-            "txt_prefix": prefix,
-            "txt_prefix_more" : "",
-            "txt_firstname": name_th,
-            "txt_lastname": surname_th,
-            "txt_birthday": '04/05/1980',
-            "telephone": tel,
-            "txt_email": email,
-            "line" : line,
-            "id_no":"",
-            "txt_address" : "-",
-            "agent_type" : "2",
-            "cert_id" : "",
-            "txt_company" : "99999",
-            "txt_company_name" : company_name,
-            "txt_company_website" : "",
-            "txt_insurance" : "",
-            "province_id[1]" : '1',
-            "amphur_id[1]" : "",
-            "district_id[1]" : "",
-            "street_name[1]" : " ",
-            "txt_pass" : passwd,
-            "txt_pass2" : passwd,
-            "agree": "yes"
+        url = 'https://www.terrabkk.com/restapi/v2/user'
+
+        headers = {
+            'Content-Type': 'application/json'
         }
 
-        f = open(os.getcwd() + '/imgtmp/default/white.jpg', 'rb')
-        filetoup = {
-            "userfile" : f,
-            "company_logo": f,
-            "brokercard": f
+        data = {
+            'app_id': 'dzI2Q3RRM3pPQzhKWlRad3JQY01Fdz09',
+            'user_email': postdata['user'],
+            'user_password': postdata['pass'],
+            'user_first_name': postdata['name_en'],
+            'user_last_name': postdata['surname_en'],
+            'user_telephone': postdata['tel'],
+            'user_line_id': postdata['line'],
+            'user_agent': 1
         }
 
-        sitekey = "6LdrH6IUAAAAAOG7H98SJ7wv9diFEBuJuPlrDCL1"
-        g_response = captcha.reCaptcha(sitekey, "https://www.terrabkk.com/member/register-agent")
-        
-        if g_response != 0:
-            datapost["g-recaptcha-response"] = g_response
-            r = self.httprequestObj.http_post("https://www.terrabkk.com/member/submit_profile_agent", data = datapost, files=filetoup)            
-            soup = BeautifulSoup(r.text, features=self.parser)
-            if not soup.find(id="login"):
-                success = "True"
-                detail = "Successful Registration. Please verify email"
-            else:
-                success = "False"
-                detail = "Registration Unsuccessful"
+        r = requests.post(url, data= json.dumps(data), headers=headers)
+        response = r.json()
+
+        if response['success'] == True:
+            success = True
+            detail = 'Registered successfully'
         else:
-            success = "False"
-            detail = "reCaptcha Error"
+            success = False
+            try:
+                detail = str(response['messages'][0]).split('p>')[1].split('<')[0]
+            except:
+                detail = 'Something wrong'
         time_end = datetime.datetime.utcnow()
-        time_usage = time_end - time_start
+
+        time_usage = str(time_end - time_start)
         return {
             "websitename": "terrabkk",
             "success": success,
             "start_time": str(time_start),
             "end_time": str(time_end),
+            "time_usage": time_usage,
             "detail": detail,
-            "ds_id":userdata['ds_id']
+            "ds_id":postdata['ds_id']
         }
     def logout_user(self,user_id,access_token):
         
-        url = 'https://www.terrabkk.com/restapi/v2/token/{}'.format(user_id)
+        url = 'https://www.terrabkk.com/restapi/v2/{}'.format(user_id)
         headers = {
             'Authorization': access_token,
             'Content-Type': 'application/json'
         }
         data = {'user_id':user_id}
-        r = requests.delete(url, data= json.dumps(data), headers=headers)
+        requests.delete(url, data= json.dumps(data), headers=headers)
 
     def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -175,7 +143,6 @@ class terrabkk():
             "user_id": user_id,
             "access_token": access_token
         }
-
 
     def post_prop(self,action,access_token,postdata):
         
@@ -315,9 +282,7 @@ class terrabkk():
             post_id = post['post_id']
             post_url = post['post_url']
             detail = post['detail']
-            if '<p>The Listing Title (EN) field is required.</p>' in detail:
-                detail = 'This website is requires an English post title.'
-            elif '<p>The Sub district code field is required.</p>' in detail:
+            if '<p>The Sub district code field is required.</p>' in detail:
                 detail = 'This website is required to fill in the district information.'
             sleep(1)
             self.logout_user(user_id,access_token)
