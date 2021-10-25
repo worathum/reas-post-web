@@ -18,7 +18,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 
-httprequestObj = lib_httprequest()
 
 
 class ban2day():
@@ -37,6 +36,7 @@ class ban2day():
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.webname = 'ban2day'
+        self.httprequestObj = lib_httprequest()
 
     def print_debug(self, msg):
         if self.debug == 1:
@@ -63,7 +63,7 @@ class ban2day():
         else:
             datapost['address'] = ''
 
-        r = httprequestObj.http_post('http://www.ban2day.com/signup_member.php', data=datapost)
+        r = self.httprequestObj.http_post('http://www.ban2day.com/signup_member.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
@@ -99,7 +99,7 @@ class ban2day():
 
         # print(datapost)
 
-        r = httprequestObj.http_post('http://www.ban2day.com/login.php', data=datapost)
+        r = self.httprequestObj.http_post('http://www.ban2day.com/login.php', data=datapost)
         # print(r.url)
         # print(r.status_code)
         data = r.text
@@ -164,11 +164,11 @@ class ban2day():
             except:
                 theprodid = getProdId[str(postdata['property_type'])]
 
-            r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php')
+            r = self.httprequestObj.http_get('http://www.ban2day.com/maneg_property.php')
             # print(r.url)
             # print(r.status_code)
 
-            r = httprequestObj.http_get('http://www.ban2day.com/add_property.php')
+            r = self.httprequestObj.http_get('http://www.ban2day.com/add_property.php')
             # print(r.url)
             # print(r.status_code)
 
@@ -217,7 +217,7 @@ class ban2day():
                 'TYPE': 'District'
             }
 
-            r = httprequestObj.http_get('http://www.ban2day.com/getaddress.php', params=params)
+            r = self.httprequestObj.http_get('http://www.ban2day.com/getaddress.php', params=params)
             # print(r.url)
             # print(r.status_code)
 
@@ -259,7 +259,7 @@ class ban2day():
                 'TYPE': 'Subdistrict'
             }
 
-            r = httprequestObj.http_get('http://www.ban2day.com/getaddress.php', params=params)
+            r = self.httprequestObj.http_get('http://www.ban2day.com/getaddress.php', params=params)
             # print(r.url)
             # print(r.status_code)
 
@@ -345,7 +345,7 @@ class ban2day():
                 # rent
                 datapost.append(('cate', (None, '2')))
 
-            r = httprequestObj.http_post('http://www.ban2day.com/add_property.php', data={}, files=datapost)
+            r = self.httprequestObj.http_post('http://www.ban2day.com/add_property.php', data={}, files=datapost)
             # print(r.url)
             # print(r.status_code)
 
@@ -360,7 +360,7 @@ class ban2day():
             #
             # print('Entering stage II')
 
-            r = httprequestObj.http_get('http://www.ban2day.com/add_map.php', params={'id': post_id})
+            r = self.httprequestObj.http_get('http://www.ban2day.com/add_map.php', params={'id': post_id})
             # print(r.url)
             # print(r.status_code)
 
@@ -374,7 +374,7 @@ class ban2day():
                 ('Submit', (None, 'เพิ่มข้อมูลแผนที่'))
             ]
 
-            r = httprequestObj.http_post('http://www.ban2day.com/add_map.php', params={'id': post_id}, data={},
+            r = self.httprequestObj.http_post('http://www.ban2day.com/add_map.php', params={'id': post_id}, data={},
                                          files=map_data)
             # print(r.url)
             # print(r.status_code)
@@ -383,7 +383,7 @@ class ban2day():
 
             ## STAGE III
 
-            r = httprequestObj.http_get('http://www.ban2day.com/add_img.php', params={'id': post_id})
+            r = self.httprequestObj.http_get('http://www.ban2day.com/add_img.php', params={'id': post_id})
             # print(r.url)
             # print(postdata['post_img_url_lists'])
 
@@ -391,17 +391,17 @@ class ban2day():
                 # file_data = []
                 filename = str(random.randint(1,10000000)) + '.jpeg'
                 file_data = {'photoimg': (filename, open(image, 'rb'), 'image/jpeg')}
-                r = httprequestObj.http_post('http://www.ban2day.com/ajax_img.php', data={}, files=file_data)
+                r = self.httprequestObj.http_post('http://www.ban2day.com/ajax_img.php', data={}, files=file_data)
                 # print(filename)
                 # print(r.url)
                 #print(r.text)
                 #time.sleep(0.8)
-                # httprequestObj.http_get("http://www.ban2day.com/"+r.text.split("src='")[1].split("'")[0])
-                # httprequestObj.http_get("http://www.ban2day.com/"+r.text.split("src='")[1].split("'")[0])
-                # r = httprequestObj.http_get('http://www.ban2day.com/add_img.php', params={'id': post_id})
+                # self.httprequestObj.http_get("http://www.ban2day.com/"+r.text.split("src='")[1].split("'")[0])
+                # self.httprequestObj.http_get("http://www.ban2day.com/"+r.text.split("src='")[1].split("'")[0])
+                # r = self.httprequestObj.http_get('http://www.ban2day.com/add_img.php', params={'id': post_id})
                 # print(r.url)
 
-            r = httprequestObj.http_get('http://www.ban2day.com/property.php', params={'id': post_id})
+            r = self.httprequestObj.http_get('http://www.ban2day.com/property.php', params={'id': post_id})
             # print(r.url)
             # print(r.status_code)
 
@@ -450,7 +450,7 @@ class ban2day():
             post_found = True
 
             """while True:
-                r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
+                r = self.httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
                 # print(ind)
                 # print(r.url)
                 # print(r.status_code)
@@ -504,11 +504,11 @@ class ban2day():
                 except:
                     theprodid = getProdId[str(postdata['property_type'])]
 
-                r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php')
+                r = self.httprequestObj.http_get('http://www.ban2day.com/maneg_property.php')
                 # print(r.url)
                 # print(r.status_code)
 
-                r = httprequestObj.http_get('http://www.ban2day.com/edit_property.php',
+                r = self.httprequestObj.http_get('http://www.ban2day.com/edit_property.php',
                                             params={'id': postdata['post_id']})
                 # print(r.url)
                 # print(r.status_code)
@@ -559,7 +559,7 @@ class ban2day():
                     'TYPE': 'District'
                 }
 
-                r = httprequestObj.http_get('http://www.ban2day.com/getaddress.php', params=params)
+                r = self.httprequestObj.http_get('http://www.ban2day.com/getaddress.php', params=params)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -602,7 +602,7 @@ class ban2day():
                     'TYPE': 'Subdistrict'
                 }
 
-                r = httprequestObj.http_get('http://www.ban2day.com/getaddress.php', params=params)
+                r = self.httprequestObj.http_get('http://www.ban2day.com/getaddress.php', params=params)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -689,14 +689,14 @@ class ban2day():
                     # rent
                     datapost.append(('cate', (None, '2')))
 
-                r = httprequestObj.http_post('http://www.ban2day.com/edit_property.php',
+                r = self.httprequestObj.http_post('http://www.ban2day.com/edit_property.php',
                                              params={'id': postdata['post_id']}, data={}, files=datapost)
                 # print(r.url)
                 # print(r.status_code)
 
                 # print('Entering stage II')
 
-                r = httprequestObj.http_get('http://www.ban2day.com/edit_map.php', params={'id': post_id})
+                r = self.httprequestObj.http_get('http://www.ban2day.com/edit_map.php', params={'id': post_id})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -710,7 +710,7 @@ class ban2day():
                     ('Submit', (None, 'แก้ไขข้อมูลแผนที่'))
                 ]
 
-                r = httprequestObj.http_post('http://www.ban2day.com/edit_map.php', params={'id': postdata['post_id']},
+                r = self.httprequestObj.http_post('http://www.ban2day.com/edit_map.php', params={'id': postdata['post_id']},
                                              data={},
                                              files=map_data)
                 # print(r.url)
@@ -761,7 +761,7 @@ class ban2day():
                 finally:
                     self.driver.close()
                     self.driver.quit()
-                """r = httprequestObj.http_get('http://www.ban2day.com/edit_img.php', params={'id': postdata['post_id']})
+                """r = self.httprequestObj.http_get('http://www.ban2day.com/edit_img.php', params={'id': postdata['post_id']})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -770,7 +770,7 @@ class ban2day():
 
                 for image in old_images:
                     del_url = 'http://www.ban2day.com/' + image.get('href')
-                    r = httprequestObj.http_get(del_url)
+                    r = self.httprequestObj.http_get(del_url)
                     # print(r.url)
                     # print(r.status_code)
 
@@ -778,11 +778,11 @@ class ban2day():
                     file_data = []
                     filename = str(i) + '.jpeg'
                     file_data.append(('photoimg', (filename, open(image, 'rb'), 'image/jpeg')))
-                    r = httprequestObj.http_post('http://www.ban2day.com/ajax_img.php', data={}, files=file_data)"""
+                    r = self.httprequestObj.http_post('http://www.ban2day.com/ajax_img.php', data={}, files=file_data)"""
                     # print(r.url)
                     # print(r.status_code)
 
-                r = httprequestObj.http_get('http://www.ban2day.com/property.php', params={'id': postdata['post_id']})
+                r = self.httprequestObj.http_get('http://www.ban2day.com/property.php', params={'id': postdata['post_id']})
                 # print(r.url)
                 # print(r.status_code)
 
@@ -835,7 +835,7 @@ class ban2day():
             post_found = True
 
             """while True:
-                r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
+                r = self.httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
                 # print(ind)
                 # print(r.url)
                 # print(r.status_code)
@@ -868,12 +868,12 @@ class ban2day():
                     ('Submit', (None, 'แก้ไขข้อมูลประกาศ')),
                 ]
 
-                r = httprequestObj.http_post('http://www.ban2day.com/edit_property.php',
+                r = self.httprequestObj.http_post('http://www.ban2day.com/edit_property.php',
                                              params={'id': postdata['post_id']}, data={}, files=datapost)
                 # print(r.url)
                 # print(r.status_code)
 
-                # r = httprequestObj.http_get('http://www.ban2day.com/property.php', params={'id': postdata['post_id']})
+                # r = self.httprequestObj.http_get('http://www.ban2day.com/property.php', params={'id': postdata['post_id']})
                 # # print(r.url)
                 # # print(r.status_code)
 
@@ -925,7 +925,7 @@ class ban2day():
             post_found = True
 
             """while True:
-                r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
+                r = self.httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
                 # print(ind)
                 # print(r.url)
                 # print(r.status_code)
@@ -953,7 +953,7 @@ class ban2day():
 
                 ## Stage I
 
-                r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php',
+                r = self.httprequestObj.http_get('http://www.ban2day.com/maneg_property.php',
                                             params={'delete': postdata['post_id']}, data={})
                 # print(r.url)
                 # print(r.status_code)
@@ -1006,7 +1006,7 @@ class ban2day():
             post_found = False
 
             while True:
-                r = httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
+                r = self.httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
 
                 with open('b.html', 'w') as f:
                     f.write(r.text)
@@ -1031,7 +1031,7 @@ class ban2day():
                         post_found = True
                         post_id = post.findChildren('td', recursive=False)[1].find('a').get('href').split('-')[1]
                         post_url = 'http://www.ban2day.com/property.php?id=' + post_id
-                        r = httprequestObj.http_get('http://www.ban2day.com/property-' + post_id + '-xxx')
+                        r = self.httprequestObj.http_get('http://www.ban2day.com/property-' + post_id + '-xxx')
                         # print(r.url)
                         # print(r.status_code)
                         soup = BeautifulSoup(r.content, self.parser)
