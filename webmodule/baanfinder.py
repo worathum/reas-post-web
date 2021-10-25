@@ -28,7 +28,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 import os
-
+from time import sleep
 import undetected_chromedriver.v2 as uc
 
 # ===========================================================================
@@ -116,18 +116,16 @@ class baanfinder():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        success = "true"
-        detail = "Login Successful"
+        success = False
+        detail = "Login unsuccessful"
 
         options = uc.ChromeOptions()
-        options.headless = True
+        #options.headless = True
         self.driver = uc.Chrome('./static/chromedriver', options=options)
         #driver = webdriver.Chrome('./static/chromedriver', options=options)
 
         self.driver.get('https://www.baanfinder.com/login')
 
-        """ driver.save_screenshot('debug_response/1.png')
-        print(postdata) """
         email = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.ID,'username')))
         email.send_keys(postdata['user'])
 
@@ -136,21 +134,17 @@ class baanfinder():
 
         login = WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.ID,'js-login-submit')))
         login.click()
-
         try:
-            check_login = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.CLASS_NAME,'alert.alert-success')))
-            if 'เข้าสู่ระบบเรียบร้อยแล้ว' in check_login.text:
-                print('testpass1')
-                success = 'true'
-                detail = 'login success'
+            check_login = WebDriverWait(self.driver,5).until(EC.presence_of_element_located((By.XPATH,'/html/body/main/div[3]/h1')))
+            if 'ยินดีต้อนรับ' in check_login.text:
+                success = True
+                detail = 'Login success'
             else:
-                print('not pass')
-                success = 'false'
+                success = False
                 detail = 'maybe web is change'
         except:
-            print('loginfailed')
-            success = 'false'
-            detail = 'login false'
+            success = False
+            detail = "Username or password incorrect"
         finally:
             if postdata['action'] == 'test_login':
                 self.driver.close()
