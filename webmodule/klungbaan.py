@@ -592,7 +592,7 @@ class klungbaan():
                     "prop_featured": "0",
                     "prop_payment": "not_paid"  
                 }
-            r = self.httprequestObj.http_get("https://rent.klungbaan.com/property-create/?edit_property="+str(postdata['post_id']))
+            r = self.httprequestObj.http_get("https://www.klungbaan.com/property-create/?edit_property="+str(postdata['post_id']))
             #print(website+'/property-create/?edit_property='+str(postdata['post_id']))
             if r.status_code==200:
                 try:
