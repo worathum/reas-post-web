@@ -609,8 +609,8 @@ class thaiapartment():
                 #     #f.write(r.text)
 
                 success = True
-                post_url="https://www.thaiapartment.com/post?id="+post_id
-                detail = 'xxx'
+                detail = 'Post created successfully'
+                post_url="https://www.thaiapartment.com/apartmentpreview?id="+post_id
 
             elif postdata['property_type'] == '1':
                 r = self.httprequestObj.http_get('https://www.thaiapartment.com/condoadd')
@@ -893,13 +893,12 @@ class thaiapartment():
                                              files=datapost)
                 print(r.url)
                 print(r.status_code)
-
                 # #with open('/home/codelover/Desktop/rough.html', 'w') as f:
                 #     #f.write(r.text)
 
                 success = True
                 detail = 'Post created successfully'
-                post_url="https://www.thaiapartment.com/condo?id="+post_id
+                post_url="https://www.thaiapartment.com/condopreview?id="+post_id
             else:
                 success = False
                 detail = "Only condo/apartment posts allowed"
@@ -932,7 +931,6 @@ class thaiapartment():
         detail = test_login["detail"]
         post_id = ""
         post_url = ""
-
         if success:
 
             post_found = False
@@ -993,7 +991,7 @@ class thaiapartment():
                 # print(captcha)
 
                 if postdata['property_type'] == '7':
-
+                    post_url="https://www.thaiapartment.com/apartmentpreview?id="+postdata['post_id']
                     r = self.httprequestObj.http_get('https://www.thaiapartment.com/post', params={'id': post_id})
                     print(r.url)
                     print(r.status_code)
@@ -1312,7 +1310,7 @@ class thaiapartment():
                     detail = "Post edited successfully"
 
                 elif postdata['property_type'] == '1':
-
+                    post_url = "https://www.thaiapartment.com/condopreview?id="+postdata['post_id']
                     r = self.httprequestObj.http_get('https://www.thaiapartment.com/condo', params={'id': post_id})
                     print(r.url)
                     print(r.status_code)
@@ -1487,7 +1485,7 @@ class thaiapartment():
             "end_time": str(time_end),
             "post_url": post_url,
             "ds_id": postdata['ds_id'],
-            "post_id": post_id,
+            "post_id": postdata["post_id"],
             "account_type": "null",
             "detail": detail,
             "websitename": self.webname,
