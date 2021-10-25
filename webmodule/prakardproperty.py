@@ -3,23 +3,10 @@
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
-# from urlparse import urlparse
 import re
 import json
 import datetime
 import sys
-from urllib.parse import unquote
-import requests
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException
-import time
-options = Options()
-options.headless = True
-options.incognito = True
-options.add_argument('--no-sandbox')
-
-
 
 class prakardproperty():
 
@@ -33,13 +20,8 @@ class prakardproperty():
             configs = {}
 
         self.httprequestObj = lib_httprequest()
-        self.encoding = 'utf-8'
-        self.imgtmp = 'imgtmp'
         self.primarydomain = 'http://www.prakardproperty.com/'
         self.debug = 0
-        self.debugresdata = 0
-        self.parser = 'html.parser'
-
 
     def register_user(self, userdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -84,349 +66,271 @@ class prakardproperty():
             "detail": detail,
         }
 
-    def test_login(self, logindata):
+    def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        
-        print("Login enter")
-        email_user = logindata['user']
-        email_pass = logindata['pass']
-        
+
+        success = False
+        detail = 'Login unsuccess'
         datapost = {
-            'login_email' : email_user,
-            'login_password' : email_pass
+            'login_email' : postdata['user'],
+            'login_password' : postdata['pass']
         }
-        #datapost)
-        i = 0
-        matchObj = False
-        success = ""
-        detail = ""
-        while i < 8 and not matchObj:
-            print("Entered While Loop")
-            r = self.httprequestObj.http_post('http://www.prakardproperty.com/login/checkmember', data=datapost)
-            # r = requests.post('http://www.prakardproperty.com/login/checkmember', data=datapost)
-            self.httprequestObj.http_get('http://www.prakardproperty.com/properties/add')
-            data = r.text
-            # print(data)
-            # #data)
-            matchObj = re.search(r'/member/account', data)
-            # #matchObj)
-            i += 1
-        # print("Broke from while loop")
-        if matchObj:
-            success = "True"
-            detail = "Successful Login"
+        r = self.httprequestObj.http_post('http://www.prakardproperty.com/login/checkmember', data=datapost)
+        
+        if r.url == 'http://www.prakardproperty.com/':
+            success = True
+            detail = 'Login successful'
         else:
-            success = "False"
-            detail = "Login Unsuccessful"
+            success = False
+            detail = 'Login unsuccessful'
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        # print({
-        #     "websitename": "prakardproperty",
-        #     "success": success,
-        #     "ds_id": logindata['ds_id'],
-        #     "start_time": str(time_start),
-        #     "end_time": str(time_end),
-        #     "detail": detail,
-        # })
         return {
             "websitename": "prakardproperty",
             "success": success,
-            "ds_id": logindata['ds_id'],
+            "ds_id": postdata['ds_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
+            "usage_time": str(time_usage),
             "detail": detail,
         }
-        #
-        #
-        #
+
+    def check_post(self,postdata):
+        r = self.httprequestObj.http_get('http://www.prakardproperty.com/property/show/{}'.format(postdata['post_id']))
+        if 'Sorry, The requested URL was not found on this server.' in r.text:
+            Found = False
+        else:
+            Found = True
+        return Found
+
+    def post_prop(self,action,postdata):
+        success = False
+        detail = 'Something wrong in this website.'
+        post_id =  postdata['post_id']
+        post_url = 'http://www.prakardproperty.com/property/show/'+post_id
+        if action == 'create':
+            r = self.httprequestObj.http_get('http://www.prakardproperty.com/properties/add')
+            soup = BeautifulSoup(r.content, 'html.parser')
+            upload_id = soup.find("input", {"id": "running_number"}).get('value')
+        else:
+            r = self.httprequestObj.http_get('http://www.prakardproperty.com/properties/edit/{}'.format(postdata['post_id']))
+            soup = BeautifulSoup(r.content, 'html.parser')
+        
+        province = soup.find("select", {"id": "province"}).find_all('option')
+        if postdata['addr_province'] == 'กรุงเทพ':
+            postdata['addr_province'] = 'กรุงเทพมหานคร'
+        province_id = [s for s in province if postdata['addr_province'] in s][0].get('value')
+
+        r = self.httprequestObj.http_post('http://www.prakardproperty.com/location/getdistrict/mode:geomap/province_id:{}'.format(province_id),data={})
+        soup = BeautifulSoup(r.content, 'html.parser')
+        district = soup.find_all('option')
+        district_id = [s for s in district if postdata['addr_district'] in s][0].get('value')
+        r = self.httprequestObj.http_post('http://www.prakardproperty.com/location/getsubdistrict/mode:geomap/province_id:2/district_id:{}'.format(district_id),data={})
+        soup = BeautifulSoup(r.content, 'html.parser')
+        subdistrict = soup.find_all('option')
+        try:
+            subdistrict_id = [s for s in subdistrict if postdata['addr_sub_district'] in s][0].get('value')
+            r = self.httprequestObj.http_post('http://www.prakardproperty.com/location/getsubdistrict_geo/mode:geomap/province_id:2/district_id:16/sub_district_id:{}'.format(subdistrict_id),data={})
+            success = True
+        except:
+            success = False
+            detail = 'This subdistrict does not exist on this site.'
+        if action == 'edit':
+            Found = self.check_post(postdata)
+            if not Found:
+                success = False
+                detail = 'Post id not found.'
+        if success:
+            propety_type = {
+                '1': '3',
+                '2': '1',
+                '3': '1',
+                '4': '2',
+                '5': '4',
+                '6': '6',
+                '7': '5',
+                '8': '5',
+                '9': '9',
+                '10': '7',
+                '25': '7',
+                '30': '6'
+            }
+
+            purposeId = {
+                'ขาย': 1,
+                'เช่า': 2
+            }
+
+            if postdata['floor_level'] == '':
+                postdata['floor_level'] = postdata['floor_total']
+
+            prod_address = ""
+            for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
+                if add is not None:
+                    prod_address += add + ","
+            prod_address = prod_address[:-1]
+
+            datapost = {
+                'data[Properties][title]': postdata["post_title_th"],
+                'data[Properties][property_type_id]': propety_type[postdata['property_type']],
+                'data[Properties][property_post_type_id]': purposeId[postdata['listing_type']],
+                'data[Properties][size_square_metre]': postdata['floorarea_sqm'],
+                'data[Properties][land_size_rai]': postdata['land_size_rai'],
+                'data[Properties][land_size_ngan]': postdata['land_size_ngan'],
+                'data[Properties][land_size_wah]': postdata['land_size_wa'],
+                'data[Properties][floor_no]': postdata['floor_level'],
+                'data[Properties][bedroom]': postdata['bed_room'],
+                'data[Properties][bathroom]': postdata['bath_room'],
+                'data[PropertyDetails][address]': prod_address,
+                'data[PropertyDetails][street]': postdata['addr_soi'],
+                'data[PropertyDetails][road]': postdata['addr_road'],
+                'data[Properties][province_id]': province_id,
+                'data[Properties][district_id]': district_id,
+                'data[Properties][sub_district_id]': subdistrict_id,
+                'data[PropertyDetails][google_map_latitude]': postdata['geo_latitude'],
+                'data[PropertyDetails][google_map_longitude]': postdata['geo_longitude'],
+                'data[PropertyDetails][location_datail]': '',
+                'data[Properties][youtube]': '' ,
+                'data[PropertyDetails][detail]': postdata['post_description_th']
+            }
+            if purposeId[postdata['listing_type']] == 1:
+                datapost['data[Properties][sell_price]'] =  postdata['price_baht']
+                datapost['data[Properties][unit_type_id1]'] = 1
+                datapost['data[Properties][unit_type_id2]'] = None
+            else:
+                datapost['data[Properties][rental_price]'] =  postdata['price_baht']
+                datapost['data[Properties][unit_type_id1]'] = None
+                datapost['data[Properties][unit_type_id2]'] = 2
+            if action == 'edit':
+                datapost['data[Properties][id]'] = postdata['post_id']
+                r = self.httprequestObj.http_get('http://www.prakardproperty.com/filesupload/updateimagelists/id:{}'.format(postdata['post_id']))
+                soup = BeautifulSoup(r.content, 'html.parser')
+                img_item = soup.find_all("div", {"class": "item"})
+                if len(img_item) != 0:
+                    for i in img_item:
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/deletepostimage/id:{}'.format(i.get('title')),data={})
+                for i in postdata['post_images']:
+                    files = {'files[]': (i, open(i, "rb"), "image/jpeg")}
+                    r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
+                r = self.httprequestObj.http_get('http://www.prakardproperty.com/filesupload/updateimagelists/id:{}'.format(postdata['post_id']))
+                soup = BeautifulSoup(r.content, 'html.parser')
+                img_item = soup.find_all("div", {"class": "item"})
+                img = []
+                for i in img_item:
+                    img.append(int(i.get('title')))
+                img.sort()
+                url = 'http://www.prakardproperty.com/filesupload/updatepostorder/id:'
+                for i in img:
+                    url += str(i)+','
+                r = self.httprequestObj.http_post(url[:-1], data={})
+                r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/editsave', data=datapost)
+                if r.status_code == 200:
+                    success == True
+                else:
+                    success == False
+            else:
+                datapost['data[Properties][running_number]'] = upload_id
+                for i in postdata['post_images']:
+                    files = {'files[]': (i, open(i, "rb"), "image/jpeg")}
+                    r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/temp/id:{}'.format(upload_id), data=datapost, files=files)
+                r = self.httprequestObj.http_get('http://www.prakardproperty.com/filesupload/updatetemplists/running_number:{}'.format(upload_id))
+                soup = BeautifulSoup(r.content, 'html.parser')
+                img_item = soup.find_all("div", {"class": "item"})
+                img = []
+                for i in img_item:
+                    img.append(int(i.get('title')))
+                img.sort()
+                url = 'http://www.prakardproperty.com/filesupload/updatetemporder/id:'
+                for i in img:
+                    url += str(i)+','
+                r = self.httprequestObj.http_post(url[:-1], data={})
+                datapost['propertyConfirm1'] = 'on'
+                r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/addsave', data=datapost)
+                try:
+                    soup = BeautifulSoup(r.content, 'html.parser')
+                    post_id = str(soup.find("div", {"id": "content"}).find_all('a')[0].get('href')).split('show/')[1]
+                    post_url = 'http://www.prakardproperty.com/property/show/'+post_id
+                    success = True
+                except:
+                    success = False
+        return {
+            'success': success,
+            'detail': detail,
+            'post_id': post_id,
+            'post_url': post_url
+        }
 
     def create_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        # #postdata)
-        webdata = postdata
-        # print("Create Post")
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        allimages = postdata['post_images']
-        price_baht = postdata['price_baht']
-        addr_province = postdata['addr_province']
-        addr_district = postdata['addr_district']
-        addr_sub_district = postdata['addr_sub_district']
-        addr_road = postdata['addr_road']
-        addr_near_by = postdata['addr_near_by']
-        prod_address = ""
-        for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
-            if add is not None:
-                prod_address += add + ","
-        prod_address = prod_address[:-1]
-        try:
-            floorarea_sqm = postdata['floorarea_sqm']
-        except:
-            floorarea_sqm = ''
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        # post_title_en = postdata['post_title_en']
-        # post_description_en = postdata['post_description_en']
-        try:
-            floor_no = postdata['floor_level']
-        except:
-            floor_no = ""
-        try:
-            bedroom = postdata['bed_room']
-        except:
-            bedroom = ""
-        try:
-            bathroom = postdata['bath_room']
-        except:
-            bathroom = ""
-        ds_id = webdata["ds_id"]
-        # account_type = webdata["account_type"]
-        user = webdata["user"]
-        password = webdata["pass"]
-        project_name = ""
-        try:
-            project_name = postdata["web_project_name"]
-        except:
-            try:
-                project_name = postdata["project_name"]
-            except:
-                project_name = postdata["post_title_th"]
-        # print("Next Check")
-        proj_url = "http://www.prakardproperty.com/autocomplete/project/?term=" + project_name
-        resp = self.httprequestObj.http_get(proj_url, verify=False)
-        try:
-            allres = json.loads(resp.content.decode('utf-8'))
-        except:
-            allres = []
-        project_id = ""
-        isProject = False
-        if len(allres) != 0:
-            isProject = True
-            project_id = allres[0]['id']
-            project_name = allres[0]['value']
-            geo_latitude = allres[0]['google_map_latitude']
-            geo_longitude = allres[0]['google_map_longitude']
-            addr_province = allres[0]['province_id']
-            addr_district = allres[0]['district_id']
-            addr_sub_district = allres[0]['sub_district_id']
 
+        success = False
+        detail = 'Something wrong in this website.'
+        login = self.test_login(postdata)
+        success = login['success']
+        detail = login['detail']
 
-        land_size_rai = postdata['land_size_rai']
-        land_size_ngan = postdata['land_size_ngan']
-        land_size_wah = postdata['land_size_wa']
-        #property_type)
-        #property_type == "6")
-        #property_type == 6)
-        if(str(property_type) == "6"):# land
-            property_type = "6"
-        elif(str(property_type) == "1"): # condo
-            property_type = "3"
-        elif(str(property_type) == 3):
-            property_type = "1"
-        elif(str(property_type) == "4"): # townhouses
-            property_type = "2"
-        elif(str(property_type) == "5"): # commercial building
-            property_type = "4"
-        elif(str(property_type) == "7"): # Apartment
-            property_type = "5"
-        elif(str(property_type) == "9"): # office
-            property_type = "9"
-        elif(str(property_type) == "10" or str(property_type) == "25"): # factory
-            property_type = "7"
-        else :
-            property_type = "8"
-
-
-        #property_type)    
-        # print("Pre Check")
-        postdata = {
-            'data[Properties][running_number]':"",
-'data[Properties][title]': post_title_th,
-'data[Properties][property_type_id]': property_type, # number between 1-9
-'data[Properties][property_post_type_id]': listing_type, 
-'data[Properties][size_square_metre]': floorarea_sqm,
-'data[Properties][land_size_rai]': land_size_rai ,
-'data[Properties][land_size_ngan]': land_size_ngan,
-'data[Properties][land_size_wah]':land_size_wah, 
-'data[Properties][floor_no]': floor_no,
-'data[Properties][bedroom]': bedroom,
-'data[Properties][bathroom]': bathroom,
-'data[Properties][living_room]':0 ,
-'data[Properties][maid_room]': 0,
-'data[Properties][parking_space]':0 ,
-'data[Properties][air_conditioner]':0 ,
-'data[Properties][age_of_property]':0 ,
-'data[Properties][project_name]': project_name,
-'data[Properties][project_id]':project_id,
-'data[PropertyDetails][address]':prod_address, 
-'data[PropertyDetails][street]': "",
-'data[PropertyDetails][road]': addr_road,
-'data[Properties][province_id]': addr_province,
-'data[Properties][district_id]': addr_district,
-'data[Properties][sub_district_id]':addr_sub_district,
-'data[PropertyDetails][google_map_latitude]': geo_latitude,
-'data[PropertyDetails][google_map_longitude]': geo_longitude,
-'data[PropertyDetails][location_datail]': "",
-'data[Properties][youtube]':"", 
-'data[PropertyDetails][detail]':post_description_th, 
-'propertyConfirm1': 'on',
-        }
-        list_dict = {'ขาย' : 1, 'เช่า':2,'ขายดาวน์':3,'เซ้ง':4,'ขาย/ให้เช่า':5, 'ให้เช่า': 1}
-        listing_type = list_dict[listing_type]
-        postdata['data[Properties][property_post_type_id]'] = listing_type
-        if(listing_type == "เช่า"):
-            postdata['data[Properties][rental_price]'] = price_baht
-            postdata['data[Properties][unit_type_id1]'] = ""
-            postdata['data[Properties][unit_type_id2]']= 1
-        else:
-            postdata['data[Properties][sell_price]'] = price_baht
-            postdata['data[Properties][unit_type_id1]'] = 1
-            postdata['data[Properties][unit_type_id2]']= ""
-            
-        # if(listing_type == 4):
-        #     postdata['data[Properties][rental_price]'] = price_baht
-        #     postdata['data[Properties][unit_type_id1]'] = 1
-        #     postdata['data[Properties][unit_type_id2]']= 1
-            
-        # login
-        
-        # print("Pre Login")
-        login = self.test_login(webdata)
-        success = login["success"]
-        detail = login["detail"]
-        post_id = ""
-        post_url = ""
-        # print("Login Success : ", success)
-        if success == "True":
-            if not isProject:
-                r = self.httprequestObj.http_get('http://www.prakardproperty.com/properties/add', verify=False)
-                
-                data = r.text
-                
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                
-                authenticityToken = soup.find("input", {"name": "data[Properties][running_number]"})['value']
-                
-                postdata['data[Properties][running_number]'] = authenticityToken
-                
-                contents =[[str(x.text),str(x['value'])] for x in soup.find("select", {"name" :"data[Properties][province_id]" }).find_all('option')]
-                # #contents)
-                for i in contents:
-                    if(addr_province.find(i[0]) != -1):
-                        postdata['data[Properties][province_id]'] = i[1]
-                        r = self.httprequestObj.http_get('http://www.prakardproperty.com/location/getdistrict/mode:geomap/province_id:'+postdata['data[Properties][province_id]'])
-                        # #r.text)
-                        soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
-                        districtcontent = [[str(x.text),str(x['value'])] for x in soup.find_all('option')]
-                        for j in districtcontent:
-                            if(addr_district.find(j[0]) != -1):
-                                postdata['data[Properties][district_id]'] = j[1]
-                                r = self.httprequestObj.http_get('http://www.prakardproperty.com/location/getsubdistrict/mode:geomap/province_id:'+postdata['data[Properties][province_id]']+'/district_id:'+postdata['data[Properties][district_id]'])
-                                # #r.text)   
-                                soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
-                                subdistrictcontent = [[str(x.text),str(x['value'])] for x in soup.find_all('option')]
-                                for k in subdistrictcontent:
-                                    if(addr_sub_district.find(k[0])!= -1):
-                                        postdata['data[Properties][sub_district_id]'] = k[1]
-                                        break
-                                break       
-                        break
-
-            r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/addsave', data = postdata)#/property/show
-            data = r.text
-            print(data)
-            # #data)
-            matchObj = re.search(r'/property/show', data)
-            if not matchObj:
-                success = "False"
-                detail = "Cannot post to prakardproperty"
+        if success:
+            create = self.post_prop('create',postdata)
+            success = create['success']
+            if success:
+                detail = 'Post successful'
+                post_id = create['post_id']
+                post_url = create['post_url']
             else:
-                post_id = re.search(r'/property/show/(\d+)',data).group(1)
-                post_url = 'http://www.prakardproperty.com/property/show/'+post_id
-            if(success == "True" ):
-                #"Image time")
-                driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-                try:
-                    
-                    try:
-                        driver.get('http://www.prakardproperty.com/')
-                        email = webdata["user"]
-                        password = webdata["pass"]
-                        newbut = driver.find_element_by_class_name('prakard-link')
-                        newbut.click()
-                        try:
-                            user = driver.find_element_by_id('login_email')
-                            passs = driver.find_element_by_id('login_password')
-                            user.send_keys(email)
-                            passs.send_keys(password)
-                            login = driver.find_element_by_class_name('login-button')
-                            login.click()
-                        except:
-                            pass
-
-                            pass
-                        driver.get('http://www.prakardproperty.com/properties/edit/'+post_id)
-                        for i in range(len(webdata['post_images'])) :
-                            fileupload = driver.find_element_by_id('file_upload')
-                            filepath = os.getcwd() + "/"+ webdata['post_images'][i]
-                            #filepath)
-                            fileupload.send_keys(filepath)
-                            while(True):
-                                try:
-                                    elements = driver.find_elements_by_class_name('item')
-                                    if(len(elements) == i+1):
-                                        break
-                                except NoSuchElementException:
-                                    continue
-                            time.sleep(1)
-                        #"uploaded images")
-                        submit = driver.find_element_by_class_name('prakard-button')
-                        submit.click()
-                        detail += " \n Images uploaded successfully"
-                    except Exception as e:
-                        print(e)
-                        detail += " \n Images not uploaded successfully"
-                finally:
-                    try:
-                        driver.close()
-                        driver.quit()
-                    except:
-                        try:
-                            alert = driver.switch_to.alert
-                            alert.accept()
-                            driver.close()
-                            driver.quit()
-                        except:
-                            pass
+                detail = create['detail']
+        else:
+            detail = login['detail']
 
         time_end = datetime.datetime.utcnow()
-        # #{
-        #     "websitename": "prakardproperty",
-        #     "success": success,
-        #     "time_usage": str(time_end - time_start),
-        #     "start_time": str(time_start),
-        #     "end_time": str(time_end),
-        #     "ds_id": "4",
-        #     "post_url": post_url,
-        #     "post_id": post_id,
-        #     "account_type": "",
-        #     "detail": detail
-        # }
+        time_usage = time_end - time_start
         return {
             "websitename": "prakardproperty",
             "success": success,
-            "time_usage": str(time_end - time_start),
+            "time_usage": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "ds_id": webdata['ds_id'],
+            "ds_id": postdata['ds_id'],
             "post_url": post_url,
             "post_id": post_id,
+            "account_type": "",
+            "detail": detail
+        }
+
+    def edit_post(self,postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        success = False
+        detail = 'Something wrong in this website.'
+        login = self.test_login(postdata)
+        success = login['success']
+        detail = login['detail']
+
+        if success:
+            edit = self.post_prop('edit',postdata)
+            success = edit['success']
+            if success:
+                detail = 'Edit successful'
+            else:
+                detail = edit['detail']
+        else:
+            detail = login['detail']
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "websitename": "prakardproperty",
+            "success": success,
+            "time_usage": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            'ds_id': postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_url": '',
+            "post_id": postdata['post_id'],
             "account_type": "",
             "detail": detail
         }
@@ -435,39 +339,27 @@ class prakardproperty():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         
+        success = False
+        detail = ''
         login = self.test_login(postdata)
         success = login["success"]
-        detail = login["detail"]
         post_id = postdata['post_id']
-        post_url = ""
-        if(success == "True"):
-            # #)
-            postdata['data[Properties][id]'] = post_id
-            # #postdata)
-            r = self.httprequestObj.http_get('http://www.prakardproperty.com/property/show/'+post_id)
-            data = r.text
-            if(re.search(r'404',data)):
-                time_end = datetime.datetime.utcnow()
-                return {
-                    "websitename": "prakardproperty",
-            'ds_id': postdata['ds_id'],
-                    "log_id": postdata['log_id'],
-                    "success": "False",
-                    "time_usage": time_end - time_start,
-                    "start_time": time_start,
-                    "end_time": time_end,
-                    "detail": "PostId not Found"
-                }
-            
-            r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/updatedate/'+post_id,data="")#/property/show
-            data = r.text
-            if r.status_code != 200:
-                success = "False"
-                detail = "Cannot Boost post with id"+post_id
-            else:
-                success = "True"
-                detail = "Post sucessfully Boosted"
 
+        if success:
+            Found = self.check_post(postdata)
+            if not Found:
+                success = False
+                detail = 'Post id not found.'
+            else:
+                r = self.httprequestObj.http_get('http://www.prakardproperty.com/properties/updatedate/{}'.format(post_id))
+                if 'OK' in r.text:
+                    success = True
+                    detail = "Post sucessfully Boosted"
+                else:
+                    success = False
+                    detail = "Cannot Boost this post."
+        else:
+            detail = login["detail"]
 
         time_end = datetime.datetime.utcnow()
         return {
@@ -487,44 +379,27 @@ class prakardproperty():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         
+        success = False
+        detail = ''
         login = self.test_login(postdata)
         success = login["success"]
-        detail = login["detail"]
         post_id = postdata['post_id']
-        post_url = ""
-        if(success == "True"):
-            # #)
-            postdata['data[Properties][id]'] = post_id
-            # #postdata)
-            r = self.httprequestObj.http_get('http://www.prakardproperty.com/property/show/'+post_id)
-            data = r.text
-            if(re.search(r'404',data)):
-                time_end = datetime.datetime.utcnow()
-                return {
-                    "success": "False",
-            'ds_id': postdata['ds_id'],
-                    "log_id": postdata['log_id'],
-                    "websitename": "prakardproperty",
-                    "time_usage": time_end - time_start,
-                    "start_time": time_start,
-                    "end_time": time_end,
-                    "detail": "PostId not Found"
-                }
-            
-            r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/delete/'+post_id,data="")#/property/show
-            data = r.text
-            r = self.httprequestObj.http_get('http://www.prakardproperty.com/member/posted/msg:success')
-            # #r.status_code,r.text)
-            if r.status_code != 200:
-                success = "False"
-                detail = "Cannot delete post with id"+post_id
-            else:
-                success = "True"
-                detail = "Post sucessfully deleted"
 
-        #
-        #
-        #
+        if success:
+            Found = self.check_post(postdata)
+            if not Found:
+                success = False
+                detail = 'Post id not found.'
+            else:
+                r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/delete/{}'.format(post_id),data={})
+                if 'delete property success' in r.text:
+                    success = True
+                    detail = "Delete sucessfully"
+                else:
+                    success = False
+                    detail = "Cannot delete this post."
+        else:
+            detail = login["detail"]
 
         time_end = datetime.datetime.utcnow()
         return {
@@ -539,309 +414,16 @@ class prakardproperty():
             "post_id":postdata['post_id']
         }
 
-
-    
-    def edit_post(self,postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
-        # #postdata)
-        webdata = postdata
-
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        allimages = postdata['post_images']
-        price_baht = postdata['price_baht']
-        addr_province = postdata['addr_province']
-        addr_district = postdata['addr_district']
-        addr_sub_district = postdata['addr_sub_district']
-        addr_road = postdata['addr_road']
-        addr_near_by = postdata['addr_near_by']
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        property_id = postdata['property_id']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-        # post_title_en = postdata['post_title_en']
-        # post_description_en = postdata['post_description_en']
-        prod_address = ""
-        for add in [postdata['addr_soi'], postdata['addr_road'], postdata['addr_sub_district'], postdata['addr_district'], postdata['addr_province']]:
-            if add is not None:
-                prod_address += add + ","
-        prod_address = prod_address[:-1]
-        try:
-            floor_no = postdata['floor_level']
-            floorarea_sqm = postdata['floorarea_sqm']
-            bedroom = postdata['bed_room']
-            bathroom = postdata['bath_room']
-        except:
-            floor_no = ""
-            floorarea_sqm = ""
-            bedroom = ""
-            bathroom = ""
-        ds_id = webdata["ds_id"]
-
-        # account_type = webdata["account_type"]
-        user = webdata["user"]
-        password = webdata["pass"]
-        project_name = ""
-        try:
-            project_name = postdata["web_project_name"]
-        except:
-            try:
-                project_name = postdata["project_name"]
-            except:
-                project_name = postdata["post_title_th"]
-        proj_url = "http://www.prakardproperty.com/autocomplete/project/?term=" + project_name
-        resp = self.httprequestObj.http_get(proj_url, verify=False)
-        try:
-            allres = json.loads(resp.content.decode('utf-8'))
-        except:
-            allres = []
-
-        project_id = ""
-        isProject = False
-        if len(allres) != 0:
-            isProject = True
-            project_id = allres[0]['id']
-            project_name = allres[0]['value']
-            geo_latitude = allres[0]['google_map_latitude']
-            geo_longitude = allres[0]['google_map_longitude']
-            addr_province = allres[0]['province_id']
-            addr_district = allres[0]['district_id']
-            addr_sub_district = allres[0]['sub_district_id']
-
-        land_size_rai = postdata['land_size_rai']
-        land_size_ngan = postdata['land_size_ngan']
-        land_size_wah = postdata['land_size_wa']
-        if(str(property_type) == "6"):# land
-            property_type = "6"
-        elif(str(property_type) == "1"): # condo
-            property_type = "3"
-        elif(str(property_type) == 3):
-            property_type = "1"
-        elif(str(property_type) == "4"): # townhouses
-            property_type = "2"
-        elif(str(property_type) == "5"): # commercial building
-            property_type = "4"
-        elif(str(property_type) == "7"): # Apartment
-            property_type = "5"
-        elif(str(property_type) == "9"): # office
-            property_type = "9"
-        elif(str(property_type) == "10" or str(property_type) == "25"): # factory
-            property_type = "7"
-        else :
-            property_type = "8"
-        postdata = {
-            'data[Properties][id]':webdata['post_id'],
-'data[Properties][title]': post_title_th,
-'data[Properties][property_type_id]': property_type, # number between 1-9
-'data[Properties][property_post_type_id]': listing_type,               #number between 1-9
-'data[Properties][size_square_metre]': floorarea_sqm,
-'data[Properties][land_size_rai]': land_size_rai ,
-'data[Properties][land_size_ngan]': land_size_ngan,
-'data[Properties][land_size_wah]':land_size_wah, 
-'data[Properties][floor_no]': floor_no,
-'data[Properties][bedroom]': bedroom,
-'data[Properties][bathroom]': bathroom,
-'data[Properties][living_room]':0 ,
-'data[Properties][maid_room]': 0,
-'data[Properties][parking_space]':0 ,
-'data[Properties][air_conditioner]':0 ,
-'data[Properties][age_of_property]':0 ,
-'data[Properties][project_name]': project_name,
-'data[Properties][project_id]':"" ,
-'data[PropertyDetails][address]':prod_address, 
-'data[PropertyDetails][street]': "",
-'data[PropertyDetails][road]': addr_road,
-'data[Properties][province_id]': addr_province,
-'data[Properties][district_id]': addr_district,
-'data[Properties][sub_district_id]':addr_sub_district,
-'data[PropertyDetails][google_map_latitude]': geo_latitude,
-'data[PropertyDetails][google_map_longitude]': geo_longitude,
-'data[PropertyDetails][location_datail]': "",
-'files[]': [],
-'data[Properties][youtube]':"", 
-'data[PropertyDetails][detail]':post_description_th
-        }
-        list_dict = {'ขาย' : 1, 'เช่า':2,'ขายดาวน์':3,'เซ้ง':4,'ขาย/ให้เช่า':5}
-        listing_type = list_dict[listing_type]
-        postdata['data[Properties][property_post_type_id]'] = listing_type
-        if(listing_type == "เช่า"):
-            postdata['data[Properties][rental_price]'] = price_baht
-            postdata['data[Properties][unit_type_id1]'] = ""
-            postdata['data[Properties][unit_type_id2]']= 1
-        else:
-            postdata['data[Properties][sell_price]'] = price_baht
-            postdata['data[Properties][unit_type_id1]'] = 1
-            postdata['data[Properties][unit_type_id2]']= ""
-        # file_list = []
-        # for i in post_img_url_lists:
-        #     file_list.append(open(i,'rb'))
-        # #file_list)
-        # login
-        login = self.test_login(webdata)
-        success = login["success"]
-        detail = login["detail"]
-        post_id = webdata['post_id']
-        post_url = ""
-        if(success == "True"):
-            r = self.httprequestObj.http_get('http://www.prakardproperty.com/properties/edit/'+post_id)
-            data = r.text
-            if(re.search(r'404',data)):
-                time_end = datetime.datetime.utcnow()
-                return {
-                    "success": "False",
-                    "time_usage": str(time_end - time_start),
-                    "start_time": str(time_start),
-                    "end_time": str(time_end),
-                    "ds_id": "4",
-                    "post_url": post_url,
-                    "post_id": post_id,
-                    "account_type": "",
-                    "detail": "Post_ID not found",
-                    "websitename":"prakardproperty"
-                }
-                
-            if not isProject:
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                try:
-                    contents =[[str(x.text),str(x['value'])] for x in soup.find("select", {"name" :"data[Properties][province_id]" }).find_all('option')]
-                    # #contents)
-                    for i in contents:
-                        if(i[0] == addr_province):
-                            postdata['data[Properties][province_id]'] = i[1]
-                            r = self.httprequestObj.http_get('http://www.prakardproperty.com/location/getdistrict/mode:geomap/province_id:'+postdata['data[Properties][province_id]'])
-                            # #r.text)
-                            soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
-                            districtcontent = [[str(x.text),str(x['value'])] for x in soup.find_all('option')]
-                            for i in districtcontent:
-                                if(i[0] == addr_district):
-                                    postdata['data[Properties][district_id]'] = i[1]
-                                    r = self.httprequestObj.http_get('http://www.prakardproperty.com/location/getsubdistrict/mode:geomap/province_id:'+postdata['data[Properties][province_id]']+'/district_id:'+postdata['data[Properties][district_id]'])
-                                    # #r.text)   
-                                    soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
-                                    subdistrictcontent = [[str(x.text),str(x['value'])] for x in soup.find_all('option')]
-                                    for i in subdistrictcontent:
-                                        if(i[0] == addr_sub_district):
-                                            postdata['data[Properties][sub_district_id]'] = i[1]
-                                            break
-                                    break       
-                            break
-                    # #)
-                # #postdata)
-                    r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/editsave', data = postdata)#/property/show
-                    data = r.text
-                    # #data)
-                    matchObj = data
-                    if not matchObj:
-                        success = "False"
-                        detail = "Edit Unsuccessful"
-                    else:
-                        post_url = 'http://www.prakardproperty.com/property/show/'+post_id
-                        detail = "Edit Successful"
-                    if(success == "True" ):
-                        try:
-                            driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
-
-                            #"Driver On")
-                            driver.get('http://www.prakardproperty.com/')
-                            email = webdata["user"]
-                            password = webdata["pass"]
-                            user = driver.find_element_by_id('login_email')
-                            passs = driver.find_element_by_id('login_password')
-                            user.send_keys(email)
-                            passs.send_keys(password)
-                            login = driver.find_element_by_class_name('login-button')
-                            login.click()
-                            newbut = driver.find_element_by_class_name('prakard-link')
-                            newbut.click()
-                            driver.get('http://www.prakardproperty.com/properties/edit/'+post_id)
-                            elements = driver.find_elements_by_class_name('item')
-                            temp = len(elements)
-                            #temp)
-                            for i in range(len(webdata['post_images'])) :
-                                fileupload = driver.find_element_by_id('file_upload')
-                                filepath = os.getcwd() + "/"+ webdata['post_images'][i]
-                                #i,filepath)
-                                fileupload.send_keys(filepath)
-                                while(True):
-                                    try:
-                                        elements = driver.find_elements_by_class_name('item')
-                                        # #elements)
-                                        if(len(elements) == temp + i+1):
-                                            break
-                                    except NoSuchElementException:
-                                        continue
-                                time.sleep(1)
-                            #"uploaded images")
-                            submit = driver.find_element_by_class_name('prakard-button')
-                            submit.click()
-                            detail += " \n Images uploaded successfully"
-                        except:
-                            detail += " \n Images not uploaded successfully"
-
-                except:
-                    success = "False"
-                    detail = "Edit Unsuccessful"
-        #
-        try:
-            driver.close()
-            driver.quit()
-            try:
-                alert = driver.switch_to.alert
-                alert.accept()
-            except:
-                pass
-
-        except:
-            pass
-        #
-        try:
-            driver.close()
-            driver.quit()
-        except:
-            pass
-
-        time_end = datetime.datetime.utcnow()
-        # #{
-        #     "websitename": "prakardproperty",
-        #     "success": success,
-        #     "time_usage": str(time_end - time_start),
-        #     "start_time": str(time_start),
-        #     "end_time": str(time_end),
-        #     "ds_id": "4",
-        #     "post_url": post_url,
-        #     "post_id": post_id,
-        #     "account_type": "",
-        #     "detail": detail
-        # }
-        return {
-            "websitename": "prakardproperty",
-            "success": success,
-            "time_usage": str(time_end - time_start),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            'ds_id': postdata['ds_id'],
-            "log_id": webdata['log_id'],
-            "post_url": post_url,
-            "post_id": post_id,
-            "account_type": "",
-            "detail": detail
-        }
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-
-        user = postdata['user']
-        passwd = postdata['pass']
 
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
         post_id = ""
-        if success == "True":
+        if success:
             post_title = postdata['post_title_th']
-            # exists, authenticityToken, post_title = self.check_post(post_id)
 
             url = "http://www.prakardproperty.com/member/posted"
             r = self.httprequestObj.http_get(url)
