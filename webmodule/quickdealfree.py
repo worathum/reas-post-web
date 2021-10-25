@@ -13,8 +13,6 @@ import shutil
 from urllib.parse import unquote
 
 
-httprequestObj = lib_httprequest()
-
 with open("./static/quickdealfree_province.json") as f:
     provincedata = json.load(f)
 
@@ -36,6 +34,7 @@ class quickdealfree():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -56,7 +55,7 @@ class quickdealfree():
             "capcha": "M7DQ",
             "submit": "สมัครสมาชิก"
         }
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'http://www.quickdealfree.com/p-register.php', data=datapost)
         data = r.text
         # print(data)
@@ -97,7 +96,7 @@ class quickdealfree():
             'email': user,
 
         }
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'http://www.quickdealfree.com/login.php', data=datapost)
         data = r.text
         print(data)
@@ -221,7 +220,7 @@ class quickdealfree():
                 else:
                     files["file"+str(i)] = r
 
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'http://www.quickdealfree.com/member/p-classifieds-post.php', data=datapost, files=files)
             data = r.text
             print(r.url)
@@ -230,7 +229,7 @@ class quickdealfree():
             # with open('rough.html', 'w') as f:
             #     f.write(r.text)
 
-            r = httprequestObj.http_get(
+            r = self.session.http_get(
                 "http://www.quickdealfree.com/member/list-classifieds.php")
             soup = BeautifulSoup(r.text, 'html.parser')
             # with open('rough.html', 'w') as f:
@@ -327,7 +326,7 @@ class quickdealfree():
             found = True
             req_post_id = str(postdata['post_id'])
             """while True:
-                r = httprequestObj.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
+                r = self.session.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
                 soup = BeautifulSoup(r.text, features=self.parser)
                 post_div = soup.find(id="frmMain")
                 all_posts = []
@@ -375,7 +374,7 @@ class quickdealfree():
                     else:
                         files["file"+str(i)] = r
 
-                r = httprequestObj.http_post(
+                r = self.session.http_post(
                     'http://www.quickdealfree.com/member/p-edit-classifieds-post.php', data=datapost, files=files)
                 detail= "Post edited successfully"
             else:
@@ -404,7 +403,7 @@ class quickdealfree():
         time_start = datetime.datetime.utcnow()
 
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
-        # r = httprequestObj.http_get(
+        # r = self.session.http_get(
         #     "http://www.quickdealfree.com/member/list-classifieds.php")
         # soup = BeautifulSoup(r.text, 'html.parser')
         # post_url = soup.select(
@@ -427,7 +426,7 @@ class quickdealfree():
             found = True
             req_post_id = str(postdata['post_id'])
             """while True:
-                r = httprequestObj.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
+                r = self.session.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
                 soup = BeautifulSoup(r.text, features=self.parser)
                 post_div = soup.find(id="frmMain")
                 all_posts = []
@@ -444,7 +443,7 @@ class quickdealfree():
                     break"""
 
             if found:
-                r = httprequestObj.http_get(
+                r = self.session.http_get(
                     'http://www.quickdealfree.com/member/del-classifieds.php?id='+postdata['post_id'])
                 detail = "Post deleted successfully"
             else:
@@ -471,7 +470,7 @@ class quickdealfree():
         time_start = datetime.datetime.utcnow()
 
         # TODO ประกาศที่ทดสอบไป ยังไม่ครบ 7 วัน ทำทดสอบการลบไม่ได้ วันหลังค่อยมาทำใหม่
-        # r = httprequestObj.http_get(
+        # r = self.session.http_get(
         #     "http://www.quickdealfree.com/member/list-classifieds.php")
         # soup = BeautifulSoup(r.text, 'html.parser')
         # post_url = soup.select(
@@ -494,7 +493,7 @@ class quickdealfree():
             found = True
             req_post_id = str(postdata['post_id'])
             """while True:
-                r = httprequestObj.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
+                r = self.session.http_get("http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page="+str(page))
                 soup = BeautifulSoup(r.text, features=self.parser)
                 post_div = soup.find(id="frmMain")
                 all_posts = []
@@ -512,7 +511,7 @@ class quickdealfree():
 
             if found:
                 detail = "Post boosted successfully"
-                r = httprequestObj.http_get(
+                r = self.session.http_get(
                     'http://www.quickdealfree.com/member/slide-classified-post.php?id='+postdata['post_id'])
             else:
                 detail = "No post found with given id."
@@ -552,7 +551,7 @@ class quickdealfree():
         if success == "true":
             post_title = postdata['post_title_th']
             # exists, authenticityToken, post_title = self.check_post(post_id)
-            r = httprequestObj.http_get('http://www.quickdealfree.com/member/list-classifieds.php')
+            r = self.session.http_get('http://www.quickdealfree.com/member/list-classifieds.php')
             # print(r.url)
             # print(r.status_code)
             soup = BeautifulSoup(r.content, 'html.parser')
@@ -574,7 +573,7 @@ class quickdealfree():
                 if post_found == 'true':
                     break
                 url = "http://www.quickdealfree.com/member/list-classifieds.php?QueryString=value&Page=%d" % i
-                r = httprequestObj.http_get(url)
+                r = self.session.http_get(url)
                 soup = BeautifulSoup(r.content, 'html.parser')
 
                 entry = soup.find('div', attrs={'class':'table-responsive'})

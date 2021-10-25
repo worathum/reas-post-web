@@ -10,7 +10,6 @@ import random
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
-httprequestObj = lib_httprequest()
 
 class thaiasungha():
    
@@ -31,7 +30,7 @@ class thaiasungha():
         self.debugresdata = 0
         self.baseurl = 'http://www.thaiasungha.com'
         self.parser = 'html.parser'
-
+        self.session = lib_httprequest()
 
 
 
@@ -52,7 +51,7 @@ class thaiasungha():
 
         
 
-        response = httprequestObj.http_post('http://www.thaiasungha.com/member-register.php', data = data1, headers = headers)
+        response = self.session.http_post('http://www.thaiasungha.com/member-register.php', data = data1, headers = headers)
         
 
         soup = BeautifulSoup(response.content,features = 'html')
@@ -85,7 +84,7 @@ class thaiasungha():
             detail = "Please enter your phone number"
         else:
             try:
-                res = httprequestObj.http_post('http://www.thaiasungha.com/p-member-register.php', data = data, headers = headers)
+                res = self.session.http_post('http://www.thaiasungha.com/p-member-register.php', data = data, headers = headers)
 
                 if 'มีอยู่ในระบบแล้วครับ' in res.text:
                     success = "false"
@@ -139,7 +138,7 @@ class thaiasungha():
             detail = "Invalid Password"
         else:
             try:
-                response = httprequestObj.http_post('http://www.thaiasungha.com/login.php', data = data, headers = headers)
+                response = self.session.http_post('http://www.thaiasungha.com/login.php', data = data, headers = headers)
                 
                 if 'ขออภัยครับ ท่านกรอก Email และ/หรือ Password ไม่ถูกต้องครับ' in response.text:
                     success = "false"
@@ -147,7 +146,7 @@ class thaiasungha():
                 else:
                     success = "true"
                     detail = 'Logged in successfully'
-                    res = httprequestObj.http_get('http://www.thaiasungha.com/member/index.php')
+                    res = self.session.http_get('http://www.thaiasungha.com/member/index.php')
                     #print(res.text)
             
             except requests.exceptions.RequestException:
@@ -283,7 +282,7 @@ class thaiasungha():
 
             province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
 
-            find_province = httprequestObj.http_get('http://www.thaiasungha.com/member/post-property.php', headers = headers).text
+            find_province = self.session.http_get('http://www.thaiasungha.com/member/post-property.php', headers = headers).text
 
             soup = BeautifulSoup(find_province,features = "html")
 
@@ -298,7 +297,7 @@ class thaiasungha():
 
             url_district = str('http://www.thaiasungha.com/data_for_list3.php?province='+data['province'])
 
-            find_district = httprequestObj.http_get(url_district, headers = headers).text
+            find_district = self.session.http_get(url_district, headers = headers).text
 
             soup = BeautifulSoup(find_district,features = "html")
 
@@ -313,7 +312,7 @@ class thaiasungha():
                 data['amphur'] = str(soup.find('option')['value'])
 
 
-            respo = httprequestObj.http_get('http://www.thaiasungha.com/member/post-property.php', headers = headers)
+            respo = self.session.http_get('http://www.thaiasungha.com/member/post-property.php', headers = headers)
         
 
             soup = BeautifulSoup(respo.content,features = 'html')
@@ -356,7 +355,7 @@ class thaiasungha():
 
 
 
-            crt_post = httprequestObj.http_post('http://www.thaiasungha.com/member/p-post-property.php', data = data, files = file, headers = headers)
+            crt_post = self.session.http_post('http://www.thaiasungha.com/member/p-post-property.php', data = data, files = file, headers = headers)
             #print(crt_post.text)
 
             soup = BeautifulSoup(crt_post.content, features = "html")
@@ -368,7 +367,7 @@ class thaiasungha():
 
             sec_step_url = str('http://www.thaiasungha.com/member/real-estate-features.php?post_id='+post_id)
 
-            sec_step = httprequestObj.http_get(sec_step_url, headers = headers)
+            sec_step = self.session.http_get(sec_step_url, headers = headers)
 
 
 
@@ -415,7 +414,7 @@ class thaiasungha():
 
             all_posts_url = 'http://www.thaiasungha.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+            all_posts = self.session.http_get(all_posts_url, headers = headers)
 
             soup = BeautifulSoup(all_posts.content, features = "html")
 
@@ -436,7 +435,7 @@ class thaiasungha():
                     'hdnCount' : str(len(all_post_ids))
                 }
 
-                delete_post = httprequestObj.http_post('http://www.thaiasungha.com/member/manage-property-not-sale.php', data = data, headers = headers)
+                delete_post = self.session.http_post('http://www.thaiasungha.com/member/manage-property-not-sale.php', data = data, headers = headers)
 
                 success = "true"
                 detail = "Post deleted successfully"
@@ -482,7 +481,7 @@ class thaiasungha():
         if(login['success'] == "true"):
             all_posts_url = 'http://www.thaiasungha.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+            all_posts = self.session.http_get(all_posts_url, headers = headers)
 
             soup = BeautifulSoup(all_posts.content, features = "html")
 
@@ -498,7 +497,7 @@ class thaiasungha():
             if req_post_id in all_post_ids:
                 boost_url = str('http://www.thaiasungha.com/member/slide-property.php?post_id='+req_post_id)
 
-                boo_post = httprequestObj.http_get(boost_url, headers = headers)
+                boo_post = self.session.http_get(boost_url, headers = headers)
 
                 #print(boo_post.text)
 
@@ -556,7 +555,7 @@ class thaiasungha():
 
             all_posts_url = 'http://www.thaiasungha.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+            all_posts = self.session.http_get(all_posts_url, headers = headers)
 
             soup = BeautifulSoup(all_posts.content, features = "html")
 
@@ -671,7 +670,7 @@ class thaiasungha():
 
                 pro_url = str('http://www.thaiasungha.com/member/edit-property.php?post_id='+req_post_id)
 
-                find_province = httprequestObj.http_get(pro_url, headers = headers).text
+                find_province = self.session.http_get(pro_url, headers = headers).text
 
                 soup = BeautifulSoup(find_province,features = "html")
 
@@ -687,7 +686,7 @@ class thaiasungha():
 
                 url_district = str('http://www.thaiasungha.com/data_for_list3.php?province='+data['province'])
 
-                find_district = httprequestObj.http_get(url_district, headers = headers).text
+                find_district = self.session.http_get(url_district, headers = headers).text
 
                 soup = BeautifulSoup(find_district,features = "html")
 
@@ -728,7 +727,7 @@ class thaiasungha():
 
                     edit_post_url = str('http://www.thaiasungha.com/member/p-edit-property.php')
 
-                    edit_post = httprequestObj.http_post(edit_post_url, data = data, files = file, headers = headers)
+                    edit_post = self.session.http_post(edit_post_url, data = data, files = file, headers = headers)
 
                     success = "true"
                     detail = "Post edited successfully"
@@ -737,7 +736,7 @@ class thaiasungha():
                 else:
                     edit_post_url = str('http://www.thaiasungha.com/member/p-edit-property.php')
 
-                    edit_post = httprequestObj.http_post(edit_post_url, data = data, headers = headers)
+                    edit_post = self.session.http_post(edit_post_url, data = data, headers = headers)
 
                     success = "true"
                     detail = "Post edited successfully"
@@ -796,7 +795,7 @@ class thaiasungha():
 
             all_posts_url = 'http://www.thaiasungha.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url, headers = headers)
+            all_posts = self.session.http_get(all_posts_url, headers = headers)
 
             soup = BeautifulSoup(all_posts.content, features = "html")
 
@@ -815,7 +814,7 @@ class thaiasungha():
                     post_modify_time = abc.span.text[13:]
                     detail = "Post found"
 
-                    find_info = httprequestObj.http_get(post_url, headers = headers)
+                    find_info = self.session.http_get(post_url, headers = headers)
 
                     sou = BeautifulSoup(find_info.content, features = "html")
 

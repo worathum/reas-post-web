@@ -9,7 +9,6 @@ from urllib.parse import unquote
 from datetime import datetime
 import random
 
-httprequestObj = lib_httprequest()
 
 def set_end_time(start_time):
     time_end = datetime.utcnow()
@@ -46,6 +45,7 @@ class sellproperty():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def register_user(self,userdata):
         start_time = datetime.utcnow()
@@ -58,8 +58,8 @@ class sellproperty():
             'check' : '1',
             'submit' : 'Next | Next >>'
         }
-        httprequestObj.http_get("https://www.xn--22ck4f6agj3aeg.com/member-register.php")
-        r = httprequestObj.http_post("https://www.xn--22ck4f6agj3aeg.com/member-register.php",data = checkData)
+        self.session.http_get("https://www.xn--22ck4f6agj3aeg.com/member-register.php")
+        r = self.session.http_post("https://www.xn--22ck4f6agj3aeg.com/member-register.php",data = checkData)
         
         username = str(userdata['name_th']+"-"+userdata['surname_th'])
         if 'addr_soi' in userdata and userdata['addr_soi']!=None:
@@ -101,7 +101,7 @@ class sellproperty():
         
         district = ''.join(map(str,str(userdata['addr_district']).split(' ')))
         url_district = str('https://www.xn--22ck4f6agj3aeg.com/data_for_list3.php?province='+str(data['province']))
-        find_district = httprequestObj.http_get(url_district).text
+        find_district = self.session.http_get(url_district).text
         print(find_district)
         abc = soup(find_district,features = "html5lib")
         
@@ -120,7 +120,7 @@ class sellproperty():
         print(capRow)
         data['rands'] = capRow
         data['capcha'] = data['rands']
-        res = httprequestObj.http_post('https://www.xn--22ck4f6agj3aeg.com/p-member-register.php',data = data)
+        res = self.session.http_post('https://www.xn--22ck4f6agj3aeg.com/p-member-register.php',data = data)
         print(res.text)
         sou = soup(res.text,'html5lib')
         err = sou.find("script")
@@ -169,12 +169,12 @@ class sellproperty():
             'pass': passwd
         }
         print(email,passwd)
-        r = httprequestObj.http_post('https://www.xn--22ck4f6agj3aeg.com/login.php', data=data)
+        r = self.session.http_post('https://www.xn--22ck4f6agj3aeg.com/login.php', data=data)
         #print(r.url)
         sou = soup(r.text,'html5lib')
         print(r.text)
         '''
-        resp = httprequestObj.http_get("https://www.xn--22ck4f6agj3aeg.com/member/edit-personal.php")
+        resp = self.session.http_get("https://www.xn--22ck4f6agj3aeg.com/member/edit-personal.php")
         sou = soup(resp.text,'html5lib')
         '''
         err = sou.find("script")
@@ -224,7 +224,7 @@ class sellproperty():
 
             all_posts_url = 'https://www.xn--22ck4f6agj3aeg.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url)
+            all_posts = self.session.http_get(all_posts_url)
             
             page = soup(all_posts.content, features = "html5lib")
             
@@ -244,7 +244,7 @@ class sellproperty():
                         pid = str(one['href'].split('=')[-1])
                         if pid == post_id :
                             post_url = "https://www.xn--22ck4f6agj3aeg.com/member/manage-property-not-sale.php"
-                            res = httprequestObj.http_post(post_url,data = data)
+                            res = self.session.http_post(post_url,data = data)
                             print(res.text)
                             sou = soup(res.text,'html5lib')
                             url = sou.find('meta',attrs = {'http-equiv':'refresh'})['content']
@@ -387,7 +387,7 @@ class sellproperty():
                 data['class_type_id'] = '2'
 
                         
-            rget = httprequestObj.http_get('https://www.xn--22ck4f6agj3aeg.com/member/post-property.php')
+            rget = self.session.http_get('https://www.xn--22ck4f6agj3aeg.com/member/post-property.php')
             sou = soup(rget.text,'html5lib')
             
 
@@ -418,7 +418,7 @@ class sellproperty():
             
 
 
-            find_district = httprequestObj.http_get(url_district)
+            find_district = self.session.http_get(url_district)
             abc = soup(find_district.text,features = "html5lib")
           
             cnt=0
@@ -457,7 +457,7 @@ class sellproperty():
                 cnt+=1
             #data['filename']=file_name
             #print(data)
-            upload_file = httprequestObj.http_post('https://www.xn--22ck4f6agj3aeg.com/member/p-post-property.php',data = data,files = file)
+            upload_file = self.session.http_post('https://www.xn--22ck4f6agj3aeg.com/member/p-post-property.php',data = data,files = file)
             
             url = soup(upload_file.text,'html5lib')
             urlList = url.find('meta',attrs = {'http-equiv':'refresh'})['content']  
@@ -522,7 +522,7 @@ class sellproperty():
             title = ''
             all_posts_url = 'https://www.xn--22ck4f6agj3aeg.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url)
+            all_posts = self.session.http_get(all_posts_url)
 
             page = soup(all_posts.content, features = "html5lib")
             print(page,"###")
@@ -611,7 +611,7 @@ class sellproperty():
             
             all_posts_url = 'https://www.xn--22ck4f6agj3aeg.com/member/list-property.php'
 
-            all_posts = httprequestObj.http_get(all_posts_url)
+            all_posts = self.session.http_get(all_posts_url)
             
             page = soup(all_posts.content, features = "html5lib")
             
@@ -630,7 +630,7 @@ class sellproperty():
                         pid = str(one['href'].split('=')[-1])
                         if pid == post_id :
                             post_url = "https://www.xn--22ck4f6agj3aeg.com/member/slide-property.php?post_id="+pid
-                            res = httprequestObj.http_get(post_url)
+                            res = self.session.http_get(post_url)
                             flag = 1
                             break
                             

@@ -9,7 +9,6 @@ from urllib.parse import unquote
 from datetime import datetime
 import random
 
-httprequestObj = lib_httprequest()
 
 def set_end_time(start_time):
     time_end = datetime.utcnow()
@@ -46,6 +45,7 @@ class bogie2():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def register_user(self, userdata):
         #self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -79,7 +79,7 @@ class bogie2():
             res['end_time'],res['usage_time']=set_end_time(start_time)
             return res
 
-        r = httprequestObj.http_post(reqst_url, data=payload)
+        r = self.session.http_post(reqst_url, data=payload)
 
         parsedHtml = soup(r.text,'html5lib')
 
@@ -105,7 +105,7 @@ class bogie2():
             'password': userdata['pass']
         }
         
-        r= httprequestObj.http_post(login_url, data=login_pload)
+        r= self.session.http_post(login_url, data=login_pload)
 
         parsedHtml = soup(r.text, 'html5lib')
 
@@ -190,8 +190,8 @@ class bogie2():
 
 
             
-            cat = httprequestObj.http_post('https://bogie2.com/process.php?process=getCategoryStep',data = data['category_id'], headers = headers).text
-            cat2 = httprequestObj.http_post('https://bogie2.com/process.php?process=getCategoryStep2',data = data['category_id_2'], headers = headers).text
+            cat = self.session.http_post('https://bogie2.com/process.php?process=getCategoryStep',data = data['category_id'], headers = headers).text
+            cat2 = self.session.http_post('https://bogie2.com/process.php?process=getCategoryStep2',data = data['category_id_2'], headers = headers).text
 
             if 'post_images' in postdata and len(postdata['post_images']) > 0:
                 pass
@@ -211,7 +211,7 @@ class bogie2():
                 if ind > 0:
                     send_file.append(('files[]', file['files[]']))
                 print(file)
-                upload_file = httprequestObj.http_post_with_headers('https://bogie2.com/php/upload.php',data = {},files=file)
+                upload_file = self.session.http_post_with_headers('https://bogie2.com/php/upload.php',data = {},files=file)
                 print(upload_file.text)
                 file_name.append(upload_file.text)
                 # temp = temp + 1
@@ -231,7 +231,7 @@ class bogie2():
             # print(upload_file.text,end='\n')
 
             province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
-            find_province = httprequestObj.http_get('https://bogie2.com/post', headers = headers).text
+            find_province = self.session.http_get('https://bogie2.com/post', headers = headers).text
             sou = soup(find_province,features = "html5lib")
 
             abc = sou.find('select',attrs = {'name':'province_id'})
@@ -248,7 +248,7 @@ class bogie2():
             }
             url_district = 'https://bogie2.com/process.php?process=getAmphur'
 
-            find_district = httprequestObj.http_post(url_district, data = dist_data,headers = headers).text
+            find_district = self.session.http_post(url_district, data = dist_data,headers = headers).text
             sou = soup(find_district,features = "html5lib")
 
             try:
@@ -264,7 +264,7 @@ class bogie2():
             
             
             
-            crt_post = httprequestObj.http_post_with_headers('https://bogie2.com/process.php?process=createPost',data=data,files=send_file)
+            crt_post = self.session.http_post_with_headers('https://bogie2.com/process.php?process=createPost',data=data,files=send_file)
             print(crt_post.text,end = '\n')
             
             create = BeautifulSoup(crt_post.content, features = "html5lib")
@@ -316,7 +316,7 @@ class bogie2():
             del_data = {
                 'post_id':post_id
             }
-            res = httprequestObj.http_post(post_url,data = del_data,headers = headers)
+            res = self.session.http_post(post_url,data = del_data,headers = headers)
             print(res.text)
             if res.text == 'ไม่สามารถลบโพสได้':
                 success = "false"
@@ -360,7 +360,7 @@ class bogie2():
             del_data = {
                 'post_id':post_id
             }
-            res = httprequestObj.http_post(post_url,data = del_data,headers = headers)
+            res = self.session.http_post(post_url,data = del_data,headers = headers)
             print(res.text)
             if res.text == 'ไม่สามารถเลื่อนกระทู้ได้':
                 success = "false"
@@ -404,7 +404,7 @@ class bogie2():
             title = ''
             all_posts_url = 'https://bogie2.com/allpost/all'
 
-            all_posts = httprequestObj.http_get(all_posts_url)
+            all_posts = self.session.http_get(all_posts_url)
 
             page = soup(all_posts.content, features = "html5lib")
 
@@ -512,12 +512,12 @@ class bogie2():
             else:
                 data['post_type'] = 'sale'
 
-            pg = httprequestObj.http_get("https://bogie2.com/edit_post/"+post_id)
+            pg = self.session.http_get("https://bogie2.com/edit_post/"+post_id)
             page = soup(pg.text,'html5lib')
             imgList = page.findAll('input',attrs = {'name':'img[]'})
             print(imgList)
             for i in imgList:
-                httprequestObj.http_post('https://bogie2.com/php/remove_file.php',data={'file':str(i['value'])})
+                self.session.http_post('https://bogie2.com/php/remove_file.php',data={'file':str(i['value'])})
             
             if 'post_images' in postdata and len(postdata['post_images']) > 0:
                 pass
@@ -537,7 +537,7 @@ class bogie2():
                 if ind > 0:
                     send_file.append(('files[]', file['files[]']))
                 #print(file)
-                upload_file = httprequestObj.http_post_with_headers('https://bogie2.com/php/upload.php',data = {},files=file)
+                upload_file = self.session.http_post_with_headers('https://bogie2.com/php/upload.php',data = {},files=file)
                 file_name.append(upload_file.text)
                 # temp = temp + 1
 
@@ -546,7 +546,7 @@ class bogie2():
             
 
             province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
-            find_province = httprequestObj.http_get("https://bogie2.com/edit_post/"+post_id, headers = headers).text
+            find_province = self.session.http_get("https://bogie2.com/edit_post/"+post_id, headers = headers).text
             sou = soup(find_province,features = "html5lib")
 
             abc = sou.find('select',attrs = {'name':'province_id'})
@@ -563,7 +563,7 @@ class bogie2():
             }
             url_district = 'https://bogie2.com/process.php?process=getAmphur'
 
-            find_district = httprequestObj.http_post(url_district, data = dist_data,headers = headers).text
+            find_district = self.session.http_post(url_district, data = dist_data,headers = headers).text
             sou = soup(find_district,features = "html5lib")
 
             try:
@@ -579,7 +579,7 @@ class bogie2():
             
             
             
-            crt_post = httprequestObj.http_post_with_headers('https://bogie2.com/process.php?process=updatePost',data=data,files=send_file)
+            crt_post = self.session.http_post_with_headers('https://bogie2.com/process.php?process=updatePost',data=data,files=send_file)
            
             create = BeautifulSoup(crt_post.content, features = "html5lib")
             post_id_ind = create.text.find('redirect')

@@ -9,8 +9,6 @@ from urllib.parse import unquote
 from datetime import datetime
 import random
 
-httprequestObj = lib_httprequest()
-
 def set_end_time(start_time):
     time_end = datetime.utcnow()
     time_usage = time_end - start_time
@@ -46,10 +44,11 @@ class praeksa():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
 
     def logout_user(self):
         url = 'http://www.แพรกษา.com/logout.php'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self, userdata):
         #self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -114,7 +113,7 @@ class praeksa():
         
         
         province = ''.join(map(str,str(userdata['addr_province']).split(' ')))
-        find_province = httprequestObj.http_get('http://www.xn--12c1dpz9b3e.com/register.php').text
+        find_province = self.session.http_get('http://www.xn--12c1dpz9b3e.com/register.php').text
         sou = soup(find_province,features = "html5lib")
         payload['save'] = str(sou.find('input',attrs = {'name':'save'})['value'])
         payload['answer'] = str(sou.find('input',attrs = {'name':'hiddenanswer'})['value'])
@@ -131,7 +130,7 @@ class praeksa():
         district = ''.join(map(str,str(userdata['addr_district']).split(' ')))
         url_district = str('http://www.xn--12c1dpz9b3e.com/lib/amphur.php?province='+str(payload['province']))
 
-        find_district = httprequestObj.http_get(url_district).text
+        find_district = self.session.http_get(url_district).text
         sou = soup(find_district,features = "html5lib")
 
         abc = sou.find('select',attrs = {'name':'amphur'})
@@ -150,7 +149,7 @@ class praeksa():
 
         #postal service not given
         #data[]
-        r1 = httprequestObj.http_post('http://www.xn--12c1dpz9b3e.com/lib/checkuser.php',data = payload)
+        r1 = self.session.http_post('http://www.xn--12c1dpz9b3e.com/lib/checkuser.php',data = payload)
         sou = BeautifulSoup(r1.text, 'html5lib')
 
         errors = None
@@ -160,7 +159,7 @@ class praeksa():
             errors=True
 
         if errors is None:
-            r = httprequestObj.http_post('http://www.xn--12c1dpz9b3e.com/register.php', data=payload)
+            r = self.session.http_post('http://www.xn--12c1dpz9b3e.com/register.php', data=payload)
             
             #print(r.text)
             #parsedHtml = soup(r.text,'html5lib')
@@ -179,7 +178,7 @@ class praeksa():
         
     def test_login(self, postdata):
         self.logout_user()
-        httprequestObj.http_get('http://www.xn--12c1dpz9b3e.com/logout.php')
+        self.session.http_get('http://www.xn--12c1dpz9b3e.com/logout.php')
         #self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.utcnow()
 
@@ -194,10 +193,10 @@ class praeksa():
             'email': email,
             'password': passwd
         }
-        rget = httprequestObj.http_get('http://www.xn--12c1dpz9b3e.com/member.php')
+        rget = self.session.http_get('http://www.xn--12c1dpz9b3e.com/member.php')
         sou = soup(rget.text,'html5lib')
         data['save'] = str(sou.find('input',attrs={'name':'save'})['value'])
-        r = httprequestObj.http_post('http://www.xn--12c1dpz9b3e.com/member.php', data=data)
+        r = self.session.http_post('http://www.xn--12c1dpz9b3e.com/member.php', data=data)
         #print(r.url)
         r_url = str(r.url).split('=')
 
@@ -257,7 +256,7 @@ class praeksa():
                 data['want'] = 'forrent'
 
                         
-            rget = httprequestObj.http_get('http://www.xn--12c1dpz9b3e.com/post-add.php')
+            rget = self.session.http_get('http://www.xn--12c1dpz9b3e.com/post-add.php')
             sou = soup(rget.text,'html5lib')
             
 
@@ -293,7 +292,7 @@ class praeksa():
             
 
 
-            find_district = httprequestObj.http_get(url_district)
+            find_district = self.session.http_get(url_district)
             sou = soup(find_district.text,features = "html5lib")
 
            
@@ -334,14 +333,14 @@ class praeksa():
                 cnt+=1
             #data['filename']=file_name
             #print(data)
-            check_file = httprequestObj.http_post('http://www.xn--12c1dpz9b3e.com/lib/checkpost.php',data = data,headers = headers)
+            check_file = self.session.http_post('http://www.xn--12c1dpz9b3e.com/lib/checkpost.php',data = data,headers = headers)
             
             data['detail'] = "<p> "+data['checkdetail']+" </p>"
             loop = 1
             upload_url = []
             #while(loop!=0 and loop<=5):
             #    try:
-            upload_file = httprequestObj.http_post('http://www.xn--12c1dpz9b3e.com/post-add.php',data = data,files= file,headers = headers)
+            upload_file = self.session.http_post('http://www.xn--12c1dpz9b3e.com/post-add.php',data = data,files= file,headers = headers)
             upload_url.append(upload_file.url)
             #        loop = 0
             #    except :
@@ -406,7 +405,7 @@ class praeksa():
             del_data = {
                 'post_id':post_id
             }
-            res = httprequestObj.http_get(post_url,data = del_data,headers = headers)
+            res = self.session.http_get(post_url,data = del_data,headers = headers)
             #print(res.text)
             if "You have an error in your SQL syntax;" in res.text :
                 success = "false"
@@ -458,7 +457,7 @@ class praeksa():
 
                 url = 'http://www.xn--12c1dpz9b3e.com/manage-post.php?page={}'.format(p_no)
                 #all_posts_url = 'http://www.xn--12c1dpz9b3e.com/manage-post.php'
-                all_posts = httprequestObj.http_get(url)
+                all_posts = self.session.http_get(url)
                 page = soup(all_posts.content, features = "html5lib")
 
                 p = page.find("div", attrs={'class': 'pagination'}).find('ul').findAll("li")
@@ -548,7 +547,7 @@ class praeksa():
             while nextpage:
                 url = 'http://www.xn--12c1dpz9b3e.com/manage-post.php?page={}'.format(p_no)
 
-                res = httprequestObj.http_get(url,headers = headers)
+                res = self.session.http_get(url,headers = headers)
                 posts = soup(res.text,'html5lib')
 
                 pages = posts.find("div", attrs={'class': 'pagination'}).find('ul').findAll("li")
@@ -577,7 +576,7 @@ class praeksa():
                     if code == post_id :
                         nextpage=False
                         flag=1
-                        httprequestObj.http_get(post_url+'?update='+post_id)
+                        self.session.http_get(post_url+'?update='+post_id)
 
                         success = "true"
                         detail = "Post Postponed successfully"
@@ -629,7 +628,7 @@ class praeksa():
             while nextpage:
 
                 url = 'http://www.xn--12c1dpz9b3e.com/manage-post.php?page={}'.format(p_no)
-                res = httprequestObj.http_get(url,headers = headers)
+                res = self.session.http_get(url,headers = headers)
                 posts = soup(res.text,'html5lib')
 
                 pages=posts.find("div",attrs={'class':'pagination'}).find('ul').findAll("li")
@@ -682,7 +681,7 @@ class praeksa():
                             data['want'] = 'forrent'
 
 
-                        rget = httprequestObj.http_get('http://www.xn--12c1dpz9b3e.com/post-edit.php?id='+postdata['post_id'])
+                        rget = self.session.http_get('http://www.xn--12c1dpz9b3e.com/post-edit.php?id='+postdata['post_id'])
                         sou = soup(rget.text,'html5lib')
                         data['save'] = str(sou.find('input',attrs={'name':'save'})['value'])
 
@@ -710,7 +709,7 @@ class praeksa():
                                     continue
                                 else :
                                     im_url = img['href']
-                                    res =httprequestObj.http_get(im_url)
+                                    res =self.session.http_get(im_url)
                                     #print(im_url)
                                     break
 
@@ -730,7 +729,7 @@ class praeksa():
                         district = ''.join(map(str,str(postdata['addr_district']).split(' ')))
                         url_district = str('http://www.xn--12c1dpz9b3e.com/lib/district.php?province='+str(data['city']))
 
-                        find_district = httprequestObj.http_get(url_district)
+                        find_district = self.session.http_get(url_district)
                         sou = soup(find_district.text,features = "html5lib")
 
                         abc = sou.find('select',attrs = {'name':'district'})
@@ -771,10 +770,10 @@ class praeksa():
                         #data['filename']=file_name
                         #print(data)
 
-                        check_file = httprequestObj.http_post('http://www.xn--12c1dpz9b3e.com/lib/checkpost.php',data = data,headers = headers)
+                        check_file = self.session.http_post('http://www.xn--12c1dpz9b3e.com/lib/checkpost.php',data = data,headers = headers)
                         print(data)
                         data['detail'] = "<p> "+data['checkdetail']+" </p>"
-                        upload_file = httprequestObj.http_post('http://www.xn--12c1dpz9b3e.com/post-edit.php?id='+post_id,data = data,files= file,headers = headers)
+                        upload_file = self.session.http_post('http://www.xn--12c1dpz9b3e.com/post-edit.php?id='+post_id,data = data,files= file,headers = headers)
                         #print(upload_file.history)
                         #http://www.xn--12c1dpz9b3e.com/post-add.php?status=1&newid=99529&name=n%20nknn
                         url = str(upload_file.url)

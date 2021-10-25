@@ -18,7 +18,7 @@ from selenium.webdriver.chrome.options import Options
 import random
 import selenium.webdriver.support.ui as ui
 import time
-httprequestObj = lib_httprequest()
+
 Captcha = lib_captcha()
 
 
@@ -39,11 +39,12 @@ class thaihomeonline():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
         self.max_image = 6
 
     def logout_user(self):
         url = 'https://www.thaihomeonline.com/logout/'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self, userdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -135,7 +136,7 @@ class thaihomeonline():
     def test_login(self, logindata):
         self.logout_user()
         # print("Here in test_login")
-        r = httprequestObj.http_get('https://www.thaihomeonline.com/logout/')
+        r = self.session.http_get('https://www.thaihomeonline.com/logout/')
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -148,7 +149,7 @@ class thaihomeonline():
             'hidMode':'login'
         }
         # print(datapost)
-        r = httprequestObj.http_post('https://www.thaihomeonline.com/login/', data=datapost)
+        r = self.session.http_post('https://www.thaihomeonline.com/login/', data=datapost)
         data = r.text
         # print(data)
         # print("Data Printed")
@@ -376,7 +377,7 @@ class thaihomeonline():
             # district = province[datapost['proptProvince']+"_province"]
             # headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'
             # }
-            # r = httprequestObj.http_post('https://www.thaihomeonline.com/location/get-district/',data={'provinceID': datapost['proptProvince'],'elemName': 'proptDistrict','css': 'class="input1"'},headers=headers)
+            # r = self.session.http_post('https://www.thaihomeonline.com/location/get-district/',data={'provinceID': datapost['proptProvince'],'elemName': 'proptDistrict','css': 'class="input1"'},headers=headers)
             # soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             district = province[datapost['proptProvince']+'_province']
             # print("District\n",r.text)
@@ -398,7 +399,7 @@ class thaihomeonline():
 # 'onChange': 'areaChange()'
 #             }
 #             print('data\n',subdis)
-#             r = httprequestObj.http_post('https://www.thaihomeonline.com/location/get-area/',data=subdis,headers=headers)
+#             r = self.session.http_post('https://www.thaihomeonline.com/location/get-area/',data=subdis,headers=headers)
 #             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             subdistrict = province[datapost['proptProvince']+'_province'+datapost['proptDistrict']+'_district']
             # print("SubDistrict\n",r.text)
@@ -408,7 +409,7 @@ class thaihomeonline():
                     datapost['proptArea']= i
                     break
             
-            r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step1/?event=next', data=datapost)
+            r = self.session.http_post('https://www.thaihomeonline.com/post-step1/?event=next', data=datapost)
             
             data = r.text
             # with open('/home/maxslide/Real_Estate/temp.html','w') as f:
@@ -421,7 +422,7 @@ class thaihomeonline():
                 post_url = 'https://www.thaihomeonline.com/post-step1/?proptID='+post_id
                 detail = "Edit post URL"
                 # print('post_id',post_id)
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step2/?proptID='+post_id+'&event=next',data=second_step)
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step2/?proptID='+post_id+'&event=next',data=second_step)
                 
                 step3 = {
                     'picOrderInit[]': '1',
@@ -433,7 +434,7 @@ class thaihomeonline():
 'hidProptID': post_id,
 'hidStepCurrent': 'postStep3'
                 }
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step3/?proptID='+post_id+'&event=next',data=step3)
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step3/?proptID='+post_id+'&event=next',data=step3)
                 
                 data = r.text
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -451,7 +452,7 @@ class thaihomeonline():
 'hidStepCurrent': 'postStep4',
 'hidUaddrID': authenticityToken
                 }
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=save', data=step_four)
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=save', data=step_four)
                 # with open('/home/maxslide/Real_Estate/temp.html','w') as f:
                 #     f.write(r.text)
                 if(re.search('ประกาศทั้งหมด', r.text)):
@@ -490,8 +491,8 @@ class thaihomeonline():
                 driver.find_element_by_name('btnSave').click()
                 driver.close()
                 driver.quit()
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=next', data=step_four)
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step-final/?proptID='+post_id+'&event=next', data={"hidStepCurrent": "postStepFinal"})
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=next', data=step_four)
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step-final/?proptID='+post_id+'&event=next', data={"hidStepCurrent": "postStepFinal"})
                 post_url = 'https://www.thaihomeonline.com/property/'+post_id+'/'
             else:
                 post_id = "error"
@@ -636,7 +637,7 @@ class thaihomeonline():
         post_url = 'https://www.thaihomeonline.com/member/property-delete/?proptID=546416'+post_id+'&mode=current'
         if(success == "True"):
             # print()
-            r = httprequestObj.http_get(post_url)
+            r = self.session.http_get(post_url)
             if r.status_code == 500 :
                 success = "False"
                 detail = "Cannot delete post with id"+post_id
@@ -858,7 +859,7 @@ class thaihomeonline():
             # district = province[datapost['proptProvince']+"_province"]
             # headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'
             # }
-            # r = httprequestObj.http_post('https://www.thaihomeonline.com/location/get-district/',data={'provinceID': datapost['proptProvince'],'elemName': 'proptDistrict','css': 'class="input1"'},headers=headers)
+            # r = self.session.http_post('https://www.thaihomeonline.com/location/get-district/',data={'provinceID': datapost['proptProvince'],'elemName': 'proptDistrict','css': 'class="input1"'},headers=headers)
             # soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             district = province[datapost['proptProvince']+'_province']
             # print("District\n",r.text)
@@ -880,7 +881,7 @@ class thaihomeonline():
 # 'onChange': 'areaChange()'
 #             }
 #             print('data\n',subdis)
-#             r = httprequestObj.http_post('https://www.thaihomeonline.com/location/get-area/',data=subdis,headers=headers)
+#             r = self.session.http_post('https://www.thaihomeonline.com/location/get-area/',data=subdis,headers=headers)
 #             soup = BeautifulSoup(r.text, self.parser, from_encoding='utf-8')
             subdistrict = province[datapost['proptProvince']+'_province'+datapost['proptDistrict']+'_district']
             # print("SubDistrict\n",r.text)
@@ -890,7 +891,7 @@ class thaihomeonline():
                     datapost['proptArea']= i
                     break
             
-            r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step1/?proptID='+post_id+'&event=next', data=datapost)
+            r = self.session.http_post('https://www.thaihomeonline.com/post-step1/?proptID='+post_id+'&event=next', data=datapost)
             
             data = r.text
             # with open('/home/maxslide/Real_Estate/temp.html','w') as f:
@@ -903,7 +904,7 @@ class thaihomeonline():
                 post_url = 'https://www.thaihomeonline.com/post-step1/?proptID='+post_id
                 detail = "Edit post URL"
                 # print('post_id',post_id)
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step2/?proptID='+post_id+'&event=next',data=second_step)
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step2/?proptID='+post_id+'&event=next',data=second_step)
                 
                 step3 = {
                     'picOrderInit[]': '1',
@@ -915,7 +916,7 @@ class thaihomeonline():
 'hidProptID': post_id,
 'hidStepCurrent': 'postStep3'
                 }
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step3/?proptID='+post_id+'&event=next',data=step3)
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step3/?proptID='+post_id+'&event=next',data=step3)
                 
                 data = r.text
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
@@ -933,7 +934,7 @@ class thaihomeonline():
 'hidStepCurrent': 'postStep4',
 'hidUaddrID': authenticityToken
                 }
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=save', data=step_four)
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=save', data=step_four)
                 # with open('/home/maxslide/Real_Estate/temp.html','w') as f:
                 #     f.write(r.text)
                 if(re.search('ประกาศทั้งหมด', r.text)):
@@ -963,7 +964,7 @@ class thaihomeonline():
                         'order': str(i+1),
                         'picOrderInit': '1@2@3@4@5@6'
                     }
-                    r=httprequestObj.http_post("https://www.thaihomeonline.com/post-pic-delete/",data=deletedata)
+                    r=self.session.http_post("https://www.thaihomeonline.com/post-pic-delete/",data=deletedata)
                     driver.get('https://www.thaihomeonline.com/post-step3/?proptID=' + post_id)
                     clickel = driver.find_element_by_xpath('//a[@href="javascript:uploadStart('+str(i+1)+');"]')
                     clickel.click()
@@ -978,8 +979,8 @@ class thaihomeonline():
                 driver.find_element_by_name('btnSave').click()
                 driver.close()
                 driver.quit()
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=next', data=step_four)
-                r = httprequestObj.http_post('https://www.thaihomeonline.com/post-step-final/?proptID='+post_id+'&event=next', data={"hidStepCurrent": "postStepFinal"})
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step4/?proptID='+post_id+'&event=next', data=step_four)
+                r = self.session.http_post('https://www.thaihomeonline.com/post-step-final/?proptID='+post_id+'&event=next', data={"hidStepCurrent": "postStepFinal"})
                 post_url = 'https://www.thaihomeonline.com/property/'+post_id+'/'
             else:
                 post_id = "error"
@@ -1032,7 +1033,7 @@ class thaihomeonline():
             
             all_posts_url = 'https://www.thaihomeonline.com/member/property-list/?show=current'
 
-            all_posts = httprequestObj.http_get(all_posts_url)
+            all_posts = self.session.http_get(all_posts_url)
 
             r = BeautifulSoup(all_posts.content, features = "html5lib")
 
@@ -1045,7 +1046,7 @@ class thaihomeonline():
             xyz=[]
             for i in range(totalpages):
                 url="https://www.thaihomeonline.com/member/property-list/?page={}&show=current".format(i+1)
-                res=httprequestObj.http_get(url)
+                res=self.session.http_get(url)
                 page=BeautifulSoup(res.text, features="html5lib")
                 a = page.find('div', attrs = {'class':'boxTable'}).findAll('tr')
                 xyz.extend(a[1:])

@@ -9,10 +9,7 @@ from datetime import datetime
 import random
 import sys
 import codecs
-        
 
-httprequestObj = lib_httprequest()
-httprequestObj.timeout=50
 
 def set_end_time(start_time):
     time_end = datetime.utcnow()
@@ -61,6 +58,8 @@ class home2nd():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
+        self.session.timeout = 50
 
     def register_user(self,userdata):
         start_time = datetime.utcnow()
@@ -70,11 +69,11 @@ class home2nd():
             account = 'null'
         print("entry")
 
-        r = httprequestObj.http_get("https://www.home2nd.com/",verify=False)
+        r = self.session.http_get("https://www.home2nd.com/",verify=False)
         sou = BeautifulSoup(r.text,'html5lib')
         
         url = sou.find('iframe',attrs = {'id':'homeidlogin'})['src']
-        r = httprequestObj.http_get(url)
+        r = self.session.http_get(url)
         page = BeautifulSoup(r.text,'html5lib')
         scrpt = page.findAll('script',attrs = {'type':'text/javascript'})
         csrf = scrpt[-2].text
@@ -97,7 +96,7 @@ class home2nd():
             'policy_checkbox': 'on'
         }
         reg_url = 'https://id.home.co.th/register'
-        r = httprequestObj.http_post(reg_url,data = data)
+        r = self.session.http_post(reg_url,data = data)
         print(r)
         jr = json.loads(r.text)
         
@@ -132,12 +131,12 @@ class home2nd():
             account = 'null'
         print("entry")
         
-        r = httprequestObj.http_get("https://www.home2nd.com/")
+        r = self.session.http_get("https://www.home2nd.com/")
         sou = BeautifulSoup(r.text,'html5lib')
 
         url = sou.find('iframe',attrs = {'id':'homeidlogin'})['src']
         urls = url.split('&')
-        r = httprequestObj.http_get(url)
+        r = self.session.http_get(url)
         page = BeautifulSoup(r.text,'html5lib')
         scrpt = page.findAll('script',attrs = {'type':'text/javascript'})
         csrf = scrpt[-2].text
@@ -158,7 +157,7 @@ class home2nd():
             'password': userdata['pass']
         }
         #print(login_pload)
-        r= httprequestObj.http_post(login_url, data=login_pload)
+        r= self.session.http_post(login_url, data=login_pload)
         
         
         if '<h1>Login complete</h1>' in r.text:
@@ -261,16 +260,16 @@ class home2nd():
             
             pold = '0'
             token = url.split('&')[0].split('?')[1].split('=')[1]
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             cookies = r.cookies
             headers = r.headers
             newUrl = 'https://www.home2nd.com/homeid-login?'+url.split('&')[0].split('?')[1]+'&redirect_uri=https://www.home2nd.com/'
             print(newUrl)
-            r = httprequestObj.http_get(newUrl,cookies = cookies,headers = headers)
+            r = self.session.http_get(newUrl,cookies = cookies,headers = headers)
             cookies = r.cookies
             headers = r.headers
             
-            resp = httprequestObj.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
+            resp = self.session.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
 
             jr = resp.text[46:-2].replace('\n','<br>').replace('\r\n','<br>').replace('\/','').replace('\"','')
             sou = BeautifulSoup(jr,'html5lib')
@@ -283,7 +282,7 @@ class home2nd():
                     pold = row['data-listing'].replace('\\','').replace('\"','')
 
             #print("******",pold)
-            r = httprequestObj.http_get('https://www.home2nd.com/',cookies = cookies, headers = headers)
+            r = self.session.http_get('https://www.home2nd.com/',cookies = cookies, headers = headers)
             
             cookies = r.cookies
             headers = r.headers
@@ -293,7 +292,7 @@ class home2nd():
             url = sou.find('div',attrs = {'class':'item','data-value':'link-profile'})['data-url']
             agentId = url.split('/')[-1] 
 
-            r1 = httprequestObj.http_get('https://www.home2nd.com/settings/tab?form=name',cookies = cookies, headers = headers)
+            r1 = self.session.http_get('https://www.home2nd.com/settings/tab?form=name',cookies = cookies, headers = headers)
             sou1 = BeautifulSoup(r1.text,'html5lib')
 
    
@@ -313,7 +312,7 @@ class home2nd():
                 'info_lastnameTH': lastnameTH,
                 'info_nicknameTH': postdata['name']
             }
-            rname = httprequestObj.http_post(nameurl,data = namedata)
+            rname = self.session.http_post(nameurl,data = namedata)
             #print(rname.text)
             #add phone number
             phonedata = {
@@ -323,7 +322,7 @@ class home2nd():
                 'info_phone_country[]': 'TH',
                 'info_phone_number[]': postdata['mobile']
             }
-            rphone = httprequestObj.http_post(nameurl,data = phonedata)
+            rphone = self.session.http_post(nameurl,data = phonedata)
             #print(rphone.text)
             province_url = 'https://www.home2nd.com/submit-listing/geolocation'
             get_url = 'https://www.home2nd.com/submit-listing/step1'
@@ -362,7 +361,7 @@ class home2nd():
             #province
             province = ''.join(map(str,str(postdata['addr_province']).split(' ')))
             print("province")
-            r3 = httprequestObj.http_get(get_url,cookies = cookies, headers = headers)
+            r3 = self.session.http_get(get_url,cookies = cookies, headers = headers)
             
             print(r3.url)
             cookies = r3.cookies
@@ -382,7 +381,7 @@ class home2nd():
             if abc==None or  data['province']=='':
                 data['province'] = '1'
                 data['provinceName'] = 'กรุงเทพ'
-            r4 = httprequestObj.http_post(province_url,data = {'type': 'province','id': data['province']})
+            r4 = self.session.http_post(province_url,data = {'type': 'province','id': data['province']})
             jr = json.loads(r4.text)
             #print(jr)
             sou4 = BeautifulSoup(str(jr['response']).replace('\"','"').replace('\/','/'),'html5lib')
@@ -396,7 +395,7 @@ class home2nd():
                     data['districtName'] = pq.text.replace(' ','')
                     break
             
-            r5 = httprequestObj.http_post(province_url,data = {'type': 'district','id': data['district']})
+            r5 = self.session.http_post(province_url,data = {'type': 'district','id': data['district']})
             #print(r5)
             jr = json.loads(r5.text)
             sou5 = BeautifulSoup(str(jr['response']).replace('\"','"').replace('\/','/'),'html5lib')
@@ -409,11 +408,11 @@ class home2nd():
                     data['subDistrict'] = str(pq['value'])
                     break
             print(data)
-            res = httprequestObj.http_post(get_url+'?',data = data)
+            res = self.session.http_post(get_url+'?',data = data)
             print(res.url)
             cookies = res.cookies
             headers = res.headers
-            resp1 = httprequestObj.http_get('https://www.home2nd.com/submit-listing/step2',cookies = cookies, headers = headers)
+            resp1 = self.session.http_get('https://www.home2nd.com/submit-listing/step2',cookies = cookies, headers = headers)
             print(resp1.url)
 
         #step 2 
@@ -442,11 +441,11 @@ class home2nd():
                 step2data['priceRent'] = postdata['price_baht']
             else:
                 step2data['priceSale'] = postdata['price_baht']
-            r = httprequestObj.http_post('https://www.home2nd.com/submit-listing/step2?',data = step2data)
+            r = self.session.http_post('https://www.home2nd.com/submit-listing/step2?',data = step2data)
             cookies = r.cookies
             headers = r.headers
             print(r.url)
-            resp = httprequestObj.http_get('https://www.home2nd.com/submit-listing/step3',cookies = cookies, headers = headers)
+            resp = self.session.http_get('https://www.home2nd.com/submit-listing/step3',cookies = cookies, headers = headers)
             
         # upload images
             print('upload Images')
@@ -463,7 +462,7 @@ class home2nd():
 
             for ind, i in enumerate(postdata['post_images']):
                 file = {'file': (i, open(i, "rb"), "image/jpeg")}
-                upload_file = httprequestObj.http_post('https://www.home2nd.com/uploadImg/upload_img',data = {},files = file)
+                upload_file = self.session.http_post('https://www.home2nd.com/uploadImg/upload_img',data = {},files = file)
                 print(upload_file.text)
                 jr = json.loads(upload_file.text)
                 imgs.append(jr['imgName'])
@@ -474,20 +473,20 @@ class home2nd():
                 'listing_video_show[]':'',
                 'listing_video_path[]':'' 
             }
-            r = httprequestObj.http_post('https://www.home2nd.com/submit-listing/step3?',data = step3data,cookies = cookies, headers = headers)
+            r = self.session.http_post('https://www.home2nd.com/submit-listing/step3?',data = step3data,cookies = cookies, headers = headers)
             cookies = r.cookies
             headers = r.headers
             print("##",r.url)
-            resp = httprequestObj.http_get('https://www.home2nd.com/submit-listing/step4',cookies = cookies, headers = headers)
+            resp = self.session.http_get('https://www.home2nd.com/submit-listing/step4',cookies = cookies, headers = headers)
             
             
             
             #step 4
-            r = httprequestObj.http_post('https://www.home2nd.com/submit-listing/step4?',data = {'assistantAgent': '1'})
+            r = self.session.http_post('https://www.home2nd.com/submit-listing/step4?',data = {'assistantAgent': '1'})
             cookies = r.cookies
             headers = r.headers
             
-            resp = httprequestObj.http_get('https://www.home2nd.com/submit-listing/complete',cookies = cookies, headers = headers)
+            resp = self.session.http_get('https://www.home2nd.com/submit-listing/complete',cookies = cookies, headers = headers)
             
             datamenu = {
                 'data_tab': 'search',
@@ -499,7 +498,7 @@ class home2nd():
                 'limit': '20',
                 'txtSearch':''
             }
-            resp = httprequestObj.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
+            resp = self.session.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
             
 
             jr = resp.text[46:-2].replace('\n','<br>').replace('\r\n','<br>').replace('\/','/').replace('\"','"')
@@ -563,17 +562,17 @@ class home2nd():
             headers = r.headers
 
             token = url.split('&')[0].split('?')[1].split('=')[1]
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             cookies = r.cookies
             headers = r.headers
             newUrl = 'https://www.home2nd.com/homeid-login?'+url.split('&')[0].split('?')[1]+'&redirect_uri=https://www.home2nd.com/'
             print(newUrl)
-            r = httprequestObj.http_get(newUrl,cookies = cookies,headers = headers)
+            r = self.session.http_get(newUrl,cookies = cookies,headers = headers)
             cookies = r.cookies
             headers = r.headers
             
             
-            r = httprequestObj.http_get('https://www.home2nd.com/',cookies = cookies, headers = headers)
+            r = self.session.http_get('https://www.home2nd.com/',cookies = cookies, headers = headers)
             datamenu = {
                 'data_tab': 'search',
                 'listingType': 'listing',
@@ -584,7 +583,7 @@ class home2nd():
                 'limit': '100',
                 'txtSearch':''
             }
-            resp = httprequestObj.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
+            resp = self.session.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
             
 
             jr = resp.text[46:-2].replace('\n','<br>').replace('\r\n','<br>').replace('\/','/').replace('\"','"')
@@ -598,7 +597,7 @@ class home2nd():
 
                 if pnew == postdata['post_id']:
                     
-                    resp = httprequestObj.http_post('https://www.home2nd.com/listing/listingclosed', data = data)
+                    resp = self.session.http_post('https://www.home2nd.com/listing/listingclosed', data = data)
                     success = True
                     detail = "Post Deleted successfully"
                     flag =1
@@ -662,17 +661,17 @@ class home2nd():
             headers = r.headers
 
             token = url.split('&')[0].split('?')[1].split('=')[1]
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             cookies = r.cookies
             headers = r.headers
             newUrl = 'https://www.home2nd.com/homeid-login?'+url.split('&')[0].split('?')[1]+'&redirect_uri=https://www.home2nd.com/'
             print(newUrl)
-            r = httprequestObj.http_get(newUrl,cookies = cookies,headers = headers)
+            r = self.session.http_get(newUrl,cookies = cookies,headers = headers)
             cookies = r.cookies
             headers = r.headers
             
             
-            r = httprequestObj.http_get('https://www.home2nd.com/',cookies = cookies, headers = headers)
+            r = self.session.http_get('https://www.home2nd.com/',cookies = cookies, headers = headers)
             datamenu = {
                 'data_tab': 'search',
                 'listingType': 'listing',
@@ -683,7 +682,7 @@ class home2nd():
                 'limit': '100',
                 'txtSearch':''
             }
-            resp = httprequestObj.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
+            resp = self.session.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
             
 
             jr = resp.text[46:-2].replace('\/','/').replace('\"','"')
@@ -714,7 +713,7 @@ class home2nd():
                 new_str = codecs.unicode_escape_decode(post_url)[0]
                 post_url = new_str.encode('utf-8', 'surrogatepass').decode('utf-8')
                 print(post_url)
-                r = httprequestObj.http_get(post_url)
+                r = self.session.http_get(post_url)
                 print(r)
                 sou = BeautifulSoup(r.text,'html5lib')
                 title = sou.find('h1',attrs = {'class':'feature-listing-title head_size_font'})
@@ -811,17 +810,17 @@ class home2nd():
             headers = r.headers
 
             token = url.split('&')[0].split('?')[1].split('=')[1]
-            r = httprequestObj.http_get(url)
+            r = self.session.http_get(url)
             cookies = r.cookies
             headers = r.headers
             newUrl = 'https://www.home2nd.com/homeid-login?'+url.split('&')[0].split('?')[1]+'&redirect_uri=https://www.home2nd.com/'
             print(newUrl)
-            r = httprequestObj.http_get(newUrl,cookies = cookies,headers = headers)
+            r = self.session.http_get(newUrl,cookies = cookies,headers = headers)
             cookies = r.cookies
             headers = r.headers
             
             
-            r = httprequestObj.http_get('https://www.home2nd.com/',cookies = cookies, headers = headers)
+            r = self.session.http_get('https://www.home2nd.com/',cookies = cookies, headers = headers)
             datamenu = {
                 'data_tab': 'search',
                 'listingType': 'listing',
@@ -832,7 +831,7 @@ class home2nd():
                 'limit': '100',
                 'txtSearch':''
             }
-            resp = httprequestObj.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
+            resp = self.session.http_post('https://www.home2nd.com/profile/getmenu',data = datamenu)
             
 
             jr = resp.text[46:-2].replace('\/','/').replace('\"','"')
@@ -900,7 +899,7 @@ class home2nd():
                         data['listingType'] = 'FS'
                     
                     url = 'https://www.home2nd.com/listing/edit/'+pnew
-                    r = httprequestObj.http_get(url,cookies=cookies,headers = headers)
+                    r = self.session.http_get(url,cookies=cookies,headers = headers)
                     cookies = r.cookies
                     headers = r.headers
                     sou = BeautifulSoup(r.text,'html5lib')
@@ -919,7 +918,7 @@ class home2nd():
                     
                     for ind, i in enumerate(postdata['post_images']):
                         file = {'file': (i, open(i, "rb"), "image/jpeg")}
-                        upload_file = httprequestObj.http_post('https://www.home2nd.com/uploadImg/uploadImg/'+post_id,data = {},files = file)
+                        upload_file = self.session.http_post('https://www.home2nd.com/uploadImg/uploadImg/'+post_id,data = {},files = file)
                         print(upload_file.text)
                         jr = json.loads(upload_file.text)
                         imgsName.append(jr['imgName'])
@@ -932,10 +931,10 @@ class home2nd():
                             'imageName': img['value'],
                             'listingId': pnew
                         }
-                        resp = httprequestObj.http_post(delUrl,data = del_data)
+                        resp = self.session.http_post(delUrl,data = del_data)
                         print(resp.text)
                     
-                    r = httprequestObj.http_post(url, data = data)
+                    r = self.session.http_post(url, data = data)
                     success = True
                     detail = 'Post Edited Successfully'
                     flag = 1

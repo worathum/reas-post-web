@@ -33,8 +33,6 @@ import undetected_chromedriver.v2 as uc
 
 # ===========================================================================
 
-httprequestObj = lib_httprequest()
-
 class baanfinder():
 
     name = 'baanfinder'
@@ -55,10 +53,11 @@ class baanfinder():
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
         }
+        self.session = lib_httprequest()
 
     def logout_user(self):
         url = 'https://www.baanfinder.com/logout'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
 
     def register_user(self, postdata):
@@ -77,11 +76,11 @@ class baanfinder():
         }
 
         url = 'https://www.baanfinder.com/signup'
-        r = httprequestObj.http_get(url, headers=self.headers)
+        r = self.session.http_get(url, headers=self.headers)
         soup = BeautifulSoup(r.content, 'lxml')
         datapost['authenticityToken'] = soup.find('input', attrs={'name': 'authenticityToken'})['value']
 
-        r = httprequestObj.http_post(url, data=datapost, headers = self.headers)
+        r = self.session.http_post(url, data=datapost, headers = self.headers)
         data = r.text
         # print(data)
 
@@ -167,7 +166,7 @@ class baanfinder():
     def check_post(self, postid):
         post_id = postid
         url = "https://www.baanfinder.com/me/my-properties"
-        r = httprequestObj.http_get(url, headers=self.headers)
+        r = self.session.http_get(url, headers=self.headers)
         exists = False
         soup = BeautifulSoup(r.content, 'lxml')
         authenticityToken = soup.find('input', attrs={'name': 'authenticityToken'})['value']
@@ -189,7 +188,7 @@ class baanfinder():
 
         login = self.test_login(postdata)
 
-        response = httprequestObj.http_get('https://www.baanfinder.com/api/search/projects/alphabet?search='+project_name, headers = self.headers)
+        response = self.session.http_get('https://www.baanfinder.com/api/search/projects/alphabet?search='+project_name, headers = self.headers)
         project_id = ""
         for project in json.loads(response.content):
             if project['text'] == project_name:
@@ -768,7 +767,7 @@ class baanfinder():
                 datapost = self.make_post_data(postdata)
 
                 url = "https://www.baanfinder.com/property/"+str(post_id)+"_"+post_title+"/edit"
-                r = httprequestObj.http_get(url, headers=self.headers)
+                r = self.session.http_get(url, headers=self.headers)
                 soup = BeautifulSoup(r.content, 'lxml')
                 datapost['authenticityToken'] = soup.find('input', attrs={'name': 'authenticityToken'})['value']
                 datapost['res.province'] = self.match_addr(postdata['addr_province'], 'res.province', soup)
@@ -778,7 +777,7 @@ class baanfinder():
                 image_upload_url = "https://api.cloudinary.com/v1_1/baanfinder/auto/upload"
                 image_upload_data = json.loads(str(soup.find('input', attrs={'type':'file', 'class':'cloudinary-fileupload'})['data-form-data']))
 
-                r = httprequestObj.http_post(url, data=datapost, headers=self.headers)
+                r = self.session.http_post(url, data=datapost, headers=self.headers)
                 self.upload_images(postdata, post_id)
                 detail = "Post Edited"
             else:
@@ -819,7 +818,7 @@ class baanfinder():
                 post_data = {}
                 post_data['authenticityToken'] = authenticityToken
                 delete_url = "https://www.baanfinder.com/property/"+str(post_id)+"_"+post_title+"/delete?showDraft=false&isExpired=false&x-http-method-override=DELETE"
-                r = httprequestObj.http_post(delete_url, data=post_data, headers=self.headers)
+                r = self.session.http_post(delete_url, data=post_data, headers=self.headers)
                 success = "true"
                 detail = "post deleted successfully"
             else:
@@ -859,7 +858,7 @@ class baanfinder():
                 post_data = {}
                 post_data['authenticityToken'] = authenticityToken
                 bump_url = "https://www.baanfinder.com/property/"+str(post_id)+"/bump"
-                r = httprequestObj.http_post(bump_url, data=post_data, headers=self.headers)
+                r = self.session.http_post(bump_url, data=post_data, headers=self.headers)
 
                 success = "true"
                 detail = "post bumped successfully"
@@ -899,7 +898,7 @@ class baanfinder():
             # exists, authenticityToken, post_title = self.check_post(post_id)
 
             url = "https://www.baanfinder.com/me/my-properties"
-            r = httprequestObj.http_get(url, headers=self.headers)
+            r = self.session.http_get(url, headers=self.headers)
             exists = False
             soup = BeautifulSoup(r.content, 'lxml')
 

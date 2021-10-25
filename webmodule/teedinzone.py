@@ -13,7 +13,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 
-httprequestObj = lib_httprequest()
 
 with open("./static/teedinzone_province.json") as f:
     province_id_map = json.load(f)
@@ -38,6 +37,7 @@ class teedinzone():
         self.debugresdata = 0
         self.parser = 'html.parser'
         self.webname = 'teedinzone'
+        self.session = lib_httprequest()
 
     def print_debug(self, msg):
         if self.debug == 1:
@@ -46,7 +46,7 @@ class teedinzone():
 
     def logout_user(self):
         url = 'https://teedinzone.com/index.php?page=main&action=logout'
-        httprequestObj.http_get(url)
+        self.session.http_get(url)
 
     def register_user(self, userdata):
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
@@ -58,7 +58,7 @@ class teedinzone():
             'action': 'register'
         }
 
-        r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+        r = self.session.http_get('https://teedinzone.com/index.php', params=params)
         # print(r.url)
         # print(r.status_code)
 
@@ -79,7 +79,7 @@ class teedinzone():
             's_email': userdata['user']
         }
 
-        r = httprequestObj.http_post('https://teedinzone.com/index.php', data=reg_data)
+        r = self.session.http_post('https://teedinzone.com/index.php', data=reg_data)
         # print(r.url)
         # print(r.status_code)
 
@@ -112,8 +112,8 @@ class teedinzone():
             'page': 'login',
             'action': 'register'
         }
-        httprequestObj.http_get('https://teedinzone.com/index.php?page=main&action=logout')
-        r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+        self.session.http_get('https://teedinzone.com/index.php?page=main&action=logout')
+        r = self.session.http_get('https://teedinzone.com/index.php', params=params)
         # print(r.url)
         # print(r.status_code)
 
@@ -130,7 +130,7 @@ class teedinzone():
             'password': userdata['pass']
         }
 
-        r = httprequestObj.http_post('https://teedinzone.com/index.php', data=reg_data)
+        r = self.session.http_post('https://teedinzone.com/index.php', data=reg_data)
         # print(r.url)
         # print(r.status_code)
 
@@ -239,7 +239,7 @@ class teedinzone():
                 'action': 'item_add'
             }
 
-            r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+            r = self.session.http_get('https://teedinzone.com/index.php', params=params)
             # print(r.url)
             # print(r.status_code)
 
@@ -286,7 +286,7 @@ class teedinzone():
                 file.append(('qquuid', (None, file_uuid)))
                 file.append(('qqtotalfilesize', (None, file_length)))
                 file.append(('qqfile', (filename, open(img, "rb"), "image/jpeg")))
-                r = httprequestObj.http_post('https://teedinzone.com/index.php', params=params, data={}, files=file)
+                r = self.session.http_post('https://teedinzone.com/index.php', params=params, data={}, files=file)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -297,7 +297,7 @@ class teedinzone():
 
             # print('Posted images')
 
-            r = httprequestObj.http_post('https://teedinzone.com/index.php', data={}, files=datapost)
+            r = self.session.http_post('https://teedinzone.com/index.php', data={}, files=datapost)
             # print(r.url)
             # print(r.status_code)
 
@@ -308,7 +308,7 @@ class teedinzone():
                 'action': 'dashboard'
             }
 
-            r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+            r = self.session.http_get('https://teedinzone.com/index.php', params=params)
             # print(r.url)
             # print(r.status_code)
 
@@ -370,7 +370,7 @@ class teedinzone():
                     'iPage': str(ind)
                 }
 
-                r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+                r = self.session.http_get('https://teedinzone.com/index.php', params=params)
                 # print(ind)
                 # print(r.url)
                 # print(r.status_code)
@@ -469,7 +469,7 @@ class teedinzone():
                     'id': postdata['post_id']
                 }
 
-                r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+                r = self.session.http_get('https://teedinzone.com/index.php', params=params)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -494,7 +494,7 @@ class teedinzone():
                         params['item'] = photo_block.get('itemid')
                         params['code'] = photo_block.get('photoname')
 
-                        r = httprequestObj.http_post('https://teedinzone.com/index.php', params=params, data={})
+                        r = self.session.http_post('https://teedinzone.com/index.php', params=params, data={})
                         # print(r.url)
                         # print(r.status_code)
 
@@ -544,12 +544,12 @@ class teedinzone():
                     # print(file_uuid)
                     # print(file_length)
 
-                    r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params_validate)
+                    r = self.session.http_get('https://teedinzone.com/index.php', params=params_validate)
 
                     file.append(('qquuid', (None, file_uuid)))
                     file.append(('qqtotalfilesize', (None, file_length)))
                     file.append(('qqfile', (filename, open(img, "rb"), "image/jpeg")))
-                    r = httprequestObj.http_post('https://teedinzone.com/index.php', params=params_upload, data={},
+                    r = self.session.http_post('https://teedinzone.com/index.php', params=params_upload, data={},
                                                  files=file)
                     # print(r.url)
                     # print(r.status_code)
@@ -563,7 +563,7 @@ class teedinzone():
 
                 # print('Posted images')
 
-                r = httprequestObj.http_post('https://teedinzone.com/index.php', data={}, files=datapost)
+                r = self.session.http_post('https://teedinzone.com/index.php', data={}, files=datapost)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -621,7 +621,7 @@ class teedinzone():
                     'iPage': str(ind)
                 }
 
-                r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+                r = self.session.http_get('https://teedinzone.com/index.php', params=params)
                 # print(ind)
                 # print(r.url)
                 # print(r.status_code)
@@ -652,7 +652,7 @@ class teedinzone():
                     'id': postdata['post_id']
                 }
 
-                r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+                r = self.session.http_get('https://teedinzone.com/index.php', params=params)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -682,7 +682,7 @@ class teedinzone():
                     ('page', (None, 'item')),
                 ]
 
-                r = httprequestObj.http_post('https://teedinzone.com/index.php', data={}, files=datapost)
+                r = self.session.http_post('https://teedinzone.com/index.php', data={}, files=datapost)
                 # print(r.url)
                 # print(r.status_code)
 
@@ -743,7 +743,7 @@ class teedinzone():
                     'iPage': str(ind)
                 }
 
-                r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+                r = self.session.http_get('https://teedinzone.com/index.php', params=params)
                 # print(ind)
                 # print(r.url)
                 # print(r.status_code)
@@ -768,7 +768,7 @@ class teedinzone():
                             'page': 'item',
                             'id': post_id
                         }
-                        r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+                        r = self.session.http_get('https://teedinzone.com/index.php', params=params)
                         # print(r.url)
                         # print(r.status_code)
 
@@ -840,7 +840,7 @@ class teedinzone():
                     'iPage': str(ind)
                 }
 
-                r = httprequestObj.http_get('https://teedinzone.com/index.php', params=params)
+                r = self.session.http_get('https://teedinzone.com/index.php', params=params)
                 # print(ind)
                 # print(r.url)
                 # print(r.status_code)
@@ -871,7 +871,7 @@ class teedinzone():
                     'id': postdata['post_id']
                 }
 
-                r = httprequestObj.http_post('https://teedinzone.com/index.php', params=params, data=())
+                r = self.session.http_post('https://teedinzone.com/index.php', params=params, data=())
                 # print(r.url)
                 # print(r.status_code)
 

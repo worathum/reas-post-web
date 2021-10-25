@@ -19,9 +19,6 @@ import sys
 from urllib.parse import unquote
 
 
-httprequestObj = lib_httprequest()
-
-
 
 class element_has_css_class(object):
   """An expectation for checking that an element has a particular css class.
@@ -57,6 +54,7 @@ class ploychao():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.session = lib_httprequest()
         with open("./static/ploychao_province.json") as f:
             self.provincedata = json.load(f)
         # product categ id
@@ -159,7 +157,7 @@ class ploychao():
             shopname=company_name,
             action='save_register',
         )
-        r = httprequestObj.http_post(
+        r = self.session.http_post(
             'https://www.ploychao.com/register/', data=datapost)
 
         data = r.text
@@ -198,7 +196,7 @@ class ploychao():
             'email': user,
         }
 
-        r = httprequestObj.http_post('https://www.ploychao.com/auth/', data=datapost)
+        r = self.session.http_post('https://www.ploychao.com/auth/', data=datapost)
         data = r.text
         if str(data) == '1':
             success = "false"
@@ -277,7 +275,7 @@ class ploychao():
                 ('productcondition',''),
             ]
 
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'https://www.ploychao.com/member/', data=datapost)
 
 
@@ -287,7 +285,7 @@ class ploychao():
                 success = "false"
                 detail = "Post could not be created."
             else:
-                r2 = httprequestObj.http_get('https://www.ploychao.com/'+ashopname+'/',verify=False)
+                r2 = self.session.http_get('https://www.ploychao.com/'+ashopname+'/',verify=False)
                 data2 = r2.text
                 soup = BeautifulSoup(data2, self.parser, from_encoding='utf-8')
                 string2 = soup.find("div", {"id": "box-product"}).find_all("div")
@@ -373,7 +371,7 @@ class ploychao():
                 ('productcondition',''),
             ]
 
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'https://www.ploychao.com/member/', data=datapost)
 
             data = r.text
@@ -381,7 +379,7 @@ class ploychao():
                 success = "false"
                 detail = "Post could not be edited."
             else:
-                r2 = httprequestObj.http_get('https://www.ploychao.com/'+ashopname+'/',verify=False)
+                r2 = self.session.http_get('https://www.ploychao.com/'+ashopname+'/',verify=False)
                 data2 = r2.text
                 soup = BeautifulSoup(data2, self.parser, from_encoding='utf-8')
                 string2 = soup.find("div", {"id": "box-product"}).find_all("div")
@@ -430,7 +428,7 @@ class ploychao():
                 ('action', 'delete_product'),
                 ('product_id', postdata['post_id']),
             ]
-            r = httprequestObj.http_post(
+            r = self.session.http_post(
                 'https://www.ploychao.com/member/', data=datapost)
             data = r.text
             if data == '':
