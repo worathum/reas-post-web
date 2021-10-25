@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from requests.adapters import Response
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 from .lib_captcha import *
@@ -9,6 +10,8 @@ import json
 import datetime
 import sys
 import requests
+from time import sleep
+import cloudscraper
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -18,6 +21,7 @@ from selenium.common.exceptions import TimeoutException, StaleElementReferenceEx
 from selenium.webdriver.common.keys import Keys
 
 # 'listing_type': (category_id, [(attr_id, unit_id), (attr_id, unit_id), (attr_id, unit_id)] )
+authorization = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1IiwianRpIjoiOTA5ZmUwNTEzZjhiMGUwZmYzNmFlZTdhZjI3MjllNTI3MDBmYmQzYTkyMzI3MTFhMjU3NDY1MzQ3NDEzNTU4N2I1MjdmNTRjYTZjOThlZDYiLCJpYXQiOjE2MTMxMzkwMzIsIm5iZiI6MTYxMzEzOTAzMiwiZXhwIjoxOTI4NjcxODMyLCJzdWIiOiIiLCJzY29wZXMiOltdfQ.QV3bJInxMEs-arTC7KBdj_wCFAGiVlLbG98vo5g4Gqf0zq3PUjiolUWKJGyI5u_79PPhrq2u3O8R-i5jt-EF1kVvkiwXgWOgGJ9qAEGaxVlRTK_MiGiyeOO5DY9rYdrbZfQsrdZBUPBNDTgU7tVZD5QLpzw-FhHzGCqIReCkK_8gtBv308qtKzJs7VKp6mTYhdms6kXF3xIQYNUwVacOKTCB3ZpGCSR68ATvphX2ZMsXju9PI532NqKwyn5DaXODYi2X0eO4kVZW7VCbdjWTS9viJvRCLCMO_Jo0h5hEZqXyh1kc-Y6FeQ-yGvY5g00KCFR97CeuibO4RS0UkMMTNyTs3g_rbrTf6LF7L12ahAln_CjHHZoPSSrqkbAK_82JXuchcvDwHJzUpRaDKA_3dX8UIuoYsXmlPohyuxQ0KqIjOVTEBov0zemqBytPBYnYcYVTDD4dBAPRAR8X8zNCVaOTTiXIS7ykxCLssPBziy8r2_BGzTyrTlTbrazE4sUi17SLX1Na_XhxMSg_sG1nhQ94aK8cTk4lxSV2mSed-2vIZ02LqoeNX9alcSISdDW_vbfxVXGMLVeQX8ZaWj6ebybR0ok82b0jSHSPyKCN-uu_QZkUiUj4civ1RgaWpr2mxxdYx_VXpq5D_NL7OMwFwRc3wS8qufl2nwu9E6gQM7o'
 categories_list = {                
     '1': (17, [(13, 8), (14, 35), (15, 36)] ),
     '2': (15, [(7, 1), (8, 31), (9, 32)] ),
@@ -32,32 +36,29 @@ categories_list = {
     '25': (133, [(26, 19)] )
 }
 
-httprequestObj = lib_httprequest()
-
 class kaidee():
     name = 'kaidee'
     site_name = "https://www.kaidee.com"
-    api_name = "https://api.kaidee.com/0.12"
+    api_name = "https://api.kaidee.com/0.18"
 
     def __init__(self):
         try:
             import configs
         except ImportError:
             configs = {}
-
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
-
+        self.scraper = cloudscraper.create_scraper()
         self.options = Options()
-        self.options.add_argument("--headless")  # Runs Firefox in headless mode.
+        #self.options.add_argument("--headless")  # Runs Firefox in headless mode.
         self.options.add_argument('--no-sandbox')  # Bypass OS security model
         self.options.add_argument('start-maximized')
         self.options.add_argument('disable-infobars')
         self.options.add_argument("--disable-extensions")
-        self.options.add_argument("window-size=1024,768")
 
 
     def register_user(self, postdata):
@@ -80,14 +81,11 @@ class kaidee():
             "ds_id": postdata['ds_id']
         }
 
-
-
-    def test_login(self, postdata, from_function=False):
+    def test_login(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        
-        # start process
-        success = "false"
+
+        success = False
         detail = 'An Error has Occurred'
         member_id = ''
         privateToken = ''
@@ -96,26 +94,31 @@ class kaidee():
             "email": postdata['user'],
             "password": postdata['pass']
         }
+        count = 0
+        while count<10:
+            print(count)
+            try:
+                r = self.scraper.post('https://api.kaidee.com/0.18/member/login', data=json.dumps(datapost))
+                response = r.json()
+                break
+            except:
+                count+=1
 
-        response = httprequestObj.http_post(self.api_name+'/member/login', data={}, json=datapost)
-        json_response = json.loads(response.text)
-
-        if response.status_code==200:
-            if "member" in json_response:
-                success = "true"
-                detail = "Login Successful!"
-                member_id = json_response["member"]["authorizations"][0]["member_id"]
-                privateToken = json_response["member"]["privateToken"]
+        if r.status_code==200:
+            if "member" in response:
+                success = True
+                detail = "Login Successful"
+                member_id = response["member"]["id"]
+                privateToken = response["member"]["privateToken"]
         else:
-            if "error" in json_response:
-                detail = "Incorrect email or password"
+            if 'error' in response:
+                detail = response['error']['message']
             else:
-                detail = 'An Error has occurred with response_code '+str(response.status_code)
-        
+                detail = 'Status code: {}'.format(r.status_code)
+
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        if from_function:
-            return {
+        return {
                 "success": success,
                 "usage_time": str(time_usage),
                 "start_time": str(time_start),
@@ -126,26 +129,12 @@ class kaidee():
                 "websitename": self.name,
                 "ds_id": postdata['ds_id'],
             }
-        return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "detail": detail,
-            "websitename": self.name,
-            "ds_id": postdata['ds_id'],
-        }
-
-
 
     def create_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        # start process
-        # login
-
-        test_login = self.test_login(postdata, True)
+        test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = "Unable to create post"
         post_id = ""
@@ -157,13 +146,91 @@ class kaidee():
             else:
                 postdata['web_project_name'] = postdata['post_title_th']
                 postdata['project_name'] = "-" 
-        
-        if success=="true":
+
+        if success:
             member_id = test_login["member_id"]
             privateToken = test_login["privateToken"]           
-            success = "false"
+            success = False
             
-            addr_province = postdata['addr_province']
+            address = ''
+            for i in ['addr_number','addr_road','addr_soi']:
+                if postdata[i] in ['-',' ']:
+                    postdata[i] = ''
+                address += postdata[i]
+                if i != 'addr_soi':
+                    address += ' '
+
+            property_type = {
+            '1': [1,6],
+            '2': [1,4],
+            '3': [1,4],
+            '4': [1,5],
+            '5': [2,10],
+            '6': [1,8],
+            '7': [1,7],
+            '8': [2,12],
+            '9': [2,11],
+            '10': [2,9],
+            '25': [2,9],
+            '30': [1,8]
+            }
+
+            purposeId = {
+                'ขาย': 1,
+                'เช่า': 2
+            }
+
+            if postdata['property_type'] == '1':
+                area = postdata['floorarea_sqm']
+            else:
+                area = (postdata['land_size_rai']*1600) + (postdata['land_size_ngan']*400) + (postdata['land_size_wa']*4)
+            
+            postdata['property_type'] = property_type[postdata['property_type']]
+            datapost = {
+                'id': None,##############
+                'categoryId': postdata['property_type'][1],
+                'parentCategoryId': postdata['property_type'][0],
+                'purposeId': purposeId[postdata['listing_type']],
+                'residenceType': '',
+                'referenceNumber': postdata['property_id'],
+                'title': {'en': postdata['post_title_en'],'th': postdata['post_title_th']},
+                'description': {'en': postdata['post_description_en'],'th': postdata['post_description_th']},
+                'locationId': '3613',###########################
+                'area': area,
+                'address': address,
+                'latitude': postdata['geo_latitude'],
+                'longitude': postdata['geo_longitude'],
+                'bedrooms': postdata['bed_room'],
+                'bathrooms': postdata['bath_room'],
+                'constructionStatus': 'completed',
+                'ownershipStatus': 'freehold',
+                'financingAvailable': '',
+                'financialInstitutions': '',
+                'occupancyStatus': '',
+                'agentId': member_id,
+                'completionDate': '',
+                'minContractPeriod': '',
+                'noticePeriod': '',
+                'maintenanceFee': '',
+                'maintenanceFeePayer': '',
+                'adAttributes': {"condition":"used"},
+                'product': '',
+                'adLocations': [],
+                'amenities': [],##################*******************************
+                "source":"profolio"#####################
+            }
+
+            if purposeId[postdata['listing_type']] == 1:
+                datapost['price'] = postdata['price_baht']
+                datapost['rentPrice'] = ''
+                datapost['rentFrequency'] = ''
+            else:
+                datapost['price'] = ''
+                datapost['rentPrice'] = postdata['price_baht']
+                datapost['rentFrequency'] = 'monthly'
+
+
+            """addr_province = postdata['addr_province']
             addr_district = postdata['addr_district']
             province = "9"
             district = {
@@ -239,31 +306,49 @@ class kaidee():
             }
             
             if len(postdata['post_images'])==0:
-                postdata['post_images'] = ['imgtmp/default/white.jpg']
-
-            images = []
-            for i,image in enumerate(postdata['post_images'][:18]):
-                files = {"image": open(os.getcwd()+"/"+image, 'rb')} 
-                r = httprequestObj.http_post(self.api_name+'/images/upload', data={}, files=files)
-                if r.status_code==200:
-                    r = json.loads(r.text)
-                    images.append({
-                        "sequence": i+1, 
-                        "sizes": {
-                            "tmp": {
-                                "resolution": r["resolution"],
-                                "link": r["link"]
-                            }
-                        }
-                    })
-            datapost["images"] = images
+                postdata['post_images'] = ['imgtmp/default/white.jpg']"""
 
             headers = {
-                "privatetoken": privateToken
+                'content-type': 'application/json',
+                'http-authorization': 'undefined',
+                'authorization': authorization
             }
 
-            response = httprequestObj.http_post(self.api_name+'/ads/create', headers=headers, data={}, json=datapost)
+            images = []
+            for i,image in enumerate(postdata['post_images']):
+                files = {"image": open(os.getcwd()+"/"+image, 'rb')} 
+                r = self.scraper.post('https://kaidee-images-live.s3.amazonaws.com', data={}, files=files)
+                if r.status_code==200:
+                    r = json.loads(r.text)
+                    """detail_img = {   
+                        'name': image,
+                        "size": 52569,###################
+                        "type":"image/jpeg",
+                        "lastModifiedDate":"2021-10-01T02:29:26.450Z",#########################
+                        "uploadedDate":"2021-10-07T04:26:50.061Z",#######################
+                        "percent":100,
+                        "id":"id-1633580810061-0",#####################
+                        "status":"done",
+                        "previewUrl":"blob:https://profolio.baan.kaidee.com/b22b55fc-9462-4abe-8353-65c04480a308",####################
+                        "width":450,######################
+                        "height":253,#####################
+                        "filename":"GDIDpXzUZD3cQAYDzmr6SkvoDiG5Xchujm0KtsaE",########################
+                        "fileUrl":"https://kaidee-images-live.s3.amazonaws.com/temp/GDIDpXzUZD3cQAYDzmr6SkvoDiG5Xchujm0KtsaE",###################
+                        "path":"https://assets.baan.kaidee.com/temp/GDIDpXzUZD3cQAYDzmr6SkvoDiG5Xchujm0KtsaE",#################
+                        "_id":"1633580810061-0",#########################
+                        "title":""
+                        }
+                    if i == 0:
+                        detail_img['isMain'] = True
+                    else:
+                        detail_img['isMain'] = False
+                    images.append(detail_img)"""
+
+            datapost["images"] = images
+
+            response = self.scraper.post('https://api.baan.kaidee.com/listings', headers=headers, data={}, json=datapost)
             json_response = json.loads(response.text)
+            print(json_response)
             if response.status_code==200:
                
                 if json_response['legacy_id'] is not None:
@@ -283,7 +368,7 @@ class kaidee():
                             }
                         ]
                     }
-                    r = httprequestObj.http_post(self.api_name+'/ven/buy/products/ads', headers=h, data={}, json=data)
+                    r = self.httprequestObj.http_post(self.api_name+'/ven/buy/products/ads', headers=h, data={}, json=data)
                     json_r = json.loads(r.text)
 
                     if r.status_code==200:
@@ -414,7 +499,7 @@ class kaidee():
                 "attributes": attributes
             }
 
-            r = httprequestObj.http_get(self.api_name+'/ads/'+postdata['post_id'])
+            r = self.httprequestObj.http_get(self.api_name+'/ads/'+postdata['post_id'])
             json_r = json.loads(r.text)
            
             if r.status_code==200:
@@ -427,7 +512,7 @@ class kaidee():
                     images = []
                     for i, image in enumerate(postdata['post_images'][:18]):
                         files = {"image": open(os.getcwd()+"/"+image, 'rb')} 
-                        r = httprequestObj.http_post(self.api_name+'/images/upload', data={}, files=files)
+                        r = self.httprequestObj.http_post(self.api_name+'/images/upload', data={}, files=files)
                         if r.status_code==200:
                             r = json.loads(r.text)
                             images.append({
@@ -445,7 +530,7 @@ class kaidee():
                     "privatetoken": privateToken
                 }
                 
-                response = httprequestObj.http_post(self.api_name+'/ads/'+postdata['post_id']+'/edit', headers=headers, data={}, json=datapost)
+                response = self.httprequestObj.http_post(self.api_name+'/ads/'+postdata['post_id']+'/edit', headers=headers, data={}, json=datapost)
                 json_response = json.loads(response.text)
                 
                 if response.status_code==200:
@@ -464,7 +549,7 @@ class kaidee():
                                 }
                             ]
                         }
-                        r = httprequestObj.http_post(self.api_name+'/ven/buy/products/ads', headers=h, data={}, json=data)
+                        r = self.httprequestObj.http_post(self.api_name+'/ven/buy/products/ads', headers=h, data={}, json=data)
                         json_r = json.loads(r.text)
                         if r.status_code==200:
                             success = "true"
@@ -625,7 +710,7 @@ class kaidee():
                 "memberid": str(member_id),
                 "privatetoken": privateToken
             }
-            response = httprequestObj.http_post(self.api_name+'/ads/'+postdata['post_id']+'/close', headers=headers, data={}, json=datapost)
+            response = self.httprequestObj.http_post(self.api_name+'/ads/'+postdata['post_id']+'/close', headers=headers, data={}, json=datapost)
             json_response = json.loads(response.text)
             
             if response.status_code==200:
@@ -690,7 +775,7 @@ class kaidee():
                 "memberid": str(member_id),
                 "privatetoken": privateToken
             }
-            response = httprequestObj.http_post(self.api_name+'/ads/'+str(postdata['post_id'])+'/extend', headers=headers, data={}, json=datapost)
+            response = self.httprequestObj.http_post(self.api_name+'/ads/'+str(postdata['post_id'])+'/extend', headers=headers, data={}, json=datapost)
             json_response = json.loads(response.text)
             
             if response.status_code==200:
