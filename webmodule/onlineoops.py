@@ -171,7 +171,6 @@ class onlineoops():
         if success=="true":
             r = self.httprequestObj.http_get(self.site_name+'/post/free')
             soup = BeautifulSoup(r.text, features=self.parser)
-            csrf = soup.find(attrs={'name':'_csrf'}).get('value')
             province = province_list[0]
             for pr in province_list:
                 if postdata['addr_province'] in pr:
@@ -214,7 +213,6 @@ class onlineoops():
                 files["PostmarketthTH[images][]"] = open(os.getcwd()+"/"+postdata['post_images'][0], 'rb')
             
             datapost= {
-                "_csrf": csrf,
                 "PostmarketthTH[name]": postdata['post_title_th'], 
                 "PostmarketthTH[quality_type]": "second", # new or second
                 "PostmarketthTH[price]": postdata['price_baht'],
