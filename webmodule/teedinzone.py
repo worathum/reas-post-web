@@ -593,7 +593,7 @@ class teedinzone():
             "end_time": str(time_end),
             'ds_id': postdata['ds_id'],
             'log_id': postdata['log_id'],
-            'post_id': post_id,
+            'post_id': postdata["post_id"],
             "detail": detail,
             "websitename": self.webname,
         }
