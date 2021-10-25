@@ -156,7 +156,7 @@ class teedin2():
                 'detail': 'wrong propertytype',
                 'ret': '',
                 'post_url': '',
-                'post_id': '',
+                'post_id': postdata["post_id"],
                 "log_id": postdata['log_id']
             }
         success = "true"
@@ -190,7 +190,7 @@ class teedin2():
                 'success': 'false',
                 'ret': "wrong province",
                 'post_url': "",
-                'post_id': "",
+                'post_id': postdata["post_id"],
                 "log_id": postdata['log_id']
 
             }
@@ -213,7 +213,7 @@ class teedin2():
                 'success': 'false',
                 'ret': "wrong district",
                 'post_url': "",
-                'post_id': "",
+                'post_id': postdata["post_id"],
                 "log_id": postdata['log_id']
 
             }
@@ -326,7 +326,7 @@ class teedin2():
                 'websitename': 'teedin2',
                 'ret': 'wrong propertytype',
                 'post_url': '',
-                'post_id': '',
+                'post_id': postdata["post_id"],
                 "ds_id": postdata['ds_id']
             }
         if 'name' not in postdata:
@@ -335,7 +335,7 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field name',
                 'post_url': '',
-                'post_id': '',
+                'post_id': postdata["post_id"],
                 "ds_id": postdata['ds_id']
 
             }
@@ -345,7 +345,7 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field mobile',
                 'post_url': '',
-                'post_id': '',
+                'post_id': postdata["post_id"],
                 "ds_id": postdata['ds_id']
 
             }
@@ -355,7 +355,7 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field pass',
                 'post_url': '',
-                'post_id': '',
+                'post_id': postdata["post_id"],
                 "ds_id": postdata['ds_id'],
 
             }
@@ -366,7 +366,7 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field email',
                 'post_url': '',
-                'post_id': ''
+                'post_id': postdata["post_id"]
             }
         if 'property_type' not in postdata:
             return{
@@ -375,7 +375,7 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field property_type',
                 'post_url': '',
-                'post_id': ''
+                'post_id': postdata["post_id"]
             }
         if 'listing_type' not in postdata:
             return{
@@ -384,7 +384,7 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field listing_type',
                 'post_url': '',
-                'post_id': ''
+                'post_id': postdata["post_id"]
             }
         if 'price_baht' not in postdata:
             return{
@@ -393,7 +393,7 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field price',
                 'post_url': '',
-                'post_id': ''
+                'post_id': postdata["post_id"]
             }
         if 'post_title_th' not in postdata:
             return{
@@ -403,7 +403,7 @@ class teedin2():
                 'detail': 'Missing required field title',
                 'ret': '',
                 'post_url': '',
-                'post_id': ''
+                'post_id': postdata["post_id"]
             }
         if 'post_description_th' not in postdata:
             return{
@@ -412,7 +412,7 @@ class teedin2():
                 'success': 'false',
                 'ret': 'Missing required field description',
                 'post_url': '',
-                'post_id': ''
+                'post_id': postdata["post_id"]
             }
 
         success = "true"
@@ -446,7 +446,7 @@ class teedin2():
                 'ret': "wrong province",
                 'post_url': "",
                 "ds_id": postdata['ds_id'],
-                'post_id': ""
+                'post_id': postdata["post_id"]
             }
         province_id = amphur_id
         print(postdata['addr_province'])
@@ -567,7 +567,7 @@ class teedin2():
                 'ret': var,
                 'post_url': post_url,
                 "ds_id": postdata['ds_id'],
-                'post_id': post_id
+                'post_id': postdata["post_id"]
             }
         end_time = datetime.datetime.utcnow()
         time_usage = end_time - start_time
