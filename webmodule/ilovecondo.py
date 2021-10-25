@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import json, datetime
 from .lib_httprequest import *
 from .lib_captcha import  *
-httprequestObj = lib_httprequest()
 import datetime
 import time,math
 
@@ -27,6 +26,7 @@ class ilovecondo:
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.httprequestObj = lib_httprequest()
 
     def register_user(self, data):
         start_time = datetime.datetime.utcnow()
@@ -62,7 +62,7 @@ class ilovecondo:
         else:
             f1 = False
         url = 'https://ilovecondo.net/Register?returnurl=https%3a%2f%2filovecondo.net%2f'
-        req = httprequestObj.http_get(url)
+        req = self.httprequestObj.http_get(url)
         soup = BeautifulSoup(req.text,'html.parser')
 
         postdata['StylesheetManager_TSSM'] = soup.find('input',{'name':'StylesheetManager_TSSM'})['value']
@@ -77,7 +77,7 @@ class ilovecondo:
         src = div.find('img')['src']
         ##print(src)
         url = 'https://www.ilovecondo.net'+str(src)
-        response = httprequestObj.http_get(url)
+        response = self.httprequestObj.http_get(url)
         file = open('tmp.jpeg', 'wb')
         file.write(response.content)
         file.close()
@@ -94,7 +94,7 @@ class ilovecondo:
                 'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
             }
             url = 'https://ilovecondo.net/Register?returnurl=https%3a%2f%2filovecondo.net%2f'
-            req = httprequestObj.http_post(url,data=postdata,headers = headers)
+            req = self.httprequestObj.http_post(url,data=postdata,headers = headers)
             txt = str(req.text)
 
 
@@ -131,7 +131,7 @@ class ilovecondo:
         return result
 
     def test_login(self, data):
-        req = httprequestObj.http_get('https://ilovecondo.net/%e0%b8%ab%e0%b8%99%e0%b9%89%e0%b8%b2%e0%b9%81%e0%b8%a3%e0%b8%81/ctl/Logoff')
+        req = self.httprequestObj.http_get('https://ilovecondo.net/%e0%b8%ab%e0%b8%99%e0%b9%89%e0%b8%b2%e0%b9%81%e0%b8%a3%e0%b8%81/ctl/Logoff')
         start_time = datetime.datetime.utcnow()
 
         success = ''
@@ -152,7 +152,7 @@ class ilovecondo:
         }
 
         url = 'https://ilovecondo.net/Login?returnurl=%2f'
-        req = httprequestObj.http_get(url)
+        req = self.httprequestObj.http_get(url)
         #time.sleep(5)
         soup = BeautifulSoup(req.text, 'html.parser')
 
@@ -167,7 +167,7 @@ class ilovecondo:
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         }
         url = 'https://ilovecondo.net/Login?returnurl=%2f'
-        req = httprequestObj.http_post(url, data=postdata, headers=headers)
+        req = self.httprequestObj.http_post(url, data=postdata, headers=headers)
         #time.sleep(5)
         txt = str(req.text)
 
@@ -217,7 +217,7 @@ class ilovecondo:
 
             }
             url = 'https://ilovecondo.net/new-post'
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
 
             soup = BeautifulSoup(req.text,'html.parser')
             try:
@@ -241,7 +241,7 @@ class ilovecondo:
                 ##print('here6')
                 url = 'https://ilovecondo.net/new-post'
                 names = []
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text,'html.parser')
                 postdata['dnn_ctr370_AddTopic_ddlNewProject_ClientState'] = ''
                 options = soup.find('ul',{'class':'rcbList'}).findAll('li',{'class':'rcbItem'})
@@ -442,7 +442,7 @@ class ilovecondo:
                 postdata['dnn$ctr370$AddTopic$topicHitNearSubway$ddlMRT'] = 'เลือกสถานีใต้ดิน'
                 postdata['ScrollTop'] = '2299'
                 url = 'https://ilovecondo.net/new-post'
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
 
                 soup = BeautifulSoup(req.text, 'html.parser')
                 postdata['__dnnVariable'] = soup.find('input',{'name':'__dnnVariable'})['value']
@@ -453,7 +453,7 @@ class ilovecondo:
                 headers = {
                     'User-Agnet':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
                 }
-                req = httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
+                req = self.httprequestObj.http_post(url,data=postdata,files=file,headers=headers)
                 txt = req.text
                 if txt.find('ประกาศของคุณเป็นหมายเลขที่') == -1:
                     success = 'false'
@@ -503,14 +503,14 @@ class ilovecondo:
             # #print('debug')
             postdata = {}
             url = 'https://ilovecondo.net/my-post'
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(req.text, 'html.parser')
             total_pages = soup.find('input', {'name': 'dnn$ctr498$ShowTopic$lblTotalRows'})['value']
             total_pages = math.ceil(int(total_pages) / 15)
             ##print(total_pages)
             for i in range(total_pages):
                 url = 'https://ilovecondo.net/my-post/pg/' + str(i + 1)
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 supermarket = soup.find('div',{'class':'col-md-12 tb-topic supermarket'})
 
@@ -560,7 +560,7 @@ class ilovecondo:
                         break
 
                 url = 'https://ilovecondo.net/my-post/pg/'+str(save_page)
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text, 'html.parser')
 
                 postdata['StylesheetManager_TSSM'] = soup.find('input',{'name':'StylesheetManager_TSSM'})['value']
@@ -603,7 +603,7 @@ class ilovecondo:
                 headers = {
                     'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
                 }
-                req = httprequestObj.http_post(url,data=postdata,headers=headers)
+                req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
 
                 success = 'true'
                 detail = 'Post deleted'
@@ -643,14 +643,14 @@ class ilovecondo:
             ##print('debug')
             postdata = {}
             url = 'https://ilovecondo.net/my-post'
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(req.text,'html.parser')
             total_pages = soup.find('input',{'name':'dnn$ctr498$ShowTopic$lblTotalRows'})['value']
             total_pages = math.ceil(int(total_pages)/15)
             ##print(total_pages)
             for i in range(total_pages):
                 url = 'https://ilovecondo.net/my-post/pg/'+str(i+1)
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 supermarket = soup.find('div', {'class': 'col-md-12 tb-topic supermarket'})
 
@@ -701,7 +701,7 @@ class ilovecondo:
                         break
 
                 url = 'https://ilovecondo.net/my-post/pg/'+str(save_page)
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text, 'html.parser')
 
                 postdata['StylesheetManager_TSSM'] = soup.find('input', {'name': 'StylesheetManager_TSSM'})['value']
@@ -751,7 +751,7 @@ class ilovecondo:
                 headers = {
                     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
                 }
-                req = httprequestObj.http_post(url, data=postdata, headers=headers)
+                req = self.httprequestObj.http_post(url, data=postdata, headers=headers)
 
                 success = 'true'
                 detail = 'Post Boosted'
@@ -788,7 +788,7 @@ class ilovecondo:
             # #print('debug')
             postdata = {}
             url = 'https://ilovecondo.net/my-post'
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
             print(req.url)
             print(req.status_code)
 
@@ -801,7 +801,7 @@ class ilovecondo:
             ##print(total_pages)
             for i in range(total_pages):
                 url = 'https://ilovecondo.net/my-post/pg/' + str(i + 1)
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 supermarket = soup.find('div', {'class': 'col-md-12 tb-topic supermarket'})
 
@@ -843,7 +843,7 @@ class ilovecondo:
             if str(post_id) in valid_ids:'''
                 
             url = 'https://ilovecondo.net/post/topicid/'+str(post_id)
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(req.text,'html.parser')
             post_mail = decodeEmail(str(soup.find('a',{'id':'dnn_ctr374_ViewTopic_topicDetail_hplEmail'})['href'])[28:])
             if req.text.find('ไม่พบประกาศที่ต้องการ') == -1 and post_mail == data['email']:
@@ -862,7 +862,7 @@ class ilovecondo:
 
                 }
                 url = 'https://ilovecondo.net/new-post/topicid/'+str(post_id)+'/trk/78'
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
 
                 soup = BeautifulSoup(req.text,'html.parser')
                 x=1
@@ -887,7 +887,7 @@ class ilovecondo:
                     ##print('here6')
                     url = 'https://ilovecondo.net/new-post/topicid/'+str(post_id)+'/trk/78'
                     names = []
-                    req = httprequestObj.http_get(url)
+                    req = self.httprequestObj.http_get(url)
                     soup = BeautifulSoup(req.text,'html.parser')
                     postdata['dnn_ctr370_AddTopic_ddlNewProject_ClientState'] = ''
                     options = soup.find('ul',{'class':'rcbList'}).findAll('li',{'class':'rcbItem'})
@@ -1079,7 +1079,7 @@ class ilovecondo:
                     postdata['dnn$ctr370$AddTopic$topicHitNearSubway$ddlMRT'] = 'เลือกสถานีใต้ดิน'
                     postdata['ScrollTop'] = '2299'
                     url = 'https://ilovecondo.net/new-post/topicid/' + str(post_id) + '/trk/78'
-                    req = httprequestObj.http_get(url)
+                    req = self.httprequestObj.http_get(url)
 
                     soup = BeautifulSoup(req.text, 'html.parser')
                     postdata['__dnnVariable'] = soup.find('input',{'name':'__dnnVariable'})['value']
@@ -1090,7 +1090,7 @@ class ilovecondo:
                     headers = {
                         'User-Agnet':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
                     }
-                    req = httprequestObj.http_post(url,data=postdata,headers=headers)
+                    req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
                     txt = req.text
                     if txt.find('ประกาศของคุณเป็นหมายเลขที่') == -1:
                         success = 'false'
@@ -1146,14 +1146,14 @@ class ilovecondo:
             valid_titles = []
             page_no = []
             url = 'https://ilovecondo.net/my-post'
-            req = httprequestObj.http_get(url)
+            req = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(req.text, 'html.parser')
             total_pages = soup.find('input', {'name': 'dnn$ctr498$ShowTopic$lblTotalRows'})['value']
             total_pages = math.ceil(int(total_pages) / 15)
             ##print(total_pages)
             for i in range(total_pages):
                 url = 'https://ilovecondo.net/my-post/pg/' + str(i + 1)
-                req = httprequestObj.http_get(url)
+                req = self.httprequestObj.http_get(url)
                 soup = BeautifulSoup(req.text, 'html.parser')
                 supermarket = soup.find('div', {'class': 'col-md-12 tb-topic supermarket'})
 
