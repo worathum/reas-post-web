@@ -3,7 +3,6 @@ from datetime import datetime
 import shutil
 from .lib_httprequest import *
 
-httprequestObj = lib_httprequest()
 
 
 class homedd():
@@ -22,6 +21,7 @@ class homedd():
         self.debug = 0
         self.debugresdata = 0
         self.parse = 'html.parser'
+        self.httprequestObj = lib_httprequest()
 
     def print_debug(self, msg):
         if(self.debug == 1):
@@ -48,7 +48,7 @@ class homedd():
 
     def logout_user(self):
         url = 'http://homedd.co.th/logoff.php'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
     # To register a user
     def register_user(self,userdata):
@@ -93,7 +93,7 @@ class homedd():
             url = "http://homedd.co.th/member_register_aed.php?typ=add"
             try:
                 start_time = datetime.utcnow()
-                request = httprequestObj.http_post(url,data=datapost,headers=headers)
+                request = self.httprequestObj.http_post(url,data=datapost,headers=headers)
                 end_time = datetime.utcnow()
                 
                 if 'อีเมลนี้ได้ถูกใช้แล้ว ไม่สามารถบันทึกได้ค่ะ' in str(request.text):
@@ -153,7 +153,7 @@ class homedd():
             url = 'http://homedd.co.th/login_aed.php'
             try:
                 start_time = datetime.utcnow()
-                request = httprequestObj.http_post(url,data=datapost,headers=headers)
+                request = self.httprequestObj.http_post(url,data=datapost,headers=headers)
                 end_time = datetime.utcnow()
 
                 if 'ยินดีต้อนรับ' in str(request.text):
@@ -267,7 +267,7 @@ class homedd():
             #     addr_district = ""
 
             url = "http://homedd.co.th/member_property_add.php"
-            request = httprequestObj.http_get(url)
+            request = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(request.text, 'html5lib')
             
             tpCode = soup.find('input',attrs = {'name': 'tpCode'})['value']
@@ -382,7 +382,7 @@ class homedd():
             if success == True:
                 newurl = "http://homedd.co.th/member_property_aed.php?typ=add"
                 
-                request = httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
+                request = self.httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
                 end_time = datetime.utcnow()
 
 
@@ -405,7 +405,7 @@ class homedd():
 
                 if success == True:
                     url = "http://homedd.co.th/member_property_list.php"
-                    r = httprequestObj.http_get("http://homedd.co.th/member_property_list.php")
+                    r = self.httprequestObj.http_get("http://homedd.co.th/member_property_list.php")
 
                     post_url = "http://www.homedd.co.th/property_display.php?id="
                     soup = BeautifulSoup(r.text,'lxml')
@@ -531,7 +531,7 @@ class homedd():
             #     addr_district = ""
             
             url = "http://homedd.co.th/member_property_add.php"
-            request = httprequestObj.http_get(url)
+            request = self.httprequestObj.http_get(url)
             soup = BeautifulSoup(request.text, 'lxml')
             
             tpCode = soup.find('input',attrs = {'name': 'tpCode'})['value']
@@ -650,7 +650,7 @@ class homedd():
             if success == True:
                 newurl = "http://homedd.co.th/member_property_aed.php?typ=edit&id=" + postdata["post_id"]
 
-                request = httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
+                request = self.httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
                 end_time = datetime.utcnow()
 
                 # f = open(filename,"w+")
@@ -669,7 +669,7 @@ class homedd():
 
                 if success == True:
                     url = "http://homedd.co.th/member_property_list.php"
-                    r = httprequestObj.http_get("http://homedd.co.th/member_property_list.php")
+                    r = self.httprequestObj.http_get("http://homedd.co.th/member_property_list.php")
                     end_time = datetime.utcnow()
 
 
@@ -728,7 +728,7 @@ class homedd():
             end_time = datetime.utcnow()
             
 
-            request = httprequestObj.http_get(url)
+            request = self.httprequestObj.http_get(url)
             # f = open(filename,"w+")
             # f.write(str(request.text))
             # f.close()
@@ -806,7 +806,7 @@ class homedd():
             files = {}
             newurl = "http://homedd.co.th/member_property_aed.php?typ=edit&id=" + postdata["post_id"]
 
-            request = httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
+            request = self.httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
             end_time = datetime.utcnow()
             detail = "Post edited and saved"
             success = True
@@ -842,7 +842,7 @@ class homedd():
         post_found = False
 
         if success:
-            r = httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php')
+            r = self.httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php')
             # print(r.url)
             # print(r.status_code)
             soup = BeautifulSoup(r.content, 'html.parser')
@@ -854,7 +854,7 @@ class homedd():
 
                 if post_found:
                     break
-                r = httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php?&nowpage=%d' % page)
+                r = self.httprequestObj.http_get('http://www.homedd.co.th/member_property_list.php?&nowpage=%d' % page)
                 soup = BeautifulSoup(r.content, 'html.parser')
 
                 all_posts = soup.find_all('tr')[2:]
@@ -870,7 +870,7 @@ class homedd():
                         post_id = info[3].find('a').get('href').split('=')[-1]
                         # print(post_id)
                         post_url = 'http://www.homedd.co.th/property_display.php?id='+post_id
-                        r = httprequestObj.http_get(post_url)
+                        r = self.httprequestObj.http_get(post_url)
                         # print(r.url)
                         # print(r.status_code)
                         soup = BeautifulSoup(r.content, 'html.parser')
