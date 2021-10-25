@@ -19,8 +19,6 @@ import sys
 from urllib.parse import unquote
 
 
-httprequestObj = lib_httprequest()
-
 
 with open("./static/ddteedin_province.json") as f:
     provincedata = json.load(f)
@@ -44,10 +42,11 @@ class ddteedin():
         self.parser = 'html.parser'
         self.Partner_user = 'vinvestor.online@gmail.com'
         self.Partner_pwd = 'vinvestor'
+        self.httprequestObj = lib_httprequest()
 
     def logout_user(self):
         url = 'https://www.ddteedin.com/logout/'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
 
     def register_user(self, postdata):
@@ -70,7 +69,7 @@ class ddteedin():
             'password':postdata['pass']
         }
         url = 'https://www.ddteedin.com/register'
-        r = httprequestObj.http_post(url, data = data)
+        r = self.httprequestObj.http_post(url, data = data)
         print(r.text)
         response = (r.text).split('code')[1][1:-2]
         if response=='r001':
@@ -83,7 +82,7 @@ class ddteedin():
         elif response == 'r005':
             detail = 'Wrong data.Please recheck it again'
         else:
-            detail = 'response = {}.Please tell your developer to know this problem'.format(response)
+            detail = 'response = {}.'.format(response)
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -101,7 +100,7 @@ class ddteedin():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         success = False
-        detail = 'Something wrong in this website.Please tell your developer to know this problem.'
+        detail = 'Something wrong in this website.'
         options = Options()
         options.set_headless(True)
         options.add_argument('--no-sandbox')
@@ -237,7 +236,7 @@ class ddteedin():
         url_upload = 'https://www.ddteedin.com/upload/'
         for i, image in enumerate(postdata['post_images'][:10]):
             files = {'files': open(os.getcwd()+"/"+image, 'rb')}
-            r = httprequestObj.http_post(url_upload, data = data,files=files)
+            r = self.httprequestObj.http_post(url_upload, data = data,files=files)
             img_path = r.json()['images'][0][0]
             data.append(('pid[]', ''))
             data.append(('file[]', img_path))
@@ -246,7 +245,7 @@ class ddteedin():
             else:
                 data.append(('df[]', ''))
 
-        r = httprequestObj.http_post(url, data = data)
+        r = self.httprequestObj.http_post(url, data = data)
         response = (r.text).split('code')[1][1:-2]
         if response =='p001' or response =='p002':
             post_id = (r.text).split('post_id')[1][1:-2]
@@ -294,7 +293,7 @@ class ddteedin():
             elif response == 'u001':
                 detail = "Wrong username or password"
             else:
-                detail = 'response = {}.Please tell your developer to know this problem.'.format(response)
+                detail = 'response = {}.'.format(response)
         else:
             detail = login['detail']
 
@@ -346,7 +345,7 @@ class ddteedin():
         elif response == 'u001':
             detail = "Wrong username or password"
         else:
-            detail = 'response = {}.Please tell your developer to know this problem'.format(response)
+            detail = 'response = {}.'.format(response)
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -375,7 +374,7 @@ class ddteedin():
             'id':postdata['post_id']
         }
         url = 'https://www.ddteedin.com/myposts/'
-        r = httprequestObj.http_post(url, data = data)
+        r = self.httprequestObj.http_post(url, data = data)
         print(r.text)
         response = (r.text).split('code')[1][1:-2]
         return response
@@ -395,7 +394,7 @@ class ddteedin():
         elif response == 'u001':
             detail = "Wrong username or password"
         else:
-            detail = 'response = {}.Please tell your developer to know this problem'.format(response)
+            detail = 'response = {}.'.format(response)
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -449,7 +448,7 @@ class ddteedin():
 
             query_string = 'https://www.ddteedin.com/myposts/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
                 ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-            r = httprequestObj.http_get(query_string, verify = False)    
+            r = self.httprequestObj.http_get(query_string, verify = False)    
             data = r.text
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
             if(data.find(" ไม่พบประกาศ") != -1):
@@ -497,7 +496,7 @@ class ddteedin():
         elif response == 'u001':
             detail = "Wrong username or password"
         else:
-            detail = 'response = {}.Please tell your developer to know this problem'.format(response)
+            detail = 'response = {}.'.format(response)
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
 
