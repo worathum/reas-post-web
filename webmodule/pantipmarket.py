@@ -44,7 +44,7 @@ class pantipmarket():
             import configs
         except ImportError:
             configs = {}
-        self.self.httprequestObj = lib_httprequest()
+        self.httprequestObj = lib_httprequest()
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.primarydomain = 'https://www.pantipmarket.com/'
