@@ -1045,7 +1045,7 @@ class residences():
             "end_time": str(time_end),
             "post_url": post_url,
             "ds_id": postdata['ds_id'],
-            "post_id": post_id,
+            "post_id": postdata["post_id"],
             "account_type": "null",
             "detail": detail,
             "websitename": self.webname,
