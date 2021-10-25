@@ -286,6 +286,10 @@ class proppit():
             WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("password")).send_keys(postdata['pass'])
             try:
                 WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Log in']"))).click()
+                try:
+                    WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div/div/div/form/button"))).click()
+                except:
+                    pass
             except:
                 WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='เข้าสู่ระบบ']"))).click()
 
