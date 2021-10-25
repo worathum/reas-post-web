@@ -26,7 +26,6 @@ category_types = {
     '25': '8'
 }
 
-httprequestObj = lib_httprequest()
 captcha = lib_captcha()
 
 class landmarket():
@@ -43,6 +42,7 @@ class landmarket():
         self.imgtmp = 'imgtmp'
         self.debug = 0
         self.debugresdata = 0
+        self.httprequestObj = lib_httprequest()
         self.parser = 'html.parser'
 
 
@@ -66,7 +66,7 @@ class landmarket():
             "submit": "" 
         }
         
-        response = httprequestObj.http_post(self.site_name+'/signup_member.php', data=datapost)     
+        response = self.httprequestObj.http_post(self.site_name+'/signup_member.php', data=datapost)     
         if response.status_code==200:
             soup = BeautifulSoup(response.text, features=self.parser)
             if 'alert-success' in soup.find(class_='alert').get('class'):
@@ -105,7 +105,7 @@ class landmarket():
             "submit": ""
         }
 
-        response = httprequestObj.http_post(self.site_name+'/login.php', data=datapost)    
+        response = self.httprequestObj.http_post(self.site_name+'/login.php', data=datapost)    
         if response.status_code==200:
             soup = BeautifulSoup(response.text, features=self.parser)
             if soup.find(class_='alert') and 'alert-danger' in soup.find(class_='alert').get('class'):
@@ -225,7 +225,7 @@ class landmarket():
             for i, image in enumerate(postdata['post_images'][:4]):
                 files['image'+str(i+1)] =  open(os.getcwd()+"/"+image, 'rb')
             
-            r = httprequestObj.http_get(self.site_name+'/post')
+            r = self.httprequestObj.http_get(self.site_name+'/post')
             if r.status_code==200:
                 soup = BeautifulSoup(r.text, features=self.parser)
                 flag = True
@@ -240,7 +240,7 @@ class landmarket():
                         detail = "Image captcha error"
                 
                 if flag:
-                    response = httprequestObj.http_post(self.site_name+'/add_property.php', data=datapost, files=files)
+                    response = self.httprequestObj.http_post(self.site_name+'/add_property.php', data=datapost, files=files)
                     if response.status_code==200:
                         soup = BeautifulSoup(response.text, features=self.parser)
                         if 'alert-success' in soup.find(class_='alert').get('class'):
@@ -248,7 +248,7 @@ class landmarket():
                             detail = "Post created successfully!"
 
                             post_title = str(postdata['post_title_th']).strip()
-                            r = httprequestObj.http_get(self.site_name+'/maneg_property.php')
+                            r = self.httprequestObj.http_get(self.site_name+'/maneg_property.php')
                             if r.status_code==200:
                                 soup = BeautifulSoup(r.text, features=self.parser)
                                 posts_element = soup.find(class_='well')
@@ -382,7 +382,7 @@ class landmarket():
             for i, image in enumerate(postdata['post_images'][:4]):
                 files['image'+str(i+1)] =  open(os.getcwd()+"/"+image, 'rb')
             
-            r = httprequestObj.http_get(self.site_name+'/edit_property.php?id='+str(postdata['post_id']))
+            r = self.httprequestObj.http_get(self.site_name+'/edit_property.php?id='+str(postdata['post_id']))
             if r.status_code==200:
                 soup = BeautifulSoup(r.text, features=self.parser)
                 flag = True
@@ -397,7 +397,7 @@ class landmarket():
                         detail = "Image captcha error"
 
                 if flag:
-                    response = httprequestObj.http_post(self.site_name+'/edit_property.php?id='+str(postdata['post_id']), data=datapost, files=files)
+                    response = self.httprequestObj.http_post(self.site_name+'/edit_property.php?id='+str(postdata['post_id']), data=datapost, files=files)
                     if response.status_code==200:
                         soup = BeautifulSoup(response.text, features=self.parser)
                         if 'alert-success' in soup.find(class_='alert').get('class'):
@@ -446,7 +446,7 @@ class landmarket():
             page_num = 0
             flag = True
             while flag:
-                response = httprequestObj.http_get(self.site_name+'/maneg_property.php?&page='+str(page_num))
+                response = self.httprequestObj.http_get(self.site_name+'/maneg_property.php?&page='+str(page_num))
                 if response.status_code==200:
                     soup = BeautifulSoup(response.text, features=self.parser)
                     posts_element = soup.find(class_='well')             
@@ -507,7 +507,7 @@ class landmarket():
         if success=="true":
             success = "false"
 
-            response = httprequestObj.http_get(self.site_name+'/maneg_property.php?delete='+str(postdata['post_id']))
+            response = self.httprequestObj.http_get(self.site_name+'/maneg_property.php?delete='+str(postdata['post_id']))
             if response.status_code==200:
                 soup = BeautifulSoup(response.text, features=self.parser)
                 alert_element = soup.find(class_='alert')
@@ -552,7 +552,7 @@ class landmarket():
             datapost = {}
             files = {'image1': b'', 'image2': b'', 'image3': b'', 'image4': b''}
 
-            r = httprequestObj.http_get(self.site_name+'/edit_property.php?id='+str(postdata['post_id']))
+            r = self.httprequestObj.http_get(self.site_name+'/edit_property.php?id='+str(postdata['post_id']))
             print(r.url)
             print(r.text)
             if '<META HTTP-EQUIV="Refresh" CONTENT="0;URL=maneg_property.php">' in r.text:
@@ -604,7 +604,7 @@ class landmarket():
                         detail = "Image captcha error"
 
                 if flag:
-                    response = httprequestObj.http_post(self.site_name+'/edit_property.php?id='+str(postdata['post_id']), data=datapost, files=files)
+                    response = self.httprequestObj.http_post(self.site_name+'/edit_property.php?id='+str(postdata['post_id']), data=datapost, files=files)
                     if response.status_code==200:
                         soup = BeautifulSoup(response.text, features=self.parser)
                         if 'alert-success' in soup.find(class_='alert').get('class'):
