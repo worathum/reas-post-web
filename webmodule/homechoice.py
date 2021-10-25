@@ -23,7 +23,6 @@ property_types = {
     '10': 'โกดัง-โรงงาน',
     '25': 'โรงงาน'
 }
-httprequestObj = lib_httprequest()
 
 
 class homechoice():
@@ -42,6 +41,7 @@ class homechoice():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.httprequestObj = lib_httprequest()
 
 
 
@@ -64,7 +64,7 @@ class homechoice():
             "line": postdata['line']
         }
         
-        response = httprequestObj.http_post(self.site_name+'/insert/insert_user.php', data=datapost)
+        response = self.httprequestObj.http_post(self.site_name+'/insert/insert_user.php', data=datapost)
 
         popup_responses = {
             '1':"Membership is successful!. You can log in immediately!", 
@@ -112,7 +112,7 @@ class homechoice():
             "email": postdata['user'],
             "password": postdata['pass']
         }
-        response = httprequestObj.http_post(self.site_name+'/chk_login.php', data=datapost)
+        response = self.httprequestObj.http_post(self.site_name+'/chk_login.php', data=datapost)
 
         popup_responses = {
             '1':"Login successful!. Happy to receive your return again!",
@@ -165,7 +165,7 @@ class homechoice():
                 postdata['web_project_name'] = postdata['post_title_th']
         
         if success=="true":
-            r = httprequestObj.http_get(self.site_name+'/create_post.html')
+            r = self.httprequestObj.http_get(self.site_name+'/create_post.html')
             soup = BeautifulSoup(r.text, features=self.parser)
             teedin_target = soup.find(attrs={"name":"at_target"}).get('value')
            
@@ -188,7 +188,7 @@ class homechoice():
 
             postimage_url = self.site_name+'/dropzonejs_upimg/uploadp.php?at_target='+teedin_target+'&url=https://xn--22ce1cbmnb1e9exbzak9o1c.com'
             for each_img in postdata['post_images'][:21]:
-                r = httprequestObj.http_post(postimage_url, data={}, files={"file":open(os.getcwd()+"/"+each_img, 'rb')})
+                r = self.httprequestObj.http_post(postimage_url, data={}, files={"file":open(os.getcwd()+"/"+each_img, 'rb')})
                 if r.status_code>=400:
                     status = "false"
                     detail = "unable to upload image(s)"
@@ -236,7 +236,7 @@ class homechoice():
                     "at_target": teedin_target
                 }
 
-                response = httprequestObj.http_post(self.site_name+'/insert/insert_post.php', data=datapost)
+                response = self.httprequestObj.http_post(self.site_name+'/insert/insert_post.php', data=datapost)
                 popup_responses = {'1': 'Success announcement! We have received your announcement!', '2':'An error has occurred. Cannot announce at this time. The system is editing'}
                 success = "false"
                 if response.status_code==200:
@@ -246,7 +246,7 @@ class homechoice():
                     if len(parsed_response)>1:
                         if parsed_response[1][0]=='1':
                             success = "true"
-                            r = httprequestObj.http_get(self.site_name+'/my_property.html')
+                            r = self.httprequestObj.http_get(self.site_name+'/my_property.html')
                             soup = BeautifulSoup(r.text, features=self.parser)
                             all_posts = soup.find_all(class_="utf_list_box_listing_item")
                             for post in all_posts[::-1]:
@@ -297,7 +297,7 @@ class homechoice():
                 postdata['web_project_name'] = postdata['post_title_th']
         
         if success=="true":
-            r = httprequestObj.http_get(self.site_name+'/my_property.html')
+            r = self.httprequestObj.http_get(self.site_name+'/my_property.html')
             soup = BeautifulSoup(r.text, features=self.parser)
             all_posts = soup.find_all(class_="utf_list_box_listing_item")
             post_url = '/post/'+postdata['post_id']+'.html'
@@ -308,7 +308,7 @@ class homechoice():
                     flag = 1
                     break
             if flag==1:
-                r = httprequestObj.http_get(self.site_name+'/edit_post/'+postdata['post_id']+'.html')
+                r = self.httprequestObj.http_get(self.site_name+'/edit_post/'+postdata['post_id']+'.html')
                 soup = BeautifulSoup(r.text, features=self.parser)
                 teedin_target = soup.find(attrs={"name":"at_target"}).get('value')
             
@@ -327,7 +327,7 @@ class homechoice():
                 
                 postimage_url = self.site_name+'/dropzonejs_upimg/uploadp.php?at_target='+teedin_target+'&url=https://xn--22ce1cbmnb1e9exbzak9o1c.com'
                 for each_img in postdata['post_images'][:21]:
-                    r = httprequestObj.http_post(postimage_url, data={}, files={"file":open(os.getcwd()+"/"+each_img, 'rb')})
+                    r = self.httprequestObj.http_post(postimage_url, data={}, files={"file":open(os.getcwd()+"/"+each_img, 'rb')})
                     if r.status_code>=400:
                         status = "false"
                         detail = "unable to upload image(s)"
@@ -374,7 +374,7 @@ class homechoice():
                         "at_target": teedin_target
                     }
 
-                    response = httprequestObj.http_post(self.site_name+'/insert/update_post.php', data=datapost)
+                    response = self.httprequestObj.http_post(self.site_name+'/insert/update_post.php', data=datapost)
                     popup_responses = {'1': 'Successful update announcement! We have received information to update your announcement!', '2':'An error has occurred. Cannot announce at this time. The system is editing'}
                     success = "false"
                     if response.status_code==200:
@@ -417,7 +417,7 @@ class homechoice():
         detail = test_login["detail"]
 
         if success=="true":
-            r = httprequestObj.http_get(self.site_name+'/my_property.html')
+            r = self.httprequestObj.http_get(self.site_name+'/my_property.html')
             soup = BeautifulSoup(r.text, features=self.parser)
             all_posts = soup.find_all(class_="utf_list_box_listing_item")
             post_url = '/post/'+postdata['post_id']+'.html'
@@ -425,7 +425,7 @@ class homechoice():
             flag = 0
             for post in all_posts:
                 if post.find('a').get('href')==post_url:    
-                    response = httprequestObj.http_get(self.site_name+'/my_property/'+postdata['post_id']+'.html')
+                    response = self.httprequestObj.http_get(self.site_name+'/my_property/'+postdata['post_id']+'.html')
                     if response.status_code==200:
                         detail = "Post deleted successfully!"
                     else:
@@ -472,7 +472,7 @@ class homechoice():
             detail = "No post found with given title"
             post_title = postdata['post_title_th']
 
-            response = httprequestObj.http_get(self.site_name+'/my_property.html')
+            response = self.httprequestObj.http_get(self.site_name+'/my_property.html')
             if response.status_code==200:
                 soup = BeautifulSoup(response.text, features=self.parser)
                 all_posts = soup.find_all(class_="utf_list_box_listing_item")
@@ -521,7 +521,7 @@ class homechoice():
         success = test_login["success"]
         
         if success=="true":
-            r = httprequestObj.http_get(self.site_name+'/my_property.html')
+            r = self.httprequestObj.http_get(self.site_name+'/my_property.html')
             soup = BeautifulSoup(r.text, features=self.parser)
             all_posts = soup.find_all(class_="utf_list_box_listing_item")
             post_url = '/post/'+postdata['post_id']+'.html'
@@ -530,7 +530,7 @@ class homechoice():
             for post in all_posts:
                 if post.find('a').get('href')==post_url:    
                     flag = 1
-                    r = httprequestObj.http_get(self.site_name+'/edit_post/'+postdata['post_id']+'.html')
+                    r = self.httprequestObj.http_get(self.site_name+'/edit_post/'+postdata['post_id']+'.html')
                     soup = BeautifulSoup(r.text, features=self.parser)
                     form = soup.find(attrs={'name':'frm', 'action':'../insert/update_post.php'})
                     teedin_type = form.find(attrs={'name':'teedin_type'}).find('option', selected=True).get('value')
@@ -560,7 +560,7 @@ class homechoice():
                             "teedin_longitude": teedin_longitude,       
                             "at_target": form.find(attrs={'name':'at_target'}).get('value')
                         }
-                    response = httprequestObj.http_post(self.site_name+'/insert/update_post.php', data=datapost)
+                    response = self.httprequestObj.http_post(self.site_name+'/insert/update_post.php', data=datapost)
                     
                     popup_responses = {'1': 'Post boosted!', '2':'An error has occurred. Cannot announce at this time. The system is editing'}
                     success = "false"
