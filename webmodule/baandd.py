@@ -31,7 +31,6 @@ category_types = {
     '10': '22',
     '25': '22'
 } 
-httprequestObj = lib_httprequest()
 
 class baandd():
     name = 'baandd'
@@ -48,6 +47,7 @@ class baandd():
         self.debug = 0
         self.debugresdata = 0
         self.parser = 'html.parser'
+        self.httprequestObj = lib_httprequest()
 
 
 
@@ -63,7 +63,7 @@ class baandd():
 
     def logout_user(self):
         url = 'http://www.baan-dd.com/index.php?option=logout'
-        httprequestObj.http_get(url)
+        self.httprequestObj.http_get(url)
 
 
     def register_user(self, postdata):
@@ -87,14 +87,14 @@ class baandd():
                 "password2": postdata['pass']
             }
 
-            r = httprequestObj.http_get(self.site_name+'/index.php?option=com_registration&task=register')
+            r = self.httprequestObj.http_get(self.site_name+'/index.php?option=com_registration&task=register')
             soup = BeautifulSoup(r.text, features=self.parser)
             form = soup.find(attrs={'name':'mosForm'})
             inputs = form.find_all('input', {'type':'hidden'})
             for inp in inputs:
                 datapost[inp.get('name')] = inp.get('value')
 
-            response = httprequestObj.http_post(self.site_name+'/index.php', data=datapost)
+            response = self.httprequestObj.http_post(self.site_name+'/index.php', data=datapost)
             if response.status_code==200:
                 soup = BeautifulSoup(response.content, features=self.parser)
                 res_div = soup.find(class_='componentheading')
@@ -124,7 +124,7 @@ class baandd():
 
     def test_login(self, postdata):
         self.logout_user()
-        r = httprequestObj.http_get('http://www.baan-dd.com/index.php?option=logout')
+        r = self.httprequestObj.http_get('http://www.baan-dd.com/index.php?option=logout')
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         
@@ -138,7 +138,7 @@ class baandd():
             "Submit":  "Sign in"
         }
 
-        r = httprequestObj.http_get(self.site_name+'/index.php')
+        r = self.httprequestObj.http_get(self.site_name+'/index.php')
         soup = BeautifulSoup(r.text, features=self.parser)
         form = soup.find(attrs={'name':'login'})
         
@@ -149,7 +149,7 @@ class baandd():
         except AttributeError:
             pass
 
-        response = httprequestObj.http_post(self.site_name+'/index.php', data=datapost)
+        response = self.httprequestObj.http_post(self.site_name+'/index.php', data=datapost)
 
         if response.status_code == 200:
             if b'alert(\'\xaa\xd7\xe8\xcd\xbc\xd9\xe9\xe3\xaa\xe9\xcb\xc3\xd7\xcd\xc3\xcb\xd1\xca\xbc\xe8\xd2\xb9 \xe4\xc1\xe8\xb6\xd9\xa1\xb5\xe9\xcd\xa7  \xa1\xc3\xd8\xb3\xd2\xc5\xcd\xa7\xe3\xcb\xc1\xe8\')' in response.content:
@@ -288,7 +288,7 @@ class baandd():
                     "submit": "ส่งประกาศ"
                 }
 
-                r = httprequestObj.http_get(self.site_name+ '/index.php?option=com_marketplace&page=write_ad&Itemid=56')
+                r = self.httprequestObj.http_get(self.site_name+ '/index.php?option=com_marketplace&page=write_ad&Itemid=56')
                 soup = BeautifulSoup(r.text, features=self.parser)
                 form  = soup.find(attrs={'name': 'write_ad'})
                 
@@ -300,7 +300,7 @@ class baandd():
                         files["ad_picture"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
                     
                     #print(json.dumps(datapost))
-                    response = httprequestObj.http_post(self.site_name+'/index.php?option=com_marketplace&page=write_ad&Itemid=56', data=datapost, files=files)
+                    response = self.httprequestObj.http_post(self.site_name+'/index.php?option=com_marketplace&page=write_ad&Itemid=56', data=datapost, files=files)
                     with open('temp.html', 'w') as f:
                         f.write(str(response.text))
                     if response.status_code==200:
@@ -311,7 +311,7 @@ class baandd():
                                 success = "true"
                                 detail = "Post created successfully"
 
-                                r = httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=show_category&catid=0&Itemid=56')
+                                r = self.httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=show_category&catid=0&Itemid=56')
                                 print(r.url)
                                 print(r.status_code)
                                 if r.status_code==200:
@@ -391,7 +391,7 @@ class baandd():
                     "ad_price": postdata['price_baht'],
                     "submit": "ส่งประกาศ"
                 }
-                r = httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=write_ad&adid='+postdata['post_id']+'&Itemid=56')
+                r = self.httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=write_ad&adid='+postdata['post_id']+'&Itemid=56')
                 soup = BeautifulSoup(r.text, features=self.parser)
                 form  = soup.find(attrs={'name': 'write_ad'})
                 
@@ -403,7 +403,7 @@ class baandd():
                     for i, image in enumerate(postdata["post_images"][:3]):
                         files["ad_picture"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
 
-                    response = httprequestObj.http_post(self.site_name+'/index.php?option=com_marketplace&page=write_ad&Itemid=56', data=datapost, files = files)
+                    response = self.httprequestObj.http_post(self.site_name+'/index.php?option=com_marketplace&page=write_ad&Itemid=56', data=datapost, files = files)
                     if response.status_code==200:
                         table = BeautifulSoup(response.text, features=self.parser).find(class_='contentpadding').find('table')
                         try:
@@ -459,7 +459,7 @@ class baandd():
             post_found = False
             detail = "No post found with given id"
             while flag:
-                r = httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=show_category&catid=0&Itemid=56&ad_type=0&limit=20&limitstart='+str(i*20))
+                r = self.httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=show_category&catid=0&Itemid=56&ad_type=0&limit=20&limitstart='+str(i*20))
                 if r.status_code==200:
                     soup = BeautifulSoup(r.content, features=self.parser)
                     posts = soup.find_all(class_='jooNormal')
@@ -476,7 +476,7 @@ class baandd():
                     detail = "Unable to search. An Error has occurred with response_code "+str(r.status_code)        
             
             if post_found:
-                response = httprequestObj.http_get(self.site_name+"/index.php?option=com_marketplace&page=delete_ad&adid="+postdata['post_id']+"&mode=db&Itemid=56")
+                response = self.httprequestObj.http_get(self.site_name+"/index.php?option=com_marketplace&page=delete_ad&adid="+postdata['post_id']+"&mode=db&Itemid=56")
                 if response.status_code==200:
                     soup = BeautifulSoup(response.text, features=self.parser)
                     tables = soup.find_all('table')
@@ -532,7 +532,7 @@ class baandd():
             flag = True
             i = 0
             while flag:
-                response = httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=show_category&catid=0&Itemid=56&ad_type=0&limit=20&limitstart='+str(i*20))
+                response = self.httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=show_category&catid=0&Itemid=56&ad_type=0&limit=20&limitstart='+str(i*20))
                 if response.status_code==200:
                     soup = BeautifulSoup(response.content, features=self.parser)
                     posts = soup.find_all(class_='jooNormal')
@@ -591,7 +591,7 @@ class baandd():
         if success=="true":
             success = "false"
             detail = "Unable to boost post"
-            r = httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=write_ad&adid='+postdata['post_id']+'&Itemid=56')
+            r = self.httprequestObj.http_get(self.site_name+'/index.php?option=com_marketplace&page=write_ad&adid='+postdata['post_id']+'&Itemid=56')
             soup = BeautifulSoup(r.text, features=self.parser)
             form  = soup.find(attrs={'name': 'write_ad'})
             datapost = {}
