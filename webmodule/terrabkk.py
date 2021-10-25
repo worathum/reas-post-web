@@ -4,7 +4,6 @@ from time import sleep
 
 from requests.adapters import Response
 from .lib_httprequest import *
-from .lib_captcha import *
 from bs4 import BeautifulSoup
 import os.path
 # from urlparse import urlparse
@@ -15,7 +14,6 @@ import sys
 from urllib.parse import unquote
 import os
 
-captcha = lib_captcha()
 
 class terrabkk():
 
