@@ -271,7 +271,9 @@ class prakardproperty():
         login = self.test_login(postdata)
         success = login['success']
         detail = login['detail']
-
+        post_url = ''
+        post_id = ''
+        
         if success:
             create = self.post_prop('create',postdata)
             success = create['success']
