@@ -247,7 +247,7 @@ class onlineoops():
                         files["PostmarketthTH[images][]"] = open(os.getcwd()+"/"+image, 'rb')
                         r = self.httprequestObj.http_post(self.site_name+'/post/free?id='+post_id, data=datapost, files = files)
             else:
-                detail += "Error code "+ str(response.status_code)+"     detail:"+response.text
+                detail += "Error code "+ str(response.status_code)
         else:
             detail = "Unable to login"
         time_end = datetime.datetime.utcnow()
@@ -296,12 +296,14 @@ class onlineoops():
                 success = "false"
                 detail  = "No post found with given id"
             else:
-                csrf = soup.find(attrs={'name':'_csrf'}).get('value')
+                """csrf = soup.find(attrs={'name':'_csrf'}).get('value')
                 header = {
                     'x-csrf-token': csrf
-                }
-                script = soup_.find('script', {'type': 'text/javascript'})
-                script = str(script).split('var')
+                }"""
+                #script = soup_.find('script', {'type': 'text/javascript'})
+                script = soup.find("div", {"id": "thumb-postmarketthth-image-init-0"})
+                list_img = str(r.text).split('"initialPreview"')[2].split(':')[1].split(']')[0].split('[')[1].split(',')
+                """script = str(script).split('var')
                 data = []
                 for i in script:
                     if 'fileinput_' in i:
@@ -316,18 +318,20 @@ class onlineoops():
                     m = m.replace('\\', '')
                     temp.append(m)
                 data[1] = temp
-                # print('\n\n\n----------->>',data)
+                # print('\n\n\n----------->>',data)"""
                 d_ = {
-                    'key': str(data[0]) + ':' + str(postdata["post_id"])
+                    'key': str(str(r.text).split('"initialPreview"')[1].split('"')[1]).replace('\\','') + ':' + str(postdata["post_id"])
                 }
-                r_ = self.httprequestObj.http_post('https://market.onlineoops.com/post/file-delete-thumb', data=d_, headers=header)
+                #print(str(str(r.text).split('"initialPreview"')[1].split('"')[1]))
+                r_ = self.httprequestObj.http_post('https://market.onlineoops.com/post/file-delete-thumb', data=d_)
                 # print(r_.url,d_,r_.text)
 
-                for i in data[1]:
+                for i in list_img:
                     d_ = {
-                        'key': str(i) + ':' + str(postdata["post_id"])
+                        'key': str(i).replace('"','').replace('\\','') + ':' + str(postdata["post_id"])
                     }
-                    r_ = self.httprequestObj.http_post('https://market.onlineoops.com/post/file-delete', data=d_, headers=header)
+                    #print(str(i).replace('"','').replace('\\','') + ':' + str(postdata["post_id"]))
+                    r_ = self.httprequestObj.http_post('https://market.onlineoops.com/post/file-delete', data=d_)
                     # text is false but pic will be deleted
                     # print(r_.url, d_, r_.text)
                 province = province_list[0]
@@ -367,7 +371,6 @@ class onlineoops():
                     postdata['land_size'] = 1
                     
                 datapost= {
-                    "_csrf": csrf,
                     "PostmarketthTH[name]": postdata['post_title_th'], 
                     "PostmarketthTH[quality_type]": "second", # new or second
                     "PostmarketthTH[price]": postdata['price_baht'],
@@ -395,7 +398,7 @@ class onlineoops():
                 if len(postdata['post_images']) <= 1:
                     response = self.httprequestObj.http_post(self.site_name+'/post/free?id='+str(postdata['post_id']), data=datapost, files = files)
                         
-                for image in postdata['post_images'][1:6]:
+                for image in postdata['post_images'][1:]:
                     files["PostmarketthTH[images][]"] = open(os.getcwd()+"/"+image, 'rb')
                     response = self.httprequestObj.http_post(self.site_name+'/post/free?id='+str(postdata['post_id']), data=datapost, files = files)
                     files = {}
@@ -578,9 +581,8 @@ class onlineoops():
             else:
                 success = "false"
                 detail = "Unable to boost post"
-                csrf = soup.find(attrs={'name':'_csrf'}).get('value')
+                #csrf = soup.find(attrs={'name':'_csrf'}).get('value')
                 datapost = {
-                    "_csrf": csrf,
                     "PostmarketthTH[name]": soup.find(attrs={'name':'PostmarketthTH[name]'}).get('value'), 
                     "PostmarketthTH[quality_type]": "second", # new or second
                     "PostmarketthTH[price]": soup.find(attrs={'name':'PostmarketthTH[price]'}).get('value'),
