@@ -283,8 +283,24 @@ class homechoice():
 
         # start process
         # login
+        success = "false"
+        post_id = postdata['post_id']
+        post_url = ''
+        
+        delete = self.delete_post(postdata)
+        success = delete["success"]
+        detail = delete["detail"]
 
-        test_login = self.test_login(postdata)
+        if success == 'true':
+            create = self.create_post(postdata)
+            success = create["success"]
+            if success == "true":
+                detail = 'Post edited successfully!'
+                post_id = create['post_id']
+                post_url = create['post_url']
+            else:
+                detail = create["detail"]
+        """test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = "Unable to update post."
         post_id = ""
@@ -390,7 +406,7 @@ class homechoice():
                 success = "false"
                 detail  = "No post found with given id"
         else:
-            detail = "cannot login"
+            detail = "cannot login"""
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -398,7 +414,8 @@ class homechoice():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
+            "post_url": post_url,
             "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": detail,
