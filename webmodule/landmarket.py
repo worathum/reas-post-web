@@ -297,7 +297,7 @@ class landmarket():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = "Unable to update post"
-        post_id = ""
+        post_id = postdata['post_id']
         post_url = ""
 
         if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
@@ -400,9 +400,17 @@ class landmarket():
                     response = self.httprequestObj.http_post(self.site_name+'/edit_property.php?id='+str(postdata['post_id']), data=datapost, files=files)
                     if response.status_code==200:
                         soup = BeautifulSoup(response.text, features=self.parser)
-                        if 'alert-success' in soup.find(class_='alert').get('class'):
-                            success = "true"
-                            detail = "Post updated successfully!"
+                        try:
+                            if 'alert-success' in soup.find(class_='alert').get('class'):
+                                success = "true"
+                                detail = "Post updated successfully!"
+                        except:
+                            post = self.create_post(postdata)
+                            success = post['success']
+                            if success == "true":
+                                post_id = post['post_id']
+                                post_url = post['post_url']
+                                detail = "Post updated successfully!"
                     else:
                         detail = 'An Error has occurred with response_code '+str(response.status_code)
         else:
@@ -415,7 +423,8 @@ class landmarket():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
+            "post_url": post_url,
             "log_id": postdata['log_id'],
             "account_type": "null",
             "detail": detail,
