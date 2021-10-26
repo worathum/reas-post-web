@@ -423,39 +423,29 @@ class home2all():
         # https://home2all.com/post/topicid/78776
 
         # login
-        success = "True"
-        if 'name' not in postdata:
-            success = "False"
-            detail  = "Please fill name"
-        elif 'mobile' not in postdata:
-            success = "False"
-            detail  = "Please fill mobile number"
-        elif 'email' not in postdata:
-            success = "False"
-            detail  = "Please fill email"
-        if success=="False":
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end-time_start
-            return {
-                "websitename": "home2all",
-                "success": success,
-                "ds_id": postdata['ds_id'],
-                "usage_time": str(time_usage),
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                "post_url": "",
-                "post_id": postdata['post_id'],
-                "account_type": "null",
-                "detail": detail
-            }
-
-
-        test_login = self.test_login(postdata)
+        success = "false"
+        post_id = postdata['post_id']
+        post_url = ''
+        """test_login = self.test_login(postdata)
         success = test_login["success"]
-        detail = test_login["detail"]
+        detail = test_login["detail"]"""
         
+        delete = self.delete_post(postdata)
+        success = delete["success"]
+        detail = delete["detail"]
 
-        post_id = ""
+        if success == 'true':
+            create = self.create_post(postdata)
+            success = create["success"]
+            if success == "true":
+                detail = 'Post edited successfully!'
+                post_id = create['post_id']
+                post_url = create['post_url']
+            else:
+                detail = create["detail"]
+
+
+        """post_id = ""
         post_url = ""
 
         proid = {
@@ -690,12 +680,9 @@ class home2all():
                     success = "False"
                     detail = "Incorrect Post Id"
         else:
-            detail = "cannot login"
+            detail = "cannot login"""
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
-        log_id = ""
-        if 'log_id' in postdata:
-            log_id = postdata['log_id']
         return {
             "websitename": "home2all",
             "success": success,
@@ -705,7 +692,7 @@ class home2all():
             "post_url": post_url,
             "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
             "account_type": "null",
             "detail": detail,
         }
