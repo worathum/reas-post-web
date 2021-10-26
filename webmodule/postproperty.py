@@ -732,6 +732,7 @@ class postproperty:
         detail = result['detail']
         post_url = ''
         post_id = str(data['post_id'])
+        print(success)
         if success == 'true':
             ##print('login')
             postdata = {}
@@ -762,7 +763,8 @@ class postproperty:
                 postdata['post_type'] = soup.find('input',{'name':'post_type'})['value']
                 postdata['original_post_status'] = soup.find('input',{'name':'original_post_status'})['value']
                 postdata['referredby'] = soup.find('input',{'name':'referredby'})['value']
-                postdata['_wp_original_http_referer'] = soup.find('input',{'name':'_wp_original_http_referer'})['value']
+                #postdata['_wp_original_http_referer'] = soup.find('input',{'name':'_wp_original_http_referer'})['value']
+                postdata['_wp_original_http_referer'] = 'https://post-property.com/wp-admin/edit.php?paged=1'
                 #postdata['auto_draft'] = soup.find('input',{'name':'auto_draft'})['value']
                 postdata['post_ID'] = post_id
                 post_id = str(postdata['post_ID'])
@@ -772,7 +774,7 @@ class postproperty:
                 postdata['post_title'] = data['post_title_th']
                 postdata['samplepermalinknonce'] = soup.find('input', {'name': 'samplepermalinknonce'})['value']
                 postdata['content'] = str(data['post_description_th'])
-                postdata['wp-preview'] = soup.find('input', {'name': 'wp-preview'})['value']
+                #postdata['wp-preview'] = soup.find('input', {'name': 'wp-preview'})['value']
                 postdata['hidden_post_status'] = soup.find('input', {'name': 'hidden_post_status'})['value']
                 postdata['post_status'] = 'draft'
                 postdata['hidden_post_password'] = soup.find('input', {'name': 'hidden_post_password'})['value']
@@ -782,7 +784,6 @@ class postproperty:
                 postdata['post_password'] = ''
                 postdata['jj'] = soup.find('input', {'name': 'jj'})['value']
                 options = soup.find('select',{'name':'mm'}).findAll('option')
-                ##print('debug1')
                 for opt in options:
                     if opt.has_attr('selected'):
                         postdata['mm'] = opt['value']
@@ -802,10 +803,9 @@ class postproperty:
                 postdata['hidden_mn'] = soup.find('input', {'name': 'hidden_mn'})['value']
                 postdata['cur_mn'] = soup.find('input', {'name': 'cur_mn'})['value']
                 postdata['pvc_nonce'] = soup.find('input', {'name': 'pvc_nonce'})['value']
-                postdata['amp-status-nonce'] = soup.find('input', {'name': 'amp-status-nonce'})['value']
-                postdata['original_publish'] = soup.find('input', {'name': 'original_publish'})['value']
-                postdata['publish'] = 'อัปเดต'
-                ##print('mid')
+                #postdata['amp-status-nonce'] = soup.find('input', {'name': 'amp-status-nonce'})['value']
+                postdata['original_publish'] = 'อัปเดต'
+                #postdata['publish'] = 'อัปเดต'
                 postdata['_thumbnail_id'] = soup.find('input', {'name': '_thumbnail_id'})['value']
                 postdata['yoast_free_metabox_nonce'] = soup.find('input', {'name': 'yoast_free_metabox_nonce'})['value']
                 postdata['yoast_free_metabox_social_nonce'] = '' #soup.find('input', {'name': 'yoast_free_metabox_social_nonce'})['value']
@@ -818,13 +818,11 @@ class postproperty:
                 postdata['yoast_wpseo_primary_category_term'] = soup.find('input', {'name': 'yoast_wpseo_primary_category_term'})['value']
                 postdata['yoast_wpseo_primary_category_nonce'] = soup.find('input', {'name': 'yoast_wpseo_primary_category_nonce'})['value']
                 postdata['yoast_wpseo_primary_internal-type_term'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-type_term'})['value']
-                ##print('debug2')
                 postdata['yoast_wpseo_primary_internal-type_nonce'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-type_nonce'})['value']
                 postdata['yoast_wpseo_primary_internal-residence_term'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-residence_term'})['value']
                 postdata['yoast_wpseo_primary_internal-residence_nonce'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-residence_nonce'})['value']
                 postdata['yoast_wpseo_primary_internal-location_term'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-location_term'})['value']
                 postdata['yoast_wpseo_primary_internal-location_nonce'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-location_nonce'})['value']
-                ##print('debug3')
                 postdata['screen'] = 'mobile'
                 postdata['yoast_wpseo_opengraph-title'] = ''
                 postdata['yoast_wpseo_opengraph-description'] = ''
@@ -863,11 +861,9 @@ class postproperty:
                     postdata['residence'] = property_tp[str(data['property_type'])]
                 else:
                     postdata['residence'] = property_tp[ids[str(data['property_type'])]]
-
                 postdata['rai'] = data['land_size_rai']
                 postdata['ngan'] = data['land_size_ngan']
                 postdata['sqwa'] = data['land_size_wa']
-
                 postdata['area'] = data['floor_area']
                 postdata['bed'] = data['bed_room']
                 postdata['bath'] = data['bath_room']
@@ -1063,29 +1059,17 @@ class postproperty:
                 ##print(postdata['media_full_url[]'])
                 ##print(postdata['media_thumbnail_url[]'])
 
-                url = 'https://post-property.com/wp-admin/post.php'
-                req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
+                url = 'https://post-property.com/wp-admin/post.php?post={}&action=edit'.format(data['post_id'])
+                #req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
+                req = self.httprequestObj.http_get(url,headers=headers)
                 txt = str(req.text)
                 soup = BeautifulSoup(req.text,'html.parser')
                 post_url = str(soup.find('li',{'id':'wp-admin-bar-view'}).find('a')['href'])
-
                 success = 'true'
                 detail = 'Post edited'
             else:
                 success = 'false'
                 detail = 'Post not found'
-
-
-
-
-
-
-
-
-
-
-
-
 
         end_time = datetime.datetime.utcnow()
         result = {'success': success,
