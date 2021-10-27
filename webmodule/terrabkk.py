@@ -157,11 +157,16 @@ class terrabkk():
 
         postdata['land_size_wa'] = int(postdata['land_size_wa'])
         postdata['land_size_rai'] = int(postdata['land_size_rai'])
+        postdata['land_size_ngan'] = int(postdata['land_size_ngan'])
         if postdata['land_size_wa'] >=400:
             postdata['land_size_rai'] += postdata['land_size_wa']//400
             postdata['land_size_wa'] = postdata['land_size_wa']%400
+        if postdata['land_size_ngan'] >=4:
+            postdata['land_size_rai'] += postdata['land_size_ngan']//4
+            postdata['land_size_ngan'] = postdata['land_size_ngan']%4
         postdata['land_size_wa'] = str(postdata['land_size_wa'])
         postdata['land_size_rai'] = str(postdata['land_size_rai'])
+        postdata['land_size_ngan'] = str(postdata['land_size_ngan'])
 
         property_type = {
             '1':'CONDOMINIUM',
