@@ -729,10 +729,11 @@ class talad:
                         temp = temp + 1
 
                 url = 'http://talad.me/post/edit/' + str(post_id)
-
-                req = self.httprequestObj.http_post(url, data=postdata, files=file, headers=headers)
-
-                soup = BeautifulSoup(req.text, 'html5lib')
+                try:
+                    req = self.httprequestObj.http_post(url, data=postdata, files=file, headers=headers)
+                    soup = BeautifulSoup(req.text, 'html5lib')
+                except:
+                    pass
 
                 if post_id == '':
                     success = 'false'
