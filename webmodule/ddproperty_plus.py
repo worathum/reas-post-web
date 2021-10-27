@@ -208,7 +208,7 @@ class ddproperty_plus():
 
         options = Options()
         # debug by comment option --headless
-        #options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -797,10 +797,10 @@ class ddproperty_plus():
                 except:
                     pass
                 try:
+                    WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "form-field-region")))
+                except:
                     WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'propertyTypeSelect'))).click()
                     time.sleep(0.2)
-                except:
-                    pass
                 #self.firefox.save_screenshot("debug_response/newp3.png")
 
                 # province district subdistrict
@@ -2244,9 +2244,7 @@ class ddproperty_plus():
                 req = self.httprequestObj.http_get(url,data=data,headers=headers)
 
                 soup = BeautifulSoup(req.text,'html.parser')
-                print(soup.prettify())
                 check = soup.find('div',{'id':'list-container'})
-                print(check)
                 if check is not None:
                     #print('here2')
                     posts = soup.find_all('div',{'class':'listing-item'})
@@ -2261,13 +2259,13 @@ class ddproperty_plus():
                     flag = False
 
 
-
-            if datahandled['post_title_th'] in valid_titles:
-                post_found = 'true'
-                for i in range(len(valid_titles)):
-                    if valid_titles[i] == datahandled['post_title_th']:
-                        post_url = valid_urls[i]
-                        post_id = valid_ids[i]
+            if valid_titles != []:
+                if datahandled['post_title_th'] in valid_titles:
+                    post_found = 'true'
+                    for i in range(len(valid_titles)):
+                        if valid_titles[i] == datahandled['post_title_th']:
+                            post_url = valid_urls[i]
+                            post_id = valid_ids[i]
 
         try:
             self.firefox.close()
