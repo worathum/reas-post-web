@@ -151,9 +151,6 @@ class dotproperty():
             else:
                 success = 'true'
                 detail = 'Log in success'
-            if (data['action'] == 'test_login'):
-                driver.close()
-                driver.quit()
         finally:
             driver.close()
             driver.quit()
