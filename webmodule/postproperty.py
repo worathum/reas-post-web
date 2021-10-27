@@ -234,7 +234,7 @@ class postproperty:
             postdata['post_password'] = ''
             postdata['jj'] = soup.find('input', {'name': 'jj'})['value']
             options = soup.find('select',{'name':'mm'}).findAll('option')
-            ##print('debug1')
+            #print('debug1')
             for opt in options:
                 if opt.has_attr('selected'):
                     postdata['mm'] = opt['value']
@@ -254,7 +254,7 @@ class postproperty:
             postdata['hidden_mn'] = soup.find('input', {'name': 'hidden_mn'})['value']
             postdata['cur_mn'] = soup.find('input', {'name': 'cur_mn'})['value']
             postdata['pvc_nonce'] = soup.find('input', {'name': 'pvc_nonce'})['value']
-            postdata['amp-status-nonce'] = soup.find('input', {'name': 'amp-status-nonce'})['value']
+            #postdata['amp-status-nonce'] = soup.find('input', {'name': 'amp-status-nonce'})['value']
             postdata['original_publish'] = soup.find('input', {'name': 'original_publish'})['value']
             postdata['publish'] = soup.find('input', {'name': 'publish'})['value']
             postdata['_thumbnail_id'] = soup.find('input', {'name': '_thumbnail_id'})['value']
@@ -269,13 +269,13 @@ class postproperty:
             postdata['yoast_wpseo_primary_category_term'] = soup.find('input', {'name': 'yoast_wpseo_primary_category_term'})['value']
             postdata['yoast_wpseo_primary_category_nonce'] = soup.find('input', {'name': 'yoast_wpseo_primary_category_nonce'})['value']
             postdata['yoast_wpseo_primary_internal-type_term'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-type_term'})['value']
-            ##print('debug2')
+            #print('debug2')
             postdata['yoast_wpseo_primary_internal-type_nonce'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-type_nonce'})['value']
             postdata['yoast_wpseo_primary_internal-residence_term'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-residence_term'})['value']
             postdata['yoast_wpseo_primary_internal-residence_nonce'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-residence_nonce'})['value']
             postdata['yoast_wpseo_primary_internal-location_term'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-location_term'})['value']
             postdata['yoast_wpseo_primary_internal-location_nonce'] = soup.find('input', {'name': 'yoast_wpseo_primary_internal-location_nonce'})['value']
-            ##print('debug3')
+            #print('debug3')
             postdata['screen'] = 'mobile'
             postdata['yoast_wpseo_opengraph-title'] = ''
             postdata['yoast_wpseo_opengraph-description'] = ''
