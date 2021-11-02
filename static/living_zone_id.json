@@ -1,0 +1,821 @@
+{
+    "1": {
+        "\ufeffZone iD": "1",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e40\u0e01\u0e29\u0e15\u0e23\u0e28\u0e32\u0e2a\u0e15\u0e23\u0e4c \u0e23\u0e31\u0e0a\u0e42\u0e22\u0e18\u0e34\u0e19 \u0e40\u0e2a\u0e37\u0e2d\u0e43\u0e2b\u0e0d\u0e48 \u0e40\u0e2a\u0e19\u0e32\u0e19\u0e34\u0e04\u0e21 \u0e27\u0e31\u0e07\u0e2b\u0e34\u0e19 \u0e23\u0e31\u0e0a\u0e27\u0e34\u0e20\u0e32 \u0e1a\u0e32\u0e07\u0e40\u0e02\u0e19",
+        "Zone name English": "Kasetsart, Ratchayothin, Wang hin, Ratchavipha, Bangkhen",
+        "Latitude": "13.82861679",
+        "Longitude": "100.5686825"
+    },
+    "2": {
+        "\ufeffZone iD": "2",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e40\u0e01\u0e29\u0e15\u0e23-\u0e19\u0e27\u0e21\u0e34\u0e19\u0e17\u0e23\u0e4c (\u0e1b\u0e23\u0e30\u0e40\u0e2a\u0e23\u0e34\u0e10\u0e21\u0e19\u0e39\u0e01\u0e34\u0e08) \u0e2a\u0e38\u0e04\u0e19\u0e18\u0e2a\u0e27\u0e31\u0e2a\u0e14\u0e34\u0e4c \u0e19\u0e27\u0e25\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c  \u0e21\u0e31\u0e22\u0e25\u0e32\u0e20 \u0e25\u0e32\u0e14\u0e1b\u0e25\u0e32\u0e40\u0e04\u0e49\u0e32 ",
+        "Zone name English": "Kaset Nawamin, Nuanchan, Ladplakao",
+        "Latitude": "13.83067263",
+        "Longitude": "100.6171497"
+    },
+    "3": {
+        "\ufeffZone iD": "3",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e40\u0e25\u0e35\u0e22\u0e1a\u0e17\u0e32\u0e07\u0e14\u0e48\u0e27\u0e19\u0e23\u0e32\u0e21\u0e2d\u0e34\u0e19\u0e17\u0e23\u0e32 (\u0e1b\u0e23\u0e30\u0e14\u0e34\u0e29\u0e10\u0e4c\u0e21\u0e19\u0e39\u0e18\u0e23\u0e23\u0e21) \u0e42\u0e22\u0e18\u0e34\u0e19\u0e1e\u0e31\u0e12\u0e19\u0e32  CDC \u0e28\u0e23\u0e35\u0e27\u0e23\u0e32",
+        "Zone name English": "Yothinpattana, CDC",
+        "Latitude": "13.80354804",
+        "Longitude": "100.6183699"
+    },
+    "4": {
+        "\ufeffZone iD": "4",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e27\u0e21\u0e34\u0e19\u0e17\u0e23\u0e4c \u0e23\u0e32\u0e21\u0e2d\u0e34\u0e19\u0e17\u0e23\u0e32 \u0e27\u0e31\u0e0a\u0e23\u0e1e\u0e25 \u0e2a\u0e32\u0e22\u0e44\u0e2b\u0e21 \u0e2b\u0e17\u0e31\u0e22\u0e23\u0e32\u0e29\u0e0e\u0e23\u0e4c \u0e41\u0e1f\u0e0a\u0e31\u0e48\u0e19\u0e44\u0e2d\u0e2a\u0e4c\u0e41\u0e25\u0e19\u0e14\u0e4c \u0e2a\u0e38\u0e02\u0e32\u0e20\u0e34\u0e1a\u0e32\u0e25 5",
+        "Zone name English": "Nawamin, Ramindra, Watcharapol",
+        "Latitude": "13.82557216",
+        "Longitude": "100.6789902"
+    },
+    "5": {
+        "\ufeffZone iD": "5",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e22\u0e32\u0e21 \u0e08\u0e38\u0e2c\u0e32\u0e25\u0e07\u0e01\u0e23\u0e13\u0e4c \u0e2a\u0e32\u0e21\u0e22\u0e48\u0e32\u0e19 \u0e2a\u0e19\u0e32\u0e21\u0e01\u0e35\u0e2c\u0e32\u0e41\u0e2b\u0e48\u0e07\u0e0a\u0e32\u0e15\u0e34 \u0e2b\u0e31\u0e27\u0e25\u0e33\u0e42\u0e1e\u0e07 \u0e1b\u0e17\u0e38\u0e21\u0e27\u0e31\u0e19",
+        "Zone name English": "Siam, Paragon, Chulalongkorn, Samyan, Pathumwan",
+        "Latitude": "13.74552496",
+        "Longitude": "100.5341171"
+    },
+    "6": {
+        "\ufeffZone iD": "6",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e27\u0e34\u0e17\u0e22\u0e38 \u0e0a\u0e34\u0e14\u0e25\u0e21 \u0e2b\u0e25\u0e31\u0e07\u0e2a\u0e27\u0e19 \u0e40\u0e1e\u0e25\u0e34\u0e19\u0e08\u0e34\u0e15 \u0e23\u0e48\u0e27\u0e21\u0e24\u0e14\u0e35 \u0e2a\u0e32\u0e23\u0e2a\u0e34\u0e19 \u0e23\u0e32\u0e0a\u0e14\u0e33\u0e23\u0e34 \u0e25\u0e38\u0e21\u0e1e\u0e34\u0e19\u0e35",
+        "Zone name English": "Witthayu, Chidlom, Langsuan, Ploenchit, Ratchadamri",
+        "Latitude": "13.7383218",
+        "Longitude": "100.5462941"
+    },
+    "7": {
+        "\ufeffZone iD": "7",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e32\u0e0a\u0e40\u0e17\u0e27\u0e35 \u0e1e\u0e0d\u0e32\u0e44\u0e17 \u0e23\u0e32\u0e07\u0e19\u0e49\u0e33 \u0e1b\u0e23\u0e30\u0e15\u0e39\u0e19\u0e49\u0e33 \u0e23\u0e32\u0e0a\u0e1b\u0e23\u0e32\u0e23\u0e20",
+        "Zone name English": "Ratchathewi, Phayathai, Pratunam, Rangnam",
+        "Latitude": "13.75387915",
+        "Longitude": "100.5391683"
+    },
+    "8": {
+        "\ufeffZone iD": "8",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2d\u0e32\u0e23\u0e35\u0e22\u0e4c \u0e2d\u0e19\u0e38\u0e2a\u0e32\u0e27\u0e23\u0e35\u0e22\u0e4c \u0e23\u0e32\u0e0a\u0e04\u0e23\u0e39 \u0e2a\u0e19\u0e32\u0e21\u0e40\u0e1b\u0e49\u0e32",
+        "Zone name English": "Ari, Anusaowaree, Sanampao, Ratchakru",
+        "Latitude": "13.77610079",
+        "Longitude": "100.5419493"
+    },
+    "9": {
+        "\ufeffZone iD": "9",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e30\u0e1e\u0e32\u0e19\u0e04\u0e27\u0e32\u0e22 \u0e08\u0e15\u0e38\u0e08\u0e31\u0e01\u0e23 \u0e2b\u0e21\u0e2d\u0e0a\u0e34\u0e15 \u0e1b\u0e23\u0e30\u0e14\u0e34\u0e1e\u0e31\u0e17\u0e18\u0e4c \u0e2d\u0e34\u0e19\u0e17\u0e32\u0e21\u0e30\u0e23\u0e30",
+        "Zone name English": "Sapankwai, Mochit, Jatujak, Inthamara",
+        "Latitude": "13.79891292",
+        "Longitude": "100.5502268"
+    },
+    "10": {
+        "\ufeffZone iD": "10",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e25\u0e32\u0e14\u0e1e\u0e23\u0e49\u0e32\u0e27\u0e15\u0e2d\u0e19\u0e15\u0e49\u0e19 \u0e2b\u0e49\u0e32\u0e41\u0e22\u0e01\u0e25\u0e32\u0e14\u0e1e\u0e23\u0e49\u0e32\u0e27 \u0e40\u0e0b\u0e47\u0e19\u0e17\u0e23\u0e31\u0e25\u0e25\u0e32\u0e14\u0e1e\u0e23\u0e49\u0e32\u0e27 \u0e42\u0e0a\u0e04\u0e0a\u0e31\u0e22\u0e23\u0e48\u0e27\u0e21\u0e21\u0e34\u0e15\u0e23",
+        "Zone name English": "Ladprao, Central Ladprao, Viphavadee road",
+        "Latitude": "13.80556041",
+        "Longitude": "100.5739765"
+    },
+    "11": {
+        "\ufeffZone iD": "11",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e25\u0e32\u0e14\u0e1e\u0e23\u0e49\u0e32\u0e27\u0e15\u0e2d\u0e19\u0e01\u0e25\u0e32\u0e07 \u0e42\u0e0a\u0e04\u0e0a\u0e31\u0e22 4 \u0e25\u0e32\u0e14\u0e1e\u0e23\u0e49\u0e32\u0e27 71 \u0e19\u0e32\u0e04\u0e19\u0e34\u0e27\u0e32\u0e2a",
+        "Zone name English": "Ladprao 48, Chokchai 4, Ladprao 71",
+        "Latitude": "13.79487242",
+        "Longitude": "100.5957619"
+    },
+    "12": {
+        "\ufeffZone iD": "12",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e25\u0e32\u0e14\u0e1e\u0e23\u0e49\u0e32\u0e27\u0e15\u0e2d\u0e19\u0e1b\u0e25\u0e32\u0e22 \u0e21\u0e2b\u0e32\u0e14\u0e44\u0e17\u0e22 \u0e25\u0e32\u0e14\u0e1e\u0e23\u0e49\u0e32\u0e27 101 \u0e41\u0e2e\u0e1b\u0e1b\u0e35\u0e49\u0e41\u0e25\u0e19\u0e14\u0e4c \u0e40\u0e14\u0e2d\u0e30\u0e21\u0e2d\u0e25\u0e25\u0e4c\u0e1a\u0e32\u0e07\u0e01\u0e30\u0e1b\u0e34",
+        "Zone name English": "Ladprao101, The Mall Bang Kapi, Bang Kapi",
+        "Latitude": "13.77226428",
+        "Longitude": "100.6380205"
+    },
+    "13": {
+        "\ufeffZone iD": "13",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e31\u0e0a\u0e14\u0e32\u0e20\u0e34\u0e40\u0e29\u0e01 \u0e2b\u0e49\u0e27\u0e22\u0e02\u0e27\u0e32\u0e07 \u0e2a\u0e38\u0e17\u0e18\u0e34\u0e2a\u0e32\u0e23 \u0e28\u0e39\u0e19\u0e22\u0e4c\u0e27\u0e31\u0e12\u0e19\u0e18\u0e23\u0e23\u0e21 \u0e40\u0e2b\u0e21\u0e48\u0e07\u0e08\u0e4b\u0e32\u0e22",
+        "Zone name English": "Ratchadapisek, Huaikwang, Suttisan",
+        "Latitude": "13.78908697",
+        "Longitude": "100.5738223"
+    },
+    "14": {
+        "\ufeffZone iD": "14",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1e\u0e23\u0e30\u0e23\u0e32\u0e21 9 \u0e40\u0e1e\u0e0a\u0e23\u0e1a\u0e38\u0e23\u0e35\u0e15\u0e31\u0e14\u0e43\u0e2b\u0e21\u0e48 RCA \u0e14\u0e34\u0e19\u0e41\u0e14\u0e07 \u0e28\u0e39\u0e19\u0e22\u0e4c\u0e27\u0e34\u0e08\u0e31\u0e22 \u0e04\u0e25\u0e2d\u0e07\u0e15\u0e31\u0e19",
+        "Zone name English": "Rama9, RCA, Asoke, Petchaburi, Dindaeng",
+        "Latitude": "13.75259808",
+        "Longitude": "100.5748069"
+    },
+    "16": {
+        "\ufeffZone iD": "16",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e01\u0e23\u0e35\u0e11\u0e32 \u0e28\u0e23\u0e35\u0e19\u0e04\u0e23\u0e34\u0e19\u0e17\u0e23\u0e4c \u0e2a\u0e27\u0e19\u0e2b\u0e25\u0e27\u0e07 \u0e1e\u0e31\u0e12\u0e19\u0e32\u0e01\u0e32\u0e23",
+        "Zone name English": "Pattanakan, Srinakarin, Suanluang",
+        "Latitude": "13.7379664",
+        "Longitude": "100.6451421"
+    },
+    "17": {
+        "\ufeffZone iD": "17",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e32\u0e19\u0e32\u0e1d\u0e31\u0e48\u0e07\u0e40\u0e2b\u0e19\u0e37\u0e2d \u0e19\u0e32\u0e19\u0e32\u0e1d\u0e31\u0e48\u0e07\u0e43\u0e15\u0e49",
+        "Zone name English": "Nana, North Nana, South Nana, Sukhumvit8, Sukhumvit11, Sukhumvit13, Soi Nana",
+        "Latitude": "13.7404735",
+        "Longitude": "100.5554355"
+    },
+    "18": {
+        "\ufeffZone iD": "18",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e38\u0e02\u0e38\u0e21\u0e27\u0e34\u0e17 \u0e2d\u0e42\u0e28\u0e01 \u0e17\u0e2d\u0e07\u0e2b\u0e25\u0e48\u0e2d \u0e40\u0e2d\u0e01\u0e21\u0e31\u0e22 \u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e1e\u0e07\u0e29\u0e4c \u0e1b\u0e23\u0e30\u0e2a\u0e32\u0e19\u0e21\u0e34\u0e15\u0e23",
+        "Zone name English": "Sukhumvit, Asoke, Prompong, Thonglor, Eakamai",
+        "Latitude": "13.73031796",
+        "Longitude": "100.5697858"
+    },
+    "19": {
+        "\ufeffZone iD": "19",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2d\u0e48\u0e2d\u0e19\u0e19\u0e38\u0e0a \u0e2d\u0e38\u0e14\u0e21\u0e2a\u0e38\u0e02 \u0e1e\u0e23\u0e30\u0e42\u0e02\u0e19\u0e07 \u0e1a\u0e32\u0e07\u0e08\u0e32\u0e01 \u0e1b\u0e38\u0e13\u0e13\u0e27\u0e34\u0e16\u0e35",
+        "Zone name English": "Onnut, Udomsuk, Phrakhanong, Bangchak, Punnawithi",
+        "Latitude": "13.69675096",
+        "Longitude": "100.6053165"
+    },
+    "20": {
+        "\ufeffZone iD": "20",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1a\u0e32\u0e07\u0e19\u0e32 \u0e2a\u0e23\u0e23\u0e1e\u0e27\u0e38\u0e18 \u0e25\u0e32\u0e0b\u0e32\u0e25 \u0e41\u0e1a\u0e23\u0e34\u0e48\u0e07 \u0e2a\u0e31\u0e19\u0e15\u0e34\u0e04\u0e32\u0e21 \u0e21.\u0e23\u0e32\u0e21\u0e04\u0e33\u0e41\u0e2b\u0e07 2 \u0e40\u0e21\u0e01\u0e30\u0e1a\u0e32\u0e07\u0e19\u0e32 \u0e40\u0e2d\u0e41\u0e1a\u0e04\u0e1a\u0e32\u0e07\u0e19\u0e32",
+        "Zone name English": "Bangna, Lasalle, Bearing, Mega Bangna, ABAC Bangna",
+        "Latitude": "13.66962825",
+        "Longitude": "100.6346436"
+    },
+    "21": {
+        "\ufeffZone iD": "21",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1e\u0e23\u0e30\u0e23\u0e32\u0e21 8 \u0e2a\u0e32\u0e21\u0e40\u0e2a\u0e19 \u0e23\u0e32\u0e0a\u0e27\u0e31\u0e15\u0e23 \u0e28\u0e23\u0e35\u0e22\u0e48\u0e32\u0e19 \u0e14\u0e38\u0e2a\u0e34\u0e15",
+        "Zone name English": "Rama 8, Samsen, Dusit, Ratchawat, Sri Yan",
+        "Latitude": "13.74272214",
+        "Longitude": "100.5069981"
+    },
+    "22": {
+        "\ufeffZone iD": "22",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e35\u0e25\u0e21 \u0e28\u0e32\u0e25\u0e32\u0e41\u0e14\u0e07 \u0e1a\u0e32\u0e07\u0e23\u0e31\u0e01 \u0e2a\u0e35\u0e48\u0e1e\u0e23\u0e30\u0e22\u0e32 \u0e2a\u0e38\u0e23\u0e27\u0e07\u0e28\u0e4c",
+        "Zone name English": "Silom, Saladaeng, Bangrak, Surawong, Si Phraya",
+        "Latitude": "13.7284027",
+        "Longitude": "100.5342526"
+    },
+    "23": {
+        "\ufeffZone iD": "23",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e04\u0e25\u0e2d\u0e07\u0e40\u0e15\u0e22 \u0e01\u0e25\u0e49\u0e27\u0e22\u0e19\u0e49\u0e33\u0e44\u0e17 \u0e17\u0e48\u0e32\u0e40\u0e23\u0e37\u0e2d \u0e1e\u0e23\u0e30\u0e23\u0e32\u0e21 4",
+        "Zone name English": "Khlongtoei, Kluaynamthai, Rama 4",
+        "Latitude": "13.7116191",
+        "Longitude": "100.5818299"
+    },
+    "24": {
+        "\ufeffZone iD": "24",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e32\u0e17\u0e23 \u0e19\u0e23\u0e32\u0e18\u0e34\u0e27\u0e32\u0e2a \u0e0a\u0e48\u0e2d\u0e07\u0e19\u0e19\u0e17\u0e23\u0e35 \u0e2a\u0e38\u0e23\u0e28\u0e31\u0e01\u0e14\u0e34\u0e4c \u0e40\u0e0b\u0e49\u0e19\u0e15\u0e4c\u0e2b\u0e25\u0e38\u0e22 \u0e40\u0e08\u0e23\u0e34\u0e0d\u0e23\u0e32\u0e29\u0e0e\u0e23\u0e4c \u0e40\u0e08\u0e23\u0e34\u0e0d\u0e01\u0e23\u0e38\u0e07",
+        "Zone name English": "Sathorn, Narathiwat, Surasak",
+        "Latitude": "13.72658652",
+        "Longitude": "100.5303743"
+    },
+    "25": {
+        "\ufeffZone iD": "25",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1e\u0e23\u0e30\u0e23\u0e32\u0e21 3 \u0e2a\u0e32\u0e18\u0e38\u0e1b\u0e23\u0e30\u0e14\u0e34\u0e29\u0e10\u0e4c \u0e19\u0e32\u0e07\u0e25\u0e34\u0e49\u0e19\u0e08\u0e35\u0e48 \u0e40\u0e22\u0e47\u0e19\u0e2d\u0e32\u0e01\u0e32\u0e28 \u0e22\u0e32\u0e19\u0e19\u0e32\u0e27\u0e32",
+        "Zone name English": "Rama3 (Riverside), Nang Linchee, Satupadit, Yenakart",
+        "Latitude": "13.69758785",
+        "Longitude": "100.5375827"
+    },
+    "26": {
+        "\ufeffZone iD": "26",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e27\u0e07\u0e40\u0e27\u0e35\u0e22\u0e19\u0e43\u0e2b\u0e0d\u0e48 \u0e40\u0e08\u0e23\u0e34\u0e0d\u0e19\u0e04\u0e23 \u0e01\u0e23\u0e38\u0e07\u0e18\u0e19\u0e1a\u0e38\u0e23\u0e35 \u0e15\u0e32\u0e01\u0e2a\u0e34\u0e19 \u0e2d\u0e34\u0e2a\u0e23\u0e20\u0e32\u0e1e",
+        "Zone name English": "Sathorn Taksin, Wongwian Yai, Charoennakorn (Riverside)",
+        "Latitude": "13.72085333",
+        "Longitude": "100.5025982"
+    },
+    "27": {
+        "\ufeffZone iD": "27",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e01\u0e31\u0e25\u0e1b\u0e1e\u0e24\u0e01\u0e29\u0e4c \u0e17\u0e48\u0e32\u0e1e\u0e23\u0e30 \u0e15\u0e25\u0e32\u0e14\u0e1e\u0e25\u0e39 \u0e42\u0e1e\u0e18\u0e34\u0e4c\u0e19\u0e34\u0e21\u0e34\u0e15\u0e23 \u0e27\u0e38\u0e12\u0e32\u0e01\u0e32\u0e28 \u0e1a\u0e32\u0e07\u0e2b\u0e27\u0e49\u0e32 \u0e40\u0e17\u0e2d\u0e14\u0e44\u0e17",
+        "Zone name English": "Thaphra, Talat Phlu, Wutthakat, Bangwa",
+        "Latitude": "13.71421907",
+        "Longitude": "100.4767667"
+    },
+    "28": {
+        "\ufeffZone iD": "28",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e32\u0e29\u0e0e\u0e23\u0e4c\u0e1a\u0e39\u0e23\u0e13\u0e30 \u0e2a\u0e38\u0e02\u0e2a\u0e27\u0e31\u0e2a\u0e14\u0e34\u0e4c \u0e1b\u0e23\u0e30\u0e0a\u0e32\u0e2d\u0e38\u0e17\u0e34\u0e28 \u0e1e\u0e23\u0e30\u0e1b\u0e23\u0e30\u0e41\u0e14\u0e07 \u0e1e\u0e38\u0e17\u0e18\u0e1a\u0e39\u0e0a\u0e32 \u0e17\u0e38\u0e48\u0e07\u0e04\u0e23\u0e38",
+        "Zone name English": "Rathburana, Suksawat, Pracha Uthit",
+        "Latitude": "13.65123332",
+        "Longitude": "100.4954231"
+    },
+    "29": {
+        "\ufeffZone iD": "29",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1a\u0e32\u0e07\u0e41\u0e04 \u0e40\u0e1e\u0e0a\u0e23\u0e40\u0e01\u0e29\u0e21 \u0e20\u0e32\u0e29\u0e35\u0e40\u0e08\u0e23\u0e34\u0e0d \u0e2b\u0e19\u0e2d\u0e07\u0e41\u0e02\u0e21",
+        "Zone name English": "Bang kae, Phetkasem, Phasi Charoen",
+        "Latitude": "13.71371585",
+        "Longitude": "100.4079525"
+    },
+    "31": {
+        "\ufeffZone iD": "31",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e32\u0e21\u0e04\u0e33\u0e41\u0e2b\u0e07\u0e15\u0e2d\u0e19\u0e15\u0e49\u0e19 \u0e21.\u0e23\u0e32\u0e21\u0e04\u0e33\u0e41\u0e2b\u0e07 \u0e2b\u0e31\u0e27\u0e2b\u0e21\u0e32\u0e01 \u0e40\u0e2d\u0e41\u0e1a\u0e04\u0e23\u0e32\u0e21\u0e04\u0e33\u0e41\u0e2b\u0e07 \u0e17\u0e32\u0e27\u0e19\u0e4c\u0e2d\u0e34\u0e19\u0e17\u0e32\u0e27\u0e19\u0e4c \u0e1a\u0e14\u0e34\u0e19\u0e17\u0e23\u0e40\u0e14\u0e0a\u0e32 ",
+        "Zone name English": "Ramkhamhaeng, Hua Mak, ABAC, Bodindecha, Town In Town",
+        "Latitude": "13.75624348",
+        "Longitude": "100.6188693"
+    },
+    "32": {
+        "\ufeffZone iD": "32",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e32\u0e21\u0e04\u0e33\u0e41\u0e2b\u0e07\u0e15\u0e2d\u0e19\u0e01\u0e25\u0e32\u0e07 \u0e19\u0e34\u0e14\u0e49\u0e32 \u0e40\u0e2a\u0e23\u0e35\u0e44\u0e17\u0e22 \u0e2a\u0e38\u0e02\u0e32\u0e20\u0e34\u0e1a\u0e32\u0e25 2",
+        "Zone name English": "Ramkhamhaeng Nida, Seri Thai, Sukhapiban 2",
+        "Latitude": "13.77283398",
+        "Longitude": "100.6546312"
+    },
+    "33": {
+        "\ufeffZone iD": "33",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e21\u0e35\u0e19\u0e1a\u0e38\u0e23\u0e35 \u0e23\u0e48\u0e21\u0e40\u0e01\u0e25\u0e49\u0e32 \u0e2b\u0e19\u0e2d\u0e07\u0e08\u0e2d\u0e01 \u0e23\u0e32\u0e21\u0e04\u0e33\u0e41\u0e2b\u0e07\u0e15\u0e2d\u0e19\u0e1b\u0e25\u0e32\u0e22 \u0e0b\u0e2d\u0e22\u0e21\u0e34\u0e2a\u0e17\u0e35\u0e19 \u0e2a\u0e38\u0e27\u0e34\u0e19\u0e17\u0e27\u0e07\u0e28\u0e4c",
+        "Zone name English": "Ramkhamhaeng, Soi Mistine, Min Buri, Romklao",
+        "Latitude": "13.79275401",
+        "Longitude": "100.7021127"
+    },
+    "34": {
+        "\ufeffZone iD": "34",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e40\u0e17\u0e1e\u0e32\u0e23\u0e31\u0e01\u0e29\u0e4c \u0e1a\u0e32\u0e07\u0e1e\u0e25\u0e35 \u0e2a\u0e33\u0e42\u0e23\u0e07 \u0e41\u0e1e\u0e23\u0e01\u0e29\u0e32 \u0e1b\u0e39\u0e48\u0e40\u0e08\u0e49\u0e32\u0e2a\u0e21\u0e34\u0e07\u0e1e\u0e23\u0e32\u0e22 \u0e28\u0e23\u0e35\u0e14\u0e48\u0e32\u0e19 \u0e1b\u0e32\u0e01\u0e19\u0e49\u0e33 \u0e1a\u0e32\u0e07\u0e1b\u0e39 \u0e2a\u0e21\u0e38\u0e17\u0e23\u0e1b\u0e23\u0e32\u0e01\u0e32\u0e23",
+        "Zone name English": "Samrong, Samut Prakan, Bangplee, Teparuk, Bang Pu",
+        "Latitude": "13.62848709",
+        "Longitude": "100.5891238"
+    },
+    "35": {
+        "\ufeffZone iD": "35",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1b\u0e17\u0e38\u0e21\u0e18\u0e32\u0e19\u0e35 \u0e25\u0e33\u0e25\u0e39\u0e01\u0e01\u0e32 \u0e23\u0e31\u0e07\u0e2a\u0e34\u0e15 \u0e18\u0e23\u0e23\u0e21\u0e28\u0e32\u0e2a\u0e15\u0e23\u0e4c \u0e04\u0e25\u0e2d\u0e07\u0e2b\u0e25\u0e27\u0e07",
+        "Zone name English": "Rangsit, Patumtani",
+        "Latitude": "13.98973841",
+        "Longitude": "100.6168384"
+    },
+    "36": {
+        "\ufeffZone iD": "36",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e41\u0e08\u0e49\u0e07\u0e27\u0e31\u0e12\u0e19\u0e30 \u0e40\u0e21\u0e37\u0e2d\u0e07\u0e17\u0e2d\u0e07 \u0e07\u0e32\u0e21\u0e27\u0e07\u0e28\u0e4c\u0e27\u0e32\u0e19 \u0e40\u0e25\u0e35\u0e22\u0e1a\u0e04\u0e25\u0e2d\u0e07\u0e1b\u0e23\u0e30\u0e1b\u0e32 \u0e41\u0e04\u0e23\u0e32\u0e22 \u0e1b\u0e32\u0e01\u0e40\u0e01\u0e23\u0e47\u0e14",
+        "Zone name English": "Ngamwongwan, Chengwatana, Muangthong",
+        "Latitude": "13.9034928",
+        "Longitude": "100.528271"
+    },
+    "37": {
+        "\ufeffZone iD": "37",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e30\u0e1e\u0e32\u0e19\u0e43\u0e2b\u0e21\u0e48 \u0e27\u0e34\u0e20\u0e32\u0e27\u0e14\u0e35 \u0e14\u0e2d\u0e19\u0e40\u0e21\u0e37\u0e2d\u0e07 \u0e2a\u0e23\u0e07\u0e1b\u0e23\u0e30\u0e20\u0e32 \u0e2b\u0e25\u0e31\u0e01\u0e2a\u0e35\u0e48",
+        "Zone name English": "Saphan Mai ,Vipawadee, Don Mueang, Lak Si",
+        "Latitude": "13.91310399",
+        "Longitude": "100.6040807"
+    },
+    "39": {
+        "\ufeffZone iD": "39",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1a\u0e32\u0e07\u0e0b\u0e37\u0e48\u0e2d \u0e27\u0e07\u0e28\u0e4c\u0e2a\u0e27\u0e48\u0e32\u0e07 \u0e40\u0e15\u0e32\u0e1b\u0e39\u0e19 \u0e1b\u0e23\u0e30\u0e0a\u0e32\u0e0a\u0e37\u0e48\u0e19 \u0e1a\u0e32\u0e07\u0e42\u0e1e \u0e1a\u0e32\u0e07\u0e0b\u0e48\u0e2d\u0e19 \u0e1b\u0e23\u0e30\u0e0a\u0e32\u0e23\u0e32\u0e29\u0e0e\u0e23\u0e4c \u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e19\u0e19\u0e17\u0e4c",
+        "Zone name English": "Bang Sue, Wong Sawang, Pracha Chuen",
+        "Latitude": "13.80608481",
+        "Longitude": "100.5307669"
+    },
+    "42": {
+        "\ufeffZone iD": "42",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e0a\u0e25\u0e1a\u0e38\u0e23\u0e35 \u0e28\u0e23\u0e35\u0e23\u0e32\u0e0a\u0e32 \u0e1e\u0e31\u0e17\u0e22\u0e32 \u0e1a\u0e32\u0e07\u0e41\u0e2a\u0e19",
+        "Zone name English": "Chonburi, Pattaya, Bangsaen,Sriracha",
+        "Latitude": "12.93512459",
+        "Longitude": "100.8829494"
+    },
+    "43": {
+        "\ufeffZone iD": "43",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2b\u0e31\u0e27\u0e2b\u0e34\u0e19 \u0e1b\u0e23\u0e30\u0e08\u0e27\u0e1a\u0e04\u0e35\u0e23\u0e35\u0e02\u0e31\u0e19\u0e18\u0e4c \u0e1b\u0e23\u0e32\u0e13\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Hua Hin, Prachuap Khiri Khan, Pran Buri",
+        "Latitude": "12.59417728",
+        "Longitude": "99.94918887"
+    },
+    "44": {
+        "\ufeffZone iD": "44",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e42\u0e04\u0e23\u0e32\u0e0a \u0e19\u0e04\u0e23\u0e23\u0e32\u0e0a\u0e2a\u0e35\u0e21\u0e32 \u0e40\u0e02\u0e32\u0e43\u0e2b\u0e0d\u0e48 \u0e1b\u0e32\u0e01\u0e0a\u0e48\u0e2d\u0e07",
+        "Zone name English": "Korat KhaoYai Pak Chong",
+        "Latitude": "14.65507161",
+        "Longitude": "101.3485612"
+    },
+    "45": {
+        "\ufeffZone iD": "45",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e40\u0e0a\u0e35\u0e22\u0e07\u0e43\u0e2b\u0e21\u0e48",
+        "Zone name English": "Chiang Mai",
+        "Latitude": "18.76784351",
+        "Longitude": "98.96423489"
+    },
+    "46": {
+        "\ufeffZone iD": "46",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e20\u0e39\u0e40\u0e01\u0e47\u0e15 \u0e1b\u0e48\u0e32\u0e15\u0e2d\u0e07",
+        "Zone name English": "Phuket, Patong",
+        "Latitude": "7.981172186",
+        "Longitude": "98.36393887"
+    },
+    "47": {
+        "\ufeffZone iD": "47",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e02\u0e2d\u0e19\u0e41\u0e01\u0e48\u0e19",
+        "Zone name English": "Khon Kaen",
+        "Latitude": "16.41830926",
+        "Longitude": "102.8187233"
+    },
+    "48": {
+        "\ufeffZone iD": "48",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2d\u0e22\u0e38\u0e18\u0e22\u0e32",
+        "Zone name English": "Phra Nakhon Si Ayutthaya",
+        "Latitude": "14.3532128",
+        "Longitude": "100.5689599"
+    },
+    "56": {
+        "\ufeffZone iD": "56",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e31\u0e15\u0e19\u0e32\u0e18\u0e34\u0e40\u0e1a\u0e28\u0e23\u0e4c \u0e2a\u0e19\u0e32\u0e21\u0e1a\u0e34\u0e19\u0e19\u0e49\u0e33 \u0e1e\u0e23\u0e30\u0e19\u0e31\u0e48\u0e07\u0e40\u0e01\u0e25\u0e49\u0e32 \u0e2a\u0e32\u0e21\u0e31\u0e04\u0e04\u0e35 \u0e40\u0e23\u0e27\u0e14\u0e35",
+        "Zone name English": "Rattanathibet, Sanambinnam",
+        "Latitude": "13.88565012",
+        "Longitude": "100.4878539"
+    },
+    "57": {
+        "\ufeffZone iD": "57",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e25\u0e32\u0e14\u0e01\u0e23\u0e30\u0e1a\u0e31\u0e07 \u0e2a\u0e38\u0e27\u0e23\u0e23\u0e13\u0e20\u0e39\u0e21\u0e34 \u0e21\u0e2d\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e27\u0e22\u0e4c \u0e40\u0e09\u0e25\u0e34\u0e21\u0e1e\u0e23\u0e30\u0e40\u0e01\u0e35\u0e22\u0e23\u0e15\u0e34 \u0e1b\u0e23\u0e30\u0e40\u0e27\u0e28",
+        "Zone name English": "Motorway, Ladkrabang, Suwannaphum Airport",
+        "Latitude": "13.73052699",
+        "Longitude": "100.7778164"
+    },
+    "58": {
+        "\ufeffZone iD": "58",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e15\u0e25\u0e34\u0e48\u0e07\u0e0a\u0e31\u0e19 \u0e1b\u0e34\u0e48\u0e19\u0e40\u0e01\u0e25\u0e49\u0e32 \u0e08\u0e23\u0e31\u0e0d\u0e2a\u0e19\u0e34\u0e17\u0e27\u0e07\u0e28\u0e4c \u0e1a\u0e32\u0e07\u0e2d\u0e49\u0e2d \u0e1a\u0e32\u0e07\u0e1e\u0e25\u0e31\u0e14 \u0e1a\u0e23\u0e21\u0e23\u0e32\u0e0a\u0e0a\u0e19\u0e19\u0e35 \u0e2d\u0e23\u0e38\u0e13\u0e2d\u0e31\u0e21\u0e23\u0e34\u0e19\u0e17\u0e23\u0e4c \u0e23\u0e32\u0e0a\u0e1e\u0e24\u0e01\u0e29\u0e4c",
+        "Zone name English": "Pinklao, Charansanitwong, Taling chan",
+        "Latitude": "13.77841972",
+        "Longitude": "100.4761779"
+    },
+    "59": {
+        "\ufeffZone iD": "59",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e04\u0e23\u0e1b\u0e10\u0e21 \u0e1e\u0e38\u0e17\u0e18\u0e21\u0e13\u0e11\u0e25 \u0e28\u0e32\u0e25\u0e32\u0e22\u0e32 \u0e28\u0e32\u0e25\u0e32\u0e18\u0e23\u0e23\u0e21\u0e2a\u0e1e\u0e19\u0e4c \u0e40\u0e25\u0e35\u0e22\u0e1a\u0e04\u0e25\u0e2d\u0e07\u0e17\u0e27\u0e35\u0e27\u0e31\u0e12\u0e19\u0e32",
+        "Zone name English": " Nakhon Pathom, Phutthamonthon, Salaya, Thawiwatthana",
+        "Latitude": "13.79491092",
+        "Longitude": "100.3234171"
+    },
+    "60": {
+        "\ufeffZone iD": "60",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1e\u0e23\u0e30\u0e23\u0e32\u0e21 2 \u0e1a\u0e32\u0e07\u0e02\u0e38\u0e19\u0e40\u0e17\u0e35\u0e22\u0e19 \u0e17\u0e48\u0e32\u0e02\u0e49\u0e32\u0e21 \u0e40\u0e17\u0e35\u0e22\u0e19\u0e17\u0e30\u0e40\u0e25 ",
+        "Zone name English": "Rama 2, Bang Khun Thian",
+        "Latitude": "13.6638297",
+        "Longitude": "100.4392445"
+    },
+    "61": {
+        "\ufeffZone iD": "61",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1a\u0e32\u0e07\u0e1a\u0e2d\u0e19 \u0e14\u0e32\u0e27\u0e04\u0e30\u0e19\u0e2d\u0e07 \u0e08\u0e2d\u0e21\u0e17\u0e2d\u0e07 \u0e40\u0e2d\u0e01\u0e0a\u0e31\u0e22 \u0e01\u0e31\u0e25\u0e1b\u0e1e\u0e24\u0e01\u0e29\u0e4c",
+        "Zone name English": "Eakachai, Bang Bon, Daokanong, Kallapapruek",
+        "Latitude": "13.69666212",
+        "Longitude": "100.4405431"
+    },
+    "62": {
+        "\ufeffZone iD": "62",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e32\u0e0a\u0e1e\u0e24\u0e01\u0e29\u0e4c \u0e0a\u0e31\u0e22\u0e1e\u0e24\u0e01\u0e29\u0e4c \u0e1a\u0e32\u0e07\u0e01\u0e23\u0e27\u0e22 \u0e15\u0e34\u0e27\u0e32\u0e19\u0e19\u0e17\u0e4c \u0e19\u0e04\u0e23\u0e2d\u0e34\u0e19\u0e17\u0e23\u0e4c \u0e1e\u0e23\u0e30\u0e23\u0e32\u0e21 5 \u0e1e\u0e34\u0e1a\u0e39\u0e25\u0e2a\u0e07\u0e04\u0e23\u0e32\u0e21",
+        "Zone name English": "Rama5, Ratchapruek, Bangkruai",
+        "Latitude": "13.8524911",
+        "Longitude": "100.4493493"
+    },
+    "63": {
+        "\ufeffZone iD": "63",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e19\u0e17\u0e1a\u0e38\u0e23\u0e35 \u0e1a\u0e32\u0e07\u0e43\u0e2b\u0e0d\u0e48 \u0e1a\u0e32\u0e07\u0e1a\u0e31\u0e27\u0e17\u0e2d\u0e07 \u0e44\u0e17\u0e23\u0e19\u0e49\u0e2d\u0e22 \u0e44\u0e17\u0e23\u0e21\u0e49\u0e32 \u0e17\u0e48\u0e32\u0e2d\u0e34\u0e10",
+        "Zone name English": "Bangbuathong, Sainoi",
+        "Latitude": "13.92638986",
+        "Longitude": "100.4094097"
+    },
+    "65": {
+        "\ufeffZone iD": "65",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e40\u0e22\u0e32\u0e27\u0e23\u0e32\u0e0a \u0e1a\u0e32\u0e07\u0e25\u0e33\u0e1e\u0e39 \u0e1e\u0e23\u0e30\u0e19\u0e04\u0e23 \u0e1b\u0e49\u0e2d\u0e21\u0e1b\u0e23\u0e32\u0e1a \u0e2a\u0e31\u0e21\u0e1e\u0e31\u0e19\u0e18\u0e27\u0e07\u0e28\u0e4c",
+        "Zone name English": "Pha Nakorn, Samphanthawong, Yaowarat",
+        "Latitude": "13.741358",
+        "Longitude": "100.508042"
+    },
+    "66": {
+        "\ufeffZone iD": "66",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e40\u0e0a\u0e35\u0e22\u0e07\u0e23\u0e32\u0e22",
+        "Zone name English": "Chiang Rai",
+        "Latitude": "19.9071656",
+        "Longitude": "99.830955"
+    },
+    "68": {
+        "\ufeffZone iD": "68",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e48\u0e32\u0e19",
+        "Zone name English": "Nan",
+        "Latitude": "18.7756318",
+        "Longitude": "100.7730417"
+    },
+    "69": {
+        "\ufeffZone iD": "69",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1e\u0e30\u0e40\u0e22\u0e32",
+        "Zone name English": "Phayao",
+        "Latitude": "19.1664789",
+        "Longitude": "99.9019419"
+    },
+    "70": {
+        "\ufeffZone iD": "70",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e41\u0e1e\u0e23\u0e48",
+        "Zone name English": "Phrae",
+        "Latitude": "18.1445774",
+        "Longitude": "100.1402831"
+    },
+    "71": {
+        "\ufeffZone iD": "71",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e41\u0e21\u0e48\u0e2e\u0e48\u0e2d\u0e07\u0e2a\u0e2d\u0e19",
+        "Zone name English": "Mae Hong Son",
+        "Latitude": "19.2990643",
+        "Longitude": "97.9656226"
+    },
+    "72": {
+        "\ufeffZone iD": "72",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e25\u0e33\u0e1b\u0e32\u0e07",
+        "Zone name English": "Lampang",
+        "Latitude": "18.2888404",
+        "Longitude": "99.490874"
+    },
+    "73": {
+        "\ufeffZone iD": "73",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e25\u0e33\u0e1e\u0e39\u0e19",
+        "Zone name English": "Lamphun",
+        "Latitude": "18.5744606",
+        "Longitude": "99.0087221"
+    },
+    "74": {
+        "\ufeffZone iD": "74",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2d\u0e38\u0e15\u0e23\u0e14\u0e34\u0e15\u0e16\u0e4c",
+        "Zone name English": "Uttaradit",
+        "Latitude": "17.6200886",
+        "Longitude": "100.0992942"
+    },
+    "75": {
+        "\ufeffZone iD": "75",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e01\u0e32\u0e2c\u0e2a\u0e34\u0e19\u0e18\u0e38\u0e4c",
+        "Zone name English": "Kalasin",
+        "Latitude": "16.4314078",
+        "Longitude": "103.5058755"
+    },
+    "77": {
+        "\ufeffZone iD": "77",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e0a\u0e31\u0e22\u0e20\u0e39\u0e21\u0e34",
+        "Zone name English": "Chaiyaphum",
+        "Latitude": "15.8068173",
+        "Longitude": "102.0315027"
+    },
+    "78": {
+        "\ufeffZone iD": "78",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e04\u0e23\u0e1e\u0e19\u0e21",
+        "Zone name English": "Nakhon Phanom",
+        "Latitude": "17.392039",
+        "Longitude": "104.7695508"
+    },
+    "80": {
+        "\ufeffZone iD": "80",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1a\u0e36\u0e07\u0e01\u0e32\u0e2c",
+        "Zone name English": "Bueng Kan",
+        "Latitude": "18.3609104",
+        "Longitude": "103.6464463"
+    },
+    "81": {
+        "\ufeffZone iD": "81",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1a\u0e38\u0e23\u0e35\u0e23\u0e31\u0e21\u0e22\u0e4c",
+        "Zone name English": "Buri Ram",
+        "Latitude": "14.9930017",
+        "Longitude": "103.1029191"
+    },
+    "82": {
+        "\ufeffZone iD": "82",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e21\u0e2b\u0e32\u0e2a\u0e32\u0e23\u0e04\u0e32\u0e21",
+        "Zone name English": "Maha Sarakham",
+        "Latitude": "16.1850896",
+        "Longitude": "103.3026461"
+    },
+    "83": {
+        "\ufeffZone iD": "83",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e21\u0e38\u0e01\u0e14\u0e32\u0e2b\u0e32\u0e23",
+        "Zone name English": "Mukdahan",
+        "Latitude": "16.542443",
+        "Longitude": "104.7209151"
+    },
+    "84": {
+        "\ufeffZone iD": "84",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e22\u0e42\u0e2a\u0e18\u0e23",
+        "Zone name English": "Yasothon",
+        "Latitude": "15.792641",
+        "Longitude": "104.1452827"
+    },
+    "85": {
+        "\ufeffZone iD": "85",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e2d\u0e47\u0e14",
+        "Zone name English": "Roi Et",
+        "Latitude": "16.0538196",
+        "Longitude": "103.6520036"
+    },
+    "86": {
+        "\ufeffZone iD": "86",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e40\u0e25\u0e22",
+        "Zone name English": "Loei",
+        "Latitude": "17.4860232",
+        "Longitude": "101.7223002"
+    },
+    "87": {
+        "\ufeffZone iD": "87",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+        "Zone name English": "Si Sa Ket",
+        "Latitude": "15.1186009",
+        "Longitude": "104.3220095"
+    },
+    "88": {
+        "\ufeffZone iD": "88",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e01\u0e25\u0e19\u0e04\u0e23",
+        "Zone name English": "Sakon Nakhon",
+        "Latitude": "17.1545995",
+        "Longitude": "104.1348365"
+    },
+    "89": {
+        "\ufeffZone iD": "89",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e38\u0e23\u0e34\u0e19\u0e17\u0e23\u0e4c",
+        "Zone name English": "Surin",
+        "Latitude": "14.882905",
+        "Longitude": "103.4937107"
+    },
+    "90": {
+        "\ufeffZone iD": "90",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2b\u0e19\u0e2d\u0e07\u0e04\u0e32\u0e22",
+        "Zone name English": "Nong Khai",
+        "Latitude": "17.8782803",
+        "Longitude": "102.7412638"
+    },
+    "91": {
+        "\ufeffZone iD": "91",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2b\u0e19\u0e2d\u0e07\u0e1a\u0e31\u0e27\u0e25\u0e33\u0e20\u0e39",
+        "Zone name English": "Nong Bua Lam Phu",
+        "Latitude": "17.2218247",
+        "Longitude": "102.4260368"
+    },
+    "92": {
+        "\ufeffZone iD": "92",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2d\u0e33\u0e19\u0e32\u0e08\u0e40\u0e08\u0e23\u0e34\u0e0d",
+        "Zone name English": "Amnat Charoen",
+        "Latitude": "15.8656783",
+        "Longitude": "104.6257774"
+    },
+    "93": {
+        "\ufeffZone iD": "93",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2d\u0e38\u0e14\u0e23\u0e18\u0e32\u0e19\u0e35",
+        "Zone name English": "Udon Thani",
+        "Latitude": "17.4138413",
+        "Longitude": "102.7872325"
+    },
+    "94": {
+        "\ufeffZone iD": "94",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2d\u0e38\u0e1a\u0e25\u0e23\u0e32\u0e0a\u0e18\u0e32\u0e19\u0e35",
+        "Zone name English": "Ubon Ratchathani",
+        "Latitude": "15.2286861",
+        "Longitude": "104.8564217"
+    },
+    "95": {
+        "\ufeffZone iD": "95",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e01\u0e33\u0e41\u0e1e\u0e07\u0e40\u0e1e\u0e0a\u0e23",
+        "Zone name English": "Kamphaeng Phet",
+        "Latitude": "16.4827798",
+        "Longitude": "99.5226618"
+    },
+    "96": {
+        "\ufeffZone iD": "96",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e0a\u0e31\u0e22\u0e19\u0e32\u0e17",
+        "Zone name English": "Chai Nat",
+        "Latitude": "15.1851971",
+        "Longitude": "100.125125"
+    },
+    "97": {
+        "\ufeffZone iD": "97",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e04\u0e23\u0e19\u0e32\u0e22\u0e01",
+        "Zone name English": "Nakhon Nayok",
+        "Latitude": "14.2069466",
+        "Longitude": "101.2130511"
+    },
+    "99": {
+        "\ufeffZone iD": "99",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e04\u0e23\u0e2a\u0e27\u0e23\u0e23\u0e04\u0e4c",
+        "Zone name English": "Nakhon Sawan",
+        "Latitude": "15.6930072",
+        "Longitude": "100.1225595"
+    },
+    "103": {
+        "\ufeffZone iD": "103",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1e\u0e34\u0e08\u0e34\u0e15\u0e23",
+        "Zone name English": "Phichit",
+        "Latitude": "16.4429516",
+        "Longitude": "100.3482329"
+    },
+    "104": {
+        "\ufeffZone iD": "104",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1e\u0e34\u0e29\u0e13\u0e38\u0e42\u0e25\u0e01",
+        "Zone name English": "Phitsanulok",
+        "Latitude": "16.8298048",
+        "Longitude": "100.2614915"
+    },
+    "105": {
+        "\ufeffZone iD": "105",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e40\u0e1e\u0e0a\u0e23\u0e1a\u0e39\u0e23\u0e13\u0e4c",
+        "Zone name English": "Phetchabun",
+        "Latitude": "16.4189807",
+        "Longitude": "101.1550926"
+    },
+    "106": {
+        "\ufeffZone iD": "106",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e25\u0e1e\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Lop Buri",
+        "Latitude": "14.7995081",
+        "Longitude": "100.6533706"
+    },
+    "108": {
+        "\ufeffZone iD": "108",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e21\u0e38\u0e17\u0e23\u0e2a\u0e07\u0e04\u0e23\u0e32\u0e21",
+        "Zone name English": "Samut Songkhram",
+        "Latitude": "13.4098217",
+        "Longitude": "100.0022645"
+    },
+    "109": {
+        "\ufeffZone iD": "109",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e21\u0e2b\u0e32\u0e0a\u0e31\u0e22 \u0e2a\u0e21\u0e38\u0e17\u0e23\u0e2a\u0e32\u0e04\u0e23",
+        "Zone name English": "Mahachai Samut Sakhon",
+        "Latitude": "13.5475216",
+        "Longitude": "100.2743956"
+    },
+    "110": {
+        "\ufeffZone iD": "110",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e34\u0e07\u0e2b\u0e4c\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Sing Buri",
+        "Latitude": "14.8936253",
+        "Longitude": "100.3967314"
+    },
+    "111": {
+        "\ufeffZone iD": "111",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e38\u0e42\u0e02\u0e17\u0e31\u0e22",
+        "Zone name English": "Sukhothai",
+        "Latitude": "17.0055573",
+        "Longitude": "99.8263712"
+    },
+    "112": {
+        "\ufeffZone iD": "112",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e38\u0e1e\u0e23\u0e23\u0e13\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Suphan Buri",
+        "Latitude": "14.4744892",
+        "Longitude": "100.1177128"
+    },
+    "113": {
+        "\ufeffZone iD": "113",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e23\u0e30\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Saraburi",
+        "Latitude": "14.5289154",
+        "Longitude": "100.9101421"
+    },
+    "114": {
+        "\ufeffZone iD": "114",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2d\u0e48\u0e32\u0e07\u0e17\u0e2d\u0e07",
+        "Zone name English": "Ang Thong",
+        "Latitude": "14.5896054",
+        "Longitude": "100.455052"
+    },
+    "115": {
+        "\ufeffZone iD": "115",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2d\u0e38\u0e17\u0e31\u0e22\u0e18\u0e32\u0e19\u0e35",
+        "Zone name English": "Uthai Thani",
+        "Latitude": "15.3835001",
+        "Longitude": "100.0245527"
+    },
+    "116": {
+        "\ufeffZone iD": "116",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e08\u0e31\u0e19\u0e17\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Chanthaburi",
+        "Latitude": "12.61134",
+        "Longitude": "102.1038546"
+    },
+    "117": {
+        "\ufeffZone iD": "117",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e09\u0e30\u0e40\u0e0a\u0e34\u0e07\u0e40\u0e17\u0e23\u0e32",
+        "Zone name English": "Chachoengsao",
+        "Latitude": "13.6904194",
+        "Longitude": "101.0779596"
+    },
+    "119": {
+        "\ufeffZone iD": "119",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e15\u0e23\u0e32\u0e14",
+        "Zone name English": "Trat",
+        "Latitude": "12.2427563",
+        "Longitude": "102.5174734"
+    },
+    "120": {
+        "\ufeffZone iD": "120",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1b\u0e23\u0e32\u0e08\u0e35\u0e19\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Prachin Buri",
+        "Latitude": "14.0509704",
+        "Longitude": "101.3727439"
+    },
+    "121": {
+        "\ufeffZone iD": "121",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e30\u0e22\u0e2d\u0e07",
+        "Zone name English": "Rayong",
+        "Latitude": "12.6833115",
+        "Longitude": "101.2374295"
+    },
+    "122": {
+        "\ufeffZone iD": "122",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e23\u0e30\u0e41\u0e01\u0e49\u0e27",
+        "Zone name English": "Sa Kaeo",
+        "Latitude": "13.824038",
+        "Longitude": "102.0645839"
+    },
+    "123": {
+        "\ufeffZone iD": "123",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e01\u0e32\u0e0d\u0e08\u0e19\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Kanchanaburi",
+        "Latitude": "14.0227797",
+        "Longitude": "99.5328115"
+    },
+    "124": {
+        "\ufeffZone iD": "124",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e15\u0e32\u0e01",
+        "Zone name English": "Tak",
+        "Latitude": "16.8839901",
+        "Longitude": "99.1258498"
+    },
+    "126": {
+        "\ufeffZone iD": "126",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e0a\u0e30\u0e2d\u0e33 \u0e40\u0e1e\u0e0a\u0e23\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Cha-am Phetchaburi",
+        "Latitude": "13.1111601",
+        "Longitude": "99.9391307"
+    },
+    "127": {
+        "\ufeffZone iD": "127",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e32\u0e0a\u0e1a\u0e38\u0e23\u0e35",
+        "Zone name English": "Ratchaburi",
+        "Latitude": "13.5282893",
+        "Longitude": "99.8134211"
+    },
+    "128": {
+        "\ufeffZone iD": "128",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e01\u0e23\u0e30\u0e1a\u0e35\u0e48",
+        "Zone name English": "Krabi",
+        "Latitude": "8.0862997",
+        "Longitude": "98.9062835"
+    },
+    "129": {
+        "\ufeffZone iD": "129",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e0a\u0e38\u0e21\u0e1e\u0e23",
+        "Zone name English": "Chumphon",
+        "Latitude": "10.4930496",
+        "Longitude": "99.1800199"
+    },
+    "130": {
+        "\ufeffZone iD": "130",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e15\u0e23\u0e31\u0e07",
+        "Zone name English": "Trang",
+        "Latitude": "7.5593851",
+        "Longitude": "99.6110065"
+    },
+    "131": {
+        "\ufeffZone iD": "131",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e04\u0e23\u0e28\u0e23\u0e35\u0e18\u0e23\u0e23\u0e21\u0e23\u0e32\u0e0a",
+        "Zone name English": "Nakhon Si Thammarat",
+        "Latitude": "8.4303975",
+        "Longitude": "99.9631219"
+    },
+    "132": {
+        "\ufeffZone iD": "132",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e19\u0e23\u0e32\u0e18\u0e34\u0e27\u0e32\u0e2a",
+        "Zone name English": "Narathiwat",
+        "Latitude": "6.4254607",
+        "Longitude": "101.8253143"
+    },
+    "133": {
+        "\ufeffZone iD": "133",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1b\u0e31\u0e15\u0e15\u0e32\u0e19\u0e35",
+        "Zone name English": "Pattani",
+        "Latitude": "6.8694844",
+        "Longitude": "101.2504826"
+    },
+    "134": {
+        "\ufeffZone iD": "134",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1e\u0e31\u0e07\u0e07\u0e32",
+        "Zone name English": "Phangnga",
+        "Latitude": "8.4407456",
+        "Longitude": "98.5193032"
+    },
+    "135": {
+        "\ufeffZone iD": "135",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e1e\u0e31\u0e17\u0e25\u0e38\u0e07",
+        "Zone name English": "Phatthalung",
+        "Latitude": "7.6166823",
+        "Longitude": "100.0740231"
+    },
+    "137": {
+        "\ufeffZone iD": "137",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e22\u0e30\u0e25\u0e32",
+        "Zone name English": "Yala",
+        "Latitude": "6.541147",
+        "Longitude": "101.2803947"
+    },
+    "138": {
+        "\ufeffZone iD": "138",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e23\u0e30\u0e19\u0e2d\u0e07",
+        "Zone name English": "Ranong",
+        "Latitude": "9.9528702",
+        "Longitude": "98.6084641"
+    },
+    "139": {
+        "\ufeffZone iD": "139",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2b\u0e32\u0e14\u0e43\u0e2b\u0e0d\u0e48 \u0e2a\u0e07\u0e02\u0e25\u0e32",
+        "Zone name English": "Hatyai Songkhla",
+        "Latitude": "7.1756004",
+        "Longitude": "100.614347"
+    },
+    "140": {
+        "\ufeffZone iD": "140",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e15\u0e39\u0e25",
+        "Zone name English": "Satun",
+        "Latitude": "6.6238158",
+        "Longitude": "100.0673744"
+    },
+    "141": {
+        "\ufeffZone iD": "141",
+        "Zone name \u0e44\u0e17\u0e22": "\u0e2a\u0e21\u0e38\u0e22 \u0e2a\u0e38\u0e23\u0e32\u0e29\u0e0e\u0e23\u0e4c\u0e18\u0e32\u0e19\u0e35",
+        "Zone name English": "Samui, Surat Thani",
+        "Latitude": "9.1382389",
+        "Longitude": "99.3217483"
+    }
+}
