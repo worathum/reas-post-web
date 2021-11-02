@@ -441,13 +441,21 @@ class ban2day():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
-        post_id = ""
+        post_id = postdata['post_id']
         post_url = ""
 
         if success:
-
-            ind = 0
             post_found = True
+            if post_id == '':
+                post_found = False
+                post = self.create_post(postdata)
+                success = post['success']
+                if success:
+                    post_id = post['post_id']
+                    post_url = post['post_url']
+                    detail = 'Post edited successfully'
+                else:
+                    detail = post['detail']
 
             """while True:
                 r = self.httprequestObj.http_get('http://www.ban2day.com/maneg_property.php?&page=' + str(ind))
@@ -796,9 +804,9 @@ class ban2day():
                 else:
                     success = False
                     detail = "Couldnot edit post"
-            else:
+            """else:
                 success = False
-                detail = "No post with given post_id"
+                detail = "No post with given post_id"""
         else:
             success = False
             detail = "Couldnot login"
@@ -813,6 +821,7 @@ class ban2day():
             "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_id": post_id,
+            "post_url": post_url,
             "detail": detail,
             "websitename": self.webname,
         }
