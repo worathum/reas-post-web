@@ -1211,13 +1211,13 @@ class thaihometown():
 
                     #log.debug(soup.text)
                     break
-            
+
                 if success == "true":
                     idcode = soup.find("input", {"name": "idcode"})['value']
                     scode = soup.find("input", {"name": "scode"})['value']
                     contacts_id = soup.find("input", {"name": "contacts_id"})['value']
                     imgurl  =  soup.find("img",src=re.compile('securimage_show'))['src']
-                    
+
                     res = self.httprequestObj.http_get(imgurl, verify=False)
                     imgname = "/imgtmp/" + str(random.randint(1, 999999999)) + '.png'
                     with open(os.getcwd()+imgname, 'wb') as f:
@@ -1287,16 +1287,17 @@ class thaihometown():
         
         #check balance first
         try:
-            user_ans = AntiCaptchaControl.AntiCaptchaControl(anticaptcha_key = self.captchascret).get_balance()
+            #user_ans = AntiCaptchaControl.AntiCaptchaControl(anticaptcha_key = self.captchascret).get_balance()
+            user_ans = AntiCaptchaControl.AntiCaptchaControl(anticaptcha_key = 'b6cba1a55625222104231e2e3eeed069').get_balance()
         except Exception as err:
             return {'errorId':9999,'errorDescription' :str(err)}
-        
         if user_ans['balance'] <= 0.001000:
             return {'errorId':9999,'errorDescription' :'balance not enough '+user_ans['balance']}
      
         #resolve captcha
         try:
-            user_ans = ImageToTextTask.ImageToTextTask(anticaptcha_key = self.captchascret).captcha_handler(captcha_file=imgname)
+            #user_ans = ImageToTextTask.ImageToTextTask(anticaptcha_key = self.captchascret).captcha_handler(captcha_file=imgname)
+            user_ans = ImageToTextTask.ImageToTextTask(anticaptcha_key = 'b6cba1a55625222104231e2e3eeed069').captcha_handler(captcha_file=imgname)
             return user_ans
         except Exception as err:
             return {'errorId':9999,'errorDescription' :str(err)}
