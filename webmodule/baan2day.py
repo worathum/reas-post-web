@@ -144,18 +144,19 @@ class baan2day():
         post_id = ""
         post_url = ""
 
-        if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
-            if 'project_name' in postdata and postdata['project_name'] is not None:
-                postdata['web_project_name'] = postdata['project_name']
-            else:
-                postdata['web_project_name'] = postdata['post_title_th']
-        r = self.httprequestObj.http_get(self.site_name+'/member_property_list.php')
-        soup = BeautifulSoup(r.text, features=self.parser)
-        rows = soup.find('tbody').find_all('tr')
-        limit = soup.find_all("div", {"class": "col-md-6"})
-        limit = int(str(limit[3].find('span').get_text()).split(' ')[1])
-        if limit <= len(rows):
-            success = "false"
+        if success == "true":
+            if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
+                if 'project_name' in postdata and postdata['project_name'] is not None:
+                    postdata['web_project_name'] = postdata['project_name']
+                else:
+                    postdata['web_project_name'] = postdata['post_title_th']
+            r = self.httprequestObj.http_get(self.site_name+'/member_property_list.php')
+            soup = BeautifulSoup(r.text, features=self.parser)
+            rows = soup.find('tbody').find_all('tr')
+            limit = soup.find_all("div", {"class": "col-md-6"})
+            limit = int(str(limit[3].find('span').get_text()).split(' ')[1])
+            if limit <= len(rows):
+                success = "false"
         if success=="true":
             taddress = ""
             for add in [postdata['addr_soi'],postdata['addr_road'],postdata['addr_sub_district'],postdata['addr_district'],postdata['addr_province']]:
@@ -234,7 +235,7 @@ class baan2day():
             files = {}
             for i,image in enumerate(postdata["post_images"][:10]):
                 files["testimage"+str(i+1)] = open(os.getcwd()+"/"+image, 'rb')
-    
+
             response = self.httprequestObj.http_post(self.site_name+'/member_property_aed.php?typ=add', data=datapost, files=files)
 
             success = "false" 
@@ -276,10 +277,12 @@ class baan2day():
                 elif "alert('หัวข้อประกาศซ้ำค่ะ ไม่สามารถบันทึกได้ค่ะ');window.history.back()" in response.text:
                     detail = "Post Unsuccessful : same title post not allowed"
             else:
-                    detail = 'Unable to create post. Maybe problem with the title. Error response_code '+str(response.status_code) 
+                detail = "Post Unsuccessful : same title post not allowed"
+                #detail = 'Unable to create post. Maybe problem with the title. Error response_code '+str(response.status_code) 
         else:
-            detail = "cannot login"
-            if limit <= len(rows):
+            if test_login["success"] == "false":
+                detail = "cannot login"
+            else:
                 detail = 'Active Unit Listing quota exceeded'
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
