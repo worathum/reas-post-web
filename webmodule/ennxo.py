@@ -459,8 +459,6 @@ class ennxo():
 
             images = []
             flag = True
-            if len(postdata['post_images'])==0:
-                postdata['post_images'] = ['imgtmp/default/white.jpg']
 
             for count,file in enumerate(postdata['post_images']):
                 r = self.httprequestObj.http_post(self.site_name+'/api/presigned_url', headers=headers, data={},json={'filename':os.getcwd()+"/"+file})
@@ -490,13 +488,18 @@ class ennxo():
             #print(datapost)
             if flag:
                 response = self.httprequestObj.http_post(self.site_name+'/api/add_product', headers=headers, data={}, json=datapost)
-                json_response = response.json()
+                try:
+                    json_response = response.json()
+                except:
+                    pass
                 if response.status_code==200:
                     if 'product_id' in json_response:
                         success = "true"
                         detail = "Post created successfully!"
                         post_id = str(json_response['product_id'])
                         post_url = self.site_name+'/product/'+post_id
+                elif  response.status_code==400:
+                    detail = 'Post not created. Limit of 5 Posts Reached maybe!'
                 else:
                     if "message" in json_response:
                         detail = json_response['message']
@@ -624,7 +627,7 @@ class ennxo():
                 "sub_category": category_types[str(postdata['property_type'])][0],
                 "is_second_handed": True,
                 "subfields": subfields,
-                "product_id": str(postdata['post_id'])
+                "product_id": int(postdata['post_id'])
             }
 
             headers= {
@@ -799,70 +802,78 @@ class ennxo():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        test_login = self.test_login(postdata, True)
-        success = test_login["success"]
-        detail = "Unable to delete post"
+        state = 0
+        while state <10:
+            try:
+                test_login = self.test_login(postdata, True)
+                success = test_login["success"]
+                detail = "Unable to delete post"
 
-        if success=="true":
-            success = "false"
-            auth = test_login['auth']
-            detail = "Unable to delete post"
+                if success=="true":
+                    success = "false"
+                    auth = test_login['auth']
+                    detail = "Unable to delete post"
 
-            headers= {
-                "Authorization": auth,
-                "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
-                "referer": "https://www.ennxo.com/product/"+str(postdata['post_id'])
-            }
+                    headers= {
+                        "Authorization": auth,
+                        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
+                        "referer": "https://www.ennxo.com/product/"+str(postdata['post_id'])
+                    }
 
-            r = self.httprequestObj.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
-            data_id = r.text.split("/_buildManifest")[0].split("/")[-1]
-            r = self.httprequestObj.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
-            json_r = r.json()["pageProps"]["product"]
-            # print(json_r)
-            if r.status_code==200:
-                datapost = {
-                    "name": json_r['name'][:109]+ ' ปิดประกาศ',
-                    "price": json_r['price'],
-                    "detail": json_r['detail'],
-                    "main_category": "อสังหาริมทรัพย์",
-                    "sub_category": json_r['sub_category'],
-                    "is_second_handed": True,
-                    "province": json_r['province'],
-                    "product_id": json_r['id'],
-                    "subfields": json_r['subfields']
-                }
+                    r = self.httprequestObj.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
+                    data_id = r.text.split("/_buildManifest")[0].split("/")[-1]
+                    r = self.httprequestObj.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
+                    json_r = r.json()["pageProps"]["product"]
+                    # print(json_r)
+                    if r.status_code==200:
+                        datapost = {
+                            "name": json_r['name'][:109]+ ' ปิดประกาศ',
+                            "price": json_r['price'],
+                            "detail": json_r['detail'],
+                            "main_category": "อสังหาริมทรัพย์",
+                            "sub_category": json_r['sub_category'],
+                            "is_second_handed": True,
+                            "province": json_r['province'],
+                            "product_id": json_r['id'],
+                            "subfields": json_r['subfields']
+                        }
 
-                images = []
-                for i, image in enumerate(json_r['photos']):
-                    if i==0:
-                        images.append({
-                            "_id": image['_id']['$oid'],
-                            "newUploaded": False,
-                            "isMainPhoto": True
-                        })
+                        images = []
+                        for i, image in enumerate(json_r['photos']):
+                            if i==0:
+                                images.append({
+                                    "_id": image['_id']['$oid'],
+                                    "newUploaded": False,
+                                    "isMainPhoto": True
+                                })
+                            else:
+                                images.append({
+                                    "_id": image['_id']['$oid'],
+                                    "newUploaded": False
+                                })
+                        datapost['photos'] = images
+
+                        response = self.httprequestObj.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
+                        json_response = response.json()
+                        if response.status_code==200:
+                            if 'product_id' in json_response:
+                                success = "true"
+                                detail = "Post deleted successfully!"
+                        else:
+                            if "message" in json_response:
+                                detail = json_response['message']
+                            else:
+                                detail = "An error occurred in following field "+str(json_response)+", with response code "+str(response.status_code)
                     else:
-                        images.append({
-                            "_id": image['_id']['$oid'],
-                            "newUploaded": False
-                        })
-                datapost['photos'] = images
+                        detail = 'An Error has occurred while fetching page with response_code '+str(r.status_code)
 
-                response = self.httprequestObj.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
-                json_response = response.json()
-                if response.status_code==200:
-                    if 'product_id' in json_response:
-                        success = "true"
-                        detail = "Post deleted successfully!"
                 else:
-                    if "message" in json_response:
-                        detail = json_response['message']
-                    else:
-                        detail = "An error occurred in following field "+str(json_response)+", with response code "+str(response.status_code)
-            else:
-                detail = 'An Error has occurred while fetching page with response_code '+str(r.status_code)
-
-        else:
-            detail = "Cannot login"
+                    detail = "Cannot login"
+                state = 10
+            except:
+                print(state)
+                state +=1
+                pass
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -878,76 +889,81 @@ class ennxo():
             "ds_id": postdata['ds_id']
         }
 
-
-
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        state = 0
+        while state <10:
+            try:
+                test_login = self.test_login(postdata, True)
+                success = test_login["success"]
+                
+                if success=="true":
+                    success = "false"
+                    auth = test_login['auth']
+                    detail = "Unable to boost post"
 
-        test_login = self.test_login(postdata, True)
-        success = test_login["success"]
-        
-        if success=="true":
-            success = "false"
-            auth = test_login['auth']
-            detail = "Unable to boost post"
+                    headers= {
+                        "Authorization": auth,
+                        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
+                        "referer": "https://www.ennxo.com/product/"+str(postdata['post_id'])
+                    }
 
-            headers= {
-                "Authorization": auth,
-                "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
-                "referer": "https://www.ennxo.com/product/"+str(postdata['post_id'])
-            }
+                    r = self.httprequestObj.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
+                    data_id = r.text.split("/_buildManifest")[0].split("/")[-1]
 
-            r = self.httprequestObj.http_get("https://www.ennxo.com/product/" + str(postdata['post_id']))
-            data_id = r.text.split("/_buildManifest")[0].split("/")[-1]
+                    r = self.httprequestObj.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
 
-            r = self.httprequestObj.http_get(self.site_name + '/_next/data/'+data_id+'/edit/' + str(postdata['post_id']) + ".json?id=" + str(postdata['post_id']))
+                    json_r = r.json()["pageProps"]["product"]
+                    if r.status_code==200:
+                        datapost = {
+                            "name": json_r['name'],
+                            "price": json_r['price'],
+                            "detail": json_r['detail'],
+                            "main_category": "อสังหาริมทรัพย์",
+                            "sub_category": json_r['sub_category'],
+                            "is_second_handed": True,
+                            "province": json_r['province'],
+                            "product_id": json_r['id'],
+                            "subfields": json_r['subfields']
+                        }
 
-            json_r = r.json()["pageProps"]["product"]
-            if r.status_code==200:
-                datapost = {
-                    "name": json_r['name'],
-                    "price": json_r['price'],
-                    "detail": json_r['detail'],
-                    "main_category": "อสังหาริมทรัพย์",
-                    "sub_category": json_r['sub_category'],
-                    "is_second_handed": True,
-                    "province": json_r['province'],
-                    "product_id": json_r['id'],
-                    "subfields": json_r['subfields']
-                }
+                        images = []
+                        for i, image in enumerate(json_r['photos']):
+                            if i==0:
+                                images.append({
+                                    "_id": image['_id']['$oid'],
+                                    "newUploaded": False,
+                                    "isMainPhoto": True
+                                })
+                            else:
+                                images.append({
+                                    "_id": image['_id']['$oid'],
+                                    "newUploaded": False
+                                })
+                        datapost['photos'] = images
 
-                images = []
-                for i, image in enumerate(json_r['photos']):
-                    if i==0:
-                        images.append({
-                            "_id": image['_id']['$oid'],
-                            "newUploaded": False,
-                            "isMainPhoto": True
-                        })
+                        response = self.httprequestObj.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
+                        json_response = response.json()
+                        if response.status_code==200:
+                            if 'product_id' in json_response:
+                                success = "true"
+                                detail = "Post boosted successfully!"
+                        else:
+                            if "message" in json_response:
+                                detail = json_response['message']
+                            else:
+                                detail = "An error occurred in following field "+str(json_response)+", with response code "+str(response.status_code)
                     else:
-                        images.append({
-                            "_id": image['_id']['$oid'],
-                            "newUploaded": False
-                        })
-                datapost['photos'] = images
+                        detail = 'An Error has occurred while fetching page with response_code '+str(r.status_code)
 
-                response = self.httprequestObj.http_post(self.site_name+'/api/edit_product', headers=headers, data={}, json=datapost)
-                json_response = response.json()
-                if response.status_code==200:
-                    if 'product_id' in json_response:
-                        success = "true"
-                        detail = "Post boosted successfully!"
                 else:
-                    if "message" in json_response:
-                        detail = json_response['message']
-                    else:
-                        detail = "An error occurred in following field "+str(json_response)+", with response code "+str(response.status_code)
-            else:
-                detail = 'An Error has occurred while fetching page with response_code '+str(r.status_code)
-
-        else:
-            detail = "Cannot login"
+                    detail = "Cannot login"
+                state = 10
+            except:
+                print(state)
+                state +=1
+                pass
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
