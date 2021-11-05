@@ -604,7 +604,10 @@ class bankumka():
                 'https://bankumka.com/member/properties', verify=False)
             data = r.content
             soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-            all_page=len(soup.find('select',{'name':'pageNo'}).find_all('option'))
+            try:
+                all_page=len(soup.find('select',{'name':'pageNo'}).find_all('option'))
+            except:
+                all_page = 1
             for i in range(1,all_page+1):
                 r = self.httprequestObj.http_get(
                 'https://bankumka.com/member/properties/page/{}'.format(i), verify=False)
