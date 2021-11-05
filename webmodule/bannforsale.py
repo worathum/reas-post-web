@@ -321,7 +321,9 @@ class bannforsale():
         success = 'false'
         delete = self.delete_post(postdata)
         post_id = postdata['post_id']
-        if delete['success']== 'true':
+        print(delete['success'])
+        print(delete['detail'])
+        if (delete['success']== 'true') or (delete['detail'] == 'No post found with given id.'):
             post = self.create_post(postdata)
             post_url = post['post_url']
             post_id = post['post_id']
@@ -541,7 +543,7 @@ class bannforsale():
         
         else:
             result['success'] = "false"
-            detail = "cannot login"
+            result['detail'] = "cannot login"
 
         end_time = datetime.datetime.utcnow()     
         result['end_time'] = str(end_time)
