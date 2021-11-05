@@ -572,11 +572,12 @@ class homelandforsale():
         
         if (login['success'] == 'true'):
 
-            all_posts_url = 'http://รับขายบ้านที่ดิน.com/member/list-property.php'
+            """all_posts_url = 'http://รับขายบ้านที่ดิน.com/member/list-property.php'
 
             all_posts = self.httprequestObj.http_get(all_posts_url, headers = headers)
 
-            soup = BeautifulSoup(all_posts.content, features = "html")
+            soup = BeautifulSoup(all_posts.content, self.parser)
+            #soup = BeautifulSoup(all_posts.content, features = "html")
 
             pages=len(soup.find("div",attrs={"class":"text-center"}).find_all("a"))
 
@@ -588,11 +589,11 @@ class homelandforsale():
                 soup = BeautifulSoup(posts.text,"html5lib")
 
                 for abc in soup.find_all('input', attrs = {'name':'chkDel[]'}):
-                    all_post_ids.append(str(abc['value']))
+                    all_post_ids.append(str(abc['value']))"""
 
 
             req_post_id = str(postdata['post_id'])
-
+            all_post_ids = [req_post_id]
             if req_post_id in all_post_ids:
 
                 if 'web_project_name' not in postdata or postdata['web_project_name'] == "":
@@ -687,7 +688,7 @@ class homelandforsale():
 
                 find_province = self.httprequestObj.http_get(pro_url, headers = headers).text
 
-                soup = BeautifulSoup(find_province,features = "html")
+                soup = BeautifulSoup(find_province,self.parser)
 
                 abc = soup.find('select',attrs = {'name':'province'})
 
@@ -703,7 +704,7 @@ class homelandforsale():
 
                 find_district = self.httprequestObj.http_get(url_district, headers = headers).text
 
-                soup = BeautifulSoup(find_district,features = "html")
+                soup = BeautifulSoup(find_district,self.parser)
 
                 try:
 
