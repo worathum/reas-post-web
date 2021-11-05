@@ -870,7 +870,7 @@ class dotproperty():
 
         end_time = datetime.datetime.utcnow()
         result = {
-            "success": "true",
+            "success": success,
             "usage_time": str(end_time - start_time),
             "start_time": str(start_time),
             "end_time": str(end_time),
