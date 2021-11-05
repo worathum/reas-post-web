@@ -650,6 +650,10 @@ class ddproperty_plus():
         if success == "true":
             self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
             time.sleep(1)
+            try:
+                webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
+            except:
+                pass
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
             # self.firefox.save_screenshot("debug_response/location.png")
 
@@ -2181,7 +2185,14 @@ class ddproperty_plus():
                 #log.debug('go to edit post %s', str(datahandled['post_id']))
                 time.sleep(0.5)
                 WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch")))
-                success, detail = self.inputpostgeneral(datahandled)
+                try:
+                    success, detail = self.inputpostgeneral(datahandled)
+                except:
+                    WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]')))
+                    #self.firefox.save_screenshot("debug_response/newp33.png")
+                    nextbttn = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[2]/div[2]'))
+                    self.firefox.execute_script("arguments[0].click();", nextbttn)
+                    success = 'true'
                 if success == 'true':
                     success, detail, post_id, account_type = self.inputpostdetail(datahandled)
 
