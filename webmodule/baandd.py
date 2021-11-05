@@ -301,8 +301,8 @@ class baandd():
                     
                     #print(json.dumps(datapost))
                     response = self.httprequestObj.http_post(self.site_name+'/index.php?option=com_marketplace&page=write_ad&Itemid=56', data=datapost, files=files)
-                    with open('temp.html', 'w') as f:
-                        f.write(str(response.text))
+                    """with open('temp.html', 'w') as f:
+                        f.write(str(response.text))"""
                     if response.status_code==200:
                         try:
                             table = BeautifulSoup(response.text, features=self.parser).find(class_='contentpadding').find('table')
