@@ -594,6 +594,8 @@ class freeannouncement():
                     code = (post.find('span', {'class': 'code'}).text).split(" ")
                     code = int(code[1])
                     valid_ids.append(code)
+            if post_id == '':
+                post_id = 0
             print(int(post_id),valid_ids)
             if int(post_id) in valid_ids:
                 postdata1 = {}
@@ -831,8 +833,16 @@ class freeannouncement():
                         sucess = 'false'
                         detail = 'Network Problem'
             else:
-                success = 'false'
-                detail = 'Invalid post id'
+                post = self.create_post(data)
+                success = post['success']
+                if success == 'true':
+                    detail = 'Successfully edited post'
+                    post_id = post['post_id']
+                    post_url = post['post_url']
+                else:
+                    detail = post['detail']
+                """success = 'false'
+                detail = 'Invalid post id'"""
 
         end_time = datetime.datetime.utcnow()
         result = {
@@ -858,46 +868,48 @@ class freeannouncement():
         result = self.test_login(data)
         success = result['success']
         detail = result['detail']
-
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-        }
-        url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php'
-        req = self.httprequestObj.http_get_with_headers(url, headers=headers)
-
-        soup = BeautifulSoup(req.text, 'html.parser')
-        if soup.find('div', {'class': 'pagination'}) == None:
-            total_pages = 1
-        else:
-            total_pages = len(soup.find('div', {'class': 'pagination'}).findAll('li'))
-            if total_pages>2:
-                total_pages-=2
-            elif total_pages==0:
-                total_pages+=1
-        # #print(total_pages)
-
-        valid_ids = []
-
-        for i in range(total_pages):
-            url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php?page=' + str(i + 1)
+        if success == 'true':
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+            }
+            url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php'
             req = self.httprequestObj.http_get_with_headers(url, headers=headers)
 
             soup = BeautifulSoup(req.text, 'html.parser')
-            posts = soup.find('div', {'class': 'postlist'}).findAll('ul')
-            for post in posts:
-                code = (post.find('span', {'class': 'code'}).text).split(" ")
-                code = int(code[1])
-                valid_ids.append(code)
-        #print(valid_ids)
-        #print('finish')
-        if int(post_id) in valid_ids:
-            url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php?update='+str(post_id)
-            req = self.httprequestObj.http_get_with_headers(url,headers=headers)
-            success = 'true'
-            detail = 'Post boosted successfully'
-        else:
-            success = 'false'
-            detail = 'Post not found'
+            if soup.find('div', {'class': 'pagination'}) == None:
+                total_pages = 1
+            else:
+                total_pages = len(soup.find('div', {'class': 'pagination'}).findAll('li'))
+                if total_pages>2:
+                    total_pages-=2
+                elif total_pages==0:
+                    total_pages+=1
+            # #print(total_pages)
+
+            valid_ids = []
+
+            for i in range(total_pages):
+                url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php?page=' + str(i + 1)
+                req = self.httprequestObj.http_get_with_headers(url, headers=headers)
+
+                soup = BeautifulSoup(req.text, 'html.parser')
+                posts = soup.find('div', {'class': 'postlist'}).findAll('ul')
+                for post in posts:
+                    code = (post.find('span', {'class': 'code'}).text).split(" ")
+                    code = int(code[1])
+                    valid_ids.append(code)
+            #print(valid_ids)
+            #print('finish')
+            if post_id == '':
+                post_id = 0
+            if int(post_id) in valid_ids:
+                url = 'http://www.xn--12c5cnoc2a8cr4a.com/manage-post.php?update='+str(post_id)
+                req = self.httprequestObj.http_get_with_headers(url,headers=headers)
+                success = 'true'
+                detail = 'Post boosted successfully'
+            else:
+                success = 'false'
+                detail = 'Post not found'
 
         end_time = datetime.datetime.utcnow()
         result = {
@@ -908,7 +920,7 @@ class freeannouncement():
             "detail": detail,
             'ds_id':data['ds_id'],
             "log_id": log_id,
-            "post_id": post_id,
+            "post_id": data['post_id'],
             'websitename':'freeannouncement'
         }
         return result
