@@ -294,7 +294,7 @@ class proppit():
                 WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='เข้าสู่ระบบ']"))).click()
 
             WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/div/div/div[1]/nav/div/div[3]/a"))).click()
-            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div[1]/div/div/a"))).click()
+            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/a"))).click()
             
             WebDriverWait(driver, 30).until(lambda x: x.find_element_by_xpath("//input[@class='MuiInputBase-input MuiInput-input jss7 jss10']")).send_keys(postdata['email'])
             #driver.find_element_by_xpath("//input[@class='MuiInputBase-input MuiInput-input jss7 jss10']").send_keys(postdata['email'])
@@ -474,7 +474,7 @@ class proppit():
             "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_url": post_url,
-            "post_id": post_id,
+            "post_id": postdata['post_id'],
             "account_type": "null"
         }
 
