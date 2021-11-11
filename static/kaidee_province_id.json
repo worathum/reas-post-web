@@ -1,0 +1,310 @@
+{
+    "9": {
+        "\ufeffprovince": "\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e21\u0e2b\u0e32\u0e19\u0e04\u0e23",
+        "province_ID": "9"
+    },
+    "8": {
+        "\ufeffprovince": "\u0e01\u0e23\u0e30\u0e1a\u0e35\u0e48",
+        "province_ID": "8"
+    },
+    "10": {
+        "\ufeffprovince": "\u0e01\u0e32\u0e0d\u0e08\u0e19\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "10"
+    },
+    "11": {
+        "\ufeffprovince": "\u0e01\u0e32\u0e2c\u0e2a\u0e34\u0e19\u0e18\u0e38\u0e4c",
+        "province_ID": "11"
+    },
+    "12": {
+        "\ufeffprovince": "\u0e01\u0e33\u0e41\u0e1e\u0e07\u0e40\u0e1e\u0e0a\u0e23",
+        "province_ID": "12"
+    },
+    "13": {
+        "\ufeffprovince": "\u0e02\u0e2d\u0e19\u0e41\u0e01\u0e48\u0e19",
+        "province_ID": "13"
+    },
+    "14": {
+        "\ufeffprovince": "\u0e08\u0e31\u0e19\u0e17\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "14"
+    },
+    "15": {
+        "\ufeffprovince": "\u0e09\u0e30\u0e40\u0e0a\u0e34\u0e07\u0e40\u0e17\u0e23\u0e32",
+        "province_ID": "15"
+    },
+    "16": {
+        "\ufeffprovince": "\u0e0a\u0e25\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "16"
+    },
+    "17": {
+        "\ufeffprovince": "\u0e0a\u0e31\u0e22\u0e19\u0e32\u0e17",
+        "province_ID": "17"
+    },
+    "18": {
+        "\ufeffprovince": "\u0e0a\u0e31\u0e22\u0e20\u0e39\u0e21\u0e34",
+        "province_ID": "18"
+    },
+    "19": {
+        "\ufeffprovince": "\u0e0a\u0e38\u0e21\u0e1e\u0e23",
+        "province_ID": "19"
+    },
+    "2": {
+        "\ufeffprovince": "\u0e40\u0e0a\u0e35\u0e22\u0e07\u0e23\u0e32\u0e22",
+        "province_ID": "2"
+    },
+    "1": {
+        "\ufeffprovince": "\u0e40\u0e0a\u0e35\u0e22\u0e07\u0e43\u0e2b\u0e21\u0e48",
+        "province_ID": "1"
+    },
+    "20": {
+        "\ufeffprovince": "\u0e15\u0e23\u0e31\u0e07",
+        "province_ID": "20"
+    },
+    "21": {
+        "\ufeffprovince": "\u0e15\u0e23\u0e32\u0e14",
+        "province_ID": "21"
+    },
+    "22": {
+        "\ufeffprovince": "\u0e15\u0e32\u0e01",
+        "province_ID": "22"
+    },
+    "23": {
+        "\ufeffprovince": "\u0e19\u0e04\u0e23\u0e19\u0e32\u0e22\u0e01",
+        "province_ID": "23"
+    },
+    "24": {
+        "\ufeffprovince": "\u0e19\u0e04\u0e23\u0e1b\u0e10\u0e21",
+        "province_ID": "24"
+    },
+    "25": {
+        "\ufeffprovince": "\u0e19\u0e04\u0e23\u0e1e\u0e19\u0e21",
+        "province_ID": "25"
+    },
+    "26": {
+        "\ufeffprovince": "\u0e19\u0e04\u0e23\u0e23\u0e32\u0e0a\u0e2a\u0e35\u0e21\u0e32",
+        "province_ID": "26"
+    },
+    "27": {
+        "\ufeffprovince": "\u0e19\u0e04\u0e23\u0e28\u0e23\u0e35\u0e18\u0e23\u0e23\u0e21\u0e23\u0e32\u0e0a",
+        "province_ID": "27"
+    },
+    "28": {
+        "\ufeffprovince": "\u0e19\u0e04\u0e23\u0e2a\u0e27\u0e23\u0e23\u0e04\u0e4c",
+        "province_ID": "28"
+    },
+    "29": {
+        "\ufeffprovince": "\u0e19\u0e19\u0e17\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "29"
+    },
+    "30": {
+        "\ufeffprovince": "\u0e19\u0e23\u0e32\u0e18\u0e34\u0e27\u0e32\u0e2a",
+        "province_ID": "30"
+    },
+    "31": {
+        "\ufeffprovince": "\u0e19\u0e48\u0e32\u0e19",
+        "province_ID": "31"
+    },
+    "32": {
+        "\ufeffprovince": "\u0e1a\u0e38\u0e23\u0e35\u0e23\u0e31\u0e21\u0e22\u0e4c",
+        "province_ID": "32"
+    },
+    "79": {
+        "\ufeffprovince": "\u0e1a\u0e36\u0e07\u0e01\u0e32\u0e2c",
+        "province_ID": "79"
+    },
+    "33": {
+        "\ufeffprovince": "\u0e1b\u0e17\u0e38\u0e21\u0e18\u0e32\u0e19\u0e35",
+        "province_ID": "33"
+    },
+    "34": {
+        "\ufeffprovince": "\u0e1b\u0e23\u0e30\u0e08\u0e27\u0e1a\u0e04\u0e35\u0e23\u0e35\u0e02\u0e31\u0e19\u0e18\u0e4c",
+        "province_ID": "34"
+    },
+    "35": {
+        "\ufeffprovince": "\u0e1b\u0e23\u0e32\u0e08\u0e35\u0e19\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "35"
+    },
+    "36": {
+        "\ufeffprovince": "\u0e1b\u0e31\u0e15\u0e15\u0e32\u0e19\u0e35",
+        "province_ID": "36"
+    },
+    "37": {
+        "\ufeffprovince": "\u0e1e\u0e23\u0e30\u0e19\u0e04\u0e23\u0e28\u0e23\u0e35\u0e2d\u0e22\u0e38\u0e18\u0e22\u0e32",
+        "province_ID": "37"
+    },
+    "38": {
+        "\ufeffprovince": "\u0e1e\u0e30\u0e40\u0e22\u0e32",
+        "province_ID": "38"
+    },
+    "39": {
+        "\ufeffprovince": "\u0e1e\u0e31\u0e07\u0e07\u0e32",
+        "province_ID": "39"
+    },
+    "40": {
+        "\ufeffprovince": "\u0e1e\u0e31\u0e17\u0e25\u0e38\u0e07",
+        "province_ID": "40"
+    },
+    "41": {
+        "\ufeffprovince": "\u0e1e\u0e34\u0e08\u0e34\u0e15\u0e23",
+        "province_ID": "41"
+    },
+    "42": {
+        "\ufeffprovince": "\u0e1e\u0e34\u0e29\u0e13\u0e38\u0e42\u0e25\u0e01",
+        "province_ID": "42"
+    },
+    "3": {
+        "\ufeffprovince": "\u0e40\u0e1e\u0e0a\u0e23\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "3"
+    },
+    "4": {
+        "\ufeffprovince": "\u0e40\u0e1e\u0e0a\u0e23\u0e1a\u0e39\u0e23\u0e13\u0e4c",
+        "province_ID": "4"
+    },
+    "6": {
+        "\ufeffprovince": "\u0e41\u0e1e\u0e23\u0e48",
+        "province_ID": "6"
+    },
+    "43": {
+        "\ufeffprovince": "\u0e20\u0e39\u0e40\u0e01\u0e47\u0e15",
+        "province_ID": "43"
+    },
+    "45": {
+        "\ufeffprovince": "\u0e21\u0e38\u0e01\u0e14\u0e32\u0e2b\u0e32\u0e23",
+        "province_ID": "45"
+    },
+    "7": {
+        "\ufeffprovince": "\u0e41\u0e21\u0e48\u0e2e\u0e48\u0e2d\u0e07\u0e2a\u0e2d\u0e19",
+        "province_ID": "7"
+    },
+    "44": {
+        "\ufeffprovince": "\u0e21\u0e2b\u0e32\u0e2a\u0e32\u0e23\u0e04\u0e32\u0e21",
+        "province_ID": "44"
+    },
+    "47": {
+        "\ufeffprovince": "\u0e22\u0e30\u0e25\u0e32",
+        "province_ID": "47"
+    },
+    "46": {
+        "\ufeffprovince": "\u0e22\u0e42\u0e2a\u0e18\u0e23",
+        "province_ID": "46"
+    },
+    "48": {
+        "\ufeffprovince": "\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e2d\u0e47\u0e14",
+        "province_ID": "48"
+    },
+    "49": {
+        "\ufeffprovince": "\u0e23\u0e30\u0e19\u0e2d\u0e07",
+        "province_ID": "49"
+    },
+    "50": {
+        "\ufeffprovince": "\u0e23\u0e30\u0e22\u0e2d\u0e07",
+        "province_ID": "50"
+    },
+    "51": {
+        "\ufeffprovince": "\u0e23\u0e32\u0e0a\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "51"
+    },
+    "52": {
+        "\ufeffprovince": "\u0e25\u0e1e\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "52"
+    },
+    "53": {
+        "\ufeffprovince": "\u0e25\u0e33\u0e1b\u0e32\u0e07",
+        "province_ID": "53"
+    },
+    "54": {
+        "\ufeffprovince": "\u0e25\u0e33\u0e1e\u0e39\u0e19",
+        "province_ID": "54"
+    },
+    "5": {
+        "\ufeffprovince": "\u0e40\u0e25\u0e22",
+        "province_ID": "5"
+    },
+    "55": {
+        "\ufeffprovince": "\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+        "province_ID": "55"
+    },
+    "56": {
+        "\ufeffprovince": "\u0e2a\u0e01\u0e25\u0e19\u0e04\u0e23",
+        "province_ID": "56"
+    },
+    "57": {
+        "\ufeffprovince": "\u0e2a\u0e07\u0e02\u0e25\u0e32",
+        "province_ID": "57"
+    },
+    "58": {
+        "\ufeffprovince": "\u0e2a\u0e15\u0e39\u0e25",
+        "province_ID": "58"
+    },
+    "59": {
+        "\ufeffprovince": "\u0e2a\u0e21\u0e38\u0e17\u0e23\u0e1b\u0e23\u0e32\u0e01\u0e32\u0e23",
+        "province_ID": "59"
+    },
+    "60": {
+        "\ufeffprovince": "\u0e2a\u0e21\u0e38\u0e17\u0e23\u0e2a\u0e07\u0e04\u0e23\u0e32\u0e21",
+        "province_ID": "60"
+    },
+    "61": {
+        "\ufeffprovince": "\u0e2a\u0e21\u0e38\u0e17\u0e23\u0e2a\u0e32\u0e04\u0e23",
+        "province_ID": "61"
+    },
+    "62": {
+        "\ufeffprovince": "\u0e2a\u0e23\u0e30\u0e41\u0e01\u0e49\u0e27",
+        "province_ID": "62"
+    },
+    "63": {
+        "\ufeffprovince": "\u0e2a\u0e23\u0e30\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "63"
+    },
+    "64": {
+        "\ufeffprovince": "\u0e2a\u0e34\u0e07\u0e2b\u0e4c\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "64"
+    },
+    "65": {
+        "\ufeffprovince": "\u0e2a\u0e38\u0e42\u0e02\u0e17\u0e31\u0e22",
+        "province_ID": "65"
+    },
+    "66": {
+        "\ufeffprovince": "\u0e2a\u0e38\u0e1e\u0e23\u0e23\u0e13\u0e1a\u0e38\u0e23\u0e35",
+        "province_ID": "66"
+    },
+    "67": {
+        "\ufeffprovince": "\u0e2a\u0e38\u0e23\u0e32\u0e29\u0e0e\u0e23\u0e4c\u0e18\u0e32\u0e19\u0e35",
+        "province_ID": "67"
+    },
+    "68": {
+        "\ufeffprovince": "\u0e2a\u0e38\u0e23\u0e34\u0e19\u0e17\u0e23\u0e4c",
+        "province_ID": "68"
+    },
+    "69": {
+        "\ufeffprovince": "\u0e2b\u0e19\u0e2d\u0e07\u0e04\u0e32\u0e22",
+        "province_ID": "69"
+    },
+    "70": {
+        "\ufeffprovince": "\u0e2b\u0e19\u0e2d\u0e07\u0e1a\u0e31\u0e27\u0e25\u0e33\u0e20\u0e39",
+        "province_ID": "70"
+    },
+    "73": {
+        "\ufeffprovince": "\u0e2d\u0e48\u0e32\u0e07\u0e17\u0e2d\u0e07",
+        "province_ID": "73"
+    },
+    "74": {
+        "\ufeffprovince": "\u0e2d\u0e33\u0e19\u0e32\u0e08\u0e40\u0e08\u0e23\u0e34\u0e0d",
+        "province_ID": "74"
+    },
+    "75": {
+        "\ufeffprovince": "\u0e2d\u0e38\u0e14\u0e23\u0e18\u0e32\u0e19\u0e35",
+        "province_ID": "75"
+    },
+    "76": {
+        "\ufeffprovince": "\u0e2d\u0e38\u0e15\u0e23\u0e14\u0e34\u0e15\u0e16\u0e4c",
+        "province_ID": "76"
+    },
+    "78": {
+        "\ufeffprovince": "\u0e2d\u0e38\u0e17\u0e31\u0e22\u0e18\u0e32\u0e19\u0e35",
+        "province_ID": "78"
+    },
+    "71": {
+        "\ufeffprovince": "\u0e2d\u0e38\u0e1a\u0e25\u0e23\u0e32\u0e0a\u0e18\u0e32\u0e19\u0e35",
+        "province_ID": "71"
+    }
+}
