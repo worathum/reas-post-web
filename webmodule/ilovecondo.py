@@ -657,7 +657,6 @@ class ilovecondo:
                 posts = supermarket.findAll('div', {'class': 'row tb-topic_tr_alt'})
 
                 ##print(len(posts))
-
                 for post in posts:
                     id = ''
                     a_s = post.findAll('a')
@@ -668,8 +667,11 @@ class ilovecondo:
                         ind += 1
                     valid_ids.append(id)
                     # #print(a_s)
-                    valid_info.append(a_s[0]['id'])
-                    page_no.append(str(i+1))
+                    try:
+                        valid_info.append(a_s[0]['id'])
+                        page_no.append(str(i+1))
+                    except:
+                        pass
                     ##print(valid_ids)
                     ##print(valid_info)
                 posts = supermarket.findAll('div', {'class': 'row tb-topic_tr'})
