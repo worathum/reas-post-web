@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import os.path
 # from urlparse import urlparse
 import re
+from .lib_captcha import *
 import json
 import datetime
 import time
@@ -21,7 +22,7 @@ from urllib.parse import unquote
 # with open("./static/ploychao_province.json") as f:
 #     provincedata = json.load(f)
 
-
+captcha = lib_captcha()
 class bankumka():
 
     name = 'bankumka'
@@ -396,6 +397,7 @@ class bankumka():
             data = json.loads(r.text)
             print(data)
             if data['status'] == 'OK':
+                g_response = captcha.reCaptcha('6Lfkov8cAAAAAOcHJBr2mND2B7xEKS3dJUJXlksm', 'https://bankumka.com')
                 datapost = [
                     ('timeout', '5'),
                     ('prop_name', postdata['post_title_th'][:119]),
@@ -435,11 +437,13 @@ class bankumka():
                     ('facility[]', ''),
                     ('drag', '0'),
                     ('token', data['token']),
+                    ('g_token',g_response),
                     ('csrf_time', csrf_time),
                     ('csrf_token', csrf_token),
                     ('action', 'insert'),
                     ('prop_id', '0')
                 ]
+
                 if theprodid == 2:
                     datapost.append(('prop_area_rai', ''))
                     datapost.append(('prop_area_ngan', ''))
@@ -619,6 +623,7 @@ class bankumka():
                     if postdata['post_id'] in i.get_text():
                         posturl += i['href']
                         break
+                post_url = posturl
                 posturl += '/edit'
             if(posturl == '/edit'):
                 success = False
@@ -967,7 +972,7 @@ class bankumka():
             'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "end_time": str(time_end),
-            "post_url": posturl,
+            "post_url": post_url,
             "post_id": postdata['post_id'],
             "account_type": "null",
             "ds_id": postdata['ds_id']
