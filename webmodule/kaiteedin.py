@@ -732,17 +732,26 @@ class kaiteedin():
             r = self.httprequestObj.http_get(list_url)
             soup = r.text
             if str(postdata['post_id']) not in soup:
+                post = self.create_post(postdata)
+                success = post['success']
+                if success == "true":
+                    detail = 'edited'
+                    post_id = post['post_id']
+                    post_url = post['post_url']
+                else:
+                    detail= post['detail']
                 time_end = datetime.datetime.utcnow()
                 time_usage = time_end - time_start
                 return {
                     "websitename": "kaiteedin",
-                    "success": 'false',
+                    "success": success,
                     "start_time": str(time_start),
                     "ds_id": postdata['ds_id'],
                     "log_id": postdata['log_id'],
-                    "post_id": postdata['post_id'],
+                    "post_id": post_id,
+                    "post_url": post_url,
                     "end_time": str(time_end),
-                    "detail": 'Wrong Post id'
+                    "detail": detail
                 }
        
             prod_address = ""
