@@ -623,8 +623,10 @@ class bankumka():
                     if postdata['post_id'] in i.get_text():
                         posturl += i['href']
                         break
-                post_url = posturl
-                posturl += '/edit'
+                if (posturl != ''):
+                    post_url = posturl
+                    posturl += '/edit'
+                    break
             if(posturl == '/edit'):
                 success = False
                 posturl = ''
@@ -792,6 +794,7 @@ class bankumka():
                     'https://bankumka.com/ajax/checkProperty', data=datapost)
                 data = json.loads(r.text)
                 if data['status'] == 'OK':
+                    g_response = captcha.reCaptcha('6Lfkov8cAAAAAOcHJBr2mND2B7xEKS3dJUJXlksm', 'https://bankumka.com')
                     datapost = [
                         ('timeout', '5'),
                         ('prop_name', postdata['post_title_th'][:119]),
@@ -830,8 +833,6 @@ class bankumka():
                         ('prop_zipcode', ''),
                         ('prop_lat', postdata['geo_latitude']),
                         ('prop_lng', postdata['geo_longitude']),
-
-
                         ('facility[]', ''),
                         ('prop_gallary1', ''),
                         ('prop_gallary2', ''),
@@ -850,6 +851,7 @@ class bankumka():
                         ('token', data['token']),
                         ('csrf_time', csrf_time),
                         ('csrf_token', csrf_token),
+                        ('g_token',g_response),
                         ('action', 'update'),
                         ('prop_id', postdata['post_id'])
                     ]
@@ -915,7 +917,7 @@ class bankumka():
                     detail = '\n'.join(data['message'])
                     posturl= ''
                     success = "false"
-                print(11111111111111)
+
                 # files = {}
                 # for i in range(len(postdata["post_img_url_lists"])):
                 #     resp = self.httprequestObj.http_get(
@@ -972,7 +974,7 @@ class bankumka():
             'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "end_time": str(time_end),
-            "post_url": post_url,
+            "post_url": '',
             "post_id": postdata['post_id'],
             "account_type": "null",
             "ds_id": postdata['ds_id']
