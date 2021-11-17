@@ -527,17 +527,6 @@ class postproperty:
                 success = 'false'
                 detail = 'Some error occured'
 
-
-
-
-
-
-
-
-
-
-
-
         end_time = datetime.datetime.utcnow()
         result = {'success': success,
                   'usage_time': str(end_time - start_time),
@@ -1058,25 +1047,21 @@ class postproperty:
                 ##print(postdata['attachment_id[]'])
                 ##print(postdata['media_full_url[]'])
                 ##print(postdata['media_thumbnail_url[]'])
-
-                url = 'https://post-property.com/wp-admin/post.php?post={}&action=edit'.format(data['post_id'])
-                #req = self.httprequestObj.http_post(url,data=postdata,headers=headers)
+                #print(postdata)
+                url = 'https://post-property.com/wp-admin/post.php?post={}&action=edit&message=1'.format(data['post_id'])
+                req = self.httprequestObj.http_post('https://post-property.com/wp-admin/post.php',data=postdata,headers=headers)
                 req = self.httprequestObj.http_get(url,headers=headers)
-                txt = str(req.text)
-                soup = BeautifulSoup(req.text,'html.parser')
-                post_url = str(soup.find('li',{'id':'wp-admin-bar-view'}).find('a')['href'])
                 success = 'true'
                 detail = 'Post edited'
             else:
                 success = 'false'
                 detail = 'Post not found'
-
         end_time = datetime.datetime.utcnow()
         result = {'success': success,
                   'usage_time': str(end_time - start_time),
                   'start_time': str(start_time),
                   'end_time': str(end_time),
-                  'post_url': post_url,
+                  'post_url': '',
                   'post_id': post_id,
                   'account_type': 'null',
                   'ds_id': data['ds_id'],
