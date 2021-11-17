@@ -337,8 +337,9 @@ class ban2day():
                 ('layer', (None, postdata['floor_total'])),
                 ('room', (None, postdata['bed_room'])),
                 ('toilet', (None, postdata['bath_room'])),
-                ('detail', (None, postdata['post_description_th'].replace('\r\n', '<br>'))),
+                ('detail', (None, postdata['post_description_th'][:1500])),
                 ('Submit', (None, 'เพิ่มข้อมูลประกาศ')),
+                ('soi',(None,None))
             ]
 
             if postdata['listing_type'] != 'เช่า':
@@ -386,12 +387,13 @@ class ban2day():
 
             ## STAGE III
 
-            r = self.httprequestObj.http_get('http://www.ban2day.com/add_img.php', params={'id': post_id})
+            """r = self.httprequestObj.http_get('http://www.ban2day.com/add_img.php', params={'id': post_id})
             # print(r.url)
             # print(postdata['post_img_url_lists'])
 
             for i, image in enumerate(postdata['post_images']):
                 # file_data = []
+                print(image)
                 filename = str(random.randint(1,10000000)) + '.jpeg'
                 file_data = {'photoimg': (filename, open(image, 'rb'), 'image/jpeg')}
                 r = self.httprequestObj.http_post('http://www.ban2day.com/ajax_img.php', data={}, files=file_data)
@@ -402,7 +404,7 @@ class ban2day():
                 # self.httprequestObj.http_get("http://www.ban2day.com/"+r.text.split("src='")[1].split("'")[0])
                 # self.httprequestObj.http_get("http://www.ban2day.com/"+r.text.split("src='")[1].split("'")[0])
                 # r = self.httprequestObj.http_get('http://www.ban2day.com/add_img.php', params={'id': post_id})
-                # print(r.url)
+                # print(r.url)"""
 
             r = self.httprequestObj.http_get('http://www.ban2day.com/property.php', params={'id': post_id})
             # print(r.url)
@@ -412,8 +414,41 @@ class ban2day():
             title = soup.find('h2', 'panel-property').string
 
             if title == postdata['post_title_th']:
-                success = True
-                detail = "Post created successfully"
+                try:
+                    options = Options()
+
+                    options.add_argument("--headless")
+                    options.add_argument('--no-sandbox')
+                    options.add_argument('start-maximized')
+                    options.add_argument('disable-infobars')
+                    options.add_argument("--disable-extensions")
+                    options.add_argument("disable-gpu")
+                    options.add_argument("window-size=1920,1080")
+                    path = './static/chromedriver'
+                    self.driver = webdriver.Chrome(executable_path=path, options=options)
+                    self.driver.get('http://www.ban2day.com/index.php')
+                    sleep(5)
+                    self.driver.find_element_by_xpath("/html/body/nav/div/div[2]/div/a[1]").click()
+                    sleep(3)
+                    self.driver.find_element_by_id('username').send_keys(postdata['user'])
+                    self.driver.find_element_by_id('password').send_keys(postdata['pass'])
+                    self.driver.find_element_by_name("submit").click()
+                    sleep(3)
+                    self.driver.get('http://www.ban2day.com/edit_img.php?id={}'.format(post_id))
+                    sleep(3)
+                    for pic in reversed(postdata['post_images']):
+                        upload = self.driver.find_element_by_id("photoimg")
+                        upload.send_keys(os.path.abspath(pic))
+                        sleep(3)
+                    sleep(3)
+                    success = True
+                    detail = "Post created successfully"
+                except:
+                    success = False
+                    detail = "Something wrong"
+                finally:
+                    self.driver.close()
+                    self.driver.quit()
 
             else:
                 success = False
