@@ -350,7 +350,7 @@ class buyzaa():
         test_login = self.test_login(postdata)
         success = test_login["success"]
         detail = test_login["detail"]
-        post_id = ""
+        post_id = postdata['post_id']
         post_url = ""
 
         if success:
