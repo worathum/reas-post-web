@@ -146,6 +146,8 @@ class livinginsider():
         zone = postdata['addr_province']
         if postdata['addr_province'] == 'กรุงเทพ':
             zone = postdata['addr_district']
+        elif postdata['addr_province'] == 'พระนครศรีอยุธยา':
+            zone = 'อยุธยา'
         
         for key in zone_data:
             if zone in zone_data[key]['Zone name \u0e44\u0e17\u0e22']:
