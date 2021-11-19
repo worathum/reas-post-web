@@ -337,7 +337,7 @@ class ban2day():
                 ('layer', (None, postdata['floor_total'])),
                 ('room', (None, postdata['bed_room'])),
                 ('toilet', (None, postdata['bath_room'])),
-                ('detail', (None, postdata['post_description_th'][:1500])),
+                ('detail', (None, postdata['post_description_th'][:800])),
                 ('Submit', (None, 'เพิ่มข้อมูลประกาศ')),
                 ('soi',(None,None))
             ]
