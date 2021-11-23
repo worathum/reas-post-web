@@ -190,9 +190,11 @@ class homechoice():
             for each_img in postdata['post_images'][:21]:
                 r = self.httprequestObj.http_post(postimage_url, data={}, files={"file":open(os.getcwd()+"/"+each_img, 'rb')})
                 if r.status_code>=400:
-                    status = "false"
+                    success = "false"
                     detail = "unable to upload image(s)"
-            
+            if postdata['price_baht'] == '':
+                success = "false"
+                detail = "Please enter your property price"
             if success=="true":
                 if 'land_size_ngan' not in postdata or postdata['land_size_ngan'] == None:
                     postdata['land_size_ngan'] = 0
