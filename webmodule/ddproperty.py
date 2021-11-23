@@ -24,7 +24,7 @@ import random
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import numpy as np
-
+import pyperclip as pc
 
 try:
     import configs
@@ -208,7 +208,7 @@ class ddproperty():
 
         options = Options()
         # debug by comment option --headless
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -278,7 +278,8 @@ class ddproperty():
                 detail = 'User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.'
                 #log.warning('User account is not active. Please contact cs@ddproperty.com or 02-204-9555 for more information.')
             matchObj = re.search(r'รหัสผ่านของคุณไม่ถูกต้อง', self.firefox.page_source)
-            if matchObj:
+            matchObj1 = re.search(r'Email or Password not valid.', self.firefox.page_source)
+            if matchObj or matchObj1:
                 success = "false"
                 detail = 'รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่'
                 #log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
@@ -294,7 +295,7 @@ class ddproperty():
             matchObj5 = re.search(r'Invalid captcha value.', self.firefox.page_source)
             if matchObj or matchObj2 or matchObj3 or matchObj5:
                 success = "false"
-                detail = 'cannot login'
+                detail = 'Invalid captcha value.'
                 #log.warning('cannot login')
             if success == "true":
                 # agent_id = re.search(r'optimize_agent_id = (\d+);', self.firefox.page_source).group(1)
@@ -809,9 +810,16 @@ class ddproperty():
 
                 # province district subdistrict
                 try:
-                    WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "form-field-region")))
-                    WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-region")).click()
-                    time.sleep(0.1)
+                    try:
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "form-field-region")))
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-region")).click()
+                        time.sleep(0.1)
+                    except:
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'propertyTypeSelect'))).click()
+                        time.sleep(0.1)
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "form-field-region")))
+                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("form-field-region")).click()
+                        time.sleep(0.1)
                     if re.search(r'กรุงเทพ', datahandled['addr_province']):
                         datahandled['addr_province'] = 'กรุงเทพ'
                     if re.search(r'ป้อมปราบ', datahandled['addr_sub_district']):
@@ -940,11 +948,14 @@ class ddproperty():
         if datahandled['post_title_th'] == '' or datahandled['post_description_th'] == '':
             success = 'false'
             detail = 'post title th is and post description th required'
-        if datahandled['property_type'] == 'CONDO' or datahandled['property_type'] == 'BUNG' or datahandled['property_type'] == 'TOWN' or datahandled['property_type'] == 'APT' or datahandled['property_type'] == 'OFF' or datahandled[
-                'property_type'] == 'SHOP' or datahandled['property_type'] == 'BIZ':
+        if datahandled['property_type'] == 'CONDO' or datahandled['property_type'] == 'BUNG' or datahandled['property_type'] == 'TOWN' or datahandled['property_type'] == 'APT' or datahandled['property_type'] == 'OFF' or  datahandled['property_type'] == 'BIZ':
             if datahandled['floor_area'] == None or datahandled['floor_area'] == '0':
                 success = 'false'
                 detail = 'floor area sqm is require and allow integer type only'
+        if datahandled['property_type'] == 'SHOP' or datahandled['property_type'] == 'WAR':
+            if datahandled['floor_area'] == None or int(datahandled['floor_area']) < 5:
+                success = 'false'
+                detail = 'property is require minimum >= 5 sqm'
         if datahandled['property_type'] == 'LAND':
             if datahandled['land_size_rai'] == '0' and datahandled['land_size_ngan'] == '0' and datahandled['land_size_wa'] == '0':
                 success = 'false'
@@ -953,6 +964,12 @@ class ddproperty():
             if datahandled['land_size_rai'] == '0' and datahandled['land_size_ngan'] == '0' and int(datahandled['land_size_wa']) <= 13:
                 success = 'false'
                 detail = 'property type land is require minimum >= 13 sqm'
+        if datahandled['property_type'] == "TOWN" and datahandled['listing_type'] == "SALE" and int(datahandled['price_baht']) < 81000:
+            success = 'false'
+            detail = 'The listing price must be at least 81000.'
+        if datahandled['listing_type'] == "SALE" and int(datahandled['price_baht']) < 16500:
+            success = 'false'
+            detail = 'The listing price must be at least 16500.'
 
         if success == 'true':
             # self.firefox.save_screenshot("debug_response/newp4.png")
@@ -1087,7 +1104,9 @@ class ddproperty():
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.DELETE)  # clear for edit action
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
+                pc.copy(datahandled['post_description_th'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(Keys.CONTROL, 'v')
+                #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-th-input")).send_keys(datahandled['post_description_th'])
                 #log.debug('input desc thai')
             except WebDriverException as e:
                 pass
@@ -1099,7 +1118,9 @@ class ddproperty():
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.DELETE)  # clear for edit action
-                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
+                pc.copy(datahandled['post_description_en'])
+                WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(Keys.CONTROL, 'v')
+                #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("description-en-input")).send_keys(datahandled['post_description_en'])
                 #log.debug('input desc en')
             except WebDriverException as e:
                 pass
@@ -2174,7 +2195,8 @@ class ddproperty():
             #log.debug('search post id %s', str(datahandled['post_id']))
             # self.firefox.save_screenshot("debug_response/edit1.png")
             matchObj = re.search(r'500 Internal Server Error', self.firefox.page_source)
-            if matchObj:
+            matchObj2 = re.search(r'404 ไม่พบหน้านี้', self.firefox.page_source)
+            if matchObj or matchObj2:
                 success = 'false'
                 detail = 'not found ddproperty post id ' + datahandled['post_id']
             if success == 'true':
