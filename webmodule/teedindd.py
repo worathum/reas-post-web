@@ -755,9 +755,10 @@ class teedindd():
                 var = soup.findAll('div')
                 store=""
                 final=""
-                for i in var:
-                    # print(i.text)
-                    if i.text[:len(i.text)-1]==postdata['post_title_th']:
+                mydivs = soup.find("table", {"class": "table pt20"})
+                mydivs = mydivs.find_all("tr")
+                for i in mydivs:
+                    if postdata['post_title_th'][:125] in i.text:
                         # print("select")
                         store=i
                         soup = store
