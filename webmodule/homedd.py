@@ -383,7 +383,6 @@ class homedd():
                 newurl = "http://homedd.co.th/member_property_aed.php?typ=add"
                 
                 request = self.httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
-                end_time = datetime.utcnow()
 
 
                 # f = open(filename,"w+")
@@ -421,7 +420,7 @@ class homedd():
                     regex = "[0-9]+"
                     post_id = re.findall(regex,r)[0]
                     post_url += post_id
-
+        end_time = datetime.utcnow()
         return {
             "success": success,
             "usage_time": str(end_time - start_time),
@@ -444,7 +443,6 @@ class homedd():
         success= test_login["success"]
         detail = test_login["detail"]
         start_time = test_login["start_time"]
-        end_time = test_login["end_time"]
         post_id = ""
         post_url = ""
 
@@ -651,7 +649,6 @@ class homedd():
                 newurl = "http://homedd.co.th/member_property_aed.php?typ=edit&id=" + postdata["post_id"]
 
                 request = self.httprequestObj.http_post(newurl, data=datapost,headers=headers,files=files)
-                end_time = datetime.utcnow()
 
                 # f = open(filename,"w+")
                 # f.write(str(request.text))
@@ -659,19 +656,30 @@ class homedd():
                 # f.close()
                 # with open(filename,'r') as file:
                 if 'ไม่สามารถทำการบันทึกได้ค่ะ' in str(request.text):
-                    detail = "Cannot Edit due to wrong post id"
-                    success = False
+                    post = self.create_post(postdata)
+                    if post['success']:
+                        post_id = post['post_id']
+                        post_url = post['post_url']
+                        success = True
+                        detail = 'Successfully Modified the Post !'
+                    else:
+                        success = False
+                        post_id = postdata['post_id']
+                        post_url = ''
+                        detail = post['detail']
+                    """detail = "Cannot Edit due to wrong post id"
+                    success = False"""
                 else:
                     detail = "Successfully Modified the Post !"
                     success = True
+                    post_id = postdata['post_id']
+                    post_url = ''
                     # file.close()
                 # os.remove(filename)
 
-                if success == True:
+                """if success == True:
                     url = "http://homedd.co.th/member_property_list.php"
-                    r = self.httprequestObj.http_get("http://homedd.co.th/member_property_list.php")
-                    end_time = datetime.utcnow()
-
+                    r = self.httprequestObj.http_get("http://homedd.co.th/member_property_list.php")  
 
                     post_url = "http://www.homedd.co.th/property_display.php?id="
                     soup = BeautifulSoup(r.text,'lxml')
@@ -686,18 +694,18 @@ class homedd():
 
                     regex = "[0-9]+"
                     post_id = re.findall(regex,r)[0]
-                    post_url += post_id
+                    post_url += post_id"""
 
-
+        end_time = datetime.utcnow()
         return {
             "success": success,
             "usage_time": str(end_time - start_time),
             "start_time": str(start_time),
             "end_time": str(end_time),
-'ds_id': postdata['ds_id'],
+            'ds_id': postdata['ds_id'],
             "log_id": postdata['log_id'],
             "post_url": post_url,
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
             "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
             "account_type": "null",
