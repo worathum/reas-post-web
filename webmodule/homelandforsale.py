@@ -355,9 +355,6 @@ class homelandforsale():
                     file.append((str('file'+str(temp)), (y, open(i, "rb"), "image/jpg")))
                     temp = temp + 1
 
-
-
-
             crt_post = self.httprequestObj.http_post('http://รับขายบ้านที่ดิน.com/member/p-post-property.php', data = data, files = file, headers = headers)
             #print(crt_post.text)
 
@@ -366,20 +363,19 @@ class homelandforsale():
             abc = soup.find('meta',attrs = {'http-equiv':'refresh'})
             post_id = str((abc['content'])[39:])
 
-            post_url = str('http://รับขายบ้านที่ดิน.com/property-'+post_id+'/.html.parser')
+            r = self.httprequestObj.http_get('http://xn--22c0bihcbb7dg4lnac3am9zla.com/member/list-property.php')
+            soup = BeautifulSoup(r.content, features = "html.parser")
+            for a in soup.find_all('a', href=True):
+               if post_id in a['href']:
+                   post_url = 'http://รับขายบ้านที่ดิน.com{}'.format((a['href'])[2:])
+                   break
 
             sec_step_url = str('http://รับขายบ้านที่ดิน.com/member/real-estate-features.php?post_id='+post_id)
 
             sec_step = self.httprequestObj.http_get(sec_step_url, headers = headers)
 
-
-
             success = "true"
             detail = "Post created successfully"
-
-
-
-
         else:
             success = "false"
             detail = "Can not log in"
