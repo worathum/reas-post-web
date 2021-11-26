@@ -335,10 +335,14 @@ class klungbaan():
 
             r = self.httprequestObj.http_get(website+'/property-create/')
             exceed_post = False
+            account_type = False
             matchObj = re.search(r'จะสามารถลงประกาศขายในเว็บได้ไม่เกิน', r.text)
+            matchObj1 = re.search(r'รายละเอียดของประกาศ (Property Description)', r.text)
+            if matchObj1:
+                account_type = True
             if matchObj:
                 exceed_post = True
-            if r.status_code==200 and not(exceed_post):
+            if r.status_code==200 and not(exceed_post) and account_type:
                 verify_nonce = ""
                 soup = BeautifulSoup(r.text, features=self.parser)
                 datapost['property_nonce'] = soup.find(id='property_nonce').get('value')
@@ -400,7 +404,9 @@ class klungbaan():
             else:
                 detail = 'Unable to create post. An Error has occurred while fetching page, with response_code '+str(r.status_code)
                 if exceed_post:
-                     detail = 'This account cannot post more than 4 posts.'
+                    detail = 'This account cannot post more than 4 posts.'
+                elif not(account_type):
+                    detail = 'This account type not for post. Please register account for agent or project owner.'
         else:
             detail = "Cannot login, "+test_login["detail"]
 
