@@ -282,12 +282,12 @@ class proppit():
 
         try:
             driver.get("https://proppit.com/login")
-            WebDriverWait(driver, 30).until(lambda x: x.find_element_by_id("email")).send_keys(postdata['user'])
-            WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("password")).send_keys(postdata['pass'])
+            WebDriverWait(driver, 30).until(lambda x: x.find_element_by_name("email")).send_keys(postdata['user'])
+            WebDriverWait(driver, 10).until(lambda x: x.find_element_by_name("password")).send_keys(postdata['pass'])
             try:
                 WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Log in']"))).click()
                 try:
-                    WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div/div/div/form/button"))).click()
+                    WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/div[2]/main/div/main/div/div/form/div[2]/button'))).click()
                 except:
                     pass
             except:
@@ -429,34 +429,38 @@ class proppit():
         detail = "can't connect to edit."
 
         post_id = postdata['post_id']
+        post_url = ""
         #post_url = "https://proppit.com/properties/"+ post_id +"/edit"
 
         test_login = self.test_login(postdata)
-        try:
-            search_post = self.search_post(postdata)
-            post_url = search_post['post_url']
-            post_id = search_post['post_id']
-        except:
-            post_url = ''
         if test_login["success"] == 'true':
-            temp_payload, files = self.payload_data(postdata,'edit',post_id)
-            payload = {'ad': json.dumps(temp_payload)}
-
-            url = "https://api.proppit.com/properties"
-
-            r = self.httprequestObj.http_post(url, data=payload , files=files)
-            
-            if (r.status_code == 200) or (r.status_code == 201):
-                success = "true"
-                detail = "Post edit successfully!"
-                #post_url = "https://proppit.com/properties/"+ post_id +"/edit"
-                #post_url = search_post['post_url']
-                post_id = post_id
+            if post_id == '':
+                post = self.create_post(postdata)
+                if post['success'] =="true":
+                    success = "true"
+                    post_id = post['post_id']
+                    post_url = post['post_url']
+                    detail = 'Post edit successfully!'
+                else:
+                    success = "false"
+                    detail = post['detail']
             else:
-                success = "false"
-                detail = "Edit failed!"
-                post_url = ""
-                post_id = ""
+                temp_payload, files = self.payload_data(postdata,'edit',post_id)
+                payload = {'ad': json.dumps(temp_payload)}
+
+                url = "https://api.proppit.com/properties"
+
+                r = self.httprequestObj.http_post(url, data=payload , files=files)
+                
+                if (r.status_code == 200) or (r.status_code == 201):
+                    success = "true"
+                    detail = "Post edit successfully!"
+                    #post_url = "https://proppit.com/properties/"+ post_id +"/edit"
+                    #post_url = search_post['post_url']
+                else:
+                    success = "false"
+                    detail = "Edit failed!"
+                    
         else:
             success = "false"
             detail = "cannot login."
