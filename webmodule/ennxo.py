@@ -547,6 +547,8 @@ class ennxo():
                 postdata['web_project_name'] = postdata['project_name']
             else:
                 postdata['web_project_name'] = postdata['post_title_th']
+        if test_login['sms_verified'] == False:
+            success = 'false'
         if success=="true":
             auth = test_login['auth']
             success = "false"
@@ -708,6 +710,8 @@ class ennxo():
                 detail = "An error occurred while uplaoding images. Error is: "+str(json_r)
         else:
             detail = "cannot login"
+            if test_login['sms_verified'] == False:
+                detail = 'Your post can not create. Please make sure your data is completed or make sure that you already verify you phone number via OTP.'
         
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -893,11 +897,12 @@ class ennxo():
             try:
                 test_login = self.test_login(postdata, True)
                 success = test_login["success"]
-                
+                if test_login['sms_verified'] == False:
+                    success = 'false'
                 if success=="true":
                     success = "false"
                     auth = test_login['auth']
-                    detail = "Unable to boost post"
+                    detail = "Your post can not create. Please make sure your data is completed or make sure that you already verify you phone number via OTP."
 
                     headers= {
                         "Authorization": auth,
@@ -955,9 +960,10 @@ class ennxo():
 
                 else:
                     detail = "Cannot login"
+                    if test_login['sms_verified'] == False:
+                        detail = 'Your post can not create. Please make sure your data is completed or make sure that you already verify you phone number via OTP.'
                 state = 10
             except:
-                print(state)
                 state +=1
                 pass
 
