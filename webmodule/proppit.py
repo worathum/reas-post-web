@@ -292,46 +292,47 @@ class proppit():
                     pass
             except:
                 WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='เข้าสู่ระบบ']"))).click()
-
-            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/div/div/div[1]/nav/div/div[3]/a"))).click()
-            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/a"))).click()
             
-            WebDriverWait(driver, 30).until(lambda x: x.find_element_by_xpath("//input[@class='MuiInputBase-input MuiInput-input jss7 jss10']")).send_keys(postdata['email'])
-            #driver.find_element_by_xpath("//input[@class='MuiInputBase-input MuiInput-input jss7 jss10']").send_keys(postdata['email'])
-            driver.find_element_by_xpath("//input[@data-test='p-title-main']").send_keys(postdata['post_title_th'])
-            driver.find_element_by_xpath("//input[@data-test='p-contact-phone']").send_keys(Keys.CONTROL + "a")
-            driver.find_element_by_xpath("//input[@data-test='p-contact-phone']").send_keys(Keys.DELETE)
-            driver.find_element_by_xpath("//input[@data-test='p-contact-phone']").send_keys(postdata['mobile'])
-            driver.find_element_by_xpath("//textarea[@data-test='p-description-main']").send_keys(postdata['post_description_th'])
-
-            driver.find_element_by_xpath("//input[@data-test='p-address']").send_keys('กรุงเทพมหานคร')
-            time.sleep(4)
-
-            driver.find_element_by_xpath("//input[@data-test='p-address']").send_keys(Keys.ARROW_DOWN)
-            driver.find_element_by_xpath("//input[@data-test='p-address']").send_keys(Keys.ENTER)
-            time.sleep(3)
-
-            find_submit = driver.find_element_by_name("publish").click()
-            time.sleep(5)
             try:
-                popup = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("confirmation-dialog-title")).text
-                print(popup=='อัปเกรดแพ็กเกจของคุณเพื่อ Boost ประกาศได้มากขึ้น')
-                if popup=='อัปเกรดแพ็กเกจของคุณเพื่อ Boost ประกาศได้มากขึ้น':
-                    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[2]/div[3]/div/div[2]/button"))).click()
+                WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[2]/div/div[2]/div[2]/div'))).click()
             except:
                 pass
+            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/div[2]/main/header/nav/div/div/a[1]'))).click()
+
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="operation"]/div[2]/div[1]/div/div/label[1]/div'))).click()
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="operation"]/div[2]/div[2]/div/div/label[1]/div'))).click()
+            WebDriverWait(driver, 5).until(lambda x: x.find_element_by_name("title_th-TH")).send_keys(postdata['post_title_th'])
+
+            driver.find_element_by_name("contactPhone").send_keys(Keys.CONTROL + "a")
+            driver.find_element_by_name("contactPhone").send_keys(Keys.DELETE)
+            driver.find_element_by_name("contactPhone").send_keys(postdata['mobile'])
+            driver.find_element_by_name("description_th-TH").send_keys(postdata['post_description_th'])
+
+            WebDriverWait(driver, 5).until(lambda x: x.find_element_by_id("downshift-1-input")).send_keys('กรุงเทพมหานคร')
+            time.sleep(4)
+
+            driver.find_element_by_id("downshift-1-input").send_keys(Keys.ENTER)
+            time.sleep(3)
+
+            find_submit = driver.find_element_by_xpath('//*[@id="root"]/div[2]/main/div[1]/div/div[2]/div/div[1]/button[2]').click()
+            try:
+                WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[2]/div/div[2]/div[2]/div'))).click()
+            except:
+                pass
+            try:
+                WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[7]/div/div/footer/button'))).click()
+            except:
+                pass
+            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/div[2]/main/div/div/div[3]/table/tbody/tr[2]/td[12]/div/div[1]'))).click()
             post_url = ''
             num_web= 5
             for i in range(num_web):
-                try:
-                    url = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[2]/div/div[2]/span/a[{}]'.format(i+1)))
-                except:
-                    url = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="root"]/div/div/div/div[2]/div/div[3]/div/div/div[1]/table/tbody/tr[1]/td[1]/div/div[2]/span/a[{}]'.format(i+1)))
+                url = WebDriverWait(driver, 5).until(lambda x: x.find_element_by_xpath('//*[@id="root"]/div[2]/main/div/div/div[3]/table/tbody/tr[2]/td[12]/div/div[1]/div[3]/div/a[{}]'.format(i+1)))
                 post_url += url.get_attribute('href')
                 if i+1 != num_web:
                     post_url += '|'
             gen_id_bool = True
-                
+
         finally:
             driver.close()
             driver.quit()
