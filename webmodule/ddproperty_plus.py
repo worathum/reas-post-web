@@ -208,7 +208,7 @@ class ddproperty_plus():
 
         options = Options()
         # debug by comment option --headless
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -965,6 +965,9 @@ class ddproperty_plus():
             if datahandled['land_size_rai'] == '0' and datahandled['land_size_ngan'] == '0' and int(datahandled['land_size_wa']) <= 13:
                 success = 'false'
                 detail = 'property type land is require minimum >= 13 sqm'
+        if datahandled['property_type'] == "BUNG" and datahandled['listing_type'] == "SALE" and int(datahandled['price_baht']) < 187500:
+            success = 'false'
+            detail = 'The listing price must be at least 187500.'
         if datahandled['property_type'] == "TOWN" and datahandled['listing_type'] == "SALE" and int(datahandled['price_baht']) < 81000:
             success = 'false'
             detail = 'The listing price must be at least 81000.'
@@ -1076,6 +1079,7 @@ class ddproperty_plus():
                     pass
 
             # title thai
+            datahandled['post_title_th'] = datahandled['post_title_th'][:240]
             try:
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
@@ -1087,6 +1091,7 @@ class ddproperty_plus():
                 #log.warning('cannot input title thai '+str(e))
 
             # title en
+            datahandled['post_title_en'] = datahandled['post_title_en'][:240]
             try:
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
