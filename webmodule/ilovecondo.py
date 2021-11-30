@@ -686,12 +686,12 @@ class ilovecondo:
                     while url[ind] != "/":
                         id += url[ind]
                         ind += 1
-                    valid_ids.append(id)
-                    # #print(a_s)
-                    valid_info.append(a_s[0]['id'])
-                    page_no.append(str(i + 1))
-                    ##print(valid_ids)
-                    ##print(valid_info)
+                    try:
+                        valid_info.append(a_s[0]['id'])
+                        valid_ids.append(id)
+                        page_no.append(str(i + 1))
+                    except:
+                        pass
 
             if str(post_id) in valid_ids:
                 save_page = ''
