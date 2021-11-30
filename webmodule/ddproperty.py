@@ -1075,6 +1075,7 @@ class ddproperty():
                     pass
 
             # title thai
+            datahandled['post_title_th'] = datahandled['post_title_th'][:240]
             try:
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("title-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
@@ -1086,6 +1087,7 @@ class ddproperty():
                 #log.warning('cannot input title thai '+str(e))
 
             # title en
+            datahandled['post_title_en'] = datahandled['post_title_en'][:240]
             try:
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("titleEn-input")).send_keys(Keys.CONTROL + "a")  # clear for edit action
