@@ -650,9 +650,22 @@ class goodpriceproperty():
     def edit_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-
+        success = 'false'
+        delete = self.delete_post(postdata)
+        success = delete['success']
+        print(success)
+        if success == "true":
+            success = 'false'
+            post = self.create_post(postdata)
+            success = post['success']
+            if success =="true":
+                post_id = post['post_id']
+                post_url = post['post_url']
+                detail = 'Post edited'
+        else:
+            detail= delete['detail']
         # login
-        success = 'true'
+        """success = 'true'
         test_login = self.test_login(postdata)
         success = test_login["success"]
         ashopname = test_login["detail"]
@@ -692,7 +705,7 @@ class goodpriceproperty():
         # total_pages = int(soup.find_all('a', {'class': 'paginate'})[-2]['href'].split("=")[-1])
         found = True
         page = 1
-        """while True:
+        while True:
             requ = self.httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php?QueryString=value&Page=" + str(page)).text
             # print(requ)
             
@@ -709,7 +722,7 @@ class goodpriceproperty():
                     count += 1
             page += 1
             if found or count==0:
-                break"""
+                break
 
         if not found:
             return {
@@ -796,7 +809,6 @@ class goodpriceproperty():
 
             print(postdata['land_size_wa'], postdata['land_size_ngan'],
                   postdata['land_size_rai'], str(postdata['floor_area']))
-            print("\n\n\n")
 
             if 'project_name' not in postdata:
                 postdata['project_name'] = postdata['post_title_th']
@@ -1048,33 +1060,34 @@ class goodpriceproperty():
                 datapost[arr[i]] = postdata['post_images'][i]
                 files[arr[i]] = (postdata['post_images'][i], open(
                     postdata['post_images'][i], "rb"), "image/jpg")
-
+            print(datapost)
             r = self.httprequestObj.http_post(
                 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/p-edit-property.php', data=datapost, headers=headers, files=files)
             print("RETURN ", r.content)
             print("RETURN ", r.text)
             print("DATA", datapost)
             data = r.text
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
+            
             # print("REACHED ")
             if data.find("alert") != -1:
                 success = "false"
                 detail = "Unable to edit post"
             else:
-                detail = "Post edited"
-            return {
-                'success': success,
-                "log_id": postdata['log_id'],
-                "action": "edit_post",
-                "websitename": "goodpriceproperty",
-                "start_time": str(time_start),
-                'ds_id': postdata['ds_id'],
-                "end_time": str(time_end),
-                "detail": detail,
-                "ds_id": postdata['ds_id'],
-                "post_id": postdata['post_id']
-            }
+                detail = "Post edited"""
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            'success': success,
+            "log_id": postdata['log_id'],
+            "action": "edit_post",
+            "websitename": "goodpriceproperty",
+            "start_time": str(time_start),
+            'ds_id': postdata['ds_id'],
+            "end_time": str(time_end),
+            "detail": detail,
+            "post_id": post_id,
+            "post_url": post_url
+        }
 
     def delete_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -1087,7 +1100,7 @@ class goodpriceproperty():
         detail = test_login["detail"]
 
         if success == "true":
-            page = 1            
+            """page = 1            
             found = False
             res = self.httprequestObj.http_get("http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php").content
             soup = BeautifulSoup(res, features = self.parser)
@@ -1127,7 +1140,7 @@ class goodpriceproperty():
                 "ds_id": postdata['ds_id'],
                 "post_id": postdata['post_id'],
                 "end_time": str(datetime.datetime.utcnow()),
-                }
+                }"""
 
             datapost = [
                 ('action', 'delete_product'),

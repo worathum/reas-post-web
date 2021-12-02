@@ -96,25 +96,26 @@ class kaidee():
         }
         count = 0
         while count<10:
-            print(count)
             try:
                 r = self.scraper.post('https://api.kaidee.com/0.18/member/login', data=json.dumps(datapost))
                 response = r.json()
                 break
             except:
                 count+=1
-
-        if r.status_code==200:
-            if "member" in response:
-                success = True
-                detail = "Login Successful"
-                member_id = response["member"]["id"]
-                privateToken = response["member"]["privateToken"]
-        else:
-            if 'error' in response:
-                detail = response['error']['message']
+        if count != 10:
+            if r.status_code==200:
+                if "member" in response:
+                    success = True
+                    detail = "Login Successful"
+                    member_id = response["member"]["id"]
+                    privateToken = response["member"]["privateToken"]
             else:
-                detail = 'Status code: {}'.format(r.status_code)
+                if 'error' in response:
+                    detail = response['error']['message']
+                else:
+                    detail = 'Status code: {}'.format(r.status_code)
+        else:
+            detail = 'Something wrong'
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -171,8 +172,7 @@ class kaidee():
             '8': [2,12],
             '9': [2,11],
             '10': [2,9],
-            '25': [2,9],
-            '30': [1,8]
+            '25': [2,9]
             }
 
             purposeId = {
@@ -180,14 +180,57 @@ class kaidee():
                 'เช่า': 2
             }
 
-            if postdata['property_type'] == '1':
-                area = postdata['floorarea_sqm']
+            for i in ['land_size_rai','land_size_ngan','land_size_wa']:
+                postdata[i] = int(postdata[i])
+
+            if postdata['property_type'] in ['6','25','10','8','2','3']:
+                area = (postdata['land_size_rai']*1600) + (postdata['land_size_ngan']*400) + (postdata['land_size_wa']*4)                
             else:
-                area = (postdata['land_size_rai']*1600) + (postdata['land_size_ngan']*400) + (postdata['land_size_wa']*4)
-            
+                area = postdata['floorarea_sqm']
+
             postdata['property_type'] = property_type[postdata['property_type']]
+
+            with open('./static/kaidee_project_id.json') as f:
+                project_data = json.load(f)
+
+            if 'web_project_name' not in postdata:
+                if 'project_name' in postdata:
+                    postdata['web_project_name'] = postdata['project_name']
+                else:
+                    postdata['web_project_name'] = 'None'
+
+            project_id = 0
+            province_id = 0
+            subdistrict_id = 0
+            for key in project_data:
+                if postdata['web_project_name'] in project_data[key]['Zone name English']:
+                    project_id = key
+                    break
+                elif postdata['web_project_name'] in project_data[key]['Zone name ไทย']:
+                    project_id = key
+                    break
+            
+            if project_id == 0:
+                with open('./static/kaidee_province_id.json') as f:
+                    province_data = json.load(f)
+                for key in province_data:
+                    if postdata['addr_province'] in province_data[key]['\ufeffprovince']:
+                        province_id = key
+                        break
+                if province_id != 0:
+                    with open('./static/kaidee_subdistrict_id.json') as f:
+                        subdistrict_data = json.load(f)
+                    for key in subdistrict_data:
+                        if (postdata['addr_sub_district'] in subdistrict_data[key]['\ufeffsubdistrict']) and (province_id == subdistrict_data[key]['province_id']):
+                            subdistrict_id = key
+                            break
+            if postdata['property_type'] == [1,6]:
+                location_area = project_id
+            else:
+                location_area = subdistrict_id
+
             datapost = {
-                'id': None,##############
+                'id': None,
                 'categoryId': postdata['property_type'][1],
                 'parentCategoryId': postdata['property_type'][0],
                 'purposeId': purposeId[postdata['listing_type']],
@@ -195,7 +238,7 @@ class kaidee():
                 'referenceNumber': postdata['property_id'],
                 'title': {'en': postdata['post_title_en'],'th': postdata['post_title_th']},
                 'description': {'en': postdata['post_description_en'],'th': postdata['post_description_th']},
-                'locationId': '3613',###########################
+                'locationId': location_area,
                 'area': area,
                 'address': address,
                 'latitude': postdata['geo_latitude'],
@@ -217,7 +260,7 @@ class kaidee():
                 'product': '',
                 'adLocations': [],
                 'amenities': [],##################*******************************
-                "source":"profolio"#####################
+                "source":"profolio"
             }
 
             if purposeId[postdata['listing_type']] == 1:
@@ -315,12 +358,14 @@ class kaidee():
             }
 
             images = []
-            for i,image in enumerate(postdata['post_images']):
+            for i in postdata['post_img_url_lists']:
+                images.append(i)
+            """for i,image in enumerate(postdata['post_images']):
                 files = {"image": open(os.getcwd()+"/"+image, 'rb')} 
                 r = self.scraper.post('https://kaidee-images-live.s3.amazonaws.com', data={}, files=files)
                 if r.status_code==200:
                     r = json.loads(r.text)
-                    """detail_img = {   
+                    detail_img = {   
                         'name': image,
                         "size": 52569,###################
                         "type":"image/jpeg",
