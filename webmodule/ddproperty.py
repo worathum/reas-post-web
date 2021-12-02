@@ -1329,28 +1329,33 @@ class ddproperty():
 
             # create post จะสำเร็จก็ต่อเมื่อ publish ได้ด้วย ถ้า editpost แค่ edit ได้ ก็ถือว่าสำเร็จ
             if datahandled['action'] == 'create_post':
-                matchObj = re.search(r'Active Unit Listing quota exceeded', self.firefox.page_source)
-                if matchObj:
-                    success = "false"
-                    detail = 'จำนวนทรัพย์ของท่านเกินจำนวนที่กำหนดแล้ว'
-            #print('here5')
+                WebDriverWait(self.firefox, 10).until(EC.alert_is_present())
+                alert = self.firefox.switch_to.alert
+                alert.accept()
+                time.sleep(5)
+                try:
+                    matchObj = re.search(r'Active Unit Listing quota exceeded', self.firefox.page_source)
+                    matchObj1 = re.search(r'ประกาศปัจจุบันเกินโควต้าแล้ว', self.firefox.page_source)
+                    if matchObj or matchObj1:
+                        success = "false"
+                        detail = 'จำนวนทรัพย์ของท่านเกินจำนวนที่กำหนดแล้ว'
+                except:
+                    pass
             #บันทึกแล้วออก
             try:
                 element = WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[3]/div/div[2]/button'))
                 self.firefox.execute_script("arguments[0].click();", element)
             except WebDriverException:
                 pass
-            #print('here6')
-            #quit        
-            self.firefox.close()
-            self.firefox.quit()
+            #quit
             try:
                 alert = self.firefox.switch_to.alert
                 alert.accept()
                 self.firefox.close()
                 self.firefox.quit()
             except:
-                pass
+                self.firefox.close()
+                self.firefox.quit()
             # self.firefox.quit()
         print(success, detail, post_id, account_type)
         return success, detail, post_id, account_type
@@ -1620,7 +1625,7 @@ class ddproperty():
 
         # start process
         #
-        datahandled = self.postdata_handle(postdata)
+        """datahandled = self.postdata_handle(postdata)
 
         # login
         test_login = self.test_login(datahandled)
@@ -1674,7 +1679,9 @@ class ddproperty():
                 
         finally:
             self.firefox.close()
-            self.firefox.quit()
+            self.firefox.quit()"""
+        success = False
+        detail = 'cannot boost'
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -1684,8 +1691,8 @@ class ddproperty():
             "start_time": str(time_start), 
             "end_time": str(time_end), 
             "detail": detail, 
-            "log_id": datahandled['log_id'], 
-            "post_id": datahandled['post_id'], 
+            "log_id": postdata['log_id'], 
+            "post_id": postdata['post_id'], 
             "websitename": self.websitename, 
             "post_view": ""
         }
