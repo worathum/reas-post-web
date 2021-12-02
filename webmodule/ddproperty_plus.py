@@ -1044,7 +1044,7 @@ class ddproperty_plus():
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
-                print(str(datahandled['floor_area']))
+
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floor_area']))
                 time.sleep(2)
                 try:
@@ -1213,7 +1213,7 @@ class ddproperty_plus():
                 return success, detail, post_id, account_type
 
             # image page
-            time.sleep(10)
+            time.sleep(5)
             WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[3]/div[2]/span')).click()
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
@@ -1238,18 +1238,6 @@ class ddproperty_plus():
                     except:
                         imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                         imglis = imgdiv.find_elements_by_link_text("...")
-                """for imgli in imglis:
-                    imgid = imgli.get_attribute("id")
-                    if imgid != None:
-                        imgli.click()
-                        time.sleep(3)
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
-                        time.sleep(3)
-                        #log.debug('delete image')
-                        alert = self.firefox.switch_to.alert
-                        print(alert.text)
-                        alert.accept()
-                        time.sleep(3)"""
 
             # for img in datahandled['post_images']:
             #     time.sleep(1)
@@ -1268,15 +1256,10 @@ class ddproperty_plus():
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
-            try: 
-                print('wait' + str(datetime.datetime.utcnow()))                 
+            try:                 
                 wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, "//*[@id='step_media_photo']/div[1]/div[2]/ul/li["+str(len(datahandled['post_images']))+"]/div/div[2]/a")))
             except:
-                print('Finish')
                 pass
-
-
-
 
             #log.debug('image success')
             #print('here1')
@@ -1314,13 +1297,6 @@ class ddproperty_plus():
                 #quit
                 self.firefox.close()
                 self.firefox.quit()
-                try:
-                    alert = self.firefox.switch_to.alert
-                    alert.accept()
-                    self.firefox.close()
-                    self.firefox.quit()
-                except:
-                    pass
                 return success, detail, post_id, account_type
             try:
                 WebDriverWait(self.firefox, 30).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
@@ -1359,13 +1335,10 @@ class ddproperty_plus():
             #print('here6')
             #quit
             try:
-                alert = self.firefox.switch_to.alert
-                alert.accept()
                 self.firefox.close()
                 self.firefox.quit()
             except:
-                self.firefox.close()
-                self.firefox.quit()
+                pass
             # self.firefox.quit()
         print(success, detail, post_id, account_type)
         return success, detail, post_id, account_type
@@ -2245,6 +2218,8 @@ class ddproperty_plus():
         print('complete dd')
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
+        print('time_usage')
+        print(time_usage)
         return {"success": success, "usage_time": str(time_usage), "start_time": str(time_start), "end_time": str(time_end), "detail": detail, "log_id": datahandled['log_id'], "websitename": self.websitename}
 
     def search_post(self,postdata):
