@@ -217,7 +217,8 @@ class livinginsider():
 
         if postdata['price_baht'] == '':
             postdata['price_baht'] = 0
-
+        postdata['post_description_th'] = postdata['post_description_th'].replace('\r','')
+        postdata['post_description_en'] = postdata['post_description_en'].replace('\r','')
         data = {
             'mem_id': mem_id,
             'device_id': device_id,
