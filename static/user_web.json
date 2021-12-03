@@ -1,0 +1,11 @@
+{
+    "data" :[
+        {
+            "ds_name": "trovit",
+            "ref_id": "1",
+            "url_web": "https://th.trovit.com/baan/",
+            "user": "vinves.postweb@outlook.com",
+            "pass": "vinvestorDev"
+        }
+    ]
+}
