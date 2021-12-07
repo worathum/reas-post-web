@@ -182,15 +182,9 @@ class ddteedin():
                 
                 for i in postdata['post_images']:
                     WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'fileupload'))).send_keys(os.path.abspath(i))
-
+                
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'name'))).send_keys(postdata['post_title_th'])
                 WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'code'))).send_keys(postdata['property_id'])
-
-                if postdata['listing_type'] == 'ขาย':
-                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_for"]/label[1]/input'))).click()
-                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_isnew"]/label[2]/input'))).click()
-                else:
-                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_for"]/label[2]/input'))).click()
 
                 property = {
                     '1': 'คอนโด',
@@ -211,23 +205,34 @@ class ddteedin():
                 drop=Select(x)
                 drop.select_by_visible_text(property_type)
 
-                if 'web_project_name' not in postdata:
-                    postdata['web_project_name'] = postdata['project_name']
+                if postdata['listing_type'] == 'ขาย':
+                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_for"]/label[1]/input'))).click()
+                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_isnew"]/label[2]/input'))).click()
+                else:
+                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_for"]/label[2]/input'))).click()
 
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'project'))).send_keys(postdata['web_project_name'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'rooms'))).send_keys(postdata['bed_room'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'bathroom'))).send_keys(postdata['bath_room'])
+                if 'web_project_name' not in postdata:
+                    if 'project_name' not in postdata:
+                        postdata['project_name'] = ''
+                    postdata['web_project_name'] = postdata['project_name']
+                try:
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'project'))).send_keys(postdata['web_project_name'])
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'rooms'))).send_keys(postdata['bed_room'])
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'bathroom'))).send_keys(postdata['bath_room'])
+                except:
+                    pass
 
                 if ('floor_level' not in postdata) or (postdata['floor_level'] == ''):
                     postdata['floor_level'] = postdata['floor_total']
 
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'floor'))).send_keys(postdata['floor_level'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'usagesize'))).send_keys(postdata['floorarea_sqm'])
                 try:
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'floor'))).send_keys(postdata['floor_level'])
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'usagesize'))).send_keys(postdata['floorarea_sqm'])
                     WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'sizerai'))).send_keys(postdata['land_size_rai'])
                     WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'sizewa2'))).send_keys(postdata['land_size_wa'])
                 except:
                     pass
+
                 if postdata['listing_type'] == 'ขาย':
                     WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'pricesale'))).send_keys(postdata['price_baht'])
                 else:
@@ -310,7 +315,8 @@ class ddteedin():
             success = False
             try:
                 try:
-                    WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/button[2]'))).click() ####close suggestion popup
+                    webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
+                    #WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/button[2]'))).click() ####close suggestion popup
                 except:
                     pass
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(postdata['property_id'])
@@ -335,6 +341,7 @@ class ddteedin():
                     links = self.driver.find_elements_by_partial_link_text('แก้ไข')[0].get_attribute('href')
                     self.driver.get(links)
                 if success:
+                    success = False
                     while True:
                         try:
                             WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="photos"]/div/a[3]/i'))).click()
@@ -350,12 +357,6 @@ class ddteedin():
                     
                     self.edit_info(By.ID,'name',postdata['post_title_th'])
                     self.edit_info(By.ID,'code',postdata['property_id'])
-
-                    if postdata['listing_type'] == 'ขาย':
-                            WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_for"]/label[1]/input'))).click()
-                            WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_isnew"]/label[2]/input'))).click()
-                    else:
-                        WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_for"]/label[2]/input'))).click()
 
                     property = {
                         '1': 'คอนโด',
@@ -376,23 +377,35 @@ class ddteedin():
                     drop=Select(x)
                     drop.select_by_visible_text(property_type)
 
+                    if postdata['listing_type'] == 'ขาย':
+                        WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_for"]/label[1]/input'))).click()
+                        WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_isnew"]/label[2]/input'))).click()
+                    else:
+                        WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="g_for"]/label[2]/input'))).click()
+
                     if 'web_project_name' not in postdata:
+                        if 'project_name' not in postdata:
+                            postdata['project_name'] = ''
                         postdata['web_project_name'] = postdata['project_name']
 
-                    self.edit_info(By.ID,'project',postdata['web_project_name'])
-                    self.edit_info(By.ID,'rooms',postdata['bed_room'])
-                    self.edit_info(By.ID,'bathroom',postdata['bath_room'])
+                    try:
+                        self.edit_info(By.ID,'project',postdata['web_project_name'])
+                        self.edit_info(By.ID,'rooms',postdata['bed_room'])
+                        self.edit_info(By.ID,'bathroom',postdata['bath_room'])
+                    except:
+                        pass
 
                     if ('floor_level' not in postdata) or (postdata['floor_level'] == ''):
                         postdata['floor_level'] = postdata['floor_total']
 
-                    self.edit_info(By.ID,'floor',postdata['floor_level'])
-                    self.edit_info(By.ID,'usagesize',postdata['floorarea_sqm'])
                     try:
+                        self.edit_info(By.ID,'floor',postdata['floor_level'])
+                        self.edit_info(By.ID,'usagesize',postdata['floorarea_sqm'])
                         self.edit_info(By.ID,'sizerai',postdata['land_size_rai'])
                         self.edit_info(By.ID,'sizewa2',postdata['land_size_wa'])
                     except:
                         pass
+                    
                     if postdata['listing_type'] == 'ขาย':
                         self.edit_info(By.ID,'pricesale',postdata['price_baht'])
                     else:
@@ -424,6 +437,9 @@ class ddteedin():
 
                     WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'btn_submit'))).click()
                     sleep(3)
+                    matchObj = re.search(r'ห้ามใช้สัญลักษณ์พิเศษมากกว่า 1 ในชื่อประกาศ', self.driver.page_source)
+                    if matchObj:
+                        detail = 'ห้ามใช้สัญลักษณ์พิเศษมากกว่า 1 ในชื่อประกาศ'
                     matchObj = re.search(r'ประกาศถูกบันทึกแล้ว', self.driver.page_source)
                     if matchObj:
                         success = True
@@ -524,11 +540,13 @@ class ddteedin():
                 try:
                     ####close suggestion popup
                     try:
-                        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[8]/div/button[2]'))).click() 
+                        webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
+                        #WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[8]/div/button[2]'))).click() 
                     except:
                         pass
                     try:
-                        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="dialog_gbutton"]/input[2]'))).click() 
+                        webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
+                        #WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="dialog_gbutton"]/input[2]'))).click() 
                     except:
                         pass
                     sleep(3)
