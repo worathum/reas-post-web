@@ -722,7 +722,6 @@ class ddproperty():
             projectname = datahandled['post_title_th']
 
         projectnametxt = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, "propertySearch")))
-        time.sleep(1)
         if datahandled['action'] == 'edit_post':
             WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.CONTROL + "a")  # clear for edit action
             WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.DELETE)  # clear for edit action
@@ -1183,11 +1182,11 @@ class ddproperty():
                     pass
             
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
-            time.sleep(2)
+            time.sleep(1)
             # next
             try:
                 next_button = WebDriverWait(self.firefox, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'btn.step-next.btn-primary')))
-                time.sleep(5)
+                time.sleep(3)
                 next = next_button[0].click()
                 # self.firefox.execute_script("return arguments[0].scrollIntoView(true);", next_button)
             except WebDriverException as e:
@@ -1196,7 +1195,6 @@ class ddproperty():
                 #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
                 success = 'false'
                 detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits, Due to: ' + str(e)
-                time.sleep(10)
                 self.firefox.close()
                 self.firefox.quit()
                 try:
@@ -1209,7 +1207,6 @@ class ddproperty():
                 return success, detail, post_id, account_type
 
             # image page
-            time.sleep(5)
             WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[3]/div[2]/span')).click()
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
@@ -1238,7 +1235,7 @@ class ddproperty():
                     all_images += os.path.abspath(pic) + '\n'
                 else:
                     all_images += os.path.abspath(pic)
-            time.sleep(3)
+
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
@@ -1286,7 +1283,6 @@ class ddproperty():
                 return success, detail, post_id, account_type
             try:
                 WebDriverWait(self.firefox, 30).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
-                time.sleep(1.8)
             except WebDriverException:
                 success = 'false'
                 detail = 'Website not response. Your post will safe in the draft.'
@@ -1301,7 +1297,7 @@ class ddproperty():
                 WebDriverWait(self.firefox, 10).until(EC.alert_is_present())
                 alert = self.firefox.switch_to.alert
                 alert.accept()
-                time.sleep(5)
+                time.sleep(3)
                 try:
                     matchObj = re.search(r'Active Unit Listing quota exceeded', self.firefox.page_source)
                     matchObj1 = re.search(r'ประกาศปัจจุบันเกินโควต้าแล้ว', self.firefox.page_source)
