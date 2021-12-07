@@ -2,10 +2,6 @@ from .lib_httprequest import *
 import datetime
 import sys
 
-try:
-    import configs
-except ImportError:
-    configs = {}
 
 class trovit():
 
