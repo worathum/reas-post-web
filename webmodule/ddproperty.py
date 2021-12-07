@@ -259,7 +259,6 @@ class ddproperty():
             #log.debug('input email')
             WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.ID, "btn_login"))).click()
             #log.debug('click next')
-            time.sleep(1.8)
 
             # input password and enter
             """passtxt = WebDriverWait(self.firefox, 30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
