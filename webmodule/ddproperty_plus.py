@@ -1221,30 +1221,20 @@ class ddproperty_plus():
                 #log.debug('edit image')
                 imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
-                #imglis[0].click()
-                #time.sleep(3)
-                #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
                 while len(imglis)>0:
                     try:
                         imglis[0].click()
-                        time.sleep(3)
+                        time.sleep(1)
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
-                        time.sleep(3)
+                        WebDriverWait(self.firefox, 5).until(EC.alert_is_present())
                         alert = self.firefox.switch_to.alert
                         alert.accept()
-                        time.sleep(3)
+                        time.sleep(1)
                         imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                         imglis = imgdiv.find_elements_by_link_text("...")
                     except:
                         imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                         imglis = imgdiv.find_elements_by_link_text("...")
-
-            # for img in datahandled['post_images']:
-            #     time.sleep(1)
-            #     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
-            #     #log.debug('post image %s', img)
-            #     time.sleep(1)
-            #     self.firefox.refresh()
 
             all_images = ""
             for count, pic in enumerate(datahandled['post_images']):
