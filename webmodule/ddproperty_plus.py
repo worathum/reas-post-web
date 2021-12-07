@@ -2178,7 +2178,8 @@ class ddproperty_plus():
             # self.firefox.save_screenshot("debug_response/edit1.png")
             matchObj = re.search(r'500 Internal Server Error', self.firefox.page_source)
             matchObj2 = re.search(r'404 ไม่พบหน้านี้', self.firefox.page_source)
-            if matchObj or matchObj2:
+            matchObj3 = re.search(r'403 Forbidden', self.firefox.page_source)
+            if matchObj or matchObj2 or matchObj3:
                 success = 'false'
                 detail = 'not found ddproperty post id ' + datahandled['post_id']
             if success == 'true':
