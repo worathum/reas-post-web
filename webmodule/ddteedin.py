@@ -316,9 +316,9 @@ class ddteedin():
             try:
                 try:
                     webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
-                    #WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/button[2]'))).click() ####close suggestion popup
                 except:
                     pass
+                sleep(2)
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(postdata['property_id'])
                 WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'btn_srch'))).click()
                 sleep(3)
@@ -439,7 +439,7 @@ class ddteedin():
                     sleep(3)
                     matchObj = re.search(r'ห้ามใช้สัญลักษณ์พิเศษมากกว่า 1 ในชื่อประกาศ', self.driver.page_source)
                     if matchObj:
-                        detail = 'ห้ามใช้สัญลักษณ์พิเศษมากกว่า 1 ในชื่อประกาศ'
+                        detail = 'Do not use more than one special symbol in the post title.'
                     matchObj = re.search(r'ประกาศถูกบันทึกแล้ว', self.driver.page_source)
                     if matchObj:
                         success = True
@@ -538,18 +538,11 @@ class ddteedin():
             if success:
                 success = False
                 try:
-                    ####close suggestion popup
                     try:
                         webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
-                        #WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[8]/div/button[2]'))).click() 
                     except:
                         pass
-                    try:
-                        webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
-                        #WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="dialog_gbutton"]/input[2]'))).click() 
-                    except:
-                        pass
-                    sleep(3)
+                    sleep(2)
                     WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(postdata['post_title_th'])
                     WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'btn_srch'))).click()
                     sleep(3)
