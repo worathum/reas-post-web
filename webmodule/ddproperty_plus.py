@@ -1232,7 +1232,6 @@ class ddproperty_plus():
                         imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                         imglis = imgdiv.find_elements_by_link_text("...")
 
-            time.sleep(5)
             all_images = ""
             for count, pic in enumerate(datahandled['post_images']):
                 if count < len(datahandled['post_images'])-1:
@@ -1240,6 +1239,7 @@ class ddproperty_plus():
                 else:
                     all_images += os.path.abspath(pic)
 
+            time.sleep(5)
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 

@@ -1235,7 +1235,7 @@ class ddproperty():
                 else:
                     all_images += os.path.abspath(pic)
             
-            time.sleep(3)
+            time.sleep(5)
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
