@@ -167,8 +167,11 @@ class ddteedin():
             success = False
             self.driver.get('https://www.ddteedin.com/post/?rf=topbtn')
             matchObj = re.search(r'ยืนยันหมายเลขโทรศัพท์', self.driver.page_source)
+            matchObj1 = re.search(r'การจำกัดการลงข้อมูลสมาชิก Free', self.driver.page_source)
             if matchObj:
                 detail = 'Login successful.But if you need to post please verify your phone number first'
+            elif matchObj1:
+                detail = 'Login successful.But you are already post exceed quota or your post need to wait website confirm'
             elif len(postdata['post_title_th'])<50:
                 detail = 'The post title should have an alphabet of more than 50 alphabet'
             elif len(postdata['post_description_th'])<150:
@@ -545,6 +548,7 @@ class ddteedin():
                         pass
                     sleep(2)
                     WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(postdata['post_title_th'])
+                    sleep(3.5)
                     WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'btn_srch'))).click()
                     sleep(3)
                     try:
@@ -589,7 +593,7 @@ class ddteedin():
     def boost_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        
+
         success = False
         detail = 'Something wrong'
         test_login = self.test_login(postdata)
