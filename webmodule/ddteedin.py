@@ -184,7 +184,6 @@ class ddteedin():
                     WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'fileupload'))).send_keys(os.path.abspath(i))
                 
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'name'))).send_keys(postdata['post_title_th'])
-                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'code'))).send_keys(postdata['property_id'])
 
                 property = {
                     '1': 'คอนโด',
@@ -266,8 +265,11 @@ class ddteedin():
                 WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'btn_submit'))).click()
                 sleep(3)
                 matchObj = re.search(r'ประกาศนี้มีรายละเอียดคล้ายกับประกาศที่มีอยู่แล้วมากเกินไป', self.driver.page_source)
+                matchObj1 = re.search(r'ตรวจสอบชื่อหัวข้อประกาศอีกครั้ง', self.driver.page_source)
                 if matchObj:
                     detail = 'Post unsuccessful.This post contains details that are too similar to existing posts.'
+                elif matchObj1:
+                    detail = 'Post unsuccessful.Please check your post title'
                 else:
                     post_url = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="main-contain"]/div/div/a[2]'))).get_attribute('href')
                     post_id = post_url.split('/')[3]
@@ -314,19 +316,15 @@ class ddteedin():
         if success:
             success = False
             try:
+                self.driver.get('https://www.ddteedin.com/myposts')
                 try:
                     webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
                 except:
                     pass
                 sleep(2)
-                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(postdata['property_id'])
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(postdata['post_id'])
                 WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'btn_srch'))).click()
                 sleep(3)
-                if len(self.driver.find_elements_by_partial_link_text('แก้ไข')) ==0:
-                    WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(Keys.CONTROL + "a")
-                    WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(postdata['post_id'])
-                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'btn_srch'))).click()
-                    sleep(3)
                 if len(self.driver.find_elements_by_partial_link_text('แก้ไข')) ==0:
                     search = self.search_post(postdata)
                     if search['post_id'] == '':
@@ -337,9 +335,9 @@ class ddteedin():
                 if len(self.driver.find_elements_by_partial_link_text('แก้ไข')) ==0:
                     detail = 'Cannot found post id'
                 else:
-                    success = True
                     links = self.driver.find_elements_by_partial_link_text('แก้ไข')[0].get_attribute('href')
                     self.driver.get(links)
+                    success = True
                 if success:
                     success = False
                     while True:
@@ -356,7 +354,7 @@ class ddteedin():
                         sleep(1)
                     
                     self.edit_info(By.ID,'name',postdata['post_title_th'])
-                    self.edit_info(By.ID,'code',postdata['property_id'])
+                    self.edit_info(By.ID,'code',Keys.DELETE)#len(property_id)>len(code)
 
                     property = {
                         '1': 'คอนโด',
@@ -461,6 +459,7 @@ class ddteedin():
             "log_id": postdata['log_id'],
             "start_time": str(time_start),
             "end_time": str(time_end),
+            "usage_time": str(time_usage),
             "detail": detail,
             "post_url": '',
             'ds_id': postdata['ds_id'],
@@ -472,39 +471,41 @@ class ddteedin():
     def delete_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
+        success = False
+        detail = 'Something wrong'
         test_login = self.test_login(postdata)
         success = test_login["success"]
-        detail = test_login["detail"]
+        if success:
+            success = False
+            try:
+                self.driver.get('https://www.ddteedin.com/myposts')
+                try:
+                    webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
+                except:
+                    pass
+                sleep(2)
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(postdata['post_id'])
+                WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'btn_srch'))).click()
+                sleep(3)
+                if len(self.driver.find_elements_by_class_name('btn-del')) ==0:
+                    detail = 'Cannot found post id'
+                else:
+                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, 'btn-del'))).click()
+                    WebDriverWait(self.driver, 5).until(EC.alert_is_present())
+                    alert = self.driver.switch_to.alert
+                    alert.accept()
+                    sleep(1)
+                    if len(self.driver.find_elements_by_class_name('btn-undel')) == 1:
+                        success = True
+                        detail = 'Delete success'
 
-        if success == "true":
-            r = self.httprequestObj.http_get(
-                'https://www.ddteedin.com/myposts/?rf=login', verify=False)
-            time.sleep(1)
-            print(r.url)
-            user_id = r.url.split('/')[-2]
-            query_element = {
-                'q': postdata['post_id'],
-                'pv': '',
-                'order': 'createdate',
-                'btn_srch': 'search'
-            }
-            query_string = 'https://www.ddteedin.com/myposts/' + user_id + '/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
-                ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-            r = self.httprequestObj.http_get(query_string, verify=False)
-            data = r.text
-            if data.find(" ไม่พบประกาศ") != -1:
-                success = "false"
-                detail = 'Your post id not found.'
-            else:
-                del_link = 'https://www.ddteedin.com/myposts/' + user_id +'/?rf=login'
-                datapost = {
-                    'id': postdata['post_id'],
-                    'act': 'del'
-                }
-                r = self.httprequestObj.http_post(del_link, data=datapost)
-                detail = 'Deleted post succesful'
+            finally:
+                self.driver.close()
+                self.driver.quit()
         else:
-            success = "false"
+            detail = test_login["detail"]
+            self.driver.close()
+            self.driver.quit()
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -520,9 +521,8 @@ class ddteedin():
             "post_id": postdata['post_id'],
             "log_id": postdata['log_id'],
             "account_type": "",
-            "ds_name": "hipflat"
+            "ds_name": "ddteedin"
         }
-        
 
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -538,6 +538,7 @@ class ddteedin():
             if success:
                 success = False
                 try:
+                    self.driver.get('https://www.ddteedin.com/myposts')
                     try:
                         webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
                     except:
@@ -588,129 +589,39 @@ class ddteedin():
     def boost_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-
-        post_id = postdata['post_id']
-        log_id = postdata['log_id']
-
+        
+        success = False
+        detail = 'Something wrong'
         test_login = self.test_login(postdata)
         success = test_login["success"]
-
-
-        if success == "true":
-            options = Options()
-            options.set_headless(True)
-            options.add_argument('--no-sandbox')
+        if success:
+            success = False
             try:
-                browser = webdriver.Chrome("./static/chromedriver",chrome_options=options)
-                #browser = webdriver.Chrome("./static/chromedriver")
-                wait = WebDriverWait(browser, 10)
-                browser.implicitly_wait(100)
-
-                browser.get('https://www.ddteedin.com/login/')
-                time.sleep(2)
-                email = browser.find_element_by_name('log_u')
-                email.clear()
-                email.send_keys(postdata['user'])
-                password = browser.find_element_by_name('log_p')
-                password.clear()
-                password.send_keys(postdata['pass'])
-                browser.find_element_by_name('login').click()
-                time.sleep(2)
-
-                search = browser.find_element_by_name('q')
-                search.send_keys(post_id + Keys.ENTER)
-                time.sleep(2)
-
-                soup = BeautifulSoup(browser.page_source, "html5lib")
-                if "ไม่พบประกาศ" not in soup.text:
-                    boost = browser.find_element_by_class_name('reindex')
-                    boost.click()
-                    time.sleep(10)
-                    soup1 = BeautifulSoup(browser.page_source, "html5lib")
-
-                    res=soup1.find("a", attrs={"class": "success"})
-
-                    if res != None:
-                        success=True
-                        detail="Post Boosted Successfully."
-                    elif soup1.find("a", attrs={"class": "disabled"}):
-                        success=False
-                        detail="Post already Boosted wait for another day."
-                    else:
-                        success=False
-                        detail="Post can't be Boosted."
-
-                else:
-                    success = False
-                    detail = "Post not found."
-
-            except:
-                success = False
-                detail = "Post can't be Boosted."
-
-            finally:
+                self.driver.get('https://www.ddteedin.com/myposts')
                 try:
-                    browser.close()
-                    browser.quit()
-                    try:
-                        alert = browser.switch_to.alert
-                        alert.accept()
-                        browser.close()
-                        browser.quit()
-                    except:
-                        pass
+                    webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
                 except:
                     pass
+                sleep(2)
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'srch'))).send_keys(postdata['post_id'])
+                WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'btn_srch'))).click()
+                sleep(3)
+                if len(self.driver.find_elements_by_partial_link_text('เลื่อนประกาศ')) ==0:
+                    detail = 'Cannot found post id'
+                else:
+                    self.driver.find_elements_by_partial_link_text('เลื่อนประกาศ')[0].click()
+                    sleep(2)
+                    if len(self.driver.find_elements_by_partial_link_text('เลื่อนแล้ว')) == 1:
+                        success = True
+                        detail = 'Boost success'
 
-            """
-            # tumbon_id = '01'
-            r = self.httprequestObj.http_get('https://www.ddteedin.com/myposts/?rf=login', verify=False)
-
-            query_element = {
-                'q': postdata['post_id'],
-                'pv': '',
-                'order': 'createdate',
-                'btn_srch': 'search'
-            }
-            query_string = 'https://www.ddteedin.com/myposts/?q='+query_element['q'].replace(' ', '+')+'&pv='+query_element['pv'].replace(
-                ' ', '+')+'&order='+query_element['order'].replace(' ', '+')+"&btn_srch="+query_element['btn_srch'].replace(' ', '+')
-            print(query_string)
-            r = self.httprequestObj.http_get(query_string, verify=False)
-            data = r.text
-
-            id = postdata['post_id']
-            # print(r.text)
-            if "ไม่พบประกาศ" in data:
-                success = "false"
-            else:
-
-                query_string = 'https://www.ddteedin.com/post-land-for-sale/edit/'+str(id)
-                r = self.httprequestObj.http_get(query_string, verify=False)
-                data = r.text
-                soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                try:
-                    cverify = soup.find("input", {"name": "cverify"})['value']
-
-                    datapost = [
-                        ('action', 'edit_post'),
-                        ('act', 'edit'),
-                        ('timeout', '5'),
-                        ('code', ''),
-                        ('warning', ""),
-                        ('opts[]', 62),
-                        ('cverify', cverify),
-                        ('id', id),
-                        ('btn_submit',"บันทึกแก้ไข")
-                    ]
-
-                    r = self.httprequestObj.http_post(query_string, data=datapost)
-
-                except Exception as e:
-                    success = "false"
-            """
+            finally:
+                self.driver.close()
+                self.driver.quit()
         else:
-            success = "false"
-            detail="Can't Login."
+            detail = test_login["detail"]
+            self.driver.close()
+            self.driver.quit()
 
 
         time_end = datetime.datetime.utcnow()
@@ -722,8 +633,8 @@ class ddteedin():
             "end_time": time_end,
             "detail": detail,
             'ds_id': postdata['ds_id'],
-            "log_id": log_id,
-            "post_id": post_id,
+            "log_id": postdata['log_id'],
+            "post_id": postdata['post_id'],
             "ds_id": postdata['ds_id']
         }
 
