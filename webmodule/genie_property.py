@@ -3,9 +3,9 @@ import datetime
 import sys
 
 
-class taladnudbaan():
+class genie_property():
 
-    name = 'taladnudbaan'
+    name = 'genie_property'
 
     def __init__(self):
 
@@ -21,29 +21,38 @@ class taladnudbaan():
         self.debug = 1
         self.debugresdata = 0
         self.parser = 'html.parser'
-        self.webname = 'taladnudbaan'
+        self.webname = 'genie_property'
 
     def print_debug(self, msg):
         if self.debug == 1:
             print(msg)
         return True
 
-    def logout_user(self):
-        url = "https://th.taladnudbaan.com/baan/index.php/cod.logout"
-        self.httprequestObj.http_get(url)
+
+    # Error 401
+    # def logout_user(self, postdata):
+
+    #     url = "https://www.genie-property.com/api/logout?mode=production"
+    #     r = self.httprequestObj.http_post(url, data=postdata)
+    #     print("function [logout_user]")
+    #     print(r.status_code)
 
     def register_details(self, postdata):
         register_data = {}
 
+        
+        register_data["first_name"] = postdata["name_en"]
+        register_data["last_name"] = postdata["surname_en"]
+        register_data["phone"] = postdata["tel"]
         register_data["email"] = postdata["user"]
         register_data["password"] = postdata["pass"]
-        register_data["password2"] = postdata["pass"]
-        register_data["terms"] = "on"
+        register_data["role"] = "seller"
+        register_data["company"] = postdata["company_name"]
 
         return register_data
 
     def register_user(self, postdata):
-        self.logout_user()
+
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
 
@@ -52,14 +61,19 @@ class taladnudbaan():
         data_register = self.register_details(postdata)
 
 
-        res = self.httprequestObj.http_post('https://accounts.taladnudbaan.com/?cod=create_user&url=https%3A%2F%2Fth.taladnudbaan.com%2Fbaan%2Findex.php%2Fcod.mail_preferences&language=th_TH&', data=data_register)
+        res = self.httprequestObj.http_post_with_headers('https://www.genie-property.com/api/signup?mode=production', data=data_register)
+        print(res.status_code)
+        # print(res.text)
+        # with open("debug_response/genie_property.txt", "w") as file:
+        #     file.write(res.text)
+
 
         detail = ""
         register_success = False
         soup_web = BeautifulSoup(res.text, "html5lib")
         if soup_web:
-            verify_register = soup_web.find("p", attrs={"class":"before_form"}).text
-            if verify_register == "อีเมลนี้ใช้ในการสมัครแล้ว คุณสามารลงชื่อเข้าใช้ได้ที่นี่":
+            verify_register = soup_web.find("span", attrs={"class":"mr-2"}).text
+            if verify_register != "สำหรับผู้ขาย":
                 register_success = True
 
         # 
@@ -68,7 +82,7 @@ class taladnudbaan():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "websitename": "taladnudbaan",
+            "websitename": "genie_property",
             "success": register_success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
@@ -77,26 +91,26 @@ class taladnudbaan():
         }
 
     def test_login(self, postdata):
-        self.logout_user()
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
-        url = "https://accounts.taladnudbaan.com/?cod=check_login&url=https%3A%2F%2Fth.taladnudbaan.com%2Fbaan%2Findex.php%2Fcod.mail_preferences&language=th_TH&"
-
         time_start = datetime.datetime.utcnow()
 
+
+        url = "https://www.genie-property.com/api/signin?mode=production"
         data_login = {
             'email' : postdata['user'],
             'password' : postdata['pass']
         }
 
+
         r = self.httprequestObj.http_post(url, data=data_login)
         print(r.status_code)
+        res = r.json()
 
         detail = ""
         success = False
-        soup = BeautifulSoup(r.text, self.parser)
-        verify_login = soup.find("span", attrs={"class":"account-button-text header-option-button-text"}).text
-        if verify_login == "บัญชี":
+        if res['success'] == True:
             success = True
+     
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
