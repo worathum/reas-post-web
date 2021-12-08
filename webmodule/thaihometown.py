@@ -1578,6 +1578,7 @@ class thaihometown():
                     email = soup.find("input", {"name": "email"})['value']
                     contact_code = soup.find("input", {"name": "contact_code"})['value']
                     old_price = soup.find("input", {"name": "selling_price"})['value']
+                    oldrent_price = soup.find("input", {"name": "rent_price"})['value']
                     datahandled['post_description_th'] = datahandled['post_description_th'].replace('\r','')
                     datapost = {
                         'code_edit':code_edit,
@@ -1635,7 +1636,7 @@ class thaihometown():
                         'property_type':datahandled['property_type'].encode('cp874', 'ignore'),
                         'property_type2':datahandled['property_type'].encode('cp874', 'ignore'),
                         'rent_price':rent_price,
-                        'rent_price_number2':rent_price,
+                        'rent_price_number2':oldrent_price,
                         'room1':datahandled['bed_room'],
                         'room12':datahandled['bed_room'],
                         'room2':datahandled['bath_room'],
