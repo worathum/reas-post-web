@@ -39,7 +39,7 @@ class goodpriceproperty():
         self.httprequestObj = lib_httprequest()
 
     def logout_user(self):
-        url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/logout.php'
+        url = 'https://www.xn--42cf4b4c7ahl7albb1b.com/logout.php'
         self.httprequestObj.http_get(url)
 
 
@@ -179,13 +179,13 @@ class goodpriceproperty():
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36'
         }
         r = self.httprequestObj.http_post(
-            'http://www.xn--42cf4b4c7ahl7albb1b.com/login.php', data=datapost, headers=headers)
+            'https://www.xn--42cf4b4c7ahl7albb1b.com/login.php', data=datapost, headers=headers)
 
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36'
         }
         data = r.text
-
+        print(data)
         if data.find("ขออภัยครับ") != -1:
             detail = "cannot login"
             success = "false"
@@ -334,7 +334,7 @@ class goodpriceproperty():
             if len(postdata['post_images']) == 0:
                 postdata['post_images'] = ['imgtmp/default/white.jpg']
 
-            edit_url = "http://www.xn--42cf4b4c7ahl7albb1b.com/member/post-property.php"
+            edit_url = "https://www.xn--42cf4b4c7ahl7albb1b.com/member/post-property.php"
             headers = {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36'
             }
