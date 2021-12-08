@@ -143,3 +143,5 @@ imgtmp/[0-9]*/
 captcha.png
 tmp.jpeg
 static/chromedriver
+piktest_s.py
+piktest.py
