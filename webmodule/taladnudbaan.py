@@ -3,9 +3,9 @@ import datetime
 import sys
 
 
-class trovit():
+class taladnudbaan():
 
-    name = 'trovit'
+    name = 'taladnudbaan'
 
     def __init__(self):
 
@@ -21,7 +21,7 @@ class trovit():
         self.debug = 1
         self.debugresdata = 0
         self.parser = 'html.parser'
-        self.webname = 'trovit'
+        self.webname = 'taladnudbaan'
 
     def print_debug(self, msg):
         if self.debug == 1:
@@ -29,7 +29,7 @@ class trovit():
         return True
 
     def logout_user(self):
-        url = "https://th.trovit.com/baan/index.php/cod.logout"
+        url = "https://th.taladnudbaan.com/baan/index.php/cod.logout"
         self.httprequestObj.http_get(url)
 
     def register_details(self, postdata):
@@ -52,7 +52,7 @@ class trovit():
         data_register = self.register_details(postdata)
 
 
-        res = self.httprequestObj.http_post('https://accounts.trovit.com/?cod=create_user&url=https%3A%2F%2Fth.trovit.com%2Fbaan%2Findex.php%2Fcod.mail_preferences&language=th_TH&', data=data_register)
+        res = self.httprequestObj.http_post('https://accounts.taladnudbaan.com/?cod=create_user&url=https%3A%2F%2Fth.taladnudbaan.com%2Fbaan%2Findex.php%2Fcod.mail_preferences&language=th_TH&', data=data_register)
 
         detail = ""
         register_success = False
@@ -68,7 +68,7 @@ class trovit():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "websitename": "trovit",
+            "websitename": "taladnudbaan",
             "success": register_success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
@@ -79,7 +79,7 @@ class trovit():
     def test_login(self, postdata):
         self.logout_user()
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
-        url = "https://accounts.trovit.com/?cod=check_login&url=https%3A%2F%2Fth.trovit.com%2Fbaan%2Findex.php%2Fcod.mail_preferences&language=th_TH&"
+        url = "https://accounts.taladnudbaan.com/?cod=check_login&url=https%3A%2F%2Fth.taladnudbaan.com%2Fbaan%2Findex.php%2Fcod.mail_preferences&language=th_TH&"
 
         time_start = datetime.datetime.utcnow()
 
