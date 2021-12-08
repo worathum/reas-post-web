@@ -2,9 +2,6 @@ from .lib_httprequest import *
 import datetime
 import sys
 
-'''
-    web can't post
-'''
 
 class trovit():
 
