@@ -649,7 +649,7 @@ class ddproperty_plus():
 
         if success == "true":
             self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
-            time.sleep(1)
+            time.sleep(5)
             try:
                 webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
             except:
@@ -1232,6 +1232,7 @@ class ddproperty_plus():
                         imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                         imglis = imgdiv.find_elements_by_link_text("...")
 
+            time.sleep(5)
             all_images = ""
             for count, pic in enumerate(datahandled['post_images']):
                 if count < len(datahandled['post_images'])-1:

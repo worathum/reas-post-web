@@ -649,7 +649,7 @@ class ddproperty():
 
         if success == "true":
             self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
-            time.sleep(1)
+            time.sleep(5)
             try:
                 webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
             except:
@@ -1234,7 +1234,8 @@ class ddproperty():
                     all_images += os.path.abspath(pic) + '\n'
                 else:
                     all_images += os.path.abspath(pic)
-
+            
+            time.sleep(3)
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
