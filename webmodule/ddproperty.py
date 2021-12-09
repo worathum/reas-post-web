@@ -1584,66 +1584,86 @@ class ddproperty():
         #log.debug('')
 
         time_start = datetime.datetime.utcnow()
-
-        # start process
-        #
-        """datahandled = self.postdata_handle(postdata)
-
-        # login
-        test_login = self.test_login(datahandled)
+        success = 'false'
+        detail = 'Something wrong'
+        post = 'true'
+        test_login = self.test_login_headless(postdata)
         success = test_login["success"]
-        detail = test_login["detail"]
-        agent_id = test_login["agent_id"]
-      #log.debug('')
-        
-        try:
-            if success == "true":
-                # datapost = {
-                #     "listing_id[]": datahandled['post_id'],
-                #     "statusCode": "ACT",
-                #     "expectedCredits[]": 0,
-                # }
+        if success == 'true':
+            if postdata['post_id'] == '':
+                success = 'false'
+                post = 'false'
 
-                self.firefox.get("https://agentnet.ddproperty.com/v2/listing_management")
-                time.sleep(5)
-
-                filterbtn = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'filter-buttons-items')))
-                filterclick = filterbtn.find_elements_by_tag_name('div')
-                filterclick[0].click()
-
-                searchinput = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedStart.MuiOutlinedInput-inputAdornedStart')))
-                searchinput.click()
-                searchinput.send_keys(datahandled['post_id'])
-                time.sleep(0.5)
-                searchinput.send_keys(Keys.ENTER)
-                time.sleep(2)
-                
-                try:
-                    WebDriverWait(self.firefox, 3).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-card-content')))
-                except:
-                    success = 'false'
-                    detail = 'Post id not found.'
-                
-                if success == 'true':
-                    btnid = 'repost-cta-' + datahandled['post_id']
-                    try:
-                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, btnid))).click()
-                        time.sleep(3)
-                        success = 'true'
-                        detail = 'Boost post success.'
-                    except:
-                        success = 'false'
-                        detail = 'Your post already renewalthis week, please wait for the next week.'
-
-        except:
+        if success == 'true':
             success = 'false'
-            detail = 'System fail. Please retry the process.'
+
+            try:
+                self.firefox.get('https://agentnet.ddproperty.com/v2/listing_management')
+                time.sleep(4)
+                WebDriverWait(self.firefox, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="listing-management-component"]/div/div[1]/div[2]/div[1]'))).click()
+                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
+                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
+                time.sleep(2)
+                try:
+                    WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/div[3]/div/div/div[2]/div/div[1]/div[1]/div[4]/div/div/ul/li[2]/div/div/div[2]/p'))).text
+                except:
+                    try:
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter"]/div'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter-popper"]/div/ul/li[3]'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
+                        time.sleep(0.5)
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
+                        time.sleep(2)
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="listing-management-component"]/div/div[3]/div/div/div[2]/div/div/div[1]/div[3]/div/div[2]/button'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[5]/div[3]/div/div[3]/div[2]'))).click()
+                        time.sleep(1)
+                        webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter"]/div'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter-popper"]/div/ul/li[1]'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
+                        time.sleep(0.5)
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
+                        time.sleep(2)
+                    except:
+                        detail = 'Post id not found.'
                 
-        finally:
+                auto_boost = ''
+                try:
+                    auto_boost = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="autorepost-cta-{}"]/span[1]/div'.format(postdata['post_id'])))).text
+                except:
+                    detail = 'Post id not found.'
+
+                if auto_boost != '':
+                    if 'ต่ออายุรอบต่อไป' in auto_boost:
+                        success = 'true'
+                        detail = 'Post already boost'
+                    else:
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="autorepost-cta-{}"]/span[1]/div'.format(postdata['post_id'])))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[2]/div/button[3]'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="tata-end-date"]'))).click()
+                        for i in range(11):
+                            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div[2]'))).click()
+                            time.sleep(0.5)
+                        for i in range(7):
+                            if WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div[3]/div/table/tbody/tr[1]/td[{}]'.format(i+1)))).text =='1':
+                                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div[3]/div/table/tbody/tr[1]/td[{}]'.format(i+1)))).click()
+                                break
+                        time.sleep(2)
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[3]/div[2]'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'autoRepostProceedBtn'))).click()
+                        time.sleep(2)
+                        if 'ต่ออายุรอบต่อไป' in WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="autorepost-cta-{}"]/span[1]/div'.format(postdata['post_id'])))).text:
+                            success = 'true'
+                            detail = 'Post already boost'
+            finally:
+                self.firefox.close()
+                self.firefox.quit()
+        else:
+            detail = test_login["detail"]
+            if post == 'false':
+                detail = 'Post id is empty.'
             self.firefox.close()
-            self.firefox.quit()"""
-        success = False
-        detail = 'cannot boost'
+            self.firefox.quit()
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
