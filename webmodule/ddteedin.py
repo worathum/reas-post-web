@@ -124,7 +124,7 @@ class ddteedin():
         self.driver = webdriver.Chrome("./static/chromedriver", chrome_options=options)
         try:
             self.driver.get('https://www.ddteedin.com/login')
-            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'log_u'))).send_keys(postdata['user'])
+            """WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, 'log_u'))).send_keys(postdata['user'])
             WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'log_p'))).send_keys(postdata['pass'])
             WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.NAME, 'login'))).click()
             sleep(2)
@@ -135,12 +135,13 @@ class ddteedin():
                 detail = 'Wrong username or password'
             elif matchObj2:
                 success = True
-                detail = 'Login successful'
+                detail = 'Login successful'"""
         finally:
             if postdata['action'] == 'test_login':
                 self.driver.close()
                 self.driver.quit()
-
+        success = False
+        detail = 'Something wrong'
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {

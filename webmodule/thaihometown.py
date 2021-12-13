@@ -1170,7 +1170,7 @@ class thaihometown():
 
         # login
         if success == 'true':
-            self.test_login(postdata)
+            #self.test_login(postdata)
             test_login = self.test_login(postdata)
             success = test_login["success"]
             detail = test_login["detail"]
@@ -1223,14 +1223,14 @@ class thaihometown():
                     with open(os.getcwd()+imgname, 'wb') as f:
                         f.write(res.content)
                     #log.debug('download image '+imgname)
-                    imgnum = self.ImgToTextResolve(os.getcwd()+imgname)              
+                    imgnum = self.ImgToTextResolve(os.getcwd()+imgname)
                     #log.debug(imgnum)
                     #if anti captcha is error
                     if imgnum['errorId'] < 0:
                         success = 'false'
                         detail = imgnum['errorDescription']
                         #log.debug(imgnum['errorDescription'])
-                        if imgnum['errorCode'] == 'ERROR_KEY_DOES_NOT_EXIST' or imgnum['errorCode'] == 'ERROR_ZERO_BALANCE' or imgnum['errorCode'] == 'ERROR_IP_NOT_ALLOWED' or imgnum['errorCode'] == 'ERROR_IP_BLOCKED':
+                        if imgnum['errorId'] == -1 or imgnum['errorCode'] == 'ERROR_KEY_DOES_NOT_EXIST' or imgnum['errorCode'] == 'ERROR_ZERO_BALANCE' or imgnum['errorCode'] == 'ERROR_IP_NOT_ALLOWED' or imgnum['errorCode'] == 'ERROR_IP_BLOCKED':
                             #log.debug('break')
                             break
                         continue
@@ -1292,7 +1292,7 @@ class thaihometown():
         except Exception as err:
             return {'errorId':9999,'errorDescription' :str(err)}
         if user_ans['balance'] <= 0.001000:
-            return {'errorId':9999,'errorDescription' :'balance not enough '+user_ans['balance']}
+            return {'errorId':-1,'errorDescription' :'balance not enough '+str(user_ans['balance'])}
      
         #resolve captcha
         try:
