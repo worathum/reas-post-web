@@ -6,6 +6,20 @@
             "url_web": "https://th.trovit.com/baan/",
             "user": "vinves.postweb@outlook.com",
             "pass": "vinvestorDev"
+        },
+        {
+            "ds_name": "genie_property",
+            "ref_id": "2",
+            "url_web": "https://www.genie-property.com/",
+            "user": "vinves.postweb@outlook.com",
+            "pass": "vinvestorDev"
         }
+        {
+            "ds_name": "genie_property",
+            "ref_id": "3",
+            "url_web": "https://www.genie-property.com/",
+            "user": "tanakon.blabla@outlook.com",
+            "pass": "K78sb96abC69"
+        },
     ]
 }

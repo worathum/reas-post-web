@@ -1,4 +1,7 @@
+from typing import Text
+from selenium.webdriver.support.expected_conditions import element_selection_state_to_be
 from .lib_httprequest import *
+from bs4 import BeautifulSoup
 import datetime
 import sys
 
@@ -63,6 +66,12 @@ class genie_property():
 
         res = self.httprequestObj.http_post_with_headers('https://www.genie-property.com/api/signup?mode=production', data=data_register)
         print(res.status_code)
+        try:
+            res_j = res.json()
+        except:
+            res_j = {}
+            res_j['message'] = '' 
+
         # print(res.text)
         # with open("debug_response/genie_property.txt", "w") as file:
         #     file.write(res.text)
@@ -70,11 +79,15 @@ class genie_property():
 
         detail = ""
         register_success = False
-        soup_web = BeautifulSoup(res.text, "html5lib")
-        if soup_web:
-            verify_register = soup_web.find("span", attrs={"class":"mr-2"}).text
-            if verify_register != "สำหรับผู้ขาย":
+        if res_j['message'] == "The given data was invalid.":
+            register_success = False
+        else:
+            test_login = self.test_login(postdata)
+            if test_login['success'] == False:
+                register_success = False
+            else:
                 register_success = True
+
 
         # 
         # end process
@@ -104,7 +117,15 @@ class genie_property():
 
         r = self.httprequestObj.http_post(url, data=data_login)
         print(r.status_code)
-        res = r.json()
+        try:
+            res = r.json()
+            res_profile = res['profile']
+        except:
+            res = {}
+            res_profile = {}
+            res_profile['id'] = False
+            res_profile['account_id'] = False
+            res['success'] = False
 
         detail = ""
         success = False
@@ -119,8 +140,196 @@ class genie_property():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            'ds_id': postdata['ds_id'],
+            "ds_id": postdata['ds_id'],
             "detail": detail,
             "websitename": self.webname,
+            "id": res_profile['id'],
+            "account_id": res_profile['account_id']
         }
 
+
+
+    def data_details(self, postdata, user_id, account_id):
+
+        form_post = {
+                    "th_desc_value":"testtest",
+                    "en_desc_value":"testtest",
+                    "bathrooms":"11",
+                    "bedrooms":"11",
+                    "type":"house", # condo, house, towmhouse
+                    "land_size":"11",
+                    "interior_size":"11",
+                    "account_id":str(account_id),
+                    "price_sale":"3000",
+                    "price_rent":"",
+                    "down_payment":"",
+                    "reference":"",
+                    "cars":"",
+                    "user_id": user_id,
+                    "storeys":"11",
+                    "is_exclusive":False,
+                    "is_hot_deal":False,
+                    "status":"draft",
+                    "formType":"general"
+                        }
+
+        translations = [
+            {
+                    "field":"title",
+                    "language":"th",
+                    "content":"xxx"
+                },
+                {
+                    "field":"title",
+                    "language":"en",
+                    "content":"xxx"
+                },
+                {
+                    "field":"highlight",
+                    "language":"en",
+                    "content":""
+                },
+                {
+                    "field":"highlight",
+                    "language":"th",
+                    "content":""
+                },
+                {
+                    "field":"desc",
+                    "language":"en",
+                    "content":"<p>xxx</p>\n"
+                },
+                {
+                    "field":"desc",
+                    "language":"th",
+                    "content":"<p>xxx</p>\n"
+                }
+        ]
+        
+        put_location = {
+                    "unit_number":"119/251",
+                    "building":"",
+                    "floor":"",
+                    "street_address":"119/251 ซ.สายไหม",
+                    "project_id":"",
+                    "location_uids":[1000000073],
+                    "type":"house",
+                    "map_address":"Soi Sai Mai 15, Khwaeng Sai Mai, Khet Sai Mai, Krung Thep Maha Nakhon 10220, Thailand",
+                    "gps_lat":13.9259609,
+                    "gps_lon":100.6444385,
+                    "formType":"location"
+        }
+
+        put_facilities = {
+                    "formType":"feature",
+                    "featureIds":[
+                                  # Facilities
+                                  1,2,3,4,5,6,7,
+                                  8,9,10,11,12,13,
+                                  14,15,16,
+                                  # Common area
+                                  17,18,19,20,21,22,
+                                  23,24,25,26,27,28,29,
+                                  30,31,32,33,34,35,
+                                  36,37,38,39,40,41,
+                                  42,43,44,45,46,47,48,
+                                  49,50
+                    ]
+        }
+
+        
+
+        for items in translations:
+            if items['language'] == 'th':
+                if items['field'] == 'title':
+                    items['content'] = postdata['post_title_th']
+                if items['field'] == 'highlight':
+                    items['content'] = postdata['short_post_title_th']
+                if items['field'] == 'desc':
+                    items['content'] = postdata['post_description_th']
+            if items['language'] == 'en':
+                if items['field'] == 'title':
+                    items['content'] = postdata['post_title_en']
+                if items['field'] == 'highlight':
+                    items['content'] = postdata['short_post_title_en']
+                if items['field'] == 'desc':
+                    items['content'] = postdata['post_description_en']
+        
+        
+        form_post["th_desc_value"] = postdata["post_description_th"]
+        form_post["en_desc_value"] = postdata["post_description_en"]
+        form_post["bathrooms"] = postdata["bath_room"]
+        form_post["bedrooms"] = postdata["bed_room"]
+        form_post["type"] = postdata["property_type"] # condo, house, towmhouse
+        form_post["land_size"] = postdata["land_size_wa"]
+        form_post["interior_size"] = postdata["land_size_wa"]
+        form_post["price_sale"] = postdata["price_baht"]
+        form_post["price_rent"] = "0"
+        form_post["reference"] = postdata["property_id"]
+        form_post["down_payment"] = "0"
+        form_post["cars"] = "1"
+        form_post["translations"] = translations
+
+        
+        return form_post
+
+    def create_post(self, postdata):
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        time_start = datetime.datetime.utcnow()
+
+        test_login = self.test_login(postdata)
+        success_login = test_login["success"]
+        detail = test_login["detail"]
+        post_id = ""
+        post_url = ""
+        account_type = "normal"
+
+
+        # start process
+        #
+        
+        
+        url = 'https://www.genie-property.com/api/properties?mode=production'
+        
+        if success_login:
+            if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
+                if 'project_name' in postdata and postdata['project_name'] is not None:
+                    postdata['web_project_name'] = postdata['project_name']
+                else:
+                    postdata['web_project_name'] = postdata['post_title_th']
+            
+            
+            payload = self.data_details(postdata, test_login['id'], test_login['account_id'])
+            print(payload)
+
+
+            r = self.httprequestObj.http_post_with_headers(url, data=payload)
+            status = r.status_code
+            # print(r.text)
+            print(r.status_code)
+
+            success = False
+            if status == 200:
+                success = True
+            else:
+                success = False
+
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "ds_id": "xxx",
+            "post_url": post_url,
+            "post_id": post_id,
+            "account_type": account_type,
+            "detail": detail,
+            "websitename": self.webname
+        }
+            
+
+            
+    
