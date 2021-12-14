@@ -1,10 +1,12 @@
-from typing import Text
-from selenium.webdriver.support.expected_conditions import element_selection_state_to_be
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import datetime
 import sys
+import json
 
+'''
+    bug post web, may be use selenium is work? 13/12/2021 PIK
+'''
 
 class genie_property():
 
@@ -115,7 +117,7 @@ class genie_property():
         }
 
 
-        r = self.httprequestObj.http_post(url, data=data_login)
+        r = self.httprequestObj.http_put_json(url, data=data_login)
         print(r.status_code)
         try:
             res = r.json()
@@ -154,11 +156,11 @@ class genie_property():
         form_post = {
                     "th_desc_value":"testtest",
                     "en_desc_value":"testtest",
-                    "bathrooms":"11",
-                    "bedrooms":"11",
+                    "bathrooms":"2",
+                    "bedrooms":"2",
                     "type":"house", # condo, house, towmhouse
-                    "land_size":"11",
-                    "interior_size":"11",
+                    "land_size":"50",
+                    "interior_size":"50",
                     "account_id":str(account_id),
                     "price_sale":"3000",
                     "price_rent":"",
@@ -300,13 +302,16 @@ class genie_property():
             
             
             payload = self.data_details(postdata, test_login['id'], test_login['account_id'])
-            print(payload)
+            data = json.dumps(payload)
 
 
-            r = self.httprequestObj.http_post_with_headers(url, data=payload)
+            r = self.httprequestObj.http_post(url, data=data)
             status = r.status_code
-            # print(r.text)
-            print(r.status_code)
+            print(r.encoding)
+            print(status)
+
+            #
+            # end process
 
             success = False
             if status == 200:
