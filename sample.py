@@ -66,7 +66,7 @@ class sample():
     "geo_latitude": "13.786862",
     "geo_longitude": "100.757815",    
     "property_id" : "A01",
-    "post_title_th": "test",
+    "post_title_th": "ขายบ้านเดี่ยว 2 ชั้น",
     "short_post_title_th": "test",
     "post_description_th": "test",
     "post_title_en": "testtest",
@@ -97,7 +97,7 @@ class sample():
     "land_size_wa": "50",
     
     "name": "test",
-    "mobile": "test",
+    "tel": "test",
     "email": "test",
     "line": "test",
     "web": [

@@ -1,8 +1,13 @@
 from .lib_httprequest import *
+from .lib_captcha import *
 from bs4 import BeautifulSoup
 import datetime
 import sys
 import json
+import requests
+
+
+captcha = lib_captcha()
 
 with open("./static/bkkland_province.json",encoding = 'utf-8') as f:
     provincedata = json.load(f)
@@ -87,18 +92,18 @@ class bkkland():
 
 
         pd_condition = {
-            '1': 'ขาย', #1 ขาย 
-            '2': 'เช่า', #2 เช่า
-            '3': 'ซื้อ', #3 ซื้อ
+            'ขาย':'1', 
+            'เช่า':'2', 
+            'ซื้อ':'3', 
         }
 
         pd_properties = {
-                '1': 'land', 
-                '2': 'house', 
-                '3': 'townhouse', 
-                '4': 'building', 
-                '5': 'condo', 
-                '6': 'office', 
+                'land':'1', 
+                'house':'2', 
+                'townhouse':'3', 
+                'building':'4', 
+                'condo':'5', 
+                'office':'6', 
             }
 
         province_id = ''
@@ -114,15 +119,49 @@ class bkkland():
                     amphur_id = key
                     break
 
+        r = self.httprequestObj.http_get('http://www.bkkland.com/post/form')
+        if r.status_code==200:
+            soup = BeautifulSoup(r.text, features=self.parser)
+            img_url = soup.find_all('img')
+            for link in img_url:
+                # if web is captcha get img and process
+                if str(link) == '''<img src="http://www.bkkland.com/post/captcha"/>''':
+                    captcha_img = self.httprequestObj.http_get("http://www.bkkland.com/post/captcha", stream=True)
+            
+            path_img = os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg'
+            with open(path_img,'wb') as local_file :
+                for block in captcha_img.iter_content(1024):
+                    if not block:
+                        break
+                    local_file.write(block)
+            
+            g_response = captcha.imageCaptcha(path_img)
+            if g_response[0]==1:
+                postdata['captcha'] = g_response[1]
+                os.remove(path_img)
 
         files = {
             'f_topic' : (None, postdata['post_title_th']),
             'f_condition' : (None, int(pd_condition[str(postdata['listing_type'])])),
             'f_typepost' : (None, int(pd_properties[str(postdata['property_type'])])),
-            'f_province' : (None, int(pd_properties[str(postdata['addr_province'])])),
-            'f_amphur' : (None, province_id),
-            'f_district' : (None, amphur_id),
+            'f_province' : (None, province_id),
+            'f_amphur' : (None, amphur_id),
+            'f_district' : (None, ""),
             'f_land_area' : (None, postdata['land_size_wa']),
+            'f_price_accept' : (None, "Y"),
+            'f_price' : (None, postdata['price_baht']),
+            'f_pricetype' : (None, "1"),
+            'f_journey' : (None, postdata['addr_soi']+postdata['addr_road']+postdata['addr_near_by']),
+            'f_mhtml' : (None, postdata['post_description_th']),
+            'f_picfake1' : (None, postdata['post_img_url_lists'][0]),
+            'picfile1' : (None, ""),
+            'f_captcha' : (None, postdata['captcha']),
+            'process' : (None, "post_add"),
+            'lat_value' : (None, postdata['geo_latitude']),
+            'lon_value' : (None, postdata['geo_longitude']),
+            'f_name' : (None, postdata['name']),
+            'f_phone' : (None, postdata['tel']),
+            'f_email' : (None, postdata['email']),
 
         }
 
@@ -130,32 +169,42 @@ class bkkland():
         
 
     def create_post(self, postdata):
-        # http://www.bkkland.com/post/add ?? may be
-
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        start_time = datetime.datetime.utcnow()
+        self.logout_user()
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
-        result =  {
-            "success": test_login['success'],
-            "usage_time": '',
-            "start_time": str(start_time),
-            "end_time": '',
-            "post_url": '',
-            "ds_id": str(postdata['ds_id']),
-            "post_id": '',
-            "account_type": "null",
-            "detail": '',
-            "websitename": self.name
-        }
-
-        payload = self.datapost_details(postdata)
 
         if test_login['success'] == "true":
             url = "http://www.bkkland.com/post/add"
-            r = self.httprequestObj.http_post(url, data=payload)
+            payload = self.datapost_details(postdata)
+            r = self.httprequestObj.http_post_with_headers(url, data=payload)
             print(r.text)
             print(r.status_code)
+
+        success = False
+        res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?status=add_complete")
+        soup = BeautifulSoup(res_complete.text, self.parser)
+        # loop find all title post
+        for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+            soup_ele = BeautifulSoup(str(hit), self.parser)
+            title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
+
+            if title == postdata['post_title_th']:
+                success = True
+
+        detail = ""
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            'ds_id': postdata['ds_id'],
+            "detail": detail,
+            "websitename": self.webname,
+        }
     
 
 
