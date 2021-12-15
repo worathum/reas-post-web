@@ -71,7 +71,7 @@ class trovit():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "websitename": "trovit",
+            "websitename": self.webname,
             "success": register_success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),

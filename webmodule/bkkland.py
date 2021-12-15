@@ -5,6 +5,8 @@ import datetime
 import sys
 import json
 import requests
+import urllib.request
+
 
 
 captcha = lib_captcha()
@@ -45,7 +47,7 @@ class bkkland():
 
     def test_login(self, postdata):
 
-        self.logout_user
+        self.logout_user()
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
 
@@ -69,7 +71,10 @@ class bkkland():
         login_success = False
         soup_web = BeautifulSoup(r.content,'lxml')
         if soup_web:
-            verify = soup_web.find("div", attrs={"class":"personal_info"}).text
+            try:
+                verify = soup_web.find("div", attrs={"class":"personal_info"}).text
+            except:
+                pass
             if postdata['user'] in verify.split():
                 login_success = True
                 
@@ -86,6 +91,70 @@ class bkkland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+        }
+
+    def register_details(self, postdata):
+        register_data = {}
+
+        register_data["f_email"] = postdata["user"]
+        register_data["f_pass"] = postdata["pass"]
+        register_data["f_phone"] = postdata["tel"]
+        register_data["f_name"] = postdata['name_en']
+        register_data["process"] = "register"
+        register_data["go"] = 'สมัครโลด !'
+
+        return register_data
+
+    def register_user(self, postdata):
+        self.logout_user()
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        time_start = datetime.datetime.utcnow()
+
+        data_register = self.register_details(postdata)
+
+        res = self.httprequestObj.http_post_with_headers('http://www.bkkland.com/auth/register/add', data=data_register)
+        print(res.status_code)
+
+
+        comment = ""
+        register_success = False
+        if res.status_code == 200:
+            soup = BeautifulSoup(res.content,'lxml')
+            for hit in soup.find_all("p", attrs={"class":"comment"}):
+                soup_ele = BeautifulSoup(str(hit), self.parser)
+                comment = soup_ele.find("p", attrs={"class":"comment"}).text
+                if comment == "อีเมล์ นี้มีคนใช้แล้วค่ะ":
+                    register_success = False
+                elif comment == "ชื่อสมาชิก นี้มีคนใช้แล้วค่ะ":
+                    register_success = False
+
+        try:
+            self.test_login(postdata)
+            r = self.httprequestObj.http_get("http://www.bkkland.com/member")
+            print(r.status_code)
+            soup = BeautifulSoup(r.content,'lxml')
+            verify = soup.find("div", attrs={"class":"personal_info"}).text
+            if verify != []:
+                if postdata['user'] in verify.split():
+                    register_success = True
+                    comment = "สมัครสมาชิกสำเร็จแล้วค่ะ"
+        except:
+            comment = "Error"
+
+
+
+        # 
+        # end process
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "websitename": self.webname,
+            "success": register_success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": comment,
         }
 
     def datapost_details(self, postdata):
@@ -153,7 +222,7 @@ class bkkland():
             'f_pricetype' : (None, "1"),
             'f_journey' : (None, postdata['addr_soi']+postdata['addr_road']+postdata['addr_near_by']),
             'f_mhtml' : (None, postdata['post_description_th']),
-            'f_picfake1' : (None, postdata['post_img_url_lists'][0]),
+            'f_picfake1' : (None, "fakepath"),
             'picfile1' : (None, ""),
             'f_captcha' : (None, postdata['captcha']),
             'process' : (None, "post_add"),
@@ -166,6 +235,29 @@ class bkkland():
         }
 
         return datapost
+
+
+    def pull_imgs(self, postdata):
+        files = {}
+        allimages = []
+        # try:
+        for count in range(len(postdata["post_img_url_lists"])):
+            link = postdata["post_img_url_lists"][count]
+            path = os.getcwd()+"/imgtmp/img_upload/"+"photo_{}.jpg".format(count+1)
+            img_data = requests.get(link).content
+            with open(path, 'wb') as handler:
+                handler.write(img_data)
+            allimages.append(path)
+
+        # except:
+        #     allimages = os.getcwd()+postdata["post_images"]
+
+        for i in range(len(allimages)):
+            r = open(allimages[i], 'rb')
+            name = 'photo{}'.format(i+1)
+            files[name] = ("{}".format(allimages[i]),r,"image/jpeg")
+        
+        return files, allimages
         
 
     def create_post(self, postdata):
@@ -178,10 +270,15 @@ class bkkland():
         if test_login['success'] == True:
             url = "http://www.bkkland.com/post/add"
             payload = self.datapost_details(postdata)
-            r = self.httprequestObj.http_post_with_headers(url, data=payload)
+            files, path_imgs = self.pull_imgs(postdata)
+            print(files)
+            r = self.httprequestObj.http_post(url, data=payload, files=files)
+            for f in path_imgs:
+                os.remove(f)
             print(r.status_code)
 
         success = False
+        url_post = ""
         res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?status=add_complete")
         soup = BeautifulSoup(res_complete.text, self.parser)
         # loop find all title post (first page)
@@ -190,6 +287,7 @@ class bkkland():
             title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
 
             if title == postdata['post_title_th']:
+                url_post = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                 success = True
 
         detail = ""
@@ -201,9 +299,18 @@ class bkkland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             'ds_id': postdata['ds_id'],
+            'url' : url_post,
             "detail": detail,
             "websitename": self.webname,
         }
-    
 
+    def edit_post(self,postdata):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        start_time = datetime.datetime.utcnow()
+
+        test_login = self.test_login(postdata)
+
+        if test_login['success'] == True:
+            url = '''http://www.bkkland.com/post/form/edit?id={}'''.format(postdata['post_id'])
+            payload = self.datapost_details(postdata)
 

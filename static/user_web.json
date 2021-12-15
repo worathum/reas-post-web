@@ -27,6 +27,13 @@
             "url_web": "https://www.bkkland.com/",
             "user": "tanakon.blabla@outlook.com",
             "pass": "K78sb96abC69"
+        },
+        {
+            "ds_name": "bkkland",
+            "ref_id": "5",
+            "url_web": "https://www.bkkland.com/",
+            "user": "vinves.postweb@outlook.com",
+            "pass": "K78sb96abC69"
         }
     ]
 }
