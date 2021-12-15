@@ -140,7 +140,7 @@ class bkkland():
                 postdata['captcha'] = g_response[1]
                 os.remove(path_img)
 
-        files = {
+        datapost = {
             'f_topic' : (None, postdata['post_title_th']),
             'f_condition' : (None, int(pd_condition[str(postdata['listing_type'])])),
             'f_typepost' : (None, int(pd_properties[str(postdata['property_type'])])),
@@ -165,7 +165,7 @@ class bkkland():
 
         }
 
-        return files
+        return datapost
         
 
     def create_post(self, postdata):
@@ -175,17 +175,16 @@ class bkkland():
 
         test_login = self.test_login(postdata)
 
-        if test_login['success'] == "true":
+        if test_login['success'] == True:
             url = "http://www.bkkland.com/post/add"
             payload = self.datapost_details(postdata)
             r = self.httprequestObj.http_post_with_headers(url, data=payload)
-            print(r.text)
             print(r.status_code)
 
         success = False
         res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?status=add_complete")
         soup = BeautifulSoup(res_complete.text, self.parser)
-        # loop find all title post
+        # loop find all title post (first page)
         for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
             soup_ele = BeautifulSoup(str(hit), self.parser)
             title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
