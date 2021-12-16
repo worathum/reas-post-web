@@ -8,7 +8,8 @@ class sample():
         self.web_name = params["web_name"]
         self.login_user = params["login_user"]
         self.login_pass = params["login_pass"]      
-        self.email = params["email"] 
+        self.email = params["email"]
+        self.post_id = params["post_id"]
 
     def get_test_login_json_string(self):
         json_string = '''
@@ -170,4 +171,21 @@ class sample():
     ]
 }
 '''
+        return json_string
+
+    def get_delete_post_json_string(self):
+        json_string = '''
+        {
+            "action": "delete_post",
+            "post_id": "''' + self.post_id + '''",
+            "web": [
+                {
+                    "ds_name": "''' + self.web_name + '''",
+                    "ds_id": "4",              
+                    "user": "''' + self.login_user + '''",
+                    "pass": "''' + self.login_pass + '''"
+                }
+            ]
+        }
+        '''
         return json_string

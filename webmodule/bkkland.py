@@ -6,6 +6,7 @@ import sys
 import json
 import requests
 import urllib.request
+import re
 
 
 
@@ -271,7 +272,6 @@ class bkkland():
             url = "http://www.bkkland.com/post/add"
             payload = self.datapost_details(postdata)
             files, path_imgs = self.pull_imgs(postdata)
-            print(files)
             r = self.httprequestObj.http_post(url, data=payload, files=files)
             for f in path_imgs:
                 os.remove(f)
@@ -288,6 +288,7 @@ class bkkland():
 
             if title == postdata['post_title_th']:
                 url_post = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                postdata['ds_id'] = re.findall("\d+", url_post)[0]
                 success = True
 
         detail = ""
@@ -304,13 +305,61 @@ class bkkland():
             "websitename": self.webname,
         }
 
+
+    def delete_post(self, postdata):
+        self.logout_user()
+        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
+        time_start = datetime.datetime.utcnow()
+
+        test_login = self.test_login(postdata)
+
+        if test_login['success'] == True:
+            url = 'http://www.bkkland.com/post/update'
+            payload = {
+                'f_checked[]' : postdata["post_id"],
+                'process' : "table_form",
+                'edittype' : "ลบ"
+            }
+            r = self.httprequestObj.http_post(url, data=payload)
+
+        success = False
+        url_post = ""
+        detail = ""
+        res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?status=add_complete")
+        soup = BeautifulSoup(res_complete.text, self.parser)
+        # loop find all title post (first page)
+        for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+            soup_ele = BeautifulSoup(str(hit), self.parser)
+            try:
+                title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
+                if title == postdata['post_title_th']:
+                    url_post = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                    postdata['ds_id'] = re.findall("\d+", url_post)[0]
+                    detail = "delete False"
+                    success = False
+            except:
+                detail = "delete complete - post_id : {}".format(postdata['post_id'])
+                success = True
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            'ds_id': postdata['ds_id'],
+            'url' : url_post,
+            "detail": detail,
+            "websitename": self.webname,
+        }
+
     def edit_post(self,postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        start_time = datetime.datetime.utcnow()
+        time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
 
         if test_login['success'] == True:
             url = '''http://www.bkkland.com/post/form/edit?id={}'''.format(postdata['post_id'])
             payload = self.datapost_details(postdata)
-
