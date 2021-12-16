@@ -158,7 +158,7 @@ class bkkland():
             "detail": comment,
         }
 
-    def datapost_details(self, postdata):
+    def datapost_details(self, postdata, url_capcha):
 
 
         pd_condition = {
@@ -188,28 +188,33 @@ class bkkland():
                 if postdata['addr_district'].strip() in value.strip() or value.strip() in postdata['addr_district'].strip():
                     amphur_id = key
                     break
+        try:
+            r = self.httprequestObj.http_get(url_capcha)
+            if r.status_code==200:
+                soup = BeautifulSoup(r.text, features=self.parser)
+                img_url = soup.find_all('img')
+                for link in img_url:
+                    # if web is captcha get img and process
+                    if str(link) == '''<img src="http://www.bkkland.com/post/captcha"/>''':
+                        captcha_img = self.httprequestObj.http_get("http://www.bkkland.com/post/captcha", stream=True)
+                
+                path_img = os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg'
+                with open(path_img,'wb') as local_file :
+                    for block in captcha_img.iter_content(1024):
+                        if not block:
+                            break
+                        local_file.write(block)
+                
+                g_response = captcha.imageCaptcha(path_img)
+                if g_response[0]==1:
+                    postdata['captcha'] = g_response[1]
+                    
+        except:
+            # capcha using create_post not using edit_post
+            postdata['captcha'] = ""
+            pass
 
-        r = self.httprequestObj.http_get('http://www.bkkland.com/post/form')
-        if r.status_code==200:
-            soup = BeautifulSoup(r.text, features=self.parser)
-            img_url = soup.find_all('img')
-            for link in img_url:
-                # if web is captcha get img and process
-                if str(link) == '''<img src="http://www.bkkland.com/post/captcha"/>''':
-                    captcha_img = self.httprequestObj.http_get("http://www.bkkland.com/post/captcha", stream=True)
-            
-            path_img = os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg'
-            with open(path_img,'wb') as local_file :
-                for block in captcha_img.iter_content(1024):
-                    if not block:
-                        break
-                    local_file.write(block)
-            
-            g_response = captcha.imageCaptcha(path_img)
-            if g_response[0]==1:
-                postdata['captcha'] = g_response[1]
-                os.remove(path_img)
-
+        os.remove(path_img)
         datapost = {
             'f_topic' : (None, postdata['post_title_th']),
             'f_condition' : (None, int(pd_condition[str(postdata['listing_type'])])),
@@ -226,7 +231,7 @@ class bkkland():
             'f_picfake1' : (None, "fakepath"),
             'picfile1' : (None, ""),
             'f_captcha' : (None, postdata['captcha']),
-            'process' : (None, "post_add"),
+            'process' : (None, ""),
             'lat_value' : (None, postdata['geo_latitude']),
             'lon_value' : (None, postdata['geo_longitude']),
             'f_name' : (None, postdata['name']),
@@ -270,7 +275,8 @@ class bkkland():
 
         if test_login['success'] == True:
             url = "http://www.bkkland.com/post/add"
-            payload = self.datapost_details(postdata)
+            payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
+            payload['process'] = "post_add"
             files, path_imgs = self.pull_imgs(postdata)
             r = self.httprequestObj.http_post(url, data=payload, files=files)
             for f in path_imgs:
@@ -355,11 +361,175 @@ class bkkland():
         }
 
     def edit_post(self,postdata):
+        self.logout_user()
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        test_login = self.test_login(postdata)
+
+
+        if test_login['success'] == True:
+            url_form = 'http://www.bkkland.com/post/form/edit?id={}'.format(postdata['post_id'])
+            url_api = 'http://www.bkkland.com/post/update'
+            payload = self.datapost_details(postdata, url_form)
+            payload['process'] = "edit_post"
+            payload["post_id"] = postdata['post_id']
+            payload["f_activated"] = (None, "Y")
+            payload["go"] = (None, "แก้ไขประกาศ")
+
+            r = self.httprequestObj.http_post_with_headers(url_api, data=payload)
+            print(r.status_code)
+
+            success = False
+            detail = ""
+            url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(postdata['post_id'])
+            res_complete = self.httprequestObj.http_get(url_update)
+            soup = BeautifulSoup(res_complete.text, self.parser)
+            for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
+                soup_ele = BeautifulSoup(str(hit), self.parser)
+                try:
+                    text_update = soup_ele.find("script", attrs={"type":"text/javascript"})
+                    mystr = str(text_update)
+                    # if != -1 is finded
+                    if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
+                        detail = "update complete - post_id : {}".format(postdata['post_id'])
+                        success = True
+
+                except:
+                    detail = "update False"
+                    success = False
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            'ds_id': postdata['ds_id'],
+            'url' : url_form,
+            "detail": detail,
+            "websitename": self.webname,
+        }
+
+    def boost_post(self, postdata):
+        self.logout_user()
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        test_login = self.test_login(postdata)
+
+
+        if test_login['success'] == True:
+            url_form = 'http://www.bkkland.com/post/form/edit?id={}'.format(postdata['post_id'])
+            url_api = 'http://www.bkkland.com/post/update'
+            payload = self.datapost_details(postdata, url_form)
+            payload['process'] = "edit_post"
+            payload["post_id"] = postdata['post_id']
+            payload["f_activated"] = (None, "Y")
+            payload["go"] = (None, "แก้ไขประกาศ")
+
+            r = self.httprequestObj.http_post_with_headers(url_api, data=payload)
+            print(r.status_code)
+
+            success = False
+            detail = ""
+            url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(postdata['post_id'])
+            res_complete = self.httprequestObj.http_get(url_update)
+            soup = BeautifulSoup(res_complete.text, self.parser)
+            for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
+                soup_ele = BeautifulSoup(str(hit), self.parser)
+                try:
+                    text_update = soup_ele.find("script", attrs={"type":"text/javascript"})
+                    mystr = str(text_update)
+                    # if != -1 is finded
+                    if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
+                        detail = "update complete - post_id : {}".format(postdata['post_id'])
+                        success = True
+
+                except:
+                    detail = "update False"
+                    success = False
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            'ds_id': postdata['ds_id'],
+            'url' : url_form,
+            "detail": detail,
+            "websitename": self.webname,
+        }
+
+
+    def search_post(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
 
         if test_login['success'] == True:
-            url = '''http://www.bkkland.com/post/form/edit?id={}'''.format(postdata['post_id'])
-            payload = self.datapost_details(postdata)
+            url_form = 'http://www.bkkland.com/post/{}.html'.format(postdata['post_id'])
+            url_list = 'http://www.bkkland.com/post/your_list'
+
+            r = self.httprequestObj.http_get(url_form)
+            print(r.status_code)
+
+            res = self.httprequestObj.http_get(url_list)
+            print(r.status_code)
+
+            result = {
+                'post_url': "",
+                'post_modify_time': "",
+                'detail': ""
+            }
+            date_time = None
+
+            soup_title = BeautifulSoup(r.text, self.parser)
+            title = soup_title.find("title").text
+
+            soup = BeautifulSoup(res.text, self.parser)
+            for hit in soup.find_all("td"):
+                line = re.sub('[<>/ptd]', '', str(hit))
+                for string_line in line:
+                    try:
+                        # loop check first string if can convert to int, that line is time.
+                        check = int(string_line)
+                        date_time = line 
+                    except:
+                        break
+
+
+            post_found = False
+            result['success'] = False
+            if title == postdata["post_title_th"]:
+                result['success'] = True
+                result['post_url'] = url_form
+                result['post_id'] = postdata['post_id']
+                result['detail'] = "Post Found"
+                result['post_modify_time'] = date_time
+                post_found = True
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+        return {
+            'success':result['success'],
+            'post_id':postdata['post_id'],
+            'log_id':postdata['log_id'],
+            'ds_id':postdata['ds_id'],
+            'websitename': self.webname,
+            'start_time':str(time_start),
+            'end_time':str(time_end),
+            'usage_time':str(time_usage),
+            'post_url':result['post_url'],
+            'account_type': '',
+            'post_found':post_found,
+            'post_create_time': '',
+            'post_modify_time': result['post_modify_time'],
+            'post_view': '',
+            'detail':result['detail']
+        }
