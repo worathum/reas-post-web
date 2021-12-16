@@ -13,7 +13,7 @@ import json
 from json import JSONEncoder
 from .lib_captcha import *
 
-'''!!! Cancle (People use less and have to pay for posts.) !!!'''
+'''!!! Cancel (People use less and have to pay for posts.) !!!'''
 
 captcha = lib_captcha()
 
