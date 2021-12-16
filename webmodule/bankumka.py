@@ -1023,7 +1023,11 @@ class bankumka():
                 data = r.text
                 # print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
-                alls = soup.findAll("script")
+                data1 = soup.find_all('script', type='text/javascript')[1].string
+                data1 = data1.split('var prop =')[1].replace('prop','"prop').replace(': "','": "')
+                data1 = json.loads(data1)
+                
+                """alls = soup.findAll("script")
                 cnt = 0
                 ans = ""
                 for i in range(len(alls)):
@@ -1046,7 +1050,7 @@ class bankumka():
                     strng += "\""+ans[indices[i]:indices[i+1]]
                 strng += "\""+ans[indices[len(indices)-1]:len(ans)]
                 # print(strng)
-                data1 = json.loads(strng)
+                data1 = json.loads(strng)"""
                 r = self.httprequestObj.http_get('https://bankumka.com/property/announce')
                 soup = BeautifulSoup(r.text, features=self.parser)
                 csrf_time = soup.find(attrs={'name': 'csrf_time'})
@@ -1118,7 +1122,7 @@ class bankumka():
                 r = self.httprequestObj.http_post(
                     'https://bankumka.com/ajax/checkProperty', data=datapost)
                 data = json.loads(r.text)
-                print(data)
+
                 if data['status'] == 'OK':
                     datapost = [
                         ('timeout', '5'),
@@ -1182,30 +1186,8 @@ class bankumka():
                     r = self.httprequestObj.http_post(
                         'https://bankumka.com/property/save', data=datapost)
                     detail  = "Post deleted successfully"
-                    # print(r.text)
                 else:
                     success = "false"
-            # files = {}
-            # for i in range(len(postdata["post_img_url_lists"])):
-            #     resp = self.httprequestObj.http_get(
-            #         postdata["post_img_url_lists"][i], stream=True)
-            #     resp.raw.decode_content = True
-            #     with open('image'+str(i)+'.jpg', 'wb') as lfile:
-            #         shutil.copyfileobj(resp.raw, lfile)
-
-            #     r = open('image'+str(i)+'.jpg', 'rb')
-            #     print(r)
-            #     if i > 20:
-            #         break
-            #     if i == 0:
-            #         files['fileshow'] = r
-            #     else:
-            #         files["file"+str(i)] = r
-            #     datapost.append(('file[]', postdata["post_img_url_lists"][i]))
-            #     # datapost['file[]'] = i
-            #     r = self.httprequestObj.http_post(
-            #         'https://www.ddteedin.com/upload', datapost)
-
         else:
             success = "false"
             detail = "cannot login: "+test_login["detail"]

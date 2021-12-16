@@ -311,11 +311,13 @@ class propertyhub():
                         ActionChains(self.driver).drag_and_drop(drag, drop).perform()
                         ActionChains(self.driver).drag_and_drop(drop, drag).perform()
 
-                    detail_post = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ql-editor')))
-                    detail_post[1].click()
-                    detail_post[1].send_keys(datahandled['post_description_th'])
-                    detail_post[2].click()
-                    detail_post[2].send_keys(datahandled['post_description_en'])
+                    #detail_post = WebDriverWait(self.driver, 5).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ql-editor')))
+                    #detail_post[1].click()
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div/div[2]/form/div/div/div[4]/div/div/div/div[2]/div[1]'))).send_keys(postdata['post_description_th'])
+                    #detail_post[1].send_keys(datahandled['post_description_th'])
+                    #detail_post[2].click()
+                    WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div/div[2]/form/div/div/div[5]/div/div/div/div[2]/div[1]'))).send_keys(postdata['post_description_th'])
+                    #detail_post[2].send_keys(datahandled['post_description_en'])
 
                     try:
                         last_img = '//*[@id="__next"]/div[1]/div/div/form/div/div/div[3]/div[2]/div/div/div[' + str(len(postdata['post_images'])) + ']/div[3]/div[2]'

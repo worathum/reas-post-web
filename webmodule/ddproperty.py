@@ -648,38 +648,44 @@ class ddproperty():
         account_type = "normal"
 
         if success == "true":
-            self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
-            time.sleep(5)
             try:
-                webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
-            except:
-                pass
-            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
-            # self.firefox.save_screenshot("debug_response/location.png")
+                self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
+                time.sleep(5)
+                try:
+                    webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
+                except:
+                    pass
+                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
+                # self.firefox.save_screenshot("debug_response/location.png")
 
-            try:
-                success, detail = self.inputpostgeneral(datahandled)
-            except:
-                time_end = datetime.datetime.utcnow()
-                self.firefox.quit()
-                return {
-                    "success": "false",
-                    "detail": "ชื่อโครงการมีปัญหาจากระบบของ ddproperty ทำให้ไม่สามารถโพสได้",
-                    "websitename": "ddproperty",
-                    "ds_name": datahandled['ds_name'],
-                    "usage_time": str(time_end - time_start),
-                    "start_time": str(time_start),
-                    "end_time": str(time_end),
-                    "account_type": "",
-                    "post_url": "",
-                    "ds_id": datahandled['ds_id'],
-                    "log_id": datahandled['log_id'],
-                    "post_id": ""
-                }
-            if success == 'true':
-                success, detail, post_id, account_type = self.inputpostdetail(datahandled)
-                print(success, detail, post_id, account_type)
-
+                try:
+                    success, detail = self.inputpostgeneral(datahandled)
+                except:
+                    time_end = datetime.datetime.utcnow()
+                    self.firefox.quit()
+                    return {
+                        "success": "false",
+                        "detail": "ชื่อโครงการมีปัญหาจากระบบของ ddproperty ทำให้ไม่สามารถโพสได้",
+                        "websitename": "ddproperty",
+                        "ds_name": datahandled['ds_name'],
+                        "usage_time": str(time_end - time_start),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "account_type": "",
+                        "post_url": "",
+                        "ds_id": datahandled['ds_id'],
+                        "log_id": datahandled['log_id'],
+                        "post_id": ""
+                    }
+                if success == 'true':
+                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+                    print(success, detail, post_id, account_type)
+            finally:
+                try:
+                    self.firefox.close()
+                    self.firefox.quit()
+                except:
+                    pass
         try:
             self.firefox.close()
             self.firefox.quit()
