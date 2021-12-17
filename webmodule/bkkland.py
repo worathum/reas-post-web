@@ -107,7 +107,7 @@ class bkkland():
 
         register_data["f_email"] = postdata["user"]
         register_data["f_pass"] = postdata["pass"]
-        register_data["f_phone"] = postdata["tel"]
+        register_data["f_phone"] = postdata["mobile"]
         register_data["f_name"] = postdata['name_en']
         register_data["process"] = "register"
         register_data["go"] = 'สมัครโลด !'
@@ -244,7 +244,7 @@ class bkkland():
             'lat_value' : (None, postdata['geo_latitude']),
             'lon_value' : (None, postdata['geo_longitude']),
             'f_name' : (None, postdata['name']),
-            'f_phone' : (None, postdata['tel']),
+            'f_phone' : (None, postdata['mobile']),
             'f_email' : (None, postdata['email']),
 
         }
@@ -294,6 +294,7 @@ class bkkland():
 
         success = False
         post_url = ""
+        detail = ""
         res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?status=add_complete")
         soup = BeautifulSoup(res_complete.text, self.parser)
         # loop find all title post (first page)
@@ -304,9 +305,10 @@ class bkkland():
             if title == postdata['post_title_th']:
                 post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                 post_id = re.findall("\d+", post_url)[0]
+                detail = "post complete."
                 success = True
 
-        detail = ""
+        
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
