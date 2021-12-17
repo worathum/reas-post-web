@@ -69,7 +69,10 @@ class bkkland():
         print(r.status_code)
 
         detail = ""
-        login_success = False
+        device_id = ""
+        mem_id = ""
+        mem_status = False
+        success = False
         soup_web = BeautifulSoup(r.content,'lxml')
         if soup_web:
             try:
@@ -77,7 +80,8 @@ class bkkland():
             except:
                 pass
             if postdata['user'] in verify.split():
-                login_success = True
+                success = True
+                mem_status = True
                 
 
         # 
@@ -86,13 +90,17 @@ class bkkland():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "websitename": self.webname,
-            "success": login_success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            "detail": detail,
-        }
+        "websitename": self.webname,
+        "usage_time": str(time_usage),
+        "start_time": str(time_start),
+        "end_time": str(time_end),
+        "success": success,
+        "detail": detail,
+        'device_id': device_id,
+        'mem_id': mem_id,
+        'mem_status': mem_status,
+        "ds_id": postdata['ds_id']
+    }
 
     def register_details(self, postdata):
         register_data = {}
@@ -118,16 +126,16 @@ class bkkland():
 
 
         comment = ""
-        register_success = False
+        success = False
         if res.status_code == 200:
             soup = BeautifulSoup(res.content,'lxml')
             for hit in soup.find_all("p", attrs={"class":"comment"}):
                 soup_ele = BeautifulSoup(str(hit), self.parser)
                 comment = soup_ele.find("p", attrs={"class":"comment"}).text
                 if comment == "อีเมล์ นี้มีคนใช้แล้วค่ะ":
-                    register_success = False
+                    success = False
                 elif comment == "ชื่อสมาชิก นี้มีคนใช้แล้วค่ะ":
-                    register_success = False
+                    success = False
 
         try:
             self.test_login(postdata)
@@ -137,12 +145,12 @@ class bkkland():
             verify = soup.find("div", attrs={"class":"personal_info"}).text
             if verify != []:
                 if postdata['user'] in verify.split():
-                    register_success = True
+                    success = True
                     comment = "สมัครสมาชิกสำเร็จแล้วค่ะ"
         except:
             comment = "Error"
 
-
+        detail = comment
 
         # 
         # end process
@@ -151,12 +159,13 @@ class bkkland():
         time_usage = time_end - time_start
         return {
             "websitename": self.webname,
-            "success": register_success,
+            "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "detail": comment,
-        }
+            'ds_id': postdata['ds_id'],
+            "detail": detail,
+    }
 
     def datapost_details(self, postdata, url_capcha):
 
@@ -284,7 +293,7 @@ class bkkland():
             print(r.status_code)
 
         success = False
-        url_post = ""
+        post_url = ""
         res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?status=add_complete")
         soup = BeautifulSoup(res_complete.text, self.parser)
         # loop find all title post (first page)
@@ -293,23 +302,24 @@ class bkkland():
             title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
 
             if title == postdata['post_title_th']:
-                url_post = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                postdata['ds_id'] = re.findall("\d+", url_post)[0]
+                post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                post_id = re.findall("\d+", post_url)[0]
                 success = True
 
         detail = ""
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            'ds_id': postdata['ds_id'],
-            'url' : url_post,
-            "detail": detail,
-            "websitename": self.webname,
-        }
+        "success": success,
+        "websitename": self.webname,
+        "usage_time": str(time_usage),
+        "start_time": str(time_start),
+        "end_time": str(time_end),
+        "post_url": post_url,
+        "post_id": post_id,
+        "account_type": "null",
+        "detail": detail,
+    }
 
 
     def delete_post(self, postdata):
@@ -369,9 +379,9 @@ class bkkland():
 
 
         if test_login['success'] == True:
-            url_form = 'http://www.bkkland.com/post/form/edit?id={}'.format(postdata['post_id'])
+            post_url = 'http://www.bkkland.com/post/form/edit?id={}'.format(postdata['post_id'])
             url_api = 'http://www.bkkland.com/post/update'
-            payload = self.datapost_details(postdata, url_form)
+            payload = self.datapost_details(postdata, post_url)
             payload['process'] = "edit_post"
             payload["post_id"] = postdata['post_id']
             payload["f_activated"] = (None, "Y")
@@ -403,13 +413,14 @@ class bkkland():
         time_usage = time_end - time_start
         return {
             "success": success,
+            "websitename": self.webname,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            'ds_id': postdata['ds_id'],
-            'url' : url_form,
+            "post_url": post_url,
+            "post_id": postdata['post_id'],
+            "account_type": "null",
             "detail": detail,
-            "websitename": self.webname,
         }
 
     def boost_post(self, postdata):
@@ -444,7 +455,7 @@ class bkkland():
                     mystr = str(text_update)
                     # if != -1 is finded
                     if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
-                        detail = "update complete - post_id : {}".format(postdata['post_id'])
+                        detail = "update complete"
                         success = True
 
                 except:
@@ -455,13 +466,15 @@ class bkkland():
         time_usage = time_end - time_start
         return {
             "success": success,
-            "usage_time": str(time_usage),
-            "start_time": str(time_start),
-            "end_time": str(time_end),
-            'ds_id': postdata['ds_id'],
-            'url' : url_form,
+            "usage_time": time_usage,
+            "start_time": time_start,
+            "end_time": time_end,
             "detail": detail,
+            "log_id": postdata['log_id'],
+            "ds_id": postdata['ds_id'],
+            "post_id": postdata['post_id'],
             "websitename": self.webname,
+            "post_view": ''
         }
 
 
@@ -473,20 +486,15 @@ class bkkland():
         test_login = self.test_login(postdata)
 
         if test_login['success'] == True:
-            url_form = 'http://www.bkkland.com/post/{}.html'.format(postdata['post_id'])
+            post_url = 'http://www.bkkland.com/post/{}.html'.format(postdata['post_id'])
             url_list = 'http://www.bkkland.com/post/your_list'
 
-            r = self.httprequestObj.http_get(url_form)
+            r = self.httprequestObj.http_get(post_url)
             print(r.status_code)
 
             res = self.httprequestObj.http_get(url_list)
             print(r.status_code)
 
-            result = {
-                'post_url': "",
-                'post_modify_time': "",
-                'detail': ""
-            }
             date_time = None
 
             soup_title = BeautifulSoup(r.text, self.parser)
@@ -498,38 +506,35 @@ class bkkland():
                 for string_line in line:
                     try:
                         # loop check first string if can convert to int, that line is time.
+                        # if check cannot convert to int, it is check error and next line.
                         check = int(string_line)
                         date_time = line 
                     except:
                         break
 
 
-            post_found = False
-            result['success'] = False
+            success = False
+            detail = ""
             if title == postdata["post_title_th"]:
-                result['success'] = True
-                result['post_url'] = url_form
-                result['post_id'] = postdata['post_id']
-                result['detail'] = "Post Found"
-                result['post_modify_time'] = date_time
-                post_found = True
+                post_modify_time = date_time
+                detail = "Post Found"
+                success = True
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            'success':result['success'],
-            'post_id':postdata['post_id'],
-            'log_id':postdata['log_id'],
-            'ds_id':postdata['ds_id'],
-            'websitename': self.webname,
-            'start_time':str(time_start),
-            'end_time':str(time_end),
-            'usage_time':str(time_usage),
-            'post_url':result['post_url'],
-            'account_type': '',
-            'post_found':post_found,
-            'post_create_time': '',
-            'post_modify_time': result['post_modify_time'],
-            'post_view': '',
-            'detail':result['detail']
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": self.webname,
+            "account_type": None,
+            "ds_id": postdata['ds_id'],
+            "log_id": postdata['log_id'],
+            "post_id": postdata['post_id'],
+            "post_created": '',
+            "post_modified": post_modify_time,
+            "post_view": "",
+            "post_url": post_url
         }

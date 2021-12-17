@@ -120,7 +120,6 @@ class sample():
 {
     "action": "edit_post",
     "timeout": "5",
-    "post_id": "''' + self.post_id + '''",
     "post_img_url_lists": [
         "http://imagestore.com/pic1.jpg",
         "http://imagestore.com/pic2.jpg"
@@ -165,7 +164,8 @@ class sample():
     "web": [
         {
             "ds_name": "''' + self.web_name + '''",
-            "ds_id": "4",              
+            "ds_id": "4",     
+            "post_id": "''' + self.post_id + '''",         
             "user": "''' + self.login_user + '''",
             "pass": "''' + self.login_pass + '''"
         }
