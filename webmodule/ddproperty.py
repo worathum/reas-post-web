@@ -25,6 +25,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import numpy as np
 import pyperclip as pc
+import cloudscraper
 
 try:
     import configs
@@ -47,6 +48,7 @@ class ddproperty():
         self.parser = 'html.parser'
         self.handled = False
         self.httprequestObj = lib_httprequest()
+        self.scraper = cloudscraper.create_scraper()
 
     def register_user(self, postdata):
         #log.debug('')
@@ -126,6 +128,39 @@ class ddproperty():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+        }
+    
+    def test_login_only(self,postdata):
+        time_start = datetime.datetime.utcnow()
+
+        success = False
+        detail = 'Something wrong'
+        data = {
+            'userid': postdata['user'],
+            'password': postdata['pass'],
+            'submit': 'submit',
+            'fromModal': '1'          
+        }
+        r = self.scraper.post('https://www.ddproperty.com/login', data=data)
+        r = self.scraper.get('https://agentnet.ddproperty.com/v2/listing_management')
+        
+        if r.url == 'https://agentnet.ddproperty.com/v2/listing_management':
+            success = True
+            detail = 'Login successful'
+        else:
+            detail = 'Cannot login'
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": self.websitename,
+            "ds_id": postdata['ds_id'],
         }
 
     def test_login_httpreq(self, postdata):
@@ -320,11 +355,13 @@ class ddproperty():
 
         # start process
         #
-        datahandled = self.postdata_handle(postdata)
-
         response = {}
-        # if datahandled['action'] == 'create_post' or datahandled['action'] == 'edit_post':
-        response = self.test_login_headless(datahandled)
+        if postdata['action'] == 'test_login':
+            response = self.test_login_only(postdata)
+        else:
+            datahandled = self.postdata_handle(postdata)
+            # if datahandled['action'] == 'create_post' or datahandled['action'] == 'edit_post':
+            response = self.test_login_headless(datahandled)
         # else:
             # response = self.test_login_httpreq(datahandled)
 

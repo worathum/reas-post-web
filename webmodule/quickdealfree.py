@@ -102,6 +102,8 @@ class quickdealfree():
         soup = BeautifulSoup(r.content, features = "html.parser")
         provinces = soup.find('select', {'name': 'province'})
         provinces = provinces.find_all('option')[1:]
+        if postdata['addr_province'] == 'กรุงเทพ':
+            postdata['addr_province'] = 'กรุงเทพมหานคร'
         for province in provinces:
             if province.text == postdata['addr_province']:
                 province_id = province['value']
@@ -207,7 +209,7 @@ class quickdealfree():
                     r = self.session.http_get("https://quickdealfree.com/member/listing/")
                     soup = BeautifulSoup(r.content, features = "html.parser")
                     for a in soup.find_all('a', href=True):
-                        if postdata['post_title_th'][:65] in a.text:
+                        if postdata['post_title_th'][:64] in a.text:
                             post_url = a['href']
                             post_id = post_url.split('=')[1]
                             success = True
