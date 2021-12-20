@@ -25,6 +25,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import numpy as np
 import pyperclip as pc
+import cloudscraper
 
 try:
     import configs
@@ -47,6 +48,7 @@ class ddproperty():
         self.parser = 'html.parser'
         self.handled = False
         self.httprequestObj = lib_httprequest()
+        self.scraper = cloudscraper.create_scraper()
 
     def register_user(self, postdata):
         #log.debug('')
@@ -126,6 +128,39 @@ class ddproperty():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
+        }
+    
+    def test_login_only(self,postdata):
+        time_start = datetime.datetime.utcnow()
+
+        success = False
+        detail = 'Something wrong'
+        data = {
+            'userid': postdata['user'],
+            'password': postdata['pass'],
+            'submit': 'submit',
+            'fromModal': '1'          
+        }
+        r = self.scraper.post('https://www.ddproperty.com/login', data=data)
+        r = self.scraper.get('https://agentnet.ddproperty.com/v2/listing_management')
+        
+        if r.url == 'https://agentnet.ddproperty.com/v2/listing_management':
+            success = True
+            detail = 'Login successful'
+        else:
+            detail = 'Cannot login'
+
+        time_end = datetime.datetime.utcnow()
+        time_usage = time_end - time_start
+
+        return {
+            "success": success,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
+            "detail": detail,
+            "websitename": self.websitename,
+            "ds_id": postdata['ds_id'],
         }
 
     def test_login_httpreq(self, postdata):
@@ -259,7 +294,6 @@ class ddproperty():
             #log.debug('input email')
             WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.ID, "btn_login"))).click()
             #log.debug('click next')
-            time.sleep(1.8)
 
             # input password and enter
             """passtxt = WebDriverWait(self.firefox, 30).until(EC.presence_of_element_located((By.ID, "inputPassword")))
@@ -321,11 +355,13 @@ class ddproperty():
 
         # start process
         #
-        datahandled = self.postdata_handle(postdata)
-
         response = {}
-        # if datahandled['action'] == 'create_post' or datahandled['action'] == 'edit_post':
-        response = self.test_login_headless(datahandled)
+        if postdata['action'] == 'test_login':
+            response = self.test_login_only(postdata)
+        else:
+            datahandled = self.postdata_handle(postdata)
+            # if datahandled['action'] == 'create_post' or datahandled['action'] == 'edit_post':
+            response = self.test_login_headless(datahandled)
         # else:
             # response = self.test_login_httpreq(datahandled)
 
@@ -649,38 +685,44 @@ class ddproperty():
         account_type = "normal"
 
         if success == "true":
-            self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
-            time.sleep(1)
             try:
-                webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
-            except:
-                pass
-            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
-            # self.firefox.save_screenshot("debug_response/location.png")
+                self.firefox.get('https://agentnet.ddproperty.com/create-listing/location')
+                time.sleep(5)
+                try:
+                    webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
+                except:
+                    pass
+                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, "propertySearch"))) 
+                # self.firefox.save_screenshot("debug_response/location.png")
 
-            try:
-                success, detail = self.inputpostgeneral(datahandled)
-            except:
-                time_end = datetime.datetime.utcnow()
-                self.firefox.quit()
-                return {
-                    "success": "false",
-                    "detail": "ชื่อโครงการมีปัญหาจากระบบของ ddproperty ทำให้ไม่สามารถโพสได้",
-                    "websitename": "ddproperty",
-                    "ds_name": datahandled['ds_name'],
-                    "usage_time": str(time_end - time_start),
-                    "start_time": str(time_start),
-                    "end_time": str(time_end),
-                    "account_type": "",
-                    "post_url": "",
-                    "ds_id": datahandled['ds_id'],
-                    "log_id": datahandled['log_id'],
-                    "post_id": ""
-                }
-            if success == 'true':
-                success, detail, post_id, account_type = self.inputpostdetail(datahandled)
-                print(success, detail, post_id, account_type)
-
+                try:
+                    success, detail = self.inputpostgeneral(datahandled)
+                except:
+                    time_end = datetime.datetime.utcnow()
+                    self.firefox.quit()
+                    return {
+                        "success": "false",
+                        "detail": "ชื่อโครงการมีปัญหาจากระบบของ ddproperty ทำให้ไม่สามารถโพสได้",
+                        "websitename": "ddproperty",
+                        "ds_name": datahandled['ds_name'],
+                        "usage_time": str(time_end - time_start),
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        "account_type": "",
+                        "post_url": "",
+                        "ds_id": datahandled['ds_id'],
+                        "log_id": datahandled['log_id'],
+                        "post_id": ""
+                    }
+                if success == 'true':
+                    success, detail, post_id, account_type = self.inputpostdetail(datahandled)
+                    print(success, detail, post_id, account_type)
+            finally:
+                try:
+                    self.firefox.close()
+                    self.firefox.quit()
+                except:
+                    pass
         try:
             self.firefox.close()
             self.firefox.quit()
@@ -722,7 +764,6 @@ class ddproperty():
             projectname = datahandled['post_title_th']
 
         projectnametxt = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, "propertySearch")))
-        time.sleep(1)
         if datahandled['action'] == 'edit_post':
             WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.CONTROL + "a")  # clear for edit action
             WebDriverWait(self.firefox, 10).until(lambda x: x.find_element_by_id("propertySearch")).send_keys(Keys.DELETE)  # clear for edit action
@@ -1040,7 +1081,7 @@ class ddproperty():
                 if datahandled['action'] == 'edit_post':
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.CONTROL + "a")  # clear for edit action
                     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(Keys.DELETE)  # clear for edit action
-                print(str(datahandled['floor_area']))
+
                 WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_id("input-floorarea_sqm")).send_keys(str(datahandled['floor_area']))
                 time.sleep(2)
                 try:
@@ -1183,11 +1224,11 @@ class ddproperty():
                     pass
             
             self.firefox.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)  # scroll to head page
-            time.sleep(2)
+            time.sleep(1)
             # next
             try:
                 next_button = WebDriverWait(self.firefox, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'btn.step-next.btn-primary')))
-                time.sleep(5)
+                time.sleep(3)
                 next = next_button[0].click()
                 # self.firefox.execute_script("return arguments[0].scrollIntoView(true);", next_button)
             except WebDriverException as e:
@@ -1196,7 +1237,6 @@ class ddproperty():
                 #log.debug('cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set '+str(e))
                 success = 'false'
                 detail = 'cannot click next , cause floor_area is too low OR price_baht is too low OR post_description_th,post_title_th not set OR account lacks credits, Due to: ' + str(e)
-                time.sleep(10)
                 self.firefox.close()
                 self.firefox.quit()
                 try:
@@ -1209,7 +1249,6 @@ class ddproperty():
                 return success, detail, post_id, account_type
 
             # image page
-            time.sleep(10)
             WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/header/div/div/div[2]/div/a[3]/div[2]/span')).click()
             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'tab-photo')))
             # ถ้า action edit และ ไม่มี รูปภาพส่งมาเลย ไม่ต้องทำอะไรกับรูปภาพ
@@ -1217,42 +1256,20 @@ class ddproperty():
                 #log.debug('edit image')
                 imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                 imglis = imgdiv.find_elements_by_link_text("...")
-                #imglis[0].click()
-                #time.sleep(3)
-                #WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
                 while len(imglis)>0:
                     try:
                         imglis[0].click()
-                        time.sleep(3)
+                        time.sleep(1)
                         WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
-                        time.sleep(3)
+                        WebDriverWait(self.firefox, 5).until(EC.alert_is_present())
                         alert = self.firefox.switch_to.alert
                         alert.accept()
-                        time.sleep(3)
+                        time.sleep(1)
                         imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                         imglis = imgdiv.find_elements_by_link_text("...")
                     except:
                         imgdiv = WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_class_name("c-upload-file-grid"))
                         imglis = imgdiv.find_elements_by_link_text("...")
-                """for imgli in imglis:
-                    imgid = imgli.get_attribute("id")
-                    if imgid != None:
-                        imgli.click()
-                        time.sleep(3)
-                        WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_link_text("ลบ")).click()
-                        time.sleep(3)
-                        #log.debug('delete image')
-                        alert = self.firefox.switch_to.alert
-                        print(alert.text)
-                        alert.accept()
-                        time.sleep(3)"""
-
-            # for img in datahandled['post_images']:
-            #     time.sleep(1)
-            #     WebDriverWait(self.firefox, 5).until(lambda x: x.find_element_by_css_selector("input[accept='image/png,image/jpg,image/jpeg'][type='file']")).send_keys(os.path.abspath(img))
-            #     #log.debug('post image %s', img)
-            #     time.sleep(1)
-            #     self.firefox.refresh()
 
             all_images = ""
             for count, pic in enumerate(datahandled['post_images']):
@@ -1260,15 +1277,14 @@ class ddproperty():
                     all_images += os.path.abspath(pic) + '\n'
                 else:
                     all_images += os.path.abspath(pic)
-            time.sleep(3)
+            
+            time.sleep(5)
             upload = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[accept='image/png,image/jpg,image/jpeg'][type='file']")))
             upload.send_keys(all_images)
 
-            try: 
-                print('wait' + str(datetime.datetime.utcnow()))                 
+            try:                
                 wait_upload = WebDriverWait(self.firefox, 60).until(EC.presence_of_element_located((By.XPATH, "//*[@id='step_media_photo']/div[1]/div[2]/ul/li["+str(len(datahandled['post_images']))+"]/div/div[2]/a")))
             except:
-                print('Finish')
                 pass
 
             #log.debug('image success')
@@ -1307,17 +1323,9 @@ class ddproperty():
                 #quit
                 self.firefox.close()
                 self.firefox.quit()
-                try:
-                    alert = self.firefox.switch_to.alert
-                    alert.accept()
-                    self.firefox.close()
-                    self.firefox.quit()
-                except:
-                    pass
                 return success, detail, post_id, account_type
             try:
                 WebDriverWait(self.firefox, 30).until(lambda x: x.find_element_by_xpath('//*[@id="app-listing-creation"]/div/div[2]/div/section/div/div[1]/div/div/footer/div[1]/div[1]/button')).click()  # ลงประกาศ
-                time.sleep(1.8)
             except WebDriverException:
                 success = 'false'
                 detail = 'Website not response. Your post will safe in the draft.'
@@ -1332,7 +1340,7 @@ class ddproperty():
                 WebDriverWait(self.firefox, 10).until(EC.alert_is_present())
                 alert = self.firefox.switch_to.alert
                 alert.accept()
-                time.sleep(5)
+                time.sleep(3)
                 try:
                     matchObj = re.search(r'Active Unit Listing quota exceeded', self.firefox.page_source)
                     matchObj1 = re.search(r'ประกาศปัจจุบันเกินโควต้าแล้ว', self.firefox.page_source)
@@ -1349,13 +1357,10 @@ class ddproperty():
                 pass
             #quit
             try:
-                alert = self.firefox.switch_to.alert
-                alert.accept()
                 self.firefox.close()
                 self.firefox.quit()
             except:
-                self.firefox.close()
-                self.firefox.quit()
+                pass
             # self.firefox.quit()
         print(success, detail, post_id, account_type)
         return success, detail, post_id, account_type
@@ -1622,66 +1627,86 @@ class ddproperty():
         #log.debug('')
 
         time_start = datetime.datetime.utcnow()
-
-        # start process
-        #
-        """datahandled = self.postdata_handle(postdata)
-
-        # login
-        test_login = self.test_login(datahandled)
+        success = 'false'
+        detail = 'Something wrong'
+        post = 'true'
+        test_login = self.test_login_headless(postdata)
         success = test_login["success"]
-        detail = test_login["detail"]
-        agent_id = test_login["agent_id"]
-      #log.debug('')
-        
-        try:
-            if success == "true":
-                # datapost = {
-                #     "listing_id[]": datahandled['post_id'],
-                #     "statusCode": "ACT",
-                #     "expectedCredits[]": 0,
-                # }
+        if success == 'true':
+            if postdata['post_id'] == '':
+                success = 'false'
+                post = 'false'
 
-                self.firefox.get("https://agentnet.ddproperty.com/v2/listing_management")
-                time.sleep(5)
-
-                filterbtn = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'filter-buttons-items')))
-                filterclick = filterbtn.find_elements_by_tag_name('div')
-                filterclick[0].click()
-
-                searchinput = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedStart.MuiOutlinedInput-inputAdornedStart')))
-                searchinput.click()
-                searchinput.send_keys(datahandled['post_id'])
-                time.sleep(0.5)
-                searchinput.send_keys(Keys.ENTER)
-                time.sleep(2)
-                
-                try:
-                    WebDriverWait(self.firefox, 3).until(EC.presence_of_element_located((By.CLASS_NAME, 'listing-card-content')))
-                except:
-                    success = 'false'
-                    detail = 'Post id not found.'
-                
-                if success == 'true':
-                    btnid = 'repost-cta-' + datahandled['post_id']
-                    try:
-                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, btnid))).click()
-                        time.sleep(3)
-                        success = 'true'
-                        detail = 'Boost post success.'
-                    except:
-                        success = 'false'
-                        detail = 'Your post already renewalthis week, please wait for the next week.'
-
-        except:
+        if success == 'true':
             success = 'false'
-            detail = 'System fail. Please retry the process.'
+
+            try:
+                self.firefox.get('https://agentnet.ddproperty.com/v2/listing_management')
+                time.sleep(4)
+                WebDriverWait(self.firefox, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="listing-management-component"]/div/div[1]/div[2]/div[1]'))).click()
+                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
+                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
+                time.sleep(2)
+                try:
+                    WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/div[3]/div/div/div[2]/div/div[1]/div[1]/div[4]/div/div/ul/li[2]/div/div/div[2]/p'))).text
+                except:
+                    try:
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter"]/div'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter-popper"]/div/ul/li[3]'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
+                        time.sleep(0.5)
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
+                        time.sleep(2)
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="listing-management-component"]/div/div[3]/div/div/div[2]/div/div/div[1]/div[3]/div/div[2]/button'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[5]/div[3]/div/div[3]/div[2]'))).click()
+                        time.sleep(1)
+                        webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter"]/div'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter-popper"]/div/ul/li[1]'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
+                        time.sleep(0.5)
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
+                        time.sleep(2)
+                    except:
+                        detail = 'Post id not found.'
                 
-        finally:
+                auto_boost = ''
+                try:
+                    auto_boost = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="autorepost-cta-{}"]/span[1]/div'.format(postdata['post_id'])))).text
+                except:
+                    detail = 'Post id not found.'
+
+                if auto_boost != '':
+                    if 'ต่ออายุรอบต่อไป' in auto_boost:
+                        success = 'true'
+                        detail = 'Post already boost'
+                    else:
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="autorepost-cta-{}"]/span[1]/div'.format(postdata['post_id'])))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[2]/div/button[3]'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="tata-end-date"]'))).click()
+                        for i in range(11):
+                            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div[2]'))).click()
+                            time.sleep(0.5)
+                        for i in range(7):
+                            if WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div[3]/div/table/tbody/tr[1]/td[{}]'.format(i+1)))).text =='1':
+                                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div[3]/div/table/tbody/tr[1]/td[{}]'.format(i+1)))).click()
+                                break
+                        time.sleep(2)
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[3]/div[2]'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'autoRepostProceedBtn'))).click()
+                        time.sleep(2)
+                        if 'ต่ออายุรอบต่อไป' in WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="autorepost-cta-{}"]/span[1]/div'.format(postdata['post_id'])))).text:
+                            success = 'true'
+                            detail = 'Post already boost'
+            finally:
+                self.firefox.close()
+                self.firefox.quit()
+        else:
+            detail = test_login["detail"]
+            if post == 'false':
+                detail = 'Post id is empty.'
             self.firefox.close()
-            self.firefox.quit()"""
-        success = False
-        detail = 'cannot boost'
+            self.firefox.quit()
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -2205,7 +2230,8 @@ class ddproperty():
             # self.firefox.save_screenshot("debug_response/edit1.png")
             matchObj = re.search(r'500 Internal Server Error', self.firefox.page_source)
             matchObj2 = re.search(r'404 ไม่พบหน้านี้', self.firefox.page_source)
-            if matchObj or matchObj2:
+            matchObj3 = re.search(r'403 Forbidden', self.firefox.page_source)
+            if matchObj or matchObj2 or matchObj3:
                 success = 'false'
                 detail = 'not found ddproperty post id ' + datahandled['post_id']
             if success == 'true':

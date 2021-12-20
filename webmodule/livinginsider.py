@@ -3,7 +3,6 @@
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import os.path
-# from urlparse import urlparse
 import re
 import json
 import datetime
@@ -12,8 +11,6 @@ import requests
 import shutil
 from urllib.parse import unquote
 import hashlib
-import csv
-
 
 class livinginsider():
     name = 'livinginsider'
@@ -383,6 +380,7 @@ class livinginsider():
                         post_url = edit['response']['share_url']
                         detail = 'Edit successful'
                     else:
+                        success = False
                         detail = edit['response']['result_msg']
             elif mem_status == '2':
                 success = False
@@ -419,7 +417,6 @@ class livinginsider():
         if success:
             device_id = test_login['device_id']
             mem_id = test_login['mem_id']
-            mem_status = test_login['mem_status']
             data={
                 'mem_id': mem_id,
                 'device_id': device_id,
@@ -436,6 +433,9 @@ class livinginsider():
             else:
                 success = False
                 detail = response['result_msg']
+        else:
+            success = False
+            detail = test_login['detail']
 
         time_end = datetime.datetime.utcnow()
         return {
@@ -449,95 +449,63 @@ class livinginsider():
             "post_id": postdata['post_id'],
             "websitename": "livinginsider",
         }
-    
 
     def boost_post(self, postdata):
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.datetime.utcnow()
-
-        post_id = postdata['post_id']
-        log_id = postdata['log_id']
-
+        success = False
+        detail = 'Something wrong'
         test_login = self.test_login(postdata)
         success = test_login["success"]
-        detail = ""
 
         if success:
-
-            headers = {
-                    'Connection': 'keep-alive',
-                    'Upgrade-Insecure-Requests': '1',
-                    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Mobile Safari/537.36',
-                    'Sec-Fetch-Mode': 'navigate',
-                    'Sec-Fetch-User': '?1',
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-                    'Sec-Fetch-Site': 'same-origin',
-                    'Referer': 'https://www.livinginsider.com/mystock.php',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+            success = False
+            device_id = test_login['device_id']
+            mem_id = test_login['mem_id']
+            mem_status = test_login['mem_status']
+            if mem_status == '1':
+                data={
+                    'mem_id': mem_id,
+                    'device_id': device_id,
+                    'device_type': 6,
+                    'web_id': postdata['post_id']
                 }
-            res = self.httprequestObj.http_get('https://www.livinginsider.com/living_edit.php', params={'topic_id': str(post_id)}, headers=headers)
-            soup = BeautifulSoup(res.text, 'html.parser')
-            #print(soup.find('meta', {'name': 'csrf-token'}).get('content'))
-            csrf_token = soup.find('meta', {'name': 'csrf-token'}).get('content')
-            referer = 'https://www.livinginsider.com/living_edit.php?topic_id=' + str(postdata['post_id']) + '&currentID=' + str(postdata['post_id'])
-
-            headers = {
-                'Accept': 'application/json, text/javascript, */*; q=0.01',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept-Language': 'th-TH,th;q=0.9,en;q=0.8',
-                'Connection': 'keep-alive',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'Host': 'www.livinginsider.com',
-                'Origin': 'https://www.livinginsider.com',
-                'Referer': referer,
-                'Sec-Fetch-Dest': 'empty',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'same-origin',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36', 
-                'X-CSRF-TOKEN': csrf_token,
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-
-            r = self.httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', data=None, headers=headers)
-            res = self.httprequestObj.http_get('https://www.livinginsider.com/living_edit2.php?topic_id='+ postdata['post_id'], headers=headers)
-            
-            headers = {
-                'Connection': 'keep-alive',
-                'Accept': 'application/json, text/javascript, */*; q=0.01',
-                'X-Requested-With': 'XMLHttpRequest',
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'Origin': 'https://www.livinginsider.com',
-                'Sec-Fetch-Site': 'same-origin',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Dest': 'empty',
-                'Referer': 'https://www.livinginsider.com/living_edit2.php?topic_id=' + post_id,
-                'Accept-Language': 'en-IN,en-US;q=0.9,en;q=0.8',
-            }
-
-            r = self.httprequestObj.http_post('https://www.livinginsider.com/a_edit_living.php', headers=headers, data=None)
-
-            data = {
-                'hidden_status': '',
-                'action': 'save',
-                'web_status': '1',
-                'publish_flag': '0',
-                'state_renew': ''
-            }
-
-            r = self.httprequestObj.http_post('https://www.livinginsider.com/living_edit_confirm.php', params={'topic_id': post_id}, data=data)
-
-            if r.status_code == 200:
-                success = 'true'
-                detail = 'Post was boosted was successfully.'
+                url = '{}/post_detail.php'.format(self.webbaseurl)
+                r = self.httprequestObj.http_post(url, data=data)
+                response = r.json()
+                if response['posts'] != None:
+                    data = response['posts'][0]
+                    all_photo = ''
+                    for count, value in enumerate(data['photo_list']):
+                        if count != len(data['photo_list'])-1:
+                            all_photo += value + '||'
+                        else:
+                            all_photo += value
+                    data['photo_list'] = all_photo
+                    for i in ['web_post_date','web_post_date','web_sortingdate','web_expiredate','web_topic_status_text','web_topic_status',
+                    'web_expired_check','share_url','web_expire_duration','first_page','first_page_status','first_page_percent']:
+                        if i in data:
+                            del data[i]
+                    data['device_id'] = device_id
+                    data['mem_id'] = mem_id
+                    data['device_type'] = 6
+                    url = '{}/post_edit.php'.format(self.webbaseurl)
+                    r = self.httprequestObj.http_post(url, data=data)
+                    response = r.json()
+                    if str(response['result_code']) == '0':
+                        success = True
+                        detail = 'Post was boosted was successfully.'
+                    else:
+                        detail = response['result_msg']
+                else:
+                    detail = 'Post id not found'
+            elif mem_status == '2':
+                detail = 'Your account is waiting to activate'
             else:
-                success = 'false'
-                detail = 'Can not boost the post.'
-            
+                detail = 'Your account is suspended'
         else:
             success = False
-            detail = 'Couldnot login'
+            detail = test_login['detail']
 
         time_end = datetime.datetime.utcnow()
         return {
@@ -546,9 +514,9 @@ class livinginsider():
             "start_time": time_start,
             "end_time": time_end,
             "detail": detail,
-            "log_id": log_id,
+            "log_id": postdata['log_id'],
             "ds_id": postdata['ds_id'],
-            "post_id": post_id,
+            "post_id": postdata['post_id'],
             "websitename": "livinginsider",
             "post_view": ''
         }
@@ -562,7 +530,6 @@ class livinginsider():
         detail = test_login["detail"]
         post_url = ""
         post_id = ""
-        post_modified = ""
         post_view = ""
 
         if success:

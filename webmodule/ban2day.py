@@ -104,7 +104,7 @@ class ban2day():
         # print(r.status_code)
         data = r.text
 
-        if ('.' in userdata['user']) or (' ' in userdata['user']):
+        if (' ' in userdata['user']):
             success = False
             detail = "Username is wrong"
         elif 'Username หรือ Password ไม่ถูกต้อง' not in data:
