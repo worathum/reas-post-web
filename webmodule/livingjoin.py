@@ -106,12 +106,12 @@ class livingjoin():
             '10':'21',
             '25':'20'
         }
-        postdata['property_type'] = property_type_tag[postdata['property_type']]
+
         tag = ''
         for i in ['addr_province','addr_district','addr_sub_district','listing_type','property_type']:
             if postdata[i] != '':
                 tag += postdata[i] + ','
-        tag += 'ราคาถูก'
+        tag += '{},ราคาถูก'.format(property_type_tag[postdata['property_type']])
 
         sub_propertytype = sub_propertytype[postdata['property_type']]
         listing_type = {'ขาย' : '1','เช่า':'2'}
@@ -157,7 +157,7 @@ class livingjoin():
 
         if province_id == '' or district_id == '' or subdistrict_id == '':
             detail = 'This subdistrict does not exist on this site.'
-        #############place_list
+
         else:
             data = [
                 ('prop_type_id', postdata['property_type']),
@@ -190,7 +190,6 @@ class livingjoin():
                 ('have_detail','yes'),
                 ('detail', postdata['post_description_th']),
                 ('dir_name', 'classified'),
-                ('default_pic','201221144551161242.jpg' ),
                 ('feature_list_other[]',''),
                 ('feature_list_other[]',''),
                 ('feature_list_other[]',''),
@@ -203,10 +202,14 @@ class livingjoin():
                 ('phone', postdata['mobile']),
                 ('post','')
             ]
-            files = []
-            for i in postdata['post_images'][:10]:
-                files.append(('imageproduct[]',((i, open(i, "rb"), "image/jpeg"))))
 
+            for count,file in enumerate(postdata['post_images'][:10]):
+                r = self.httprequestObj.http_post('https://www.livingjoin.com/file_upload.php', data={},files={'uploadfile':open(os.getcwd()+"/"+file, 'rb')})
+                if count == 0:
+                    data.append(('default_pic','{}.jpg'.format(r.json()['file'])))
+
+            r = self.httprequestObj.http_post('https://www.livingjoin.com/member/post', data=data)
+            print(r.text)
         return {
             'success': success,
             'detail': detail,
