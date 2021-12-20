@@ -13,8 +13,9 @@ import json
 from json import JSONEncoder
 from .lib_captcha import *
 
-captcha = lib_captcha()
+'''!!! Cancel (People use less and have to pay for posts.) !!!'''
 
+captcha = lib_captcha()
 
 class thaiproperty():
 

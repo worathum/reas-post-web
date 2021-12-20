@@ -139,9 +139,13 @@ imgtmp/[0-9]*/
 .vscode/settings.json
 /py37-venv
 
+# other
 *.html
 captcha.png
 tmp.jpeg
 static/chromedriver
-piktest_s.py
 piktest.py
+piktest_s.py
+sample.py
+sample.txt
+test.json
