@@ -153,7 +153,6 @@ class bkkland():
         except:
             pass
         
-        print(detail)
 
         # 
         # end process
