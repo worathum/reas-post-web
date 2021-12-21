@@ -16,9 +16,9 @@ httprequestObj = lib_httprequest()
 import re
 import time
 import traceback
+import subprocess
 
-
-
+output = subprocess.check_output(["git", "pull"])
 
 try:
     import configs
