@@ -614,7 +614,7 @@ class postcore():
     def coreworker_test(self, postdatajson):
         # json decode
         try:
-            datarequest = json.loads(postdatajson)
+            datarequest = json.loads(postdatajson, strict=False)
         except ValueError as e:
             return {
                 "success": "false",
