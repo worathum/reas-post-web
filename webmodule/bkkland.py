@@ -82,13 +82,10 @@ class bkkland():
             if postdata['user'] in verify.split():
                 success = True
                 mem_status = True
-<<<<<<< webmodule/bkkland.py
                 detail = "เข้าสู่ระบบสำเร็จ"
             else:
                 detail = "เข้าสู่ระบบล้มเหลว"
 
-=======
->>>>>>> webmodule/bkkland.py
                 
 
         # 
@@ -114,11 +111,7 @@ class bkkland():
 
         register_data["f_email"] = postdata["user"]
         register_data["f_pass"] = postdata["pass"]
-<<<<<<< webmodule/bkkland.py
         register_data["f_phone"] = postdata["tel"]
-=======
-        register_data["f_phone"] = postdata["mobile"]
->>>>>>> webmodule/bkkland.py
         register_data["f_name"] = postdata['name_en']
         register_data["process"] = "register"
         register_data["go"] = 'สมัครโลด !'
@@ -136,27 +129,16 @@ class bkkland():
         print(res.status_code)
 
 
-<<<<<<< webmodule/bkkland.py
         detail = ""
-=======
-        comment = ""
->>>>>>> webmodule/bkkland.py
         success = False
         if res.status_code == 200:
             soup = BeautifulSoup(res.content,'lxml')
             for hit in soup.find_all("p", attrs={"class":"comment"}):
                 soup_ele = BeautifulSoup(str(hit), self.parser)
-<<<<<<< webmodule/bkkland.py
                 detail = soup_ele.find("p", attrs={"class":"comment"}).text
                 if detail == "อีเมล์ นี้มีคนใช้แล้วค่ะ":
                     success = False
                 elif detail == "ชื่อสมาชิก นี้มีคนใช้แล้วค่ะ":
-=======
-                comment = soup_ele.find("p", attrs={"class":"comment"}).text
-                if comment == "อีเมล์ นี้มีคนใช้แล้วค่ะ":
-                    success = False
-                elif comment == "ชื่อสมาชิก นี้มีคนใช้แล้วค่ะ":
->>>>>>> webmodule/bkkland.py
                     success = False
 
         try:
@@ -168,17 +150,10 @@ class bkkland():
             if verify != []:
                 if postdata['user'] in verify.split():
                     success = True
-<<<<<<< webmodule/bkkland.py
         except:
             pass
         
-=======
-                    comment = "สมัครสมาชิกสำเร็จแล้วค่ะ"
-        except:
-            comment = "Error"
-
-        detail = comment
->>>>>>> webmodule/bkkland.py
+        print(detail)
 
         # 
         # end process
@@ -321,10 +296,7 @@ class bkkland():
             print(r.status_code)
 
         success = False
-<<<<<<< webmodule/bkkland.py
         post_id = ""
-=======
->>>>>>> webmodule/bkkland.py
         post_url = ""
         detail = ""
         res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?status=add_complete")
@@ -339,11 +311,8 @@ class bkkland():
                 post_id = re.findall("\d+", post_url)[0]
                 detail = "post complete."
                 success = True
-<<<<<<< webmodule/bkkland.py
             else:
                 detail = "post error"
-=======
->>>>>>> webmodule/bkkland.py
 
         
         time_end = datetime.datetime.utcnow()
@@ -380,7 +349,6 @@ class bkkland():
         success = False
         url_post = ""
         detail = ""
-<<<<<<< webmodule/bkkland.py
         res_post = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list")
         soup = BeautifulSoup(res_post.text, self.parser)
         # loop find all title post (first page)
@@ -412,23 +380,6 @@ class bkkland():
                 detail = "post_id wrong!"
             else:
                 detail = "error"
-=======
-        res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?status=add_complete")
-        soup = BeautifulSoup(res_complete.text, self.parser)
-        # loop find all title post (first page)
-        for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
-            soup_ele = BeautifulSoup(str(hit), self.parser)
-            try:
-                title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
-                if title == postdata['post_title_th']:
-                    url_post = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                    postdata['ds_id'] = re.findall("\d+", url_post)[0]
-                    detail = "delete False"
-                    success = False
-            except:
-                detail = "delete complete - post_id : {}".format(postdata['post_id'])
-                success = True
->>>>>>> webmodule/bkkland.py
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -437,11 +388,7 @@ class bkkland():
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
-<<<<<<< webmodule/bkkland.py
             'ds_id': "",
-=======
-            'ds_id': postdata['ds_id'],
->>>>>>> webmodule/bkkland.py
             'url' : url_post,
             "detail": detail,
             "websitename": self.webname,
