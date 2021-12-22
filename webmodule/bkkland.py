@@ -179,12 +179,12 @@ class bkkland():
         }
 
         pd_properties = {
-                'land':'1', 
-                'house':'2', 
-                'townhouse':'3', 
-                'building':'4', 
-                'condo':'5', 
-                'office':'6', 
+                '1' : '1', # condo
+                '2' : '2', # house
+                '4' : '4', # townhouse
+                '6' : '6', # land
+                '5' : '5', # building
+                '9' : '9' # office
             }
 
         province_id = ''
@@ -298,7 +298,7 @@ class bkkland():
         post_id = ""
         post_url = ""
         detail = ""
-        res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?status=add_complete")
+        res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list")
         soup = BeautifulSoup(res_complete.text, self.parser)
         # loop find all title post (first page)
         for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
@@ -310,6 +310,13 @@ class bkkland():
                 post_id = re.findall("\d+", post_url)[0]
                 detail = "post complete."
                 success = True
+            elif title != postdata['post_title_th']:
+                post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                post_id = re.findall("\d+", post_url)[0]
+                check_url = self.httprequestObj.http_get(post_url)
+                if check_url.status_code == 200:
+                    detail = "post complete."
+                    success = True
             else:
                 detail = "post error"
 
