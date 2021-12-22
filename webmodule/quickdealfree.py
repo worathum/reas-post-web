@@ -365,6 +365,9 @@ class quickdealfree():
             if 'คุณเลื่อนประกาศเรียบร้อย' in r.text:
                 success = True
                 detail = 'Boost successful'
+            elif 'คุณจะเลื่อนประกาศได้อีกครั้งเวลา' in r.text:
+                success = False
+                detail = 'This announcement was postponed today'
             else:
                 detail = r.text
             

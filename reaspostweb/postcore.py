@@ -18,7 +18,13 @@ import time
 import traceback
 import subprocess
 
-output = subprocess.check_output(["git", "pull"])
+try:
+    output = subprocess.check_output(["git", "pull"])
+    print("pull")
+except:
+    pass
+
+
 
 try:
     import configs
