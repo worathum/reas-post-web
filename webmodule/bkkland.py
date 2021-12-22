@@ -550,6 +550,7 @@ class bkkland():
 
             success = False
             detail = ""
+            post_modify_time = ""
             if title == postdata["post_title_th"]:
                 post_modify_time = date_time
                 detail = "Post Found"
