@@ -178,6 +178,9 @@ class aecmarketing():
                 post_url = response['result']['redirect']
                 post_id = post_url.split('/')[-1].split('-')[0]
                 success = True
+                if action == ('post'):
+                    postdata['post_id'] = post_id
+                    self.boost_post(postdata)
             else:
                 detail = response['result']['description']
         return {
