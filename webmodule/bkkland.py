@@ -182,9 +182,14 @@ class bkkland():
                 '1' : '1', # condo
                 '2' : '2', # house
                 '4' : '4', # townhouse
-                '6' : '6', # land
                 '5' : '5', # building
-                '9' : '9' # office
+                '6' : '6', # land
+                '7' : '6', # apartment
+                '8' : '6', # hotel
+                '9' : '9', # office
+                '10' : '9', # warehouse
+                '25' : '9' # factory
+                # '8' : '6', # hotel
             }
 
         province_id = ''
