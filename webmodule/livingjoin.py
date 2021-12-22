@@ -302,6 +302,8 @@ class livingjoin():
                             success = True
                             detail = 'successful'
                             break
+                else:
+                    detail = 'Something wrong. Maybe this post is duplicate'
 
         return {
             'success': success,
