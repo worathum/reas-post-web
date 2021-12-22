@@ -1,0 +1,39 @@
+{
+    "data" :[
+        {
+            "ds_name": "trovit",
+            "ref_id": "1",
+            "url_web": "https://th.trovit.com/baan/",
+            "user": "vinves.postweb@outlook.com",
+            "pass": "vinvestorDev"
+        },
+        {
+            "ds_name": "genie_property",
+            "ref_id": "2",
+            "url_web": "https://www.genie-property.com/",
+            "user": "vinves.postweb@outlook.com",
+            "pass": "vinvestorDev"
+        },
+        {
+            "ds_name": "genie_property",
+            "ref_id": "3",
+            "url_web": "https://www.genie-property.com/",
+            "user": "tanakon.blabla@outlook.com",
+            "pass": "K78sb96abC69"
+        },
+        {
+            "ds_name": "bkkland",
+            "ref_id": "4",
+            "url_web": "https://www.bkkland.com/",
+            "user": "tanakon.blabla@outlook.com",
+            "pass": "K78sb96abC69"
+        },
+        {
+            "ds_name": "bkkland",
+            "ref_id": "5",
+            "url_web": "https://www.bkkland.com/",
+            "user": "vinves.postweb@outlook.com",
+            "pass": "K78sb96abC69"
+        }
+    ]
+}
