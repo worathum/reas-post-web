@@ -169,6 +169,8 @@ class bkkland():
             "detail": detail,
     }
 
+
+
     def datapost_details(self, postdata, url_capcha):
 
 
@@ -229,6 +231,9 @@ class bkkland():
             # capcha using create_post not using edit_post
             postdata['captcha'] = ""
             pass
+        
+        # replace : space and break the line
+        des_re = postdata['post_description_th'].replace("\r\n", "<p>&nbsp;</p>")
 
         os.remove(path_img)
         datapost = {
@@ -243,7 +248,7 @@ class bkkland():
             'f_price' : (None, postdata['price_baht']),
             'f_pricetype' : (None, "1"),
             'f_journey' : (None, postdata['addr_soi']+postdata['addr_road']+postdata['addr_near_by']),
-            'f_mhtml' : (None, postdata['post_description_th']),
+            'f_mhtml' : (None, des_re),
             'f_picfake1' : (None, "fakepath"),
             'picfile1' : (None, ""),
             'f_captcha' : (None, postdata['captcha']),

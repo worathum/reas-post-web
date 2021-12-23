@@ -19,10 +19,34 @@ import traceback
 
 # new import using try be safe
 try:
+    logging.info("==============================================================================")
+    logging.info("==============================================================================")
+    logging.warning("PULL GIT: IN PROGRESS") 
     import git
+    import subprocess
     g = git.cmd.Git(os.path.abspath(os.getcwd()))
     g.pull()
+    logging.warning("PULL GIT: COMPLETE")
+    logging.info("==============================================================================")
+    logging.info("==============================================================================")
+
+    logging.warning("RESTART SERVER: IN PROGRESS") 
+    bashCommand = "pm2 restart pm_config.json"
+    process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+    output, error = process.communicate()
+    logging.warning("RESTART SERVER: COMPLETE") 
+    logging.info("==============================================================================")
+    logging.info("==============================================================================")
 except:
+    try:
+        logging.error("PULL GIT : ERROR")
+        logging.warning("CODE: {}".format(g))
+        logging.error("RESTART SERVER : ERROR")
+        logging.warning("CODE: {} - {}".format(output, error))
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+    except:
+        pass
     pass
 
 
