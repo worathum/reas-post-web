@@ -214,7 +214,7 @@ class bkkland():
                     if str(link) == '''<img src="http://www.bkkland.com/post/captcha"/>''':
                         captcha_img = self.httprequestObj.http_get("http://www.bkkland.com/post/captcha", stream=True)
                 
-                path_img = os.getcwd() + '/imgtmp/Img_Captcha/imagecaptcha.jpg'
+                path_img = os.getcwd() + '/imgtmp/imagecaptcha.jpg'
                 with open(path_img,'wb') as local_file :
                     for block in captcha_img.iter_content(1024):
                         if not block:
@@ -265,7 +265,7 @@ class bkkland():
         # try:
         for count in range(len(postdata["post_img_url_lists"])):
             link = postdata["post_img_url_lists"][count]
-            path = os.getcwd()+"/imgtmp/img_upload/"+"photo_{}.jpg".format(count+1)
+            path = os.getcwd()+"/imgtmp/"+"photo_{}.jpg".format(count+1)
             img_data = requests.get(link).content
             with open(path, 'wb') as handler:
                 handler.write(img_data)
