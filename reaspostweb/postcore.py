@@ -16,9 +16,10 @@ httprequestObj = lib_httprequest()
 import re
 import time
 import traceback
-import git
 
+# new import using try be safe
 try:
+    import git
     g = git.cmd.Git(os.path.abspath(os.getcwd()))
     g.pull()
 except:
