@@ -373,7 +373,7 @@ class ddproperty():
         response['start_time'] = str(time_start)
         response['end_time'] = str(time_end)
         response['websitename'] = self.websitename
-        response['ds_id'] = datahandled['ds_id']
+        response['ds_id'] = postdata['ds_id']
         
         return response
 

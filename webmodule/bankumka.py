@@ -995,6 +995,7 @@ class bankumka():
         province_id = '10'
         amphur_id = '26'
         if success == "true":
+            success = "false"
             page = 1
             posturl = ""
             found = False
@@ -1005,7 +1006,7 @@ class bankumka():
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 all_ = soup.findAll("a", {"class": "my-property-name"})
                 for i in all_:
-                    if (i.get_text()).find(str(postdata['post_id'])) != -1:
+                    if i['href'].find(str(postdata['post_id'])) != -1:
                         posturl += i['href']
                         found = True
                         break
@@ -1124,6 +1125,7 @@ class bankumka():
                 data = json.loads(r.text)
 
                 if data['status'] == 'OK':
+                    g_response = captcha.reCaptcha('6Lfkov8cAAAAAOcHJBr2mND2B7xEKS3dJUJXlksm', 'https://bankumka.com')
                     datapost = [
                         ('timeout', '5'),
                         ('prop_name', data1['prop_name']),
@@ -1178,6 +1180,7 @@ class bankumka():
                         ('prop_gallary10', ''),
                         ('drag', '0'),
                         ('token', data['token']),
+                        ('g_token',g_response),
                         ('csrf_time', csrf_time),
                         ('csrf_token', csrf_token),
                         ('action', 'update'),
@@ -1185,7 +1188,11 @@ class bankumka():
                     ]
                     r = self.httprequestObj.http_post(
                         'https://bankumka.com/property/save', data=datapost)
-                    detail  = "Post deleted successfully"
+                    if 'ไม่สามารถแสดงข้อมูลประกาศ' in r.text:
+                        detail  = "Post deleted successfully"
+                    else:
+                        success = "false"
+                        detail = 'Something wrong'
                 else:
                     success = "false"
         else:
