@@ -16,11 +16,11 @@ httprequestObj = lib_httprequest()
 import re
 import time
 import traceback
-import subprocess
+import git
 
 try:
-    output = subprocess.check_output(["git", "pull"])
-    print("pull")
+    g = git.cmd.Git(os.path.abspath(os.getcwd()))
+    g.pull()
 except:
     pass
 
