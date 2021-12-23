@@ -38,12 +38,15 @@ try:
     logging.info("==============================================================================")
     logging.info("==============================================================================")
 except:
-    logging.error("PULL GIT : ERROR")
-    logging.warning("CODE: {}".format(g))
-    logging.error("RESTART SERVER : ERROR")
-    logging.warning("CODE: {} - {}".format(output, error))
-    logging.info("==============================================================================")
-    logging.info("==============================================================================")
+    try:
+        logging.error("PULL GIT : ERROR")
+        logging.warning("CODE: {}".format(g))
+        logging.error("RESTART SERVER : ERROR")
+        logging.warning("CODE: {} - {}".format(output, error))
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+    except:
+        pass
     pass
 
 
