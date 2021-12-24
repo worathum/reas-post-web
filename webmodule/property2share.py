@@ -567,14 +567,18 @@ class property2share():
         for post in all_posts:
             actual_title = post['title'].replace(" ", "")
             if(post_title == actual_title):
-                detail = 'Successfully Found the Post'
-                post_found = True
-                success = True
                 post_url = 'https://www.property2share.com/property-'+str(post['publish_id'])
-                post_id = (post['publish_id'])
-                post_create_time = post['create_date']
-                post_view = post['view']
-                break
+                check_post = self.httprequestObj.http_get(post_url)
+                soup = BeautifulSoup(check_post.text, features=self.parser)
+                title_in_post = soup.find('title')
+                if title_in_post == postdata['post_title_th']:
+                    detail = 'Successfully Found the Post'
+                    post_found = True
+                    success = True
+                    post_id = (post['publish_id'])
+                    post_create_time = post['create_date']
+                    post_view = post['view']
+                    break
 
 
         time_end = datetime.utcnow()
