@@ -433,37 +433,38 @@ class bkkland():
                         detail = "post complete."
                         success = True
                         break
+            
+            if postdata['post_id'] == int:
+                # start edit_post            
+                url_edit = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
+                url_api = 'http://www.bkkland.com/post/update'
+                payload = self.datapost_details(postdata, url_edit)
+                payload['process'] = "edit_post"
+                payload["post_id"] = post_id
+                payload["f_activated"] = (None, "Y")
+                payload["go"] = (None, "แก้ไขประกาศ")
 
-            # start edit_post            
-            url_edit = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
-            url_api = 'http://www.bkkland.com/post/update'
-            payload = self.datapost_details(postdata, url_edit)
-            payload['process'] = "edit_post"
-            payload["post_id"] = post_id
-            payload["f_activated"] = (None, "Y")
-            payload["go"] = (None, "แก้ไขประกาศ")
+                r = self.httprequestObj.http_post_with_headers(url_api, data=payload)
+                print(r.status_code)
 
-            r = self.httprequestObj.http_post_with_headers(url_api, data=payload)
-            print(r.status_code)
+                success = False
+                detail = ""
+                url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(post_id)
+                res_complete = self.httprequestObj.http_get(url_update)
+                soup = BeautifulSoup(res_complete.text, self.parser)
+                for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
+                    soup_ele = BeautifulSoup(str(hit), self.parser)
+                    try:
+                        text_update = soup_ele.find("script", attrs={"type":"text/javascript"})
+                        mystr = str(text_update)
+                        # if != -1 is finded
+                        if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
+                            detail = "update complete - post_id : {}".format(post_id)
+                            success = True
 
-            success = False
-            detail = ""
-            url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(post_id)
-            res_complete = self.httprequestObj.http_get(url_update)
-            soup = BeautifulSoup(res_complete.text, self.parser)
-            for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
-                soup_ele = BeautifulSoup(str(hit), self.parser)
-                try:
-                    text_update = soup_ele.find("script", attrs={"type":"text/javascript"})
-                    mystr = str(text_update)
-                    # if != -1 is finded
-                    if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
-                        detail = "update complete - post_id : {}".format(post_id)
-                        success = True
-
-                except:
-                    detail = "update False"
-                    success = False
+                    except:
+                        detail = "update False"
+                        success = False
 
     
 
