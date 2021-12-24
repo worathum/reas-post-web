@@ -181,16 +181,16 @@ class bkkland():
         }
 
         pd_properties = {
-                '1' : '1', # condo
+                '1' : '5', # condo
                 '2' : '2', # house
-                '4' : '4', # townhouse
-                '5' : '5', # building
-                '6' : '6', # land
-                '7' : '6', # apartment
-                '8' : '6', # hotel
-                '9' : '9', # office
-                '10' : '9', # warehouse
-                '25' : '9' # factory
+                '3' : '3', # townhouse
+                '5' : '4', # building
+                '6' : '1', # land
+                '7' : '5', # apartment
+                '8' : '5', # hotel
+                '9' : '6', # office
+                '10' : '6', # warehouse
+                '25' : '6' # factory
                 # '8' : '6', # hotel
             }
 
