@@ -184,6 +184,7 @@ class bkkland():
                 '1' : '5', # condo
                 '2' : '2', # house
                 '3' : '3', # townhouse
+                '4' : '3', # townhome
                 '5' : '4', # building
                 '6' : '1', # land
                 '7' : '5', # apartment
