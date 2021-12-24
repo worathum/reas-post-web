@@ -554,7 +554,10 @@ class property2share():
 
         
         my_post_page = self.httprequestObj.http_get("https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000")
-        all_posts_response = json.loads(my_post_page.content.decode('utf-8')[2:])
+        try:
+            all_posts_response = json.loads(my_post_page.content.decode('utf-8')[2:])
+        except:
+            all_posts_response = json.loads(my_post_page.content.decode('utf-8')[2:], strict=False)
 
         if 'data' in all_posts_response:
             all_posts = all_posts_response['data']
