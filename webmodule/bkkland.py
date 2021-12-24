@@ -583,47 +583,12 @@ class bkkland():
                     if name == post_title:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                         post_id = re.findall("\d+", post_url)[0]
-                        detail = "post complete."
+                        detail = "Post Found"
                         success = True
                         break
                 count_page += 1
                 if success == True:
                     break
-
-            # post_url = 'http://www.bkkland.com/post/{}.html'.format(postdata['post_id'])
-            # url_list = 'http://www.bkkland.com/post/your_list'
-
-            # r = self.httprequestObj.http_get(post_url)
-            # print(r.status_code)
-
-            # res = self.httprequestObj.http_get(url_list)
-            # print(r.status_code)
-
-            date_time = None
-
-            # soup_title = BeautifulSoup(r.text, self.parser)
-            # title = soup_title.find("title").text
-
-            # soup = BeautifulSoup(res.text, self.parser)
-            # for hit in soup.find_all("td"):
-            #     line = re.sub('[<>/ptd]', '', str(hit))
-            #     for string_line in line:
-            #         try:
-            #             # loop check first string if can convert to int, that line is time.
-            #             # if check cannot convert to int, it is check error and next line.
-            #             check = int(string_line)
-            #             date_time = line 
-            #         except:
-            #             break
-
-
-            success = False
-            detail = ""
-            post_modify_time = ""
-            if title == postdata["post_title_th"]:
-                post_modify_time = date_time
-                detail = "Post Found"
-                success = True
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -639,7 +604,7 @@ class bkkland():
             "log_id": postdata['log_id'],
             "post_id": post_id,
             "post_created": '',
-            "post_modified": post_modify_time,
+            "post_modified": time_end,
             "post_view": "",
             "post_url": post_url
         }
