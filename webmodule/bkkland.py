@@ -412,12 +412,13 @@ class bkkland():
 
         test_login = self.test_login(postdata)
 
+        success = False
+        post_id = ""
+        post_url = ""
+        detail = ""
         if test_login['success'] == True:
             if postdata['post_id'] != int:
-                success = False
-                post_id = ""
-                post_url = ""
-                detail = ""
+                
                 res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list")
                 soup = BeautifulSoup(res_complete.text, self.parser)
                 # loop find all title post (first page)
@@ -433,10 +434,10 @@ class bkkland():
                         success = True
                         break
 
-        if test_login['success'] == True:
-            post_url = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
+            # start edit_post            
+            url_edit = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
             url_api = 'http://www.bkkland.com/post/update'
-            payload = self.datapost_details(postdata, post_url)
+            payload = self.datapost_details(postdata, url_edit)
             payload['process'] = "edit_post"
             payload["post_id"] = post_id
             payload["f_activated"] = (None, "Y")
