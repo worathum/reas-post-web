@@ -44,7 +44,7 @@ try:
 
     # work pip install 00:00:00 - 08:00:00
     time_now = datetime.datetime.now().strftime("%H")
-    if time_now > "08":
+    if time_now < "08":
         if platform.system() == "Linux":
             requi = 'requirements_linux.txt'
         elif platform.system() == "windows":

@@ -289,8 +289,9 @@ class property2share():
         url = detail_res.url
 
         url_clean = url.split('?')
-        post_id = str(url_clean[1][11:])
-        
+        post_id = str(re.sub("[^0-9]", "", url_clean[1]))
+
+
 
         url_upload_img = "https://www.property2share.com/pageuser/upload.php?type=1&publish_id={}".format(str(post_id))
 
@@ -305,6 +306,7 @@ class property2share():
 
         url_submit = 'https://www.property2share.com/pageuser/preview_publish.php?id={}'.format(str(post_id))
         data['publish_id'] = int(post_id)
+
         register_res = self.httprequestObj.http_post(url_submit,data=data)
         print(register_res.status_code)
 

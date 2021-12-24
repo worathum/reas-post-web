@@ -355,7 +355,7 @@ class klungbaan():
 
                 image_ids = []
                 flag = True
-                for image in postdata['post_images'][:10]:
+                for image in postdata['post_img_url_lists'][:10]:
                     data = {"name": image}
                     files = {"property_upload_file": open(os.getcwd()+"/"+image, 'rb')}
                     r = self.httprequestObj.http_post(website+'/wp-admin/admin-ajax.php?action=houzez_property_img_upload&verify_nonce='+verify_nonce, data=data, files=files)
