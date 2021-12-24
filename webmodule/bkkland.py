@@ -315,18 +315,13 @@ class bkkland():
             soup_ele = BeautifulSoup(str(hit), self.parser)
             title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
 
+
             if title == postdata['post_title_th']:
                 post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                 post_id = re.findall("\d+", post_url)[0]
                 detail = "post complete."
                 success = True
-            elif title != postdata['post_title_th']:
-                post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                post_id = re.findall("\d+", post_url)[0]
-                check_url = self.httprequestObj.http_get(post_url)
-                if check_url.status_code == 200:
-                    detail = "post complete."
-                    success = True
+                break
             else:
                 detail = "post error"
 
@@ -417,13 +412,33 @@ class bkkland():
 
         test_login = self.test_login(postdata)
 
+        if test_login['success'] == True:
+            if postdata['post_id'] != int or int(postdata['post_id']):
+                success = False
+                post_id = ""
+                post_url = ""
+                detail = ""
+                res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list")
+                soup = BeautifulSoup(res_complete.text, self.parser)
+                # loop find all title post (first page)
+                for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+                    soup_ele = BeautifulSoup(str(hit), self.parser)
+                    title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
+
+
+                    if title == postdata['post_title_th']:
+                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                        post_id = re.findall("\d+", post_url)[0]
+                        detail = "post complete."
+                        success = True
+                        break
 
         if test_login['success'] == True:
-            post_url = 'http://www.bkkland.com/post/form/edit?id={}'.format(postdata['post_id'])
+            post_url = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
             url_api = 'http://www.bkkland.com/post/update'
             payload = self.datapost_details(postdata, post_url)
             payload['process'] = "edit_post"
-            payload["post_id"] = postdata['post_id']
+            payload["post_id"] = post_id
             payload["f_activated"] = (None, "Y")
             payload["go"] = (None, "แก้ไขประกาศ")
 
@@ -432,7 +447,7 @@ class bkkland():
 
             success = False
             detail = ""
-            url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(postdata['post_id'])
+            url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(post_id)
             res_complete = self.httprequestObj.http_get(url_update)
             soup = BeautifulSoup(res_complete.text, self.parser)
             for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
@@ -442,12 +457,14 @@ class bkkland():
                     mystr = str(text_update)
                     # if != -1 is finded
                     if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
-                        detail = "update complete - post_id : {}".format(postdata['post_id'])
+                        detail = "update complete - post_id : {}".format(post_id)
                         success = True
 
                 except:
                     detail = "update False"
                     success = False
+
+    
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -458,7 +475,7 @@ class bkkland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
             "account_type": "null",
             "detail": detail,
         }
