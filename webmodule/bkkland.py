@@ -586,7 +586,6 @@ class bkkland():
             post_id = ""
             while count_page < 35:
                 url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
-                print(url_check_title)
                 res_complete = self.httprequestObj.http_get(url_check_title)
                 soup = BeautifulSoup(res_complete.text, self.parser)
                 # loop find all title post (first page)

@@ -292,7 +292,7 @@ class property2share():
         post_id = str(re.sub("[^0-9]", "", url_clean[1]))
         
 
-        url_upload_img = "https://www.property2share.com/pageuser/upload.php?type=1&publish_id={}".format(str(post_id))
+        url_upload_img = "https://www.property2share.com/pageuser/upload.php?type=1&publish_id={}".format(post_id)
 
         path_imgs = self.pull_imgs(postdata)
         files = {}
@@ -303,13 +303,13 @@ class property2share():
         for f in path_imgs:
             os.remove(f)
 
-        url_submit = 'https://www.property2share.com/pageuser/preview_publish.php?id={}'.format(str(post_id))
+        url_submit = 'https://www.property2share.com/pageuser/preview_publish.php?id={}'.format(post_id)
         data['publish_id'] = int(post_id)
         register_res = self.httprequestObj.http_post(url_submit,data=data)
         print(register_res.status_code)
 
         
-        posturl_submit = 'https://www.property2share.com/property-{}'.format(str(post_id))
+        posturl_submit = 'https://www.property2share.com/property-{}'.format(post_id)
         check_prop_res = self.httprequestObj.http_get(posturl_submit)
 
         success, posted = "false", "post not created"
@@ -363,7 +363,7 @@ class property2share():
             return login
 
         try:
-            response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+post_id)
+            response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+str(post_id))
             if(response.status_code == 200):
                 success = True
                 detail = "Post Boosted Successfully"
@@ -567,7 +567,6 @@ class property2share():
         for post in all_posts:
             actual_title = post['title'].replace(" ", "")
             if(post_title == actual_title):
-                print(post_title, actual_title)
                 detail = 'Successfully Found the Post'
                 post_found = True
                 success = True
