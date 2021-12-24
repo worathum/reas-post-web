@@ -243,7 +243,7 @@ class bkkland():
             'f_province' : (None, province_id),
             'f_amphur' : (None, amphur_id),
             'f_district' : (None, ""),
-            'f_land_area' : (None, postdata['land_size_wa']),
+            'f_land_area' : (None, "{}, {}, {}".format(postdata['land_size_rai'], postdata['land_size_ngan'], postdata['land_size_wa'])),
             'f_price_accept' : (None, "Y"),
             'f_price' : (None, postdata['price_baht']),
             'f_pricetype' : (None, "1"),
