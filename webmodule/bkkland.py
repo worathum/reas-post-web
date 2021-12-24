@@ -194,6 +194,17 @@ class bkkland():
                 # '8' : '6', # hotel
             }
 
+        if postdata['property_type'] == '1' or '7':
+            land_area = "{}ตรม.".format(postdata['floorarea_sqm'])
+
+        else:
+            land_area = "{}ไร่, {}งาน, {}วา, {}ตรม.".format(postdata['land_size_rai'], 
+                                                          postdata['land_size_ngan'], 
+                                                          postdata['land_size_wa'], 
+                                                          postdata['floorarea_sqm'])
+
+
+
         province_id = ''
         amphur_id = ''
 
@@ -232,6 +243,7 @@ class bkkland():
             postdata['captcha'] = ""
             pass
         
+
         # replace : space and break the line
         des_re = postdata['post_description_th'].replace("\r\n", "<p>&nbsp;</p>")
 
@@ -243,7 +255,7 @@ class bkkland():
             'f_province' : (None, province_id),
             'f_amphur' : (None, amphur_id),
             'f_district' : (None, ""),
-            'f_land_area' : (None, "{}, {}, {}".format(postdata['land_size_rai'], postdata['land_size_ngan'], postdata['land_size_wa'])),
+            'f_land_area' : (None, land_area),
             'f_price_accept' : (None, "Y"),
             'f_price' : (None, postdata['price_baht']),
             'f_pricetype' : (None, "1"),
