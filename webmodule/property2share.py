@@ -178,7 +178,7 @@ class property2share():
 
         district_list_full = []
 
-        district_list_resp = self.httprequestObj.http_get('https://www.property2share.com/connection/amphur.php?province_id=' + province_id)
+        district_list_resp = self.httprequestObj.http_get('https://www.property2share.com/connection/amphur.php?province_id=' + str(province_id))
         district_list = district_list_resp.content.decode('utf-8')
         district_list = ast.literal_eval(district_list)
 
