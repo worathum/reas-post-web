@@ -194,14 +194,28 @@ class bkkland():
                 # '8' : '6', # hotel
             }
 
-        if postdata['property_type'] == '1' or '7':
-            land_area = "{}ตรม.".format(postdata['floorarea_sqm'])
 
+        land_area = ""
+
+        rai = "{}ไร่".format(postdata['land_size_rai'])
+        ngan = "{}งาน".format(postdata['land_size_ngan'])
+        wa = "{}วา".format(postdata['land_size_wa'])
+        sqm = "{}ตรม.".format(postdata['floorarea_sqm'])
+
+        if postdata['property_type'] == '1' or postdata['property_type'] == '7':
+            land_area = "{}".format(sqm)
         else:
-            land_area = "{}ไร่, {}งาน, {}วา, {}ตรม.".format(postdata['land_size_rai'], 
-                                                          postdata['land_size_ngan'], 
-                                                          postdata['land_size_wa'], 
-                                                          postdata['floorarea_sqm'])
+            if postdata['land_size_rai'] != "":
+                land_area = " "+rai
+
+            if postdata['land_size_ngan'] != "":
+                land_area += " "+ngan
+
+            if postdata['land_size_wa'] != "":
+                land_area += " "+wa
+
+            if postdata['floorarea_sqm'] != "":
+                land_area += " "+sqm
 
 
 
@@ -319,7 +333,7 @@ class bkkland():
         success = False
         post_id = ""
         post_url = ""
-        detail = ""
+        detail = "post fail"
         res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list")
         soup = BeautifulSoup(res_complete.text, self.parser)
         # loop find all title post (first page)
