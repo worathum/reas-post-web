@@ -417,30 +417,39 @@ class bkkland():
         post_url = ""
         detail = ""
         if test_login['success'] == True:
-            if postdata['post_id'] != int:
+            # if postdata['post_id'] != int:
                 
-                count_page = 1
 
-                while True:
-                    url_edit = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
-                    res_complete = self.httprequestObj.http_get(url_edit)
-                    soup = BeautifulSoup(res_complete.text, self.parser)
-                    # loop find all title post (first page)
-                    for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
-                        soup_ele = BeautifulSoup(str(hit), self.parser)
-                        title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
+            #     count_page = 1
+            #     while count_page < 35:
+            #         url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
+            #         print(url_check_title)
+            #         res_complete = self.httprequestObj.http_get(url_check_title)
+            #         soup = BeautifulSoup(res_complete.text, self.parser)
+            #         # loop find all title post (first page)
+            #         for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+            #             soup_ele = BeautifulSoup(str(hit), self.parser)
+            #             title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
+
+            #             def intersection(lst1, lst2):
+            #                 lst3 = [value for value in lst1 if value in lst2]
+            #                 return lst3
+
+            #             # pull from web is more space >>'  '<<, >>' '<<
+            #             name = title.text.split(' ')
+            #             name_db = postdata['post_title_th']
+            #             new = intersection(name, name_db)
 
 
-                        if title.text == postdata['post_title_th']:
-                            post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                            post_id = re.findall("\d+", post_url)[0]
-                            detail = "post complete."
-                            success = True
-                            break
-                    
-                    count_page += 1
-                    if success == True:
-                        break
+            #             if title.text == postdata['post_title_th'] or len(new) > 8:
+            #                 post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+            #                 post_id = re.findall("\d+", post_url)[0]
+            #                 detail = "post complete."
+            #                 success = True
+            #                 break
+            #         count_page += 1
+            #         if success == True:
+            #             break
 
             
             if postdata['post_id'] == int:
@@ -553,32 +562,59 @@ class bkkland():
 
         test_login = self.test_login(postdata)
 
+        success = False
         if test_login['success'] == True:
-            post_url = 'http://www.bkkland.com/post/{}.html'.format(postdata['post_id'])
-            url_list = 'http://www.bkkland.com/post/your_list'
+            count_page = 1
+            post_id = ""
+            while count_page < 35:
+                url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
+                print(url_check_title)
+                res_complete = self.httprequestObj.http_get(url_check_title)
+                soup = BeautifulSoup(res_complete.text, self.parser)
+                # loop find all title post (first page)
+                for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+                    soup_ele = BeautifulSoup(str(hit), self.parser)
+                    title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
-            r = self.httprequestObj.http_get(post_url)
-            print(r.status_code)
+                    name = title.text.replace(" ", "")
+                    post_title = postdata['post_title_th'].replace(" ", "")
 
-            res = self.httprequestObj.http_get(url_list)
-            print(r.status_code)
+
+                    if name == post_title:
+                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                        post_id = re.findall("\d+", post_url)[0]
+                        detail = "post complete."
+                        success = True
+                        break
+                count_page += 1
+                if success == True:
+                    break
+
+            # post_url = 'http://www.bkkland.com/post/{}.html'.format(postdata['post_id'])
+            # url_list = 'http://www.bkkland.com/post/your_list'
+
+            # r = self.httprequestObj.http_get(post_url)
+            # print(r.status_code)
+
+            # res = self.httprequestObj.http_get(url_list)
+            # print(r.status_code)
 
             date_time = None
 
-            soup_title = BeautifulSoup(r.text, self.parser)
-            title = soup_title.find("title").text
+            # soup_title = BeautifulSoup(r.text, self.parser)
+            # title = soup_title.find("title").text
 
-            soup = BeautifulSoup(res.text, self.parser)
-            for hit in soup.find_all("td"):
-                line = re.sub('[<>/ptd]', '', str(hit))
-                for string_line in line:
-                    try:
-                        # loop check first string if can convert to int, that line is time.
-                        # if check cannot convert to int, it is check error and next line.
-                        check = int(string_line)
-                        date_time = line 
-                    except:
-                        break
+            # soup = BeautifulSoup(res.text, self.parser)
+            # for hit in soup.find_all("td"):
+            #     line = re.sub('[<>/ptd]', '', str(hit))
+            #     for string_line in line:
+            #         try:
+            #             # loop check first string if can convert to int, that line is time.
+            #             # if check cannot convert to int, it is check error and next line.
+            #             check = int(string_line)
+            #             date_time = line 
+            #         except:
+            #             break
 
 
             success = False
@@ -601,7 +637,7 @@ class bkkland():
             "account_type": None,
             "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
             "post_created": '',
             "post_modified": post_modify_time,
             "post_view": "",
