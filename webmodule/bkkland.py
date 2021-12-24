@@ -417,72 +417,64 @@ class bkkland():
         post_url = ""
         detail = ""
         if test_login['success'] == True:
-            # if postdata['post_id'] != int:
-                
+            count_page = 1
+            post_id = ""
+            while count_page < 35:
+                url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
+                print(url_check_title)
+                res_complete = self.httprequestObj.http_get(url_check_title)
+                soup = BeautifulSoup(res_complete.text, self.parser)
+                # loop find all title post (first page)
+                for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+                    soup_ele = BeautifulSoup(str(hit), self.parser)
+                    title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
-            #     count_page = 1
-            #     while count_page < 35:
-            #         url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
-            #         print(url_check_title)
-            #         res_complete = self.httprequestObj.http_get(url_check_title)
-            #         soup = BeautifulSoup(res_complete.text, self.parser)
-            #         # loop find all title post (first page)
-            #         for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
-            #             soup_ele = BeautifulSoup(str(hit), self.parser)
-            #             title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
-
-            #             def intersection(lst1, lst2):
-            #                 lst3 = [value for value in lst1 if value in lst2]
-            #                 return lst3
-
-            #             # pull from web is more space >>'  '<<, >>' '<<
-            #             name = title.text.split(' ')
-            #             name_db = postdata['post_title_th']
-            #             new = intersection(name, name_db)
+                    name = title.text.replace(" ", "")
+                    post_title = postdata['post_title_th'].replace(" ", "")
 
 
-            #             if title.text == postdata['post_title_th'] or len(new) > 8:
-            #                 post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-            #                 post_id = re.findall("\d+", post_url)[0]
-            #                 detail = "post complete."
-            #                 success = True
-            #                 break
-            #         count_page += 1
-            #         if success == True:
-            #             break
+                    if name == post_title:
+                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                        post_id = re.findall("\d+", post_url)[0]
+                        detail = "Post Found"
+                        success = True
+                        break
+                count_page += 1
+                if success == True:
+                    break
 
             
-            if postdata['post_id'] == int:
-                # start edit_post            
-                url_edit = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
-                url_api = 'http://www.bkkland.com/post/update'
-                payload = self.datapost_details(postdata, url_edit)
-                payload['process'] = "edit_post"
-                payload["post_id"] = post_id
-                payload["f_activated"] = (None, "Y")
-                payload["go"] = (None, "แก้ไขประกาศ")
 
-                r = self.httprequestObj.http_post_with_headers(url_api, data=payload)
-                print(r.status_code)
+            # start edit_post            
+            url_edit = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
+            url_api = 'http://www.bkkland.com/post/update'
+            payload = self.datapost_details(postdata, url_edit)
+            payload['process'] = "edit_post"
+            payload["post_id"] = post_id
+            payload["f_activated"] = (None, "Y")
+            payload["go"] = (None, "แก้ไขประกาศ")
 
-                success = False
-                detail = ""
-                url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(post_id)
-                res_complete = self.httprequestObj.http_get(url_update)
-                soup = BeautifulSoup(res_complete.text, self.parser)
-                for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
-                    soup_ele = BeautifulSoup(str(hit), self.parser)
-                    try:
-                        text_update = soup_ele.find("script", attrs={"type":"text/javascript"})
-                        mystr = str(text_update)
-                        # if != -1 is finded
-                        if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
-                            detail = "update complete - post_id : {}".format(post_id)
-                            success = True
+            r = self.httprequestObj.http_post_with_headers(url_api, data=payload)
+            print(r.status_code)
 
-                    except:
-                        detail = "update False"
-                        success = False
+            success = False
+            detail = ""
+            url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(post_id)
+            res_complete = self.httprequestObj.http_get(url_update)
+            soup = BeautifulSoup(res_complete.text, self.parser)
+            for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
+                soup_ele = BeautifulSoup(str(hit), self.parser)
+                try:
+                    text_update = soup_ele.find("script", attrs={"type":"text/javascript"})
+                    mystr = str(text_update)
+                    # if != -1 is finded
+                    if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
+                        detail = "update complete - post_id : {}".format(post_id)
+                        success = True
+
+                except:
+                    detail = "update False"
+                    success = False
 
     
 
