@@ -1,6 +1,6 @@
 from .lib_httprequest import *
 from .lib_captcha import *
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 import datetime
 import sys
 import json
@@ -419,20 +419,29 @@ class bkkland():
         if test_login['success'] == True:
             if postdata['post_id'] != int:
                 
-                res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list")
-                soup = BeautifulSoup(res_complete.text, self.parser)
-                # loop find all title post (first page)
-                for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
-                    soup_ele = BeautifulSoup(str(hit), self.parser)
-                    title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
+                count_page = 1
+
+                while True:
+                    url_edit = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
+                    res_complete = self.httprequestObj.http_get(url_edit)
+                    soup = BeautifulSoup(res_complete.text, self.parser)
+                    # loop find all title post (first page)
+                    for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+                        soup_ele = BeautifulSoup(str(hit), self.parser)
+                        title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
 
-                    if title == postdata['post_title_th']:
-                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                        post_id = re.findall("\d+", post_url)[0]
-                        detail = "post complete."
-                        success = True
+                        if title.text == postdata['post_title_th']:
+                            post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                            post_id = re.findall("\d+", post_url)[0]
+                            detail = "post complete."
+                            success = True
+                            break
+                    
+                    count_page += 1
+                    if success == True:
                         break
+
             
             if postdata['post_id'] == int:
                 # start edit_post            
