@@ -54,7 +54,7 @@ python-dateutil==2.8.2
 python3-anticaptcha==1.6.2
 PyTweening==1.0.3
 pytz==2020.4
-pywin32==302
+pywin32==303
 pyzmq==22.3.0
 requests==2.23.0
 requests-toolbelt==0.9.1
@@ -71,4 +71,3 @@ webencodings==0.5.1
 yarl==1.6.3
 cloudscraper==1.2.58
 undetected-chromedriver==2.2.7
-GitPython==3.1.24
