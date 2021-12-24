@@ -9,6 +9,7 @@ import ast
 import json
 from datetime import  datetime
 from .lib_captcha import  *
+import re
 
 
 
@@ -223,6 +224,13 @@ class property2share():
 
         province_id, amphur_id = self.get_province(postdata)
 
+
+        # invalid literal for int() with base 10: ''
+        postdata['land_size_rai'] = str(re.sub("[^0-9]", "", postdata['land_size_rai']))
+        postdata['land_size_ngan'] = str(re.sub("[^0-9]", "", postdata['land_size_ngan']))
+        postdata['land_size_wa'] = str(re.sub("[^0-9]", "", postdata['land_size_wa']))
+        postdata['price_baht'] = str(re.sub("[^0-9]", "", postdata['price_baht']))
+
         data = {
             'find_broker':  (None, 'on'),
             'type_publish':  (None, post_type),
@@ -250,6 +258,7 @@ class property2share():
             'contact_email':  (None, postdata['email']),
             'contact_website': (None, ""),
         }
+
         return data
 
 
