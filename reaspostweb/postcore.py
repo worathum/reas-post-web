@@ -42,16 +42,19 @@ try:
     import subprocess
     import platform
 
-    if platform.system() == "Linux":
-        requi = 'requirements_linux.txt'
-    elif platform.system() == "windows":
-        requi = 'requirements_windoes.txt'
-    
-    logging.info("==============================================================================")
-    logging.info("==============================================================================")
-    logging.warning("PIP INSTALL: IN PROGRESS") 
-    proces_pip = subprocess.call(['pip', 'install', '-r', requi])
-    logging.warning("PIP INSTALL: COMPLETE")
+    # work pip install 00:00:00 - 08:00:00
+    time_now = datetime.datetime.now().strftime("%H")
+    if time_now > "08":
+        if platform.system() == "Linux":
+            requi = 'requirements_linux.txt'
+        elif platform.system() == "windows":
+            requi = 'requirements_windoes.txt'
+        
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.warning("PIP INSTALL: IN PROGRESS") 
+        proces_pip = subprocess.call(['pip', 'install', '-r', requi])
+        logging.warning("PIP INSTALL: COMPLETE")
     logging.info("==============================================================================")
     logging.info("==============================================================================")
     logging.warning("PULL GIT: IN PROGRESS") 
@@ -72,8 +75,9 @@ except:
     try:
         logging.info("==============================================================================")
         logging.info("==============================================================================")
-        logging.error("PIP INSTALL: ERROR") 
-        logging.warning("CODE: ERROR")
+        if time_now < "08":
+            logging.error("PIP INSTALL: ERROR") 
+            logging.warning("CODE: ERROR")
         if output_pull:
             logging.error("PULL GIT : ERROR")
             logging.warning("CODE: {}".format(output_pull))
