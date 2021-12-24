@@ -30,65 +30,65 @@ logging.basicConfig(level=logging.INFO, filename='log/app-' + str(datetime.date.
 # logging.config.dictConfig(getattr(configs, 'logging_config', {}))
 # log = logging.getLogger()
 
-# new import using try be safe
-try:
-    logging.info("==============================================================================")
-    logging.info("==============================================================================")
-    logging.info("==============================================================================")
-    logging.info("==============================================================================")
-    logging.warning("*/*\**/*\**/*\**/*\**/*\*APP STARTING*/*\**/*\**/*\**/*\**/*\*") 
-    logging.info("==============================================================================")
-    logging.info("==============================================================================")
-    import subprocess
-    import platform
+# # new import using try be safe
+# try:
+#     logging.info("==============================================================================")
+#     logging.info("==============================================================================")
+#     logging.info("==============================================================================")
+#     logging.info("==============================================================================")
+#     logging.warning("*/*\**/*\**/*\**/*\**/*\*APP STARTING*/*\**/*\**/*\**/*\**/*\*") 
+#     logging.info("==============================================================================")
+#     logging.info("==============================================================================")
+#     import subprocess
+#     import platform
 
-    # work pip install 00:00:00 - 08:00:00
-    time_now = datetime.datetime.now().strftime("%H")
-    if time_now < "08":
-        if platform.system() == "Linux":
-            requi = 'requirements_linux.txt'
-        elif platform.system() == "windows":
-            requi = 'requirements_windoes.txt'
+#     # work pip install 00:00:00 - 08:00:00
+#     time_now = datetime.datetime.now().strftime("%H")
+#     if time_now < "08":
+#         if platform.system() == "Linux":
+#             requi = 'requirements_linux.txt'
+#         elif platform.system() == "windows":
+#             requi = 'requirements_windoes.txt'
         
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
-        logging.warning("PIP INSTALL: IN PROGRESS") 
-        proces_pip = subprocess.call(['pip', 'install', '-r', requi])
-        logging.warning("PIP INSTALL: COMPLETE")
-    logging.info("==============================================================================")
-    logging.info("==============================================================================")
-    logging.warning("PULL GIT: IN PROGRESS") 
-    process_pull = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
-    output_pull = process_pull.communicate()[0]
-    logging.warning("PULL GIT: COMPLETE")
-    logging.info("==============================================================================")
-    logging.info("==============================================================================")
+#         logging.info("==============================================================================")
+#         logging.info("==============================================================================")
+#         logging.warning("PIP INSTALL: IN PROGRESS") 
+#         proces_pip = subprocess.call(['pip', 'install', '-r', requi])
+#         logging.warning("PIP INSTALL: COMPLETE")
+#     logging.info("==============================================================================")
+#     logging.info("==============================================================================")
+#     logging.warning("PULL GIT: IN PROGRESS") 
+#     process_pull = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
+#     output_pull = process_pull.communicate()[0]
+#     logging.warning("PULL GIT: COMPLETE")
+#     logging.info("==============================================================================")
+#     logging.info("==============================================================================")
 
-    logging.warning("RESTART SERVER: IN PROGRESS") 
-    bashCommand = "pm2 restart pm_config.json"
-    process_pull = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-    output_server, error_server = process_pull.communicate()
-    logging.warning("RESTART SERVER: COMPLETE") 
-    logging.info("==============================================================================")
-    logging.info("==============================================================================")
-except:
-    try:
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
-        if time_now < "08":
-            logging.error("PIP INSTALL: ERROR") 
-            logging.warning("CODE: ERROR")
-        if output_pull:
-            logging.error("PULL GIT : ERROR")
-            logging.warning("CODE: {}".format(output_pull))
-        if output_server:
-            logging.error("RESTART SERVER : ERROR")
-            logging.warning("CODE: {} - {}".format(output_server, error_server))
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
-    except:
-        pass
-    pass
+#     logging.warning("RESTART SERVER: IN PROGRESS") 
+#     bashCommand = "pm2 restart pm_config.json"
+#     process_pull = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+#     output_server, error_server = process_pull.communicate()
+#     logging.warning("RESTART SERVER: COMPLETE") 
+#     logging.info("==============================================================================")
+#     logging.info("==============================================================================")
+# except:
+#     try:
+#         logging.info("==============================================================================")
+#         logging.info("==============================================================================")
+#         if time_now < "08":
+#             logging.error("PIP INSTALL: ERROR") 
+#             logging.warning("CODE: ERROR")
+#         if output_pull:
+#             logging.error("PULL GIT : ERROR")
+#             logging.warning("CODE: {}".format(output_pull))
+#         if output_server:
+#             logging.error("RESTART SERVER : ERROR")
+#             logging.warning("CODE: {} - {}".format(output_server, error_server))
+#         logging.info("==============================================================================")
+#         logging.info("==============================================================================")
+#     except:
+#         pass
+#     pass
 
 
 def deEmojify(text):
