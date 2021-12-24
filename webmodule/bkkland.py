@@ -206,7 +206,7 @@ class bkkland():
             land_area = "{}".format(sqm)
         else:
             if postdata['land_size_rai'] != "":
-                land_area = " "+rai
+                land_area += " "+rai
 
             if postdata['land_size_ngan'] != "":
                 land_area += " "+ngan
@@ -217,7 +217,7 @@ class bkkland():
             if postdata['floorarea_sqm'] != "":
                 land_area += " "+sqm
 
-
+        print(land_area)
 
         province_id = ''
         amphur_id = ''

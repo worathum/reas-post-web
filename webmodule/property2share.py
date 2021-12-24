@@ -32,6 +32,7 @@ class property2share():
         self.debugresdata = 0
         self.register_link = 'https://www.property2share.com/%E0%B8%A5%E0%B8%87%E0%B8%97%E0%B8%B0%E0%B9%80%E0%B8%9A%E0%B8%B5%E0%B8%A2%E0%B8%99'
         self.login_link =  'https://www.property2share.com/submitLogin2.php'
+        self.parser = 'html.parser'
 
     def logout_user(self):
         url = "https://www.property2share.com/pageuser/logout.php"
@@ -282,7 +283,6 @@ class property2share():
 
 
         url_detail = 'https://www.property2share.com/pageuser/submitNewPublish.php?type=2'
-        # url_detail = 'https://www.property2share.com/pageuser/new_publish.php'
         data = self.datapost_detail(postdata)
         detail_res = self.httprequestObj.http_post(url_detail, data=data)
         print(detail_res.status_code)
@@ -532,10 +532,10 @@ class property2share():
         time_start = datetime.utcnow()
 
         login = self.test_login(postdata)
+
         log_id = ''
         if ('log_id' not in postdata or postdata['log_id'] == None):
             log_id = ''
-
 
         else:
             log_id = postdata['log_id']
@@ -544,29 +544,33 @@ class property2share():
             return login
 
         post_title = postdata['post_title_th']
-        all_posts_response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
-        all_posts_response = json.loads(all_posts_response.content.decode('utf-8')[2:])
+        post_id = ""
+        success = False
+        detail = 'Unable To Find the Post'
+        post_found = False
+        post_url = ''
+        post_create_time = ''
+        post_view = ''
+
+        
+        my_post_page = self.httprequestObj.http_get("https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000")
+        all_posts_response = json.loads(my_post_page.content.decode('utf-8')[2:])
 
         if 'data' in all_posts_response:
             all_posts = all_posts_response['data']
         else:
             all_posts = []
-        detail = 'Unable To Find the Post'
-        success = True
-        post_found = False
-        post_url = ''
-        post_id = ''
-        post_create_time = ''
-        post_view = ''
 
-        post_title = post_title.split()
+
+        post_title = post_title.replace(" ", "")
 
         for post in all_posts:
-
-            actual_title = post['title'].split()
+            actual_title = post['title'].replace(" ", "")
             if(post_title == actual_title):
+                print(post_title, actual_title)
                 detail = 'Successfully Found the Post'
                 post_found = True
+                success = True
                 post_url = 'https://www.property2share.com/property-'+str(post['publish_id'])
                 post_id = (post['publish_id'])
                 post_create_time = post['create_date']
