@@ -413,7 +413,7 @@ class bkkland():
         test_login = self.test_login(postdata)
 
         if test_login['success'] == True:
-            if postdata['post_id'] != int or int(postdata['post_id']):
+            if postdata['post_id'] != int:
                 success = False
                 post_id = ""
                 post_url = ""
