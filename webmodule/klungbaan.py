@@ -438,13 +438,16 @@ class klungbaan():
                 if flag:
                     datapost['propperty_image_ids[]'] = image_ids
                     response = self.httprequestObj.http_post(website+'/property-create/', data=datapost)
+                    try:
+                        for f in path_imgs:
+                            os.remove(f)
+                    except:
+                        pass
     
                     if response.status_code==200:
                         if "thank-you" in response.url:
                             success = True
                             detail = "Post created successfully!"
-                            for f in path_imgs:
-                                os.remove(f)
                             r = self.httprequestObj.http_get(website+'/my-properties/')
                             if r.status_code==200:
                                 soup = BeautifulSoup(r.text, features=self.parser)
@@ -472,6 +475,7 @@ class klungbaan():
         else:
             detail = "Cannot login, "+test_login["detail"]
 
+
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
@@ -498,7 +502,7 @@ class klungbaan():
         # login
 
         test_login = self.test_login(postdata)
-        success = test_login["success"]
+        success = False
         detail = "Unable to update post"
         post_url = ""
 
@@ -508,159 +512,22 @@ class klungbaan():
             else:
                 postdata['web_project_name'] = postdata['post_title_th']
 
-        if success==True:
+        if test_login['success']==True:
             success = False
 
-            addr_province = postdata['addr_province']
-            addr_district = postdata['addr_district']
-            province = 'krabi'
-            district = 'khlong-thom-krabi'
-            province_th = 'กระบี่'
-            district_th = 'คลองท่อม'
-            with open('./static/klungbaan_province.json') as f:
-                province_data = json.load(f)
-
-            for key in province_data["provinces"]:
-                if (addr_province.find(str(key)) != -1) or (str(key).find(addr_province) != -1):
-                    province = province_data["provinces"][key]
-                    break
-            for key in province_data["districts"][province]:
-                if(addr_district.find(str(key)) != -1)  or (str(key).find(addr_district) != -1):
-                    district = province_data["districts"][province][key]
-                    break
-            
             # sell
             if postdata['listing_type']=='ขาย':
                 website = 'https://www.klungbaan.com'
-                datapost = {
-                    "draft_prop_id": postdata['post_id'],
-                    "prop_title": postdata['post_title_th'],
-                    "prop_title_eng": postdata['post_title_en'],
-                    "prop_project_name": postdata['web_project_name'],
-                    "prop_price": postdata['price_baht'],
-                    "prop_type": property_types[str(postdata['property_type'])][0],
-                    "want_agent": "yes",
-                    "status_property": "empty",
-                    "prop_des": postdata['post_description_th'],
-                    "prop_status": "17",
-                    "building_name": "",
-                    "where_floor": "",
-                    "property_area_rai": "",
-                    "property_area_ngan": "",
-                    "prop_land_area": "",
-                    "width_near_road": "",
-                    "width_near_water": "",
-                    "land_color_plan": "",
-                    "prop_size": "",
-                    "front_width": "",
-                    "amount_floor": "",
-                    "prop_beds": "",
-                    "prop_baths": "",
-                    "prop_garage": "",
-                    "property_address": province_th+" "+district_th+" ไม่ระบุ (ถนน/ทำเล)", 
-                    "administrative_area_level_1": province,
-                    "locality": district,
-                    "near_road": "concrete" if str(postdata['property_type'])=='6' else "none",
-                    "neighborhood": "other",
-                    "train_type": "", 
-                    "train_line": "",
-                    "train_station": "",
-                    "property_map_address": postdata['addr_province']+' '+postdata['addr_district'],
-                    "prop_google_street_view": "show",
-                    "prop_video_url": "", 
-                    "lat": postdata['geo_latitude'],
-                    "lng": postdata['geo_longitude'],
-                    "fave_agent_display_option": "author_info",
-                    "prop_tel": postdata['mobile'],
-                    "prop_website": "-", 
-                    "prop_lineid": postdata['line'],
-                    "prop_email": postdata['email'],
-                    "_wp_http_referer": "/property-create/?edit_property="+str(postdata['post_id']),
-                    "action": "update_property",
-                    "prop_id": postdata['post_id'],
-                    "prop_featured": "0",
-                    "prop_sales_self": "0",
-                    "prop_payment": "not_paid"
-                }
+                datapost = self.data_post_sell(postdata)
                 
-                try:
-                    if int(postdata['bed_room'])>5:
-                        postdata['bed_room'] = 'มากกว่า 5'
-                except (TypeError, ValueError):
-                    postdata['bed_room'] = '1'
-                try:
-                    if int(postdata['bath_room'])>5:
-                        postdata['bath_room'] = 'มากกว่า 5'
-                except (TypeError, ValueError):
-                    postdata['bath_room'] = '1'
-                
-                for key, value in property_types[str(postdata['property_type'])][1].items():
-                    if value and value in postdata:
-                        datapost[key] = postdata[value]
-            
             # rent    
             else:
                 website = 'https://rent.klungbaan.com'
-                if str(postdata['property_type'])=='6':
-                    if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None:
-                        postdata['land_size_ngan'] = 0
-                    if 'land_size_rai' not in postdata or postdata['land_size_rai']==None:
-                        postdata['land_size_rai'] = 0
-                    if 'land_size_wa' not in postdata or postdata['land_size_wa']==None:
-                        postdata['land_size_wa'] = 0
-                    try:
-                        postdata['land_size_ngan'] = int(postdata['land_size_ngan'])
-                    except ValueError:
-                        postdata['land_size_ngan'] = 0
-                    try:
-                        postdata['land_size_rai'] = int(postdata['land_size_rai'])
-                    except ValueError:
-                        postdata['land_size_rai'] = 0
-                    try:
-                        postdata['land_size_wa'] = int(postdata['land_size_wa'])
-                    except ValueError:
-                        postdata['land_size_wa'] = 0
-                    prop_size = 400 * postdata['land_size_rai'] + 100 * postdata['land_size_ngan'] + postdata['land_size_wa']
-                    prop_size_prefix = "ตร.วา"
-                else:
-                    prop_size = postdata['floor_area']
-                    prop_size_prefix = "ตร.ม."
-                    
-                datapost = {
-                    "draft_prop_id": postdata['post_id'],
-                    "prop_title": postdata['post_title_th'],
-                    "prop_des": postdata['post_description_th'],
-                    "prop_tel": postdata['mobile'],
-                    "prop_website": "-", 
-                    "prop_lineid": postdata['line'],
-                    "prop_email": postdata['email'],
-                    "prop_status": "17",
-                    "prop_type": property_types[str(postdata['property_type'])][0],
-                    "prop_sec_price": postdata['price_baht'],
-                    "prop_label": "เดือน",
-                    "prop_size": prop_size,
-                    "prop_size_prefix": prop_size_prefix,
-                    "prop_beds": "",
-                    "prop_baths": "",
-                    "prop_garage": "",
-                    "train_type": "", 
-                    "train_line": "",
-                    "train_station": "",
-                    "property_address": province_th+" "+district_th+" ไม่ระบุ (ถนน/ทำเล)",
-                    "administrative_area_level_1": province,
-                    "locality": district,
-                    "neighborhood": "other",
-                    "property_map_address": postdata['addr_province']+' '+postdata['addr_district'],
-                    "prop_google_street_view": "show",
-                    "prop_video_url": "", 
-                    "lat": postdata['geo_latitude'],
-                    "lng": postdata['geo_longitude'],
-                    "_wp_http_referer": "/property-create/?edit_property="+str(postdata['post_id']),
-                    "action": "update_property",
-                    "prop_id": postdata['post_id'],
-                    "prop_featured": "0",
-                    "prop_payment": "not_paid"  
-                }
+                datapost = self.data_post_rent(postdata)
+
+            # replace : space and break the line
+            datapost["prop_des"].replace("\r\n", "<p>&nbsp;</p>")
+
             r = self.httprequestObj.http_get("https://www.klungbaan.com/property-create/?edit_property="+str(postdata['post_id']))
             #print(website+'/property-create/?edit_property='+str(postdata['post_id']))
             if r.status_code==200:
@@ -688,9 +555,10 @@ class klungbaan():
                     
                     image_ids = []
                     flag = True
-                    for image in postdata['post_images'][:10]:
+                    path_imgs = self.pull_imgs(postdata)
+                    for image in path_imgs:
                         data = {"name": image}
-                        files = {"property_upload_file": open(os.getcwd()+"/"+image, 'rb')}
+                        files = {"property_upload_file": open(image, 'rb')}
                         r = self.httprequestObj.http_post(website+'/wp-admin/admin-ajax.php?action=houzez_property_img_upload&verify_nonce='+verify_nonce, data=data, files=files)
                         if r.status_code==200:
                             r = json.loads(r.text)
@@ -708,6 +576,11 @@ class klungbaan():
                     if flag:
                         datapost['propperty_image_ids[]'] = image_ids
                         response = self.httprequestObj.http_post(website+'/property-create/?edit_property='+str(postdata['post_id']), data=datapost)
+                        try:
+                            for f in path_imgs:
+                                os.remove(f)
+                        except:
+                            pass
  
                         if response.status_code==200:
                             soup = BeautifulSoup(response.text, features=self.parser)
@@ -720,6 +593,7 @@ class klungbaan():
                 detail = 'Unable to update post. An Error has occurred while fetching page, with response_code '+str(r.status_code) 
         else:
             detail = "Cannot login, "+test_login["detail"]
+        
         
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
