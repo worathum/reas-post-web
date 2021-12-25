@@ -300,9 +300,12 @@ class property2share():
         for path in path_imgs:
             files["myfile[]"] = open(path, 'rb') 
             upload_img_res = self.httprequestObj.http_post(url_upload_img, data={}, files=files)
-            
-        for f in path_imgs:
-            os.remove(f)
+        
+        try:
+            for f in path_imgs:
+                os.remove(f)
+        except:
+            pass
 
         url_submit = 'https://www.property2share.com/pageuser/preview_publish.php?id={}'.format(str(post_id))
         data['publish_id'] = int(post_id)
