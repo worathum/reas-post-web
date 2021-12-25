@@ -297,14 +297,22 @@ class property2share():
         path_imgs = self.pull_imgs(postdata)
         files = {}
         for path in path_imgs:
-            files["myfile[]"] = open(path, 'rb') 
-            upload_img_res = self.httprequestObj.http_post(url_upload_img, data={}, files=files)
+            try:
+                files["myfile[]"] = open(path, 'rb') 
+                upload_img_res = self.httprequestObj.http_post(url_upload_img, data={}, files=files)
+            except:
+                pass
             
-        for f in path_imgs:
-            os.remove(f)
+        
+        try:
+            for f in path_imgs:
+                os.remove(f)
+        except:
+            pass
 
         url_submit = 'https://www.property2share.com/pageuser/preview_publish.php?id={}'.format(post_id)
         data['publish_id'] = int(post_id)
+
         register_res = self.httprequestObj.http_post(url_submit,data=data)
         print(register_res.status_code)
 

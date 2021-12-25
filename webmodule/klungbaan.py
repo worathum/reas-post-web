@@ -43,13 +43,22 @@ class klungbaan():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
+    def logout_user(self):
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        url = "https://www.klungbaan.com/wp-dashboard/?action=logout"
+        res = self.httprequestObj.http_get(url)
+        soup = BeautifulSoup(res.text, self.parser)
+        logout = soup.find("a")["href"]
+        self.httprequestObj.http_get(logout)
+
+
 
     def register_user(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
         # start process
-        success = "false"
+        success = False
         detail = 'An Error has Occurred'
 
         datapost = {
@@ -82,7 +91,7 @@ class klungbaan():
                 if response.status_code==200: 
                     response = json.loads(response.text)
                     if response["success"]:
-                        success = "true"
+                        success = True
                         detail = "Registration successful!"
                     else:
                         detail = str(response["msg"])
@@ -109,11 +118,12 @@ class klungbaan():
 
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
         
         # start process
-        success = "false"
+        success = False
         detail = 'An Error has Occurred'
 
         datapost = {
@@ -124,28 +134,30 @@ class klungbaan():
         }
         r = self.httprequestObj.http_get(self.site_name)
         if r.status_code==200:
-            soup = BeautifulSoup(r.text, features=self.parser)
-            houzez_login_security = soup.find(id='houzez_login_security')
-            datapost['houzez_login_security'] = houzez_login_security.get('value')
+            for round in range(5):
+                soup = BeautifulSoup(r.text, features=self.parser)
+                houzez_login_security = soup.find(id='houzez_login_security')
+                datapost['houzez_login_security'] = houzez_login_security.get('value')
 
-            sitekey = "6LdMoTgUAAAAAOCwIhJ8pHeXK0BAiBkge-Lat67-"
-            g_response = captcha.reCaptcha(sitekey, self.site_name)
-            if g_response != 0:
-                datapost["g-recaptcha-response"] = g_response
+                sitekey = "6LdMoTgUAAAAAOCwIhJ8pHeXK0BAiBkge-Lat67-"
+                g_response = captcha.reCaptcha(sitekey, self.site_name)
+                if g_response != 0:
+                    datapost["g-recaptcha-response"] = g_response
+                
+                    response = self.httprequestObj.http_post(self.site_name+'/wp-admin/admin-ajax.php', data=datapost)
             
-                response = self.httprequestObj.http_post(self.site_name+'/wp-admin/admin-ajax.php', data=datapost)
-        
-                if response.status_code==200:
-                    response = json.loads(response.text)
-                    if response["success"]:
-                        success = "true"
-                        detail = "Logged in successfully!"
+                    if response.status_code==200:
+                        response = json.loads(response.text)
+                        if response["success"]:
+                            success = True
+                            detail = "Logged in successfully!"
+                            break
+                        else:
+                            detail = str(response["msg"].replace('<strong>', '').replace('</strong>', ''))
                     else:
-                        detail = str(response["msg"].replace('<strong>', '').replace('</strong>', ''))
+                        detail = 'An Error has occurred with response_code '+str(response.status_code)
                 else:
-                    detail = 'An Error has occurred with response_code '+str(response.status_code)
-            else:
-                detail = "reCaptcha error"
+                    detail = "reCaptcha error"
         else:
             detail = 'An Error has occurred during fetching page with response_code '+str(r.status_code)
 
@@ -160,55 +172,34 @@ class klungbaan():
             "websitename": self.name,
             "ds_id": postdata['ds_id'],
         }
+
+    def get_province(self, postdata):
+        addr_province = postdata['addr_province']
+        addr_district = postdata['addr_district']
+        province = 'krabi'
+        district = 'khlong-thom-krabi'
+        province_th = 'กระบี่'
+        district_th = 'คลองท่อม'
+        with open('./static/klungbaan_province.json') as f:
+            province_data = json.load(f)
+
+        for key in province_data["provinces"]:
+            if (addr_province.find(str(key)) != -1) or (str(key).find(addr_province) != -1):
+                province = province_data["provinces"][key]
+                province_th = str(key)
+                break
+        for key in province_data["districts"][province]:
+            if(addr_district.find(str(key)) != -1)  or (str(key).find(addr_district) != -1):
+                district = province_data["districts"][province][key]
+                district_th = str(key)
+                break
+        return province, district, district_th, province_th
         
 
+    def data_post_sell(self, postdata):
 
-    def create_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.datetime.utcnow()
-
-        # start process
-        # login
-
-        test_login = self.test_login(postdata)
-        success = test_login["success"]
-        detail = "Unable to create post"
-        post_id = ""
-        post_url = ""
-        
-        if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
-            if 'project_name' in postdata and postdata['project_name'] is not None:
-                postdata['web_project_name'] = postdata['project_name']
-            else:
-                postdata['web_project_name'] = postdata['post_title_th'] 
-        
-        if success=="true":            
-            success = "false"
-
-            addr_province = postdata['addr_province']
-            addr_district = postdata['addr_district']
-            province = 'krabi'
-            district = 'khlong-thom-krabi'
-            province_th = 'กระบี่'
-            district_th = 'คลองท่อม'
-            with open('./static/klungbaan_province.json') as f:
-                province_data = json.load(f)
-
-            for key in province_data["provinces"]:
-                if (addr_province.find(str(key)) != -1) or (str(key).find(addr_province) != -1):
-                    province = province_data["provinces"][key]
-                    province_th = str(key)
-                    break
-            for key in province_data["districts"][province]:
-                if(addr_district.find(str(key)) != -1)  or (str(key).find(addr_district) != -1):
-                    district = province_data["districts"][province][key]
-                    district_th = str(key)
-                    break
-
-            # sell
-            if postdata['listing_type']=='ขาย':
-                website = 'https://www.klungbaan.com'
-                datapost = {
+        province, district, district_th, province_th = self.get_province(postdata)
+        datapost = {
                     "prop_title": postdata['post_title_th'],
                     "prop_title_eng": postdata['post_title_en'],
                     "prop_project_name": postdata['web_project_name'],
@@ -256,93 +247,161 @@ class klungbaan():
                     "prop_sales_self": "0",
                     "prop_payment": "not_paid"
                 }
-                try:
-                    if int(postdata['bed_room'])>5:
-                        postdata['bed_room'] = 'มากกว่า 5'
-                except (TypeError, ValueError):
-                    postdata['bed_room'] = '1'
-                try:
-                    if int(postdata['bath_room'])>5:
-                        postdata['bath_room'] = 'มากกว่า 5'
-                except (TypeError, ValueError):
-                    postdata['bath_room'] = '1'
+        try:
+            if int(postdata['bed_room'])>5:
+                postdata['bed_room'] = 'มากกว่า 5'
+        except (TypeError, ValueError):
+            postdata['bed_room'] = '1'
+        try:
+            if int(postdata['bath_room'])>5:
+                postdata['bath_room'] = 'มากกว่า 5'
+        except (TypeError, ValueError):
+            postdata['bath_room'] = '1'
+        
+        for key, value in property_types[str(postdata['property_type'])][1].items():
+            if value and value in postdata:
+                datapost[key] = postdata[value]
+
+        return datapost
+
+    def data_post_rent(self, postdata):
+        province, district, district_th, province_th = self.get_province(postdata)
+        if str(postdata['property_type'])=='6':
+            if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None:
+                postdata['land_size_ngan'] = 0
+            if 'land_size_rai' not in postdata or postdata['land_size_rai']==None:
+                postdata['land_size_rai'] = 0
+            if 'land_size_wa' not in postdata or postdata['land_size_wa']==None:
+                postdata['land_size_wa'] = 0
+            try:
+                postdata['land_size_ngan'] = int(postdata['land_size_ngan'])
+            except ValueError:
+                postdata['land_size_ngan'] = 0
+            try:
+                postdata['land_size_rai'] = int(postdata['land_size_rai'])
+            except ValueError:
+                postdata['land_size_rai'] = 0
+            try:
+                postdata['land_size_wa'] = int(postdata['land_size_wa'])
+            except ValueError:
+                postdata['land_size_wa'] = 0
+            prop_size = 400 * postdata['land_size_rai'] + 100 * postdata['land_size_ngan'] + postdata['land_size_wa']
+            prop_size_prefix = "ตร.วา"
+        else:
+            prop_size = postdata['floor_area']
+            prop_size_prefix = "ตร.ม."
+
+        datapost = {
+            "prop_title": postdata['post_title_th'],
+            "prop_des": postdata['post_description_th'],
+            "prop_tel": postdata['mobile'],
+            "prop_website": "-", 
+            "prop_lineid": postdata['line'],
+            "prop_email": postdata['email'],
+            "prop_status": "17",
+            "prop_type": property_types[str(postdata['property_type'])][0],
+            "prop_sec_price": postdata['price_baht'],
+            "prop_label": "เดือน",
+            "prop_size": prop_size,
+            "prop_size_prefix": prop_size_prefix,
+            "prop_beds": "",
+            "prop_baths": "",
+            "prop_garage": "",
+            "train_type": "", 
+            "train_line": "",
+            "train_station": "",
+            "property_address": province_th+" "+district_th+" ไม่ระบุ (ถนน/ทำเล)",
+            "administrative_area_level_1": province,
+            "locality": district,
+            "neighborhood": "other",
+            "property_map_address": postdata['addr_province']+' '+postdata['addr_district'],
+            "prop_google_street_view": "show",
+            "prop_video_url": "", 
+            "lat": postdata['geo_latitude'],
+            "lng": postdata['geo_longitude'],
+            "_wp_http_referer": "/property-create/",
+            "action": "add_property",
+            "prop_featured": "0",
+            "prop_payment": "not_paid"   
+        }
+        return datapost
+
+    def pull_imgs(self, postdata):
+        # files = {}
+        allimages = []
+
+        for count in range(len(postdata["post_img_url_lists"])):
+            link = postdata["post_img_url_lists"][count]
+            path = os.getcwd()+"/imgtmp/"+"photo_{}.jpg".format(count+1)
+            img_data = requests.get(link).content
+            with open(path, 'wb') as handler:
+                handler.write(img_data)
+            allimages.append(path)
+
+
+        # for i in range(len(allimages)):
+        #     r = open(allimages[i], 'rb')
+        #     name = 'property_upload_file'
+        #     files[name] = ("{}".format(allimages[i]),r,"image/jpeg")
+        
+        return allimages
+
+
+    def create_post(self, postdata):
+        self.logout_user()
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.datetime.utcnow()
+
+        # start process
+        # login
+
+        test_login = self.test_login(postdata)
+        detail = "Unable to create post"
+        post_id = ""
+        post_url = ""
+        success = False
+        
+        if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
+            if 'project_name' in postdata and postdata['project_name'] is not None:
+                postdata['web_project_name'] = postdata['project_name']
+            else:
+                postdata['web_project_name'] = postdata['post_title_th'] 
+        
+        if test_login["success"] == True:
+                      
+            # sell
+            if postdata['listing_type']=='ขาย':
+                website = 'https://www.klungbaan.com'
+                datapost = self.data_post_sell(postdata)
                 
-                for key, value in property_types[str(postdata['property_type'])][1].items():
-                    if value and value in postdata:
-                        datapost[key] = postdata[value]
-            
             # rent    
             else:
                 website = 'https://rent.klungbaan.com'
-                if str(postdata['property_type'])=='6':
-                    if 'land_size_ngan' not in postdata or postdata['land_size_ngan']==None:
-                        postdata['land_size_ngan'] = 0
-                    if 'land_size_rai' not in postdata or postdata['land_size_rai']==None:
-                        postdata['land_size_rai'] = 0
-                    if 'land_size_wa' not in postdata or postdata['land_size_wa']==None:
-                        postdata['land_size_wa'] = 0
-                    try:
-                        postdata['land_size_ngan'] = int(postdata['land_size_ngan'])
-                    except ValueError:
-                        postdata['land_size_ngan'] = 0
-                    try:
-                        postdata['land_size_rai'] = int(postdata['land_size_rai'])
-                    except ValueError:
-                        postdata['land_size_rai'] = 0
-                    try:
-                        postdata['land_size_wa'] = int(postdata['land_size_wa'])
-                    except ValueError:
-                        postdata['land_size_wa'] = 0
-                    prop_size = 400 * postdata['land_size_rai'] + 100 * postdata['land_size_ngan'] + postdata['land_size_wa']
-                    prop_size_prefix = "ตร.วา"
-                else:
-                    prop_size = postdata['floor_area']
-                    prop_size_prefix = "ตร.ม."
+                datapost = self.data_post_rent(postdata)
 
-                datapost = {
-                    "prop_title": postdata['post_title_th'],
-                    "prop_des": postdata['post_description_th'],
-                    "prop_tel": postdata['mobile'],
-                    "prop_website": "-", 
-                    "prop_lineid": postdata['line'],
-                    "prop_email": postdata['email'],
-                    "prop_status": "17",
-                    "prop_type": property_types[str(postdata['property_type'])][0],
-                    "prop_sec_price": postdata['price_baht'],
-                    "prop_label": "เดือน",
-                    "prop_size": prop_size,
-                    "prop_size_prefix": prop_size_prefix,
-                    "prop_beds": "",
-                    "prop_baths": "",
-                    "prop_garage": "",
-                    "train_type": "", 
-                    "train_line": "",
-                    "train_station": "",
-                    "property_address": province_th+" "+district_th+" ไม่ระบุ (ถนน/ทำเล)",
-                    "administrative_area_level_1": province,
-                    "locality": district,
-                    "neighborhood": "other",
-                    "property_map_address": postdata['addr_province']+' '+postdata['addr_district'],
-                    "prop_google_street_view": "show",
-                    "prop_video_url": "", 
-                    "lat": postdata['geo_latitude'],
-                    "lng": postdata['geo_longitude'],
-                    "_wp_http_referer": "/property-create/",
-                    "action": "add_property",
-                    "prop_featured": "0",
-                    "prop_payment": "not_paid"   
-                }
+            # replace : space and break the line
+            datapost["prop_des"].replace("\r\n", "<p>&nbsp;</p>")
 
-            r = self.httprequestObj.http_get(website+'/property-create/')
             exceed_post = False
             account_type = False
-            matchObj = re.search(r'จะสามารถลงประกาศขายในเว็บได้ไม่เกิน', r.text)
-            matchObj1 = re.search(r'รายละเอียดของประกาศ (Property Description)', r.text)
-            if matchObj1:
-                account_type = True
-            if matchObj:
-                exceed_post = True
-            if r.status_code==200 and not(exceed_post) and account_type:
+            head_post = ""
+            matchObj = 'จะสามารถลงประกาศขายในเว็บได้ไม่เกิน'
+            matchObj1 = 'รายละเอียดของประกาศ(PropertyDescription)'
+
+            r = self.httprequestObj.http_get(website+'/property-create/')
+            soup = BeautifulSoup(r.text, self.parser)
+            for hit in soup.find_all("h2"):
+                head_all = hit.text
+                head_post = head_all.replace(" ", "")
+                if matchObj1 == head_post:
+                    account_type = True
+                    break
+                if matchObj == head_post:
+                    exceed_post = True
+                    break
+
+            
+            if r.status_code==200 and exceed_post==False and account_type==True:
                 verify_nonce = ""
                 soup = BeautifulSoup(r.text, features=self.parser)
                 datapost['property_nonce'] = soup.find(id='property_nonce').get('value')
@@ -355,9 +414,10 @@ class klungbaan():
 
                 image_ids = []
                 flag = True
-                for image in postdata['post_images'][:10]:
+                path_imgs = self.pull_imgs(postdata)
+                for image in path_imgs:
                     data = {"name": image}
-                    files = {"property_upload_file": open(os.getcwd()+"/"+image, 'rb')}
+                    files = {"property_upload_file": open(image, 'rb')}
                     r = self.httprequestObj.http_post(website+'/wp-admin/admin-ajax.php?action=houzez_property_img_upload&verify_nonce='+verify_nonce, data=data, files=files)
                     if r.status_code==200:
                         r = json.loads(r.text)
@@ -381,8 +441,10 @@ class klungbaan():
     
                     if response.status_code==200:
                         if "thank-you" in response.url:
-                            success = "true"
+                            success = True
                             detail = "Post created successfully!"
+                            for f in path_imgs:
+                                os.remove(f)
                             r = self.httprequestObj.http_get(website+'/my-properties/')
                             if r.status_code==200:
                                 soup = BeautifulSoup(r.text, features=self.parser)
@@ -428,6 +490,7 @@ class klungbaan():
 
 
     def edit_post(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -445,8 +508,8 @@ class klungbaan():
             else:
                 postdata['web_project_name'] = postdata['post_title_th']
 
-        if success=="true":
-            success = "false"
+        if success==True:
+            success = False
 
             addr_province = postdata['addr_province']
             addr_district = postdata['addr_district']
@@ -649,7 +712,7 @@ class klungbaan():
                         if response.status_code==200:
                             soup = BeautifulSoup(response.text, features=self.parser)
                             if "thank-you" in response.url:
-                                success = "true"
+                                success = True
                                 detail = "Post updated successfully!"
                 except AttributeError:
                     detail = "No post found with given id"
@@ -676,11 +739,12 @@ class klungbaan():
 
 
     def search_post(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
-        success = test_login["success"]
+        success = False
         post_url = ""
         post_id = ""
         post_found = ""
@@ -688,8 +752,8 @@ class klungbaan():
         post_create_time = ""
         post_view = ""
 
-        if success == "true":
-            post_found = "false"
+        if test_login["success"] == True:
+            post_found = False
             detail = "No post found with given title"
             post_title = " ".join(str(postdata['post_title_th']).strip().split()).replace("-", "").replace("–", "")
             page = 1
@@ -713,8 +777,9 @@ class klungbaan():
                             if title==post_title:
                                 post_url = post_url_div.get("href")
                                 post_id = post.find(class_="property-table-actions").find(class_="dropdown-item").get("href").split("=")[-1]
-                                post_found = "true"
+                                post_found = True
                                 detail = "Post found successfully!"
+                                success = True
                                 flag = True
                                 break
                     else:
@@ -722,7 +787,7 @@ class klungbaan():
                 page += 1
 
             
-            if post_found=="false":
+            if post_found==False:
                 page = 1
                 flag = False
                 while not flag:
@@ -740,8 +805,9 @@ class klungbaan():
                                 if title==post_title:
                                     post_url = post_url_div.get("href")
                                     post_id = post.find(class_="property-table-actions").find(class_="dropdown-item").get("href").split("=")[-1]
-                                    post_found = "true"
+                                    post_found = True
                                     detail = "Post found successfully!"
+                                    success = True
                                     flag = True
                                     break
                         else:
@@ -773,6 +839,7 @@ class klungbaan():
 
 
     def delete_post(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
@@ -780,8 +847,8 @@ class klungbaan():
         success = test_login["success"]
         detail = "Unable to delete post"
 
-        if success=="true":
-            success = "false"
+        if success==True:
+            success = False
             r = self.httprequestObj.http_get('https://klungbaan.com/my-properties/')
             print(r.url)
             print(r.status_code)
@@ -798,7 +865,7 @@ class klungbaan():
                 if response.status_code==200:
                     response = json.loads(response.text)
                     if response["success"]:
-                        success = "true"
+                        success = True
                         detail = "Post deleted successfully!"
                     else:
                         r = self.httprequestObj.http_get('https://rent.klungbaan.com/my-properties/')
@@ -814,7 +881,7 @@ class klungbaan():
                             if response.status_code==200:
                                 response = json.loads(response.text)
                                 if response["success"]:
-                                    success = "true"
+                                    success = True
                                     detail = "Post deleted successfully!"
                                 else:
                                     detail = response["reason"]
@@ -842,14 +909,15 @@ class klungbaan():
 
 
     def boost_post(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
         success = test_login["success"]
         
-        if success=="true":
-            success = "false"
+        if success == True:
+            success = False
             detail = "Unable to boost post"
             datapost = {
                 "action": "houzez_property_update_modified_date",
@@ -860,14 +928,14 @@ class klungbaan():
             if response.status_code==200:
                 response = json.loads(response.text)
                 if response["success"]:
-                    success = "true"
+                    success = True
                     detail = "Post boosted successfully!"
                 else:
                     response = self.httprequestObj.http_post('https://rent.klungbaan.com/wp-admin/admin-ajax.php', data=datapost)
                     if response.status_code==200:
                         response = json.loads(response.text)
                         if response["success"]:
-                            success = "true"
+                            success = True
                             detail = "Post boosted successfully!"
                         else:
                             detail = response["reason"]
@@ -896,10 +964,6 @@ class klungbaan():
         return True
 
     def print_debug_data(self, data):
-        if(self.debugdata == 1):
-            print(data)
-        return True
-
         if(self.debugdata == 1):
             print(data)
         return True
