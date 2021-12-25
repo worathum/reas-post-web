@@ -352,13 +352,13 @@ class proppit():
 
         sort_date = []
         for ret_t in ret['data']:
-            temp = ret_t['date']
+            temp = datetime.datetime.strptime(str(ret_t['date']), "%Y-%m-%dT%H:%M:%SZ")
             sort_date.append(temp)
 
         sort_date = sorted(sort_date)
 
         for ret_t in ret['data']:
-            if sort_date[-1] == ret_t['date']:
+            if sort_date[-1] == datetime.datetime.strptime(str(ret_t['date']), "%Y-%m-%dT%H:%M:%SZ"):
                 last_id = ret_t['id']
 
         return last_id
@@ -620,7 +620,7 @@ class proppit():
                         if exists == True:
                             post_id = ret_t['id']
                             #post_url = "https://proppit.com/properties/"+ ret_t['id'] +"/edit"
-                            post_modify_time = ret_t['date']
+                            post_modify_time = str(ret_t['date'])
 
                             post_found = "true"
                             detail = "post found successfully"
