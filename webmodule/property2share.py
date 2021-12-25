@@ -32,6 +32,7 @@ class property2share():
         self.debugresdata = 0
         self.register_link = 'https://www.property2share.com/%E0%B8%A5%E0%B8%87%E0%B8%97%E0%B8%B0%E0%B9%80%E0%B8%9A%E0%B8%B5%E0%B8%A2%E0%B8%99'
         self.login_link =  'https://www.property2share.com/submitLogin2.php'
+        self.parser = 'html.parser'
 
     def logout_user(self):
         url = "https://www.property2share.com/pageuser/logout.php"
@@ -177,7 +178,7 @@ class property2share():
 
         district_list_full = []
 
-        district_list_resp = self.httprequestObj.http_get('https://www.property2share.com/connection/amphur.php?province_id=' + province_id)
+        district_list_resp = self.httprequestObj.http_get('https://www.property2share.com/connection/amphur.php?province_id=' + str(province_id))
         district_list = district_list_resp.content.decode('utf-8')
         district_list = ast.literal_eval(district_list)
 
@@ -282,7 +283,6 @@ class property2share():
 
 
         url_detail = 'https://www.property2share.com/pageuser/submitNewPublish.php?type=2'
-        # url_detail = 'https://www.property2share.com/pageuser/new_publish.php'
         data = self.datapost_detail(postdata)
         detail_res = self.httprequestObj.http_post(url_detail, data=data)
         print(detail_res.status_code)
@@ -290,10 +290,9 @@ class property2share():
 
         url_clean = url.split('?')
         post_id = str(re.sub("[^0-9]", "", url_clean[1]))
+        
 
-
-
-        url_upload_img = "https://www.property2share.com/pageuser/upload.php?type=1&publish_id={}".format(str(post_id))
+        url_upload_img = "https://www.property2share.com/pageuser/upload.php?type=1&publish_id={}".format(post_id)
 
         path_imgs = self.pull_imgs(postdata)
         files = {}
@@ -311,14 +310,14 @@ class property2share():
         except:
             pass
 
-        url_submit = 'https://www.property2share.com/pageuser/preview_publish.php?id={}'.format(str(post_id))
+        url_submit = 'https://www.property2share.com/pageuser/preview_publish.php?id={}'.format(post_id)
         data['publish_id'] = int(post_id)
 
         register_res = self.httprequestObj.http_post(url_submit,data=data)
         print(register_res.status_code)
 
         
-        posturl_submit = 'https://www.property2share.com/property-{}'.format(str(post_id))
+        posturl_submit = 'https://www.property2share.com/property-{}'.format(post_id)
         check_prop_res = self.httprequestObj.http_get(posturl_submit)
 
         success, posted = "false", "post not created"
@@ -372,7 +371,7 @@ class property2share():
             return login
 
         try:
-            response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+post_id)
+            response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+str(post_id))
             if(response.status_code == 200):
                 success = True
                 detail = "Post Boosted Successfully"
@@ -541,10 +540,10 @@ class property2share():
         time_start = datetime.utcnow()
 
         login = self.test_login(postdata)
+
         log_id = ''
         if ('log_id' not in postdata or postdata['log_id'] == None):
             log_id = ''
-
 
         else:
             log_id = postdata['log_id']
@@ -553,34 +552,44 @@ class property2share():
             return login
 
         post_title = postdata['post_title_th']
-        all_posts_response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
-        all_posts_response = json.loads(all_posts_response.content.decode('utf-8')[2:])
+        post_id = ""
+        success = False
+        detail = 'Unable To Find the Post'
+        post_found = False
+        post_url = ''
+        post_create_time = ''
+        post_view = ''
+
+        
+        my_post_page = self.httprequestObj.http_get("https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000")
+        try:
+            all_posts_response = json.loads(my_post_page.content.decode('utf-8')[2:])
+        except:
+            all_posts_response = json.loads(my_post_page.content.decode('utf-8')[2:], strict=False)
 
         if 'data' in all_posts_response:
             all_posts = all_posts_response['data']
         else:
             all_posts = []
-        detail = 'Unable To Find the Post'
-        success = True
-        post_found = False
-        post_url = ''
-        post_id = ''
-        post_create_time = ''
-        post_view = ''
 
-        post_title = post_title.split()
+
+        post_title = post_title.replace(" ", "")
 
         for post in all_posts:
-
-            actual_title = post['title'].split()
+            actual_title = post['title'].replace(" ", "")
             if(post_title == actual_title):
-                detail = 'Successfully Found the Post'
-                post_found = True
                 post_url = 'https://www.property2share.com/property-'+str(post['publish_id'])
-                post_id = (post['publish_id'])
-                post_create_time = post['create_date']
-                post_view = post['view']
-                break
+                check_post = self.httprequestObj.http_get(post_url)
+                soup = BeautifulSoup(check_post.text, features=self.parser)
+                title_in_post = soup.find('title')
+                if title_in_post == postdata['post_title_th']:
+                    detail = 'Successfully Found the Post'
+                    post_found = True
+                    success = True
+                    post_id = (post['publish_id'])
+                    post_create_time = post['create_date']
+                    post_view = post['view']
+                    break
 
 
         time_end = datetime.utcnow()
