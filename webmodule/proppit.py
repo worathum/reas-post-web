@@ -348,17 +348,19 @@ class proppit():
 
         url = "https://api.proppit.com/properties"
         r = self.httprequestObj.http_get(url)
+        print(r.status_code)
         ret = json.loads(r.text)
 
         sort_date = []
+        print(ret)
         for ret_t in ret['data']:
-            temp = datetime.datetime.strptime(str(ret_t['date']), "%Y-%m-%dT%H:%M:%SZ")
+            temp = ret_t['date']
             sort_date.append(temp)
 
         sort_date = sorted(sort_date)
 
         for ret_t in ret['data']:
-            if sort_date[-1] == datetime.datetime.strptime(str(ret_t['date']), "%Y-%m-%dT%H:%M:%SZ"):
+            if sort_date[-1] == ret_t['date']:
                 last_id = ret_t['id']
 
         return last_id
@@ -538,6 +540,8 @@ class proppit():
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
 
+        self.sort_date_id()
+
         time_start = datetime.datetime.utcnow()
 
         success = "false"
@@ -618,7 +622,7 @@ class proppit():
                         if exists == True:
                             post_id = ret_t['id']
                             #post_url = "https://proppit.com/properties/"+ ret_t['id'] +"/edit"
-                            post_modify_time = str(ret_t['date'])
+                            post_modify_time = ret_t['date']
 
                             post_found = "true"
                             detail = "post found successfully"
