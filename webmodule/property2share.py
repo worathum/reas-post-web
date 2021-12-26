@@ -339,25 +339,6 @@ class property2share():
         }
 
 
-    def check_posted(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
-
-        login = self.test_login(postdata)
-        if(login['success'] == False):
-            return login
-
-        all_posts_response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
-        all_posts_response = all_posts_response.content.decode('utf-8')
-        print(all_posts_response.find(str(postdata['post_id'])))
-
-        post_id = postdata['post_id']
-        check_string = '"publish_id":"' + str(post_id) + '"'
-
-        if check_string in all_posts_response:
-            return True
-        else:
-            return False
-
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.utcnow()
@@ -413,9 +394,9 @@ class property2share():
         if login['success'] == False:
             return login
 
-        check_posted = self.check_posted(postdata)
+        check_posted = self.search_post(postdata)
 
-        if check_posted == False:
+        if check_posted['success'] == False:
             success = False
             time_end = datetime.utcnow()
             detail = 'This Post is not created by user'
@@ -463,7 +444,6 @@ class property2share():
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
 
-        post_id = postdata['post_id']
         posturl = ""
         posted = ""
 
@@ -473,9 +453,10 @@ class property2share():
         if login['success'] == False:
             return login
 
-        check_posted = self.check_posted(postdata)
+        check_posted = self.search_post(postdata)
+        post_id = check_posted['post_id']
 
-        if (check_posted == False):
+        if check_posted['success'] == False:
             success = False
             detail = 'This Post is not created by user'
 
@@ -579,17 +560,13 @@ class property2share():
             actual_title = post['title'].replace(" ", "")
             if(post_title == actual_title):
                 post_url = 'https://www.property2share.com/property-'+str(post['publish_id'])
-                check_post = self.httprequestObj.http_get(post_url)
-                soup = BeautifulSoup(check_post.text, features=self.parser)
-                title_in_post = soup.find('title')
-                if title_in_post == postdata['post_title_th']:
-                    detail = 'Successfully Found the Post'
-                    post_found = True
-                    success = True
-                    post_id = (post['publish_id'])
-                    post_create_time = post['create_date']
-                    post_view = post['view']
-                    break
+                detail = 'Successfully Found the Post'
+                post_found = True
+                success = True
+                post_id = (post['publish_id'])
+                post_create_time = post['create_date']
+                post_view = post['view']
+                break
 
 
         time_end = datetime.utcnow()
