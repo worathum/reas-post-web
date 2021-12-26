@@ -348,11 +348,9 @@ class proppit():
 
         url = "https://api.proppit.com/properties"
         r = self.httprequestObj.http_get(url)
-        print(r.status_code)
         ret = json.loads(r.text)
 
         sort_date = []
-        print(ret)
         for ret_t in ret['data']:
             temp = ret_t['date']
             sort_date.append(temp)
