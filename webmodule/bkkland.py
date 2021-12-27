@@ -581,6 +581,7 @@ class bkkland():
         test_login = self.test_login(postdata)
 
         success = False
+        detail = "post not found"
         if test_login['success'] == True:
             count_page = 1
             post_id = ""
@@ -592,10 +593,11 @@ class bkkland():
                 for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
                     soup_ele = BeautifulSoup(str(hit), self.parser)
                     title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
+            
 
-                    name = title.text.replace(" ", "")
+                    re_title = title.text.replace(" ", "")
+                    name = re_title.replace("\n", "")
                     post_title = postdata['post_title_th'].replace(" ", "")
-
 
                     if name == post_title:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
