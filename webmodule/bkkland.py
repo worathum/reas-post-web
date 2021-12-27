@@ -335,10 +335,11 @@ class bkkland():
         # loop find all title post (first page)
         for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
             soup_ele = BeautifulSoup(str(hit), self.parser)
-            title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
+            title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
             post_title = ' '.join(postdata['post_title_th'].split())
-            name, title_post = self.replace_all(title, post_title)
+            name = title.text.replace(" ", "")
+            title_post = post_title.replace(" ", "")
 
             if name == title_post:
                 post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
@@ -454,7 +455,8 @@ class bkkland():
                     title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
                     post_title = ' '.join(postdata['post_title_th'].split())
-                    name, title_post = self.replace_all(title, post_title)
+                    name = title.text.replace(" ", "")
+                    title_post = post_title.replace(" ", "")
 
 
                     if name == title_post:
