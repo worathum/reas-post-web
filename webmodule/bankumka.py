@@ -1025,9 +1025,9 @@ class bankumka():
                 # print(data)
                 soup = BeautifulSoup(data, self.parser, from_encoding='utf-8')
                 data1 = soup.find_all('script', type='text/javascript')[1].string
-                data1 = data1.split('var prop =')[1].replace('prop','"prop').replace(': "','": "')
+                data1 = data1.split('var prop =')[1].replace(' prop',' "prop').replace(': "','": "')
                 data1 = json.loads(data1)
-                
+
                 """alls = soup.findAll("script")
                 cnt = 0
                 ans = ""
@@ -1126,78 +1126,82 @@ class bankumka():
 
                 if data['status'] == 'OK':
                     g_response = captcha.reCaptcha('6Lfkov8cAAAAAOcHJBr2mND2B7xEKS3dJUJXlksm', 'https://bankumka.com')
-                    datapost = [
-                        ('timeout', '5'),
-                        ('prop_name', data1['prop_name']),
-                        ('prop_type', data1['prop_type']),
-                        ('prop_cate', data1['prop_cate']),
-                        ('prop_detail', data1['prop_detail']),
-                        ('prop_contact', data1['prop_contact']),
-                        ('prop_line_id', data1['prop_line_id']),
-                        ('prop_price', data1['prop_price']),
-                        ('prop_price_attr', data1['prop_price_attr']),
-                        ('prop_pricerent', data1['prop_pricerent']),
-                        ('prop_pricerent_attr', data1['prop_pricerent_attr']),
-                        ('prop_area_rai', data1['prop_area_rai']),
-                        ('prop_area_ngan', data1['prop_area_ngan']),
-                        ('prop_area_sqm', data1['prop_area_sqm']),
-                        ('prop_space', data1['prop_space']),
-                        ('prop_bedroom_type', data1['prop_bedroom_type']),
-                        ('prop_bedroom', data1['prop_bedroom']),
-                        ('prop_bathroom', data1['prop_bathroom']),
-                        ('prop_livingroom', data1['prop_livingroom']),
-                        ('prop_kitchen', data1['prop_kitchen']),
-                        ('prop_parking', data1['prop_parking']),
-                        ('prop_floor', data1['prop_floor']),
-                        ('prop_mainroad', data1['prop_mainroad']),
-                        ('prop_active', 4),
-                        ('prop_reason', ''),
-                        ('prop_cancel', ''),
-                        ('prop_project_name', data1['prop_project_name']),
-                        ('prop_project', data1['prop_project']),
-                        ('prop_project_old', data1['prop_project_old']),
-                        ('project_prop_province', ''),
-                        ('project_prop_district', ''),
-                        ('project_prop_subdistrict', ''),
-                        ('prop_soi', data1['prop_soi']),
-                        ('prop_road', data1['prop_road']),
-                        ('prop_province', data1["prop_province"]),
-                        ('prop_district', data1["prop_district"]),
-                        ('prop_subdistrict', data1["prop_subdistrict"]),
-                        ('prop_zipcode', data1['prop_zipcode']),
-                        ('prop_lat', data1['prop_lat']),
-                        ('prop_lng', data1['prop_lng']),
-                        ('facility[]', ''),
-                        ('prop_gallary1', ''),
-                        ('prop_gallary2', ''),
-                        ('prop_gallary3', ''),
-                        ('prop_gallary4', ''),
-                        ('prop_gallary5', ''),
-                        ('prop_gallary6', ''),
-                        ('prop_gallary7', ''),
-                        ('prop_gallary8', ''),
-                        ('prop_gallary9', ''),
-                        ('prop_gallary10', ''),
-                        ('drag', '0'),
-                        ('token', data['token']),
-                        ('g_token',g_response),
-                        ('csrf_time', csrf_time),
-                        ('csrf_token', csrf_token),
-                        ('action', 'update'),
-                        ('prop_id', data1['prop_id'])
-                    ]
-                    r = self.httprequestObj.http_post(
-                        'https://bankumka.com/property/save', data=datapost)
-                    if 'ไม่สามารถแสดงข้อมูลประกาศ' in r.text:
-                        detail  = "Post deleted successfully"
-                    else:
+                    if g_response == 0:
+                        detail = 'Recaptcha error'
                         success = "false"
-                        detail = 'Something wrong'
+                    else:
+                        datapost = [
+                            ('timeout', '5'),
+                            ('prop_name', data1['prop_name']),
+                            ('prop_type', data1['prop_type']),
+                            ('prop_cate', data1['prop_cate']),
+                            ('prop_detail', data1['prop_detail']),
+                            ('prop_contact', data1['prop_contact']),
+                            ('prop_line_id', data1['prop_line_id']),
+                            ('prop_price', data1['prop_price']),
+                            ('prop_price_attr', data1['prop_price_attr']),
+                            ('prop_pricerent', data1['prop_pricerent']),
+                            ('prop_pricerent_attr', data1['prop_pricerent_attr']),
+                            ('prop_area_rai', data1['prop_area_rai']),
+                            ('prop_area_ngan', data1['prop_area_ngan']),
+                            ('prop_area_sqm', data1['prop_area_sqm']),
+                            ('prop_space', data1['prop_space']),
+                            ('prop_bedroom_type', data1['prop_bedroom_type']),
+                            ('prop_bedroom', data1['prop_bedroom']),
+                            ('prop_bathroom', data1['prop_bathroom']),
+                            ('prop_livingroom', data1['prop_livingroom']),
+                            ('prop_kitchen', data1['prop_kitchen']),
+                            ('prop_parking', data1['prop_parking']),
+                            ('prop_floor', data1['prop_floor']),
+                            ('prop_mainroad', data1['prop_mainroad']),
+                            ('prop_active', 4),
+                            ('prop_reason', ''),
+                            ('prop_cancel', ''),
+                            ('prop_project_name', data1['prop_project_name']),
+                            ('prop_project', data1['prop_project']),
+                            ('prop_project_old', data1['prop_project_old']),
+                            ('project_prop_province', ''),
+                            ('project_prop_district', ''),
+                            ('project_prop_subdistrict', ''),
+                            ('prop_soi', data1['prop_soi']),
+                            ('prop_road', data1['prop_road']),
+                            ('prop_province', data1["prop_province"]),
+                            ('prop_district', data1["prop_district"]),
+                            ('prop_subdistrict', data1["prop_subdistrict"]),
+                            ('prop_zipcode', data1['prop_zipcode']),
+                            ('prop_lat', data1['prop_lat']),
+                            ('prop_lng', data1['prop_lng']),
+                            ('facility[]', ''),
+                            ('prop_gallary1', ''),
+                            ('prop_gallary2', ''),
+                            ('prop_gallary3', ''),
+                            ('prop_gallary4', ''),
+                            ('prop_gallary5', ''),
+                            ('prop_gallary6', ''),
+                            ('prop_gallary7', ''),
+                            ('prop_gallary8', ''),
+                            ('prop_gallary9', ''),
+                            ('prop_gallary10', ''),
+                            ('drag', '0'),
+                            ('token', data['token']),
+                            ('g_token',g_response),
+                            ('csrf_time', csrf_time),
+                            ('csrf_token', csrf_token),
+                            ('action', 'update'),
+                            ('prop_id', data1['prop_id'])
+                        ]
+                        r = self.httprequestObj.http_post(
+                            'https://bankumka.com/property/save', data=datapost)
+                        if 'ไม่สามารถแสดงข้อมูลประกาศ' in r.text:
+                            detail  = "Post deleted successfully"
+                        else:
+                            success = "false"
+                            detail = 'Something wrong'
                 else:
                     success = "false"
         else:
             success = "false"
-            detail = "cannot login: "+test_login["detail"]
+            detail = test_login["detail"]
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
