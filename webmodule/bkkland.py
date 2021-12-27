@@ -252,7 +252,7 @@ class bkkland():
                 postdata['captcha'] = g_response
 
         # replace : space and break the line
-        post_title_th = postdata['post_title_th'].replace("\r\n", "")
+        post_title_th = ' '.join(postdata['post_title_th'].split())
         des_re = postdata['post_description_th'].replace("\r\n", "<p>&nbsp;</p>")
 
         os.remove(path_img)
@@ -313,13 +313,10 @@ class bkkland():
         time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
-        check = self.search_post(postdata)
 
-        if check["success"] == True:
-            return check
-        elif test_login['success'] != True:
-            return check
-
+        if test_login['success'] != True:
+            return test_login
+            
         url = "http://www.bkkland.com/post/add"
         payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
         payload['process'] = "post_add"
