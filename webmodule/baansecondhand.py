@@ -129,7 +129,6 @@ class baansecondhand():
         } 
 
     def test_login(self, postdata):
-        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
 
         time_start = datetime.datetime.utcnow()
@@ -143,20 +142,14 @@ class baansecondhand():
             "bt_login": "เข้าสู่ระบบ"
         }
 
-        response = self.httprequestObj.http_post(self.site_name+'/', data=datapost)   
-         
-        if response.status_code==200:
-            if "history.back()" in response.text:
-                detail = "Cannot Login" 
-            else:
-                r = self.httprequestObj.http_get(self.site_name+"/mypage.php")
-                if "history.back()" in r.text:
-                    detail = "Cannot Login"
-                else:
-                    success = "true"
-                    detail = "Logged in successfully!"
+        #response = self.httprequestObj.http_post(self.site_name+'/', data=datapost)
+        response = requests.post(self.site_name+'/', data=datapost,verify=False)
+        r = requests.get(self.site_name+"/mypage.php",verify=False)
+        if "https://www.baansecondhand.com/mypage.php" == r.url:
+            success = "true"
+            detail = "Logged in successfully!"
         else:
-            detail = "An error occurred with response code "+str(response.status_code)
+            detail = 'Cannot login'
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -183,7 +176,7 @@ class baansecondhand():
         detail = "Unable to create post"
         post_id = ""
         post_url = ""
-        
+
         if 'web_project_name' not in postdata or postdata['web_project_name'] is None:
             if 'project_name' in postdata and postdata['project_name'] is not None:
                 postdata['web_project_name'] = postdata['project_name']
@@ -267,12 +260,10 @@ class baansecondhand():
                 datapost["home_tolit"] = postdata['bath_room'] if postdata['bath_room'] else "0",
                 datapost["post_submit"] = "บันทึกข้อมูล"
                 request_url = self.site_name+'/post.php?post=home'
-                rent_error = False
             else:
                 datapost["room_type"] = category_types_rent[str(postdata['property_type'])]
                 datapost["room_submit"] = "บันทึกข้อมูล"
                 request_url = self.site_name+'/post.php?post=rent'
-                rent_error = True
 
             if len(postdata['post_images'])==0:
                 postdata['post_images'] = ['imgtmp/default/white.jpg']
@@ -280,33 +271,33 @@ class baansecondhand():
             files = {"pic1": b'', "pic2": b'', "pic3": b'', "pic4": b'', "pic5": b''}
             for i, image in enumerate(postdata['post_images'][:5]):
                 files["pic"+str(i+1)] = (str(random.random())[2:]+'.'+image.split('.')[-1], open(os.getcwd()+"/"+image, 'rb'), 'image/png')
-            if rent_error:
-                detail = "Can't post for rent at this time because of website issues."
-            else:
-                response = self.httprequestObj.http_post(request_url, data=datapost, files=files)
-                if response.status_code==200:
-                    if 'https://www.baansecondhand.com/thank.php' in response.text:
-                        success = "true"
-                        detail = "Post created successfully"
-                        post_title = str(postdata['post_title_th']).strip()
-                        r = self.httprequestObj.http_get('https://www.baansecondhand.com/mypage.php')
-                        if r.status_code==200:
-                            soup = BeautifulSoup(r.text, features=self.parser)
-                            posts_element = soup.find_all(class_='board')
-                            for posts in posts_element:
-                                for post in posts.find_all('tr')[1:]:
-                                    title = post.find_all('a')
-                                    if title[0].getText().strip()==post_title:
-                                        post_url = title[0].get('href')
-                                        post_id = post_url.split('?home_id=')[1]
-                                        break
-                        else:
-                            detail += 'But an error has occurred while fetching post id '+str(r.status_code)
 
-                    elif 'window.history.back()' in response.text:
-                        detail = "Following error occurred: "+response.text.split('alert(')[1].split(')')[0][1:-1]
-                else:
-                    detail = 'An Error has occurred with response_code '+str(response.status_code)
+            #response = self.httprequestObj.http_post(request_url, data=datapost, files=files)
+            response = requests.post(request_url, data=datapost, files=files,verify=False)
+            if response.status_code==200:
+                if 'https://www.baansecondhand.com/thank.php' in response.text:
+                    success = "true"
+                    detail = "Post created successfully"
+                    post_title = str(postdata['post_title_th']).strip()
+                    #r = self.httprequestObj.http_get('https://www.baansecondhand.com/mypage.php')
+                    r = requests.get('https://www.baansecondhand.com/mypage.php',verify=False)
+                    if r.status_code==200:
+                        soup = BeautifulSoup(r.text, features=self.parser)
+                        posts_element = soup.find_all(class_='board')
+                        for posts in posts_element:
+                            for post in posts.find_all('tr')[1:]:
+                                title = post.find_all('a')
+                                if title[0].getText().strip()==post_title:
+                                    post_url = title[0].get('href')
+                                    post_id = post_url.split('?home_id=')[1]
+                                    break
+                    else:
+                        detail += 'But an error has occurred while fetching post id '+str(r.status_code)
+
+                elif 'window.history.back()' in response.text:
+                    detail = "Following error occurred: "+response.text.split('alert(')[1].split(')')[0][1:-1]
+            else:
+                detail = 'An Error has occurred with response_code '+str(response.status_code)
 
         else:
             detail = "cannot login"
