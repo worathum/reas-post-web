@@ -319,7 +319,11 @@ class bkkland():
         time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
+        check = self.search_post(postdata)
 
+        if check["success"] == True:
+            return check
+            
         if test_login['success'] == True:
             url = "http://www.bkkland.com/post/add"
             payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
@@ -600,7 +604,10 @@ class bkkland():
                 for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
                     soup_ele = BeautifulSoup(str(hit), self.parser)
                     title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
+
+                    postdata['post_title_th'] = postdata['post_title_th']
                     name, post_title = self.replace_all(title.text ,postdata['post_title_th'])
+
                     if name == post_title:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                         post_id = re.findall("\d+", post_url)[0]
