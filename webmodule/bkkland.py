@@ -252,11 +252,12 @@ class bkkland():
                 postdata['captcha'] = g_response
 
         # replace : space and break the line
+        post_title_th = postdata['post_title_th'].replace("\r\n", "")
         des_re = postdata['post_description_th'].replace("\r\n", "<p>&nbsp;</p>")
 
         os.remove(path_img)
         datapost = {
-            'f_topic' : (None, postdata['post_title_th']),
+            'f_topic' : (None, post_title_th),
             'f_condition' : (None, int(pd_condition[str(postdata['listing_type'])])),
             'f_typepost' : (None, int(pd_properties[str(postdata['property_type'])])),
             'f_province' : (None, province_id),
