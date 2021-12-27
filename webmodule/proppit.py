@@ -196,7 +196,7 @@ class proppit():
         recdata['furnished'] = None
         recdata['ownership'] = None
         recdata['stratum'] = None
-        
+
         date_now = (datetime.datetime.now()) - (datetime.timedelta(hours=7))
         recdata['creationDate'] = str(date_now.isoformat())
 
@@ -270,7 +270,7 @@ class proppit():
         path = './static/chromedriver'
         options = Options()
 
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument('--no-sandbox')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
@@ -351,13 +351,13 @@ class proppit():
         ret = json.loads(r.text)
 
         sort_date = []
-        for ret_t in ret['data']:
+        for key, ret_t in ret['data'].items():
             temp = datetime.datetime.strptime(ret_t['date'], "%Y-%m-%dT%H:%M:%SZ")
             sort_date.append(temp)
 
         sort_date = sorted(sort_date)
 
-        for ret_t in ret['data']:
+        for key, ret_t in ret['data'].items():
             if sort_date[-1] == datetime.datetime.strptime(ret_t['date'], "%Y-%m-%dT%H:%M:%SZ"):
                 last_id = ret_t['id']
 
