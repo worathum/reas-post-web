@@ -578,11 +578,12 @@ class bkkland():
         }
 
     def replace_all(self, t1, t2):
-        
-        re_t1 = t1.replace("\n", "").replace(" ", "")
-        re_t2 = t2.replace("\r\n", "").replace(" ", "")
+        re_t0 = t1.replace("\n", "").replace(" ", "")
+        re_t1 = re_t0.replace("\r\n", "").replace(" ", "")
+        re_t2 = re_t1.replace("<p>&nbsp;</p>", "").replace(" ", "")
+        re_t3 = t2.replace("\r\n", "").replace(" ", "")
 
-        return re_t1 , re_t2
+        return re_t2 , re_t3
 
     def search_post(self, postdata):
         self.logout_user()
