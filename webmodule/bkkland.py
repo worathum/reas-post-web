@@ -572,6 +572,12 @@ class bkkland():
             "post_view": ''
         }
 
+    def replace_all(self, t1, t2):
+        
+        re_t1 = t1.replace("\n", "").replace(" ", "")
+        re_t2 = t2.replace("\r\n", "").replace(" ", "")
+
+        return re_t1 , re_t2
 
     def search_post(self, postdata):
         self.logout_user()
@@ -594,13 +600,7 @@ class bkkland():
                 for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
                     soup_ele = BeautifulSoup(str(hit), self.parser)
                     title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
-            
-
-                    re_title = title.text.replace(" ", "")
-                    name = re_title.replace("\n", "")
-                    re_post_title = postdata['post_title_th'].replace(" ", "")
-                    post_title = re_post_title.replace("\r\n", "")
-
+                    name, post_title = self.replace_all(title.text ,postdata['post_title_th'])
                     if name == post_title:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                         post_id = re.findall("\d+", post_url)[0]
