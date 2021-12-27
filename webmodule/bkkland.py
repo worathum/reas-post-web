@@ -75,11 +75,8 @@ class bkkland():
         success = False
         soup_web = BeautifulSoup(r.content,'lxml')
         if soup_web:
-            try:
-                verify = soup_web.find("div", attrs={"class":"personal_info"}).text
-            except:
-                pass
-            if postdata['user'] in verify.split():
+            verify_member = soup_web.find("div", attrs={"class":"personal_info"}).text
+            if postdata['user'] in verify_member.split():
                 success = True
                 mem_status = True
                 detail = "เข้าสู่ระบบสำเร็จ"
@@ -141,17 +138,14 @@ class bkkland():
                 elif detail == "ชื่อสมาชิก นี้มีคนใช้แล้วค่ะ":
                     success = False
 
-        try:
-            self.test_login(postdata)
-            r = self.httprequestObj.http_get("http://www.bkkland.com/member")
-            print(r.status_code)
-            soup = BeautifulSoup(r.content,'lxml')
-            verify = soup.find("div", attrs={"class":"personal_info"}).text
-            if verify != []:
-                if postdata['user'] in verify.split():
-                    success = True
-        except:
-            pass
+        self.test_login(postdata)
+        r = self.httprequestObj.http_get("http://www.bkkland.com/member")
+        print(r.status_code)
+        soup = BeautifulSoup(r.content,'lxml')
+        find_member = soup.find("div", attrs={"class":"personal_info"}).text
+        if find_member != []:
+            if postdata['user'] in find_member.split():
+                success = True
         
 
         # 
