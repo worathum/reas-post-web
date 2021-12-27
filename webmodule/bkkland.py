@@ -316,7 +316,7 @@ class bkkland():
 
         if test_login['success'] != True:
             return test_login
-            
+
         url = "http://www.bkkland.com/post/add"
         payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
         payload['process'] = "post_add"
@@ -337,7 +337,8 @@ class bkkland():
             soup_ele = BeautifulSoup(str(hit), self.parser)
             title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
 
-            name, title_post = self.replace_all(title, postdata['post_title_th'])
+            post_title = ' '.join(postdata['post_title_th'].split())
+            name, title_post = self.replace_all(title, post_title)
 
             if name == title_post:
                 post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
@@ -452,11 +453,11 @@ class bkkland():
                     soup_ele = BeautifulSoup(str(hit), self.parser)
                     title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
-                    name = title.text.replace(" ", "")
-                    post_title = postdata['post_title_th'].replace(" ", "")
+                    post_title = ' '.join(postdata['post_title_th'].split())
+                    name, title_post = self.replace_all(title, post_title)
 
 
-                    if name == post_title:
+                    if name == title_post:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                         post_id = re.findall("\d+", post_url)[0]
                         detail = "Post Found"
@@ -601,10 +602,10 @@ class bkkland():
                     soup_ele = BeautifulSoup(str(hit), self.parser)
                     title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
-                    postdata['post_title_th'] = postdata['post_title_th']
-                    name, post_title = self.replace_all(title.text ,postdata['post_title_th'])
+                    post_title = ' '.join(postdata['post_title_th'].split())
+                    name, title_post = self.replace_all(title, post_title)
 
-                    if name == post_title:
+                    if name == title_post:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                         post_id = re.findall("\d+", post_url)[0]
                         detail = "Post Found"
