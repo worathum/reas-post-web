@@ -323,7 +323,7 @@ class bkkland():
 
         if check["success"] == True:
             return check
-            
+
         if test_login['success'] == True:
             url = "http://www.bkkland.com/post/add"
             payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
@@ -593,6 +593,8 @@ class bkkland():
         success = False
         detail = "post not found"
         post_url = ""
+        ds_id = ""
+        log_id = ""
         if test_login['success'] == True:
             count_page = 1
             post_id = ""
@@ -613,6 +615,11 @@ class bkkland():
                         post_id = re.findall("\d+", post_url)[0]
                         detail = "Post Found"
                         success = True
+                        try:
+                            ds_id = postdata['ds_id']
+                            log_id = postdata['log_id']
+                        except:
+                            pass
                         break
                 count_page += 1
                 if success == True:
@@ -628,8 +635,8 @@ class bkkland():
             "detail": detail,
             "websitename": self.webname,
             "account_type": None,
-            "ds_id": postdata['ds_id'],
-            "log_id": postdata['log_id'],
+            "ds_id": ds_id,
+            "log_id": log_id,
             "post_id": post_id,
             "post_created": '',
             "post_modified": time_end,
