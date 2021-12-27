@@ -218,7 +218,6 @@ class bkkland():
             if postdata['floorarea_sqm'] != "":
                 land_area += " "+sqm
 
-        print(land_area)
 
         province_id = ''
         amphur_id = ''
@@ -323,16 +322,17 @@ class bkkland():
 
         if check["success"] == True:
             return check
+        elif test_login['success'] != True:
+            return check
 
-        if test_login['success'] == True:
-            url = "http://www.bkkland.com/post/add"
-            payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
-            payload['process'] = "post_add"
-            files, path_imgs = self.pull_imgs(postdata)
-            r = self.httprequestObj.http_post(url, data=payload, files=files)
-            for f in path_imgs:
-                os.remove(f)
-            print(r.status_code)
+        url = "http://www.bkkland.com/post/add"
+        payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
+        payload['process'] = "post_add"
+        files, path_imgs = self.pull_imgs(postdata)
+        r = self.httprequestObj.http_post(url, data=payload, files=files)
+        for f in path_imgs:
+            os.remove(f)
+        print(r.status_code)
 
         success = False
         post_id = ""
@@ -345,8 +345,9 @@ class bkkland():
             soup_ele = BeautifulSoup(str(hit), self.parser)
             title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
 
+            name, title_post = self.replace_all(title, postdata['post_title_th'])
 
-            if title == postdata['post_title_th']:
+            if name == title_post:
                 post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                 post_id = re.findall("\d+", post_url)[0]
                 detail = "post complete."
