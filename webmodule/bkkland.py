@@ -570,14 +570,6 @@ class bkkland():
             "post_view": ''
         }
 
-    def replace_all(self, t1, t2):
-        re_t0 = t1.replace("\n", "").replace(" ", "")
-        re_t1 = re_t0.replace("\r\n", "").replace(" ", "")
-        re_t2 = re_t1.replace("<p>&nbsp;</p>", "").replace(" ", "")
-        re_t3 = t2.replace("\r\n", "").replace(" ", "")
-
-        return re_t2 , re_t3
-
     def search_post(self, postdata):
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -603,7 +595,8 @@ class bkkland():
                     title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
                     post_title = ' '.join(postdata['post_title_th'].split())
-                    name, title_post = self.replace_all(title, post_title)
+                    name = title.text.replace(" ", "")
+                    title_post = post_title.replace(" ", "")
 
                     if name == title_post:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
