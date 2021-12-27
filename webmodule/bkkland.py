@@ -582,6 +582,7 @@ class bkkland():
 
         success = False
         detail = "post not found"
+        post_url = ""
         if test_login['success'] == True:
             count_page = 1
             post_id = ""
@@ -597,7 +598,8 @@ class bkkland():
 
                     re_title = title.text.replace(" ", "")
                     name = re_title.replace("\n", "")
-                    post_title = postdata['post_title_th'].replace(" ", "")
+                    re_post_title = postdata['post_title_th'].replace(" ", "")
+                    post_title = re_post_title.replace("\n", "")
 
                     if name == post_title:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
