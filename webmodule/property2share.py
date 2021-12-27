@@ -297,11 +297,9 @@ class property2share():
         path_imgs = self.pull_imgs(postdata)
         files = {}
         for path in path_imgs:
-            try:
-                files["myfile[]"] = open(path, 'rb') 
-                upload_img_res = self.httprequestObj.http_post(url_upload_img, data={}, files=files)
-            except:
-                pass
+            files["myfile[]"] = open(path, 'rb') 
+            upload_img_res = self.httprequestObj.http_post(url_upload_img, data={}, files=files)
+
             
         
         try:

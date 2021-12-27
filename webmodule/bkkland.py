@@ -232,32 +232,31 @@ class bkkland():
                 if postdata['addr_district'].strip() in value.strip() or value.strip() in postdata['addr_district'].strip():
                     amphur_id = key
                     break
-        try:
-            r = self.httprequestObj.http_get(url_capcha)
-            if r.status_code==200:
-                soup = BeautifulSoup(r.text, features=self.parser)
-                img_url = soup.find_all('img')
-                for link in img_url:
-                    # if web is captcha get img and process
-                    if str(link) == '''<img src="http://www.bkkland.com/post/captcha"/>''':
-                        captcha_img = self.httprequestObj.http_get("http://www.bkkland.com/post/captcha", stream=True)
-                
-                path_img = os.getcwd() + '/imgtmp/imagecaptcha.jpg'
-                with open(path_img,'wb') as local_file :
-                    for block in captcha_img.iter_content(1024):
-                        if not block:
-                            break
-                        local_file.write(block)
-                
-                g_response = captcha.imageCaptcha(path_img)
-                if g_response[0]==1:
-                    postdata['captcha'] = g_response[1]
-                    
-        except:
-            # capcha using create_post not using edit_post
-            postdata['captcha'] = ""
-            pass
-        
+
+        postdata['captcha'] = ""  
+
+        r = self.httprequestObj.http_get(url_capcha)
+        if r.status_code==200:
+            soup = BeautifulSoup(r.text, features=self.parser)
+            img_url = soup.find_all('img')
+            for link in img_url:
+                link_cap = link.get("src")
+                # if web is captcha get img and process
+                if link_cap == "http://www.bkkland.com/post/captcha":
+                    captcha_img = self.httprequestObj.http_get(link_cap, stream=True)
+            
+            path_img = os.getcwd() + '/imgtmp/imagecaptcha.jpg'
+            with open(path_img,'wb') as local_file :
+                for block in captcha_img.iter_content(1024):
+                    if not block:
+                        break
+                    local_file.write(block)
+            
+            g_response = captcha.imageCaptcha(path_img)
+            if g_response[0]==1:
+                postdata['captcha'] = g_response[1]
+            else:
+                postdata['captcha'] = g_response
 
         # replace : space and break the line
         des_re = postdata['post_description_th'].replace("\r\n", "<p>&nbsp;</p>")

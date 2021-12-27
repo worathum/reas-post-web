@@ -538,6 +538,8 @@ class proppit():
     def search_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
 
+        self.sort_date_id()
+
         time_start = datetime.datetime.utcnow()
 
         success = "false"

@@ -7,6 +7,7 @@ import re
 import json
 import datetime
 import sys
+import os
 
 class prakardproperty():
 
@@ -83,7 +84,7 @@ class prakardproperty():
             detail = 'Login successful'
         else:
             success = False
-            detail = 'Login unsuccessful'
+            detail = 'email and password ผิดพลาด, หรือท่านอาจยังไม่ได้ทำการยืนยันตัวตนทางอีเมล'
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -105,11 +106,30 @@ class prakardproperty():
             Found = True
         return Found
 
+    def pull_imgs(self, postdata):
+        allimages = []
+        # try:
+        for count in range(len(postdata["post_img_url_lists"])):
+            link = postdata["post_img_url_lists"][count]
+            path = os.getcwd()+"/imgtmp/"+"photo_{}.jpg".format(count+1)
+            img_data = requests.get(link).content
+            with open(path, 'wb') as handler:
+                handler.write(img_data)
+            allimages.append(path)
+
+        # except:
+        #     allimages = os.getcwd()+postdata["post_images"]
+        
+        return allimages
+
     def post_prop(self,action,postdata):
         success = False
         detail = 'Something wrong in this website.'
-        post_id =  postdata['post_id']
-        post_url = 'http://www.prakardproperty.com/property/show/'+post_id
+
+        if action != 'create':
+            post_id =  postdata['post_id']
+            post_url = 'http://www.prakardproperty.com/property/show/'+post_id
+
         if action == 'create':
             r = self.httprequestObj.http_get('http://www.prakardproperty.com/properties/add')
             soup = BeautifulSoup(r.content, 'html.parser')
@@ -137,6 +157,7 @@ class prakardproperty():
         except:
             success = False
             detail = 'This subdistrict does not exist on this site.'
+
         if action == 'edit':
             Found = self.check_post(postdata)
             if not Found:
@@ -211,9 +232,13 @@ class prakardproperty():
                 if len(img_item) != 0:
                     for i in img_item:
                         r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/deletepostimage/id:{}'.format(i.get('title')),data={})
-                for i in postdata['post_images']:
-                    files = {'files[]': (i, open(i, "rb"), "image/jpeg")}
+
+
+                path_imgs = self.pull_imgs(postdata)
+                for count in range(len(path_imgs)):
+                    files = {'files[]': (path_imgs[count], open(path_imgs[count], "rb"), "image/jpeg")}
                     r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
+                
                 r = self.httprequestObj.http_get('http://www.prakardproperty.com/filesupload/updateimagelists/id:{}'.format(postdata['post_id']))
                 soup = BeautifulSoup(r.content, 'html.parser')
                 img_item = soup.find_all("div", {"class": "item"})
@@ -232,9 +257,12 @@ class prakardproperty():
                     success == False
             else:
                 datapost['data[Properties][running_number]'] = upload_id
-                for i in postdata['post_images']:
-                    files = {'files[]': (i, open(i, "rb"), "image/jpeg")}
-                    r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/temp/id:{}'.format(upload_id), data=datapost, files=files)
+                path_imgs = self.pull_imgs(postdata)
+                files = None
+                for count in range(len(path_imgs)):
+                    files = {'files[]': (path_imgs[count], open(path_imgs[count], "rb"), "image/jpeg")}
+                    r = self.httprequestObj.http_post('http://www.prakardproperty.com/upload/temp/id:{}'.format(upload_id), data=datapost, files=files)
+
                 r = self.httprequestObj.http_get('http://www.prakardproperty.com/filesupload/updatetemplists/running_number:{}'.format(upload_id))
                 soup = BeautifulSoup(r.content, 'html.parser')
                 img_item = soup.find_all("div", {"class": "item"})
@@ -247,7 +275,7 @@ class prakardproperty():
                     url += str(i)+','
                 r = self.httprequestObj.http_post(url[:-1], data={})
                 datapost['propertyConfirm1'] = 'on'
-                r = self.httprequestObj.http_post('http://www.prakardproperty.com/properties/addsave', data=datapost)
+                r = self.httprequestObj.http_post_with_headers('http://www.prakardproperty.com/properties/addsave', data=datapost)
                 try:
                     soup = BeautifulSoup(r.content, 'html.parser')
                     post_id = str(soup.find("div", {"id": "content"}).find_all('a')[0].get('href')).split('show/')[1]
@@ -255,6 +283,12 @@ class prakardproperty():
                     success = True
                 except:
                     success = False
+
+        try:
+            for f in path_imgs:
+                os.remove(f)
+        except:
+            pass
         return {
             'success': success,
             'detail': detail,
@@ -269,16 +303,16 @@ class prakardproperty():
         success = False
         detail = 'Something wrong in this website.'
         login = self.test_login(postdata)
-        success = login['success']
         detail = login['detail']
         post_url = ''
         post_id = ''
         
-        if success:
+        if login['success'] == True:
             create = self.post_prop('create',postdata)
-            success = create['success']
-            if success:
+            cre_check = create['success']
+            if cre_check:
                 detail = 'Post successful'
+                success = True
                 post_id = create['post_id']
                 post_url = create['post_url']
             else:
@@ -421,20 +455,19 @@ class prakardproperty():
         time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
-        success = test_login["success"]
-        detail = test_login["detail"]
+        success = False
+        detail = test_login['detail']
         post_id = ""
-        if success:
+        post_url = ""
+        post_modify_time = ""
+        post_view = ""
+        post_found = "false"
+        exists = False
+        if test_login["success"] == True:
             post_title = postdata['post_title_th']
-
             url = "http://www.prakardproperty.com/member/posted"
             r = self.httprequestObj.http_get(url)
-            exists = False
             soup = BeautifulSoup(r.content, 'lxml')
-            post_url = ""
-            post_modify_time = ""
-            post_view = ""
-            post_found = "false"
             entry = soup.find('div', attrs={'id':'member-list'})
             for title_row in entry.find_all('div', attrs={'class':'c3'}):
                 if title_row is None:
@@ -448,6 +481,7 @@ class prakardproperty():
                     post_modify_time = title_row.find('span', attrs={'class':'update'}).text[13:-2]
                     post_view = title_row.find('p', attrs={'class':'stat'}).text[7:]
                     post_found = "true"
+                    success = True
                     detail = "post found successfully"
 
             if not exists:
@@ -456,7 +490,7 @@ class prakardproperty():
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
-            "success": "true",
+            "success": success,
             "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
