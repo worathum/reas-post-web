@@ -1,6 +1,6 @@
 from .lib_httprequest import *
 from .lib_captcha import *
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 import datetime
 import sys
 import json
@@ -181,18 +181,44 @@ class bkkland():
         }
 
         pd_properties = {
-                '1' : '1', # condo
+                '1' : '5', # condo
                 '2' : '2', # house
-                '4' : '4', # townhouse
-                '5' : '5', # building
-                '6' : '6', # land
-                '7' : '6', # apartment
-                '8' : '6', # hotel
-                '9' : '9', # office
-                '10' : '9', # warehouse
-                '25' : '9' # factory
+                '3' : '3', # townhouse
+                '4' : '3', # townhome
+                '5' : '4', # building
+                '6' : '1', # land
+                '7' : '5', # apartment
+                '8' : '5', # hotel
+                '9' : '6', # office
+                '10' : '6', # warehouse
+                '25' : '6' # factory
                 # '8' : '6', # hotel
             }
+
+
+        land_area = ""
+
+        rai = "{}ไร่".format(postdata['land_size_rai'])
+        ngan = "{}งาน".format(postdata['land_size_ngan'])
+        wa = "{}วา".format(postdata['land_size_wa'])
+        sqm = "{}ตรม.".format(postdata['floorarea_sqm'])
+
+        if postdata['property_type'] == '1' or postdata['property_type'] == '7':
+            land_area = "{}".format(sqm)
+        else:
+            if postdata['land_size_rai'] != "":
+                land_area += " "+rai
+
+            if postdata['land_size_ngan'] != "":
+                land_area += " "+ngan
+
+            if postdata['land_size_wa'] != "":
+                land_area += " "+wa
+
+            if postdata['floorarea_sqm'] != "":
+                land_area += " "+sqm
+
+        print(land_area)
 
         province_id = ''
         amphur_id = ''
@@ -232,6 +258,7 @@ class bkkland():
             postdata['captcha'] = ""
             pass
         
+
         # replace : space and break the line
         des_re = postdata['post_description_th'].replace("\r\n", "<p>&nbsp;</p>")
 
@@ -243,7 +270,7 @@ class bkkland():
             'f_province' : (None, province_id),
             'f_amphur' : (None, amphur_id),
             'f_district' : (None, ""),
-            'f_land_area' : (None, postdata['land_size_wa']),
+            'f_land_area' : (None, land_area),
             'f_price_accept' : (None, "Y"),
             'f_price' : (None, postdata['price_baht']),
             'f_pricetype' : (None, "1"),
@@ -307,7 +334,7 @@ class bkkland():
         success = False
         post_id = ""
         post_url = ""
-        detail = ""
+        detail = "post fail"
         res_complete = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list")
         soup = BeautifulSoup(res_complete.text, self.parser)
         # loop find all title post (first page)
@@ -315,18 +342,13 @@ class bkkland():
             soup_ele = BeautifulSoup(str(hit), self.parser)
             title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
 
+
             if title == postdata['post_title_th']:
                 post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                 post_id = re.findall("\d+", post_url)[0]
                 detail = "post complete."
                 success = True
-            elif title != postdata['post_title_th']:
-                post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                post_id = re.findall("\d+", post_url)[0]
-                check_url = self.httprequestObj.http_get(post_url)
-                if check_url.status_code == 200:
-                    detail = "post complete."
-                    success = True
+                break
             else:
                 detail = "post error"
 
@@ -417,13 +439,45 @@ class bkkland():
 
         test_login = self.test_login(postdata)
 
-
+        success = False
+        post_id = ""
+        post_url = ""
+        detail = ""
         if test_login['success'] == True:
-            post_url = 'http://www.bkkland.com/post/form/edit?id={}'.format(postdata['post_id'])
+            count_page = 1
+            post_id = ""
+            while count_page < 35:
+                url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
+                print(url_check_title)
+                res_complete = self.httprequestObj.http_get(url_check_title)
+                soup = BeautifulSoup(res_complete.text, self.parser)
+                # loop find all title post (first page)
+                for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+                    soup_ele = BeautifulSoup(str(hit), self.parser)
+                    title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
+
+                    name = title.text.replace(" ", "")
+                    post_title = postdata['post_title_th'].replace(" ", "")
+
+
+                    if name == post_title:
+                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                        post_id = re.findall("\d+", post_url)[0]
+                        detail = "Post Found"
+                        success = True
+                        break
+                count_page += 1
+                if success == True:
+                    break
+
+            
+
+            # start edit_post            
+            url_edit = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
             url_api = 'http://www.bkkland.com/post/update'
-            payload = self.datapost_details(postdata, post_url)
+            payload = self.datapost_details(postdata, url_edit)
             payload['process'] = "edit_post"
-            payload["post_id"] = postdata['post_id']
+            payload["post_id"] = post_id
             payload["f_activated"] = (None, "Y")
             payload["go"] = (None, "แก้ไขประกาศ")
 
@@ -432,7 +486,7 @@ class bkkland():
 
             success = False
             detail = ""
-            url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(postdata['post_id'])
+            url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(post_id)
             res_complete = self.httprequestObj.http_get(url_update)
             soup = BeautifulSoup(res_complete.text, self.parser)
             for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
@@ -442,12 +496,14 @@ class bkkland():
                     mystr = str(text_update)
                     # if != -1 is finded
                     if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
-                        detail = "update complete - post_id : {}".format(postdata['post_id'])
+                        detail = "update complete - post_id : {}".format(post_id)
                         success = True
 
                 except:
                     detail = "update False"
                     success = False
+
+    
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -458,7 +514,7 @@ class bkkland():
             "start_time": str(time_start),
             "end_time": str(time_end),
             "post_url": post_url,
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
             "account_type": "null",
             "detail": detail,
         }
@@ -525,41 +581,32 @@ class bkkland():
 
         test_login = self.test_login(postdata)
 
+        success = False
         if test_login['success'] == True:
-            post_url = 'http://www.bkkland.com/post/{}.html'.format(postdata['post_id'])
-            url_list = 'http://www.bkkland.com/post/your_list'
+            count_page = 1
+            post_id = ""
+            while count_page < 35:
+                url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
+                res_complete = self.httprequestObj.http_get(url_check_title)
+                soup = BeautifulSoup(res_complete.text, self.parser)
+                # loop find all title post (first page)
+                for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+                    soup_ele = BeautifulSoup(str(hit), self.parser)
+                    title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
-            r = self.httprequestObj.http_get(post_url)
-            print(r.status_code)
+                    name = title.text.replace(" ", "")
+                    post_title = postdata['post_title_th'].replace(" ", "")
 
-            res = self.httprequestObj.http_get(url_list)
-            print(r.status_code)
 
-            date_time = None
-
-            soup_title = BeautifulSoup(r.text, self.parser)
-            title = soup_title.find("title").text
-
-            soup = BeautifulSoup(res.text, self.parser)
-            for hit in soup.find_all("td"):
-                line = re.sub('[<>/ptd]', '', str(hit))
-                for string_line in line:
-                    try:
-                        # loop check first string if can convert to int, that line is time.
-                        # if check cannot convert to int, it is check error and next line.
-                        check = int(string_line)
-                        date_time = line 
-                    except:
+                    if name == post_title:
+                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                        post_id = re.findall("\d+", post_url)[0]
+                        detail = "Post Found"
+                        success = True
                         break
-
-
-            success = False
-            detail = ""
-            post_modify_time = ""
-            if title == postdata["post_title_th"]:
-                post_modify_time = date_time
-                detail = "Post Found"
-                success = True
+                count_page += 1
+                if success == True:
+                    break
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -573,9 +620,9 @@ class bkkland():
             "account_type": None,
             "ds_id": postdata['ds_id'],
             "log_id": postdata['log_id'],
-            "post_id": postdata['post_id'],
+            "post_id": post_id,
             "post_created": '',
-            "post_modified": post_modify_time,
+            "post_modified": time_end,
             "post_view": "",
             "post_url": post_url
         }

@@ -6,13 +6,10 @@ import os.path
 import sys
 from .lib_httprequest import *
 import ast
-import codecs
-
-#from urlparse import urlparse
-import re
 import json
 from datetime import  datetime
 from .lib_captcha import  *
+import re
 
 
 
@@ -27,6 +24,7 @@ class property2share():
         except ImportError:
             configs = {}
         self.httprequestObj = lib_httprequest()
+        self.webname = 'property2share'
         self.encoding = 'utf-8'
         self.imgtmp = 'imgtmp'
         self.primarydomain = ''
@@ -34,8 +32,14 @@ class property2share():
         self.debugresdata = 0
         self.register_link = 'https://www.property2share.com/%E0%B8%A5%E0%B8%87%E0%B8%97%E0%B8%B0%E0%B9%80%E0%B8%9A%E0%B8%B5%E0%B8%A2%E0%B8%99'
         self.login_link =  'https://www.property2share.com/submitLogin2.php'
+        self.parser = 'html.parser'
+
+    def logout_user(self):
+        url = "https://www.property2share.com/pageuser/logout.php"
+        self.httprequestObj.http_get(url)
 
     def register_user(self, userdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.now()
 
@@ -113,6 +117,7 @@ class property2share():
         return resp
 
     def test_login(self, logindata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         st_time = datetime.utcnow()
 
@@ -145,32 +150,10 @@ class property2share():
 
         return resp
 
-    def create_post(self, postdata):
-        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
-        time_start = datetime.utcnow()
+    def get_province(self, postdata):
 
-        if ('log_id' not in postdata or postdata['log_id'] == None or postdata['log_id'] == ""):
-            log_id = ''
-
-        else:
-            log_id = int(postdata['log_id'])
-
-        # Required Data
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        price_baht = postdata['price_baht']
         addr_province = postdata['addr_province']
         addr_district = postdata['addr_district']
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
-
-        # login with user info first
-        login = self.test_login(postdata)
-    
-        if login['success'] == False:
-            return login
 
         # MAKE GET REQUEST FOR GETTING DROPDOWN DETAILS
         request = self.httprequestObj.http_get('https://www.property2share.com/pageuser/new_publish.php')
@@ -185,16 +168,6 @@ class property2share():
             provinces_dict[each_option[i].text[:-3]] = each_option[i].attrs['value']
             province_list.append(each_option[i].text[:-3])
 
-        #TYPE OF THE PROPERTY MAPPED
-        type_mapping = {
-            1 : 2, 2 : 1, 3 : 1 , 4 : 3, 5 : 7, 6 : 4, 7 : 5, 8 : 8, 9 : 9, 10 : 6, 25 : 6
-        }
-
-        #POST TYPE (RENT/ SELL)
-        post_type = 21
-
-        if(listing_type == 'เช่า'):
-            post_type = 22
 
         province_id = 1
 
@@ -205,7 +178,7 @@ class property2share():
 
         district_list_full = []
 
-        district_list_resp = self.httprequestObj.http_get('https://www.property2share.com/connection/amphur.php?province_id=' + province_id)
+        district_list_resp = self.httprequestObj.http_get('https://www.property2share.com/connection/amphur.php?province_id=' + str(province_id))
         district_list = district_list_resp.content.decode('utf-8')
         district_list = ast.literal_eval(district_list)
 
@@ -215,132 +188,156 @@ class property2share():
             if(addr_district in districts['AMPHUR_NAME']):
                 amphur_id = int(districts['AMPHUR_ID'])
 
-        #LAND SIZE CALCULATIONS
-        rai_size = 0
-        if('land_size_rai' not in postdata or postdata['land_size_rai'] == None or postdata['land_size_rai'] == ""):
-            rai_size = 0
-        else:
-            rai_size = int(postdata['land_size_rai'])
+        return province_id, amphur_id
 
-        ngan_size = 0
-        if('land_size_ngan' not in postdata or postdata['land_size_ngan'] == None or postdata['land_size_ngan'] == ""):
-            ngan_size = 0
+    def pull_imgs(self, postdata):
+        files = {}
+        allimages = []
+        # try:
+        for count in range(len(postdata["post_img_url_lists"])):
+            link = postdata["post_img_url_lists"][count]
+            path = os.getcwd()+"/imgtmp/"+"photo_{}.jpg".format(count+1)
+            img_data = requests.get(link).content
+            with open(path, 'wb') as handler:
+                handler.write(img_data)
+            allimages.append(path)
 
-        else:
-            ngan_size = int(postdata['land_size_ngan'])
+        # except:
+        #     allimages = os.getcwd()+postdata["post_images"]
 
-        wa_size = 0
+        for i in range(len(allimages)):
+            r = open(allimages[i], 'rb')
+            name = 'photo{}'.format(i+1)
+            files[name] = ("{}".format(allimages[i]),r,"image/jpeg")
+        
+        return allimages
 
-        if('land_size_wa' not in postdata or postdata['land_size_wa'] == None or postdata['land_size_wa'] == ""):
-            wa_size = 0
+    def datapost_detail(self, postdata):
 
-        else:
-            wa_size = int(postdata['land_size_wa'])
-
-        #SQM SIZE
-        # sqm_size = ((400 * rai_size) + (100 * ngan_size) + (wa_size))
-
-        if('floorarea' not in postdata or postdata['floorarea'] == None):
-            floorarea = 0
-
-        else:
-            floorarea = postdata['floorarea']
-
-        # REQUEST FOR CREATE POST
-        url = 'https://www.property2share.com/pageuser/submitNewPublish.php?type=2'
-        data = {
-            'find_broker': 'on',
-            'type_publish': post_type,
-            'asset_type': type_mapping[int(property_type)],
-            'location_home': 'on',
-            'publish_title': post_title_th,
-            'txtDescription': post_description_th,
-            'publish_special': '',
-            'location_detail': addr_province,
-            'province_id': province_id,
-            'amphur_id': amphur_id,
-            'latLngPublish': '(' + str(geo_latitude)+', '+str(geo_longitude)+')',
-            'station_type': 0,
-            'station_id': 0,
-            'publish_price': price_baht,
-            'unit_price': 1,
-            'area_rai': rai_size,
-            'area_ngan': ngan_size,
-            'area_va2': wa_size,
-            'area_use': floorarea,
-            'contact_name': postdata['name'],
-            'contact_tel': postdata['mobile'],
-            'contact_mobile': postdata['mobile'],
-            'contact_email': postdata['email'],
-            'contact_website': ''
+        if postdata['listing_type'] == "เช่า":
+            post_type = 22
+        elif postdata['listing_type'] == "ขาย":
+            post_type = 21
+        
+        type_mapping = {
+            1 : 2, 2 : 1, 3 : 1 , 4 : 3, 5 : 7, 6 : 4, 7 : 5, 8 : 8, 9 : 9, 10 : 6, 25 : 6
         }
 
-        #POST REQUEST WITH DATA
-        res = self.httprequestObj.http_post(url,data=data)
-        url = res.url
-        print(res.status_code)
-        url = url.split('?')
-        post_id = str(url[1][11:])
-        url = 'https://www.property2share.com/pageuser/upload.php'
+        province_id, amphur_id = self.get_province(postdata)
 
-        allimages = postdata["post_images"][:15]
+
+        # invalid literal for int() with base 10: ''
+        postdata['land_size_rai'] = str(re.sub("[^0-9]", "", postdata['land_size_rai']))
+        postdata['land_size_ngan'] = str(re.sub("[^0-9]", "", postdata['land_size_ngan']))
+        postdata['land_size_wa'] = str(re.sub("[^0-9]", "", postdata['land_size_wa']))
+        postdata['price_baht'] = str(re.sub("[^0-9]", "", postdata['price_baht']))
+
+        data = {
+            'find_broker':  (None, 'on'),
+            'type_publish':  (None, post_type),
+            'asset_type':  (None, type_mapping[int(postdata['property_type'])]),
+            'location_home':  (None, 'on'),
+            'publish_title':  (None, postdata['post_title_th']),
+            'txtDescription':  (None, postdata['post_description_th']),
+            'publish_special':  (None, postdata['prominent_point']),
+            'location_detail':  (None, postdata['addr_province']),
+            'province_id':  (None, province_id),
+            'amphur_id':  (None, amphur_id),
+            'use_map': (None, "0"),
+            'latLngPublish':  (None, "({}, {})".format(str(postdata['geo_latitude']), str(postdata['geo_longitude']))), 
+            'station_type':  (None, '0'),
+            'station_id':  (None, '0'),
+            'publish_price':  (None, postdata['price_baht']),
+            'unit_price':  (None, '1'),
+            'area_rai':  (None, postdata['land_size_rai']),
+            'area_ngan':  (None, postdata['land_size_ngan']),
+            'area_va2':  (None, postdata['land_size_wa']),
+            'area_use':  (None, postdata['floorarea_sqm']),
+            'contact_name':  (None, postdata['name']),
+            'contact_tel': (None, postdata['mobile']),
+            'contact_mobile':  (None, postdata['mobile']),
+            'contact_email':  (None, postdata['email']),
+            'contact_website': (None, ""),
+        }
+
+        return data
+
+
+    def create_post(self, postdata):
+        self.logout_user()
+        self.print_debug('function ['+sys._getframe().f_code.co_name+']')
+        time_start = datetime.utcnow()
+
+        if ('log_id' not in postdata or postdata['log_id'] == None or postdata['log_id'] == ""):
+            log_id = ''
+
+        else:
+            log_id = int(postdata['log_id'])
+
+        # login with user info first
+        login = self.test_login(postdata)
+    
+        if login['success'] == False:
+            return login
+
+
+
+        url_detail = 'https://www.property2share.com/pageuser/submitNewPublish.php?type=2'
+        data = self.datapost_detail(postdata)
+        detail_res = self.httprequestObj.http_post(url_detail, data=data)
+        print(detail_res.status_code)
+        url = detail_res.url
+
+        url_clean = url.split('?')
+        post_id = str(re.sub("[^0-9]", "", url_clean[1]))
+        
+
+        url_upload_img = "https://www.property2share.com/pageuser/upload.php?type=1&publish_id={}".format(post_id)
+
+        path_imgs = self.pull_imgs(postdata)
         files = {}
-        for i in range(len(allimages)-1,-1,-1):
+        for path in path_imgs:
+            try:
+                files["myfile[]"] = open(path, 'rb') 
+                upload_img_res = self.httprequestObj.http_post(url_upload_img, data={}, files=files)
+            except:
+                pass
+            
+        
+        try:
+            for f in path_imgs:
+                os.remove(f)
+        except:
+            pass
 
-            r = open(os.getcwd() + "/" + allimages[i], 'rb')
-            params = (
-                ('type', '1'),
-                ('publish_id', post_id),
-            )
-            files['myfile'] = r
-            res1 = self.httprequestObj.http_post(url, data = None, params =params, files = files)
+        url_submit = 'https://www.property2share.com/pageuser/preview_publish.php?id={}'.format(post_id)
+        data['publish_id'] = int(post_id)
 
-        url = 'https://www.property2share.com/pageuser/preview_publish.php?id='
-        url += str(post_id)
-        data = { 'publish_id': int(post_id) }
-        register_req = self.httprequestObj.http_post(url,data=data)
+        register_res = self.httprequestObj.http_post(url_submit,data=data)
+        print(register_res.status_code)
 
-        #CHECK IF PROP
-        time_end = datetime.utcnow()
-        posturl = 'https://www.property2share.com/property-' + str(post_id)
-        retc = self.httprequestObj.http_get(posturl)
-        retc = retc.status_code
+        
+        posturl_submit = 'https://www.property2share.com/property-{}'.format(post_id)
+        check_prop_res = self.httprequestObj.http_get(posturl_submit)
 
-        success,posted = "false", "post not created"
-        if retc == 200:
+        success, posted = "false", "post not created"
+        if check_prop_res.status_code == 200:
             success,posted = "true", "posted successfully"
+
+        time_end = datetime.utcnow()
         return {
             "success": success,
             "time_usage": str(time_end - time_start),
             "start_time": str(time_start),
             "end_time": str(time_end),
-            "post_url": posturl,
+            "post_url": posturl_submit,
             "post_id": post_id,
             "log_id" : log_id,
             "ds_id": postdata["ds_id"],
             "detail": posted,
-            "websitename": "property2share"
+            "websitename": self.webname,
         }
 
-
-    def check_posted(self, postdata):
-        self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
-
-        login = self.test_login(postdata)
-        if(login['success'] == False):
-            return login
-
-        all_posts_response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
-        all_posts_response = all_posts_response.content.decode('utf-8')
-        print(all_posts_response.find(str(postdata['post_id'])))
-
-        post_id = postdata['post_id']
-        check_string = '"publish_id":"' + str(post_id) + '"'
-
-        if check_string in all_posts_response:
-            return True
-        else:
-            return False
 
     def boost_post(self, postdata):
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -354,31 +351,8 @@ class property2share():
         if (login['success'] == False):
             return login
 
-            """check_posted = self.check_posted(postdata)
-            if ('log_id' not in postdata or postdata['log_id'] == None or postdata['log_id'] == ""):
-                log_id = ''
-
-
-            else:
-                log_id = int(postdata['log_id'])
-
-            if(check_posted == False):
-                success = False
-                time_end = datetime.utcnow()
-                detail = 'This Post is not created by user'
-                return {
-                    "success": success,
-                    "time_usage": str(time_end - time_start),
-                    'ds_id': postdata['ds_id'],
-                    'log_id': postdata['log_id'],
-                    "start_time": str(time_start),
-                    "end_time": str(time_end),
-                    "detail": detail,
-                    "websitename": "property2share",
-                    "post_view": ""
-                }"""
         try:
-            response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+post_id)
+            response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/set_move_up.php?id='+str(post_id))
             if(response.status_code == 200):
                 success = True
                 detail = "Post Boosted Successfully"
@@ -420,9 +394,9 @@ class property2share():
         if login['success'] == False:
             return login
 
-        check_posted = self.check_posted(postdata)
+        check_posted = self.search_post(postdata)
 
-        if check_posted == False:
+        if check_posted['success'] == False:
             success = False
             time_end = datetime.utcnow()
             detail = 'This Post is not created by user'
@@ -466,22 +440,12 @@ class property2share():
         }
 
     def edit_post(self, postdata):
+        self.logout_user()
         self.print_debug('function [' + sys._getframe().f_code.co_name + ']')
         time_start = datetime.utcnow()
 
-        log_id = postdata['log_id']
-
-        post_id = postdata['post_id']
-        listing_type = postdata['listing_type']
-        property_type = postdata['property_type']
-        post_img_url_lists = postdata['post_img_url_lists']
-        price_baht = postdata['price_baht']
-        addr_province = postdata['addr_province']
-        addr_district = postdata['addr_district']
-        geo_latitude = postdata['geo_latitude']
-        geo_longitude = postdata['geo_longitude']
-        post_title_th = postdata['post_title_th']
-        post_description_th = postdata['post_description_th']
+        posturl = ""
+        posted = ""
 
         # login with user info first
         login = self.test_login(postdata)
@@ -489,161 +453,55 @@ class property2share():
         if login['success'] == False:
             return login
 
-        check_posted = self.check_posted(postdata)
+        check_posted = self.search_post(postdata)
+        post_id = check_posted['post_id']
 
-        if (check_posted == False):
+        if check_posted['success'] == False:
             success = False
-            time_end = datetime.utcnow()
             detail = 'This Post is not created by user'
-            return {
-                "success": success,
-                "time_usage": str(time_end - time_start),
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                "detail": detail,
-                'ds_id': postdata['ds_id'],
-                "log_id": log_id,
-                "post_id": postdata["post_id"],
-                "websitename": "property2share"
-            }
 
-        request = self.httprequestObj.http_get('https://www.property2share.com/pageuser/new_publish.php')
-        soup = BeautifulSoup(request.content, 'html.parser')
-        provinces = soup.find_all("select", {"name": "province_id"})
-        each_option = provinces[0].find_all("option")
-        provinces_dict = {}
-        province_list = []
-
-        for i in range(len(each_option)):
-            provinces_dict[each_option[i].text[:-3]] = each_option[i].attrs['value']
-            province_list.append(each_option[i].text[:-3])
-
-        type_mapping = {
-            1: 2, 2: 1, 3: 1, 4: 3, 5: 7, 6: 4, 7: 5, 8: 8, 9: 9, 10: 6, 25: 6
-        }
-
-        post_type = 21
-
-        if (listing_type == 'เช่า'):
-            post_type = 22
-
-        province_id = 1
-
-        for i in range(len(province_list)):
-            if (addr_province in province_list[i]):
-                province_id = provinces_dict[province_list[i]]
-                break
-
-        district_list_full = []
-
-        district_list_resp = self.httprequestObj.http_get(
-            'https://www.property2share.com/connection/amphur.php?province_id=' + province_id)
-        district_list = district_list_resp.content.decode('utf-8')
-        district_list = ast.literal_eval(district_list)
-
-        amphur_id = 46
-        for districts in district_list:
-            district_list_full.append(districts['AMPHUR_NAME'])
-            if (addr_district in districts['AMPHUR_NAME']):
-                amphur_id = int(districts['AMPHUR_ID'])
-
-        rai_size = 0
-        if ('land_size_rai' not in postdata or postdata['land_size_rai'] == None or postdata['land_size_rai'] == ""):
-            rai_size = 0
+        
         else:
-            rai_size = int(postdata['land_size_rai'])
+            url = 'https://www.property2share.com/pageuser/submitEdit_Publish.php?id={}&type=2'.format(str(post_id))
+            data = self.datapost_detail(postdata)
+            res = self.httprequestObj.http_post(url, data=data)
 
-        ngan_size = 0
-        if ('land_size_ngan' not in postdata or postdata['land_size_ngan'] == None or postdata['land_size_ngan'] == ""):
-            ngan_size = 0
+            r_ = self.httprequestObj.http_get('https://www.property2share.com/pageuser/addPicPublish.php?publish_id=' + str(post_id))
+            soup = BeautifulSoup(r_.text, 'html.parser')
+            all_img = soup.findAll('div', {'class':'divImg'})
+            for del_id in all_img:
+                del_id = del_id['id'].replace('divImg_','')
+                u_ = 'https://www.property2share.com/pageuser/delete_pic.php'
+                data_ = {
+                    'id': int(del_id),
+                    'type': 1
+                }
+                #delete all imgs
+                res_ = self.httprequestObj.http_post(u_, data=data_)
+     
 
-        else:
-            ngan_size = int(postdata['land_size_ngan'])
+            path_imgs = self.pull_imgs(postdata)
+            url_edit_imgs = "https://www.property2share.com/pageuser/upload.php?type=1&publish_id={}".format(str(post_id))
+            files = {}
+            for path in path_imgs:
+                files["myfile[]"] = open(path, 'rb') 
+                upload_img_res = self.httprequestObj.http_post(url_edit_imgs, data={}, files=files)
+                
+            for f in path_imgs:
+                os.remove(f)
 
-        wa_size = 0
+            url_submit = 'https://www.property2share.com/pageuser/preview_publish.php?id={}'.format(str(post_id))
+            data['publish_id'] = int(post_id)
+            register_res = self.httprequestObj.http_post(url_submit,data=data)
 
-        if ('land_size_wa' not in postdata or postdata['land_size_wa'] == None or postdata['land_size_wa'] == ""):
-            wa_size = 0
-
-        else:
-            wa_size = int(postdata['land_size_wa'])
-
-        # sqm_size = (400 * rai_size) + (100 * ngan_size) + (wa_size)
-
-        floorarea_sqm = 0
-        if (floorarea_sqm not in postdata or postdata['floor_area'] == None or postdata['floor_area'] == ""):
-            floorarea_sqm = 0
-
-        else:
-            floorarea_sqm = postdata['floor_area']
-
-        # create post request to add post
-        url = 'https://www.property2share.com/pageuser/submitEdit_Publish.php?id='+str(post_id) + '&type=2'
-        data = {
-            'find_broker': 'on',
-            'type_publish': post_type,
-            'asset_type': type_mapping[int(property_type)],
-            'location_home': 'on',
-            'publish_title': post_title_th,
-            'txtDescription': post_description_th,
-            'publish_special': '',
-            'location_detail': addr_province,
-            'province_id': province_id,
-            'amphur_id': amphur_id,
-            'latLngPublish': '(' + str(geo_latitude) + ', ' + str(geo_longitude) + ')',
-            'station_type': 0,
-            'station_id': 0,
-            'publish_price': price_baht,
-            'unit_price': 1,
-            'area_rai': rai_size,
-            'area_ngan': ngan_size,
-            'area_va2': wa_size,
-            'area_use': floorarea_sqm,
-            'contact_name': postdata['name'],
-            'contact_tel': postdata['mobile'],
-            'contact_mobile': postdata['mobile'],
-            'contact_email': postdata['email'],
-            'contact_website': ''
-        }
-
-
-        res = self.httprequestObj.http_post(url, data=data)
-        url = res.url
-
-        r_ = self.httprequestObj.http_get('https://www.property2share.com/pageuser/addPicPublish.php?publish_id=' + str(post_id))
-        soup = BeautifulSoup(r_.text, 'html.parser')
-        all_img = soup.findAll('div', {'class':'divImg'})
-        for del_id in all_img:
-            del_id = del_id['id'].replace('divImg_','')
-            # print(del_id)
-            u_ = 'https://www.property2share.com/pageuser/delete_pic.php'
-            data_ = {
-                'id': int(del_id),
-                'type': 1
-            }
-            res_ = self.httprequestObj.http_post(u_, data=data_)
-            # print(res_.text)
-        allimages = postdata["post_images"][:15]
-        files = {}
-        for i in range(len(allimages)):
-            r = open(os.getcwd() + "/" + allimages[i], 'rb')
-            params = (
-                ('type', '1'),
-                ('publish_id', post_id),
-            )
-            files['myfile'] = r
-            res1 = self.httprequestObj.http_post('https://www.property2share.com/pageuser/upload.php', data=None, params=params, files=files)
-            print(res1.text)
-
+            posturl = 'https://www.property2share.com/property-' + str(post_id)
+            retc = self.httprequestObj.http_get(posturl)
+            retc = retc.status_code
+            success, posted = "false", "Unable to Edit the Post"
+            if retc == 200:
+                success, posted = "true", "Post Edited Successfully"
 
         time_end = datetime.utcnow()
-        posturl = 'https://www.property2share.com/property-' + str(post_id)
-        retc = self.httprequestObj.http_get(posturl)
-        retc = retc.status_code
-        success, posted = "false", "Unable to Edit the Post"
-        if retc == 200:
-            success, posted = "true", "Post Edited Successfully"
-
         return {
             "success": success,
             "time_usage": str(time_end - time_start),
@@ -653,8 +511,8 @@ class property2share():
             "post_id": post_id,
             "detail": posted,
             'ds_id': postdata['ds_id'],
-            "log_id" : log_id,
-            "websitename": "property2share"
+            "log_id" : postdata['log_id'],
+            "websitename": self.webname
         }
 
     def search_post(self, postdata):
@@ -663,10 +521,10 @@ class property2share():
         time_start = datetime.utcnow()
 
         login = self.test_login(postdata)
+
         log_id = ''
         if ('log_id' not in postdata or postdata['log_id'] == None):
             log_id = ''
-
 
         else:
             log_id = postdata['log_id']
@@ -675,30 +533,36 @@ class property2share():
             return login
 
         post_title = postdata['post_title_th']
-        all_posts_response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000')
-        all_posts_response = json.loads(all_posts_response.content.decode('utf-8')[2:])
+        post_id = ""
+        success = False
+        detail = 'Unable To Find the Post'
+        post_found = False
+        post_url = ''
+        post_create_time = ''
+        post_view = ''
+
+        
+        my_post_page = self.httprequestObj.http_get("https://www.property2share.com/pageuser/publish_getAll2.php?type=0&flag=1&asset_type=0&page=1&limit=20000")
+        try:
+            all_posts_response = json.loads(my_post_page.content.decode('utf-8')[2:])
+        except:
+            all_posts_response = json.loads(my_post_page.content.decode('utf-8')[2:], strict=False)
 
         if 'data' in all_posts_response:
             all_posts = all_posts_response['data']
         else:
             all_posts = []
-        detail = 'Unable To Find the Post'
-        success = True
-        post_found = False
-        post_url = ''
-        post_id = ''
-        post_create_time = ''
-        post_view = ''
 
-        post_title = post_title.split()
+
+        post_title = post_title.replace(" ", "")
 
         for post in all_posts:
-
-            actual_title = post['title'].split()
+            actual_title = post['title'].replace(" ", "")
             if(post_title == actual_title):
+                post_url = 'https://www.property2share.com/property-'+str(post['publish_id'])
                 detail = 'Successfully Found the Post'
                 post_found = True
-                post_url = 'https://www.property2share.com/property-'+str(post['publish_id'])
+                success = True
                 post_id = (post['publish_id'])
                 post_create_time = post['create_date']
                 post_view = post['view']

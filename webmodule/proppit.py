@@ -351,14 +351,24 @@ class proppit():
         ret = json.loads(r.text)
 
         sort_date = []
+<<<<<<< HEAD
         for key, ret_t in ret['data'].items():
             temp = datetime.datetime.strptime(ret_t['date'], "%Y-%m-%dT%H:%M:%SZ")
+=======
+        for ret_t in ret['data']:
+            temp = ret_t['date']
+>>>>>>> e4b5ace8e5c77d61abdc3c1938c6dbd5b6a24578
             sort_date.append(temp)
 
         sort_date = sorted(sort_date)
 
+<<<<<<< HEAD
         for key, ret_t in ret['data'].items():
             if sort_date[-1] == datetime.datetime.strptime(ret_t['date'], "%Y-%m-%dT%H:%M:%SZ"):
+=======
+        for ret_t in ret['data']:
+            if sort_date[-1] == ret_t['date']:
+>>>>>>> e4b5ace8e5c77d61abdc3c1938c6dbd5b6a24578
                 last_id = ret_t['id']
 
         return last_id
