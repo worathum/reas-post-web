@@ -345,293 +345,310 @@ class goodpriceproperty():
 
                 # r=s.post(edit_url,,headers=register_headers)
             soup = BeautifulSoup(r.content, features = self.parser)
-            var = soup.find('input', attrs={'name': 'rands'})['value']
-            if len(var) == 0:
-                return{
-                    "websitename": "goodpriceproperty",
-                    "start_time": str(time_start),
-                    "end_time": str(datetime.datetime.utcnow()),
-                    "ds_id": postdata['ds_id'],
-                    'success': 'false',
-                    'websitename': 'goodpriceproperty',
-                    'post_url': "",
-                    'post_id': "",
-                    'detail': 'Un successful post'
-                }
-
-            datapost = {
-                'class_type_id': '1',  # 1 for sell 2 for rent
-                # the property tye
-                'cate_id': postdata['property_type'],
-                'action': 'saveproduct',
-                'savetype': 'R',
-                'title': postdata['post_title_th'],
-                'project': postdata['project_name'],
-                'detail': postdata['post_description_th'],
-                'price': postdata['price_baht'],
-                'product_unit[]': '',
-                'product_warranty_price': '',
-                'shipping_id': '',
-                'add': prod_address,
-                'province': province_id,
-                'amphur': amphur_id,
-                'map_lat': postdata['geo_latitude'],
-                'map_zoom': '',
-                'map_lng': postdata['geo_longitude'],
-                'payment_method': '',
-                'productcondition': '',
-                'area': str(400*int(postdata['land_size_rai']) + 100 * int(postdata['land_size_ngan']) + int(postdata['land_size_wa'])),
-                'capcha': var,
-                'rands': var,
-                'fileshow': 'download.jpeg',
-                'op_s_show': '',
-                'file1': '(binary)',
-                'op1': '',
-                'file2': '(binary)',
-                'op2': '',
-                'file3': '(binary)',
-                'op3': '',
-                'file4': '(binary)',
-                'op4': '',
-                'Submit.x': '79',
-                'Submit.y': '17',
-                'tel': postdata['mobile']
-            }
-            # postdata['land_area_rai'] = str(postdata['land_area_rai'])
-            # postdata['land_area_ngan'] = str(postdata['land_area_ngan'])
-            # postdata['land_area_wa'] = str(postdata['land_area_wa'])
-            postdata['land_size_rai'] = str(postdata['land_size_rai'])
-            postdata['land_size_ngan'] = str(postdata['land_size_ngan'])
-            postdata['land_size_wa'] = str(postdata['land_size_wa'])
-            if postdata['property_type'] == 'บ้านเดี่ยว' or int(postdata['property_type']) == 2:
-                datapost['cate_id'] = 1
-                datapost['area'] = ''
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area']) + ' ตร.ม '
-
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
-            elif postdata['property_type'] == 'บ้านแฝด' or int(postdata['property_type']) == 3:
-                datapost['area'] = ''
-
-                datapost['cate_id'] = 2
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
-            elif postdata['property_type'] == 'ทาวน์โฮม ทาวน์เฮ้าส์' or int(postdata['property_type']) == 4:
-                datapost['area'] = ''
-
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
-                datapost['cate_id'] = 3
-            elif postdata['property_type'] == 'คอนโดมิเนียม' or int(postdata['property_type']) == 1:
-                datapost['area'] = ''
-
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-                datapost['cate_id'] = 4
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม'
-            elif postdata['property_type'] == 'อพาร์ทเมนท์' or int(postdata['property_type']) == 7:
-                datapost['area'] = ''
-
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + str(postdata['land_size_rai'])+' ตร.ไร่ '+str(postdata['land_size_ngan'])+' ตร.งาน ' + str(postdata['land_size_wa'])+'  ตร.วา'
-                datapost['cate_id'] = 5
-            elif postdata['property_type'] == 'อาคารพาณิชย์' or int(postdata['property_type']) == 5:
-                datapost['area'] = ''
-
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
-                datapost['cate_id'] = 6
-            elif postdata['property_type'] == 'บ้านรีสอร์ท บังกะโล':
-                datapost['area'] = ''
-
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
-                datapost['cate_id'] = 7
-            elif postdata['property_type'] == 'อาคาร พื้นที่สำนักตร.งาน' or int(postdata['property_type']) == 9:
-                datapost['area'] = ''
-
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
-                datapost['cate_id'] = 8
-            elif postdata['property_type'] == 'โรงตร.งาน คลังสินค้า' or int(postdata['property_type']) == 10 or int(postdata['property_type']) == 25:
-                datapost['area'] = ''
-
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
-                datapost['cate_id'] = 9
-            elif postdata['property_type'] == 'ที่ดินเปล่า' or int(postdata['property_type']) == 6:
-                datapost['area'] = ''
-
-                datapost['cate_id'] = 10
-                ans = 0
-                if postdata['land_size_rai'] != '0':
-                    ans += 400*float(postdata['land_size_rai'])
-                if postdata['land_size_ngan'] != '0':
-                    ans += 100*float(postdata['land_size_ngan'])
-                if postdata['land_size_wa'] != '0':
-                    ans += float(postdata['land_size_wa'])
-                datapost['area'] = str(int(ans))+' ตร.วา'
-            elif postdata['property_type'] == 'อื่นๆ':
-                datapost['area'] = ''
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-
-                datapost['cate_id'] = 11
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
-            else:
-                datapost['area'] = ''
-                if postdata['land_size_rai'] != '0':
-                    datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
-                if postdata['land_size_ngan'] != '0':
-                    datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
-                if postdata['land_size_wa'] != '0':
-                    datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
-                if str(postdata['floor_area']) != '0':
-                    datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
-
-                datapost['cate_id'] = 11  # default
-                # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + str(postdata['land_area_rai'])+' ตร.ไร่ '+str(postdata['land_area_ngan'])+' ตร.งาน ' + str(postdata['land_area_wa'])+'  ตร.วา'
-            if postdata['listing_type'] != 'ขาย':
-                datapost['class_type_id'] = 2
-            arr = ["fileshow", "file1", "file2", "file3", "file4"]
-            # files = {'fileshow': open('download.jpeg', 'rb')}
-            files = {}
-            # print(postdata['post_images'])
-            no = len(postdata['post_images'][:5])
-            if no == 0:
-                files = {'fileshow': ('imgtmp/default/white.png', open(
-                    'imgtmp/default/white.png', 'rb'), 'image/png')}
-            else:
-                for i in range(no):
-                    datapost[arr[i]] = postdata['post_images'][i]
-                    files[arr[i]] = (postdata['post_images'][i], open(
-                        postdata['post_images'][i], "rb"), "image/jpg")
-
-            r = self.httprequestObj.http_post(
-                'http://www.xn--42cf4b4c7ahl7albb1b.com/member/p-post-property.php', data=datapost, files=files)
-            list_url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php'
-            r = self.httprequestObj.http_get(list_url)
-            soup = BeautifulSoup(r.content, features = self.parser)
-            var = soup.find('a', attrs={'title': postdata['post_title_th']})[
-                'href']
-            if var == "" or var == 'http://www.อสังหาราคาดี.com/index.php':
+            if 'คุณมีจำนวนโพสต์มากกว่า 10 รายการ' in soup:
+                detail = 'You are reached the limit for posting quota.'
+                success = 'false'
                 time_end = datetime.datetime.utcnow()
-                time_usage = time_end - time_start
-                return {
-                    'success': 'false',
-                    'action': "create_post",
-                    
+
+                return{
                     "ds_id": postdata['ds_id'],
+                    'success':success,
+                    'detail':detail,
                     "websitename": "goodpriceproperty",
                     "start_time": str(time_start),
                     "end_time": str(time_end),
-                    'detail': 'Could not create post',
                     'post_url': '',
-                    'post_id': '',
-                    'account_type': ''
+                    'post_id': ''
                 }
-            # for i in '../property/':
-            i = len('../property/')
-            # post_id=''
-            post_id = ''
+            else:
+                var = soup.find('input', attrs={'name': 'rands'})['value']
+                if len(var) == 0:
+                    return{
+                        "websitename": "goodpriceproperty",
+                        "start_time": str(time_start),
+                        "end_time": str(datetime.datetime.utcnow()),
+                        "ds_id": postdata['ds_id'],
+                        'success': 'false',
+                        'websitename': 'goodpriceproperty',
+                        'post_url': "",
+                        'post_id': "",
+                        'detail': 'Un successful post'
+                    }
 
-            while var[i] != '/':
-                post_id += var[i]
-                i += 1
-            if postdata['post_title_th'][len(postdata['post_title_th'])-1] == '%':
-                postdata['post_title_th'] = postdata['post_title_th'][:len(
-                    postdata['post_title_th'])-1]
-            post_url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/property/' + \
-                post_id+"/"+postdata['post_title_th']+'.html'
+                datapost = {
+                    'class_type_id': '1',  # 1 for sell 2 for rent
+                    # the property tye
+                    'cate_id': postdata['property_type'],
+                    'action': 'saveproduct',
+                    'savetype': 'R',
+                    'title': postdata['post_title_th'],
+                    'project': postdata['project_name'],
+                    'detail': postdata['post_description_th'],
+                    'price': postdata['price_baht'],
+                    'product_unit[]': '',
+                    'product_warranty_price': '',
+                    'shipping_id': '',
+                    'add': prod_address,
+                    'province': province_id,
+                    'amphur': amphur_id,
+                    'map_lat': postdata['geo_latitude'],
+                    'map_zoom': '',
+                    'map_lng': postdata['geo_longitude'],
+                    'payment_method': '',
+                    'productcondition': '',
+                    'area': str(400*int(postdata['land_size_rai']) + 100 * int(postdata['land_size_ngan']) + int(postdata['land_size_wa'])),
+                    'capcha': var,
+                    'rands': var,
+                    'fileshow': 'download.jpeg',
+                    'op_s_show': '',
+                    'file1': '(binary)',
+                    'op1': '',
+                    'file2': '(binary)',
+                    'op2': '',
+                    'file3': '(binary)',
+                    'op3': '',
+                    'file4': '(binary)',
+                    'op4': '',
+                    'Submit.x': '79',
+                    'Submit.y': '17',
+                    'tel': postdata['mobile']
+                }
+                # postdata['land_area_rai'] = str(postdata['land_area_rai'])
+                # postdata['land_area_ngan'] = str(postdata['land_area_ngan'])
+                # postdata['land_area_wa'] = str(postdata['land_area_wa'])
+                postdata['land_size_rai'] = str(postdata['land_size_rai'])
+                postdata['land_size_ngan'] = str(postdata['land_size_ngan'])
+                postdata['land_size_wa'] = str(postdata['land_size_wa'])
+                if postdata['property_type'] == 'บ้านเดี่ยว' or int(postdata['property_type']) == 2:
+                    datapost['cate_id'] = 1
+                    datapost['area'] = ''
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area']) + ' ตร.ม '
 
-            time_end = datetime.datetime.utcnow()
-            time_usage = time_end - time_start
-            data = r.text
-            success = "true"
-            if data.find("alert") != -1:
-                success = "false"
-            return {
-                # 'prop_type': postdata['property_type'],
-                # 'data_prop_type': datapost['cate_id'],
-                'success': 'true',
-                "ds_id": postdata['ds_id'],
-                'action': "create_post",
-                "websitename": "goodpriceproperty",
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                'post_url': post_url,
-                'post_id': post_id,
-                'account_type': '',
-                'detail': 'Post created!'
-            }
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
+                elif postdata['property_type'] == 'บ้านแฝด' or int(postdata['property_type']) == 3:
+                    datapost['area'] = ''
+
+                    datapost['cate_id'] = 2
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
+                elif postdata['property_type'] == 'ทาวน์โฮม ทาวน์เฮ้าส์' or int(postdata['property_type']) == 4:
+                    datapost['area'] = ''
+
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
+                    datapost['cate_id'] = 3
+                elif postdata['property_type'] == 'คอนโดมิเนียม' or int(postdata['property_type']) == 1:
+                    datapost['area'] = ''
+
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+                    datapost['cate_id'] = 4
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม'
+                elif postdata['property_type'] == 'อพาร์ทเมนท์' or int(postdata['property_type']) == 7:
+                    datapost['area'] = ''
+
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + str(postdata['land_size_rai'])+' ตร.ไร่ '+str(postdata['land_size_ngan'])+' ตร.งาน ' + str(postdata['land_size_wa'])+'  ตร.วา'
+                    datapost['cate_id'] = 5
+                elif postdata['property_type'] == 'อาคารพาณิชย์' or int(postdata['property_type']) == 5:
+                    datapost['area'] = ''
+
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
+                    datapost['cate_id'] = 6
+                elif postdata['property_type'] == 'บ้านรีสอร์ท บังกะโล':
+                    datapost['area'] = ''
+
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
+                    datapost['cate_id'] = 7
+                elif postdata['property_type'] == 'อาคาร พื้นที่สำนักตร.งาน' or int(postdata['property_type']) == 9:
+                    datapost['area'] = ''
+
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
+                    datapost['cate_id'] = 8
+                elif postdata['property_type'] == 'โรงตร.งาน คลังสินค้า' or int(postdata['property_type']) == 10 or int(postdata['property_type']) == 25:
+                    datapost['area'] = ''
+
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
+                    datapost['cate_id'] = 9
+                elif postdata['property_type'] == 'ที่ดินเปล่า' or int(postdata['property_type']) == 6:
+                    datapost['area'] = ''
+
+                    datapost['cate_id'] = 10
+                    ans = 0
+                    if postdata['land_size_rai'] != '0':
+                        ans += 400*float(postdata['land_size_rai'])
+                    if postdata['land_size_ngan'] != '0':
+                        ans += 100*float(postdata['land_size_ngan'])
+                    if postdata['land_size_wa'] != '0':
+                        ans += float(postdata['land_size_wa'])
+                    datapost['area'] = str(int(ans))+' ตร.วา'
+                elif postdata['property_type'] == 'อื่นๆ':
+                    datapost['area'] = ''
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+
+                    datapost['cate_id'] = 11
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + postdata['land_size_rai']+' ตร.ไร่ '+postdata['land_size_ngan']+' ตร.งาน ' + postdata['land_size_wa']+'  ตร.วา'
+                else:
+                    datapost['area'] = ''
+                    if postdata['land_size_rai'] != '0':
+                        datapost['area'] += postdata['land_size_rai'] + ' ตร.ไร่ '
+                    if postdata['land_size_ngan'] != '0':
+                        datapost['area'] += postdata['land_size_ngan'] + ' ตร.งาน '
+                    if postdata['land_size_wa'] != '0':
+                        datapost['area'] += postdata['land_size_wa'] + '  ตร.วา '
+                    if str(postdata['floor_area']) != '0':
+                        datapost['area'] += str(postdata['floor_area'])+' ตร.ม '
+
+                    datapost['cate_id'] = 11  # default
+                    # datapost['area']=str(postdata['floor_area'])+' ตร.ม ' + str(postdata['land_area_rai'])+' ตร.ไร่ '+str(postdata['land_area_ngan'])+' ตร.งาน ' + str(postdata['land_area_wa'])+'  ตร.วา'
+                if postdata['listing_type'] != 'ขาย':
+                    datapost['class_type_id'] = 2
+                arr = ["fileshow", "file1", "file2", "file3", "file4"]
+                # files = {'fileshow': open('download.jpeg', 'rb')}
+                files = {}
+                # print(postdata['post_images'])
+                no = len(postdata['post_images'][:5])
+                if no == 0:
+                    files = {'fileshow': ('imgtmp/default/white.png', open(
+                        'imgtmp/default/white.png', 'rb'), 'image/png')}
+                else:
+                    for i in range(no):
+                        datapost[arr[i]] = postdata['post_images'][i]
+                        files[arr[i]] = (postdata['post_images'][i], open(
+                            postdata['post_images'][i], "rb"), "image/jpg")
+
+                r = self.httprequestObj.http_post(
+                    'http://www.xn--42cf4b4c7ahl7albb1b.com/member/p-post-property.php', data=datapost, files=files)
+                list_url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/member/list-property.php'
+                r = self.httprequestObj.http_get(list_url)
+                soup = BeautifulSoup(r.content, features = self.parser)
+                var = soup.find('a', attrs={'title': postdata['post_title_th']})[
+                    'href']
+                if var == "" or var == 'http://www.อสังหาราคาดี.com/index.php':
+                    time_end = datetime.datetime.utcnow()
+                    time_usage = time_end - time_start
+                    return {
+                        'success': 'false',
+                        'action': "create_post",
+                        
+                        "ds_id": postdata['ds_id'],
+                        "websitename": "goodpriceproperty",
+                        "start_time": str(time_start),
+                        "end_time": str(time_end),
+                        'detail': 'Could not create post',
+                        'post_url': '',
+                        'post_id': '',
+                        'account_type': ''
+                    }
+                # for i in '../property/':
+                i = len('../property/')
+                # post_id=''
+                post_id = ''
+
+                while var[i] != '/':
+                    post_id += var[i]
+                    i += 1
+                if postdata['post_title_th'][len(postdata['post_title_th'])-1] == '%':
+                    postdata['post_title_th'] = postdata['post_title_th'][:len(
+                        postdata['post_title_th'])-1]
+                post_url = 'http://www.xn--42cf4b4c7ahl7albb1b.com/property/' + \
+                    post_id+"/"+postdata['post_title_th']+'.html'
+
+                time_end = datetime.datetime.utcnow()
+                time_usage = time_end - time_start
+                data = r.text
+                success = "true"
+                if data.find("alert") != -1:
+                    success = "false"
+                return {
+                    # 'prop_type': postdata['property_type'],
+                    # 'data_prop_type': datapost['cate_id'],
+                    'success': 'true',
+                    "ds_id": postdata['ds_id'],
+                    'action': "create_post",
+                    "websitename": "goodpriceproperty",
+                    "start_time": str(time_start),
+                    "end_time": str(time_end),
+                    'post_url': post_url,
+                    'post_id': post_id,
+                    'account_type': '',
+                    'detail': 'Post created!'
+                }
+            
         else:
             time_end = datetime.datetime.utcnow()
             time_usage = time_end - time_start
