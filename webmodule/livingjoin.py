@@ -197,6 +197,9 @@ class livingjoin():
             postdata['post_title_th'] = postdata['post_title_th'].replace('(','')
         if ')' in postdata['post_title_th']:
             postdata['post_title_th'] = postdata['post_title_th'].replace(')','')
+        if '*' in postdata['post_title_th']:
+            postdata['post_title_th'] = postdata['post_title_th'].replace('*','')
+
 
         if province_id == '' or district_id == '' or subdistrict_id == '':
             detail = 'This subdistrict does not exist on this site.'
