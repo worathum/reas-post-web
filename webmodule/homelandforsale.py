@@ -409,53 +409,24 @@ class homelandforsale():
         }
 
         login = self.test_login(postdata)
-        
+
         if(login['success'] == "true"):
-
-            all_posts_url = 'http://รับขายบ้านที่ดิน.com/member/list-property.php'
-
-            all_posts = self.httprequestObj.http_get(all_posts_url, headers=headers)
-
-            soup = BeautifulSoup(all_posts.content, features="html")
-
-            pages = len(soup.find("div", attrs={"class": "text-center"}).find_all("a"))
-
-            all_post_ids = []
-
-            for i in range(pages):
-                url = "http://xn--22c0bihcbb7dg4lnac3am9zla.com/member/list-property.php?QueryString=value&Page=" + str(
-                    i + 1)
-                posts = self.httprequestObj.http_get(url, headers=headers)
-                soup = BeautifulSoup(posts.text, "html5lib")
-
-                for abc in soup.find_all('input', attrs={'name': 'chkDel[]'}):
-                    all_post_ids.append(str(abc['value']))
-
-            #print(all_post_ids)
 
             req_post_id = str(postdata['post_id'])
 
-            if req_post_id in all_post_ids:
-                boost_url = str('http://รับขายบ้านที่ดิน.com/member/slide-property.php?post_id='+req_post_id)
+            boost_url = str('http://รับขายบ้านที่ดิน.com/member/slide-property.php?post_id='+req_post_id)
 
-                boo_post = self.httprequestObj.http_get(boost_url, headers = headers)
+            boo_post = self.httprequestObj.http_get(boost_url, headers = headers)
 
-                #print(boo_post.text)
+            #print(boo_post.text)
 
-                if 'ขอโทษครับ คุณได้เลื่อนประกาศนี้ในวันนี้แล้วครับ' in boo_post.text:
-                    success = "false"
-                    detail = "This announcement was postponed today, so cannot be postponed now"
-
-                else:
-                    success = "true"
-                    detail = "Announcement postponed successfully"
-
-
+            if 'ขอโทษครับ คุณได้เลื่อนประกาศนี้ในวันนี้แล้วครับ' in boo_post.text:
+                success = "false"
+                detail = "This announcement was postponed today, so cannot be postponed now"
 
             else:
-                success = "false"
-                detail = "post_id is incorrect"
-
+                success = "true"
+                detail = "Announcement postponed successfully"
 
 
         else :
