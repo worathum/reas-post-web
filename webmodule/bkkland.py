@@ -348,7 +348,13 @@ class bkkland():
                 success = True
                 break
             else:
-                detail = "post error"
+                post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                post_id = re.findall("\d+", post_url)[0]
+                res = self.httprequestObj.http_get(post_url)
+                if res.status_code == 200:
+                    detail = "Post Found"
+                    success = True
+                    break
 
         
         time_end = datetime.datetime.utcnow()
@@ -465,6 +471,15 @@ class bkkland():
                         detail = "Post Found"
                         success = True
                         break
+                    else:
+                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                        post_id = re.findall("\d+", post_url)[0]
+                        res = self.httprequestObj.http_get(post_url)
+                        if res.status_code == 200:
+                            detail = "Post Found"
+                            success = True
+                            break
+                    
                 count_page += 1
                 if success == True:
                     break
@@ -611,6 +626,14 @@ class bkkland():
                         except:
                             pass
                         break
+                    else:
+                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                        post_id = re.findall("\d+", post_url)[0]
+                        res = self.httprequestObj.http_get(post_url)
+                        if res.status_code == 200:
+                            detail = "Post Found"
+                            success = True
+                            break
                 count_page += 1
                 if success == True:
                     break
