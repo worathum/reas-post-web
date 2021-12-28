@@ -75,11 +75,8 @@ class bkkland():
         success = False
         soup_web = BeautifulSoup(r.content,'lxml')
         if soup_web:
-            try:
-                verify = soup_web.find("div", attrs={"class":"personal_info"}).text
-            except:
-                pass
-            if postdata['user'] in verify.split():
+            verify_member = soup_web.find("div", attrs={"class":"personal_info"}).text
+            if postdata['user'] in verify_member.split():
                 success = True
                 mem_status = True
                 detail = "เข้าสู่ระบบสำเร็จ"
@@ -141,17 +138,14 @@ class bkkland():
                 elif detail == "ชื่อสมาชิก นี้มีคนใช้แล้วค่ะ":
                     success = False
 
-        try:
-            self.test_login(postdata)
-            r = self.httprequestObj.http_get("http://www.bkkland.com/member")
-            print(r.status_code)
-            soup = BeautifulSoup(r.content,'lxml')
-            verify = soup.find("div", attrs={"class":"personal_info"}).text
-            if verify != []:
-                if postdata['user'] in verify.split():
-                    success = True
-        except:
-            pass
+        self.test_login(postdata)
+        r = self.httprequestObj.http_get("http://www.bkkland.com/member")
+        print(r.status_code)
+        soup = BeautifulSoup(r.content,'lxml')
+        find_member = soup.find("div", attrs={"class":"personal_info"}).text
+        if find_member != []:
+            if postdata['user'] in find_member.split():
+                success = True
         
 
         # 
@@ -218,7 +212,6 @@ class bkkland():
             if postdata['floorarea_sqm'] != "":
                 land_area += " "+sqm
 
-        print(land_area)
 
         province_id = ''
         amphur_id = ''
@@ -259,11 +252,12 @@ class bkkland():
                 postdata['captcha'] = g_response
 
         # replace : space and break the line
+        post_title_th = ' '.join(postdata['post_title_th'].split())
         des_re = postdata['post_description_th'].replace("\r\n", "<p>&nbsp;</p>")
 
         os.remove(path_img)
         datapost = {
-            'f_topic' : (None, postdata['post_title_th']),
+            'f_topic' : (None, post_title_th),
             'f_condition' : (None, int(pd_condition[str(postdata['listing_type'])])),
             'f_typepost' : (None, int(pd_properties[str(postdata['property_type'])])),
             'f_province' : (None, province_id),
@@ -320,15 +314,17 @@ class bkkland():
 
         test_login = self.test_login(postdata)
 
-        if test_login['success'] == True:
-            url = "http://www.bkkland.com/post/add"
-            payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
-            payload['process'] = "post_add"
-            files, path_imgs = self.pull_imgs(postdata)
-            r = self.httprequestObj.http_post(url, data=payload, files=files)
-            for f in path_imgs:
-                os.remove(f)
-            print(r.status_code)
+        if test_login['success'] != True:
+            return test_login
+
+        url = "http://www.bkkland.com/post/add"
+        payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
+        payload['process'] = "post_add"
+        files, path_imgs = self.pull_imgs(postdata)
+        r = self.httprequestObj.http_post(url, data=payload, files=files)
+        for f in path_imgs:
+            os.remove(f)
+        print(r.status_code)
 
         success = False
         post_id = ""
@@ -339,10 +335,13 @@ class bkkland():
         # loop find all title post (first page)
         for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
             soup_ele = BeautifulSoup(str(hit), self.parser)
-            title = soup_ele.find("a", attrs={"class":"link_blue14_bu"}).text
+            title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
+            post_title = ' '.join(postdata['post_title_th'].split())
+            name = title.text.replace(" ", "")
+            title_post = post_title.replace(" ", "")
 
-            if title == postdata['post_title_th']:
+            if name == title_post:
                 post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                 post_id = re.findall("\d+", post_url)[0]
                 detail = "post complete."
@@ -455,11 +454,12 @@ class bkkland():
                     soup_ele = BeautifulSoup(str(hit), self.parser)
                     title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
+                    post_title = ' '.join(postdata['post_title_th'].split())
                     name = title.text.replace(" ", "")
-                    post_title = postdata['post_title_th'].replace(" ", "")
+                    title_post = post_title.replace(" ", "")
 
 
-                    if name == post_title:
+                    if name == title_post:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                         post_id = re.findall("\d+", post_url)[0]
                         detail = "Post Found"
@@ -572,7 +572,6 @@ class bkkland():
             "post_view": ''
         }
 
-
     def search_post(self, postdata):
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
@@ -581,6 +580,10 @@ class bkkland():
         test_login = self.test_login(postdata)
 
         success = False
+        detail = "post not found"
+        post_url = ""
+        ds_id = ""
+        log_id = ""
         if test_login['success'] == True:
             count_page = 1
             post_id = ""
@@ -593,15 +596,20 @@ class bkkland():
                     soup_ele = BeautifulSoup(str(hit), self.parser)
                     title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
+                    post_title = ' '.join(postdata['post_title_th'].split())
                     name = title.text.replace(" ", "")
-                    post_title = postdata['post_title_th'].replace(" ", "")
+                    title_post = post_title.replace(" ", "")
 
-
-                    if name == post_title:
+                    if name == title_post:
                         post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
                         post_id = re.findall("\d+", post_url)[0]
                         detail = "Post Found"
                         success = True
+                        try:
+                            ds_id = postdata['ds_id']
+                            log_id = postdata['log_id']
+                        except:
+                            pass
                         break
                 count_page += 1
                 if success == True:
@@ -617,8 +625,8 @@ class bkkland():
             "detail": detail,
             "websitename": self.webname,
             "account_type": None,
-            "ds_id": postdata['ds_id'],
-            "log_id": postdata['log_id'],
+            "ds_id": ds_id,
+            "log_id": log_id,
             "post_id": post_id,
             "post_created": '',
             "post_modified": time_end,

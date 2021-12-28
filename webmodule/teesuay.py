@@ -11,9 +11,6 @@ import json
 import datetime
 import time
 import sys
-from urllib.parse import unquote
-from urllib.request import urlopen
-
 
 
 with open("./static/teesuay.json",encoding='utf-8') as f:
@@ -36,13 +33,18 @@ class teesuay():
         self.debugresdata = 0
         self.parser = 'html.parser'
 
+    def logout_user(self):
+        url = "http://www.teesuay.com/member/logout.php"
+        try:
+            self.httprequestObj.http_get(url)
+        except AttributeError:
+            print("time out : ",AttributeError)
 
 
-
-    def register_user(self, postdata):        
+    def register_user(self, postdata):
+        self.logout_user()        
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
-        self.httprequestObj.http_get("http://www.teesuay.com/member/logout.php")
 
         province_id=0
         amphur_id=0
@@ -99,10 +101,10 @@ class teesuay():
 
 
     def test_login(self, postdata):
+        self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
-        self.httprequestObj.http_get("http://www.teesuay.com/member/logout.php")
         email = postdata['user']
         passwd = postdata['pass']
         btloginx=22
@@ -720,36 +722,6 @@ class teesuay():
             page = 1
             found = False
             temp = len('property-')
-            """while True:
-                r = self.httprequestObj.http_get('http://www.teesuay.com/member/list-property.php?QueryString=value&Page='+str(page))
-                soup = BeautifulSoup(r.content, features = self.parser)
-                count = 0
-                for i in soup.findAll('a'):
-                    var = i['href']
-                    if 'property-' in var:
-                        count += 1
-                    var = var.split('/')
-                    if len(var)>1:
-                        if var[1][temp:].strip()==str(postdata['post_id']):
-                            found = True
-                            break
-                page += 1
-                if found or count==0:
-                    break
-
-            if not found:
-                time_end = datetime.datetime.utcnow()
-                return {
-                    'websitename':'teesuay',
-                    'success':'false',
-                    "start_time": str(time_start),
-                    'ds_id': postdata['ds_id'],
-                    "end_time": str(time_end),
-                    "detail": "wrong post id",
-                    "log_id": postdata['log_id'],
-                    "post_view": ""
-
-                }"""
             try:
                 posturl="http://www.teesuay.com/member/slide-property.php?post_id="+postdata['post_id']
                 r=self.httprequestObj.http_get(posturl)
