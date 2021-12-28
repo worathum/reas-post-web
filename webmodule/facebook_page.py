@@ -51,7 +51,7 @@ class facebook_page():
         post_url = ''
         post_id = ''
 
-        message_post = 'รหัสทรัพย์ : {}\n\n{}\n\n__________________________________________________________{}'.format(postdata['property_id'],postdata['post_description_th'],postdata['post_description_en'])
+        message_post = 'รหัสทรัพย์ : {}\n\n{}\n\n      _______________________________________________________________      \n\n{}'.format(postdata['property_id'],postdata['post_description_th'],postdata['post_description_en'])
         
         imgs_id = []
         for img in postdata['post_images']:
