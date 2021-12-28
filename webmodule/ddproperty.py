@@ -315,7 +315,7 @@ class ddproperty():
             matchObj1 = re.search(r'Email or Password not valid.', self.firefox.page_source)
             if matchObj or matchObj1:
                 success = "false"
-                detail = 'รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่'
+                detail = 'Email or Password not valid.'
                 #log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
             matchObj = re.search(r'มีข้อผิดพลาดเกิดขึ้น', self.firefox.page_source)
             matchObj2 = re.search(r'Too many login attempts', self.firefox.page_source)
