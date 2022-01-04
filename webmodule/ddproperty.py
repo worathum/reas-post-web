@@ -319,7 +319,8 @@ class ddproperty():
                 #log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
             matchObj = re.search(r'มีข้อผิดพลาดเกิดขึ้น', self.firefox.page_source)
             matchObj2 = re.search(r'Too many login attempts', self.firefox.page_source)
-            if matchObj or matchObj2:
+            matchObj3 = re.search(r'ขณะนี้เกิดปัญหาขัดข้องในระบบเซิร์ฟเวอร์ของเรา', self.firefox.page_source)
+            if matchObj or matchObj2 or matchObj3:
                 success = "false"
                 detail = 'มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง'
                 #log.warning('มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง')

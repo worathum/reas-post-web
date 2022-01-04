@@ -318,7 +318,8 @@ class ddproperty_plus():
                 #log.warning('รหัสผ่านของคุณไม่ถูกต้อง กรุณาลองใส่รหัสที่ถูกต้องอีกครั้ง หรือกดปุ่ม "ลืมรหัสผ่าน" เพื่อทำการตั้งรหัสใหม่')
             matchObj = re.search(r'มีข้อผิดพลาดเกิดขึ้น', self.firefox.page_source)
             matchObj2 = re.search(r'Too many login attempts', self.firefox.page_source)
-            if matchObj or matchObj2:
+            matchObj3 = re.search(r'ขณะนี้เกิดปัญหาขัดข้องในระบบเซิร์ฟเวอร์ของเรา', self.firefox.page_source)
+            if matchObj or matchObj2 or matchObj3:
                 success = "false"
                 detail = 'มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง'
                 #log.warning('มีข้อผิดพลาดเกิดขึ้น โปรดลองใหม่อีกครั้งในภายหลัง')
@@ -1647,29 +1648,31 @@ class ddproperty_plus():
                 WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
                 WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
                 time.sleep(2)
-                try:
-                    WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/div[3]/div/div/div[2]/div/div[1]/div[1]/div[4]/div/div/ul/li[2]/div/div/div[2]/p'))).text
-                except:
+                matchObj = re.search(r'https://agentnet.ddproperty.com/create-listing/detail/{}'.format(postdata['post_id']), self.firefox.page_source)
+                if not matchObj:
                     try:
-                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter"]/div'))).click()
-                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter-popper"]/div/ul/li[3]'))).click()
-                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
-                        time.sleep(0.5)
-                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
-                        time.sleep(2)
-                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="listing-management-component"]/div/div[3]/div/div/div[2]/div/div/div[1]/div[3]/div/div[2]/button'))).click()
-                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[5]/div[3]/div/div[3]/div[2]'))).click()
-                        time.sleep(1)
-                        webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
-                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter"]/div'))).click()
-                        WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter-popper"]/div/ul/li[1]'))).click()
-                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
-                        time.sleep(0.5)
-                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
-                        time.sleep(2)
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/div[3]/div/div/div[2]/div/div[1]/div[1]/div[4]/div/div/ul/li[2]/div/div/div[2]/p'))).text
                     except:
-                        detail = 'Post id not found.'
-                
+                        try:
+                            WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter"]/div'))).click()
+                            WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter-popper"]/div/ul/li[3]'))).click()
+                            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
+                            time.sleep(0.5)
+                            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
+                            time.sleep(2)
+                            WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="listing-management-component"]/div/div[3]/div/div/div[2]/div/div/div[1]/div[3]/div/div[2]/button'))).click()
+                            WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[5]/div[3]/div/div[3]/div[2]'))).click()
+                            time.sleep(1)
+                            webdriver.ActionChains(self.firefox).send_keys(Keys.ESCAPE).perform()
+                            WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter"]/div'))).click()
+                            WebDriverWait(self.firefox, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="quick-status-filter-popper"]/div/ul/li[1]'))).click()
+                            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(postdata['post_id'])
+                            time.sleep(0.5)
+                            WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="listing-management-component"]/div/form/div/div/div[1]/div/input'))).send_keys(Keys.RETURN)
+                            time.sleep(2)
+                        except:
+                            detail = 'Post id not found.'
+
                 auto_boost = ''
                 try:
                     auto_boost = WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="autorepost-cta-{}"]/span[1]/div'.format(postdata['post_id'])))).text
@@ -1683,13 +1686,13 @@ class ddproperty_plus():
                     else:
                         WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="autorepost-cta-{}"]/span[1]/div'.format(postdata['post_id'])))).click()
                         WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[2]/div/button[3]'))).click()
-                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="tata-end-date"]'))).click()
+                        WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.ID, 'autoRepostRecurring'))).click()
                         for i in range(11):
                             WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[1]/div[2]'))).click()
                             time.sleep(0.5)
                         for i in range(7):
-                            if WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div[3]/div/table/tbody/tr[1]/td[{}]'.format(i+1)))).text =='1':
-                                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div[3]/div/table/tbody/tr[1]/td[{}]'.format(i+1)))).click()
+                            if WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[{}]'.format(i+1)))).text =='1':
+                                WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[2]/div/div/div[3]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[{}]'.format(i+1)))).click()
                                 break
                         time.sleep(2)
                         WebDriverWait(self.firefox, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[3]/div/div[3]/div[2]'))).click()
