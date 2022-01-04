@@ -141,7 +141,9 @@ class ddproperty():
             'submit': 'submit',
             'fromModal': '1'          
         }
+        print(11111111111111111111)
         r = self.scraper.post('https://www.ddproperty.com/login', data=data)
+        print(r)
         r = self.scraper.get('https://agentnet.ddproperty.com/v2/listing_management')
         
         if r.url == 'https://agentnet.ddproperty.com/v2/listing_management':
