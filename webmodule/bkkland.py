@@ -61,30 +61,30 @@ class bkkland():
 
         # start process
         #
-        
-        r = self.httprequestObj.http_post(url, data=data_login)
-        print(r.status_code)
-
-        r = self.httprequestObj.http_get("http://www.bkkland.com/member")
-        print(r.status_code)
-
         detail = ""
         device_id = ""
         mem_id = ""
         mem_status = False
         success = False
-        soup_web = BeautifulSoup(r.content,'lxml')
-        if soup_web:
-            try:
-                verify = soup_web.find("div", attrs={"class":"personal_info"}).text
-            except:
-                pass
-            if postdata['user'] in verify.split():
-                success = True
-                mem_status = True
-                detail = "เข้าสู่ระบบสำเร็จ"
-            else:
-                detail = "เข้าสู่ระบบล้มเหลว"
+        
+        r = self.httprequestObj.http_post(url, data=data_login)
+        if r.text == 'ไม่พบข้อมูลสมาชิกค่ะ':
+            detail = 'ไม่พบข้อมูลสมาชิกค่ะ'
+        else:
+            r = self.httprequestObj.http_get("http://www.bkkland.com/member")
+            print(r.status_code)
+            soup_web = BeautifulSoup(r.content,'lxml')
+            if soup_web:
+                try:
+                    verify = soup_web.find("div", attrs={"class":"personal_info"}).text
+                except:
+                    pass
+                if postdata['user'] in verify.split():
+                    success = True
+                    mem_status = True
+                    detail = "เข้าสู่ระบบสำเร็จ"
+                else:
+                    detail = "เข้าสู่ระบบล้มเหลว"
 
                 
 
