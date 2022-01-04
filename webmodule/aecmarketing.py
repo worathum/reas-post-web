@@ -4,6 +4,7 @@ from .lib_httprequest import *
 from bs4 import BeautifulSoup
 import datetime
 import sys
+from time import sleep
 
 class aecmarketing():
     name = 'aecmarketing'
@@ -104,14 +105,22 @@ class aecmarketing():
             if (postdata['addr_province'] in i.text) and (postdata['addr_district'] in i.text):
                 province_id = i['value']
                 break
+        
+        extra_subdistrict = {
+            '29': '178',
+            '45': '225'
+        }
 
-        r = self.httprequestObj.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/{}'.format(province_id))
-        if r.text != '[]':
-            response = r.json()
-            for i in response:
-                if postdata['addr_sub_district'] in i['subdistrict_name']:
-                    subdistrict_id = i['subdistrict_id']
-                    break
+        if province_id in extra_subdistrict:
+            subdistrict_id = extra_subdistrict[province_id]
+        else:
+            r = self.httprequestObj.http_get('https://www.aecmarketinghome.com/th/post/get_subdistrict/{}'.format(province_id))
+            if r.text != '[]':
+                response = r.json()
+                for i in response:
+                    if postdata['addr_sub_district'] in i['subdistrict_name']:
+                        subdistrict_id = i['subdistrict_id']
+                        break
 
         if province_id == '' or subdistrict_id == '':
             detail = 'This subdistrict does not exist on this site.'
