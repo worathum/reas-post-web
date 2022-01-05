@@ -132,7 +132,7 @@ class ddproperty():
     
     def test_login_only(self,postdata):
         time_start = datetime.datetime.utcnow()
-
+        r = self.scraper.get('https://www.ddproperty.com/logout')
         success = False
         detail = 'Something wrong'
         data = {
@@ -141,9 +141,7 @@ class ddproperty():
             'submit': 'submit',
             'fromModal': '1'          
         }
-        print(11111111111111111111)
         r = self.scraper.post('https://www.ddproperty.com/login', data=data)
-        print(r)
         r = self.scraper.get('https://agentnet.ddproperty.com/v2/listing_management')
         
         if r.url == 'https://agentnet.ddproperty.com/v2/listing_management':
@@ -360,7 +358,11 @@ class ddproperty():
         #
         response = {}
         if postdata['action'] == 'test_login':
-            response = self.test_login_only(postdata)
+            try:
+                response = self.test_login_only(postdata)
+            except:
+                datahandled = self.postdata_handle(postdata)
+                response = self.test_login_headless(datahandled)
         else:
             datahandled = self.postdata_handle(postdata)
             # if datahandled['action'] == 'create_post' or datahandled['action'] == 'edit_post':
