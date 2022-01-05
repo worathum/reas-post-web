@@ -254,11 +254,12 @@ class bkkland():
                 else:
                     postdata['captcha'] = g_response
 
+            os.remove(path_img)
+
         # replace : space and break the line
         post_title_th = ' '.join(postdata['post_title_th'].split())
         des_re = postdata['post_description_th'].replace("\r\n", "<p>&nbsp;</p>")
 
-        os.remove(path_img)
         datapost = {
             'f_topic' : (None, post_title_th),
             'f_condition' : (None, int(pd_condition[str(postdata['listing_type'])])),
