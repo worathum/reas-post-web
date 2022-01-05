@@ -230,29 +230,29 @@ class bkkland():
                     break
 
         postdata['captcha'] = ""  
-
-        r = self.httprequestObj.http_get(url_capcha)
-        if r.status_code==200:
-            soup = BeautifulSoup(r.text, features=self.parser)
-            img_url = soup.find_all('img')
-            for link in img_url:
-                link_cap = link.get("src")
-                # if web is captcha get img and process
-                if link_cap == "http://www.bkkland.com/post/captcha":
-                    captcha_img = self.httprequestObj.http_get(link_cap, stream=True)
-            
-            path_img = os.getcwd() + '/imgtmp/imagecaptcha.jpg'
-            with open(path_img,'wb') as local_file :
-                for block in captcha_img.iter_content(1024):
-                    if not block:
-                        break
-                    local_file.write(block)
-            
-            g_response = captcha.imageCaptcha(path_img)
-            if g_response[0]==1:
-                postdata['captcha'] = g_response[1]
-            else:
-                postdata['captcha'] = g_response
+        if url_capcha == "http://www.bkkland.com/post/form":
+            r = self.httprequestObj.http_get(url_capcha)
+            if r.status_code==200:
+                soup = BeautifulSoup(r.text, features=self.parser)
+                img_url = soup.find_all('img')
+                for link in img_url:
+                    link_cap = link.get("src")
+                    # if web is captcha get img and process
+                    if link_cap == "http://www.bkkland.com/post/captcha":
+                        captcha_img = self.httprequestObj.http_get(link_cap, stream=True)
+                
+                path_img = os.getcwd() + '/imgtmp/imagecaptcha.jpg'
+                with open(path_img,'wb') as local_file :
+                    for block in captcha_img.iter_content(1024):
+                        if not block:
+                            break
+                        local_file.write(block)
+                
+                g_response = captcha.imageCaptcha(path_img)
+                if g_response[0]==1:
+                    postdata['captcha'] = g_response[1]
+                else:
+                    postdata['captcha'] = g_response
 
         # replace : space and break the line
         post_title_th = ' '.join(postdata['post_title_th'].split())
