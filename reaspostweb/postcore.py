@@ -24,7 +24,7 @@ try:
     import configs
     import subprocess
     import platform
-    time_update = time.strftime("%H%M%S")
+    time_update = time.strftime("%H%M")
 except ImportError:
     configs = {}
 if os.path.isdir('log') == False:
@@ -35,7 +35,7 @@ logging.basicConfig(level=logging.INFO, filename='log/app-' + str(datetime.date.
 
 # # new import using try be safe
 # work pip install 04:00:00
-if time_update == "040000":
+if time_update == "0400":
     try:
         logging.info("==============================================================================")
         logging.info("==============================================================================")
