@@ -22,6 +22,9 @@ import traceback
 
 try:
     import configs
+    import subprocess
+    import platform
+    time_update = time.strftime("%H%M%S")
 except ImportError:
     configs = {}
 if os.path.isdir('log') == False:
@@ -31,64 +34,45 @@ logging.basicConfig(level=logging.INFO, filename='log/app-' + str(datetime.date.
 # log = logging.getLogger()
 
 # # new import using try be safe
-# try:
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     logging.warning("*/*\**/*\**/*\**/*\**/*\*APP STARTING*/*\**/*\**/*\**/*\**/*\*") 
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     import subprocess
-#     import platform
+# work pip install 04:00:00
+if time_update == "040000":
+    try:
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.warning("*/*\**/*\**/*\**/*\**/*\*UPDATE STARTING*/*\**/*\**/*\**/*\**/*\*") 
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.warning("PULL GIT: IN PROGRESS") 
+        process_pull = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
+        output_pull = process_pull.communicate()[0]
+        logging.warning("PULL GIT: "+output_pull)
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
 
-#     # work pip install 00:00:00 - 08:00:00
-#     time_now = datetime.datetime.now().strftime("%H")
-#     if time_now < "08":
-#         if platform.system() == "Linux":
-#             requi = 'requirements_linux.txt'
-#         elif platform.system() == "windows":
-#             requi = 'requirements_windoes.txt'
-        
-#         logging.info("==============================================================================")
-#         logging.info("==============================================================================")
-#         logging.warning("PIP INSTALL: IN PROGRESS") 
-#         proces_pip = subprocess.call(['pip', 'install', '-r', requi])
-#         logging.warning("PIP INSTALL: COMPLETE")
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     logging.warning("PULL GIT: IN PROGRESS") 
-#     process_pull = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
-#     output_pull = process_pull.communicate()[0]
-#     logging.warning("PULL GIT: COMPLETE")
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-
-#     logging.warning("RESTART SERVER: IN PROGRESS") 
-#     bashCommand = "pm2 restart pm_config.json"
-#     process_pull = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-#     output_server, error_server = process_pull.communicate()
-#     logging.warning("RESTART SERVER: COMPLETE") 
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-# except:
-#     try:
-#         logging.info("==============================================================================")
-#         logging.info("==============================================================================")
-#         if time_now < "08":
-#             logging.error("PIP INSTALL: ERROR") 
-#             logging.warning("CODE: ERROR")
-#         if output_pull:
-#             logging.error("PULL GIT : ERROR")
-#             logging.warning("CODE: {}".format(output_pull))
-#         if output_server:
-#             logging.error("RESTART SERVER : ERROR")
-#             logging.warning("CODE: {} - {}".format(output_server, error_server))
-#         logging.info("==============================================================================")
-#         logging.info("==============================================================================")
-#     except:
-#         pass
-#     pass
+        logging.warning("RESTART SERVER: IN PROGRESS") 
+        process_restart = subprocess.run(["pm2", "restart", "pm_config.json"])
+        logging.warning("RESTART SERVER: "+process_restart) 
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+    except:
+        try:
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+            if output_pull:
+                logging.error("PULL GIT : ERROR")
+                logging.warning("CODE: "+output_pull))
+            if output_server:
+                logging.error("RESTART SERVER : ERROR")
+                logging.warning("CODE: "+process_restart) )
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+        except:
+            pass
+        pass
 
 
 def deEmojify(text):
@@ -430,7 +414,24 @@ class postcore():
                     response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
-                    logging.error('IMPORT ERROR %s',str(e))
+                    import_error = 'IMPORT ERROR %s',str(e)
+                    logging.error(import_error)
+                    if import_error:
+                        try:
+                            logging.info("==============================================================================")
+                            logging.info("==============================================================================")
+
+                            logging.warning("RESTART SERVER: IN PROGRESS") 
+                            process_restart = subprocess.run(["pm2", "restart", "pm_config.json"])
+                            logging.warning("RESTART SERVER: "+process_restart) 
+                            logging.info("==============================================================================")
+                            logging.info("==============================================================================")
+                        except:
+                            if output_server:
+                                logging.error("RESTART SERVER : ERROR")
+                                logging.warning("CODE: "+process_restart)
+                                logging.info("==============================================================================")
+                                logging.info("==============================================================================")
                     continue
             all_start_time = datetime.datetime.utcnow()
 
