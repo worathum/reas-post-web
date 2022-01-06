@@ -42,6 +42,13 @@
             "url_web": "https://proppit.com/",
             "user": "iconnectproperty.ip@gmail.com",
             "pass": "Iconnect8888"
+        },
+        {
+            "ds_name": "prakardproperty",
+            "ref_id": "7",
+            "url_web": "http://www.prakardproperty.com/",
+            "user": "vinves.postweb@outlook.com",
+            "pass": "K78sb96abC69"
         }
     ]
 }

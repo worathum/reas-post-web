@@ -54,7 +54,8 @@ class prakardproperty():
                 res = self.httprequestObj.http_get("https://www.prakardproperty.com/member/account")
                 soup = BeautifulSoup(res.text, self.parser)
                 hit = soup.find("li", attrs={"class":"username"})
-                if hit == "ยินดีต้อนรับค่ะ คุณ":
+                check_login = hit.text.split(" ")
+                if check_login[0] == "ยินดีต้อนรับค่ะ":
                     success = True
                     detail = "Sucessful Registration"
                 else:
@@ -89,7 +90,8 @@ class prakardproperty():
         res = self.httprequestObj.http_get("https://www.prakardproperty.com/member/account")
         soup = BeautifulSoup(res.text, self.parser)
         hit = soup.find("li", attrs={"class":"username"})
-        if hit == "ยินดีต้อนรับค่ะ คุณ":
+        check_login = hit.text.split(" ")
+        if check_login[0] == "ยินดีต้อนรับค่ะ":
             success = True
             detail = 'Login successful'
         else:
@@ -136,6 +138,7 @@ class prakardproperty():
         success = False
         detail = 'Something wrong in this website.'
         post_id = ""
+        file_img = {}
 
         if action != 'create':
             post_id =  postdata['post_id']
@@ -203,11 +206,17 @@ class prakardproperty():
                 if add is not None:
                     prod_address += add + ","
             prod_address = prod_address[:-1]
+            dataempty = {
 
+            }
             datapost = {
                 'data[Properties][title]': postdata["post_title_th"],
                 'data[Properties][property_type_id]': propety_type[postdata['property_type']],
                 'data[Properties][property_post_type_id]': purposeId[postdata['listing_type']],
+                'data[Properties][sell_price]': "",
+                'data[Properties][unit_type_id1]': "",
+                'data[Properties][rental_price]': "",
+                'data[Properties][unit_type_id2]': "",
                 'data[Properties][size_square_metre]': postdata['floorarea_sqm'],
                 'data[Properties][land_size_rai]': postdata['land_size_rai'],
                 'data[Properties][land_size_ngan]': postdata['land_size_ngan'],
@@ -215,6 +224,12 @@ class prakardproperty():
                 'data[Properties][floor_no]': postdata['floor_level'],
                 'data[Properties][bedroom]': postdata['bed_room'],
                 'data[Properties][bathroom]': postdata['bath_room'],
+                'data[Properties][living_room]': "0",
+                'data[Properties][maid_room]': "0",
+                'data[Properties][parking_space]': "0",
+                'data[Properties][age_of_property]': "0",
+                'data[Properties][project_name]': "",
+                'data[Properties][project_id]': "",
                 'data[PropertyDetails][address]': prod_address,
                 'data[PropertyDetails][street]': postdata['addr_soi'],
                 'data[PropertyDetails][road]': postdata['addr_road'],
@@ -246,15 +261,15 @@ class prakardproperty():
 
                 try:
                     for i in postdata['post_images']:
-                        files = {'files[]': (i, open(i, "rb"), "image/jpeg")}
-                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
+                        file_img = [('files[]', (i, open(i, "rb"), "image/jpeg"))]
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=file_img)
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/updateimagelists/id:{}'.format(postdata['post_id']), data=dataempty)
                 except:
                     path_imgs = self.pull_imgs(postdata)
-                    for count in range(len(path_imgs)):
-                        files = {'files[]': (path_imgs[count], open(path_imgs[count], "rb"), "image/jpeg")}
-                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
-                    
-                r = self.httprequestObj.http_get('http://www.prakardproperty.com/filesupload/updateimagelists/id:{}'.format(postdata['post_id']))
+                    for i in path_imgs:
+                        file_img = [('files[]', (i, open(i, "rb"), "image/jpeg"))]
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=file_img)
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/updateimagelists/id:{}'.format(postdata['post_id']), data=dataempty)
                 soup = BeautifulSoup(r.content, 'html.parser')
                 img_item = soup.find_all("div", {"class": "item"})
                 img = []
@@ -274,15 +289,19 @@ class prakardproperty():
                 datapost['data[Properties][running_number]'] = upload_id
                 try:
                     for i in postdata['post_images']:
-                        files = {'files[]': (i, open(i, "rb"), "image/jpeg")}
-                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
+                        file_img = [('files[]', (i, open(i, "rb"), "image/jpeg"))]
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/temp/id:{}'.format(upload_id), data=datapost, files=file_img)
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/updatetemplists/running_number:{}'.format(upload_id), data=dataempty)
+
+
                 except:
                     path_imgs = self.pull_imgs(postdata)
-                    for count in range(len(path_imgs)):
-                        files = {'files[]': (path_imgs[count], open(path_imgs[count], "rb"), "image/jpeg")}
-                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
+                    for i in path_imgs:
+                        file_img = [('files[]', (i, open(i, "rb"), "image/jpeg"))]
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/temp/id:{}'.format(upload_id), data=datapost, files=file_img)
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/updatetemplists/running_number:{}'.format(upload_id), data=dataempty)
 
-                r = self.httprequestObj.http_get('http://www.prakardproperty.com/filesupload/updatetemplists/running_number:{}'.format(upload_id))
+
                 soup = BeautifulSoup(r.content, 'html.parser')
                 img_item = soup.find_all("div", {"class": "item"})
                 img = []

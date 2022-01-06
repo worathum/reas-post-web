@@ -696,6 +696,141 @@ class postcore():
             "web": {},
         }
 
+        # ===========================================================================
+        # store image in img tmp
+        # ===========================================================================
+        try:
+            allimages = datarequest["post_img_url_lists"]
+        except KeyError as e:
+            allimages = {}
+            # logging.warning(str(e))
+
+        for i in range(6):
+            dirtmp = 'imgupload_' + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
+            uuni = dirtmp.split('_')[1]
+            if os.path.isdir('imgtmp/' + dirtmp) == False:
+                try:
+                    os.mkdir("imgtmp/" + dirtmp)
+                    logging.info('image directory imgtmp/%s is created', dirtmp)
+                    time.sleep(0.2)
+                except:
+                    pass
+                break
+        # ===========================================================================
+        # ===========================================================================
+
+        datarequest['post_images'] = []
+        imgcount = 1
+        for imgurl in allimages:
+            try:
+                res = httprequestObj.http_get(imgurl, verify=False)
+                # logging.info('get image from url %s', imgurl)
+            except:
+                # logging.warning('http connection error %s', imgurl)
+                continue
+            if res.status_code == 200:
+                if int(res.headers['Content-Length']) > 0:
+                    if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png': # Please make the condition if there is no image, please send success false directly
+                        try:
+                            extension = res.headers['Content-Type'].split("/")[-1]
+                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension, 'wb') as f:
+                                f.write(res.content)
+                                f.close()
+                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension)
+                            imgcount = imgcount + 1
+                        except:
+                            pass
+                    elif res.headers['Content-Type'] == 'application/octet-stream':
+                        try:
+                            extension = 'jpeg'
+                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension, 'wb') as f:
+                                f.write(res.content)
+                                f.close()
+                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension)
+                            imgcount = imgcount + 1
+                        except:
+                            pass
+                    else:
+                        logging.error('Issue with image urls')
+                        weblists = datarequest['web']
+                        web = {}
+                        for webitem in weblists:
+                            web[webitem['ds_name']] = {
+                                "websitename": webitem['ds_name'],
+                                "success": "false",
+                                "detail": "ข้อมูลจากลิงค์รูปภาพของท่านมีประเภทที่ไม่สามารถดำเนินการในระบบได้ กรุณาตรวจสอบรูปภาพใหม่อีกครั้ง", #Your image url is not a proper content type.
+                                "start_time": datetime.datetime.utcnow(),
+                                "end_time": datetime.datetime.utcnow(),
+                                "usage_time": datetime.datetime.utcnow(),
+                                "ds_name": webitem['ds_name'],
+                                "ds_id": webitem['ds_id'],
+                                "account_type": "",
+                                "post_url": "",
+                                "post_id": "",
+                            }
+                            if 'log_id' in webitem:
+                                web[webitem['ds_name']]['log_id'] = webitem['log_id']
+                        return {
+                            "success": "true",
+                            "action": action,
+                            "web": web
+                        }
+                else:
+                    logging.error('Issue with image urls')
+                    weblists = datarequest['web']
+                    web = {}
+                    for webitem in weblists:
+                        web[webitem['ds_name']] = {
+                            "websitename": webitem['ds_name'],
+                            "success": "false",
+                            "detail": "ลิงค์รูปภาพของท่านไม่มีข้อมูลรูปภาพ กรุณาตรวจสอบรูปภาพอีกครั้ง", #There is no image in your data. Please kindly recheck.
+                            "start_time": datetime.datetime.utcnow(),
+                            "end_time": datetime.datetime.utcnow(),
+                            "usage_time": datetime.datetime.utcnow(),
+                            "ds_name": webitem['ds_name'],
+                            "ds_id": webitem['ds_id'],
+                            "account_type": "",
+                            "post_url": "",
+                            "post_id": "",
+                        }
+                        if 'log_id' in webitem:
+                            web[webitem['ds_name']]['log_id'] = webitem['log_id']
+                    return {
+                        "success": "true",
+                        "action": action,
+                        "web": web
+                    }  
+            else:
+                logging.error('Issue with image urls')
+                weblists = datarequest['web']
+                web = {}
+                for webitem in weblists:
+                    web[webitem['ds_name']] = {
+                        "websitename": webitem['ds_name'],
+                        "success": "false",
+                        "detail": "ไม่สามารถเชื่อมต่อลิงค์รูปภาพของท่านได้ กรุณาตรวจสอบรูปภาพใหม่อีกครั้ง", #Found 404 on your image link.
+                        "start_time": datetime.datetime.utcnow(),
+                        "end_time": datetime.datetime.utcnow(),
+                        "usage_time": datetime.datetime.utcnow(),
+                        "ds_name": webitem['ds_name'],
+                        "ds_id": webitem['ds_id'],
+                        "account_type": "",
+                        "post_url": "",
+                        "post_id": "",
+                    }
+                    if 'log_id' in webitem:
+                        web[webitem['ds_name']]['log_id'] = webitem['log_id']
+                return {
+                    "success": "true",
+                    "action": action,
+                    "web": web
+                }
+
+                # else:
+                    # logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
+            # else:
+                # logging.warning('image url response error %s', res.status_code)
+
         weblists = datarequest['web']
         del (datarequest['web'])
 
@@ -715,4 +850,8 @@ class postcore():
             webdata.update(datarequest)
             response["web"][websitename] = getattr(module_instance, action)(webdata)
 
+        # remove image tmp
+        if os.path.isdir('imgtmp/' + dirtmp) == True:
+            shutil.rmtree(os.path.abspath('imgtmp/' + dirtmp))
+            
         return response
