@@ -22,6 +22,7 @@ class prakardproperty():
 
         self.httprequestObj = lib_httprequest()
         self.primarydomain = 'http://www.prakardproperty.com/'
+        self.parser = 'html.parser'
         self.debug = 0
 
     def register_user(self, userdata):
@@ -32,6 +33,9 @@ class prakardproperty():
         passwd = userdata['pass']
         display_name = userdata['name_th']
         mobile = userdata['tel']
+
+        success = False
+        detail = "Error"
         
         datapost={
             'data[Members][email]':email,
@@ -39,22 +43,24 @@ class prakardproperty():
             'data[Members][re-password]':passwd,
             'data[Members][display_name]':display_name,
             'data[Members][mobile]': mobile,
-            'data[Members][accept_newsletter]' : 0
+            'data[Members][accept_newsletter]' : "0",
+            'data[MemberIncomingTypes][agent]' : "1"
         }
-        try:
-            r = self.httprequestObj.http_post('http://www.prakardproperty.com/register/save', data=datapost)
-            data = r.text
-            matchObj = re.search(r'/register/resentmail', data)
-            if matchObj:
-                success = "True"
-                detail = "Sucessful Registration"
-            else:
-                success = "False"
-                detail = "Not Registered"
-        except:
-            success = "True"
-            detail = "Sucessful Registration"
-
+        
+        r = self.httprequestObj.http_post('http://www.prakardproperty.com/register/save', data=datapost)
+        if r.status_code == 200:
+            r_login = self.test_login(userdata)
+            if r_login['success'] == True:
+                res = self.httprequestObj.http_get("https://www.prakardproperty.com/member/account")
+                soup = BeautifulSoup(res.text, self.parser)
+                hit = soup.find("li", attrs={"class":"username"})
+                if hit == "ยินดีต้อนรับค่ะ คุณ":
+                    success = True
+                    detail = "Sucessful Registration"
+                else:
+                    success = False
+                    detail = "Not Registered, Maybe email is already"
+    
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
@@ -62,6 +68,7 @@ class prakardproperty():
             "websitename": "prakardproperty",
             "success": success,
             'ds_id': userdata['ds_id'],
+            "usage_time": str(time_usage),
             "start_time": str(time_start),
             "end_time": str(time_end),
             "detail": detail,
@@ -79,7 +86,10 @@ class prakardproperty():
         }
         r = self.httprequestObj.http_post('http://www.prakardproperty.com/login/checkmember', data=datapost)
         
-        if r.url == 'http://www.prakardproperty.com/':
+        res = self.httprequestObj.http_get("https://www.prakardproperty.com/member/account")
+        soup = BeautifulSoup(res.text, self.parser)
+        hit = soup.find("li", attrs={"class":"username"})
+        if hit == "ยินดีต้อนรับค่ะ คุณ":
             success = True
             detail = 'Login successful'
         else:
@@ -125,6 +135,7 @@ class prakardproperty():
     def post_prop(self,action,postdata):
         success = False
         detail = 'Something wrong in this website.'
+        post_id = ""
 
         if action != 'create':
             post_id =  postdata['post_id']
@@ -233,12 +244,16 @@ class prakardproperty():
                     for i in img_item:
                         r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/deletepostimage/id:{}'.format(i.get('title')),data={})
 
-
-                path_imgs = self.pull_imgs(postdata)
-                for count in range(len(path_imgs)):
-                    files = {'files[]': (path_imgs[count], open(path_imgs[count], "rb"), "image/jpeg")}
-                    r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
-                
+                try:
+                    for i in postdata['post_images']:
+                        files = {'files[]': (i, open(i, "rb"), "image/jpeg")}
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
+                except:
+                    path_imgs = self.pull_imgs(postdata)
+                    for count in range(len(path_imgs)):
+                        files = {'files[]': (path_imgs[count], open(path_imgs[count], "rb"), "image/jpeg")}
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
+                    
                 r = self.httprequestObj.http_get('http://www.prakardproperty.com/filesupload/updateimagelists/id:{}'.format(postdata['post_id']))
                 soup = BeautifulSoup(r.content, 'html.parser')
                 img_item = soup.find_all("div", {"class": "item"})
@@ -257,11 +272,15 @@ class prakardproperty():
                     success == False
             else:
                 datapost['data[Properties][running_number]'] = upload_id
-                path_imgs = self.pull_imgs(postdata)
-                files = None
-                for count in range(len(path_imgs)):
-                    files = {'files[]': (path_imgs[count], open(path_imgs[count], "rb"), "image/jpeg")}
-                    r = self.httprequestObj.http_post('http://www.prakardproperty.com/upload/temp/id:{}'.format(upload_id), data=datapost, files=files)
+                try:
+                    for i in postdata['post_images']:
+                        files = {'files[]': (i, open(i, "rb"), "image/jpeg")}
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
+                except:
+                    path_imgs = self.pull_imgs(postdata)
+                    for count in range(len(path_imgs)):
+                        files = {'files[]': (path_imgs[count], open(path_imgs[count], "rb"), "image/jpeg")}
+                        r = self.httprequestObj.http_post('http://www.prakardproperty.com/filesupload/properties/id:{}'.format(postdata['post_id']), data=datapost, files=files)
 
                 r = self.httprequestObj.http_get('http://www.prakardproperty.com/filesupload/updatetemplists/running_number:{}'.format(upload_id))
                 soup = BeautifulSoup(r.content, 'html.parser')
@@ -461,7 +480,7 @@ class prakardproperty():
         post_url = ""
         post_modify_time = ""
         post_view = ""
-        post_found = "false"
+        post_found = False
         exists = False
         if test_login["success"] == True:
             post_title = postdata['post_title_th']
@@ -480,7 +499,7 @@ class prakardproperty():
                     post_url = "https://www.prakardproperty.com/property/show/"+post_id
                     post_modify_time = title_row.find('span', attrs={'class':'update'}).text[13:-2]
                     post_view = title_row.find('p', attrs={'class':'stat'}).text[7:]
-                    post_found = "true"
+                    post_found = True
                     success = True
                     detail = "post found successfully"
 
