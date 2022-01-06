@@ -175,18 +175,20 @@ class livingjoin():
             if postdata['addr_district'] in i:
                 district_id = i.split('"')[1]
                 break
-
-        get_subdistrict = {
-            'amphur_id': district_id,
-            'PH': '../../',
-            'andval': '0.33840354397483763'
-        }
-        r = self.httprequestObj.http_post('https://www.livingjoin.com/ajax/misc/set_district?amphur_id={}&PH=../../&andval=0.33840354397483763'.format(district_id), data=get_subdistrict)
-        
-        for i in (r.text).split('option'):
-            if postdata['addr_sub_district'] in i:
-                subdistrict_id = i.split('"')[1]
-                break
+        if district_id not in ['47']:
+            get_subdistrict = {
+                'amphur_id': district_id,
+                'PH': '../../',
+                'andval': '0.33840354397483763'
+            }
+            r = self.httprequestObj.http_post('https://www.livingjoin.com/ajax/misc/set_district?amphur_id={}&PH=../../&andval=0.33840354397483763'.format(district_id), data=get_subdistrict)
+            
+            for i in (r.text).split('option'):
+                if postdata['addr_sub_district'] in i:
+                    subdistrict_id = i.split('"')[1]
+                    break
+        else:
+            subdistrict_id = '231'
 
         if postdata['floor_level'] == '':
             postdata['floor_level'] = postdata['floor_total']
