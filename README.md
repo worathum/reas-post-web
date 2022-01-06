@@ -6,7 +6,6 @@ https://unix.stackexchange.com/questions/395316/install-firefox-quantum-in-debia
 install geckodriver
 cd /bin OR cd . # {home}
 sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
-
 wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-macos.tar.gz
 
 sudo tar -xvf geckodriver-v0.26.0-linux64.tar.gz
@@ -14,7 +13,7 @@ tar - xvf geckodriver-v0.26.0-macos.tar.gz
 
 sudo rm -f geckodriver-v0.26.0-linux64.tar.gz
 rm -f geckodriver-v0.26.0-macos.tar.gz
-4
+
 sudo chmod +x geckodriver
 
 install google chrome on ubuntu/debian
@@ -24,7 +23,6 @@ install chromedriver
 cd /bin OR cd . # {home}
 
 wget https://chromedriver.storage.googleapis.com/81.0.4044.69/chromedriver_linux64.zip
-
 wget https://chromedriver.storage.googleapis.com/97.0.4692.71/chromedriver_mac64.zip
 
 unzip chromedriver_linux64.zip
