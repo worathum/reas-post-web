@@ -166,6 +166,12 @@ class prakardproperty():
         soup = BeautifulSoup(r.content, 'html.parser')
         subdistrict = soup.find_all('option')
         try:
+            re_sub_district = [
+                "บางนาเหนือ",
+                "บางนาใต้",
+            ]
+            if postdata['addr_sub_district'] in re_sub_district:
+                postdata['addr_sub_district'] = "บางนา"
             subdistrict_id = [s for s in subdistrict if postdata['addr_sub_district'] in s][0].get('value')
             r = self.httprequestObj.http_post('http://www.prakardproperty.com/location/getsubdistrict_geo/mode:geomap/province_id:2/district_id:16/sub_district_id:{}'.format(subdistrict_id),data={})
             success = True
