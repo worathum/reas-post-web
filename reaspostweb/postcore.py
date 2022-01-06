@@ -22,8 +22,8 @@ import traceback
 
 try:
     import configs
-    import subprocess
-    import platform
+    # import subprocess
+    # import platform
     time_update = time.strftime("%H%M")
 except ImportError:
     configs = {}
@@ -36,6 +36,7 @@ logging.basicConfig(level=logging.INFO, filename='log/app-' + str(datetime.date.
 # # new import using try be safe
 # work pip install 04:00:00
 try:
+    time_update = time.strftime("%H%M")
     if time_update == "0400":
         logging.info("==============================================================================")
         logging.info("==============================================================================")
@@ -59,19 +60,6 @@ try:
         logging.info("==============================================================================")
         logging.info("==============================================================================")
 except:
-    try:
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
-        if output_pull:
-            logging.error("PULL GIT : ERROR")
-            logging.warning("CODE: "+output_pull))
-        if output_server:
-            logging.error("RESTART SERVER : ERROR")
-            logging.warning("CODE: "+process_restart) )
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
-    except:
-        pass
     pass
 
 
