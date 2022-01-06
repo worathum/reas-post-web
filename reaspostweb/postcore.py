@@ -404,22 +404,17 @@ class postcore():
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
                     import_error = 'IMPORT ERROR %s',str(e)
                     logging.error(import_error)
-                    if import_error:
-                        try:
-                            logging.info("==============================================================================")
-                            logging.info("==============================================================================")
+                    try:
+                        logging.info("==============================================================================")
+                        logging.info("==============================================================================")
 
-                            logging.warning("RESTART SERVER: IN PROGRESS") 
-                            process_restart = subprocess.run(["pm2", "restart", "pm_config.json"])
-                            logging.warning("RESTART SERVER: "+process_restart) 
-                            logging.info("==============================================================================")
-                            logging.info("==============================================================================")
-                        except:
-                            if output_server:
-                                logging.error("RESTART SERVER : ERROR")
-                                logging.warning("CODE: "+process_restart)
-                                logging.info("==============================================================================")
-                                logging.info("==============================================================================")
+                        logging.warning("RESTART SERVER: IN PROGRESS") 
+                        process_restart = subprocess.run(["pm2", "restart", "pm_config.json"])
+                        logging.warning("RESTART SERVER: "+process_restart) 
+                        logging.info("==============================================================================")
+                        logging.info("==============================================================================")
+                    except:
+                        pass
                     continue
             all_start_time = datetime.datetime.utcnow()
 
