@@ -136,6 +136,7 @@ class prakardproperty():
 
     def post_prop(self,action,postdata):
         success = False
+        post_url = ""
         detail = 'Something wrong in this website.'
         post_id = ""
         file_img = {}
@@ -314,13 +315,28 @@ class prakardproperty():
                 r = self.httprequestObj.http_post(url[:-1], data={})
                 datapost['propertyConfirm1'] = 'on'
                 r = self.httprequestObj.http_post_with_headers('http://www.prakardproperty.com/properties/addsave', data=datapost)
+
+
                 try:
                     soup = BeautifulSoup(r.content, 'html.parser')
                     post_id = str(soup.find("div", {"id": "content"}).find_all('a')[0].get('href')).split('show/')[1]
                     post_url = 'http://www.prakardproperty.com/property/show/'+post_id
                     success = True
                 except:
-                    success = False
+                    try:
+                        res = self.httprequestObj.http_get("'http://www.prakardproperty.com/member/posted")
+                        soup = BeautifulSoup(res.text, self.parser)
+                        hit = soup.find("h3")
+                        hit_title = hit.find("a")
+                        if hit_title.text == postdata["post_title_th"]:
+                            success = True
+                            post_id = hit_title.get("href").split("/")[3]
+                            post_url = 'http://www.prakardproperty.com/property/show/'+post_id
+                            success = True
+                            detail = "post success!"
+                    except:
+                        success = False
+                        detail = "post fail!"
 
         try:
             for f in path_imgs:
