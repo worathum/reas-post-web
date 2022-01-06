@@ -35,8 +35,8 @@ logging.basicConfig(level=logging.INFO, filename='log/app-' + str(datetime.date.
 
 # # new import using try be safe
 # work pip install 04:00:00
-if time_update == "0400":
-    try:
+try:
+    if time_update == "0400":
         logging.info("==============================================================================")
         logging.info("==============================================================================")
         logging.info("==============================================================================")
@@ -58,21 +58,21 @@ if time_update == "0400":
         logging.warning("RESTART SERVER: "+process_restart) 
         logging.info("==============================================================================")
         logging.info("==============================================================================")
+except:
+    try:
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        if output_pull:
+            logging.error("PULL GIT : ERROR")
+            logging.warning("CODE: "+output_pull))
+        if output_server:
+            logging.error("RESTART SERVER : ERROR")
+            logging.warning("CODE: "+process_restart) )
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
     except:
-        try:
-            logging.info("==============================================================================")
-            logging.info("==============================================================================")
-            if output_pull:
-                logging.error("PULL GIT : ERROR")
-                logging.warning("CODE: "+output_pull))
-            if output_server:
-                logging.error("RESTART SERVER : ERROR")
-                logging.warning("CODE: "+process_restart) )
-            logging.info("==============================================================================")
-            logging.info("==============================================================================")
-        except:
-            pass
         pass
+    pass
 
 
 def deEmojify(text):
