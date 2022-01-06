@@ -7,6 +7,7 @@ import json
 import requests
 import urllib.request
 import re
+import shutil
 
 
 
@@ -287,6 +288,9 @@ class bkkland():
 
         return datapost
 
+    def re_lastname_imgs(self, postdata):
+        for img in postdata['post_images']:
+            shutil.move(img, img+".jpg")
 
     def pull_imgs(self, postdata):
         files = {}
@@ -324,12 +328,27 @@ class bkkland():
         url = "http://www.bkkland.com/post/add"
         payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
         payload['process'] = "post_add"
-        files, path_imgs = self.pull_imgs(postdata)
-        r = self.httprequestObj.http_post(url, data=payload, files=files)
-        for f in path_imgs:
-            os.remove(f)
-        print(r.status_code)
 
+        files = {}
+        
+        try:
+            # on web upload .jpg only
+            self.re_lastname_imgs(postdata)
+            for i in range(len(postdata['post_images'])):
+                path_img = os.getcwd()+"/"+postdata['post_images'][i]+".jpg"
+                r = open(path_img, 'rb')
+                name = "photo{}".format(i+1)
+                files[name] = ("{}".format(path_img),r,"image/jpeg")
+
+            r = self.httprequestObj.http_post(url, data=payload, files=files)
+            for f in postdata['post_images']:
+                os.remove(f+".jpg")
+        except:
+            files, path_imgs = self.pull_imgs(postdata)
+            r = self.httprequestObj.http_post(url, data=payload, files=files)
+            for f in path_imgs:
+                os.remove(f)
+    
         success = False
         post_id = ""
         post_url = ""
