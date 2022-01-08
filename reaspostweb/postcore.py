@@ -22,9 +22,7 @@ import traceback
 
 try:
     import configs
-    # import subprocess
-    # import platform
-    time_update = time.strftime("%H%M")
+    import subprocess
 except ImportError:
     configs = {}
 if os.path.isdir('log') == False:
