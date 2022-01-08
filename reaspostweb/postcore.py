@@ -408,6 +408,7 @@ class postcore():
                     import_error = 'IMPORT ERROR %s',str(e)
                     logging.error(import_error)
                     try:
+                        import subprocess
                         logging.info("==============================================================================")
                         logging.info("==============================================================================")
                         logging.warning("RESTART SERVER: IN PROGRESS") 
