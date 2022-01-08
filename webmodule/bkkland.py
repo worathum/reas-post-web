@@ -413,39 +413,21 @@ class bkkland():
             r = self.httprequestObj.http_post(url, data=payload)
 
         success = False
-        url_post = ""
-        detail = ""
-        res_post = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list")
+        url_post = "http://www.bkkland.com/post/{}.html".format(postdata['post_id'])
+        detail = "Error"
+        res_post = self.httprequestObj.http_get(url_post)
         soup = BeautifulSoup(res_post.text, self.parser)
-        # loop find all title post (first page)
-        search_post = None
-        for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
-            search_post = "found"
-            soup_ele = BeautifulSoup(str(hit), self.parser)
-            try:
-                url_post = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                postdata = re.findall("\d+", url_post)[0]
-                if postdata:
-                    detail = "delete False"
-                    success = False
-            except:
-                url_post = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                postdata = re.findall("\d+", url_post)[0]
-                print(type(postdata), type(postdata['post_id']))
-                if postdata == postdata['post_id']:
-                    detail = "delete complete - post_id : {}".format(postdata)
-                    success = True
+        hit = soup.find("div", attrs={"class":"cbody"})
+        if hit != None:
+            split = hit.text.split("\n")
+            id_post = split[1].split(" ")
+            if str(id_post[2]) == str(postdata['post_id']):
+                detail = "post found, delete error"
+                success = False
+        if str(res_post.url) == 'http://www.bkkland.com/error404':
+            detail = "Delete post success!!"
+            success = True
         
-        if search_post == None:
-            for hit in soup.find_all("td", attrs={"colspan":"6"}):
-                soup_ele = BeautifulSoup(str(hit), self.parser)
-                detail = soup_ele.text
-                success = True
-        else:
-            if url_post:
-                detail = "post_id wrong!"
-            else:
-                detail = "error"
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
