@@ -5,7 +5,6 @@ import datetime
 import sys
 import json
 import requests
-import urllib.request
 import re
 import shutil
 
@@ -169,7 +168,7 @@ class bkkland():
 
 
 
-    def datapost_details(self, postdata, url_capcha):
+    def datapost_details(self, postdata, action):
 
 
         pd_condition = {
@@ -234,8 +233,8 @@ class bkkland():
                     break
 
         postdata['captcha'] = ""  
-        if url_capcha == "http://www.bkkland.com/post/form":
-            r = self.httprequestObj.http_get(url_capcha)
+        if action == "create":
+            r = self.httprequestObj.http_get("http://www.bkkland.com/post/form")
             if r.status_code==200:
                 soup = BeautifulSoup(r.text, features=self.parser)
                 img_url = soup.find_all('img')
@@ -328,7 +327,7 @@ class bkkland():
             return test_login
 
         url = "http://www.bkkland.com/post/add"
-        payload = self.datapost_details(postdata, 'http://www.bkkland.com/post/form')
+        payload = self.datapost_details(postdata, 'create')
         payload['process'] = "post_add"
 
         files = {}
@@ -514,7 +513,7 @@ class bkkland():
             # start edit_post            
             url_edit = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
             url_api = 'http://www.bkkland.com/post/update'
-            payload = self.datapost_details(postdata, url_edit)
+            payload = self.datapost_details(postdata, "edit")
             payload['process'] = "edit_post"
             payload["post_id"] = post_id
             payload["f_activated"] = (None, "Y")
@@ -558,52 +557,136 @@ class bkkland():
             "detail": detail,
         }
 
+    def datapost_details_boost(self, postdata):
+
+        url_form = 'http://www.bkkland.com/post/form/edit?id={}'.format(postdata['post_id'])
+        res = self.httprequestObj.http_get(url_form)
+        soup = BeautifulSoup(res.text, self.parser)
+
+        postdetails = {}
+        for hit in soup.find_all("input", attrs={"class":"txtinput required"}):
+            if hit['name'] == 'f_topic':
+                postdetails['f_topic'] = hit["value"] 
+            if hit['name'] == 'f_name':
+                postdetails['f_name'] = hit["value"]
+            if hit['name'] == 'f_phone':
+                postdetails['f_phone'] = hit["value"]
+        
+        for hit in soup.find_all("input", attrs={"name":"f_condition"}):
+            try:
+                if hit['checked']:
+                    postdetails['f_condition'] = hit['value']
+            except Exception as e:
+                pass
+
+        for hit in soup.find_all("select", attrs={"class":"txtinput"}):
+            if hit['name'] == 'f_typepost':
+                for option in hit:
+                    try:
+                        if option['selected']:
+                            postdetails['f_typepost'] = option['value']
+                    except Exception as e:
+                        pass
+
+            if hit['name'] == 'f_pricetype':
+                for option in hit:
+                    try:
+                        if option['selected']:
+                            postdetails['f_pricetype'] = option['value']
+                    except Exception as e:
+                        pass
+        
+        for hit in soup.find_all("div", attrs={"id":"main-content"}):
+            for script in hit:
+                li = list(str(script).split(" "))
+                for data in li:
+                    if data == 'amphur':
+                        num_province = li[li.index(data)-1]
+                        num_amphur = li[li.index(data)+2]
+                        num_province_re = num_province.replace(",", "")
+                        num_amphur_re = num_amphur.replace("}),\n\t\t\t\tasync:", "")
+                        postdetails['f_province'] = num_province_re
+                        postdetails['f_amphur'] = num_amphur_re
+                        break
+        
+        for hit in soup.find_all("input", attrs={"class":"txtinput"}):
+            if hit['name'] == 'f_land_area':
+                postdetails['f_land_area'] = hit["value"]
+            if hit['name'] == 'f_price':
+                postdetails['f_price'] = hit["value"]
+            if hit['name'] == 'f_email':
+                postdetails['f_email'] = hit["value"]
+        
+
+        postdetails['f_journey'] = soup.find("textarea", attrs={"id":"f_journey"}).text
+        postdetails['f_mhtml'] = soup.find("textarea", attrs={"id":"f_mhtml"}).text
+
+
+        datapost = {
+            'f_activated' : (None, "Y"),
+            'f_topic' : (None, postdetails['f_topic']),
+            'f_condition' : (None, int(postdetails['f_condition'])),
+            'f_typepost' : (None, int(postdetails['f_typepost'])),
+            'f_province' : (None, postdetails['f_province']),
+            'f_amphur' : (None, postdetails['f_amphur']),
+            'f_district' : (None, ""),
+            'f_land_area' : (None, postdetails['f_land_area']),
+            'f_price_accept' : (None, "Y"),
+            'f_price' : (None, postdetails['f_price']),
+            'f_pricetype' : (None, "1"),
+            'f_journey' : (None, postdetails['f_journey']),
+            'f_mhtml' : (None, postdetails['f_mhtml']),
+            'f_picfake1' : (None, "fakepath"),
+            'picfile1' : (None, ""),
+            'f_name' : (None, postdetails['f_name']),
+            'f_phone' : (None, postdetails['f_phone']),
+            'f_email' : (None, postdetails['f_email']),
+            'process' : (None, "edit_post"),
+            'post_id' : (None, postdata['post_id']),
+            'lat_value' : (None, ""),
+            'lon_value' : (None, ""),
+            'zoom_value' : (None, "13"),
+            'go' : (None, "แก้ไขประกาศ"),
+        }
+
+        return datapost
+
+
+
     def boost_post(self, postdata):
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
 
         test_login = self.test_login(postdata)
-
+        success = False
+        detail = "update fail"
 
         if test_login['success'] == True:
-            url_form = 'http://www.bkkland.com/post/form/edit?id={}'.format(postdata['post_id'])
             url_api = 'http://www.bkkland.com/post/update'
-            payload = self.datapost_details(postdata, url_form)
-            payload['process'] = "edit_post"
-            payload["post_id"] = postdata['post_id']
-            payload["f_activated"] = (None, "Y")
-            payload["go"] = (None, "แก้ไขประกาศ")
+            payload = self.datapost_details_boost(postdata)
 
             r = self.httprequestObj.http_post_with_headers(url_api, data=payload)
             print(r.status_code)
 
-            success = False
-            detail = ""
-            url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(postdata['post_id'])
-            res_complete = self.httprequestObj.http_get(url_update)
+            url_check_title = "http://www.bkkland.com/post/your_list?page=1"
+            res_complete = self.httprequestObj.http_get(url_check_title)
             soup = BeautifulSoup(res_complete.text, self.parser)
-            for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
-                soup_ele = BeautifulSoup(str(hit), self.parser)
-                try:
-                    text_update = soup_ele.find("script", attrs={"type":"text/javascript"})
-                    mystr = str(text_update)
-                    # if != -1 is finded
-                    if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
-                        detail = "update complete"
-                        success = True
+            # find first page
+            url_first = soup.find("a", attrs={"class":"link_blue14_bu"})['href']
+            post_id = re.findall("\d+", url_first)[0]
 
-                except:
-                    detail = "update False"
-                    success = False
+            if postdata['post_id'] == post_id:
+                success = True
+                detail = "update complete"
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
         return {
             "success": success,
-            "usage_time": time_usage,
-            "start_time": time_start,
-            "end_time": time_end,
+            "usage_time": str(time_usage),
+            "start_time": str(time_start),
+            "end_time": str(time_end),
             "detail": detail,
             "log_id": postdata['log_id'],
             "ds_id": postdata['ds_id'],
