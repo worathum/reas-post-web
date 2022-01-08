@@ -18,11 +18,8 @@ import time
 import traceback
 
 
-
-
 try:
     import configs
-    import subprocess
 except ImportError:
     configs = {}
 if os.path.isdir('log') == False:
@@ -31,34 +28,41 @@ logging.basicConfig(level=logging.INFO, filename='log/app-' + str(datetime.date.
 # logging.config.dictConfig(getattr(configs, 'logging_config', {}))
 # log = logging.getLogger()
 
-# # new import using try be safe
-# work pip install 04:00:00
-try:
-    time_update = time.strftime("%H%M")
-    if time_update == "0400":
+def update():
+    # # new import using try be safe
+    # work pip install 04:00:00 GMT+7 (SERVER GMT-7) 
+    try:
         logging.info("==============================================================================")
         logging.info("==============================================================================")
+        logging.warning("*/*\**/*\**/*\**/*\**/*\*CHECK UPDATE STARTING*/*\**/*\**/*\**/*\**/*\*") 
         logging.info("==============================================================================")
         logging.info("==============================================================================")
-        logging.warning("*/*\**/*\**/*\**/*\**/*\*UPDATE STARTING*/*\**/*\**/*\**/*\**/*\*") 
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
-        logging.warning("PULL GIT: IN PROGRESS") 
-        process_pull = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
-        output_pull = process_pull.communicate()[0]
-        logging.warning("PULL GIT: "+output_pull)
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
+        import subprocess
+        time_update = time.strftime("%H%M")
+        # TH time update 01:00:00 - 04:00:00
+        time_pack = list(range(1800, 2100))
+        if int(time_update) in time_pack:
+            logging.warning("PULL GIT: IN PROGRESS") 
+            process_pull = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
+            output_pull = process_pull.communicate()[0]
+            logging.warning("PULL GIT: "+str(output_pull))
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+            logging.warning("RESTART SERVER: IN PROGRESS") 
+            process_restart = subprocess.run(["pm2", "restart", "pm_config.json"])
+            logging.warning("RESTART SERVER: "+str(process_restart)) 
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+            logging.warning("*/*\**/*\**/*\**/*\**/*\*UPDATE COMPLETE*/*\**/*\**/*\**/*\**/*\*") 
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+        else:
+            logging.warning("*/*\**/*\**/*\**/*\**/*\*NO UPDATE*/*\**/*\**/*\**/*\**/*\*") 
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+    except Exception as e:
+        logging.critical(e, exc_info=True)
 
-        logging.warning("RESTART SERVER: IN PROGRESS") 
-        process_restart = subprocess.run(["pm2", "restart", "pm_config.json"])
-        logging.warning("RESTART SERVER: "+process_restart) 
-        logging.info("==============================================================================")
-        logging.info("==============================================================================")
-except:
-    pass
 
 
 def deEmojify(text):
@@ -81,6 +85,7 @@ class postcore():
         self.list_module = getattr(configs, 'list_module', [])
         self.list_action = getattr(configs, 'list_action', [])
         self.encoding = 'utf-8'
+        update()
         logging.info('load app config success.')
 
 
@@ -405,14 +410,13 @@ class postcore():
                     try:
                         logging.info("==============================================================================")
                         logging.info("==============================================================================")
-
                         logging.warning("RESTART SERVER: IN PROGRESS") 
                         process_restart = subprocess.run(["pm2", "restart", "pm_config.json"])
-                        logging.warning("RESTART SERVER: "+process_restart) 
+                        logging.warning("RESTART SERVER: "+str(process_restart))
                         logging.info("==============================================================================")
                         logging.info("==============================================================================")
-                    except:
-                        pass
+                    except Exception as ex:
+                        logging.critical(ex, exc_info=True)
                     continue
             all_start_time = datetime.datetime.utcnow()
 
