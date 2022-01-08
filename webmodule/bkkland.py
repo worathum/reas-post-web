@@ -204,18 +204,21 @@ class bkkland():
         if postdata['property_type'] == '1' or postdata['property_type'] == '7':
             land_area = "{}".format(sqm)
         else:
-            if postdata['land_size_rai'] != "":
-                land_area += " "+rai
-
-            if postdata['land_size_ngan'] != "":
-                land_area += " "+ngan
-
+            if postdata['floorarea_sqm'] != "":
+                land_area += " "+sqm
+            
             if postdata['land_size_wa'] != "":
                 land_area += " "+wa
 
-            if postdata['floorarea_sqm'] != "":
-                land_area += " "+sqm
+            if postdata['floorarea_sqm'] == "" and postdata['land_size_wa'] == "":
+                if postdata['land_size_rai'] != "":
+                    land_area += " "+rai
 
+                if postdata['land_size_ngan'] != "":
+                    land_area += " "+ngan
+            
+            else:
+                land_area = "0"
 
         province_id = ''
         amphur_id = ''
@@ -283,7 +286,6 @@ class bkkland():
             'f_name' : (None, postdata['name']),
             'f_phone' : (None, postdata['mobile']),
             'f_email' : (None, postdata['email']),
-
         }
 
         return datapost
