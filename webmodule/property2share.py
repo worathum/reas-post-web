@@ -392,24 +392,6 @@ class property2share():
         if login['success'] == False:
             return login
 
-        check_posted = self.search_post(postdata)
-
-        if check_posted['success'] == False:
-            success = False
-            time_end = datetime.utcnow()
-            detail = 'This Post is not created by user'
-            return {
-                "success": success,
-                "time_usage": str(time_end - time_start),
-                "start_time": str(time_start),
-                "end_time": str(time_end),
-                "detail": detail,
-                'ds_id': postdata['ds_id'],
-                "log_id": log_id,
-                "post_id": postdata["post_id"],
-                "websitename": "property2share"
-            }
-
         post_id = postdata['post_id']
         #Get request On the Delete Link
         response = self.httprequestObj.http_get('https://www.property2share.com/pageuser/delete_publish.php?type=1&id='+ str(post_id) + '&flag=0')
