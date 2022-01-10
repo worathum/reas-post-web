@@ -81,22 +81,25 @@ class prakardproperty():
 
         success = False
         detail = 'Login unsuccess'
-        datapost = {
-            'login_email' : postdata['user'],
-            'login_password' : postdata['pass']
-        }
-        r = self.httprequestObj.http_post('http://www.prakardproperty.com/login/checkmember', data=datapost)
-        
-        res = self.httprequestObj.http_get("https://www.prakardproperty.com/member/account")
-        soup = BeautifulSoup(res.text, self.parser)
-        hit = soup.find("li", attrs={"class":"username"})
-        check_login = hit.text.split(" ")
-        if check_login[0] == "ยินดีต้อนรับค่ะ":
-            success = True
-            detail = 'Login successful'
+        if '@' not in postdata['user']:
+            detail = 'This website require email for login'
         else:
-            success = False
-            detail = 'email and password ผิดพลาด, หรือท่านอาจยังไม่ได้ทำการยืนยันตัวตนทางอีเมล'
+            datapost = {
+                'login_email' : postdata['user'],
+                'login_password' : postdata['pass']
+            }
+            r = self.httprequestObj.http_post('http://www.prakardproperty.com/login/checkmember', data=datapost)
+            
+            res = self.httprequestObj.http_get("https://www.prakardproperty.com/member/account")
+            soup = BeautifulSoup(res.text, self.parser)
+            hit = soup.find("li", attrs={"class":"username"})
+            check_login = hit.text.split(" ")
+            if check_login[0] == "ยินดีต้อนรับค่ะ":
+                success = True
+                detail = 'Login successful'
+            else:
+                success = False
+                detail = 'email and password ผิดพลาด, หรือท่านอาจยังไม่ได้ทำการยืนยันตัวตนทางอีเมล'
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
