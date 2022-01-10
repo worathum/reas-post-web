@@ -74,7 +74,7 @@ class taladx():
         data['answer'] = ans
         data['hiddenanswer'] = ans
 
-        success = "false"
+        success = False
         detail = ""
 
         if data['email'] == "":
@@ -94,10 +94,10 @@ class taladx():
                 response = self.httprequestObj.http_post('http://www.taladx.com/register.php', data = data, headers = headers)
                 #if response.text.find("มีอยู่ในระบบแล้ว") != -1:
                 if response.url == 'http://www.taladx.com/register.php':
-                    success = "false"
+                    success = False
                     detail = "Email Already registered"
                 else :
-                    success = "true"
+                    success = True
                     detail = "Registered Successfully"
 
                 #print(response.url)
@@ -136,7 +136,7 @@ class taladx():
             'password': postdata['pass']
         }
         
-        success = "false"
+        success = False
         detail = ""
         
         headers = {
@@ -155,10 +155,10 @@ class taladx():
                 soup = BeautifulSoup(response.content , features = self.parser)
                 if soup.find_all("h3", attrs={'class':"fail"}):
                 #if (response.url == 'http://www.estate.in.th/login.php' or response.url == 'http://www.estate.in.th/signup.php'):
-                    success = "false"
+                    success = False
                     detail = 'Incorrect Username or Password !!'
                 else:
-                    success = "true"
+                    success = True
                     detail = 'Logged in successfully'
             
             except requests.exceptions.RequestException:
@@ -191,9 +191,11 @@ class taladx():
         }
         post_url = ""
         post_id = ""
+        success = False
+        detail = "post error!!"
 
 
-        if (login["success"] == "true"):
+        if (login["success"] == True):
             if 'web_project_name' not in postdata or postdata['web_project_name'] == "":
                 if 'project_name' in postdata and postdata['project_name'] != "":
                     postdata['web_project_name'] = postdata['project_name']
@@ -302,29 +304,28 @@ class taladx():
                     temp = temp + 1
 
             post_create = self.httprequestObj.http_post("http://www.taladx.com/post-add.php", data = data, files = file, headers = headers)
-            success = "true"
-            detail = "Post created successfully"
-            #print(post_create.url)
-
-            url = post_create.url
-
-            parsed = urlparse.urlparse(url)
-
-            #print(str(parse_qs(parsed.query)['newid']))
-
-            post_id = str((parse_qs(parsed.query)['newid'])[0])
-            #print(post_id)
-
-            post_title = str((parse_qs(parsed.query)['name'])[0])
-
-            #print(post_title)
-
-            post_url = str('http://www.taladx.com/view'+post_id+'/'+post_title)
-
+            
+            res = self.httprequestObj.http_get("http://www.taladx.com/manage-post.php")
+            soup = BeautifulSoup(res.text, "html.parser")
+            first_post = soup.find("ul", attrs={"class":"lileft first highlight"})
+            title_head = first_post.find("li", attrs={"class":"title"})
+            post_url = title_head.find("a")["href"]
+            link_head = post_url.split("/")
+            get_title_re = link_head[4].replace("-","")
+            # title_post = postdata['post_title_th'].replace("\r\n","\n").replace(".", "").replace(" ", "")
+            get_title = re.sub(r'\W+', '', get_title_re)
+            title_post = re.sub(r'\W+', '', postdata['post_title_th'].replace("\r\n","\n"))
+            print(get_title)
+            print(title_post)
+            if title_post == get_title:
+                post_id = link_head[3].replace("view","")
+                get_title = link_head[4].replace("-","")
+                success = True
+                detail = "Post created successfully"
 
 
         else:
-            success = "false"
+            success = False
             detail = "Can not log in"
             
         end_time = datetime.datetime.utcnow()
@@ -355,7 +356,7 @@ class taladx():
 
         login = self.test_login(postdata)
         
-        if login['success'] == "true":
+        if login['success'] == True:
             page = 1
             req_post_id = str(postdata['post_id'])
             all_post_ids = set([])
@@ -381,14 +382,14 @@ class taladx():
             try:
                 boost_url = str('http://www.taladx.com/manage-post.php?update='+req_post_id)
                 res = self.httprequestObj.http_get(boost_url, headers = headers)
-                success = "true"
+                success = True
                 detail = "Post boosted successfully"
             except:
-                success = "false"
+                success = False
                 detail = "post_id is incorrect"
             
         else :
-            success = "false"
+            success = False
             detail = "Login failed"
 
         end_time = datetime.datetime.utcnow()
@@ -417,7 +418,7 @@ class taladx():
 
         login = self.test_login(postdata)
         
-        if login['success'] == "true":
+        if login['success'] == True:
             page = 1
             req_post_id = str(postdata['post_id'])
             all_post_ids = set([])
@@ -443,13 +444,13 @@ class taladx():
             if found:
                 delete_url = str('http://www.taladx.com/manage-post.php?delete='+req_post_id)
                 res = self.httprequestObj.http_get(delete_url, headers = headers)
-                success = "true"
+                success = True
                 detail = "Post deleted successfully"
             else:
-                success = "false"
+                success = False
                 detail = "post_id is incorrect"
         else :
-            success = "false"
+            success = False
             detail = "Login failed"
 
         end_time = datetime.datetime.utcnow()
@@ -621,20 +622,20 @@ class taladx():
                             temp = temp + 1
 
                     post_create = self.httprequestObj.http_post(post_url, data = data, files = file, headers = headers)
-                    success = "true"
+                    success = True
                     detail = "Post edited successfully"
 
                 else:
                     post_create = self.httprequestObj.http_post(post_url, data = data, headers = headers)
-                    success = "true"
+                    success = True
                     detail = "Post edited successfully"
 
             else:
-                success = "false"
+                success = False
                 detail = "post_id is incorrect"
 
         else :
-            success = "false"
+            success = False
             detail = "Login failed"
 
         end_time = datetime.datetime.utcnow()
@@ -668,7 +669,7 @@ class taladx():
         
         if(login['success'] == 'true'):
 
-            post_found = "false"
+            post_found = False
             post_id = ''
             post_url = ''
             post_view = ''
