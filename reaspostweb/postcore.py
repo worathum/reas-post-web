@@ -18,8 +18,6 @@ import time
 import traceback
 
 
-
-
 try:
     import configs
 except ImportError:
@@ -30,65 +28,41 @@ logging.basicConfig(level=logging.INFO, filename='log/app-' + str(datetime.date.
 # logging.config.dictConfig(getattr(configs, 'logging_config', {}))
 # log = logging.getLogger()
 
-# # new import using try be safe
-# try:
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     logging.warning("*/*\**/*\**/*\**/*\**/*\*APP STARTING*/*\**/*\**/*\**/*\**/*\*") 
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     import subprocess
-#     import platform
+def update():
+    # # new import using try be safe
+    # work pip install 04:00:00 GMT+7 (SERVER GMT-7) 
+    try:
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        logging.warning("*/*\**/*\**/*\**/*\**/*\*CHECK UPDATE STARTING*/*\**/*\**/*\**/*\**/*\*") 
+        logging.info("==============================================================================")
+        logging.info("==============================================================================")
+        import subprocess
+        time_update = time.strftime("%H%M")
+        # TH time update 01:00:00 - 04:00:00
+        time_pack = list(range(1800, 2100))
+        if int(time_update) in time_pack:
+            logging.warning("PULL GIT: IN PROGRESS") 
+            process_pull = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
+            output_pull = process_pull.communicate()[0]
+            logging.warning("PULL GIT: "+str(output_pull))
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+            logging.warning("RESTART SERVER: IN PROGRESS") 
+            process_restart = subprocess.run(["pm2", "restart", "pm_config.json"])
+            logging.warning("RESTART SERVER: "+str(process_restart)) 
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+            logging.warning("*/*\**/*\**/*\**/*\**/*\*UPDATE COMPLETE*/*\**/*\**/*\**/*\**/*\*") 
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+        else:
+            logging.warning("*/*\**/*\**/*\**/*\**/*\*NO UPDATE*/*\**/*\**/*\**/*\**/*\*") 
+            logging.info("==============================================================================")
+            logging.info("==============================================================================")
+    except Exception as e:
+        logging.critical(e, exc_info=True)
 
-#     # work pip install 00:00:00 - 08:00:00
-#     time_now = datetime.datetime.now().strftime("%H")
-#     if time_now < "08":
-#         if platform.system() == "Linux":
-#             requi = 'requirements_linux.txt'
-#         elif platform.system() == "windows":
-#             requi = 'requirements_windoes.txt'
-        
-#         logging.info("==============================================================================")
-#         logging.info("==============================================================================")
-#         logging.warning("PIP INSTALL: IN PROGRESS") 
-#         proces_pip = subprocess.call(['pip', 'install', '-r', requi])
-#         logging.warning("PIP INSTALL: COMPLETE")
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-#     logging.warning("PULL GIT: IN PROGRESS") 
-#     process_pull = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
-#     output_pull = process_pull.communicate()[0]
-#     logging.warning("PULL GIT: COMPLETE")
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-
-#     logging.warning("RESTART SERVER: IN PROGRESS") 
-#     bashCommand = "pm2 restart pm_config.json"
-#     process_pull = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-#     output_server, error_server = process_pull.communicate()
-#     logging.warning("RESTART SERVER: COMPLETE") 
-#     logging.info("==============================================================================")
-#     logging.info("==============================================================================")
-# except:
-#     try:
-#         logging.info("==============================================================================")
-#         logging.info("==============================================================================")
-#         if time_now < "08":
-#             logging.error("PIP INSTALL: ERROR") 
-#             logging.warning("CODE: ERROR")
-#         if output_pull:
-#             logging.error("PULL GIT : ERROR")
-#             logging.warning("CODE: {}".format(output_pull))
-#         if output_server:
-#             logging.error("RESTART SERVER : ERROR")
-#             logging.warning("CODE: {} - {}".format(output_server, error_server))
-#         logging.info("==============================================================================")
-#         logging.info("==============================================================================")
-#     except:
-#         pass
-#     pass
 
 
 def deEmojify(text):
@@ -111,6 +85,7 @@ class postcore():
         self.list_module = getattr(configs, 'list_module', [])
         self.list_action = getattr(configs, 'list_action', [])
         self.encoding = 'utf-8'
+        update()
         logging.info('load app config success.')
 
 
@@ -430,7 +405,19 @@ class postcore():
                     response["web"][websitename]["usage_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["start_time"] = datetime.datetime.utcnow()
                     response["web"][websitename]["end_time"] = datetime.datetime.utcnow()
-                    logging.error('IMPORT ERROR %s',str(e))
+                    import_error = 'IMPORT ERROR %s',str(e)
+                    logging.error(import_error)
+                    try:
+                        import subprocess
+                        logging.info("==============================================================================")
+                        logging.info("==============================================================================")
+                        logging.warning("RESTART SERVER: IN PROGRESS") 
+                        process_restart = subprocess.run(["pm2", "restart", "pm_config.json"])
+                        logging.warning("RESTART SERVER: "+str(process_restart))
+                        logging.info("==============================================================================")
+                        logging.info("==============================================================================")
+                    except Exception as ex:
+                        logging.critical(ex, exc_info=True)
                     continue
             all_start_time = datetime.datetime.utcnow()
 
@@ -696,6 +683,141 @@ class postcore():
             "web": {},
         }
 
+        # ===========================================================================
+        # store image in img tmp
+        # ===========================================================================
+        try:
+            allimages = datarequest["post_img_url_lists"]
+        except KeyError as e:
+            allimages = {}
+            # logging.warning(str(e))
+
+        for i in range(6):
+            dirtmp = 'imgupload_' + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
+            uuni = dirtmp.split('_')[1]
+            if os.path.isdir('imgtmp/' + dirtmp) == False:
+                try:
+                    os.mkdir("imgtmp/" + dirtmp)
+                    logging.info('image directory imgtmp/%s is created', dirtmp)
+                    time.sleep(0.2)
+                except:
+                    pass
+                break
+        # ===========================================================================
+        # ===========================================================================
+
+        datarequest['post_images'] = []
+        imgcount = 1
+        for imgurl in allimages:
+            try:
+                res = httprequestObj.http_get(imgurl, verify=False)
+                # logging.info('get image from url %s', imgurl)
+            except:
+                # logging.warning('http connection error %s', imgurl)
+                continue
+            if res.status_code == 200:
+                if int(res.headers['Content-Length']) > 0:
+                    if res.headers['Content-Type'] == 'image/jpeg' or res.headers['Content-Type'] == 'image/png': # Please make the condition if there is no image, please send success false directly
+                        try:
+                            extension = res.headers['Content-Type'].split("/")[-1]
+                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension, 'wb') as f:
+                                f.write(res.content)
+                                f.close()
+                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension)
+                            imgcount = imgcount + 1
+                        except:
+                            pass
+                    elif res.headers['Content-Type'] == 'application/octet-stream':
+                        try:
+                            extension = 'jpeg'
+                            with open("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension, 'wb') as f:
+                                f.write(res.content)
+                                f.close()
+                            datarequest['post_images'].append("imgtmp/" + dirtmp + "/" + str(imgcount) + "_" + uuni + "." + extension)
+                            imgcount = imgcount + 1
+                        except:
+                            pass
+                    else:
+                        logging.error('Issue with image urls')
+                        weblists = datarequest['web']
+                        web = {}
+                        for webitem in weblists:
+                            web[webitem['ds_name']] = {
+                                "websitename": webitem['ds_name'],
+                                "success": "false",
+                                "detail": "ข้อมูลจากลิงค์รูปภาพของท่านมีประเภทที่ไม่สามารถดำเนินการในระบบได้ กรุณาตรวจสอบรูปภาพใหม่อีกครั้ง", #Your image url is not a proper content type.
+                                "start_time": datetime.datetime.utcnow(),
+                                "end_time": datetime.datetime.utcnow(),
+                                "usage_time": datetime.datetime.utcnow(),
+                                "ds_name": webitem['ds_name'],
+                                "ds_id": webitem['ds_id'],
+                                "account_type": "",
+                                "post_url": "",
+                                "post_id": "",
+                            }
+                            if 'log_id' in webitem:
+                                web[webitem['ds_name']]['log_id'] = webitem['log_id']
+                        return {
+                            "success": "true",
+                            "action": action,
+                            "web": web
+                        }
+                else:
+                    logging.error('Issue with image urls')
+                    weblists = datarequest['web']
+                    web = {}
+                    for webitem in weblists:
+                        web[webitem['ds_name']] = {
+                            "websitename": webitem['ds_name'],
+                            "success": "false",
+                            "detail": "ลิงค์รูปภาพของท่านไม่มีข้อมูลรูปภาพ กรุณาตรวจสอบรูปภาพอีกครั้ง", #There is no image in your data. Please kindly recheck.
+                            "start_time": datetime.datetime.utcnow(),
+                            "end_time": datetime.datetime.utcnow(),
+                            "usage_time": datetime.datetime.utcnow(),
+                            "ds_name": webitem['ds_name'],
+                            "ds_id": webitem['ds_id'],
+                            "account_type": "",
+                            "post_url": "",
+                            "post_id": "",
+                        }
+                        if 'log_id' in webitem:
+                            web[webitem['ds_name']]['log_id'] = webitem['log_id']
+                    return {
+                        "success": "true",
+                        "action": action,
+                        "web": web
+                    }  
+            else:
+                logging.error('Issue with image urls')
+                weblists = datarequest['web']
+                web = {}
+                for webitem in weblists:
+                    web[webitem['ds_name']] = {
+                        "websitename": webitem['ds_name'],
+                        "success": "false",
+                        "detail": "ไม่สามารถเชื่อมต่อลิงค์รูปภาพของท่านได้ กรุณาตรวจสอบรูปภาพใหม่อีกครั้ง", #Found 404 on your image link.
+                        "start_time": datetime.datetime.utcnow(),
+                        "end_time": datetime.datetime.utcnow(),
+                        "usage_time": datetime.datetime.utcnow(),
+                        "ds_name": webitem['ds_name'],
+                        "ds_id": webitem['ds_id'],
+                        "account_type": "",
+                        "post_url": "",
+                        "post_id": "",
+                    }
+                    if 'log_id' in webitem:
+                        web[webitem['ds_name']]['log_id'] = webitem['log_id']
+                return {
+                    "success": "true",
+                    "action": action,
+                    "web": web
+                }
+
+                # else:
+                    # logging.warning('url %s is not image content-type %s', imgurl, res.headers['Content-Type'])
+            # else:
+                # logging.warning('image url response error %s', res.status_code)
+
         weblists = datarequest['web']
         del (datarequest['web'])
 
@@ -715,4 +837,8 @@ class postcore():
             webdata.update(datarequest)
             response["web"][websitename] = getattr(module_instance, action)(webdata)
 
+        # remove image tmp
+        if os.path.isdir('imgtmp/' + dirtmp) == True:
+            shutil.rmtree(os.path.abspath('imgtmp/' + dirtmp))
+            
         return response

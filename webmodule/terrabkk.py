@@ -2,17 +2,12 @@
 
 from time import sleep
 
-from requests.adapters import Response
 from .lib_httprequest import *
 from bs4 import BeautifulSoup
-import os.path
-# from urlparse import urlparse
 import requests
 import json
 import datetime
 import sys
-from urllib.parse import unquote
-import os
 
 
 class terrabkk():
@@ -192,7 +187,9 @@ class terrabkk():
             if i != 'addr_soi':
                 address += ' '
 
-        sub_district_id = postdata['addr_sub_district_code']
+        # on web is not บางนาใต้, บางนาเหนือ
+        if postdata['addr_sub_district'] == 'บางนาเหนือ' or postdata['addr_sub_district'] == 'บางนาใต้':
+            sub_district_id = 104701 # บางนา
 
         headers = {
             'Authorization': access_token,
