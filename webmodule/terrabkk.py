@@ -188,6 +188,7 @@ class terrabkk():
                 address += ' '
 
         # on web is not บางนาใต้, บางนาเหนือ
+        sub_district_id = postdata['addr_sub_district_code']
         if postdata['addr_sub_district'] == 'บางนาเหนือ' or postdata['addr_sub_district'] == 'บางนาใต้':
             sub_district_id = 104701 # บางนา
 
