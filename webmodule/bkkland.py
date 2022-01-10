@@ -70,6 +70,8 @@ class bkkland():
         r = self.httprequestObj.http_post(url, data=data_login)
         if r.text == 'ไม่พบข้อมูลสมาชิกค่ะ':
             detail = 'ไม่พบข้อมูลสมาชิกค่ะ'
+        elif r.text == 'ขออภัย ข้อมูลไม่ถูกต้องค่ะ':
+            detail = 'ขออภัย ข้อมูลไม่ถูกต้องค่ะ'
         else:
             r = self.httprequestObj.http_get("http://www.bkkland.com/member")
             print(r.status_code)
