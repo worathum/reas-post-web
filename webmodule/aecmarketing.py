@@ -108,7 +108,8 @@ class aecmarketing():
         
         extra_subdistrict = {
             '29': '178',
-            '45': '225'
+            '45': '225',
+            '47': '231'
         }
 
         if province_id in extra_subdistrict:
