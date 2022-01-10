@@ -126,8 +126,12 @@ class taladx():
         start_time = datetime.datetime.utcnow()
         self.httprequestObj.http_get('http://www.taladx.com/logout.php')
 
+        res = self.httprequestObj.http_get("http://www.taladx.com/member.php")
+        soup = BeautifulSoup(res.text, self.parser)
+        token = soup.find("input", attrs={"id":"save"})
+        
         data = {
-            'save': 'pr1sb7ul4pvmuaogt7pk3aepj5',
+            'save': token['value'],
             'email': postdata['user'],
             'password': postdata['pass']
         }
