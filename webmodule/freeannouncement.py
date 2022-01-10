@@ -125,6 +125,17 @@ class freeannouncement():
         return result
 
     def test_login(self, data):
+        start_time = datetime.datetime.utcnow()
+        end_time = datetime.datetime.utcnow()
+        return {
+            'websitename': 'freeannouncement',
+            'success': "false",
+            'start_time': str(start_time),
+            'end_time': str(end_time),
+            'usage_time': str(end_time - start_time),
+            'ds_id': data['ds_id'],
+            'detail': "Can't Login due to website problem. Please try again later."
+        }
         self.logout_user()
         start_time = datetime.datetime.utcnow()
         headers = {
