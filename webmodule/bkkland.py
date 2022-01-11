@@ -373,14 +373,6 @@ class bkkland():
                 detail = "post complete."
                 success = True
                 break
-            else:
-                post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                post_id = re.findall("\d+", post_url)[0]
-                res = self.httprequestObj.http_get(post_url)
-                if res.status_code == 200:
-                    detail = "Post Found"
-                    success = True
-                    break
 
         
         time_end = datetime.datetime.utcnow()
@@ -444,7 +436,7 @@ class bkkland():
             "websitename": self.webname,
         }
 
-    def edit_post(self,postdata):
+    def edit_post(self, postdata):
         self.logout_user()
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         time_start = datetime.datetime.utcnow()
@@ -452,50 +444,58 @@ class bkkland():
         test_login = self.test_login(postdata)
 
         success = False
-        post_id = ""
-        post_url = ""
-        detail = ""
+        post_id = postdata['post_id']
+        detail = "Error"
         if test_login['success'] == True:
-            count_page = 1
-            post_id = ""
-            while count_page < 35:
-                url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
-                print(url_check_title)
-                res_complete = self.httprequestObj.http_get(url_check_title)
-                soup = BeautifulSoup(res_complete.text, self.parser)
-                # loop find all title post (first page)
-                for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
-                    soup_ele = BeautifulSoup(str(hit), self.parser)
-                    title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
+            if post_id == "":
+                res = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?page=1")
+                soup = BeautifulSoup(res.text, self.parser)
+                for hit in soup.find_all("a"):
+                    try:
+                        if hit.text == "หน้าสุดท้าย":
+                            num_last_page = hit['href'][-1]
+                    except:
+                        continue
 
-                    post_title = ' '.join(postdata['post_title_th'].split())
-                    name = title.text.replace(" ", "")
-                    title_post = post_title.replace(" ", "")
+                count_page = 1
+                while num_last_page:
+                    url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
+                    res_complete = self.httprequestObj.http_get(url_check_title)
+                    soup = BeautifulSoup(res_complete.text, self.parser)
+                    # loop find all title post (first page)
+                    for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+                        soup_ele = BeautifulSoup(str(hit), self.parser)
+                        title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
+
+                        post_title = ' '.join(postdata['post_title_th'].split())
+                        name = title.text.replace(" ", "")
+                        title_post = post_title.replace(" ", "")
 
 
-                    if name == title_post:
-                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                        post_id = re.findall("\d+", post_url)[0]
-                        detail = "Post Found"
-                        success = True
-                        break
-                    else:
-                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
-                        post_id = re.findall("\d+", post_url)[0]
-                        res = self.httprequestObj.http_get(post_url)
-                        if res.status_code == 200:
+                        if name == title_post:
+                            post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                            post_id = re.findall("\d+", post_url)[0]
                             detail = "Post Found"
                             success = True
                             break
-                    
-                count_page += 1
-                if success == True:
-                    break
+                        else:
+                            name = title.text.replace(" ")
+                            post_title.replace(" ")
+                            check_word = 0
+                            for item_name in name:
+                                for item_title in post_title:
+                                    if item_title == item_name:
+                                        check_word += 1
 
-            
+                            if check_word > 5:
+                                post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                                post_id = re.findall("\d+", post_url)[0]
+                        
+                    count_page += 1
+                    if success == True:
+                        break
 
             # start edit_post            
-            url_edit = 'http://www.bkkland.com/post/form/edit?id={}'.format(post_id)
             url_api = 'http://www.bkkland.com/post/update'
             payload = self.datapost_details(postdata, "edit")
             payload['process'] = "edit_post"
@@ -503,8 +503,25 @@ class bkkland():
             payload["f_activated"] = (None, "Y")
             payload["go"] = (None, "แก้ไขประกาศ")
 
-            r = self.httprequestObj.http_post_with_headers(url_api, data=payload)
-            print(r.status_code)
+            files = {}
+        
+            try:
+                # on web upload .jpg only
+                self.re_lastname_imgs(postdata)
+                for i in range(len(postdata['post_images'])):
+                    path_img = os.getcwd()+"/"+postdata['post_images'][i]+".jpg"
+                    r = open(path_img, 'rb')
+                    name = "photo{}".format(i+1)
+                    files[name] = ("{}".format(path_img),r,"image/jpeg")
+
+                r = self.httprequestObj.http_post(url_api, data=payload, files=files)
+                for f in postdata['post_images']:
+                    os.remove(f+".jpg")
+            except:
+                files, path_imgs = self.pull_imgs(postdata)
+                r = self.httprequestObj.http_post(url_api, data=payload, files=files)
+                for f in path_imgs:
+                    os.remove(f)
 
             success = False
             detail = ""
@@ -518,8 +535,17 @@ class bkkland():
                     mystr = str(text_update)
                     # if != -1 is finded
                     if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
-                        detail = "update complete - post_id : {}".format(post_id)
-                        success = True
+                        res = self.httprequestObj.http_get('http://www.bkkland.com/post/{}.html'.format(post_id))
+                        soup = BeautifulSoup(res.text, self.parser)
+                        title = soup.find("title").text
+
+                        post_title = ' '.join(postdata['post_title_th'].split())
+                        name = title.text.replace(" ", "")
+                        title_post = post_title.replace(" ", "")
+                        
+                        if name == post_title:
+                            detail = "update complete - post_id : {}".format(post_id)
+                            success = True
 
                 except:
                     detail = "update False"
