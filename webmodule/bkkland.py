@@ -368,7 +368,7 @@ class bkkland():
             title_post = post_title.replace(" ", "")
 
             if name == title_post:
-                post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                post_url =title['href']
                 post_id = re.findall("\d+", post_url)[0]
                 detail = "post complete."
                 success = True
