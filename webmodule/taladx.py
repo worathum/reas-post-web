@@ -667,15 +667,14 @@ class taladx():
 
         login = self.test_login(postdata)
         
+        post_found = False
+        post_id = ''
+        post_url = ''
+        post_view = ''
+        post_create_time = ''
+        post_modify_time = ''
+        detail = 'No post with this title'
         if(login['success'] == 'true'):
-
-            post_found = False
-            post_id = ''
-            post_url = ''
-            post_view = ''
-            post_create_time = ''
-            post_modify_time = ''
-            detail = 'No post with this title'
 
             urls = str('http://www.taladx.com/post-search.php?keyword='+str(postdata['post_title_th']).replace('.','').replace(' ', "+")+'&category=&subcategory=&province=&price=')
 
