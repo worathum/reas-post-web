@@ -479,8 +479,8 @@ class bkkland():
                             success = True
                             break
                         else:
-                            name = title.text.replace(" ")
-                            post_title.replace(" ")
+                            name = title.text.replace(" ", "")
+                            post_title.replace(" ", "")
                             check_word = 0
                             for item_name in name:
                                 for item_title in post_title:
