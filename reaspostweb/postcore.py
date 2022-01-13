@@ -234,11 +234,11 @@ class postcore():
                 res = httprequestObj.http_get(imgurl, verify=False)
                 # logging.info('get image from url %s', imgurl)
             except:
-                logging.warning('http connection error %s', imgurl)
                 try:
                     # some time need vefify
                     res = httprequestObj.http_get(imgurl)
                 except:
+                    logging.warning('http connection error %s', imgurl)
                     continue
 
             try:
@@ -261,6 +261,8 @@ class postcore():
 
             if len(datarequest['post_images']) == 0:
                 if res.status_code == 200:
+                    if os.path.isdir('imgtmp/' + dirtmp) == True:
+                        shutil.rmtree(os.path.abspath('imgtmp/' + dirtmp))
                     logging.error('Issue with image urls')
                     weblists = datarequest['web']
                     web = {}
@@ -287,6 +289,8 @@ class postcore():
                     }
 
                 if int(res.headers['Content-Length']) < 0:
+                    if os.path.isdir('imgtmp/' + dirtmp) == True:
+                        shutil.rmtree(os.path.abspath('imgtmp/' + dirtmp))
                     logging.error('Issue with image urls')
                     weblists = datarequest['web']
                     web = {}
@@ -313,6 +317,8 @@ class postcore():
                     } 
 
                 if res.headers['Content-Type'] != 'image/jpeg' or res.headers['Content-Type'] != 'image/png' or res.headers['Content-Type'] != 'application/octet-stream':
+                    if os.path.isdir('imgtmp/' + dirtmp) == True:
+                        shutil.rmtree(os.path.abspath('imgtmp/' + dirtmp))
                     logging.error('Issue with image urls')
                     weblists = datarequest['web']
                     web = {}
