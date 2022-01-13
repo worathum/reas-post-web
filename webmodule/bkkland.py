@@ -523,35 +523,48 @@ class bkkland():
                 for f in path_imgs:
                     os.remove(f)
 
-            success = False
-            detail = ""
             url_update = 'http://www.bkkland.com/post/form/edit?id={}&status=update_complete'.format(post_id)
-            res_complete = self.httprequestObj.http_get(url_update)
-            soup = BeautifulSoup(res_complete.text, self.parser)
-            for hit in soup.find_all("script", attrs={"type":"text/javascript"}):
-                soup_ele = BeautifulSoup(str(hit), self.parser)
-                try:
-                    text_update = soup_ele.find("script", attrs={"type":"text/javascript"})
-                    mystr = str(text_update)
-                    # if != -1 is finded
-                    if mystr.find("อัพเดทประกาศเรียบร้อยค่ะ") != -1:
-                        res = self.httprequestObj.http_get('http://www.bkkland.com/post/{}.html'.format(post_id))
-                        soup = BeautifulSoup(res.text, self.parser)
-                        title = soup.find("title").text
+            count_page = 1
+            while num_last_page:
+                url_check_title = "http://www.bkkland.com/post/your_list?page={}".format(str(count_page))
+                res_complete = self.httprequestObj.http_get(url_check_title)
+                soup = BeautifulSoup(res_complete.text, self.parser)
+                # loop find all title post (first page)
+                for hit in soup.find_all("a", attrs={"class":"link_blue14_bu"}):
+                    soup_ele = BeautifulSoup(str(hit), self.parser)
+                    title = soup_ele.find("a", attrs={"class":"link_blue14_bu"})
 
-                        post_title = ' '.join(postdata['post_title_th'].split())
+                    post_title = ' '.join(postdata['post_title_th'].split())
+                    name = title.text.replace(" ", "")
+                    title_post = post_title.replace(" ", "")
+
+
+                    if name == title_post:
+                        post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                        post_id = re.findall("\d+", post_url)[0]
+                        detail = "update complete."
+                        success = True
+                        break
+                    else:
                         name = title.text.replace(" ", "")
-                        title_post = post_title.replace(" ", "")
-                        
-                        if name == post_title:
-                            detail = "update complete - post_id : {}".format(post_id)
-                            success = True
+                        post_title.replace(" ", "")
+                        check_word = 0
+                        for item_name in name:
+                            for item_title in post_title:
+                                if item_title == item_name:
+                                    check_word += 1
 
-                except:
-                    detail = "update False"
-                    success = False
+                        if check_word > 5:
+                            post_url = soup_ele.find("a", attrs={"class":"link_blue14_bu"})['href']
+                            post_id = re.findall("\d+", post_url)[0]
+                        else:
+                            success = False
+                            detail = 'update false!!'
+                    
+                count_page += 1
+                if success == True:
+                    break
 
-    
 
         time_end = datetime.datetime.utcnow()
         time_usage = time_end - time_start
