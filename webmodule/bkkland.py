@@ -445,18 +445,18 @@ class bkkland():
 
         success = False
         post_id = postdata['post_id']
+        post_url = ""
         detail = "Error"
         num_last_page = ""
-        res = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?page=1")
-        soup = BeautifulSoup(res.text, self.parser)
-        for hit in soup.find_all("a"):
-            try:
-                if hit.text == "หน้าสุดท้าย":
-                    num_last_page = hit['href'][-1]
-            except:
-                continue
-
         if test_login['success'] == True:
+            res = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?page=1")
+            soup = BeautifulSoup(res.text, self.parser)
+            for hit in soup.find_all("a"):
+                try:
+                    if hit.text == "หน้าสุดท้าย":
+                        num_last_page = hit['href'][-1]
+                except:
+                    continue
             if post_id == "":
                 
 
