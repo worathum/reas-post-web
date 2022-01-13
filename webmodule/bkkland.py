@@ -446,16 +446,19 @@ class bkkland():
         success = False
         post_id = postdata['post_id']
         detail = "Error"
+        num_last_page = ""
+        res = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?page=1")
+        soup = BeautifulSoup(res.text, self.parser)
+        for hit in soup.find_all("a"):
+            try:
+                if hit.text == "หน้าสุดท้าย":
+                    num_last_page = hit['href'][-1]
+            except:
+                continue
+
         if test_login['success'] == True:
             if post_id == "":
-                res = self.httprequestObj.http_get("http://www.bkkland.com/post/your_list?page=1")
-                soup = BeautifulSoup(res.text, self.parser)
-                for hit in soup.find_all("a"):
-                    try:
-                        if hit.text == "หน้าสุดท้าย":
-                            num_last_page = hit['href'][-1]
-                    except:
-                        continue
+                
 
                 count_page = 1
                 while num_last_page:
@@ -502,9 +505,15 @@ class bkkland():
             payload["post_id"] = post_id
             payload["f_activated"] = (None, "Y")
             payload["go"] = (None, "แก้ไขประกาศ")
+            get_id_imgs_old = self.httprequestObj.http_get('http://www.bkkland.com/post/form/edit?id={}'.format(post_id))
+            soup = BeautifulSoup(get_id_imgs_old.text, self.parser)
+
+            id_img = []
+            for hit in soup.find_all("input", attrs={"name":"f_del_pic[]"}):
+                id_img.append(hit['value'])
+                payload['f_del_pic[]'] = id_img
 
             files = {}
-        
             try:
                 # on web upload .jpg only
                 self.re_lastname_imgs(postdata)
