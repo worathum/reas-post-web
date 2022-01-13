@@ -259,8 +259,8 @@ class postcore():
                 except:
                     continue
 
-            if len(datarequest['post_images']) == 0:
-                if res.status_code == 200:
+            if len(datarequest['post_images']) <= 0:
+                if res.status_code != 200:
                     if os.path.isdir('imgtmp/' + dirtmp) == True:
                         shutil.rmtree(os.path.abspath('imgtmp/' + dirtmp))
                     logging.error('Issue with image urls')
