@@ -65,7 +65,7 @@ class property2share():
         else:
             time_end = datetime.utcnow()
             return {
-                "success": "true",
+                "success": True,
                 "time_usage": str(time_end - time_start),
                 "start_time": str(time_start),
                 'ds_id': userdata['ds_id'],
@@ -121,6 +121,7 @@ class property2share():
         self.print_debug('function ['+sys._getframe().f_code.co_name+']')
         st_time = datetime.utcnow()
 
+        success, detail = False, "login fail."
         email_user = logindata['user']
         passwd = logindata['pass']
 
@@ -129,26 +130,27 @@ class property2share():
             'txtPass': passwd
         }
 
-        login_resp = self.httprequestObj.http_post(self.login_link, data = inc_data)
-        decoded_result = login_resp.content.decode('utf-8')
+        res = self.httprequestObj.http_post(self.login_link, data = inc_data)
+        decoded_result = res.content.decode('utf-8')
         #print(decoded_result)
         en_time = datetime.utcnow()
 
-        resp = {
-            "success": True,
+        if('ชื่อหรือรหัสผ่านผิด' in decoded_result):
+            success = False
+            detail = 'Incorrect Username or Password'
+
+        if res.status_code == 200:
+            success, detail = True, "Login Success!!"
+
+        return {
+            "success": success,
             "ds_id": logindata["ds_id"],
             "time_usage": str(en_time-st_time),
             "websitename": "property2share",
             "start_time": str(st_time),
             "end_time": str(en_time),
-            "detail": "Logged in successfully"
+            "detail": detail
         }
-
-        if('ชื่อหรือรหัสผ่านผิด' in decoded_result):
-            resp['success'] = False
-            resp['detail'] = 'Incorrect Username or Password'
-
-        return resp
 
     def get_province(self, postdata):
 
@@ -318,9 +320,9 @@ class property2share():
         posturl_submit = 'https://www.property2share.com/property-{}'.format(post_id)
         check_prop_res = self.httprequestObj.http_get(posturl_submit)
 
-        success, posted = "false", "post not created"
+        success, posted = False, "post not created"
         if check_prop_res.status_code == 200:
-            success,posted = "true", "posted successfully"
+            success,posted = True, "posted successfully"
 
         time_end = datetime.utcnow()
         return {
@@ -425,7 +427,8 @@ class property2share():
         time_start = datetime.utcnow()
 
         posturl = ""
-        posted = ""
+        success = False
+        detail = "edit error!!"
 
         # login with user info first
         login = self.test_login(postdata)
@@ -477,9 +480,9 @@ class property2share():
             posturl = 'https://www.property2share.com/property-' + str(post_id)
             retc = self.httprequestObj.http_get(posturl)
             retc = retc.status_code
-            success, posted = "false", "Unable to Edit the Post"
+            success, detail = False, "Unable to Edit the Post"
             if retc == 200:
-                success, posted = "true", "Post Edited Successfully"
+                success, detail = True, "Post Edited Successfully"
 
         time_end = datetime.utcnow()
         return {
@@ -489,7 +492,7 @@ class property2share():
             "end_time": str(time_end),
             "post_url": posturl,
             "post_id": post_id,
-            "detail": posted,
+            "detail": detail,
             'ds_id': postdata['ds_id'],
             "log_id" : postdata['log_id'],
             "websitename": self.webname
